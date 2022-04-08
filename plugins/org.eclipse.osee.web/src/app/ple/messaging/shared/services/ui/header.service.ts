@@ -17,7 +17,8 @@ import { element } from '../../types/element';
 import { structure } from '../../types/structure';
 import { message } from '../../../message-interface/types/messages';
 import { subMessage } from '../../../message-interface/types/sub-messages';
-import { elementHeaderDetail, messageHeaderDetail, structureHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
+import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
+import { branchSummary, connectionDiffItem, DiffHeaderType, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport.d';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +83,131 @@ export class HeaderService {
     { header: 'interfaceSubMessageNumber', description: 'Order of submessage', humanReadable: 'SubMessage Number' },
     { header: 'applicability', description: 'Applicability of a given submessage', humanReadable: 'Applicability' },
   ])
+
+  private _allNodeDiffs = new BehaviorSubject<nodeDiffHeaderDetail[]>([
+    { header: 'name', description: 'Name of node', humanReadable: 'Name' },
+    { header: 'description', description: 'Description of node', humanReadable: 'Description' },
+    { header: 'address', description: 'Address of node', humanReadable: 'Address' },
+    { header: 'color', description: 'Color of node', humanReadable: 'Color' },
+    { header: 'applicability', description: 'Applicability of node', humanReadable: 'Applicability' },
+  ])
+
+  private _allConnectionDiffs = new BehaviorSubject<connectionDiffHeaderDetail[]>([
+    { header: 'name', description: 'Name of connection', humanReadable: 'Name' },
+    { header: 'description', description: 'Description of connection', humanReadable: 'Description' },
+    { header: 'transportType', description: 'Transport Type of connection', humanReadable: 'Transport Type' },
+    { header: 'applicability', description: 'Applicability of connection', humanReadable: 'Applicability' },
+  ])
+
+  private _allMessageDiffs = new BehaviorSubject<messageDiffHeaderDetail[]>([
+    { header: 'name', description: 'Name of message', humanReadable: 'Name' },
+    { header: 'description', description: 'Description of message', humanReadable: 'Description' },
+    { header: 'interfaceMessageNumber', description: 'Message Number', humanReadable: 'Message Number' },
+    { header: 'interfaceMessagePeriodicity', description: 'Periodicity of message', humanReadable: 'Periodicity' },
+    { header: 'interfaceMessageRate', description: 'Transmission rate of message', humanReadable: 'TxRate' },
+    { header: 'interfaceMessageWriteAccess', description: 'Write access of message', humanReadable: 'Write Access' },
+    { header: 'interfaceMessageType', description: 'Type of message', humanReadable: 'Type' },
+    { header: 'applicability', description: 'Applicability of message', humanReadable: 'Applicability' },
+  ])
+
+  private _allSubmessageDiffs = new BehaviorSubject<submessageDiffHeaderDetail[]>([
+    { header: 'name', description: 'Name of submessage', humanReadable: 'Name' },
+    { header: 'description', description: 'Description of submessage', humanReadable: 'Description' },
+    { header: 'interfaceSubMessageNumber', description: 'Submessage number', humanReadable: 'SubMessage Number' },
+    { header: 'applicability', description: 'Applicability of submessage', humanReadable: 'Applicability' },
+  ])
+
+  private _allStructureDiffs = new BehaviorSubject<structureDiffHeaderDetail[]>([
+    { header: 'name', description: 'Name of structure', humanReadable: 'Name' },
+    { header: 'description', description: 'Description of structure', humanReadable: 'Description' },
+    { header: 'interfaceMinSimultaneity', description: 'Minimum simultaneity of structure', humanReadable: 'Min Simult.' },
+    { header: 'interfaceMaxSimultaneity', description: 'Maximum simultaneity of structure', humanReadable: 'Max Simult.' },
+    { header: 'interfaceTaskFileType', description: 'Task file type of structure', humanReadable: 'Task File Type' },
+    { header: 'interfaceStructureCategory', description: 'Category of structure', humanReadable: 'Category' },
+    { header: 'applicability', description: 'Applicability of the structure', humanReadable: 'Applicability' },
+  ])
+
+  private _allElementDiffs = new BehaviorSubject<elementDiffHeaderDetail[]>([
+    { header: 'name', description: 'Name of element', humanReadable: 'Name' },
+    { header: 'description', description: 'Description of element', humanReadable: 'Description' },
+    { header: 'logicalType', description: 'Logical type of element', humanReadable: 'Logical Type' },
+    { header: 'elementSizeInBits', description: 'Bit size of element', humanReadable: 'Bit Size' },
+    { header: 'interfaceElementIndexStart', description: 'Minimum value of element', humanReadable: 'Min. Val' },
+    { header: 'interfaceElementIndexEnd', description: 'Minimum value of element', humanReadable: 'Min. Val' },
+    { header: 'interfacePlatformTypeMinval', description: 'Minimum value of element', humanReadable: 'Min. Val' },
+    { header: 'interfacePlatformTypeMaxval', description: 'Maximum value of element', humanReadable: 'Max. Val' },
+    { header: 'interfacePlatformTypeDefaultValue', description: 'Default value of element', humanReadable: 'Devault Val' },
+    { header: 'units', description: 'Element units', humanReadable: 'Units' },
+    { header: 'enumeration', description: 'Element enumeration', humanReadable: 'Enumeration' },
+    { header: 'interfaceElementAlterable', description: 'Alterability of element', humanReadable: 'Alterable' },
+    { header: 'notes', description: 'Element notes', humanReadable: 'Notes' },
+    { header: 'applicability', description: 'Applicability of the element', humanReadable: 'Applicability' },
+  ])
+
+  private _allBranchSummary = new BehaviorSubject<branchSummaryHeaderDetail[]>([
+    { header: 'pcrNo', description: 'Workflow number of the branch\'s associated artifact', humanReadable: 'Workflow' },
+    { header: 'description', description: 'Description of the branch', humanReadable: 'Description' },
+    { header: 'compareBranch', description: 'Branch being compared against', humanReadable: 'Compare Against' },
+    { header: 'reportDate', description: 'Date the report was generated', humanReadable: 'Report Date' },
+  ]) 
+
+
+  private _allNodeDiffHeaders = this._allNodeDiffs.pipe(
+    mergeMap((nodes) => from(nodes).pipe(
+      map((node) => node.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof nodeDiffItem,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allConnectionDiffHeaders = this._allConnectionDiffs.pipe(
+    mergeMap((connections) => from(connections).pipe(
+      map((connection) => connection.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof connectionDiffItem,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allMessageDiffHeaders = this._allMessageDiffs.pipe(
+    mergeMap((messages) => from(messages).pipe(
+      map((message) => message.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof messageDiffItem,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allSubmessageDiffHeaders = this._allSubmessageDiffs.pipe(
+    mergeMap((submessages) => from(submessages).pipe(
+      map((submessage) => submessage.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof submessageDiffItem,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allStructureDiffHeaders = this._allStructureDiffs.pipe(
+    mergeMap((structures) => from(structures).pipe(
+      map((structure) => structure.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof structureDiffItem,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allElementDiffHeaders = this._allElementDiffs.pipe(
+    mergeMap((elements) => from(elements).pipe(
+      map((element) => element.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof elementDiffItem,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allBranchSummaryHeaders = this._allBranchSummary.pipe(
+    mergeMap((summary) => from(summary).pipe(
+      map((sum) => sum.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof branchSummary,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
   private _allElementsHeaders = this._allElements.pipe(
     mergeMap((elements) => from(elements).pipe(
       map((element) => element.header),
@@ -115,6 +241,62 @@ export class HeaderService {
   )
   constructor () { }
   
+  get AllNodeDiffHeaders() {
+    return this._allNodeDiffHeaders;
+  }
+
+  get AllNodeDiffs() {
+    return this._allNodeDiffs;
+  }
+
+  get AllConnectionDiffHeaders() {
+    return this._allConnectionDiffHeaders;
+  }
+
+  get AllConnectionDiffs() {
+    return this._allConnectionDiffs;
+  }
+
+  get AllMessageDiffHeaders() {
+    return this._allMessageDiffHeaders;
+  }
+
+  get AllMessageDiffs() {
+    return this._allMessageDiffs;
+  }
+
+  get AllSubmessageDiffHeaders() {
+    return this._allSubmessageDiffHeaders;
+  }
+
+  get AllSubmessageDiffs() {
+    return this._allSubmessageDiffs;
+  }
+
+  get AllStructureDiffHeaders() {
+    return this._allStructureDiffHeaders;
+  }
+
+  get AllStructureDiffs() {
+    return this._allStructureDiffs;
+  }
+
+  get AllElementDiffHeaders() {
+    return this._allElementDiffHeaders;
+  }
+
+  get AllElementDiffs() {
+    return this._allElementDiffs;
+  }
+
+  get AllBranchSummaryHeaders() {
+    return this._allBranchSummaryHeaders;
+  }
+
+  get AllBranchSummary() {
+    return this._allBranchSummary;
+  }
+
   get AllElementHeaders() {
     return this._allElementsHeaders;
   }
@@ -147,7 +329,7 @@ export class HeaderService {
     return this._allSubMessageHeaders;
   }
 
-  getHeaderByName(value: keyof structure|keyof element|keyof message|keyof subMessage|string,type:string) {
+  getHeaderByName(value: keyof structure|keyof element|keyof message|keyof subMessage|keyof nodeDiffItem|string,type:string) {
     return iif(() => type === 'message',
       this.AllMessages.pipe(
         mergeMap((messages) => from(messages).pipe(
@@ -172,7 +354,55 @@ export class HeaderService {
                 filter((element)=>element.header===value)
               ))
             ), //element obs
-          
+            iif(() => type === DiffHeaderType.NODE,
+              this.AllNodeDiffs.pipe(
+                mergeMap((nodes) => from(nodes).pipe(
+                  filter((node)=>node.header===value)
+                ))
+              ), //nodeDiff obs
+              iif(() => type === DiffHeaderType.CONNECTION,
+                this.AllConnectionDiffs.pipe(
+                  mergeMap((connections) => from(connections).pipe(
+                    filter((connection)=>connection.header===value)
+                  ))
+                ), //connectionDiff obs
+                iif(() => type === DiffHeaderType.MESSAGE,
+                  this.AllMessageDiffs.pipe(
+                    mergeMap((messages) => from(messages).pipe(
+                      filter((message)=>message.header===value)
+                    ))
+                  ), //messageDiff obs
+                  iif(() => type === DiffHeaderType.SUBMESSAGE,
+                    this.AllSubmessageDiffs.pipe(
+                      mergeMap((submessages) => from(submessages).pipe(
+                        filter((submessage)=>submessage.header===value)
+                      ))
+                    ), //submessageDiff obs
+                    iif(() => type === DiffHeaderType.STRUCTURE,
+                      this.AllStructureDiffs.pipe(
+                        mergeMap((structures) => from(structures).pipe(
+                          filter((structure)=>structure.header===value)
+                        ))
+                      ), //structureDiffs obs
+                      iif(() => type === DiffHeaderType.ELEMENT,
+                        this.AllElementDiffs.pipe(
+                          mergeMap((elements) => from(elements).pipe(
+                            filter((element)=>element.header===value)
+                          ))
+                        ), //elementDiffs obs
+                        iif(() => type === 'branchSummary',
+                          this.AllBranchSummary.pipe(
+                            mergeMap((summary) => from(summary).pipe(
+                              filter((sum)=>sum.header===value)
+                            ))
+                          ), //branchSummary obs
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            ) 
           )
         )
       )

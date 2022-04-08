@@ -1,0 +1,66 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="items?.length">
+    <div class="diff-report-table">
+        <table mat-table [dataSource]="items||[]" class="mat-elevation-z1">
+            <ng-container [matColumnDef]="'TableHeader'" *ngIf="title && title !== ''">
+                <th mat-header-cell *matHeaderCellDef [attr.colspan]="headers.length" class="diff-table-title-header">
+                    {{title}}
+                </th>
+            </ng-container>
+            <ng-container [matColumnDef]="header" *ngFor="let header of headers">
+                <th mat-header-cell *matHeaderCellDef class="diff-table-cell message-element-interface-table-view-message-header">
+                    {{(getHeaderByName(header)|async)?.humanReadable||''}}
+                </th>
+                <td mat-cell *matCellDef="let item;" class="diff-table-cell" [ngClass]="item.diffInfo.added?'message-table-row-even-added':item.diffInfo.deleted? 'message-table-row-even-deleted':item.diffInfo.fieldsChanged.hasOwnProperty(header)?'message-table-row-changed':'message-table-row-even'">
+                    <ng-container *ngIf="item.diffInfo.fieldsChanged.hasOwnProperty(header) && !item.diffInfo.added && !item.diffInfo.deleted">
+                        <div class="diff-table-changed-from-to">
+                            <ng-container *ngIf="item.diffInfo.fieldsChanged.hasOwnProperty(header)">
+                                <mat-icon color="warn">remove</mat-icon>
+                            </ng-container>
+                            <ng-container *ngIf="header === 'applicability'; else prev_value">
+                                <span>{{item.diffInfo.fieldsChanged[header]?.name||""}}</span>
+                            </ng-container>
+                            <ng-template #prev_value>
+                                <span>{{item.diffInfo.fieldsChanged[header]}}</span>
+                            </ng-template>
+                        </div>
+                        <div style="width:100%; border-bottom: 1px solid #000; margin: 0.5em 0 0.5em 0;"></div>
+                    </ng-container>
+                    <ng-container *ngIf="header === 'applicability'; else current_value">
+                        <div class="diff-table-changed-from-to">
+                            <ng-container *ngIf="item.diffInfo.fieldsChanged.hasOwnProperty(header) && !item.diffInfo.added && !item.diffInfo.deleted">
+                                <mat-icon color="success">add</mat-icon>
+                            </ng-container>
+                            <span>{{item.applicability?.name}}</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #current_value>
+                        <div class="diff-table-changed-from-to">
+                            <ng-container *ngIf="item.diffInfo.fieldsChanged.hasOwnProperty(header) && !item.diffInfo.added && !item.diffInfo.deleted">
+                                <mat-icon color="success">add</mat-icon>
+                            </ng-container>
+                            <span>{{item[header]}}</span>
+                        </div>
+                    </ng-template>
+                </td>
+            </ng-container>
+            <ng-container *ngIf="title && title !== ''">
+                <tr mat-header-row *matHeaderRowDef="['TableHeader']">{{title}}</tr>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="headers"></tr>
+            <tr mat-row *matRowDef="let row; columns: headers;"
+                class="message-detail-row"></tr>
+        </table>
+    </div>
+</ng-container>

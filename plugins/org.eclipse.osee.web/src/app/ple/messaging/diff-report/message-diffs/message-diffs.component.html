@@ -1,0 +1,27 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="(allMessages|async) as allItems">
+    <ng-container *ngIf="allItems.length !== 0">
+        <h2 class="mat-title diff-report-section-header">Message Changes</h2>
+        <ng-container *ngIf="(messagesAdded|async) as messages">
+            <app-diff-report-table [items]="messages" [headers]="headers" [headerKey]="headerType" [title]="'Messages Added'"></app-diff-report-table>
+        </ng-container>
+        <ng-container *ngIf="(messagesDeleted|async) as messages">
+            <app-diff-report-table [items]="messages" [headers]="headers" [headerKey]="headerType" [title]="'Messages Deleted'"></app-diff-report-table>
+        </ng-container>
+        <ng-container *ngIf="(messagesChanged|async) as messages">
+            <app-diff-report-table [items]="messages" [headers]="headers" [headerKey]="headerType" [title]="'Messages Changed'"></app-diff-report-table>
+        </ng-container>
+    </ng-container>
+</ng-container>
+

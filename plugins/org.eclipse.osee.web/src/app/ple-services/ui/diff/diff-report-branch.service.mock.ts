@@ -14,9 +14,11 @@
 import { of } from "rxjs";
 import { testBranchListing } from "src/app/ple/plconfig/testing/mockBranchService";
 import { changeReportMock } from "../../http/change-report.mock";
+import { differenceReportMock } from "../../http/difference-report.mock";
 import { DiffReportBranchService } from "./diff-report-branch.service";
 
 export const diffReportBranchServiceMock: Partial<DiffReportBranchService> = {
     differences: of(changeReportMock),
-    parentBranch:of(testBranchListing[0].parentBranch.id)
+    parentBranch:of(testBranchListing[0].parentBranch.id),
+    differenceReport: of(differenceReportMock)
 }
