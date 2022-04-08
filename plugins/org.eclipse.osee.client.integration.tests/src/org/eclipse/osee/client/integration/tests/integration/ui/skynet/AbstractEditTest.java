@@ -204,10 +204,13 @@ public abstract class AbstractEditTest {
       @Override
       public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
          List<EventTopicArtifactTransfer> changes = artifactTopicEvent.getArtifacts();
-         if (changes.contains(topicArtToLookFor)) {
-            wasUpdateReceived = true;
-            synchronized (this) {
-               notify();
+         for (EventTopicArtifactTransfer transferArt : changes) {
+            // just make sure the artifact was sent, by checking for an artifactId match
+            if (transferArt.getArtifactToken().equals(topicArtToLookFor.getArtifactToken())) {
+               wasUpdateReceived = true;
+               synchronized (this) {
+                  notify();
+               }
             }
          }
       }
