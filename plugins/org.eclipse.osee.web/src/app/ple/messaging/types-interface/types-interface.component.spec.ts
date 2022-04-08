@@ -37,6 +37,7 @@ describe('TypesInterfaceComponent', () => {
       [
         {
           interfaceLogicalType: "boolean",
+          description:'',
           interfacePlatform2sComplement: false,
           interfacePlatformTypeAnalogAccuracy: "Hello",
           interfacePlatformTypeBitsResolution: "1",
@@ -53,6 +54,7 @@ describe('TypesInterfaceComponent', () => {
         },
         {
           interfaceLogicalType: "integer",
+          description:'',
           interfacePlatform2sComplement: false,
           interfacePlatformTypeAnalogAccuracy: "Hello",
           interfacePlatformTypeBitsResolution: "1",

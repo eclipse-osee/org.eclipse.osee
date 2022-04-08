@@ -20,6 +20,9 @@
         </div>
     </div>
     <div mat-card-content>
+        <div *ngIf="typeData.description">
+            Description:<br> {{typeData.description}}
+        </div>
         <div *ngIf="typeData.interfacePlatformTypeMinval">
             Minimum Value:<br> {{typeData.interfacePlatformTypeMinval}}
         </div>

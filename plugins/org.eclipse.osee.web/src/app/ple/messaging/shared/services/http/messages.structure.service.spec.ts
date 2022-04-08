@@ -40,4 +40,12 @@ describe('MessagesService', () => {
     req.flush(messagesMock[0].subMessages[0]);
     httpTestingController.verify();
   })
+
+  it('should get a message', () => {
+    service.getMessage('10', '20', '30').subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 10 + "/connections/"+20+"/messages/"+30);
+    expect(req.request.method).toEqual('GET');
+    req.flush(messagesMock[0].subMessages[0]);
+    httpTestingController.verify();
+  })
 });

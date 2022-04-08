@@ -40,6 +40,7 @@ describe('EditTypeDialogComponent', () => {
     mode: editPlatformTypeDialogDataMode.edit,
     type: {
       interfaceLogicalType: 'boolean',
+      description:'',
       interfacePlatform2sComplement: false,
       interfacePlatformTypeAnalogAccuracy: 'N/A',
       interfacePlatformTypeBitsResolution: 'N/A',

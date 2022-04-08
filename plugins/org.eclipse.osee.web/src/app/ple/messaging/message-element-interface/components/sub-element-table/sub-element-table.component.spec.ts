@@ -34,7 +34,6 @@ import { of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-add-button/two-layer-add-button.harness';
-import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { SubElementTableRowComponentMock } from '../../mocks/components/sub-element-table-row.component.mock';
 import { elementsMock } from '../../../shared/mocks/element.mock';
@@ -88,7 +87,7 @@ describe('SubElementTableComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[CommonModule,MatIconModule,MatDialogModule,MatTableModule,MatTooltipModule,MatMenuModule,MatFormFieldModule,MatInputModule,FormsModule,NoopAnimationsModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule,SharedMessagingModule, HttpClientTestingModule],
-      declarations: [SubElementTableComponent, ConvertMessageInterfaceTitlesToStringPipe, EditElementFieldComponent,SubElementTableRowComponentMock],
+      declarations: [SubElementTableComponent, EditElementFieldComponent,SubElementTableRowComponentMock],
       providers: [{
         provide: ActivatedRoute, useValue: {
           paramMap: of(convertToParamMap({ branchId: "10", branchType: "working" })),

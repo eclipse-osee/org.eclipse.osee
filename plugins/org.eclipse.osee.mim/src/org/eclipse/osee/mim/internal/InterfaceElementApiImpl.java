@@ -145,6 +145,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
             platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
          element.setUnits(
             platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
+         element.setInterfacePlatformTypeDescription(
+            platformType.getDescription() != null ? platformType.getDescription() : "");
       } catch (Exception ex) {
 
       }

@@ -166,6 +166,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
       type: {
         id: '',
         name: '',
+        description:'',
         interfaceLogicalType: '',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: '',

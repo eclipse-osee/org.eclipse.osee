@@ -15,6 +15,7 @@
  */
 export interface PlatformType {
     id?: string,
+    description:string,
     interfaceLogicalType: string,
     interfacePlatform2sComplement: boolean,
     interfacePlatformTypeAnalogAccuracy: string,

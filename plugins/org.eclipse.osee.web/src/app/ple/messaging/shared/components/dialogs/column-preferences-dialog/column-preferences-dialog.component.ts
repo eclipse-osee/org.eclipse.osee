@@ -11,11 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject, OnInit } from '@angular/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { defaultEditElementProfile, defaultEditStructureProfile, defaultViewElementProfile, defaultViewStructureProfile } from '../../../constants/defaultProfiles';
 import { EditAuthService } from '../../../services/edit-auth-service.service';
+import { HeaderService } from '../../../services/ui/header.service';
+import { element } from '../../../types/element';
 import { settingsDialogData } from '../../../types/settingsdialog';
+import { structure } from '../../../types/structure';
 
 @Component({
   selector: 'app-column-preferences-dialog',
@@ -27,7 +32,7 @@ export class ColumnPreferencesDialogComponent implements OnInit {
     map(x=>x?.editable)
   )
 
-  constructor(public dialogRef: MatDialogRef<ColumnPreferencesDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: settingsDialogData, private editAuthService: EditAuthService) {
+  constructor(public dialogRef: MatDialogRef<ColumnPreferencesDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: settingsDialogData, private editAuthService: EditAuthService, private _headerService: HeaderService) {
     this.editAuthService.BranchIdString = data.branchId;
    }
 
@@ -36,5 +41,19 @@ export class ColumnPreferencesDialogComponent implements OnInit {
 
   onNoClick() {
     this.dialogRef.close();
+  }
+
+  getHeaderByName(value: keyof structure|keyof element, type: 'structure'|'element') {
+    return this._headerService.getHeaderByName(value,type);
+  }
+
+  resetToDefaultHeaders(event: MouseEvent) {
+    if (this.data.editable) {
+      this.data.allowedHeaders1 = defaultEditStructureProfile;
+      this.data.allowedHeaders2 = defaultEditElementProfile;
+      return;
+    }
+    this.data.allowedHeaders1 = defaultViewStructureProfile;
+    this.data.allowedHeaders2 = defaultViewElementProfile;
   }
 }

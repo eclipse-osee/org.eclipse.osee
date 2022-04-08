@@ -27,7 +27,8 @@ export const platformTypesMock: PlatformType[] = [
         interfacePlatformTypeMsbValue: '0',
         interfacePlatformTypeUnits: 'N/A',
         interfacePlatformTypeValidRangeDescription: '',
-        name:'First'
+        name: 'First',
+        description:''
     },
     {
         interfaceLogicalType: 'boolean',
@@ -43,12 +44,14 @@ export const platformTypesMock: PlatformType[] = [
         interfacePlatformTypeMsbValue: '0',
         interfacePlatformTypeUnits: 'N/A',
         interfacePlatformTypeValidRangeDescription: '',
-        name:'First2'
+        name: 'First2',
+        description:''
     },
 ];
 export const platformTypes1: PlatformType[] = [
     {
         interfaceLogicalType: '',
+        description:'',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: '',
         interfacePlatformTypeBitSize: '8',
@@ -66,6 +69,7 @@ export const platformTypes1: PlatformType[] = [
     },
     {
         interfaceLogicalType: '',
+        description:'',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: '',
         interfacePlatformTypeBitSize: '8',
@@ -83,6 +87,7 @@ export const platformTypes1: PlatformType[] = [
     },
     {
         interfaceLogicalType: '',
+        description:'',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: '',
         interfacePlatformTypeBitSize: '8',

@@ -58,6 +58,7 @@ describe('AddElementDialogComponent', () => {
     type: {
       id: '',
       name: '',
+      description:'',
       interfaceLogicalType: '',
       interfacePlatform2sComplement: false,
       interfacePlatformTypeAnalogAccuracy: '',

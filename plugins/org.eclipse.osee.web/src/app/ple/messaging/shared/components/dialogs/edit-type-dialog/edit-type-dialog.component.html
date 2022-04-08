@@ -36,6 +36,14 @@
     <br>
     <div class="full-width">
         <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea cdkTextareaAutosize matInput [(ngModel)]="data.type.description"></textarea>
+            <mat-hint>Description of Platform Type</mat-hint>
+        </mat-form-field>
+    </div>
+    <br>
+    <div class="full-width">
+        <mat-form-field>
             <mat-label>Minimum Value</mat-label>
             <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeMinval" #input required>
             <mat-hint align="end">Minimum Value Platform Type can Achieve</mat-hint>

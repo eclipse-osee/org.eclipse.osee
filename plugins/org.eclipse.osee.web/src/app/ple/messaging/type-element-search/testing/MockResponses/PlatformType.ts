@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { PlatformType } from "../../types/PlatformType";
+
+import { PlatformType } from '../../../shared/types/platformType'
 
 export const platformTypes1: PlatformType[] = [
     {
@@ -28,7 +29,8 @@ export const platformTypes1: PlatformType[] = [
         interfacePlatformTypeUnits: '',
         interfacePlatformTypeValidRangeDescription: '',
         id: '0',
-        name:'Name'
+        name: 'Name',
+        description:''
     },
     {
         interfaceLogicalType: '',
@@ -45,7 +47,8 @@ export const platformTypes1: PlatformType[] = [
         interfacePlatformTypeUnits: '',
         interfacePlatformTypeValidRangeDescription: '',
         id: '1',
-        name:'Name2'
+        name: 'Name2',
+        description:''
     },
     {
         interfaceLogicalType: '',
@@ -62,7 +65,8 @@ export const platformTypes1: PlatformType[] = [
         interfacePlatformTypeUnits: '',
         interfacePlatformTypeValidRangeDescription: '',
         id: '2',
-        name:'Name3'
+        name: 'Name3',
+        description:''
     },
 ]
 
@@ -82,7 +86,8 @@ export const platformTypes2: PlatformType[] = [
         interfacePlatformTypeUnits: '',
         interfacePlatformTypeValidRangeDescription: '',
         id: '3',
-        name:'Title'
+        name: 'Title',
+        description:''
     },
     {
         interfaceLogicalType: '',
@@ -99,7 +104,8 @@ export const platformTypes2: PlatformType[] = [
         interfacePlatformTypeUnits: '',
         interfacePlatformTypeValidRangeDescription: '',
         id: '4',
-        name:'Title2'
+        name: 'Title2',
+        description:''
     },
     {
         interfaceLogicalType: '',
@@ -116,6 +122,7 @@ export const platformTypes2: PlatformType[] = [
         interfacePlatformTypeUnits: '',
         interfacePlatformTypeValidRangeDescription: '',
         id: '2',
-        name:'Title3'
+        name: 'Title3',
+        description:''
     },
 ]

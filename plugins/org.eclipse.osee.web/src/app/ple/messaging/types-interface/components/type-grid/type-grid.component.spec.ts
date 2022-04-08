@@ -44,6 +44,7 @@ describe('TypeGridComponent', () => {
     [
       {
         interfaceLogicalType: "boolean",
+        description:'',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: "Hello",
         interfacePlatformTypeBitsResolution: "1",
@@ -60,6 +61,7 @@ describe('TypeGridComponent', () => {
       },
       {
         interfaceLogicalType: "integer",
+        description:'',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: "Hello",
         interfacePlatformTypeBitsResolution: "1",

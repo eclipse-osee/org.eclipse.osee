@@ -88,7 +88,12 @@
                                         }">
                                             {{element[header]}}
                                         </div>
-                                        <div *ngIf="header!=='applicability' && header!==' ' && header!=='name' && header!=='description' && header !=='sizeInBytes'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
+                                        <ng-container *ngIf="header==='txRate'">
+                                            <ng-container *ngIf="_messageData|async as messageData">
+                                                {{messageData.interfaceMessageRate}}
+                                            </ng-container>
+                                        </ng-container>
+                                        <div *ngIf="header!=='applicability' && header!==' ' && header!=='name' && header!=='description' && header !=='sizeInBytes' && header !=='txRate'" appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-element-interface-table-highlighted-text">
                                             {{element[header]}}
                                         </div>
                                     </ng-template>

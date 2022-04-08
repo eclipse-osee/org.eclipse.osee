@@ -10,11 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,11 +26,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { apiURL } from 'src/environments/environment';
-import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../pipes/convert-message-interface-titles-to-string.pipe';
 import { branchApplicability } from '../../../types/branch.applic';
 import { settingsDialogData } from '../../../types/settingsdialog';
 
 import { ColumnPreferencesDialogComponent } from './column-preferences-dialog.component';
+import { defaultEditElementProfile, defaultEditStructureProfile, defaultViewElementProfile, defaultViewStructureProfile } from '../../../constants/defaultProfiles';
 
 describe('ColumnPreferencesDialogComponent', () => {
   let component: ColumnPreferencesDialogComponent;
@@ -44,11 +48,12 @@ describe('ColumnPreferencesDialogComponent', () => {
   };
   let httpClient :HttpClient;
   let httpTestingController: HttpTestingController;
+  let loader: HarnessLoader;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatDialogModule, MatFormFieldModule,NoopAnimationsModule, MatListModule, FormsModule,MatButtonModule,MatTableModule,MatCheckboxModule, HttpClientTestingModule],
-      declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe],
+      declarations: [ColumnPreferencesDialogComponent],
       providers: [{ provide: MatDialogRef, useValue: {} },
       {provide:MAT_DIALOG_DATA,useValue:dialogData}]
     })
@@ -60,6 +65,7 @@ describe('ColumnPreferencesDialogComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ColumnPreferencesDialogComponent);
     component = fixture.componentInstance;
+    loader = TestbedHarnessEnvironment.loader(fixture);
     fixture.detectChanges();
   });
 
@@ -92,4 +98,17 @@ describe('ColumnPreferencesDialogComponent', () => {
     req.flush(testData);
     httpTestingController.verify();
   });
+  it('should set default edit profiles', async () => {
+    component.data.editable = true;
+    await (await loader.getHarness(MatButtonHarness.with({ text: 'Reset to Defaults' }))).click();
+    expect(component.data.allowedHeaders1).toEqual(defaultEditStructureProfile);
+    expect(component.data.allowedHeaders2).toEqual(defaultEditElementProfile);
+  })
+
+  it('should set default view profiles', async () => {
+    component.data.editable = false;
+    await (await loader.getHarness(MatButtonHarness.with({ text: 'Reset to Defaults' }))).click();
+    expect(component.data.allowedHeaders1).toEqual(defaultViewStructureProfile);
+    expect(component.data.allowedHeaders2).toEqual(defaultViewElementProfile);
+  })
 });

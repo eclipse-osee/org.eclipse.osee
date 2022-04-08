@@ -19,7 +19,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ConvertMessageInterfaceTitlesToStringPipe } from './pipes/convert-message-interface-titles-to-string.pipe';
 import { EditEnumSetDialogComponent } from './components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,12 +30,14 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { PlatformTypeCardComponent } from './components/platform-type-card/platform-type-card.component';
 import { EditTypeDialogComponent } from './components/dialogs/edit-type-dialog/edit-type-dialog.component';
 import { MatCardModule } from '@angular/material/card';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent, ConvertMessageInterfaceTitlesToStringPipe,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent],
+  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent],
   imports: [
     CommonModule,
     MatDialogModule,
+    RouterModule,
     MatCardModule,
     MatFormFieldModule,
     MatListModule,
@@ -49,6 +50,6 @@ import { MatCardModule } from '@angular/material/card';
     MatStepperModule,
     MatIconModule
   ],
-  exports:[ConvertMessageInterfaceTitlesToStringPipe,ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, NewTypeDialogComponent,PlatformTypeCardComponent]
+  exports:[ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, NewTypeDialogComponent,PlatformTypeCardComponent]
 })
 export class SharedMessagingModule {}
