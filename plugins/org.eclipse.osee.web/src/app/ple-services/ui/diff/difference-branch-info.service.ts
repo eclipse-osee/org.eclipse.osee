@@ -34,4 +34,10 @@ export class DifferenceBranchInfoService {
       map((branches)=>branches.parentBranch.id)
     )
   }
+
+  differenceReport(branchId: string | number) {
+    return this.parentBranch(branchId).pipe(
+      switchMap((parentBranch)=>this.diffService.getDifferenceReport(parentBranch, branchId))
+    )
+  }
 }

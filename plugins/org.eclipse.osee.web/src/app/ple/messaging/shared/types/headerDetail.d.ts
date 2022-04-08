@@ -2,6 +2,7 @@ import { element } from "./element";
 import { structure } from "./structure";
 import { message } from "../../message-interface/types/messages";
 import { subMessage } from "../../message-interface/types/sub-messages";
+import { branchSummary, connectionDiffItem, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from "./DifferenceReport.d";
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -29,4 +30,25 @@ export interface structureHeaderDetail extends headerDetail<structure>{
 }
 
 export interface elementHeaderDetail extends headerDetail<element>{
+}
+
+export interface nodeDiffHeaderDetail extends headerDetail<nodeDiffItem>{
+}
+
+export interface connectionDiffHeaderDetail extends headerDetail<connectionDiffItem>{
+}
+
+export interface messageDiffHeaderDetail extends headerDetail<messageDiffItem>{
+}
+
+export interface submessageDiffHeaderDetail extends headerDetail<submessageDiffItem>{
+}
+
+export interface structureDiffHeaderDetail extends headerDetail<structureDiffItem>{
+}
+
+export interface elementDiffHeaderDetail extends headerDetail<elementDiffItem>{
+}
+
+export interface branchSummaryHeaderDetail extends headerDetail<branchSummary>{
 }

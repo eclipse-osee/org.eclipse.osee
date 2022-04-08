@@ -1,0 +1,50 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container>
+    <h1 class="mat-headline diff-report-header">Difference Report</h1>
+    <ng-container *ngIf="(branchSummary|async) as _branchSummary">
+        <table mat-table [dataSource]="_branchSummary||[]" class="mat-elevation-z1">
+            <ng-container [matColumnDef]="header" *ngFor="let header of branchSummaryHeaders">
+                <th mat-header-cell *matHeaderCellDef class="diff-table-cell message-element-interface-table-view-message-header">
+                    {{(getHeaderByName(header)|async)?.humanReadable||''}}
+                </th>
+                <td mat-cell *matCellDef="let item;" class="diff-table-cell" [ngClass]="'message-table-row-even'">
+                    <ng-container *ngIf="header === 'reportDate'; else other">
+                        {{date|date:'medium'}}
+                    </ng-container>
+                    <ng-template #other>
+                        {{item[header]}}
+                    </ng-template>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="branchSummaryHeaders"></tr>
+            <tr mat-row *matRowDef="let row; columns: branchSummaryHeaders;"
+                class="message-detail-row"></tr>
+        </table>
+    </ng-container>
+</ng-container>
+<ng-container *ngIf="(differenceReport|async) as diffReport; else diffReportLoading">
+    <ng-container *ngIf="(isDifference|async); else no_diffs">
+        <app-node-diffs></app-node-diffs>
+        <app-connection-diffs></app-connection-diffs>
+        <app-message-diffs></app-message-diffs>
+        <app-submessage-diffs></app-submessage-diffs>
+        <app-structure-diffs></app-structure-diffs>
+    </ng-container>
+    <ng-template #no_diffs>
+        <h3 class="mat-h3 diff-report-message">No differences</h3>
+    </ng-template>
+</ng-container>
+<ng-template #diffReportLoading>
+    <h3 class="mat-h3 diff-report-message">Loading report...</h3>
+</ng-template>
