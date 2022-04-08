@@ -28,6 +28,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.action.ViewLoadingReportAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -41,6 +42,7 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -499,6 +501,14 @@ public class WorldXWidgetActionPage extends FormPage {
    protected void createToolBar(IToolBarManager toolBarManager) {
 
       toolBarManager.add(new GroupMarker(MENU_GROUP_PRE));
+
+      boolean columnLoadingDebugOn =
+         "true".equals(System.getProperty(ToggleXViewerColumnLoadingDebug.DEBUG_COLUMN_LOADING));
+      if (columnLoadingDebugOn) {
+         toolBarManager.add(new ViewLoadingReportAction(worldComposite.getXViewer()));
+         toolBarManager.add(new Separator());
+      }
+
       if (worldEditor.isTaskEditor()) {
          try {
             TaskComposite taskComposite = getTaskComposite();
@@ -541,7 +551,8 @@ public class WorldXWidgetActionPage extends FormPage {
 
       try {
          if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
-            ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).createToolbar(toolBarManager);
+            ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).createToolbar(toolBarManager,
+               worldEditor);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

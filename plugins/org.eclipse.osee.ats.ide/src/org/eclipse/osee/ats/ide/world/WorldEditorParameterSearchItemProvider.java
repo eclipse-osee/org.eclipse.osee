@@ -173,8 +173,8 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
     * Available for actions needing to be done after controls are created
     */
    @Override
-   public void createToolbar(IToolBarManager toolBarManager) {
-      worldParameterSearchItem.createToolbar(toolBarManager);
+   public void createToolbar(IToolBarManager toolBarManager, WorldEditor worldEditor) {
+      worldParameterSearchItem.createToolbar(toolBarManager, worldEditor);
    }
 
    @Override

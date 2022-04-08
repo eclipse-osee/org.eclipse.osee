@@ -436,7 +436,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void createToolbar(IToolBarManager toolBarManager) {
+   public void createToolbar(IToolBarManager toolBarManager, WorldEditor worldEditor) {
       // do nothing
    }
 

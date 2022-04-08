@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
@@ -38,11 +37,9 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -147,25 +144,13 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(element)) {
-               AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamWf);
-               String ptsStr = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, pointsAttrType, "");
-               if (Strings.isValid(ptsStr)) {
-                  strs.add(ptsStr);
-               }
-            }
-            return Collections.toString("; ", strs);
+         if (element instanceof IAtsWorkItem) {
+            return atsApi.getAgileService().getPointsStr((IAtsWorkItem) element);
          }
-
-         if (!(element instanceof IAtsWorkItem)) {
-            return "";
-         }
-         return atsApi.getAgileService().getPointsStr((IAtsWorkItem) element);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
+      return "";
    }
 
    @Override
