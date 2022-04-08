@@ -32,6 +32,7 @@ export class HeaderService {
     { header: 'interfacePlatformTypeDefaultValue', description: 'Default value of Element or Element Array', humanReadable: 'Default' },
     { header: 'interfacePlatformTypeMinval', description: 'Minimum Value of Element', humanReadable: 'Min' },
     { header: 'interfacePlatformTypeMaxval', description: 'Maximum Value of Element', humanReadable: 'Max' },
+    { header: 'interfacePlatformTypeDescription', description: 'Description of the Type', humanReadable: 'Type Description' },
     { header: 'beginWord', description: '(Computed) Beginning Word of Element/Element Array', humanReadable: 'Begin Word' },
     { header: 'endWord', description: '(Computed) Ending Word of Element/Element Array', humanReadable: 'End Word' },
     { header: 'beginByte', description: '(Computed) Beginning Byte of Element/Element Array', humanReadable: 'Begin Byte' },
@@ -40,7 +41,7 @@ export class HeaderService {
     { header: 'description', description: 'Description of a given element', humanReadable: 'Description' },
     { header: 'notes', description: 'Notes corresponding to a given element, for example, specific enum literal descriptions for a given element', humanReadable: 'Notes' },
     { header: 'applicability', description: 'Applicability of a given element', humanReadable: 'Applicability' },
-    { header:'units',description:'Units of the platform type associated with the given element',humanReadable:'Units' }
+    { header: 'units', description: 'Units of the platform type associated with the given element', humanReadable: 'Units' },
   ]).pipe(
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -58,6 +59,7 @@ export class HeaderService {
     { header: 'bytesPerSecondMaximum', description: '(Computed) Maximum rate of a given structure calculated as Maximum Simultaneity x Size In Bytes', humanReadable: 'Max BPS' },
     // { header: 'GenerationIndicator', description: 'TBD?(need to figure out)', humanReadable: 'Indicator' },
     { header: 'applicability', description: 'Applicability of a given structure', humanReadable: 'Applicability' },
+    { header: 'txRate', description: 'Transmission Rate of Message', humanReadable: 'Tx Rate'}
   ]).pipe(
     shareReplay({bufferSize:1,refCount:true})
   )

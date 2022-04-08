@@ -39,7 +39,6 @@ import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
 import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
 import { editAuthServiceMock } from '../../../connection-view/mocks/EditAuthService.mock';
-import { ConvertMessageInterfaceTitlesToStringPipe } from '../../../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { EditAuthService } from '../../../shared/services/edit-auth-service.service';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { EditStructureFieldComponentMock } from '../../mocks/components/EditStructureField.mock';
@@ -92,7 +91,6 @@ describe('StructureTableComponent', () => {
         SharedMessagingModule
       ],
       declarations: [ StructureTableComponent,SubElementTableComponentMock,
-        ConvertMessageInterfaceTitlesToStringPipe,
         EditElementFieldComponent,
         EditStructureFieldComponentMock, MimSingleDiffDummy,AddElementDialogComponent, HighlightFilteredTextDirective, ActionDropdownStub],
       providers: [

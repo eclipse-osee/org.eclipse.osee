@@ -74,6 +74,15 @@ export class CurrentStructureService {
     return this._expandedRowsDecreasing.asObservable();
   }
 
+  get message() {
+    return combineLatest([this.BranchId, this.connectionId, this.MessageId]).pipe(
+      switchMap(([branch, connection, id]) => this.messages.getMessage(branch, connection, id).pipe(
+        repeatWhen(_ => this.ui.UpdateRequired),
+        share(),
+      )),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    )
+  }
   set addExpandedRow(value: structure) {
     if (this._expandedRows.getValue().map(s=>s.id).indexOf(value.id) === -1) {
       const temp = this._expandedRows.getValue();

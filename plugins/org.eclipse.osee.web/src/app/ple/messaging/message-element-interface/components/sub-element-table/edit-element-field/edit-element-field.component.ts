@@ -16,7 +16,7 @@ import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, scan, share, switchMap, tap } from 'rxjs/operators';
 import { CurrentStructureService } from '../../../services/current-structure.service';
 import { element } from '../../../../shared/types/element';
-import { PlatformType } from '../../../types/platformtype';
+import { PlatformType } from '../../../../shared/types/platformType';
 
 @Component({
   selector: 'osee-messaging-edit-element-field',

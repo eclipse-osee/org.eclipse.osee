@@ -26,7 +26,6 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
-import { ConvertMessageInterfaceTitlesToStringPipe } from '../shared/pipes/convert-message-interface-titles-to-string.pipe';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CurrentStructureService } from './services/current-structure.service';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
@@ -69,7 +68,6 @@ describe('MessageElementInterfaceComponent', () => {
       declarations: [
         MessageElementInterfaceComponent,
         SubElementTableComponentMock,
-        ConvertMessageInterfaceTitlesToStringPipe,
         EditElementFieldComponent,
         EditStructureFieldComponentMock,
         StructureTableComponentMock

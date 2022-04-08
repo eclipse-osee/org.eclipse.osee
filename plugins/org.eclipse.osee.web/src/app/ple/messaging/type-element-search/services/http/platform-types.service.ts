@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { PlatformType } from '../../types/PlatformType';
+import { PlatformType } from '../../../shared/types/platformType';
 
 @Injectable({
   providedIn: 'root'

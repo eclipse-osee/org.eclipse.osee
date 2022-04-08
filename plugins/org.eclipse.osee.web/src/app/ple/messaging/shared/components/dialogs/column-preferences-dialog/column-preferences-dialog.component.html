@@ -16,8 +16,13 @@
     [(ngModel)]="data.editable"
     [disabled]="!(editability | async) || false"
     color="primary"
-    >Edit Mode</mat-checkbox
-  >
+    cdkFocusInitial>
+    <mat-label>
+      Edit Mode
+    </mat-label>  
+  </mat-checkbox>
+  <br>
+  <button mat-stroked-button (click)="resetToDefaultHeaders($event)">Reset to Defaults</button>
   <ng-container *ngIf="data.headersTableActive">
     <h2>Column Preferences</h2>
     <table class="mat-table mat-elevation-z8">
@@ -39,7 +44,7 @@
               *ngFor="let header of data.allHeaders1"
               [value]="header"
             >
-              {{ header | convertMessageInterfaceTitlesToString }}
+              {{ (getHeaderByName(header,'structure')|async)?.humanReadable }}
             </mat-list-option>
           </mat-selection-list>
         </td>
@@ -52,29 +57,16 @@
               *ngFor="let header of data.allHeaders2"
               [value]="header"
             >
-              {{ header | convertMessageInterfaceTitlesToString }}
+            {{ (getHeaderByName(header,'element')|async)?.humanReadable }}
             </mat-list-option>
           </mat-selection-list>
         </td>
       </tr>
     </table>
   </ng-container>
-  <!-- <mat-selection-list [(ngModel)]="data.allowedStructureHeaders" color="primary">
-        <mat-label>Structure Headers:</mat-label>
-        <mat-list-option *ngFor="let header of data.allStructureHeaders" [value]="header">
-            {{header |convertMessageInterfaceTitlesToString}}
-        </mat-list-option>
-    </mat-selection-list>
-    <mat-selection-list [(ngModel)]="data.allowedElementHeaders" color="primary">
-        <mat-label>Element Headers:</mat-label>
-        <mat-list-option *ngFor="let header of data.allElementHeaders" [value]="header">
-            {{header |convertMessageInterfaceTitlesToString}}
-        </mat-list-option>
-    </mat-selection-list> -->
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <!-- [disabled]="data.allowedElementHeaders.length===0||data.allowedStructureHeaders.length===0" -->
   <button mat-raised-button [mat-dialog-close]="data" color="primary">
     Ok
   </button>

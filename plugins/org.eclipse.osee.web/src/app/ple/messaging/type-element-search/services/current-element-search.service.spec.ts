@@ -14,7 +14,6 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { elementSearch1, elementSearch2 } from '../testing/MockResponses/ElementSearch';
 import { platformTypes1, platformTypes2 } from '../testing/MockResponses/PlatformType';
-import { PlatformType } from '../types/PlatformType';
 import {TestScheduler} from 'rxjs/testing'
 
 import { CurrentElementSearchService } from './current-element-search.service';
@@ -22,6 +21,7 @@ import { ElementSearchService } from './http/element-search.service';
 import { PlatformTypesService } from './http/platform-types.service';
 import { BranchIdService } from './router/branch-id.service';
 import { SearchService } from './router/search.service';
+import { PlatformType } from '../../shared/types/platformType';
 
 describe('CurrentElementSearchService', () => {
   let service: CurrentElementSearchService;

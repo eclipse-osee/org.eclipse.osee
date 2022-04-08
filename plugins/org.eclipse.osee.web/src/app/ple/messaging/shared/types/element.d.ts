@@ -20,6 +20,7 @@ export interface element {
     name: string,
     description: string,
     notes: string,
+    interfacePlatformTypeDescription?:string,
     interfaceElementIndexEnd: number,
     interfaceElementIndexStart: number,
     interfaceElementAlterable: boolean,

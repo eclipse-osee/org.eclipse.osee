@@ -49,6 +49,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
    private String InterfacePlatformTypeCompRate;
 
    private String InterfacePlatformTypeAnalogAccuracy;
+   private String Description;
 
    private String InterfaceLogicalType; //required
 
@@ -87,6 +88,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeUnits, ""));
       this.setInterfacePlatformTypeValidRangeDescription(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, ""));
+      this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
    }
 
    public PlatformTypeToken() {
@@ -275,6 +277,20 @@ public class PlatformTypeToken extends PLGenericDBObject {
    public void setInterfaceLogicalType(String interfaceLogicalType) {
       InterfaceLogicalType = interfaceLogicalType;
 
+   }
+
+   /**
+    * @return the description
+    */
+   public String getDescription() {
+      return Description;
+   }
+
+   /**
+    * @param description the description to set
+    */
+   public void setDescription(String description) {
+      Description = description;
    }
 
 }

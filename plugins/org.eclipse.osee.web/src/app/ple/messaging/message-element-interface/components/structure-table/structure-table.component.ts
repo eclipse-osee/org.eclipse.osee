@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { combineLatest, from, iif, Observable, of, OperatorFunction } from 'rxjs';
-import { delay, distinctUntilChanged, filter, first, map, mergeMap, reduce, share, shareReplay, skipUntil, switchMap, take, tap } from 'rxjs/operators';
+import { delay, distinctUntilChanged, filter, first, map, mergeMap, reduce, share, shareReplay, skipUntil, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -35,6 +35,7 @@ import { RemoveStructureDialogComponent } from '../remove-structure-dialog/remov
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpLoadingService } from '../../../../../services/http-loading.service';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { defaultEditElementProfile, defaultEditStructureProfile, defaultViewElementProfile, defaultViewStructureProfile } from '../../../shared/constants/defaultProfiles';
 
 @Component({
   selector: 'app-structure-table',
@@ -96,11 +97,15 @@ export class StructureTableComponent implements OnInit {
     )),
     mergeMap((headers) => iif(() => headers.length !== 0, of(headers).pipe(
       map((array) => { array.push(array.splice(array.indexOf('applicability'), 1)[0]); return array; })
-    ), of(['name',
-      'platformTypeName2',
-      'interfaceElementAlterable',
-      'description',
-      'notes',]))),
+    ), this.isEditing.pipe(
+      switchMap((editing) =>
+        iif(() => editing, of(
+          defaultEditElementProfile
+        ), of(
+          defaultViewElementProfile
+        ))
+      ))
+    )),
     share(),
     shareReplay(1),
   );
@@ -112,18 +117,26 @@ export class StructureTableComponent implements OnInit {
         reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof structure,string>)[])
       ))
     )),
-    mergeMap((headers) => iif(() => headers.length !== 0, of(headers), of(['name',
-      'description',
-      'interfaceMinSimultaneity',
-      'interfaceMaxSimultaneity',
-      'interfaceTaskFileType',
-      'interfaceStructureCategory',]))),
+    mergeMap((headers) => iif(() => headers.length !== 0, of(headers), this.isEditing.pipe(
+      switchMap((editing) => iif(() => editing, of(
+        defaultEditStructureProfile
+      ),
+        of(
+          defaultViewStructureProfile
+        )
+      ))
+    )
+    )
+    ),
     switchMap((finalHeaders) => of<(keyof structure & string)[]>([' ', ...finalHeaders])),
     share(),
     shareReplay(1)
   )
   _connectionsRoute = this.structureService.connectionsRoute;
-
+  _messageData = this.currentStructureHeaders.pipe(
+    switchMap((headers) => iif(() => headers.includes('txRate'), this.structureService.message, of())),
+    takeUntil(this.structureService.done)
+  )
   structureDialog = this.structureService.SubMessageId.pipe(
     take(1),
     switchMap((submessage) => this.dialog.open(AddStructureDialogComponent, {
@@ -222,6 +235,7 @@ export class StructureTableComponent implements OnInit {
       type: {
         id: '',
         name: '',
+        description:'',
         interfaceLogicalType: '',
         interfacePlatform2sComplement: false,
         interfacePlatformTypeAnalogAccuracy: '',
