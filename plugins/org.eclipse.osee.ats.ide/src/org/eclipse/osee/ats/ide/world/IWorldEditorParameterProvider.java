@@ -32,6 +32,6 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
     */
    void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp);
 
-   public void createToolbar(IToolBarManager toolBarManager);
+   public void createToolbar(IToolBarManager toolBarManager, WorldEditor worldEditor);
 
 }

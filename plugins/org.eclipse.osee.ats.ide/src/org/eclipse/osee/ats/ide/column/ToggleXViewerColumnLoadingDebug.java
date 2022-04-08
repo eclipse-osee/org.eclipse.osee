@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ToggleXViewerColumnLoadingDebug extends XNavigateItemAction {
 
-   private static final String DEBUG_COLUMN_LOADING = "DebugLoading";
+   public static final String DEBUG_COLUMN_LOADING = "DebugLoading";
 
    public ToggleXViewerColumnLoadingDebug() {
       super("Toggle XViewer Column Loading Debug", FrameworkImage.GEAR, XNavigateItem.UTILITY);
@@ -37,8 +37,8 @@ public class ToggleXViewerColumnLoadingDebug extends XNavigateItemAction {
       if (MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
          String.format("Toggle Column Loading Debug On to [%s]\n\n" //
             + "NOTE: This option should not be left on as it degrades loading performance in calculations\n\n" //
-            + "NOTE: When true, a \"View Loading Report\" menu option will show in right-click of table after load",
-            newDebugOn))) {
+            + "NOTE: When true, a \"View Loading Report\" menu option will show in right-click\n" //
+            + " of table after load and as report icon in toolbar.", newDebugOn))) {
          System.setProperty(DEBUG_COLUMN_LOADING, (debugOn ? "false" : "true"));
       }
    }
