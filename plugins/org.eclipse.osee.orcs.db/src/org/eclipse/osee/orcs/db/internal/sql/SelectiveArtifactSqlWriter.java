@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
@@ -161,8 +162,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       } else {
          artWithAlias = startCommonTableExpression("arts");
          boolean firstAlias = true;
-         if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-            CoreBranchCategoryTokens.MIM)) {
+         if (!rootQueryData.getBranchCategories().isEmpty()
+            && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
             for (String art : artWithAliases) {
                if (!firstAlias) {
                   write(" union ");
@@ -178,7 +179,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                      if (regexMatcher.group(1).contains("osee_relation rel")) {
                         write("SELECT " + art + ".* from " + art);
                      } else {
-                        write("SELECT " + art + ".*, 0 as rel_top_type, 0 as rel_top_order from " + art);
+                        write("SELECT " + art + ".*, 0 as top_rel_type, 0 as top_rel_order from " + art);
                      }
                   }
                } else {
@@ -200,8 +201,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          } else {
             writeRelsCommonTableExpression(artWithAlias);
 
-            if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-               CoreBranchCategoryTokens.MIM)) {
+            if (!rootQueryData.getBranchCategories().isEmpty()
+               && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
                writeRelsCommonTableExpression2(artWithAlias);
             }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
@@ -220,13 +221,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write(" ORDER BY art_id");
 
       } else if (this.rels2Alias != null) {
-         if (this.rootQueryData.hasCriteriaType(CriteriaRelatedTo.class)) {
-            List<CriteriaRelatedTo> crt = this.rootQueryData.getCriteriaByType(CriteriaRelatedTo.class);
-            if (crt.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
-               write(" ORDER BY top_rel_type, top_rel_order, rel_order");
-            } else {
-               write(" ORDER BY rel_order");
-            }
+         if (this.output.toString().contains("top_rel_type")) {
+            write(" ORDER BY top_rel_type, top_rel_order, rel_order");
          } else {
             write(" ORDER BY rel_order");
          }
@@ -238,8 +234,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       writeSelectAndHint();
       writeSelectFields(attsAlias, "*");
-      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
+      if (!rootQueryData.getBranchCategories().isEmpty()
+         && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
          write(", 0 as rel_type, 0 as rel_order, 0 AS other_art_type_id FROM ");
       } else {
          write(", 0 AS other_art_type_id FROM ");
@@ -273,8 +269,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       relWriter.write(handlers);
       write(relWriter.toSql());
 
-      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
+      if (!rootQueryData.getBranchCategories().isEmpty()
+         && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
          write("\n UNION ALL\n ");
 
          SelectiveArtifactSqlWriter relWriter2 = new SelectiveArtifactSqlWriter(this);
@@ -332,8 +328,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String relTxsAlias = "txs";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
-      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
+      if (!rootQueryData.getBranchCategories().isEmpty()
+         && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
          write(
             ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, 0 as rel_type, 0 as rel_order");
       } else {
@@ -376,8 +372,18 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
-         if (getTableEntries().stream().anyMatch(
-            a -> a.contains(OseeDb.RELATION_TABLE2.getName().toLowerCase() + " "))) {
+
+         if (this.rootQueryData.hasCriteriaType(CriteriaRelatedTo.class)) {
+            List<CriteriaRelatedTo> crt = this.rootQueryData.getCriteriaByType(CriteriaRelatedTo.class);
+            if (crt.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
+               write(", rel_type as top_rel_type, rel_order as top_rel_order");
+            }
+         } else if (this.rootQueryData.hasCriteriaType(CriteriaRelatedRecursive.class)) {
+            List<CriteriaRelatedRecursive> crr = this.rootQueryData.getCriteriaByType(CriteriaRelatedRecursive.class);
+            if (crr.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
+               write(", top_rel_type, top_rel_order");
+            }
+         } else if (this.getTableEntries().stream().filter(a -> a.startsWith("osee_relation rel")).count() > 0) {
             write(", rel_type as top_rel_type, rel_order as top_rel_order");
          }
       } else if (relsAlias != null) {

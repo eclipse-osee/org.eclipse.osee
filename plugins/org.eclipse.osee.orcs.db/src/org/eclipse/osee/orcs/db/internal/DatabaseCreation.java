@@ -59,6 +59,7 @@ import static org.eclipse.osee.orcs.OseeDb.TXS_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.TX_DETAILS_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.TX_DETAILS_TRANSACTION_ID;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcDbType;
 
 /**
  * @author Ryan D. Brooks
@@ -73,7 +74,9 @@ public final class DatabaseCreation {
 
    public void createDataStore() {
       dropTables();
-
+      if (jdbcClient.getDbType().equals(JdbcDbType.hsql)) {
+         jdbcClient.runPreparedUpdate("SET DATABASE SQL SYNTAX ORA TRUE;");
+      }
       jdbcClient.createTable(ARTIFACT_TABLE);
       jdbcClient.createTable(ATTRIBUTE_TABLE);
       jdbcClient.createTable(RELATION_TABLE);

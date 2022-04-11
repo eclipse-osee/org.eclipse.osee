@@ -92,7 +92,11 @@ public class JdbcDbType extends BaseId {
    }
 
    public String getRecursiveWithSql() {
-      return equals(oracle) ? "" : "RECURSIVE";
+      if (matches(oracle, hsql)) {
+         return "";
+      } else {
+         return "RECURSIVE";
+      }
    }
 
    /**
