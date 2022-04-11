@@ -655,7 +655,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
          throw new RuntimeException("Resource Save Failed", e);
       }
 
-      var inputStream = new ByteArrayInputStream(outputStream.getBuffer());
+      var inputStream = new ByteArrayInputStream(outputStream.getBuffer(), 0, outputStream.size());
       return inputStream;
    }
 
