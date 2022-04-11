@@ -20,14 +20,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.event.TopicEvent;
@@ -36,6 +39,7 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReord
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
@@ -63,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGu
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationReorderTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
@@ -412,10 +417,10 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static EventTopicArtifactTransfer artifactTransferFactory(BranchId branch, ArtifactToken artifactToken, ArtifactTypeId artifactTypeId, EventModType eventModType, ArtifactTypeId fromArtType, Collection<AttributeChange> arrayList, EventTopicTransferType transferType) {
+   public static EventTopicArtifactTransfer artifactTransferFactory(BranchId branch, ArtifactToken artifactToken, ArtifactTypeId artifactTypeId, EventModType eventModType, ArtifactTypeId fromArtType, Collection<EventTopicAttributeChangeTransfer> arrayList, EventTopicTransferType transferType) {
       EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
       artifactTransfer.setBranch(branch);
-      artifactTransfer.setArtifactToken(artifactToken);
+      artifactTransfer.setArtifactId(artifactToken);
       artifactTransfer.setArtifactTypeId(artifactTypeId);
       artifactTransfer.setEventModType(eventModType);
       artifactTransfer.setFromArtTypeGuid(fromArtType);
@@ -435,6 +440,7 @@ public final class FrameworkEventUtil {
       transfer.setRelationEventType(relationEventType);
       transfer.setRelationId(relationId);
       transfer.setRelTypeId(relTypeId);
+      transfer.setRationale(rationale);
       return transfer;
    }
 
@@ -447,17 +453,28 @@ public final class FrameworkEventUtil {
       return transfer;
    }
 
-   public static EventTopicArtifactTransfer defaultGuidArtifactToTransfer(DefaultBasicGuidArtifact guidArt) {
+   public static EventTopicAttributeChangeTransfer attributeChangeTransferFactory(AttributeTypeId attrTypeId, Long modType, AttributeId attrId, GammaId gammaId, List<Object> data, ApplicabilityId applicabilityId) {
+      EventTopicAttributeChangeTransfer attrChange = new EventTopicAttributeChangeTransfer();
+      attrChange.setAttrTypeId(attrTypeId);
+      attrChange.setModType(modType);
+      attrChange.setAttrId(attrId);
+      attrChange.setGammaId(gammaId);
+      attrChange.setData(data);
+      attrChange.setApplicabilityId(applicabilityId);
+      return attrChange;
+   }
+
+   public static EventTopicArtifactTransfer defaultGuidArtifactToTransfer(DefaultBasicGuidArtifact guidArt, EventModType eventModType) {
       EventTopicArtifactTransfer artifactTransfer = artifactTransferFactory(guidArt.getBranch(),
-         ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()), guidArt.getArtifactType(),
-         EventModType.Reloaded, null, null, EventTopicTransferType.BASE);
+         ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch(), DeletionFlag.allowDeleted(true)),
+         guidArt.getArtifactType(), eventModType, null, null, EventTopicTransferType.BASE);
       return artifactTransfer;
    }
 
    public static EventTopicArtifactTransfer eventGuidArtifactToTransfer(EventBasicGuidArtifact guidArt) {
       EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
       artifactTransfer.setBranch(guidArt.getBranch());
-      artifactTransfer.setArtifactToken(ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()));
+      artifactTransfer.setArtifactId(ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch()));
       artifactTransfer.setEventModType(guidArt.getModType());
       return artifactTransfer;
    }
@@ -468,10 +485,19 @@ public final class FrameworkEventUtil {
       return guidArt;
    }
 
-   public static EventTopicRelationReorderTransfer relationReorderBasicToTransfer(DefaultBasicUuidRelationReorder basicRelationReorder) {
-      EventTopicRelationReorderTransfer transfer =
-         relationReorderTransferFactory(defaultGuidArtifactToTransfer(basicRelationReorder.getParentArt()),
-            basicRelationReorder.getBranch(), basicRelationReorder.getRelTypeGuid(), basicRelationReorder.getModType());
+   public static EventTopicRelationReorderTransfer relationReorderBasicToTransfer(DefaultBasicUuidRelationReorder basicRelationReorder, EventModType eventModType) {
+      EventTopicRelationReorderTransfer transfer = relationReorderTransferFactory(
+         defaultGuidArtifactToTransfer(basicRelationReorder.getParentArt(), eventModType),
+         basicRelationReorder.getBranch(), basicRelationReorder.getRelTypeGuid(), basicRelationReorder.getModType());
       return transfer;
+   }
+
+   public static EventTopicAttributeChangeTransfer attributeChangeToTransfer(AttributeChange attrChange) {
+      EventTopicAttributeChangeTransfer attrChangeTransfer = attributeChangeTransferFactory(
+         AttributeTypeId.valueOf(attrChange.getAttrTypeGuid()),
+         AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType().getId(),
+         attrChange.getAttributeId(), attrChange.getGammaId(), attrChange.getData(), attrChange.getApplicabilityId());
+      return attrChangeTransfer;
+
    }
 }

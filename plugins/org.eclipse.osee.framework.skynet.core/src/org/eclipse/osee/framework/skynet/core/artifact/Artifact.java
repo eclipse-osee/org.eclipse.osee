@@ -1789,7 +1789,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final EventTopicArtifactTransfer getArtifactTransfer(EventModType eventModType) {
       EventTopicArtifactTransfer transferArt = new EventTopicArtifactTransfer();
-      transferArt.setArtifactToken(this);
+      transferArt.setArtifactId(this);
       transferArt.setBranch(getBranch());
       transferArt.setArtifactTypeId(getArtifactType());
       transferArt.setEventModType(eventModType);

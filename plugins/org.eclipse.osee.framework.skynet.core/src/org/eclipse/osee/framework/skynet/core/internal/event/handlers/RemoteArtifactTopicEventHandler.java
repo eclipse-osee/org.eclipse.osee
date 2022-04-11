@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -35,9 +34,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventHandlerRemote;
@@ -112,19 +111,19 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
 
    private void updateModifiedArtifact(EventTopicArtifactTransfer transArt, TransactionId transactionId) {
       try {
-         Artifact artifact = ArtifactCache.getActive(transArt.getArtifactToken());
+         Artifact artifact =
+            ArtifactCache.getActive(transArt.getArtifactToken());
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
 
             artifact.setTransactionId(TransactionManager.getTransaction(transactionId));
-            for (AttributeChange attrChange : transArt.getAttributeChanges()) {
+            for (EventTopicAttributeChangeTransfer attrChange : transArt.getAttributeChanges()) {
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
-                  ModificationType modificationType =
-                     AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType();
-                  AttributeTypeToken attributeType = tokenService.getAttributeType(attrChange.getAttrTypeGuid());
+                  ModificationType modificationType = ModificationType.valueOf(attrChange.getModType());
+                  AttributeTypeToken attributeType = tokenService.getAttributeType(attrChange.getAttrTypeId().getId());
                   try {
-                     Attribute<?> attribute = artifact.getAttributeById(attrChange.getAttributeId(), true);
+                     Attribute<?> attribute = artifact.getAttributeById(attrChange.getAttrId(), true);
                      // Attribute already exists (but may be deleted), process update
                      // Process MODIFIED / DELETED attribute
                      if (attribute != null) {
@@ -136,13 +135,14 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
                            if (modificationType == null) {
                               EventUtil.eventLog(String.format(
                                  "REM: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
-                                 artifact.getArtifactTypeName(), attrChange.getAttributeId()));
+                                 artifact.getArtifactTypeName(), attrChange.getAttrId()));
                               continue;
                            }
                            if (modificationType.isDeleted()) {
                               attribute.internalSetModType(modificationType, false, false);
                            } else {
-                              attribute.getAttributeDataProvider().loadData(attrChange.getDataArray());
+                              attribute.getAttributeDataProvider().loadData(attrChange.getDataContent(),
+                                 attrChange.getDataLocator());
                            }
                            attribute.setNotDirty();
                            attribute.internalSetGammaId(attrChange.getGammaId());
@@ -156,12 +156,12 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
                      else {
                         if (modificationType == null) {
                            EventUtil.eventLog(String.format("REM: Can't get mod type for %s's attribute %d.",
-                              artifact.getArtifactTypeName(), attrChange.getAttributeId()));
+                              artifact.getArtifactTypeName(), attrChange.getAttrId()));
                            continue;
                         }
-                        artifact.internalInitializeAttribute(attributeType, attrChange.getAttributeId(),
+                        artifact.internalInitializeAttribute(attributeType, attrChange.getAttrId(),
                            attrChange.getGammaId(), modificationType, attrChange.getApplicabilityId(), false,
-                           attrChange.getDataArray());
+                           attrChange.getDataContent(), attrChange.getDataLocator());
                      }
                   } catch (OseeCoreException ex) {
                      EventUtil.eventLog(
@@ -184,8 +184,8 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
             EventUtil.eventLog(String.format("REM: updateRelation -> [%s]", transRel.toString()));
 
             RelationTypeToken relationType = tokenService.getRelationType(transRel.getRelTypeId());
-            Artifact aArtifact = ArtifactCache.getActive(transRel.getArtAId());
-            Artifact bArtifact = ArtifactCache.getActive(transRel.getArtBId());
+            Artifact aArtifact = ArtifactCache.getActive(transRel.getArtAToken());
+            Artifact bArtifact = ArtifactCache.getActive(transRel.getArtBToken());
             // Nothing in cache, ignore this relation only
             if (aArtifact == null && bArtifact == null) {
                continue;
@@ -194,9 +194,9 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
             boolean bArtifactLoaded = bArtifact != null;
 
             if (aArtifactLoaded || bArtifactLoaded) {
-               BranchToken branch = BranchManager.getBranchToken(transRel.getArtAId().getBranch());
-               ArtifactToken artifactIdA = ArtifactToken.valueOf(transRel.getArtAId(), branch);
-               ArtifactToken artifactIdB = ArtifactToken.valueOf(transRel.getArtBId(), branch);
+               BranchToken branch = BranchManager.getBranchToken(transRel.getArtAToken().getBranch());
+               ArtifactToken artifactIdA = transRel.getArtAToken();
+               ArtifactToken artifactIdB = transRel.getArtBToken();
                RelationLink relation =
                   RelationManager.getLoadedRelationById(transRel.getRelationId(), artifactIdA, artifactIdB, branch);
 
