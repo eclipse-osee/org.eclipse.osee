@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,8 +23,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.client.OseeClient;
@@ -61,6 +67,14 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
+import org.eclipse.rmf.reqif10.AttributeDefinition;
+import org.eclipse.rmf.reqif10.AttributeValue;
+import org.eclipse.rmf.reqif10.DatatypeDefinition;
+import org.eclipse.rmf.reqif10.Identifiable;
+import org.eclipse.rmf.reqif10.ReqIF;
+import org.eclipse.rmf.reqif10.SpecObject;
+import org.eclipse.rmf.reqif10.SpecType;
+import org.eclipse.rmf.reqif10.serialization.ReqIF10ResourceFactoryImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -81,6 +95,108 @@ public class SynchronizationEndpointTest {
 
    @ClassRule
    public static NotProductionDataStoreRule rule = new NotProductionDataStoreRule();
+
+   /**
+    * A two level map structure where the primary key selects a secondary map and the secondary key is used as the key
+    * with the secondary map.
+    *
+    * @param <Kp> the type of primary map keys
+    * @param <Ks> the type of the secondary map keys
+    * @param <V> the type of the map values
+    */
+
+   interface DoubleMap<Kp, Ks, V> {
+
+      /**
+       * Returns the value which is mapped to the primary and secondary keys.
+       *
+       * @param primaryKey the key used to select the secondary map.
+       * @param secondaryKey the key used to select the value from the secondary map.
+       * @return when the key pair maps to a value, an {@link Optional} with the selected value; otherwise, an empty
+       * {@link Optional}.
+       */
+
+      Optional<V> get(Kp primaryKey, Ks secondaryKey);
+
+      /**
+       * Associates the provide <code>value</code> with the primary and secondary keys. If a secondary map is not
+       * associated with the primary key, the secondary map will be created and associated with the primary key.
+       *
+       * @param primaryKey the key used to select the secondary map.
+       * @param secondaryKey the key used to associate the value with in the secondary map.
+       * @param value the value to be associated with the key pair.
+       * @return when the key pair currently maps to a value, an {@link Optional} with the previous value; otherwise, an
+       * empty {@link Optional}.
+       */
+
+      Optional<V> put(Kp primaryKey, Ks secondaryKey, V value);
+   }
+
+   /**
+    * An implementation of the {@link DoubleMap} interface using {@link HashMap} maps for the primary and secondary
+    * maps.
+    *
+    * @param <Kp> the type of primary map keys
+    * @param <Ks> the type of the secondary map keys
+    * @param <V> the type of the map values
+    */
+
+   static class DoubleHashMap<Kp, Ks, V> implements DoubleMap<Kp, Ks, V> {
+
+      /**
+       * The primary map.
+       */
+
+      private final HashMap<Kp, Map<Ks, V>> primaryMap;
+
+      /**
+       * Constructor creates the primary {@link HashMap} with default initialization values.
+       */
+
+      DoubleHashMap() {
+         this.primaryMap = new HashMap<>();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Optional<V> get(Kp primaryKey, Ks secondaryKey) {
+         var secondaryMap = primaryMap.get(primaryKey);
+
+         if (secondaryMap == null) {
+            return Optional.empty();
+         }
+
+         var value = secondaryMap.get(secondaryKey);
+
+         return Optional.ofNullable(value);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Optional<V> put(Kp primaryKey, Ks secondaryKey, V value) {
+         var secondaryMap = primaryMap.get(primaryKey);
+
+         if (secondaryMap == null) {
+            secondaryMap = new HashMap<Ks, V>();
+
+            primaryMap.put(primaryKey, secondaryMap);
+
+            secondaryMap.put(secondaryKey, value);
+
+            return Optional.empty();
+         }
+
+         var priorValue = secondaryMap.put(secondaryKey, value);
+
+         return Optional.ofNullable(priorValue);
+      }
+   }
 
    /**
     * Class used to define and build test artifacts with a test attribute in the local database. Only one attribute per
@@ -469,6 +585,83 @@ public class SynchronizationEndpointTest {
    //@formatter:on
 
    /**
+    * ReqIF Attribute Definitions are specific to ReqIF Specification Types and Spec Object Types. This is a map of the
+    * ReqIF Attribute Definitions in the test document keyed by the ReqIF Specification Type or ReqIF Spec Object Type
+    * identifier and then by the ReqIF Attribute Definition identifier.
+    */
+
+   private static DoubleMap<String, String, AttributeDefinition> reqifAttributeDefinitionByIdentifiersMap;
+
+   /**
+    * ReqIF Attribute Definitions are specific to ReqIF Specification Types and Spec Object Types. This is a map of the
+    * ReqIF Attribute Definitions in the test document keyed by the ReqIF Specification Type or ReqIF Spec Object Type
+    * long name and then by the ReqIF Attribute Definition long name.
+    */
+
+   private static DoubleMap<String, String, AttributeDefinition> reqifAttributeDefinitionByLongNamesMap;
+
+   /**
+    * ReqIF Attribute Values are specific to ReqIF Specification and Spec Objects. This is a map of the ReqIF Attribute
+    * Values in the test document keyed by the ReqIF Specification or ReqIF Spec Object identifier and then by the ReqIF
+    * Attribute Value's Attribute Definition reference Identifier.
+    */
+
+   private static DoubleMap<String, String, AttributeValue> reqifAttributeValueByIdentifiersMap;
+
+   /**
+    * ReqIF Attribute Values are specific to ReqIF Specification and Spec Objects. This is a map of the ReqIF Attribute
+    * Values in the test document keyed by the ReqIF Specification or ReqIF Spec Object long name and then by the ReqIF
+    * Attribute Value's Attribute Definition reference long name.
+    */
+
+   private static DoubleMap<String, String, AttributeValue> reqifAttributeValueByLongNamesMap;
+
+   /**
+    * Map of ReqIF Data Type Definitions from the test document keyed by their identifiers.
+    */
+
+   private static Map<String, DatatypeDefinition> reqifDatatypeDefinitionByIdentifierMap;
+
+   /**
+    * Map of ReqIF Data Type Definitions from the test document keyed by their long names.
+    */
+
+   private static Map<String, DatatypeDefinition> reqifDatatypeDefinitionByLongNameMap;
+
+   /**
+    * Map of ReqIF Spec Objects from the test document keyed by their identifiers. This map does not include the ReqIF
+    * Specifications.
+    */
+
+   private static Map<String, SpecObject> reqifSpecObjectByIdentifierMap;
+
+   /**
+    * Map of ReqIF Spec Objects from the test document keyed by their long names. This map does not include the ReqIF
+    * Specifications.
+    */
+
+   private static Map<String, SpecObject> reqifSpecObjectByLongNameMap;
+
+   /**
+    * Map of ReqIF Specification Type and Spec Object Type definitions from the test document keyed by their
+    * identifiers.
+    */
+
+   private static Map<String, SpecType> reqifSpecTypeByIdentifierMap;
+
+   /**
+    * Map of ReqIF Specification Type and Spec Object Type definitions from the test document keyed by their long names.
+    */
+
+   private static Map<String, SpecType> reqifSpecTypeByLongNameMap;
+
+   /**
+    * Saves the {@link ReqIF} DOM of the test document read back from the server.
+    */
+
+   private static ReqIF reqifTestDocument;
+
+   /**
     * Saves the {@link ArtifactId} of the root artifact of the test document.
     */
 
@@ -575,6 +768,379 @@ public class SynchronizationEndpointTest {
       return calendar.getTime();
    }
 
+   /**
+    * For each provided {@link Identifiable}:
+    * <ul>
+    * <li>extracts an identifier,</li>
+    * <li>extracts a long name,</li>
+    * <li>adds the {@link Identifiable} to the maps using the identifier or long name as the key.</li>
+    * </ul>
+    *
+    * @param reqifIdentifiables the list of {@link Identifiable> objects to be added to the maps.
+    * @param byIdentifierMap the map to store values by identifier.
+    * @param byLongNameMap the map to store values by long name.
+    * @throws AssertionError when:
+    * <ul>
+    * <li>an identifier is not extracted from the {@link Identifiable},</li>
+    * <li>a long name is not extracted from the {@link Identifiable},</li>
+    * <li>an entry for the {@link Identifiable} already exits in one of the maps.</li>
+    * </ul>
+    */
+
+   private static void mapIdentifiables(EList<? extends Identifiable> reqifIdentifiables, Map<String, ? extends Identifiable> byIdentifierMap, Map<String, ? extends Identifiable> byLongNameMap) {
+
+      for (var reqifIdentifiable : reqifIdentifiables) {
+
+         var identifier = reqifIdentifiable.getIdentifier();
+
+         Assert.assertNotNull(identifier);
+         Assert.assertFalse(byIdentifierMap.containsKey(identifier));
+
+         ((Map<String, Identifiable>) byIdentifierMap).put(identifier, reqifIdentifiable);
+
+         var longName = reqifIdentifiable.getLongName();
+
+         Assert.assertNotNull(longName);
+         Assert.assertFalse(byLongNameMap.containsKey(longName));
+
+         ((Map<String, Identifiable>) byLongNameMap).put(longName, reqifIdentifiable);
+      }
+   }
+
+   /**
+    * For each provided secondary {@link Identifiable}:
+    * <ul>
+    * <li>extracts an identifier,</li>
+    * <li>extracts a long name,</li>
+    * <li>adds the secondary {@link Identifiable} to the maps using the primary and secondary identifiers or long names
+    * as keys.</li>
+    * </ul>
+    *
+    * @param primaryIdentifier the identifier to use as the primary map key for the <code>byIdentifierMap</code>. This
+    * parameter may be <code>null</code>. When <code>null</code> the <code>byIdentifierMap</code> will not be populated.
+    * @param primaryLongName the long name to use as the primary map key for the <code>byLongNameMap</code>. This
+    * parameter may be <code>null</code>. When <code>null</code> the <code>byLongNameMap</code> will not be populated.
+    * @param reqifSecondaryEObjects the list of secondary {@link Identifiable} objects that were extracted from the
+    * primary {@link Identifiable}.
+    * @param secondaryIdentifierFunction a {@link Function} used to extract the identifier from the secondary
+    * {@link Identifiable}.
+    * @param secondaryLongNameFunction a {@link Function } used to extract the long name from the secondary
+    * {@link Identifiable}.
+    * @param byIdentifierMap the map to store values by identifier.
+    * @param byLongNameMap the map to store values by long name.
+    * @throws AssertionError when:
+    * <ul>
+    * <li>an identifier is needed and not extracted from the secondary {@link Identifiable},</li>
+    * <li>a long name is needed and not extracted from the secondary {@link Identifiable},
+    * <li>
+    * <li>an entry for the secondary {@link Identifiable} already exists in a map being populated.</li>
+    * </ul>
+    */
+   private static void mapSecondaryEObjects(String primaryIdentifier, String primaryLongName, EList<? extends EObject> reqifSecondaryEObjects, Function<EObject, String> secondaryIdentifierFunction, Function<EObject, String> secondaryLongNameFunction, DoubleMap<String, String, ? extends EObject> byIdentifierMap, DoubleMap<String, String, ? extends EObject> byLongNameMap) {
+
+      for (var reqifSecondaryEObject : reqifSecondaryEObjects) {
+
+         if (Objects.nonNull(primaryIdentifier)) {
+            var secondaryIdentifier = secondaryIdentifierFunction.apply(reqifSecondaryEObject);
+
+            Assert.assertNotNull(secondaryIdentifier);
+
+            var priorValueOptional = ((DoubleMap<String, String, EObject>) byIdentifierMap).put(primaryIdentifier,
+               secondaryIdentifier, reqifSecondaryEObject);
+
+            Assert.assertTrue(priorValueOptional.isEmpty());
+         }
+
+         if (Objects.nonNull(primaryLongName)) {
+            var secondaryLongName = secondaryLongNameFunction.apply(reqifSecondaryEObject);
+
+            Assert.assertNotNull(secondaryLongName);
+
+            var priorValueOptional = ((DoubleMap<String, String, EObject>) byIdentifierMap).put(primaryLongName,
+               secondaryLongName, reqifSecondaryEObject);
+
+            Assert.assertTrue(priorValueOptional.isEmpty());
+         }
+      }
+   }
+
+   /**
+    * For each provided primary {@link Identifiable}:
+    * <ul>
+    * <li>extracts an identifier,</li>
+    * <li>extracts a long name,</li>
+    * <li>extracts a list of secondary {@link Identifiable} objects.</li>
+    * </ul>
+    * The secondary {@link Identifiable} objects are then added to the maps using the identifier and long name keys from
+    * the associated primary {@link Identifiable} object.
+    *
+    * @param reqifPrimaryIdentifiables list of ReqIF {@link Identifiable} objects to be stored into the maps.
+    * @param secondaryIdentifiablesFunction a {@link Function} used to extract the secondary {@link Identifiable} from
+    * the primary {@link Identifiable}.
+    * @param secondaryIdentifierFunction a {@link Function} used to extract the identifier from the secondary
+    * {@link Identifiable}.
+    * @param secondaryLongNameFunction a {@link Function} used to extract the long name from the secondary
+    * {@link Identifiable}.
+    * @param byIdentifierMap the map to store values by identifier.
+    * @param byLongNameMap the map to store values by long name.
+    * @throws AssertionError when
+    * <ul>
+    * <li>an identifier cannot be extracted from a primary {@link Identifiable}, or</li>
+    * <li>an long name cannot be extracted from a primary {@link Identifiable}.</li>
+    * </ul>
+    */
+
+   private static void mapSecondaryEObjects(EList<? extends Identifiable> reqifPrimaryIdentifiables, Function<Identifiable, EList<? extends EObject>> secondaryIdentifiablesFunction, Function<EObject, String> secondaryIdentifierFunction, Function<EObject, String> secondaryLongNameFunction, DoubleMap<String, String, ? extends EObject> byIdentifierMap, DoubleMap<String, String, ? extends EObject> byLongNameMap) {
+
+      for (var reqifPrimaryIdentifiable : reqifPrimaryIdentifiables) {
+
+         var primaryIdentifier = reqifPrimaryIdentifiable.getIdentifier();
+
+         Assert.assertNotNull(primaryIdentifier);
+
+         var primaryLongName = reqifPrimaryIdentifiable.getLongName();
+
+         Assert.assertNotNull(primaryLongName);
+
+         var reqifSecondaryIdentifiables = secondaryIdentifiablesFunction.apply(reqifPrimaryIdentifiable);
+
+         SynchronizationEndpointTest.mapSecondaryEObjects(primaryIdentifier, primaryLongName,
+            reqifSecondaryIdentifiables, secondaryIdentifierFunction, secondaryLongNameFunction, byIdentifierMap,
+            byLongNameMap);
+      }
+   }
+
+   /**
+    * Parses ReqIF AttributeDefinitions from the test document into {@link DoubleMap} keyed with the Specification Type
+    * or Spec Object Type identifier or long name; and then keyed by the Attribute Definitions's identifier or long
+    * name;
+    *
+    * @param reqif the test document to parse
+    * @param byIdentifierMap the map to store values by identifier.
+    * @param byLongNameMap the map to store values by long name.
+    * @throws AssertionError when
+    * <ul>
+    * <li>the test document core content is missing,</li>
+    * <li>the test document spec types are missing.</li>
+    * </ul>
+    */
+
+   private static void parseAttributeDefinitions(ReqIF reqif, DoubleMap<String, String, AttributeDefinition> byIdentifierMap, DoubleMap<String, String, AttributeDefinition> byLongNameMap) {
+
+      var reqifCoreContent = SynchronizationEndpointTest.reqifTestDocument.getCoreContent();
+
+      Assert.assertNotNull(reqifCoreContent);
+
+      var reqifSpecTypes = reqifCoreContent.getSpecTypes();
+
+      Assert.assertNotNull(reqifSpecTypes);
+
+      SynchronizationEndpointTest.mapSecondaryEObjects(reqifSpecTypes,
+         (specType) -> ((SpecType) specType).getSpecAttributes(), (eObject) -> ((Identifiable) eObject).getIdentifier(),
+         (eObject) -> ((Identifiable) eObject).getLongName(), byIdentifierMap, byLongNameMap);
+   }
+
+   /**
+    * ReqIF Attribute Value objects don't have an identifier or long name. The Attribute Value objects reference an
+    * Attribute Definition which does have an identifier and long name. The referenced Attribute Definition's identifier
+    * and long name are used for the Attribute Value. The ReqIF Attribute Value classes do not share a common base or
+    * interface which allows for access to the Attribute Definition or the Attribute Definition's values. Since this is
+    * test code, reflection is used to obtain the Attribute Definition object and then either it's identifier or long
+    * name instead of implementing class specific code.
+    *
+    * @param eObject the ReqIF Attribute Value to obtain an identifier or long name for.
+    * @param secondaryFunctionName use "getIdentifier" to obtain the identifier and "getLongName" to get the long name.
+    * @return the identifier or long name to be used for the Attribute Value.
+    * @throws AssertionError when any of the reflective methods fail.
+    */
+
+   private static String parseAttributeValueIdentifiers(EObject eObject, String secondaryFunctionName) {
+      try {
+         var theClass = eObject.getClass();
+
+         var getDefinitionMethod = theClass.getDeclaredMethod("getDefinition");
+
+         var attributeDefinition = getDefinitionMethod.invoke(eObject);
+
+         var attributeDefinitionClass = attributeDefinition.getClass();
+
+         var getIdentifierMethod = attributeDefinitionClass.getMethod(secondaryFunctionName);
+
+         var value = (String) getIdentifierMethod.invoke(attributeDefinition);
+
+         return value;
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
+         //Should never get here.
+         return null;
+      }
+   }
+
+   /**
+    * Parses ReqIF AttributeValues from the test document into {@link DoubleMap} keyed with the Spec Object identifier
+    * or long name; and then keyed by the Attribute Value's Attribute Definition reference identifier or long name;
+    *
+    * @param reqif the test document to parse
+    * @param byIdentifierMap the map to store values by identifier.
+    * @param byLongNameMap the map to store values by long name.
+    * @throws AssertionError when
+    * <ul>
+    * <li>the test document core content is missing,</li>
+    * <li>the test document spec objects are missing.</li>
+    * </ul>
+    */
+
+   private static void parseAttributeValues(ReqIF reqif, DoubleMap<String, String, AttributeValue> byIdentifierMap, DoubleMap<String, String, AttributeValue> byLongNameMap) {
+
+      var reqifCoreContent = SynchronizationEndpointTest.reqifTestDocument.getCoreContent();
+
+      Assert.assertNotNull(reqifCoreContent);
+
+      var reqifSpecObjects = reqifCoreContent.getSpecObjects();
+
+      Assert.assertNotNull(reqifSpecObjects);
+
+      SynchronizationEndpointTest.mapSecondaryEObjects(reqifSpecObjects,
+         (specObject) -> ((SpecObject) specObject).getValues(),
+         (eObject) -> SynchronizationEndpointTest.parseAttributeValueIdentifiers(eObject, "getIdentifier"),
+         (eObject) -> SynchronizationEndpointTest.parseAttributeValueIdentifiers(eObject, "getLongName"),
+         byIdentifierMap, byLongNameMap);
+   }
+
+   /**
+    * Parses the ReqIF Data Type Definitions from the test document into maps by identifier and by long names.
+    *
+    * @param reqif the test document to parse
+    * @param byIdentifier The {@link Map} to add the {@link DatatypeDefinition} objects keyed by identifier to.
+    * @param byLongName The {@link Map} to add the {@link DatatypeDefinition} objects keyed by long name to.
+    * @throws AssertionError when
+    * <ul>
+    * <li>the ReqIF core content is not available,</li>
+    * <li>the ReqIF data type definitions are not available,</li>
+    * </ul>
+    */
+
+   private static void parseDatatypeDefinitions(ReqIF reqif, Map<String, DatatypeDefinition> byIdentifierMap, Map<String, DatatypeDefinition> byLongNameMap) {
+
+      var reqifCoreContent = reqif.getCoreContent();
+
+      Assert.assertNotNull(reqifCoreContent);
+
+      var reqifDatatypes = reqifCoreContent.getDatatypes();
+
+      Assert.assertNotNull(reqifDatatypes);
+
+      SynchronizationEndpointTest.mapIdentifiables(reqifDatatypes, byIdentifierMap, byLongNameMap);
+   }
+
+   /**
+    * Parses the ReqIF Spec Objects from the test document into maps by identifier and by long names.
+    *
+    * @param reqif the test document to parse
+    * @param byIdentifier The {@link Map} to add the {@link DatatypeDefinition} objects keyed by identifier to.
+    * @param byLongName The {@link Map} to add the {@link DatatypeDefinition} objects keyed by long name to.
+    * @throws AssertionError when
+    * <ul>
+    * <li>the ReqIF core content is not available,</li>
+    * <li>the ReqIF spec objects are not available,</li>
+    * </ul>
+    */
+
+   private static void parseSpecObjects(ReqIF reqif, Map<String, SpecObject> byIdentifierMap, Map<String, SpecObject> byLongNameMap) {
+
+      var reqifCoreContent = SynchronizationEndpointTest.reqifTestDocument.getCoreContent();
+
+      Assert.assertNotNull(reqifCoreContent);
+
+      var reqifSpecObjects = reqifCoreContent.getSpecObjects();
+
+      Assert.assertNotNull(reqifSpecObjects);
+
+      SynchronizationEndpointTest.mapIdentifiables(reqifSpecObjects, byIdentifierMap, byLongNameMap);
+   }
+
+   /**
+    * Parses the ReqIF Spec Types from the test document into maps by identifier and by long names.
+    *
+    * @param reqif the test document to parse
+    * @param byIdentifier The {@link Map} to add the {@link DatatypeDefinition} objects keyed by identifier to.
+    * @param byLongName The {@link Map} to add the {@link DatatypeDefinition} objects keyed by long name to.
+    * @throws AssertionError when
+    * <ul>
+    * <li>the ReqIF core content is not available,</li>
+    * <li>the ReqIF spec types are not available,</li>
+    * </ul>
+    */
+
+   private static void parseSpecTypes(ReqIF reqif, Map<String, SpecType> byIdentifierMap, Map<String, SpecType> byLongNameMap) {
+
+      var reqifCoreContent = SynchronizationEndpointTest.reqifTestDocument.getCoreContent();
+
+      Assert.assertNotNull(reqifCoreContent);
+
+      var reqifSpecTypes = reqifCoreContent.getSpecTypes();
+
+      Assert.assertNotNull(reqifSpecTypes);
+
+      SynchronizationEndpointTest.mapIdentifiables(reqifSpecTypes, byIdentifierMap, byLongNameMap);
+   }
+
+   /**
+    * Get the test document from the server and parse it into a ReqIF DOM.
+    *
+    * @return the ReqIF DOM.
+    * @throws AssertionError when
+    * <ul>
+    * <li>a response is not received from the server,</li>
+    * <li>the server response is not OK,</li>
+    * <li>the received resource does not have any contents,</li>
+    * <li>the received resource does not contain a {@link ReqIF} object.</li>
+    * </ul>
+    * @throws RuntimeException when an error occurs loading the {@link InputStream} received from the server into a
+    * resource.
+    */
+
+   private static ReqIF parseTestDocument() {
+      String synchronizationArtifactType = "reqif";
+
+      Response response = SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(
+         SynchronizationEndpointTest.rootBranchId, SynchronizationEndpointTest.rootArtifactId,
+         synchronizationArtifactType);
+
+      Assert.assertNotNull(response);
+
+      int statusCode = response.getStatus();
+
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), statusCode);
+
+      var reqIfInputStream = response.readEntity(InputStream.class);
+
+      var resourceSet = new ResourceSetImpl();
+
+      resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("reqif",
+         new ReqIF10ResourceFactoryImpl());
+
+      var uri = URI.createFileURI("i.reqif");
+
+      var resource = resourceSet.createResource(uri);
+
+      try {
+         resource.load(reqIfInputStream, null);
+      } catch (Exception e) {
+         throw new RuntimeException("Resource Load Failed", e);
+      }
+
+      var eObjectList = resource.getContents();
+
+      Assert.assertNotNull(eObjectList);
+
+      var rootEObject = eObjectList.get(0);
+
+      Assert.assertTrue(rootEObject instanceof ReqIF);
+
+      return (ReqIF) rootEObject;
+   }
+
    @BeforeClass
    public static void testSetup() {
       //@formatter:off
@@ -673,6 +1239,66 @@ public class SynchronizationEndpointTest {
 
       SynchronizationEndpointTest.rootBranchId = testBranchId;
       SynchronizationEndpointTest.rootArtifactId = ArtifactId.valueOf( SynchronizationEndpointTest.artifactInfoRecords.get( 0 ).getArtifact().getId() );
+
+      /*
+       * Create tracking maps
+       */
+
+      SynchronizationEndpointTest.reqifAttributeDefinitionByIdentifiersMap = new DoubleHashMap<>();
+      SynchronizationEndpointTest.reqifAttributeDefinitionByLongNamesMap = new DoubleHashMap<>();
+      SynchronizationEndpointTest.reqifAttributeValueByIdentifiersMap = new DoubleHashMap<>();
+      SynchronizationEndpointTest.reqifAttributeValueByLongNamesMap = new DoubleHashMap<>();
+      SynchronizationEndpointTest.reqifDatatypeDefinitionByIdentifierMap = new HashMap<>();
+      SynchronizationEndpointTest.reqifDatatypeDefinitionByLongNameMap = new HashMap<>();
+      SynchronizationEndpointTest.reqifSpecObjectByIdentifierMap = new HashMap<>();
+      SynchronizationEndpointTest.reqifSpecObjectByLongNameMap = new HashMap<>();
+      SynchronizationEndpointTest.reqifSpecTypeByIdentifierMap = new HashMap<>();
+      SynchronizationEndpointTest.reqifSpecTypeByLongNameMap = new HashMap<>();
+
+      /*
+       * Get and save the ReqIF test document from the server
+       */
+
+      SynchronizationEndpointTest.reqifTestDocument = SynchronizationEndpointTest.parseTestDocument();
+
+      /*
+       * Index the members of the ReqIF by identifier and long name
+       */
+
+      SynchronizationEndpointTest.parseSpecTypes
+         (
+            SynchronizationEndpointTest.reqifTestDocument,
+            SynchronizationEndpointTest.reqifSpecTypeByIdentifierMap,
+            SynchronizationEndpointTest.reqifSpecTypeByLongNameMap
+         );
+
+      SynchronizationEndpointTest.parseDatatypeDefinitions
+         (
+            SynchronizationEndpointTest.reqifTestDocument,
+            SynchronizationEndpointTest.reqifDatatypeDefinitionByIdentifierMap,
+            SynchronizationEndpointTest.reqifDatatypeDefinitionByLongNameMap
+         );
+
+      SynchronizationEndpointTest.parseAttributeDefinitions
+         (
+            SynchronizationEndpointTest.reqifTestDocument,
+            SynchronizationEndpointTest.reqifAttributeDefinitionByIdentifiersMap,
+            SynchronizationEndpointTest.reqifAttributeDefinitionByLongNamesMap
+         );
+
+      SynchronizationEndpointTest.parseSpecObjects
+         (
+            SynchronizationEndpointTest.reqifTestDocument,
+            SynchronizationEndpointTest.reqifSpecObjectByIdentifierMap,
+            SynchronizationEndpointTest.reqifSpecObjectByLongNameMap
+         );
+
+      SynchronizationEndpointTest.parseAttributeValues
+         (
+            SynchronizationEndpointTest.reqifTestDocument,
+            SynchronizationEndpointTest.reqifAttributeValueByIdentifiersMap,
+            SynchronizationEndpointTest.reqifAttributeValueByLongNamesMap
+         );
 
       //@formatter:on
    }
