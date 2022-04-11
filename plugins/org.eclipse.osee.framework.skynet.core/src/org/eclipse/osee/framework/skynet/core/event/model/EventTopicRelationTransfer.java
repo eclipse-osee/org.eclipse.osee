@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -26,9 +28,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 public class EventTopicRelationTransfer {
 
    private RelationEventType relationEventType;
-   private ArtifactToken artAId;
+   private ArtifactId artAId;
    private ArtifactTypeId artAIdType;
-   private ArtifactToken artBId;
+   private ArtifactId artBId;
    private ArtifactTypeId artBIdType;
    private String rationale;
    private Long relTypeId;
@@ -92,19 +94,27 @@ public class EventTopicRelationTransfer {
       this.branch = branch;
    }
 
-   public ArtifactToken getArtAId() {
+   public ArtifactId getArtAId() {
       return artAId;
    }
 
-   public void setArtAId(ArtifactToken artAId) {
+   public ArtifactToken getArtAToken() {
+      return ArtifactToken.valueOf(artAId, BranchToken.valueOf(branch));
+   }
+
+   public void setArtAId(ArtifactId artAId) {
       this.artAId = artAId;
    }
 
-   public ArtifactToken getArtBId() {
+   public ArtifactId getArtBId() {
       return artBId;
    }
 
-   public void setArtBId(ArtifactToken artBId) {
+   public ArtifactToken getArtBToken() {
+      return ArtifactToken.valueOf(artBId, BranchToken.valueOf(branch));
+   }
+
+   public void setArtBId(ArtifactId artBId) {
       this.artBId = artBId;
    }
 
@@ -130,11 +140,11 @@ public class EventTopicRelationTransfer {
    @Override
    public int hashCode() {
       final int prime = 31;
-      long result = 1;
+      int result = 1;
       result = prime * result + (rationale == null ? 0 : rationale.hashCode());
       result = prime * result + (getArtAId() == null ? 0 : getArtAId().hashCode());
       result = prime * result + (getArtBId() == null ? 0 : getArtBId().hashCode());
-      return Math.toIntExact(result);
+      return result;
    }
 
    @Override

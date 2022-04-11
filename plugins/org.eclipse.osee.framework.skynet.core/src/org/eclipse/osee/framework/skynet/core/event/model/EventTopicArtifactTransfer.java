@@ -14,9 +14,11 @@
 package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -25,11 +27,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public class EventTopicArtifactTransfer {
    private BranchId branch;
-   private ArtifactToken artifactToken;
+   private ArtifactId artifactId;
    private ArtifactTypeId artifactTypeId;
    private EventModType eventModType;
    private ArtifactTypeId fromArtTypeGuid;
-   private Collection<AttributeChange> attributeChanges;
+   private Collection<EventTopicAttributeChangeTransfer> attributeChanges;
    private EventTopicTransferType transferType = EventTopicTransferType.BASE;
 
    public BranchId getBranch() {
@@ -40,12 +42,16 @@ public class EventTopicArtifactTransfer {
       this.branch = branch;
    }
 
-   public ArtifactToken getArtifactToken() {
-      return artifactToken;
+   public ArtifactId getArtifactId() {
+      return artifactId;
    }
 
-   public void setArtifactToken(ArtifactToken artifactToken) {
-      this.artifactToken = artifactToken;
+   public ArtifactToken getArtifactToken() {
+      return ArtifactToken.valueOf(artifactId, BranchToken.valueOf(branch));
+   }
+
+   public void setArtifactId(ArtifactId artifactId) {
+      this.artifactId = artifactId;
    }
 
    public ArtifactTypeId getArtifactTypeId() {
@@ -72,11 +78,11 @@ public class EventTopicArtifactTransfer {
       this.fromArtTypeGuid = fromArtTypeGuid;
    }
 
-   public Collection<AttributeChange> getAttributeChanges() {
+   public Collection<EventTopicAttributeChangeTransfer> getAttributeChanges() {
       return attributeChanges;
    }
 
-   public void setAttributeChanges(Collection<AttributeChange> attributeChanges) {
+   public void setAttributeChanges(Collection<EventTopicAttributeChangeTransfer> attributeChanges) {
       this.attributeChanges = attributeChanges;
    }
 
@@ -91,7 +97,7 @@ public class EventTopicArtifactTransfer {
    @Override
    public String toString() {
       String branchName = this.branch == null ? "null branch" : this.branch.getIdString();
-      String artifactTokenName = this.artifactToken == null ? "null Artifact" : this.artifactToken.getIdString();
+      String artifactIdName = this.artifactId == null ? "null Artifact" : this.artifactId.getIdString();
       String artifactTypeIdName =
          this.artifactTypeId == null ? "null Artifact Type" : this.artifactTypeId.getIdString();
       String eventModTypeName = this.eventModType == null ? "null mod type" : this.eventModType.toString();
@@ -106,11 +112,11 @@ public class EventTopicArtifactTransfer {
             return String.format("[BASE: %s - B:%s - A:%s]", eventModTypeName, branchName, artifactTypeIdName);
          }
          case CHANGE: {
-            return String.format("[CHANGE: %s - %s from type [%s] to [%s]]", eventModTypeName, artifactTokenName,
+            return String.format("[CHANGE: %s - %s from type [%s] to [%s]]", eventModTypeName, artifactIdName,
                fromArtTypeGuidName, artifactTypeIdName);
          }
          case MODIFICATION: {
-            return String.format("[MOD: %s - G:%s - B:%s - A:%s - %s]", eventModTypeName, artifactTokenName, branchName,
+            return String.format("[MOD: %s - G:%s - B:%s - A:%s - %s]", eventModTypeName, artifactIdName, branchName,
                artifactTypeIdName, attributeChangesName);
          }
          default: {
@@ -132,7 +138,7 @@ public class EventTopicArtifactTransfer {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((artifactToken == null) ? 0 : artifactToken.hashCode());
+      result = prime * result + ((artifactId == null) ? 0 : artifactId.hashCode());
       result = prime * result + ((artifactTypeId == null) ? 0 : artifactTypeId.hashCode());
       result = prime * result + ((attributeChanges == null) ? 0 : attributeChanges.hashCode());
       result = prime * result + ((branch == null) ? 0 : branch.hashCode());
@@ -154,11 +160,11 @@ public class EventTopicArtifactTransfer {
          return false;
       }
       EventTopicArtifactTransfer other = (EventTopicArtifactTransfer) obj;
-      if (artifactToken == null) {
-         if (other.artifactToken != null) {
+      if (artifactId == null) {
+         if (other.artifactId != null) {
             return false;
          }
-      } else if (!artifactToken.equals(other.artifactToken)) {
+      } else if (!artifactId.equals(other.artifactId)) {
          return false;
       }
       if (artifactTypeId == null) {

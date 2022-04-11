@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
@@ -105,13 +106,15 @@ public class UpdateArtifactOperation extends AbstractOperation {
                   artifact.reloadAttributesAndRelations();
                   Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
                   if (!attrChanges.isEmpty()) {
-
-                     Collection<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange> changeAttrs =
-                        new ArrayList<>();
+                     Collection<EventTopicAttributeChangeTransfer> attrChangeTransfers =
+                        new ArrayList<EventTopicAttributeChangeTransfer>();
+                     for (AttributeChange attrChange : attrChanges) {
+                        attrChangeTransfers.add(FrameworkEventUtil.attributeChangeToTransfer(attrChange));
+                     }
 
                      EventTopicArtifactTransfer artEvent = FrameworkEventUtil.artifactTransferFactory(
                         artifact.getBranch(), artifact, artifact.getArtifactType(), EventModType.ChangeType, null,
-                        changeAttrs, EventTopicTransferType.MODIFICATION);
+                        attrChangeTransfers, EventTopicTransferType.MODIFICATION);
 
                      artifactTopicEvent.addArtifact(artEvent);
                   }

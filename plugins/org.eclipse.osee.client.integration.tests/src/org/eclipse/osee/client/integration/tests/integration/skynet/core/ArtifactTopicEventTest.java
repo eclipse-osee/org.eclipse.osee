@@ -17,16 +17,19 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.RelationId;
@@ -39,16 +42,9 @@ import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelationReorder1;
+import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistTopicEvent1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTopicArtifact1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTopicAttributeChange1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTopicRelation1;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -58,9 +54,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationReorderTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
@@ -387,7 +383,7 @@ public class ArtifactTopicEventTest {
 
       EventTopicArtifactTransfer transferArt = new EventTopicArtifactTransfer();
       transferArt.setArtifactTypeId(artType);
-      transferArt.setArtifactToken(ArtifactToken.valueOf(ArtifactId.valueOf("1234567890"), "Test Artifact Name"));
+      transferArt.setArtifactId(ArtifactId.valueOf(123456789L));
       transferArt.setBranch(COMMON);
       transferArt.setEventModType(EventModType.Added);
 
@@ -433,51 +429,51 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals(reorderTransfer, newReorderTransfer);
    }
 
+   @Test
+   public void testSerializeAttributeChange() throws Exception {
+      //Create new EventTopicAttributeChangeTransfer
+      EventTopicAttributeChangeTransfer attrTransfer = FrameworkEventUtil.attributeChangeTransferFactory(
+         AttributeTypeId.valueOf(14L), AttributeEventModificationType.New.getModificationType().getId(),
+         AttributeId.valueOf(12L), gammaId7, null, null);
+      attrTransfer.setDataContent("Test Data 1");
+      attrTransfer.setDataLocator("Test Data 2");
+
+      //Test that the EventTopicAttributeChangeTransfer can serialize correctly
+      String transferJson = JsonUtil.toJson(attrTransfer);
+      EventTopicAttributeChangeTransfer newAttrTransfer =
+         JsonUtil.readValue(transferJson, EventTopicAttributeChangeTransfer.class);
+      Assert.assertEquals(attrTransfer, newAttrTransfer);
+   }
+
    protected boolean isRemoteTest() {
       return false;
    }
 
-   private RemotePersistTopicEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt) {
+   private RemoteArtifactTopicEvent getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt, Collection<EventTopicAttributeChangeTransfer> attributeChanges) {
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = new RemotePersistTopicEvent1();
+      ArtifactTopicEvent topicEvent = new ArtifactTopicEvent(COMMON);
+      topicEvent.setTransaction(tx);
+      EventTopicArtifactTransfer artTransfer =
+         FrameworkEventUtil.artifactTransferFactory(COMMON, modifiedArt.getToken(), CoreArtifactTypes.GeneralData,
+            EventModType.Modified, null, attributeChanges, EventTopicTransferType.BASE);
+      topicEvent.addArtifact(artTransfer);
       // Set sender to something other than this client so event system will think came from another client
-      remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setTransaction(tx);
-
-      remoteEvent.setBranchGuid(COMMON);
-
-      RemoteTopicArtifact1 remGuidArt = new RemoteTopicArtifact1();
-      remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      remGuidArt.setBranch(COMMON);
-      remGuidArt.setArtifactType(CoreArtifactTypes.GeneralData);
-      remGuidArt.setArtGuid(modifiedArt.getGuid());
-
-      remoteEvent.getArtifacts().add(remGuidArt);
-      return remoteEvent;
+      topicEvent.setNetworkSender(FrameworkEventUtil.getNetworkSender(networkSender));
+      RemoteArtifactTopicEvent remoteTopicEvent = FrameworkEventUtil.getRemotePersistTopicEvent(topicEvent);
+      return remoteTopicEvent;
    }
 
-   private RemotePersistTopicEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(RelationId relationId, RelationEventType relationEventType, RelationTypeToken relType, Artifact artA, Artifact artB) {
+   private RemoteArtifactTopicEvent getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(RelationId relationId, RelationEventType relationEventType, RelationTypeToken relType, Artifact artA, Artifact artB, String rationale) {
+      ArtifactTopicEvent topicEvent = new ArtifactTopicEvent(COMMON);
+      topicEvent.setTransaction(tx);
+      EventTopicRelationTransfer relationTransfer = FrameworkEventUtil.relationTransferFactory(relationEventType, artA,
+         artB, relationId, relType.getId(), incrementingGammaId.increment(1), rationale);
+      topicEvent.addRelation(relationTransfer);
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = new RemotePersistTopicEvent1();
       // Set sender to something other than this client so event system will think came from another client
-      remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setTransaction(tx);
-      remoteEvent.setBranchGuid(COMMON);
-
-      RemoteTopicRelation1 remGuidRel = new RemoteTopicRelation1();
-      remGuidRel.setModTypeGuid(relationEventType.getGuid());
-
-      remGuidRel.setBranchGuid(COMMON);
-      remGuidRel.setGammaId(incrementingGammaId.increment(1));
-      remGuidRel.setRelTypeGuid(relType.getId());
-      remGuidRel.setRelationId(relationId);
-      remGuidRel.setArtAId(artA.getToken());
-      remGuidRel.setArtBId(artB.getToken());
-      remGuidRel.setArtA(FrameworkEventUtil.getRemoteTopicArtifact(artA.getArtifactTransfer(EventModType.Modified)));
-      remGuidRel.setArtB(FrameworkEventUtil.getRemoteTopicArtifact(artB.getArtifactTransfer(EventModType.Modified)));
-
-      remoteEvent.getRelations().add(remGuidRel);
-      return remoteEvent;
+      topicEvent.setNetworkSender(FrameworkEventUtil.getNetworkSender(networkSender));
+      RemoteArtifactTopicEvent remoteTopicEvent = FrameworkEventUtil.getRemotePersistTopicEvent(topicEvent);
+      return remoteTopicEvent;
    }
 
    private Artifact testArtifactRelationEvents__addArtifact() throws Exception {
@@ -627,9 +623,9 @@ public class ArtifactTopicEventTest {
       listener.reset();
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
+      RemoteArtifactTopicEvent remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
          RelationId.valueOf(getIncrementingRelationId()), RelationEventType.Added,
-         CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
+         CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt, "Test Rationale");
 
       // Send
       OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
@@ -648,7 +644,7 @@ public class ArtifactTopicEventTest {
 
       Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
-      Assert.assertEquals("", relLink.getRationale());
+      Assert.assertEquals("Test Rationale", relLink.getRationale());
       Assert.assertFalse(injectArt.isDirty());
       Assert.assertFalse(rootArt.isDirty());
 
@@ -661,9 +657,9 @@ public class ArtifactTopicEventTest {
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent =
-         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getRelationId(),
-            RelationEventType.Deleted, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
+      RemoteArtifactTopicEvent remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
+         relLink.getRelationId(), RelationEventType.Deleted, CoreRelationTypes.DefaultHierarchical_Child, rootArt,
+         injectArt, "Test Rationale");
 
       // Send
       OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
@@ -690,29 +686,20 @@ public class ArtifactTopicEventTest {
    private Artifact remoteInjection_relations_reorderRelation(Artifact rootArt, Artifact injectArt) throws Exception {
       listener.reset();
 
+      ArtifactTopicEvent topicEvent = new ArtifactTopicEvent(COMMON);
+      topicEvent.setTransaction(tx);
+      EventTopicArtifactTransfer artTransfer = FrameworkEventUtil.artifactTransferFactory(COMMON, rootArt,
+         CoreArtifactTypes.GeneralData, EventModType.Modified, null, null, EventTopicTransferType.BASE);
+      EventTopicRelationReorderTransfer reorderTransfer = FrameworkEventUtil.relationReorderTransferFactory(artTransfer,
+         COMMON, CoreRelationTypes.DefaultHierarchical_Child.getId(), RelationOrderModType.Absolute);
+      topicEvent.addRelationReorder(reorderTransfer);
       // Create fake remote event that would come in from another client
-      RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
-      remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setTransaction(tx);
-      remoteEvent.setBranchGuid(COMMON);
-
-      RemoteBasicGuidRelationReorder1 remoteReorder = new RemoteBasicGuidRelationReorder1();
-      remoteReorder.setBranchGuid(COMMON);
-      remoteReorder.setModTypeGuid(RelationOrderModType.Absolute.getGuid());
-      remoteReorder.setRelTypeGuid(CoreRelationTypes.DefaultHierarchical_Child.getGuid());
-
-      RemoteBasicGuidArtifact1 parentRemGuidArt = new RemoteBasicGuidArtifact1();
-      parentRemGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      parentRemGuidArt.setBranch(COMMON);
-      parentRemGuidArt.setArtifactType(CoreArtifactTypes.GeneralData);
-      parentRemGuidArt.setArtGuid(GUID.create());
-
-      remoteReorder.setParentArt(parentRemGuidArt);
-      remoteEvent.getRelationReorders().add(remoteReorder);
+      topicEvent.setNetworkSender(FrameworkEventUtil.getNetworkSender(networkSender));
+      RemoteArtifactTopicEvent remoteTopicEvent = FrameworkEventUtil.getRemotePersistTopicEvent(topicEvent);
 
       // Send
-      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteTopicEvent);
 
       // Wait for event to propagate
 
@@ -720,13 +707,13 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals("No relations events should be sent", 0, listener.getRelations().size());
       Assert.assertEquals("1 reorder events should be sent", 1, listener.getReorders().size());
       Assert.assertTrue(listener.getSender().isRemote());
-      EventTopicRelationReorderTransfer transferReorder = listener.getReorders().iterator().next();
-      Assert.assertEquals(RelationOrderModType.Absolute, transferReorder.getModType());
-      Assert.assertEquals(parentRemGuidArt.getArtGuid(), transferReorder.getParentArt().getArtifactToken().getGuid());
-      Assert.assertEquals(parentRemGuidArt.getArtifactType(), transferReorder.getParentArt().getArtifactTypeId());
-      Assert.assertTrue(transferReorder.getParentArt().getBranch().equals(COMMON));
-      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), transferReorder.getRelTypeUuid());
-      Assert.assertTrue(injectArt.getBranch().equals((transferReorder.getBranch())));
+      EventTopicRelationReorderTransfer reorderTransfer1 = listener.getReorders().iterator().next();
+      Assert.assertEquals(RelationOrderModType.Absolute, reorderTransfer1.getModType());
+      Assert.assertEquals(artTransfer.getArtifactToken(), reorderTransfer1.getParentArt().getArtifactToken());
+      Assert.assertEquals(artTransfer.getArtifactTypeId(), reorderTransfer1.getParentArt().getArtifactTypeId());
+      Assert.assertTrue(reorderTransfer1.getParentArt().getBranch().equals(COMMON));
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), reorderTransfer1.getRelTypeUuid());
+      Assert.assertTrue(injectArt.getBranch().equals((reorderTransfer1.getBranch())));
 
       return injectArt;
    }
@@ -737,14 +724,12 @@ public class ArtifactTopicEventTest {
       String RATIONALE_STR = "This is the rationale";
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
+      RemoteArtifactTopicEvent remoteTopicEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
          RelationId.valueOf(getIncrementingRelationId()), RelationEventType.Added,
-         CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
-      RemoteTopicRelation1 relation = remoteEvent.getRelations().iterator().next();
-      relation.setRationale(RATIONALE_STR);
+         CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt, RATIONALE_STR);
 
       // Send
-      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteTopicEvent);
 
       // Wait for event to propagate
 
@@ -755,7 +740,7 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals(RelationEventType.Added, topicRel.getRelationEventType());
       Assert.assertEquals(rootArt.getId(), topicRel.getArtAId().getId());
       Assert.assertEquals(injectArt.getId(), topicRel.getArtBId().getId());
-      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), topicRel.getRelTypeId());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getId(), topicRel.getRelTypeId());
       Assert.assertEquals(injectArt.getBranch().getId(), topicRel.getBranch().getId());
 
       Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
@@ -775,14 +760,12 @@ public class ArtifactTopicEventTest {
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.DefaultHierarchical_Parent).iterator().next();
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent =
-         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getRelationId(),
-            RelationEventType.ModifiedRationale, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
-      RemoteTopicRelation1 relation = remoteEvent.getRelations().iterator().next();
-      relation.setRationale(NEW_RATIONALE_STR);
+      RemoteArtifactTopicEvent remoteTopicEvent = getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
+         relLink.getRelationId(), RelationEventType.ModifiedRationale, CoreRelationTypes.DefaultHierarchical_Child,
+         rootArt, injectArt, NEW_RATIONALE_STR);
 
       // Send
-      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteTopicEvent);
 
       // Wait for event to propagate
 
@@ -793,7 +776,7 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals(RelationEventType.ModifiedRationale, topicRel.getRelationEventType());
       Assert.assertEquals(rootArt.getId(), topicRel.getArtAId().getId());
       Assert.assertEquals(injectArt.getId(), topicRel.getArtBId().getId());
-      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), topicRel.getRelTypeId());
+      Assert.assertEquals(CoreRelationTypes.DefaultHierarchical_Child.getId(), topicRel.getRelTypeId());
       Assert.assertEquals(injectArt.getBranch().getId(), topicRel.getBranch().getId());
 
       Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.DefaultHierarchical_Parent).size());
@@ -818,23 +801,19 @@ public class ArtifactTopicEventTest {
       listener.reset();
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
-      RemoteTopicArtifact1 remGuidArt = remoteEvent.getArtifacts().iterator().next();
-
-      RemoteTopicAttributeChange1 remAttrChg = new RemoteTopicAttributeChange1();
-
-      // Create modify attribute record
+      Collection<EventTopicAttributeChangeTransfer> attributeChanges = new ArrayList<>();
       Long nameAttrId = injectArt.getAttributes().iterator().next().getId();
-      remAttrChg.setAttributeId(AttributeId.valueOf(nameAttrId));
-      remAttrChg.setGammaId(gammaId7);
-      remAttrChg.setAttributeType(CoreAttributeTypes.Name);
-      remAttrChg.setModTypeGuid(AttributeEventModificationType.Modified.getGuid());
-      remAttrChg.getData().add(NEW_NAME);
-      remAttrChg.getData().add("");
-      remGuidArt.getAttributes().add(remAttrChg);
+      EventTopicAttributeChangeTransfer attrTransfer = FrameworkEventUtil.attributeChangeTransferFactory(
+         CoreAttributeTypes.Name, AttributeEventModificationType.Modified.getModificationType().getId(),
+         AttributeId.valueOf(nameAttrId), gammaId7, null, ApplicabilityId.BASE);
+      attrTransfer.setDataContent(NEW_NAME);
+      attrTransfer.setDataLocator("");
+      attributeChanges.add(attrTransfer);
+      RemoteArtifactTopicEvent remoteTopicEvent =
+         getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt, attributeChanges);
 
       // Send
-      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteTopicEvent);
 
       // Wait for event to propagate
 
@@ -849,14 +828,14 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals(1, topicArt.getAttributeChanges().size());
 
       // Validate attribute change in event message
-      AttributeChange attrChg = topicArt.getAttributeChanges().iterator().next();
-      Assert.assertEquals(nameAttrId, attrChg.getAttributeId());
-      Assert.assertEquals(AttributeEventModificationType.Modified,
-         AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
-      Assert.assertEquals(CoreAttributeTypes.Name, attrChg.getAttrTypeGuid());
+      EventTopicAttributeChangeTransfer attrChg = topicArt.getAttributeChanges().iterator().next();
+      Assert.assertEquals(nameAttrId, attrChg.getAttrId().getId());
+      Assert.assertEquals(AttributeEventModificationType.Modified.getModificationType().getId(), attrChg.getModType());
+      Assert.assertEquals(CoreAttributeTypes.Name.getId(), attrChg.getAttrTypeId().getId());
       Assert.assertEquals(gammaId7, attrChg.getGammaId());
 
-      Assert.assertEquals(Arrays.asList(NEW_NAME, ""), remAttrChg.getData());
+      Assert.assertEquals(NEW_NAME, attrTransfer.getDataContent());
+      Assert.assertEquals("", attrTransfer.getDataLocator());
 
       // Validate that artifact was updated
       Assert.assertEquals(NEW_NAME, injectArt.getName());
@@ -870,21 +849,19 @@ public class ArtifactTopicEventTest {
       String GENERAL_DATA_STRING = "This is the string";
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
-      RemoteTopicArtifact1 remTopicArt = remoteEvent.getArtifacts().iterator().next();
-
       // Create add attribute record
-      RemoteTopicAttributeChange1 remAttrChg = new RemoteTopicAttributeChange1();
-      remAttrChg.setAttributeId(AttributeId.valueOf(2343L));
-      remAttrChg.setGammaId(gammaId7);
-      remAttrChg.setAttributeType(CoreAttributeTypes.GeneralStringData);
-      remAttrChg.setModTypeGuid(AttributeEventModificationType.New.getGuid());
-      remAttrChg.getData().add(GENERAL_DATA_STRING);
-      remAttrChg.getData().add("");
-      remTopicArt.getAttributes().add(remAttrChg);
+      Collection<EventTopicAttributeChangeTransfer> attributeChanges = new ArrayList<>();
+      EventTopicAttributeChangeTransfer remAttrChg = FrameworkEventUtil.attributeChangeTransferFactory(
+         CoreAttributeTypes.GeneralStringData, AttributeEventModificationType.New.getModificationType().getId(),
+         AttributeId.valueOf(2343L), gammaId7, null, null);
+      remAttrChg.setDataContent(GENERAL_DATA_STRING);
+      remAttrChg.setDataLocator("");
+      attributeChanges.add(remAttrChg);
+      RemoteArtifactTopicEvent remoteTopicEvent =
+         getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt, attributeChanges);
 
       // Send
-      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteTopicEvent);
 
       // Wait for event to propagate
 
@@ -899,14 +876,13 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals(1, topicArt.getAttributeChanges().size());
 
       // Validate attribute change in event message
-      AttributeChange attrChg = topicArt.getAttributeChanges().iterator().next();
-      Assert.assertEquals(2343, attrChg.getAttributeId());
-      Assert.assertEquals(AttributeEventModificationType.New,
-         AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
-      Assert.assertEquals(CoreAttributeTypes.GeneralStringData, attrChg.getAttrTypeGuid());
+      EventTopicAttributeChangeTransfer attrChg = topicArt.getAttributeChanges().iterator().next();
+      Assert.assertEquals(AttributeId.valueOf(2343L), attrChg.getAttrId());
+      Assert.assertEquals(AttributeEventModificationType.New.getModificationType().getId(), attrChg.getModType());
+      Assert.assertEquals(CoreAttributeTypes.GeneralStringData.getId(), attrChg.getAttrTypeId().getId());
       Assert.assertEquals(gammaId7, attrChg.getGammaId());
 
-      Assert.assertEquals(Arrays.asList(GENERAL_DATA_STRING, ""), remAttrChg.getData());
+      Assert.assertEquals(GENERAL_DATA_STRING, remAttrChg.getDataContent());
 
       // Validate that artifact was updated
       Assert.assertEquals(GENERAL_DATA_STRING,
@@ -919,20 +895,18 @@ public class ArtifactTopicEventTest {
       listener.reset();
 
       // Create fake remote event that would come in from another client
-      RemotePersistTopicEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
-      RemoteTopicArtifact1 remTopicArt = remoteEvent.getArtifacts().iterator().next();
-
       // Create delete attribute record
-      RemoteTopicAttributeChange1 remAttrChg = new RemoteTopicAttributeChange1();
       Long genStrAttrId = injectArt.getAttributes(CoreAttributeTypes.GeneralStringData).iterator().next().getId();
-      remAttrChg.setAttributeId(AttributeId.valueOf(genStrAttrId));
-      remAttrChg.setGammaId(gammaId7);
-      remAttrChg.setAttributeType(CoreAttributeTypes.GeneralStringData);
-      remAttrChg.setModTypeGuid(AttributeEventModificationType.Deleted.getGuid());
-      remTopicArt.getAttributes().add(remAttrChg);
+      Collection<EventTopicAttributeChangeTransfer> attributeChanges = new ArrayList<>();
+      EventTopicAttributeChangeTransfer remAttrChg = FrameworkEventUtil.attributeChangeTransferFactory(
+         CoreAttributeTypes.GeneralStringData, AttributeEventModificationType.Deleted.getModificationType().getId(),
+         AttributeId.valueOf(genStrAttrId), gammaId7, null, null);
+      attributeChanges.add(remAttrChg);
+      RemoteArtifactTopicEvent remoteTopicEvent =
+         getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt, attributeChanges);
 
       // Send
-      OseeEventManager.internalTestSendRemoteEvent(remoteEvent);
+      OseeEventManager.internalTestSendRemoteEvent(remoteTopicEvent);
 
       // Wait for event to propagate
 
@@ -948,11 +922,10 @@ public class ArtifactTopicEventTest {
       Assert.assertEquals(1, topicArt.getAttributeChanges().size());
 
       // Validate attribute change in event message
-      AttributeChange attrChg = topicArt.getAttributeChanges().iterator().next();
-      Assert.assertEquals(genStrAttrId, attrChg.getAttributeId());
-      Assert.assertEquals(AttributeEventModificationType.Deleted,
-         AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
-      Assert.assertEquals(CoreAttributeTypes.GeneralStringData, attrChg.getAttrTypeGuid());
+      EventTopicAttributeChangeTransfer attrChg = topicArt.getAttributeChanges().iterator().next();
+      Assert.assertEquals(genStrAttrId, attrChg.getAttrId().getId());
+      Assert.assertEquals(AttributeEventModificationType.Deleted.getModificationType().getId(), attrChg.getModType());
+      Assert.assertEquals(CoreAttributeTypes.GeneralStringData.getId(), attrChg.getAttrTypeId().getId());
       Assert.assertEquals(gammaId7, attrChg.getGammaId());
 
       // Validate that artifact was updated

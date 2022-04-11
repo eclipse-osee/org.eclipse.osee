@@ -145,6 +145,25 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
          artifact) || isRelAdded(artifact);
    }
 
+   public EventModType getEventModType(Artifact artifact) {
+      if (isHasEvent(artifact)) {
+         if (isModified(artifact)) {
+            return EventModType.Modified;
+         } else if (isDeletedPurged(artifact)) {
+            for (EventTopicArtifactTransfer gArt : artifacts) {
+               if (gArt.is(EventModType.Deleted) && gArt.getArtifactToken().getId().equals(artifact.getId())) {
+                  return EventModType.Deleted;
+               } else {
+                  return EventModType.Purged;
+               }
+            }
+         }
+      } else if (isReloaded(artifact)) {
+         return EventModType.Reloaded;
+      }
+      return EventModType.Added;
+   }
+
    public boolean isDeletedPurged(Artifact artifact) {
       for (EventTopicArtifactTransfer gArt : artifacts) {
          if (gArt.is(EventModType.Deleted,
@@ -194,14 +213,18 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
    }
 
    public void addArtifact(Artifact artifact) {
-      EventTopicArtifactTransfer transferArt = FrameworkEventUtil.artifactTransferFactory(artifact.getBranch(),
-         artifact, artifact.getArtifactType(), EventModType.Modified, null,
-         artifact.getDirtyFrameworkAttributeChanges(), EventTopicTransferType.MODIFICATION);
+      Collection<EventTopicAttributeChangeTransfer> attrChanges = new ArrayList<EventTopicAttributeChangeTransfer>();
+      for (AttributeChange attrChange : artifact.getDirtyFrameworkAttributeChanges()) {
+         attrChanges.add(FrameworkEventUtil.attributeChangeToTransfer(attrChange));
+      }
+      EventTopicArtifactTransfer transferArt =
+         FrameworkEventUtil.artifactTransferFactory(artifact.getBranch(), artifact, artifact.getArtifactType(),
+            EventModType.Modified, null, attrChanges, EventTopicTransferType.MODIFICATION);
 
       artifacts.add(transferArt);
       for (DefaultBasicUuidRelationReorder uuidRelationReorder : artifact.getRelationOrderRecords()) {
          EventTopicRelationReorderTransfer transfer =
-            FrameworkEventUtil.relationReorderBasicToTransfer(uuidRelationReorder);
+            FrameworkEventUtil.relationReorderBasicToTransfer(uuidRelationReorder, getEventModType(artifact));
          relationReorderRecords.add(transfer);
       }
    }

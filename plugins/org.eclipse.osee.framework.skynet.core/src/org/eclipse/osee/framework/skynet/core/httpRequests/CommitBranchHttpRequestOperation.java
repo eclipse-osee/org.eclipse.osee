@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -152,14 +153,13 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                EventTopicRelationTransfer event =
                   FrameworkEventUtil.relationTransferFactory(relationEventType, relChange.getChangeArtifact(),
                      relChange.getEndTxBArtifact(), RelationId.valueOf(relChange.getItemId().getId()),
-                     relChange.getRelationType().getId(), relChange.getGamma(), "CommitBranchHttp transfer");
-               event.setRationale(relChange.getRationale());
+                     relChange.getRelationType().getId(), relChange.getGamma(), relChange.getRationale());
                artifactTopicEvent.getRelations().add(event);
                Artifact artA = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
                if (artA != null) {
                   artifacts.add(artA);
                }
-               Artifact artB = ArtifactCache.getActive(relChange.getArtId(), newTransaction.getBranch());
+               Artifact artB = ArtifactCache.getActive(relChange.getBArtId(), newTransaction.getBranch());
                if (artB != null) {
                   artifacts.add(artB);
                }
@@ -176,36 +176,27 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                if (changedArtifact.isValid()) {
                   EventTopicArtifactTransfer artEvent = artEventMap.get(artifactId);
 
-                  Collection<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange> changeAttrs =
+                  Collection<org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer> changeAttrs =
                      new ArrayList<>();
 
                   if (artEvent == null) {
                      artEvent = FrameworkEventUtil.artifactTransferFactory(newTransaction.getBranch(),
-                        change.getChangeArtifact(), changedArtifact.getArtifactType(), EventModType.ChangeType, null,
+                        change.getChangeArtifact(), changedArtifact.getArtifactType(), EventModType.Modified, null,
                         changeAttrs, EventTopicTransferType.MODIFICATION);
-
                   }
 
                   AttributeChange attributeChange = (AttributeChange) change;
-                  org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
-                     new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
-                  attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
-                  attrChangeEvent.setGammaId(attributeChange.getGamma());
-                  attrChangeEvent.setAttributeId(attributeChange.getAttrId());
-                  attrChangeEvent.setModTypeGuid(
-                     AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
+                  org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer attrChangeEvent =
+                     FrameworkEventUtil.attributeChangeTransferFactory(attributeChange.getAttributeType(),
+                        attributeChange.getModificationType().getId(), attributeChange.getAttrId(),
+                        attributeChange.getGamma(), null, null);
 
                   Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId().getId(), true);
                   if (attribute != null) {
-                     for (Object obj : attribute.getAttributeDataProvider().getData()) {
-                        if (obj == null) {
-                           attrChangeEvent.getData().add("");
-                        } else {
-                           attrChangeEvent.getData().add(obj);
-                        }
-                     }
+                     attrChangeEvent.setData(Arrays.asList(attribute.getAttributeDataProvider().getData()));
                   }
                   artEvent.getAttributeChanges().add(attrChangeEvent);
+                  artifactTopicEvent.addArtifact(artEvent);
                }
             }
          }

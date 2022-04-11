@@ -64,7 +64,7 @@ public class BranchIdTopicEventFilter implements ITopicEventFilter {
          return true;
       }
       for (EventTopicRelationTransfer rel : transferRelations) {
-         if (rel.getArtAId().isOnBranch(branchToken) || rel.getArtBId().isOnBranch(branchToken)) {
+         if (rel.getArtAToken().isOnBranch(branchToken) || rel.getArtBToken().isOnBranch(branchToken)) {
             return true;
          }
       }
