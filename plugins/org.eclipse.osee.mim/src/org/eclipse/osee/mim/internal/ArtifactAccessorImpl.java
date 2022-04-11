@@ -111,7 +111,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).and(
          attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-         QueryOption.TOKEN_MATCH_ORDER__ANY).getResults().getList()) { //asArtifacts() doesn't work for and() currently
+         QueryOption.TOKEN_MATCH_ORDER__ANY).asArtifacts()) {
          if (artifact.isValid()) {
             T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
             if (hasSetApplic(clazz)) {
@@ -129,7 +129,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       List<T> artifactList = new LinkedList<T>();
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(relation,
          relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-            QueryOption.TOKEN_MATCH_ORDER__ANY).getResults().getList()) { //asArtifacts() doesn't work for and() currently
+            QueryOption.TOKEN_MATCH_ORDER__ANY).asArtifacts()) {
          if (artifact.isValid()) {
             T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
             if (hasSetApplic(clazz)) {
