@@ -44,7 +44,7 @@
 	<!--  	<eclipse-site>http://download.eclipse.org/releases/2020-06/202006171000</eclipse-site> -->
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
 		<papyrus-site>http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2020-06/202006171000/</papyrus-site>
-	  	<nebula-site>http://download.eclipse.org/nebula/releases/2.4.3/</nebula-site> 
+		<nebula-site>http://download.eclipse.org/nebula/releases/latest/</nebula-site> 
 	<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 	<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site</polarion-site>
 	<emma-site>http://update.eclemma.org</emma-site>
