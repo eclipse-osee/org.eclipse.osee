@@ -55,8 +55,7 @@ public class SprintItems {
          if (workItemArt instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) workItemArt;
             try {
-               ArtifactId backlogArt = AtsApiService.get().getRelationResolver().getRelatedOrNull(workItem,
-                  AtsRelationTypes.AgileBacklog_AgileBacklog);
+               ArtifactId backlogArt = AtsApiService.get().getAgileService().getRelatedBacklogArt(workItem);
                Artifact relatedBacklogArt = null;
                if (backlogArt != null && backlogArt.isValid()) {
                   relatedBacklogArt = AtsApiService.get().getQueryServiceIde().getArtifact(backlogArt);
