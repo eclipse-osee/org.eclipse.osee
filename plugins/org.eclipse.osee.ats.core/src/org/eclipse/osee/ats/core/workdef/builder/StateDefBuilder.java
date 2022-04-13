@@ -264,4 +264,13 @@ public class StateDefBuilder {
    public boolean hasOption(WorkDefBuilderOption option) {
       return builderOptions.contains(option);
    }
+
+   public List<LayoutItem> getLayoutItems() {
+      return state.getLayoutItems();
+   }
+
+   public StateDefBuilder andLayout(List<LayoutItem> layoutItems) {
+      state.getLayoutItems().addAll(layoutItems);
+      return this;
+   }
 }

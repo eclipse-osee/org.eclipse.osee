@@ -172,12 +172,12 @@ public class WorkflowManager {
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) {
       List<StateXWidgetPage> statePages = new ArrayList<>();
       if (workItem != null) {
-         IAtsWorkDefinition definition = workItem.getWorkDefinition();
+         IAtsWorkDefinition workDef = workItem.getWorkDefinition();
          ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
          for (IAtsStateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
-            definition)) {
+            workDef)) {
             try {
-               StateXWidgetPage statePage = new StateXWidgetPage(definition, stateDefinition, null, optionResolver,
+               StateXWidgetPage statePage = new StateXWidgetPage(workDef, stateDefinition, null, optionResolver,
                   (AbstractWorkflowArtifact) workItem);
                statePages.add(statePage);
             } catch (Exception ex) {

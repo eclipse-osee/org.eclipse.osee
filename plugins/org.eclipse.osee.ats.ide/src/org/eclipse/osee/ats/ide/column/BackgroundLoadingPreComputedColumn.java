@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.column;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
@@ -35,7 +36,7 @@ public abstract class BackgroundLoadingPreComputedColumn extends XViewerAtsColum
 
    public AtomicBoolean loading = new AtomicBoolean(false);
    public AtomicBoolean loaded = new AtomicBoolean(false);
-   protected Map<Long, String> preComputedValueMap;
+   protected Map<Long, String> preComputedValueMap = new HashMap<>();
 
    public BackgroundLoadingPreComputedColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
