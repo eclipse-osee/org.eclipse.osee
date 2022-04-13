@@ -47,6 +47,7 @@ public class StateToken extends NamedIdBase {
    public static StateToken Completed = StateToken.valueOf(3532702930L, "Completed");
    public static StateToken Decision = StateToken.valueOf(98983282387L, "Decision");
    public static StateToken Deferred = StateToken.valueOf(1034976443L, "Deferred");
+   public static StateToken Demonstrate = StateToken.valueOf(2335132432L, "Demonstrate");
    public static StateToken Detail = StateToken.valueOf(2070391728L, "Detail");
    public static StateToken Endorse = StateToken.valueOf(23420230948L, "Endorse");
    public static StateToken Develop = StateToken.valueOf(463695258L, "Develop");

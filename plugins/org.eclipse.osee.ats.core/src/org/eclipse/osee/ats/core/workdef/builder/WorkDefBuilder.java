@@ -53,6 +53,10 @@ public class WorkDefBuilder {
       rd = workDef.getResults();
    }
 
+   public StateDefBuilder andState(int ordinal, StateToken state, StateType type, WorkDefBuilderOption... builderOptions) {
+      return this.andState(ordinal, state.getName(), type, builderOptions);
+   }
+
    public StateDefBuilder andState(int ordinal, String name, StateType type, WorkDefBuilderOption... builderOptions) {
       if (ordinal <= 0) {
          rd.errorf("Ordinal must be > 1 for state [%s]\n", name);

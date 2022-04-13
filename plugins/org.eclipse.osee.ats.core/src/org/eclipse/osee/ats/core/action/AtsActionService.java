@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -82,6 +83,12 @@ public class AtsActionService implements IAtsActionService {
    private IAtsTeamDefinition topTeamDefinition;
    private JsonFactory jsonFactory;
    private IWorkItemListener workItemListener;
+   private static final Collection<INewActionListener> actionListeners = new ArrayList<>();
+
+   public AtsActionService() {
+      this(null);
+      // for jax-rs
+   }
 
    public AtsActionService(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -442,8 +449,23 @@ public class AtsActionService implements IAtsActionService {
 
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
-      IAtsWorkDefinition workDef =
-         atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);
+
+      IAtsWorkDefinition workDef = null;
+      // Determine of any osgi registered listeners want to provide work def
+      if (actionListeners != null) {
+         for (INewActionListener listener : actionListeners) {
+            AtsWorkDefinitionToken overrideWorkDefinitionId = listener.getOverrideWorkDefinitionId(teamDef);
+            if (overrideWorkDefinitionId != null) {
+               workDef = atsApi.getWorkDefinitionService().getWorkDefinition(overrideWorkDefinitionId);
+               break;
+            }
+         }
+      }
+      // Else, use normal computed work def
+      if (workDef == null) {
+         workDef =
+            atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);
+      }
       Conditions.assertNotNull(workDef, "Work Definition can no be null");
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
@@ -500,6 +522,12 @@ public class AtsActionService implements IAtsActionService {
       // Notify listener of team creation
       if (newActionListeners != null) {
          for (INewActionListener listener : newActionListeners) {
+            listener.teamCreated(action, teamWf, changes);
+         }
+      }
+      // Notify any osgi registered listeners
+      if (actionListeners != null) {
+         for (INewActionListener listener : actionListeners) {
             listener.teamCreated(action, teamWf, changes);
          }
       }
@@ -686,5 +714,9 @@ public class AtsActionService implements IAtsActionService {
 
    public void setWorkItemListener(IWorkItemListener workItemListener) {
       this.workItemListener = workItemListener;
+   }
+
+   public void addActionListener(INewActionListener listener) {
+      actionListeners.add(listener);
    }
 }

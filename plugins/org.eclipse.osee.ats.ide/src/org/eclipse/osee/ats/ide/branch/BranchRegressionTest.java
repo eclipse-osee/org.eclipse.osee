@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -34,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -627,12 +627,16 @@ public abstract class BranchRegressionTest {
       }
    }
 
+   public StateToken getRequirementsCompletedState() {
+      return StateToken.Completed;
+   }
+
    public void testRequirementsWorkflowCompletion() {
       // Complete Requirements and Start Code/Test
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("testRequirementsWorkflowCompletion");
-      TransitionHelper helper =
-         new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeam), TeamState.Completed.getName(), null,
-            null, changes, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper = new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeam),
+         getRequirementsCompletedState().getName(), null, null, changes, AtsApiService.get(),
+         TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       if (!results.isEmpty()) {
          Assert.fail("Complete Requirements Failed " + results.toString());
