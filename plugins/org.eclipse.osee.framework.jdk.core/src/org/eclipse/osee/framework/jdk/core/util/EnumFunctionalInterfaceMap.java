@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.util;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Optional;
 import java.util.Set;
@@ -25,7 +25,7 @@ import java.util.Set;
  * @param <F> the mapped functional interfaces.
  */
 
-public interface EnumFunctionMap<K extends Enum<K>, F> {
+public interface EnumFunctionalInterfaceMap<K extends Enum<K>, F> {
 
    /**
     * Predicate to determine if the map contains a key-function mapping for the specified key.
@@ -44,6 +44,7 @@ public interface EnumFunctionMap<K extends Enum<K>, F> {
     * @param key the key whose associated function is desired.
     * @return an {@link Optional} containing the function associated with the provided key; otherwise, an empty
     * {@link Optional} is returned when the key is not present in the map.
+    * @throws NullPointerException when the specified key is <code>null</code>.
     */
 
    public Optional<F> getFunction(K key);
@@ -59,11 +60,11 @@ public interface EnumFunctionMap<K extends Enum<K>, F> {
    /**
     * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map, so changes to the map
     * are reflected in the set. Implementations are required to return an unmodifiable {@link Set}. The returned
-    * {@link Set} should throw an {@link UnsporttedOperationException} if an attempt is made to add or remove items from
-    * the {@link Set}. The set's iterator will return the keys in the order in which the enumeration constants are
+    * {@link Set} should throw an {@link UnsupportedOperationException} if an attempt is made to add or remove items
+    * from the {@link Set}. The set's iterator will return the keys in the order in which the enumeration constants are
     * declared.
     *
-    * @return a set view of the keys contained in this {@link EnumFunctionMap}.
+    * @return a set view of the keys contained in this {@link EnumFunctionalInterfaceMap}.
     */
 
    Set<K> keySet();

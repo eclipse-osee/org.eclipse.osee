@@ -11,22 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.util;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.AbstractSet;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 /**
- * This class provides a skeletal implementation of the the {@link EnumFunctionMap} interface, to minimize the effort
- * required to implement this interface for maps of various different functional interfaces.<br>
- * <br>
+ * This class provides a skeletal implementation of the the {@link EnumFunctionalInterfaceMap} interface, to minimize
+ * the effort required to implement this interface for maps of various different functional interfaces.
+ * <p>
  * To create an implementation the programmers needs to:
  * <ul>
- * <li>Create a class extending the {@link AbstractEnumFunctionMap}.</li>
+ * <li>Create a class extending the {@link AbstractEnumFunctionalInterfaceMap}.</li>
  * <li>Specify an enumerated type for the parameter <code>K</code>.</li>
  * <li>Specify an functional interface for the parameter <code>F</code>.</li>
  * <li>Implement a constructor receiving a single parameter of type K that calls the single parameter constructor of the
@@ -42,7 +43,7 @@ import java.util.Set;
  * @param <F> the mapped functional interfaces.
  */
 
-public class AbstractEnumFunctionMap<K extends Enum<K>, F> implements EnumFunctionMap<K, F> {
+public class AbstractEnumFunctionalInterfaceMap<K extends Enum<K>, F> implements EnumFunctionalInterfaceMap<K, F> {
 
    /**
     * The encapsulated {@link EnumMap} used to implement the map.
@@ -56,7 +57,7 @@ public class AbstractEnumFunctionMap<K extends Enum<K>, F> implements EnumFuncti
     * @param enumerationKeyClass the class object of the key type for this map.
     */
 
-   AbstractEnumFunctionMap(Class<K> enumerationKeyClass) {
+   AbstractEnumFunctionalInterfaceMap(Class<K> enumerationKeyClass) {
 
       /*
        * Create the EnumMap with an overloaded keySet method that returns a Set that is not modifiable by the user.
@@ -93,11 +94,6 @@ public class AbstractEnumFunctionMap<K extends Enum<K>, F> implements EnumFuncti
             return new AbstractSet<K>() {
 
                @Override
-               public boolean add(K k) {
-                  throw new UnsupportedOperationException();
-               }
-
-               @Override
                public Iterator<K> iterator() {
                   Iterator<K> rvIterator = superKeySet.iterator();
 
@@ -127,24 +123,24 @@ public class AbstractEnumFunctionMap<K extends Enum<K>, F> implements EnumFuncti
 
    /**
     * {@inheritDoc}
+    *
+    * @throws NullPointerException {@inheritDoc}
     */
 
    @Override
    public boolean containsKey(K key) {
-      if (key == null) {
-         throw new NullPointerException();
-      }
-
-      return this.enumMap.containsKey(key);
+      return this.enumMap.containsKey(Objects.requireNonNull(key));
    }
 
    /**
     * {@inheritDoc}
+    *
+    * @throws NullPointerException {@inheritDoc}
     */
 
    @Override
    public Optional<F> getFunction(K key) {
-      return Optional.ofNullable(this.enumMap.get(key));
+      return Optional.ofNullable(this.enumMap.get(Objects.requireNonNull(key)));
    }
 
    /**
@@ -166,7 +162,36 @@ public class AbstractEnumFunctionMap<K extends Enum<K>, F> implements EnumFuncti
    }
 
    /**
+    * Loads the provided key and value pairs into the map. The {@link Map.Entry} objects themselves are not stored in
+    * the map.
+    *
+    * @param entries an array of {@link Map.Entry} objects containing the keys and values used to populate the map.
+    * @return this map.
+    * @throws NullPointerException when:
+    * <ul>
+    * <li>the <code>entries</code> array reference is <code>null</code>, or</li>
+    * <li>an entry in the <code>entries</code> array is <code>null</code>.
+    * </ul>
+    * @throws EnumMapDuplicateEntryException when an attempt is made to add an entry to the map when a mapping for the
+    * provided key already exists.
+    */
+
+   protected AbstractEnumFunctionalInterfaceMap<K, F> ofEntriesLoader(Map.Entry<K, F>[] entries) {
+      for (var entry : entries) {
+         var key = entry.getKey();
+         if (this.enumMap.containsKey(key)) {
+            throw new EnumMapDuplicateEntryException(key);
+         }
+         this.enumMap.put(key, entry.getValue());
+      }
+      return this;
+   }
+
+   /**
     * {@inheritDoc}
+    *
+    * @throws NullPointerException {@inheritDoc}
+    * @throws EnumMapDuplicateEntryException {@inheritDoc}
     */
 
    @Override

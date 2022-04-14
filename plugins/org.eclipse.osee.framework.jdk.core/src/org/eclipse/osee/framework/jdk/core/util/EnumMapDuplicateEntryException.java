@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.util;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.EnumMap;
 
