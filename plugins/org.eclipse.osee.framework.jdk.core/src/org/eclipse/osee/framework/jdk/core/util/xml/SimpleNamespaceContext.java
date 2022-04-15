@@ -67,6 +67,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
       return getPrefixes(namespaceURI).next();
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Iterator<String> getPrefixes(String namespaceURI) {
       if (namespaceURI == null) {

@@ -14,9 +14,11 @@
 package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,6 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response;
@@ -72,12 +75,22 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
+import org.eclipse.rmf.reqif10.AccessControlledElement;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
+import org.eclipse.rmf.reqif10.AttributeDefinitionBoolean;
+import org.eclipse.rmf.reqif10.AttributeDefinitionDate;
 import org.eclipse.rmf.reqif10.AttributeDefinitionInteger;
+import org.eclipse.rmf.reqif10.AttributeDefinitionReal;
+import org.eclipse.rmf.reqif10.AttributeDefinitionString;
+import org.eclipse.rmf.reqif10.AttributeDefinitionXHTML;
 import org.eclipse.rmf.reqif10.AttributeValue;
-import org.eclipse.rmf.reqif10.AttributeValueInteger;
 import org.eclipse.rmf.reqif10.DatatypeDefinition;
+import org.eclipse.rmf.reqif10.DatatypeDefinitionBoolean;
+import org.eclipse.rmf.reqif10.DatatypeDefinitionDate;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionInteger;
+import org.eclipse.rmf.reqif10.DatatypeDefinitionReal;
+import org.eclipse.rmf.reqif10.DatatypeDefinitionString;
+import org.eclipse.rmf.reqif10.DatatypeDefinitionXHTML;
 import org.eclipse.rmf.reqif10.Identifiable;
 import org.eclipse.rmf.reqif10.ReqIF;
 import org.eclipse.rmf.reqif10.SpecElementWithAttributes;
@@ -90,6 +103,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * Tests for the Synchronization REST API End point defined in the package
@@ -101,7 +115,9 @@ import org.junit.Test;
 public class SynchronizationEndpointTest {
 
    /**
-    * Testing rule used to prevent modification of a production database.
+    * Testing rule used to prevent modification of a production database. This is a {@link ClassRule} which will prevent
+    * the <code>BeforeClass</code> method from running on a production database. A {@link TestRule} is not applied to
+    * <code>BeforeClass</code> class methods and will therefore not provide any protection.
     */
 
    @ClassRule
@@ -261,7 +277,7 @@ public class SynchronizationEndpointTest {
    };
 
    /**
-    * Class used to define and build test artifacts with a test attribute in the local database. Only one attribute per
+    * Class used to define, and build test artifacts with a test attribute in the local database. Only one attribute per
     * test artifact is setup and used for testing.
     */
 
@@ -331,6 +347,12 @@ public class SynchronizationEndpointTest {
       private Attribute<?> attribute;
 
       /**
+       * The expected subclass of the ReqIf {@link AttributeDefinition} object.
+       */
+
+      private final Class<? extends AttributeDefinition> attributeDefinitionClass;
+
+      /**
        * The expected description for the test attribute's {@link AttributeDefinition}.
        */
 
@@ -362,6 +384,12 @@ public class SynchronizationEndpointTest {
       private final Function<Object, Object> backToOseeTypeFunction;
 
       /**
+       * The expected subclass of the ReqIF {@link DatatypeDefinition} object.
+       */
+
+      private final Class<? extends DatatypeDefinition> datatypeDefinitionClass;
+
+      /**
        * The expected description for the test attribute's {@link DatatypeDefinition}.
        */
 
@@ -378,6 +406,12 @@ public class SynchronizationEndpointTest {
        */
 
       private final String datatypeDefinitionLongName;
+
+      /**
+       * Method to check {@link DatatypeDefinition} subclass specific parameters for correctness.
+       */
+
+      private final Consumer<? super DatatypeDefinition> datatypeDefinitionVerifier;
 
       /**
        * The {@link ArtifactInfoRecord#identifier} for the test artifact that is the hierarchical parent of the test
@@ -464,11 +498,13 @@ public class SynchronizationEndpointTest {
        * @param attributeDefinitionIdentifierPrefix The expected identifier prefix for the test attribute's
        * {@link AttributeDefinition}.
        * @param attributeDefinitionLongName The expected long name for the test attribute's {@link AttributeDefinition}.
+       * @param attributeDefinitionClass The expected subclass of the ReqIf {@link AttributeDefinition} object.
        * @param datatypeDefinitionDescription The expected description for the test attribute's
        * {@link DatatypeDefinition}.
        * @param datatypeDefinitionIdentifier The expected identifier prefix for the test attribute's
        * {@link DatatypeDefinition}.
        * @param datatypeDefinitionLongName The expected long name for the test attribute's {@link DatatypeDefinition}.
+       * @param datatypeDefinitionClass The expected subclass of the ReqIF {@link DatatypeDefinition} object.
        * @param attributeSetter A {@link BiConsumer} used to assign the attribute value to the test attribute. The first
        * parameter is the attribute as an {@link Attribute} and the second parameter is the value as an {@link Object}.
        * @param backToOseeTypeFunction A {@link Function} implementation used to convert the value from the ReqIf test
@@ -478,28 +514,31 @@ public class SynchronizationEndpointTest {
       //@formatter:off
       ArtifactInfoRecord
          (
-            Integer                         identifier,
-            Integer                         hierarchicalParentIdentifier,
-            String                          name,
-            ArtifactTypeToken               typeToken,
-            AttributeTypeGeneric<?>         testAttributeType,
-            Object                          testAttributeValue,
-            Object                          testAttributeDefaultValue,
+            Integer                                identifier,
+            Integer                                hierarchicalParentIdentifier,
+            String                                 name,
+            ArtifactTypeToken                      typeToken,
+            AttributeTypeGeneric<?>                testAttributeType,
+            Object                                 testAttributeValue,
+            Object                                 testAttributeDefaultValue,
 
-            String                          specTypeDescription,
-            String                          specTypeIdentifierPrefix,
-            String                          specTypeLongName,
+            String                                 specTypeDescription,
+            String                                 specTypeIdentifierPrefix,
+            String                                 specTypeLongName,
 
-            String                          attributeDefinitionDescription,
-            String                          attributeDefinitionIdentifierPrefix,
-            String                          attributeDefinitionLongName,
+            String                                 attributeDefinitionDescription,
+            String                                 attributeDefinitionIdentifierPrefix,
+            String                                 attributeDefinitionLongName,
+            Class<? extends AttributeDefinition>   attributeDefinitionClass,
 
-            String                          datatypeDefinitionDescription,
-            String                          datatypeDefinitionIdentifierPrefix,
-            String                          datatypeDefinitionLongName,
+            String                                 datatypeDefinitionDescription,
+            String                                 datatypeDefinitionIdentifierPrefix,
+            String                                 datatypeDefinitionLongName,
+            Class<? extends DatatypeDefinition>    datatypeDefinitionClass,
+            Consumer<? super DatatypeDefinition>   datatypeDefinitionVerifier,
 
-            BiConsumer<Attribute<?>,Object> attributeSetter,
-            Function<Object,Object>         backToOseeTypeFunction
+            BiConsumer<Attribute<?>,Object>     attributeSetter,
+            Function<Object,Object>             backToOseeTypeFunction
          )
       {
          this.identifier = Objects.requireNonNull(identifier);
@@ -517,10 +556,13 @@ public class SynchronizationEndpointTest {
          this.attributeDefinitionDescription = Objects.requireNonNull( attributeDefinitionDescription );
          this.attributeDefinitionIdentifierPrefix = Objects.requireNonNull( attributeDefinitionIdentifierPrefix );
          this.attributeDefinitionLongName = Objects.requireNonNull(attributeDefinitionLongName);
+         this.attributeDefinitionClass = Objects.requireNonNull(attributeDefinitionClass);
 
          this.datatypeDefinitionDescription = Objects.requireNonNull( datatypeDefinitionDescription );
          this.datatypeDefinitionIdentifierPrefix = Objects.requireNonNull( datatypeDefinitionIdentifierPrefix );
          this.datatypeDefinitionLongName = Objects.requireNonNull(datatypeDefinitionLongName);
+         this.datatypeDefinitionClass = Objects.requireNonNull(datatypeDefinitionClass);
+         this.datatypeDefinitionVerifier = datatypeDefinitionVerifier;
 
          this.attributeSetter = Objects.requireNonNull(attributeSetter);
          this.backToOseeTypeFunction = Objects.requireNonNull(backToOseeTypeFunction);
@@ -530,12 +572,6 @@ public class SynchronizationEndpointTest {
          this.attribute = null;
       }
       //@formatter:on
-
-      private void verifyExpectedValue(Object reqifValue) {
-         var oseeValue = this.backToOseeTypeFunction.apply(reqifValue);
-
-         Assert.assertEquals(this.testAttributeValue, oseeValue);
-      }
 
       /**
        * Creates a new artifact under the specified parent on the specified branch.
@@ -595,6 +631,16 @@ public class SynchronizationEndpointTest {
       }
 
       /**
+       * Gets the expected subclass of the ReqIF {@link AttributeDefinition} object.
+       *
+       * @return the expected subclass of the ReqIF {@link AttributeDefinition} object.
+       */
+
+      Class<? extends AttributeDefinition> getAttributeDefinitionClass() {
+         return this.attributeDefinitionClass;
+      }
+
+      /**
        * Gets the expected description for the ReqIF {@link AttributeDefinition} that should be generated in the test
        * document for the test artifact.
        *
@@ -647,6 +693,16 @@ public class SynchronizationEndpointTest {
                .findFirst()
                ;
          //@formatter:on
+      }
+
+      /**
+       * Gets the expected subclass of the ReqIF {@link DatatypeDefinition} object.
+       *
+       * @return the expected subclass of the ReqIF {@link DatatypeDefinition} object.
+       */
+
+      Class<? extends DatatypeDefinition> getDatatypeDefinitionClass() {
+         return this.datatypeDefinitionClass;
       }
 
       /**
@@ -814,13 +870,13 @@ public class SynchronizationEndpointTest {
       }
 
       /**
-       * Gets the expected default value for the test attribute.
+       * Predicate to determine if the test attribute has a default value.
        *
-       * @return the test attribute's expected default value.
+       * @return <code>true</code> when a default value is defined; otherwise, <code>false</code>.
        */
 
-      Optional<Object> getTestAttributeDefaultValue() {
-         return Optional.ofNullable(this.testAttributeDefaultValue);
+      boolean hasDefaultValue() {
+         return Objects.nonNull(this.testAttributeDefaultValue);
       }
 
       /**
@@ -856,11 +912,54 @@ public class SynchronizationEndpointTest {
          return this;
       }
 
-      Object getTestAttributeValue() {
-         return this.testAttributeValue;
+      /**
+       * Checks {@link DatatypeDefinition} subclass specific parameters for correctness.
+       *
+       * @param datatypeDefinition the {@link DatatypeDefinition} to check.
+       */
+      void verifyDatatypeDefinition(DatatypeDefinition datatypeDefinition) {
+         if (this.datatypeDefinitionVerifier != null) {
+            this.datatypeDefinitionVerifier.accept(datatypeDefinition);
+         }
+      }
+
+      /**
+       * Verifies a value read from the ReqIF DOM matches the expected value saved in this record.
+       *
+       * @param reqifValue the value to be tested.
+       * @param checkDefaultValue <code>true</code> to check against the default value and <code>false</code> to check
+       * against the regular value.
+       * @throws AssertionError when the provided value does not match the expected value.
+       */
+
+      private void verifyExpectedValue(Object reqifValue, Boolean checkDefaultValue) {
+
+         var oseeValue = this.backToOseeTypeFunction.apply(reqifValue);
+
+         var expectedValue = checkDefaultValue ? this.testAttributeDefaultValue : this.testAttributeValue;
+
+         if (oseeValue instanceof Date) {
+            Assert.assertTrue(((Date) oseeValue).compareTo((Date) expectedValue) == 0);
+         } else {
+            Assert.assertEquals(oseeValue, expectedValue);
+         }
+
       }
 
    }
+
+   /**
+    * Time {@link ZoneId} constant for "Zulu".
+    */
+
+   private static final ZoneId zoneIdZ = ZoneId.of("Z");
+
+   /**
+    * {@link GregorianCalendar} constant for the UNIX epoch January 1, 1970 UTC.
+    */
+
+   private static final GregorianCalendar lastChangeEpoch =
+      GregorianCalendar.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, SynchronizationEndpointTest.zoneIdZ));
 
    /**
     * List of {@link ArtifactInfoRecords} describing the test artifacts.
@@ -872,6 +971,7 @@ public class SynchronizationEndpointTest {
     * <li>Ensure hierarchical parents are at lower list indices.</li>
     * <li>Top level test artifact have a hierarchical parent identifier of 0.</li>
     * <li>Ensure children artifact's of a hierarchical parent artifact have unique names.</li>
+    * <li>Ensure the Long Names for each class of ReqIF object are unique.</li>
     * </ul>
     */
 
@@ -881,22 +981,25 @@ public class SynchronizationEndpointTest {
          (
            new ArtifactInfoRecord
                   (
-                    1,                                        /* Identifier                             (Integer)                 */
-                    0,                                        /* Hierarchical Parent Identifier         (Integer)                 */
-                    "ReqIF Test Specifications",              /* Artifact Name                          (String)                  */
-                    CoreArtifactTypes.Folder,                 /* Artifact Type                          (ArtifactTypeToken)       */
-                    CoreAttributeTypes.Description,           /* Test Attribute Type                    (AttributeTypeGeneric<?>) */
-                    "Motley folder of test artifacts",        /* Test Attribute Value                   (Object)                  */
-                    null,                                     /* Test Attribute Default Value           {Object}                  */
-                    "",                                       /* Spec Type Description                  (String)                  */
-                    "ST-",                                    /* Spec Type Identifier Prefix            (String)                  */
-                    "",                                       /* Spec Type Long Name                    (String)                  */
-                    "",                                       /* Attribute Definition Description       (String)                  */
-                    "AD-",                                    /* Attribute Definition Identifier Prefix (String)                  */
-                    "",                                       /* Attribute Definition Long Name         (String)                  */
-                    "",                                       /* Datatype Definition Description        (String)                  */
-                    "DD-",                                    /* Datatype Definition Identifier Prefix  (String)                  */
-                    "",                                       /* Datatype Definition Long Name          (String)                  */
+                    1,                                        /* Identifier                             (Integer)                               */
+                    0,                                        /* Hierarchical Parent Identifier         (Integer)                               */
+                    "ReqIF Test Specifications",              /* Artifact Name                          (String)                                */
+                    CoreArtifactTypes.Folder,                 /* Artifact Type                          (ArtifactTypeToken)                     */
+                    CoreAttributeTypes.Description,           /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                    "Motley folder of test artifacts",        /* Test Attribute Value                   (Object)                                */
+                    null,                                     /* Test Attribute Default Value           {Object}                                */
+                    "",                                       /* Spec Type Description                  (String)                                */
+                    "ST-",                                    /* Spec Type Identifier Prefix            (String)                                */
+                    "",                                       /* Spec Type Long Name                    (String)                                */
+                    "",                                       /* Attribute Definition Description       (String)                                */
+                    "AD-",                                    /* Attribute Definition Identifier Prefix (String)                                */
+                    "",                                       /* Attribute Definition Long Name         (String)                                */
+                    AttributeDefinitionInteger.class,         /* Attribute Definition Class             (Class<? extends AttributeDefinition)   */
+                    "",                                       /* Datatype Definition Description        (String)                                */
+                    "DD-",                                    /* Datatype Definition Identifier Prefix  (String)                                */
+                    "",                                       /* Datatype Definition Long Name          (String)                                */
+                    DatatypeDefinitionInteger.class,          /* Datatype Definition Class              (Class<? extends DatatypeDefinition)    */
+                    null,                                     /* Datatype Definition Verifier           (Consumer<? super DatatypeDefinition)   */
                     ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
                     ( reqifValue ) -> reqifValue
                   ),
@@ -909,16 +1012,25 @@ public class SynchronizationEndpointTest {
                     CoreArtifactTypes.GitCommit,
                     CoreAttributeTypes.UserArtifactId,
                     ArtifactId.valueOf( 1938 ),
-                    BigInteger.valueOf( -1 ),
+                    ArtifactId.valueOf( -1 ),
                     "OSEE Git Commit Spec Object Type",
                     "SOT-",
                     "Git Commit",
                     "Artifact id of an artifact of type User",
                     "AD-",
                     "User Artifact Id",
+                    AttributeDefinitionInteger.class,
                     "OSEE Artifact Identifier Datatype",
                     "DD-",
                     "ARTIFACT_IDENTIFIER",
+                    DatatypeDefinitionInteger.class,
+                    ( datatypeDefinition ) ->
+                    {
+                       var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
+
+                       Assert.assertEquals( SynchronizationEndpointTest.maxLong, reqifDatatypeDefinitionInteger.getMax() );
+                       Assert.assertEquals( SynchronizationEndpointTest.minLong, reqifDatatypeDefinitionInteger.getMin() );
+                    },
                     ( attribute, value ) -> ((ArtifactReferenceAttribute) attribute).setValue( (ArtifactId) value ),
                     ( reqifValue ) -> ArtifactId.valueOf( ((BigInteger) reqifValue).longValueExact() )
                   ),
@@ -931,16 +1043,19 @@ public class SynchronizationEndpointTest {
                     CoreArtifactTypes.User,
                     CoreAttributeTypes.Active,
                     true,
-                    null,
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
+                    false,
+                    "OSEE User Spec Object Type",
+                    "SOT-",
+                    "User",
+                    "OSEE Active Attribute Definition",
+                    "AD-",
+                    "Active",
+                    AttributeDefinitionBoolean.class,
+                    "OSEE Boolean Datatype",
+                    "DD-",
+                    "BOOLEAN",
+                    DatatypeDefinitionBoolean.class,
+                    null, /* Nothing else to verify for Boolean types */
                     ( attribute, value ) -> ((BooleanAttribute) attribute).setValue( (Boolean) value ),
                     ( reqifValue ) -> reqifValue
                   ),
@@ -953,18 +1068,21 @@ public class SynchronizationEndpointTest {
                     CoreArtifactTypes.CertificationBaselineEvent,
                     CoreAttributeTypes.BaselinedTimestamp,
                     SynchronizationEndpointTest.getTestDate(),
-                    null,
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
+                    SynchronizationEndpointTest.lastChangeEpoch.getTime(),
+                    "OSEE Certification Baseline Event Spec Object Type",
+                    "SOT-",
+                    "Certification Baseline Event",
+                    "OSEE Baselined Timestamp Attribute Definition",
+                    "AD-",
+                    "Baselined Timestamp",
+                    AttributeDefinitionDate.class,
+                    "OSEE Date Datatype",
+                    "DD-",
+                    "DATE",
+                    DatatypeDefinitionDate.class,
+                    null, /* Nothing else to verify for Boolean types */
                     ( attribute, value ) -> ((DateAttribute) attribute).setValue( (Date) value ),
-                    ( reqifValue ) -> reqifValue
+                    ( reqifValue ) -> ((GregorianCalendar) reqifValue).getTime()
                   ),
 
            new ArtifactInfoRecord
@@ -975,16 +1093,26 @@ public class SynchronizationEndpointTest {
                     SynchronizationEndpointTest.getArtifactType( "Work Package" ),
                     SynchronizationEndpointTest.getAttributeType( "ats.Estimated Hours" ),
                     8.75,
-                    null,
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
+                    0.0,
+                    "\"OSEE Work Package Spec Object Type",
+                    "SOT-",
+                    "Work Package",
+                    "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.",
+                    "AD-",
+                    "ats.Estimated Hours",
+                    AttributeDefinitionReal.class,
+                    "OSEE Double Datatype",
+                    "DD-",
+                    "DOUBLE",
+                    DatatypeDefinitionReal.class,
+                    ( datatypeDefinition ) ->
+                    {
+                       var reqifDatatypeDefinitionReal = (DatatypeDefinitionReal) datatypeDefinition;
+
+                       Assert.assertEquals( SynchronizationEndpointTest.accuracyReal, reqifDatatypeDefinitionReal.getAccuracy() );
+                       Assert.assertEquals( SynchronizationEndpointTest.maxReal, (Double) reqifDatatypeDefinitionReal.getMax() );
+                       Assert.assertEquals( SynchronizationEndpointTest.minReal, (Double) reqifDatatypeDefinitionReal.getMin() );
+                    },
                     ( attribute, value ) -> ((FloatingPointAttribute) attribute).setValue( (Double) value ),
                     ( reqifValue ) -> reqifValue
                   ),
@@ -997,16 +1125,25 @@ public class SynchronizationEndpointTest {
                     CoreArtifactTypes.CertificationBaselineEvent,
                     CoreAttributeTypes.ReviewId,
                     42,
-                    BigInteger.valueOf( 0 ),
+                    0,
                     "OSEE Certification Baseline Event Spec Object Type",
                     "SOT-",
                     "Certification Baseline Event",
                     "OSEE Review Id Attribute Definition",
                     "AD-",
                     "Review Id",
+                    AttributeDefinitionInteger.class,
                     "OSEE Integer Datatype",
                     "DD-",
                     "INTEGER",
+                    DatatypeDefinitionInteger.class,
+                    ( datatypeDefinition ) ->
+                    {
+                       var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
+
+                       Assert.assertEquals( SynchronizationEndpointTest.maxInteger, reqifDatatypeDefinitionInteger.getMax() );
+                       Assert.assertEquals( SynchronizationEndpointTest.minInteger, reqifDatatypeDefinitionInteger.getMin() );
+                    },
                     ( attribute, value ) -> ((IntegerAttribute) attribute).setValue( (Integer) value ),
                     ( reqifValue ) -> ((BigInteger) reqifValue).intValueExact()
                   ),
@@ -1019,16 +1156,25 @@ public class SynchronizationEndpointTest {
                     SynchronizationEndpointTest.getArtifactType( "Team Definition" ),
                     SynchronizationEndpointTest.getAttributeType( "ats.Task Set Id" ),
                     420L,
-                    BigInteger.valueOf( 0L ),
+                    0L,
                     "OSEE Team Definition Spec Object Type",
                     "SOT-",
                     "Team Definition",
                     "OSEE ats.Task Set Id Attribute Definition",
                     "AD-",
                     "ats.Task Set Id",
+                    AttributeDefinitionInteger.class,
                     "OSEE Long Datatype",
                     "DD-",
                     "LONG",
+                    DatatypeDefinitionInteger.class,
+                    ( datatypeDefinition ) ->
+                    {
+                       var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
+
+                       Assert.assertEquals( SynchronizationEndpointTest.maxLong, reqifDatatypeDefinitionInteger.getMax() );
+                       Assert.assertEquals( SynchronizationEndpointTest.minLong, reqifDatatypeDefinitionInteger.getMin() );
+                    },
                     ( attribute, value ) -> ((LongAttribute) attribute).setValue( (Long) value ),
                     ( reqifValue ) -> ((BigInteger) reqifValue).longValueExact()
                   ),
@@ -1048,9 +1194,12 @@ public class SynchronizationEndpointTest {
                     "",
                     "",
                     "",
+                    AttributeDefinitionString.class,
                     "",
                     "",
                     "",
+                    DatatypeDefinitionString.class,
+                    null,
                     ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
                     ( reqifValue ) -> reqifValue
                   ),
@@ -1070,9 +1219,12 @@ public class SynchronizationEndpointTest {
                     "",
                     "",
                     "",
+                    AttributeDefinitionXHTML.class,
                     "",
                     "",
                     "",
+                    DatatypeDefinitionXHTML.class,
+                    null,
                     ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
                     ( reqifValue ) -> reqifValue
                   ),
@@ -1092,9 +1244,12 @@ public class SynchronizationEndpointTest {
                     "",
                     "",
                     "",
+                    AttributeDefinitionString.class,
                     "",
                     "",
                     "",
+                    DatatypeDefinitionString.class,
+                    null,
                     ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
                     ( reqifValue ) -> reqifValue
                   )
@@ -1111,17 +1266,10 @@ public class SynchronizationEndpointTest {
          Collectors.toMap(ArtifactInfoRecord::getIdentifier, (artifactInfoRecord) -> artifactInfoRecord));
 
    /**
-    * Time {@link ZoneId} constant for "Zulu".
+    * The number of bits used to represent the Real value.
     */
 
-   private static final ZoneId zoneIdZ = ZoneId.of("Z");
-
-   /**
-    * {@link GregorianCalendar} constant for the UNIX epoch January 1, 1970 UTC.
-    */
-
-   private static final GregorianCalendar lastChangeEpoch =
-      GregorianCalendar.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, SynchronizationEndpointTest.zoneIdZ));
+   private static BigInteger accuracyReal = BigInteger.valueOf(Double.SIZE);
 
    /**
     * The maximum value of an OSEE integer attribute as a {@link BigInteger}.
@@ -1136,6 +1284,12 @@ public class SynchronizationEndpointTest {
    private static BigInteger maxLong = BigInteger.valueOf(Long.MAX_VALUE);
 
    /**
+    * The maximum value of an OSEE real attribute as a {@link Double}.
+    */
+
+   private static Double maxReal = Double.MAX_VALUE;
+
+   /**
     * The minimum value of an OSEE integer attribute as a {@link BigInteger}.
     */
 
@@ -1146,6 +1300,12 @@ public class SynchronizationEndpointTest {
     */
 
    private static BigInteger minLong = BigInteger.valueOf(Long.MIN_VALUE);
+
+   /**
+    * The minimum value of an OSEE real attribute as a {@link Double}.
+    */
+
+   private static Double minReal = Double.MIN_VALUE;
 
    /**
     * ReqIF Attribute Definitions are specific to ReqIF Specification Types and Spec Object Types. This is a map of the
@@ -1274,6 +1434,36 @@ public class SynchronizationEndpointTest {
    }
 
    /**
+    * {@link AttributeValue} subclasses all define a <code>getDefinition</code> method to obtain a reference to the
+    * {@link AttributeDefinition} subclass that defines the attribute. Since these methods are defined at the subclass
+    * level and this is test code, reflection is used to obtain the {@link AttributeDefintion} associated with the
+    * {@link AttributeValue} instead of writing class specific code.
+    *
+    * @param eObject the {@link AttributeValue} to obtain the associated {@link AttributeDefinition} from.
+    * @return the {@link AttributeDefinition}.
+    * @throws AssertionError when"
+    * <ul>
+    * <li>The object returned by the <code>getDefinition</code> method is not an instance of
+    * {@link AttributeDefinition}, or</li>
+    * <li>a failure occurs obtaining the {@link AttributeDefinition}.</li>
+    * </ul>
+    */
+
+   private static AttributeDefinition getAttributeDefinitionFromEObject(EObject eObject) {
+      try {
+         var attributeDefinition = eObject.getClass().getDeclaredMethod("getDefinition").invoke(eObject);
+
+         Assert.assertTrue(attributeDefinition instanceof AttributeDefinition);
+
+         return (AttributeDefinition) attributeDefinition;
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
+         //Should never get here.
+         return null;
+      }
+   }
+
+   /**
     * Gets the {@link ArtifactTypeToken} for the named artifact type. Not all of the artifact type classes are available
     * to the test suite at compile time. This method provides a means to specify test artifacts where the class
     * instantiation of the artifact type definition is not available to compile.
@@ -1317,6 +1507,32 @@ public class SynchronizationEndpointTest {
             .findFirst()
             ;
       //@formatter:on
+   }
+
+   /**
+    * Gets the {@link DatatypeDefinition} referenced by the {@link AttributeDefinition}. The method to obtain the
+    * {@link DatatypeDefinition} for an {@link AttributeDefinition} is defined separately in each subclass of
+    * {@link AttributeDefinition} and returns the specific subclass of {@link DatatypeDefinition} that is referenced by
+    * the {@link AttributeDefinition}. Since this is test code, reflection is used to obtain the
+    * {@link DatatypeDefinition} object from the {@link AttributeDefinition}.
+    *
+    * @param reqifAttributeDefinition the {@link AttributeDefinition}.
+    * @return the {@link DatatypeDefinition}.
+    * @throws AssertionError when unable to obtain the referenced {@link DatatypeDefinition}.
+    */
+
+   public static DatatypeDefinition getDatatypeDefinitionFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition) {
+      try {
+         var datatypeDefinition =
+            (DatatypeDefinition) reqifAttributeDefinition.getClass().getDeclaredMethod("getType").invoke(
+               reqifAttributeDefinition);
+         Assert.assertNotNull(datatypeDefinition);
+         return datatypeDefinition;
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
+         //Will never reach here.
+         return null;
+      }
    }
 
    /**
@@ -1399,6 +1615,7 @@ public class SynchronizationEndpointTest {
     * <li>an entry for the secondary {@link Identifiable} already exists in a map being populated.</li>
     * </ul>
     */
+
    private static void mapSecondaryEObjects(String primaryIdentifier, String primaryLongName, EList<? extends EObject> reqifSecondaryEObjects, Function<EObject, String> secondaryIdentifierFunction, Function<EObject, String> secondaryLongNameFunction, DoubleMap<String, String, ? extends EObject> byIdentifierMap, DoubleMap<String, String, ? extends EObject> byLongNameMap) {
 
       for (var reqifSecondaryEObject : reqifSecondaryEObjects) {
@@ -1519,11 +1736,7 @@ public class SynchronizationEndpointTest {
 
    private static String parseAttributeValueIdentifiers(EObject eObject, String secondaryFunctionName) {
       try {
-         var theClass = eObject.getClass();
-
-         var getDefinitionMethod = theClass.getDeclaredMethod("getDefinition");
-
-         var attributeDefinition = getDefinitionMethod.invoke(eObject);
+         var attributeDefinition = SynchronizationEndpointTest.getAttributeDefinitionFromEObject(eObject);
 
          var attributeDefinitionClass = attributeDefinition.getClass();
 
@@ -1705,6 +1918,96 @@ public class SynchronizationEndpointTest {
    }
 
    /**
+    * Verifies that a ReqIf {@link AccessControlledElement} has the "is editable" flag set and the flag is set.
+    *
+    * @param accessControlledElement the ReqIF {@link AccessControlledElement} to check.
+    */
+
+   public static void verifyAccessControlledElement(AccessControlledElement accessControlledElement) {
+      //@formatter:off
+      Assert.assertTrue( accessControlledElement.isSetEditable() && accessControlledElement.isEditable());
+      //@formatter:on
+   }
+
+   /**
+    * Verifies the value specified in an {@link AttributeValue} subclass is the expected value.
+    *
+    * @param reqifAttributeValue the {@link AttributeValue} to be checked.
+    * @param artifactInfoRecord object containing the expected values.
+    * @param checkDefaultValue when <code>true</code> the comparison is with the expected default value; otherwise, the
+    * comparison is with the expected value.
+    * @throws AssertionError when:
+    * <ul>
+    * <li>unable to obtain the value from the {@link AttributeValue} object, or</li>
+    * <li>the {@link AttributeValue} object does not have a value.</li>
+    * </ul>
+    */
+
+   private static void verifyAttributeValue(AttributeValue reqifAttributeValue, ArtifactInfoRecord artifactInfoRecord, Boolean checkDefaultValue) {
+      try {
+
+         var attributeValueIsSet =
+            (Boolean) reqifAttributeValue.getClass().getDeclaredMethod("isSetTheValue").invoke(reqifAttributeValue);
+
+         Assert.assertTrue(attributeValueIsSet);
+
+         var declaredMethodsMap = Arrays.stream(reqifAttributeValue.getClass().getDeclaredMethods()).collect(
+            Collectors.toMap(Method::getName, Function.identity()));
+
+         //@formatter:off
+         var value = declaredMethodsMap.containsKey("getTheValue")
+                        ? declaredMethodsMap.get("getTheValue").invoke(reqifAttributeValue)
+                        : declaredMethodsMap.containsKey("isTheValue")
+                             ? declaredMethodsMap.get("isTheValue").invoke(reqifAttributeValue)
+                             : null;
+         //@formatter:on
+
+         artifactInfoRecord.verifyExpectedValue(value, checkDefaultValue);
+
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
+      }
+   }
+
+   /**
+    * Verifies the default value from an {@link AttributeDefinition}. The method to obtain the default value is defined
+    * separately in each subclass of {@link AttributeDefinition} and returns the default value with its specific type.
+    * Since this is test code, reflection is used to obtain the default value as an {@link Object} from the
+    * {@link AttributeDefinition} instead of implementing class specific code.
+    *
+    * @param reqifAttributeDefinition the {@link AttributeDefinition} to get the default value from.
+    * @param artifactInfoRecord object containing the expected values.
+    * @throws AssertionError when:
+    * <ul>
+    * <li>an error occurs obtaining the default value status or the default value,</li>
+    * <li>a default value is expected and the {@link AttributeDefintion} does not have a default value,</li>
+    * <li>a default value is not expected and the {@link AttributeDefinition} does have a default value, or</li>
+    * </ul>
+    */
+
+   private static void verifyDefaultValueFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition, ArtifactInfoRecord artifactInfoRecord) {
+      try {
+         var defaultValueSet =
+            reqifAttributeDefinition.getClass().getDeclaredMethod("isSetDefaultValue").invoke(reqifAttributeDefinition);
+
+         Assert.assertEquals(artifactInfoRecord.hasDefaultValue(), defaultValueSet);
+
+         if (!artifactInfoRecord.hasDefaultValue()) {
+            return;
+         }
+
+         var attributeValue =
+            reqifAttributeDefinition.getClass().getDeclaredMethod("getDefaultValue").invoke(reqifAttributeDefinition);
+
+         SynchronizationEndpointTest.verifyAttributeValue((AttributeValue) attributeValue, artifactInfoRecord,
+            true /* defaultValue */ );
+
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
+      }
+   }
+
+   /**
     * The class of the <code>reqifIdentifiable</code> being tested is used to obtain the expected values from the
     * {@link ArtifactInfoRecord}. The description, identifier, last change time, and long name of the
     * {@link Identifiable} are compared with expected values.
@@ -1751,7 +2054,7 @@ public class SynchronizationEndpointTest {
     * </ul>
     */
 
-   public static void verifyAttributeDefinitionInteger(Integer artifactInfoRecordIdentifier) {
+   public static void verifyAttributeDefinition(Integer artifactInfoRecordIdentifier) {
 
       var artifactInfoRecord =
          SynchronizationEndpointTest.artifactInfoRecordsByIdentifierMap.get(artifactInfoRecordIdentifier);
@@ -1763,25 +2066,26 @@ public class SynchronizationEndpointTest {
 
       var reqifAttributeDefinition = reqifAttributeDefinitionOptional.get();
 
-      Assert.assertTrue(reqifAttributeDefinition instanceof AttributeDefinitionInteger);
+      SynchronizationEndpointTest.verifyIdentifiable(artifactInfoRecord, reqifAttributeDefinition);
 
-      var reqifAttributeDefinitionInteger = (AttributeDefinitionInteger) reqifAttributeDefinition;
+      SynchronizationEndpointTest.verifyAccessControlledElement(reqifAttributeDefinition);
 
-      SynchronizationEndpointTest.verifyIdentifiable(artifactInfoRecord, reqifAttributeDefinitionInteger);
+      Assert.assertTrue(artifactInfoRecord.getAttributeDefinitionClass().isInstance(reqifAttributeDefinition));
 
-      //@formatter:off
-      Assert.assertTrue( reqifAttributeDefinitionInteger.isSetEditable() && reqifAttributeDefinitionInteger.isEditable());
-      //@formatter:on
+      /*
+       * Verify the expected default value
+       */
+
+      SynchronizationEndpointTest.verifyDefaultValueFromAttributeDefinition(reqifAttributeDefinition, artifactInfoRecord );
 
       /*
        * Verify the data type definition reference is correct
        */
 
-      var reqifDatatypeDefinitionInteger = reqifAttributeDefinitionInteger.getType();
+      var reqifDatatypeDefinition =
+         SynchronizationEndpointTest.getDatatypeDefinitionFromAttributeDefinition(reqifAttributeDefinition);
 
-      Assert.assertNotNull(reqifDatatypeDefinitionInteger);
-
-      var reqifDatatypeDefinitionIdentifier = reqifDatatypeDefinitionInteger.getIdentifier();
+      var reqifDatatypeDefinitionIdentifier = reqifDatatypeDefinition.getIdentifier();
 
       Assert.assertNotNull(reqifDatatypeDefinitionIdentifier);
 
@@ -1796,22 +2100,6 @@ public class SynchronizationEndpointTest {
 
       Assert.assertEquals(expectedReqifDatatypeDefinitionIdentifier, reqifDatatypeDefinitionIdentifier);
 
-      /*
-       * Verify the expected default value
-       */
-
-      Assert.assertTrue(reqifAttributeDefinitionInteger.isSetDefaultValue());
-
-      var attributeValueInteger = reqifAttributeDefinitionInteger.getDefaultValue();
-
-      Assert.assertNotNull(attributeValueInteger);
-
-      Assert.assertTrue(attributeValueInteger.isSetTheValue());
-
-      var value = attributeValueInteger.getTheValue();
-
-      artifactInfoRecord.getTestAttributeDefaultValue().ifPresent(
-         expectedDefaultValue -> Assert.assertEquals(expectedDefaultValue, value));
    }
 
    /**
@@ -1841,25 +2129,15 @@ public class SynchronizationEndpointTest {
 
       var reqifAttributeValue = reqifAttributeValueOptional.get();
 
-      Assert.assertTrue(reqifAttributeValue instanceof AttributeValueInteger);
-
-      var reqifAttributeValueInteger = (AttributeValueInteger) reqifAttributeValue;
-
-      /*
-       * Verify the attribute value
-       */
-
-      var theValue = reqifAttributeValueInteger.getTheValue();
-
-      artifactInfoRecord.verifyExpectedValue(theValue);
+      SynchronizationEndpointTest.verifyAttributeValue(reqifAttributeValue, artifactInfoRecord, false /* not default value */ );
 
       /*
        * Verify the attribute definition reference
        */
 
-      var reqifAttributeDefinitionInteger = reqifAttributeValueInteger.getDefinition();
+      var reqifAttributeDefinition = SynchronizationEndpointTest.getAttributeDefinitionFromEObject( reqifAttributeValue );
 
-      SynchronizationEndpointTest.verifyIdentifiable(artifactInfoRecord, reqifAttributeDefinitionInteger);
+      SynchronizationEndpointTest.verifyIdentifiable(artifactInfoRecord, reqifAttributeDefinition);
    }
 
    /**
@@ -1881,7 +2159,7 @@ public class SynchronizationEndpointTest {
     * </ul>
     */
 
-   private static void verifyDatatypeDefinitionInteger(Integer artifactInfoRecordIdentifier, BigInteger max, BigInteger min) {
+   private static void verifyDatatypeDefinition(Integer artifactInfoRecordIdentifier) {
       var artifactInfoRecord =
          SynchronizationEndpointTest.artifactInfoRecordsByIdentifierMap.get(artifactInfoRecordIdentifier);
 
@@ -1890,14 +2168,11 @@ public class SynchronizationEndpointTest {
 
       Assert.assertNotNull(reqifDatatypeDefinition);
 
-      Assert.assertTrue(reqifDatatypeDefinition instanceof DatatypeDefinitionInteger);
+      SynchronizationEndpointTest.verifyIdentifiable(artifactInfoRecord, reqifDatatypeDefinition);
 
-      var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) reqifDatatypeDefinition;
+      Assert.assertTrue(artifactInfoRecord.getDatatypeDefinitionClass().isInstance(reqifDatatypeDefinition));
 
-      verifyIdentifiable(artifactInfoRecord, reqifDatatypeDefinitionInteger);
-
-      Assert.assertEquals(max, reqifDatatypeDefinitionInteger.getMax());
-      Assert.assertEquals(min, reqifDatatypeDefinitionInteger.getMin());
+      artifactInfoRecord.verifyDatatypeDefinition(reqifDatatypeDefinition);
    }
 
    @BeforeClass
@@ -2063,7 +2338,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByBranchIdArtifactIdOk() {
+   public void testGetByBranchIdArtifactIdOk() {
       BranchId branchId = DemoBranches.SAW_PL_Working_Branch;
       ArtifactId artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
       String synchronizationArtifactType = "reqif";
@@ -2079,7 +2354,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByBranchIdArtifactIdKoBadArtifactType() {
+   public void testGetByBranchIdArtifactIdKoBadArtifactType() {
       BranchId branchId = DemoBranches.SAW_PL_Working_Branch;
       ArtifactId artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
       String synchronizationArtifactType = "ZooCreatures";
@@ -2101,7 +2376,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsOk() {
+   public void testGetByRootsOk() {
       String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
       String artifactId = CoreArtifactTokens.DefaultHierarchyRoot.getIdString();
       String roots = branchId + ":" + artifactId;
@@ -2118,7 +2393,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsNonDigitFirstBranch() {
+   public void testGetByRootsKoBadRootsNonDigitFirstBranch() {
       String roots = "10a:1,2,3;11:4,5,6";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2140,7 +2415,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsNonDigitSecondBranch() {
+   public void testGetByRootsKoBadRootsNonDigitSecondBranch() {
       String roots = "10:1,2,3;11z:4,5,6";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2162,7 +2437,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsNonDigitFirstArtifact() {
+   public void testGetByRootsKoBadRootsNonDigitFirstArtifact() {
       String roots = "10:1a,2,3;11:4,5,6";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2184,7 +2459,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsNonDigitLastArtifact() {
+   public void testGetByRootsKoBadRootsNonDigitLastArtifact() {
       String roots = "10:1,2,3;11:4,5,6a";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2206,7 +2481,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsBranchDelimiterOutOfPlace() {
+   public void testGetByRootsKoBadRootsBranchDelimiterOutOfPlace() {
       String roots = "10:1:2,3;11:4,5,6";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2228,7 +2503,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsArtifactDelimiterOutOfPlace() {
+   public void testGetByRootsKoBadRootsArtifactDelimiterOutOfPlace() {
       String roots = "10:1,2,3;11,4,5,6";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2250,7 +2525,7 @@ public class SynchronizationEndpointTest {
    }
 
    @Test
-   public void getByRootsKoBadRootsSpecificationDelimiterOutOfPlace() {
+   public void testGetByRootsKoBadRootsSpecificationDelimiterOutOfPlace() {
       String roots = "10:1,2,3;11;4,5,6";
       String synchronizationArtifactType = "ReqIF";
       boolean exceptionCought = false;
@@ -2271,75 +2546,129 @@ public class SynchronizationEndpointTest {
 
    }
 
-   @Test
-   public void dataDefinitionArtifactIdentifier() {
+   /*
+    * Artifact Identifier Tests
+    */
 
-      //@formatter:off
-      SynchronizationEndpointTest.verifyDatatypeDefinitionInteger
-         (
-            2,
-            SynchronizationEndpointTest.maxLong,
-            SynchronizationEndpointTest.minLong
-         );
-      //@formatter:on
+   @Test
+   public void testDataDefinitionArtifactIdentifier() {
+
+      SynchronizationEndpointTest.verifyDatatypeDefinition(2);
    }
 
    @Test
-   public void attributeDefinitionArtifactIdentifier() {
+   public void testAttributeDefinitionArtifactIdentifier() {
 
-      SynchronizationEndpointTest.verifyAttributeDefinitionInteger(2);
+      SynchronizationEndpointTest.verifyAttributeDefinition(2);
    }
 
    @Test
-   public void attributeValueArtifactIdentifier() {
+   public void testAttributeValueArtifactIdentifier() {
       SynchronizationEndpointTest.verifyAttributeValueInteger(2);
    }
 
-   @Test
-   public void dataDefinitionInteger() {
+   /*
+    * Boolean Tests
+    */
 
-      //@formatter:off
-      SynchronizationEndpointTest.verifyDatatypeDefinitionInteger
-         (
-            6,
-            SynchronizationEndpointTest.maxInteger,
-            SynchronizationEndpointTest.minInteger
-         );
-      //@formatter:on
+   @Test
+   public void testDataDefinitionBoolean() {
+
+      SynchronizationEndpointTest.verifyDatatypeDefinition(3);
    }
 
    @Test
-   public void attributeDefinitionInteger() {
+   public void testAttributeDefinitionBoolean() {
 
-      SynchronizationEndpointTest.verifyAttributeDefinitionInteger(6);
+      SynchronizationEndpointTest.verifyAttributeDefinition(3);
    }
 
    @Test
-   public void attributeValueInteger() {
+   public void testAttributeValueBoolean() {
+      SynchronizationEndpointTest.verifyAttributeValueInteger(3);
+   }
+
+   /*
+    * Date Tests
+    */
+
+   @Test
+   public void testDataDefinitionDate() {
+
+      SynchronizationEndpointTest.verifyDatatypeDefinition(4);
+   }
+
+   @Test
+   public void testAttributeDefinitionDate() {
+
+      SynchronizationEndpointTest.verifyAttributeDefinition(4);
+   }
+
+   @Test
+   public void testAttributeValueDate() {
+      SynchronizationEndpointTest.verifyAttributeValueInteger(4);
+   }
+
+   /*
+    * Double Tests
+    */
+
+   @Test
+   public void testDataDefinitionDouble() {
+
+      SynchronizationEndpointTest.verifyDatatypeDefinition(5);
+   }
+
+   @Test
+   public void testAttributeDefinitionDouble() {
+
+      SynchronizationEndpointTest.verifyAttributeDefinition(5);
+   }
+
+   @Test
+   public void testAttributeValueDouble() {
+      SynchronizationEndpointTest.verifyAttributeValueInteger(5);
+   }
+
+   /*
+    * Integer Tests
+    */
+
+   @Test
+   public void testDataDefinitionInteger() {
+
+      SynchronizationEndpointTest.verifyDatatypeDefinition(6);
+   }
+
+   @Test
+   public void testAttributeDefinitionInteger() {
+
+      SynchronizationEndpointTest.verifyAttributeDefinition(6);
+   }
+
+   @Test
+   public void testAttributeValueInteger() {
       SynchronizationEndpointTest.verifyAttributeValueInteger(6);
    }
 
-   @Test
-   public void dataDefinitionLong() {
+   /*
+    * Long Tests
+    */
 
-      //@formatter:off
-      SynchronizationEndpointTest.verifyDatatypeDefinitionInteger
-         (
-            7,
-            SynchronizationEndpointTest.maxLong,
-            SynchronizationEndpointTest.minLong
-         );
-      //@formatter:on
+   @Test
+   public void testDataDefinitionLong() {
+
+      SynchronizationEndpointTest.verifyDatatypeDefinition(7);
    }
 
    @Test
-   public void attributeDefinitionLong() {
+   public void testAttributeDefinitionLong() {
 
-      SynchronizationEndpointTest.verifyAttributeDefinitionInteger(7);
+      SynchronizationEndpointTest.verifyAttributeDefinition(7);
    }
 
    @Test
-   public void attributeValueLong() {
+   public void testAttributeValueLong() {
       SynchronizationEndpointTest.verifyAttributeValueInteger(7);
    }
 
