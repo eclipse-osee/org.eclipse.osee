@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Automatic-Module-Name: org.eclipse.osee.framework.jdk.core
 Export-Package: org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.framework.jdk.core.reportdata,
@@ -20,7 +21,6 @@ Export-Package: org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.util.annotation,
  org.eclipse.osee.framework.jdk.core.util.benchmark,
  org.eclipse.osee.framework.jdk.core.util.io,
- org.eclipse.osee.framework.jdk.core.util.io.streams,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.jdk.core.util.network,
  org.eclipse.osee.framework.jdk.core.util.time,

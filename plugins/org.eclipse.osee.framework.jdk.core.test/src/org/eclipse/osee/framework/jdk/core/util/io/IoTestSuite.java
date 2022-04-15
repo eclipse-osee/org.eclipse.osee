@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2010 Boeing
+ * Copyright (c) 2010, 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -24,7 +24,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 //@formatter:off
    IoXmlTestSuite.class,
-   FileWatcherTest.class
+   FileWatcherTest.class,
+   StreamingOutputTestSuite.class
 //@formatter:on
 })
 public class IoTestSuite {

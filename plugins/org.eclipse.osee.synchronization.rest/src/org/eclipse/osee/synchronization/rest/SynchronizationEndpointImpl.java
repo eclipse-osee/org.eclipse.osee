@@ -18,10 +18,10 @@ import java.io.StringWriter;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.util.io.CharSequenceStreamingOutput;
+import org.eclipse.osee.framework.jdk.core.util.io.InputStreamStreamingOutput;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
-import org.eclipse.osee.synchronization.util.CharSequenceStreamingOutput;
-import org.eclipse.osee.synchronization.util.InputStreamStreamingOutput;
 
 /**
  * Implementation of the {@link SynchronizationEndpoint} interface contains the methods that are invoked when a REST API
