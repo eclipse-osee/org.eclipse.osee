@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.synchronization.util;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -77,6 +79,22 @@ public class HierarchyTree<K, V> {
       return this.nodeMap.containsKey(key);
    }
 
+   public boolean containsKey(K parentKey, K childKey) {
+      assert Objects.nonNull(parentKey) && Objects.nonNull(childKey);
+
+      var child = this.nodeMap.get(childKey);
+
+      //@formatter:off
+      return
+         Objects.nonNull( child )
+            ? child.hasParent()
+                 ? child.getParent().getKey().equals( parentKey )
+                      ? true
+                      : false
+                 : false
+            : false;
+   }
+
    /**
     * Get the value associated with the specified key or <code>null</code> when the key is not associated with a value.
     * When assertions are enabled an assertion error will be thrown if the parameter <code>key</code> is
@@ -96,6 +114,20 @@ public class HierarchyTree<K, V> {
       }
 
       return hierarchyTreeNode.getValue();
+   }
+
+   public Optional<V> get(K parentKey, K childKey) {
+      assert Objects.nonNull(parentKey) && Objects.nonNull(childKey);
+
+      var child = nodeMap.get(childKey);
+
+      //@formatter:off
+      return
+         child.hasParent()
+            ? child.getParent().getKey().equals( parentKey )
+                 ? Optional.of( child.getValue() )
+                 : Optional.empty()
+            : Optional.empty();
    }
 
    /**
@@ -324,18 +356,192 @@ public class HierarchyTree<K, V> {
       };
    }
 
-   public Stream<V> stream() {
+   /**
+    * Returns a unordered {@link Stream} of all values stored in the hierarchy tree.
+    *
+    * @return a unordered {@link Stream} of the values in the hierarchy tree.
+    */
+
+   public Stream<V> streamValuesDeep() {
       return this.nodeMap.values().stream().map(HierarchyTreeNode::getValue);
    }
 
    /**
-    * Performs the provided action on the keys of the current node's hierarchical children.
+    * Returns an ordered {@link Stream} of the values of the hierarchy tree nodes that are immediate children of the
+    * specified node.
     *
-    * @param action the action to be performed on each element.
+    * @param parentKey the key for the node to stream the children of.
+    * @return when the node specified by <code>parentKey</code> exists, an ordered {@link Stream} of the specified
+    * node's children; otherwise, an empty {@link Stream}.
     */
 
-   public Stream<K> streamChildKeys() {
-      return this.currNode.streamChildKeys();
+   public Stream<V> streamValuesShallow(K parentKey) {
+      {
+         assert Objects.nonNull(parentKey);
+
+         var hierarchyTreeNode = nodeMap.get(parentKey);
+
+         if (hierarchyTreeNode == null) {
+            return Stream.empty();
+         }
+
+         return hierarchyTreeNode.stream();
+      }
+
+   }
+
+   /**
+    * Returns a unordered {@link Stream} of the keys of all nodes stored in the hierarchy tree.
+    *
+    * @return a unordered {@link Stream} of the keys in the hierarchy tree.
+    */
+
+   public Stream<K> streamKeysDeep() {
+      return this.nodeMap.keySet().stream();
+   }
+
+   /**
+    * Returns an ordered {@link Stream} of the keys of the nodes hierarchically lower than the specified node.
+    *
+    * @param parentKey the key for the node to stream the keys of subordinate nodes.
+    * @return when the node specified by <code>parentKey</code> exists, an unordered {@link Stream} of the specified
+    * node's subordinates nodes keys; otherwise, an empty {@link Stream}.
+    */
+
+   public Stream<K> streamKeysDeep(K parentKey) {
+      assert Objects.nonNull(parentKey);
+
+      var hierarchyTreeNode = nodeMap.get(parentKey);
+
+      if (hierarchyTreeNode == null) {
+         return Stream.empty();
+      }
+
+      return hierarchyTreeNode.streamChildKeysDeep();
+   }
+
+   /**
+    * Returns an ordered {@link Stream} of the keys of the hierarchy tree nodes that are immediate children of the
+    * specified node.
+    *
+    * @param parentKey the key for the node to stream the children keys of.
+    * @return when the node specified by <code>parentKey</code> exists, an ordered {@link Stream} of the specified
+    * node's children keys; otherwise, an empty {@link Stream}.
+    */
+
+   public Stream<K> streamKeysShallow(K parentKey) {
+      assert Objects.nonNull(parentKey);
+
+      var hierarchyTreeNode = nodeMap.get(parentKey);
+
+      if (hierarchyTreeNode == null) {
+         return Stream.empty();
+      }
+
+      return hierarchyTreeNode.streamChildKeys();
+   }
+
+   /**
+    * Returns an ordered {@link Stream} of the keys of the current nodes immediate hierarchical children.
+    *
+    * @param when the current node is set, an ordered {@link Stream} of the keys of the current nodes immediate
+    * hierarchical children; otherwise, an empty {@link Stream}.
+    */
+
+   public Stream<K> streamCurrentNodeKeysShallow() {
+      return Objects.nonNull(this.currNode) ? this.currNode.streamChildKeys() : Stream.empty();
+   }
+
+   /**
+    * Returns a unordered {@link Stream} of the key sets of all nodes stored in the hierarchy tree.
+    *
+    * @return a unordered {@link Stream} of the key sets in the hierarchy tree.
+    */
+
+   @SuppressWarnings("unchecked")
+   public Stream<K[]> streamKeySetsDeep() {
+      //@formatter:off
+      return this.nodeMap.values().stream().map
+         (
+            ( hierarchyTreeNode ) ->
+            {
+               K parentKey = hierarchyTreeNode.hasParent() ? hierarchyTreeNode.getParent().getKey() : hierarchyTreeNode.getKey();
+               K childKey  = hierarchyTreeNode.getKey();
+               Class<?> keyClass = childKey.getClass();
+               K[] keyArray = (K[]) Array.newInstance( keyClass, 2);
+               keyArray[0] = parentKey;
+               keyArray[1] = childKey;
+               return keyArray;
+            }
+         );
+      //@formatter:on
+   }
+
+   /**
+    * Returns an ordered {@link Stream} of the key sets of the nodes hierarchically lower than the specified node.
+    *
+    * @param parentKey the key for the node to stream the key sets of subordinate nodes.
+    * @return when the node specified by <code>parentKey</code> exists, an unordered {@link Stream} of the specified
+    * node's subordinates nodes key sets; otherwise, an empty {@link Stream}.
+    */
+
+   @SuppressWarnings("unchecked")
+   public Stream<K[]> streamKeySetsDeep(K parentKey) {
+      //@formatter:off
+      var parent = this.nodeMap.get( parentKey );
+
+      if( parent == null ) {
+         return Stream.empty();
+      }
+
+      return parent.streamChildKeysDeep().map
+         (
+            ( childKey ) ->
+            {
+               Class<?> keyClass = childKey.getClass();
+               K[] keyArray = (K[]) Array.newInstance( keyClass, 2);
+               keyArray[0] = parentKey;
+               keyArray[1] = childKey;
+               return keyArray;
+            }
+         );
+      //@formatter:on
+   }
+
+   /**
+    * Returns an ordered {@link Stream} of the key sets of the hierarchy tree nodes that are immediate children of the
+    * specified node.
+    *
+    * @param parentKey the key for the node to stream the children key sets of.
+    * @return when the node specified by <code>parentKey</code> exists, an ordered {@link Stream} of the specified
+    * node's children key sets; otherwise, an empty {@link Stream}.
+    */
+
+   @SuppressWarnings("unchecked")
+   public Stream<K[]> streamKeySetsShallow(K parentKey) {
+      //@formatter:off
+      var parent = this.nodeMap.get( parentKey );
+
+      if( parent == null ) {
+         return Stream.empty();
+      }
+
+      return parent.streamChildKeys().map
+         (
+            ( childKey ) ->
+            {
+               Class<?> keyClass = childKey.getClass();
+               K[] keyArray = (K[]) Array.newInstance( keyClass, 2);
+               keyArray[0] = parentKey;
+               keyArray[1] = childKey;
+               return keyArray;
+            }
+         );
+      //@formatter:on
+   }
+
+   public int size() {
+      return this.nodeMap.size();
    }
 
 }
