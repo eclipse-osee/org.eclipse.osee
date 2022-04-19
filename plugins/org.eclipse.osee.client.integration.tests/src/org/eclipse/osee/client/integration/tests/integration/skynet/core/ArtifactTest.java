@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_PL_Working_Branch;
 import org.eclipse.osee.client.demo.DemoOseeTypes;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -49,8 +50,10 @@ public final class ArtifactTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private static final String BREAKER_NAME = "ArtifactTest Breaker";
+   private static final String COMPONENT_TEST = "ArtifactTest Component";
    private static Artifact artifactWithSpecialAttr;
    private static Artifact breakerArt;
+   private static Artifact componentArt;
 
    @BeforeClass
    public static void setUp() throws Exception {
@@ -59,6 +62,9 @@ public final class ArtifactTest {
       breakerArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, COMMON);
       breakerArt.setName(BREAKER_NAME);
       breakerArt.persist("ArtifactTest");
+      componentArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, SAW_PL_Working_Branch);
+      componentArt.setName(COMPONENT_TEST);
+      componentArt.persist("ComponentTest");
    }
 
    @BeforeClass
@@ -66,6 +72,9 @@ public final class ArtifactTest {
    public static void cleanUp() throws Exception {
       if (breakerArt != null) {
          breakerArt.deleteAndPersist(ArtifactTest.class.getSimpleName());
+      }
+      if (componentArt != null) {
+         componentArt.deleteAndPersist(ArtifactTest.class.getSimpleName());
       }
       if (artifactWithSpecialAttr != null) {
          ArtifactCache.deCache(artifactWithSpecialAttr);
@@ -102,6 +111,20 @@ public final class ArtifactTest {
    public void testSetSoleAttributeValue() throws Exception {
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
+   }
+
+   @Test
+   public void testSetFACEAttributeValues() throws Exception {
+      componentArt.addAttributeFromString(CoreAttributeTypes.FACEProfile, "Safety - Base");
+      componentArt.addAttributeFromString(CoreAttributeTypes.FACESegment, "PSSS - PSGS");
+      componentArt.addAttributeFromString(CoreAttributeTypes.FACEVersion, "FACE 3.0");
+      componentArt.persist("Testing adding FACE Attrs");
+      Assert.assertEquals("Safety - Base",
+         componentArt.getSoleAttributeValue(CoreAttributeTypes.FACEProfile, "not correct"));
+      Assert.assertEquals("PSSS - PSGS",
+         componentArt.getSoleAttributeValue(CoreAttributeTypes.FACESegment, "not correct"));
+      Assert.assertEquals("FACE 3.0",
+         componentArt.getSoleAttributeValue(CoreAttributeTypes.FACEVersion, "not correct"));
    }
 
    /**

@@ -66,7 +66,10 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken Component = osee.add(osee.artifactType(57L, "Component", false, Artifact)
       .exactlyOne(Developmental, Boolean.TRUE)
       .exactlyOne(GfeCfe, GfeCfe.Unspecified)
-      .exactlyOne(IDAL, IDAL.Unspecified));
+      .exactlyOne(IDAL, IDAL.Unspecified)
+      .zeroOrOne(FACEProfile, FACEProfile.Unspecified)
+      .zeroOrOne(FACESegment, FACESegment.Unspecified)
+      .zeroOrOne(FACEVersion, FACEVersion.Unspecified));
    ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Artifact));
    ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, Artifact)
       .zeroOrOne(DefaultValue)
