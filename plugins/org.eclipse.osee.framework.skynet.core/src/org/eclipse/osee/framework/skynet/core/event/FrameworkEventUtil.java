@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelati
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTopicArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -284,15 +283,6 @@ public final class FrameworkEventUtil {
       event.setBranch(guidArt.getBranch());
       event.setArtifactType(guidArt.getArtifactType());
       event.setArtGuid(guidArt.getGuid());
-      return event;
-   }
-
-   public static RemoteTopicArtifact1 getRemoteTopicArtifact(EventTopicArtifactTransfer transferArt) {
-      RemoteTopicArtifact1 event = new RemoteTopicArtifact1();
-      event.setBranch(transferArt.getBranch());
-      event.setArtifactType(transferArt.getArtifactTypeId());
-      event.setArtGuid(transferArt.getArtifactToken().getName());
-      event.setModTypeGuid(transferArt.getEventModType().toString());
       return event;
    }
 
