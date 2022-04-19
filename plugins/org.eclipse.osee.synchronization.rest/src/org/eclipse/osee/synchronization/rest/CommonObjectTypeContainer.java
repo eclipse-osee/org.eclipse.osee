@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.synchronization.rest.forest.CommonObjectTypeGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecObjectTypeGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecTypeGroveThing;
 
 /**
  * Container used to group {@link SpecTypeGroveThing} and {@link SpecObjecType} objects that share a common set of attribute

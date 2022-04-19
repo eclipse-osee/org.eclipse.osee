@@ -39,7 +39,8 @@ import org.junit.runners.Suite;
    ReservedCharactersTest.class,
    StringsTest.class,
    UrlQueryTest.class,
-   EnumFunctionalInterafaceMapsTest.class})
+   EnumFunctionalInterafaceMapsTest.class,
+   DoubleMapTest.class})
 public class JdkCoreUtilTestSuite {
    // Test Suite
 }

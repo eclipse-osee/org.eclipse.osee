@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Implementation of the {@link EnumFunctionalInterfaceMap} interface for {@link Supplier} functional interfaces.
+ * Implementation of the {@link EnumFunctionalInterfaceMap} interface for {@link Function} functional interfaces.
  *
  * @author Loren K. Ashley
  * @param <K> the enumeration type whose members may be used as keys in this map.

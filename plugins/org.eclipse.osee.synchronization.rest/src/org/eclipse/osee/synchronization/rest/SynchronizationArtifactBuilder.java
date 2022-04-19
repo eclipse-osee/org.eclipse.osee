@@ -16,6 +16,16 @@ package org.eclipse.osee.synchronization.rest;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
+import org.eclipse.osee.synchronization.rest.forest.AttributeDefinitionGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.AttributeValueGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.DataTypeDefinitionGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.HeaderGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecObjectGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecObjectTypeGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecTypeGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecificationGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.morphology.Grove;
+import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
 
 /**
  * Implementations of this interface contain the Synchronization Artifact artifact type specific building logic.

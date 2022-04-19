@@ -32,7 +32,7 @@ import org.eclipse.osee.synchronization.util.ToMessage;
  * SpecificationGroveThing roots in the Synchronization Artifact.
  */
 
-class RootList implements Iterable<Root>, ToMessage {
+public class RootList implements Iterable<Root>, ToMessage {
 
    /**
     * Delimiter used to separate pairs of branch and artifact lists.
@@ -184,35 +184,6 @@ class RootList implements Iterable<Root>, ToMessage {
 
       if (token == null || token.isEmpty()) {
          return false;
-      }
-
-      return true;
-   }
-
-   /**
-    * Validates a token is composed of only digits.
-    *
-    * @param token the {@link String} to be validated.
-    * @return <code>true</code> when the token only contains digits; otherwise, <code>false</code>.
-    */
-
-   private static boolean validateId(String token) {
-
-      if (token == null || token.isEmpty()) {
-         return false;
-      }
-
-      int length = token.length();
-
-      for (int i = 0; i < length; i++) {
-         CharacterType characterType = CharacterType.classifyCharacter(token.charAt(i));
-
-         switch (characterType) {
-            case DIGIT:
-               continue;
-            default:
-               return false;
-         }
       }
 
       return true;
@@ -479,7 +450,7 @@ class RootList implements Iterable<Root>, ToMessage {
     * @return the provided {@link StringBuilder} when not null; otherwise, a new {@link StringBuilder}.
     */
 
-   StringBuilder toText(StringBuilder message) {
+   public StringBuilder toText(StringBuilder message) {
       var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
       boolean first = true;
       this.rootsList.stream().forEach(root -> {

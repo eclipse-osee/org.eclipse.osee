@@ -528,9 +528,9 @@ class HierarchyTreeNode<K, V> {
    }
 
    /**
-    * Returns an ordered non-partitionable spliterator of the node's hierarchical children.<br>
-    * <br>
-    * {@inheritDoc}
+    * Returns an ordered non-partitionable spliterator of the node's hierarchical children.
+    *
+    * @return a {@link Spliterator} over the node's hierarchical children.
     */
 
    public Spliterator<V> spliterator() {
@@ -561,6 +561,7 @@ class HierarchyTreeNode<K, V> {
 
                action.accept(value);
 
+               this.first = false;
                index++;
 
                return true;
@@ -585,6 +586,12 @@ class HierarchyTreeNode<K, V> {
          }
       };
    }
+
+   /**
+    * Returns an ordered non-partitionable spliterator of the keys of the node's hierarchical children.
+    *
+    * @return a {@link Spliterator} over the keys of the node's hierarchical children.
+    */
 
    public Spliterator<K> spliteratorChildKeys() {
 
@@ -614,7 +621,8 @@ class HierarchyTreeNode<K, V> {
 
                action.accept(key);
 
-               index++;
+               this.first = false;
+               this.index++;
 
                return true;
             }
@@ -627,7 +635,75 @@ class HierarchyTreeNode<K, V> {
 
             action.accept(key);
 
-            index++;
+            this.index++;
+
+            return true;
+         }
+
+         @Override
+         public Spliterator<K> trySplit() {
+            return null;
+         }
+      };
+   }
+
+   /**
+    * Returns an unordered non-partitionable spliterator of the keys of all hierarchically lower nodes.
+    *
+    * @return a {@link Spliterator} over the keys of all hierarchically lower nodes.
+    */
+
+   public Spliterator<K> spliteratorChildKeysDeep() {
+
+      return new Spliterator<K>() {
+
+         boolean first = true;
+         Spliterator<K> childSpliteratorChildKeysDeep = null;
+
+         @Override
+         public int characteristics() {
+            return Spliterator.NONNULL;
+         }
+
+         @Override
+         public long estimateSize() {
+            return Long.MAX_VALUE;
+         }
+
+         @Override
+         public boolean tryAdvance(Consumer<? super K> action) {
+            if (this.first) {
+               if (!HierarchyTreeNode.this.hasChild()) {
+                  return false;
+               }
+
+               var child = HierarchyTreeNode.this.getFirstChild();
+               var key = child.getKey();
+               this.childSpliteratorChildKeysDeep = child.spliteratorChildKeysDeep();
+
+               action.accept(key);
+
+               this.first = false;
+               return true;
+            }
+
+            if (this.childSpliteratorChildKeysDeep != null) {
+               if (this.childSpliteratorChildKeysDeep.tryAdvance(action)) {
+                  return true;
+               } else {
+                  this.childSpliteratorChildKeysDeep = null;
+               }
+            }
+
+            if (!HierarchyTreeNode.this.hasNextChild()) {
+               return false;
+            }
+
+            var child = HierarchyTreeNode.this.getNextChild();
+            var key = child.getKey();
+            this.childSpliteratorChildKeysDeep = child.spliteratorChildKeysDeep();
+
+            action.accept(key);
 
             return true;
          }
@@ -646,12 +722,29 @@ class HierarchyTreeNode<K, V> {
     */
 
    Stream<V> stream() {
-      return StreamSupport.stream(spliterator(), false);
+      return StreamSupport.stream(this.spliterator(), false);
    }
 
+   /**
+    * Returns a ordered {@link Stream} of the keys of the node's hierarchical children.
+    *
+    * @return a {@link Stream} of the keys of the node's children.
+    */
+
    Stream<K> streamChildKeys() {
-      return StreamSupport.stream(spliteratorChildKeys(), false);
+      return StreamSupport.stream(this.spliteratorChildKeys(), false);
    }
+
+   /**
+    * Returns a {@link Stream} of the keys of all nodes hierarchically below this node.
+    *
+    * @return an unordered {@link Stream} of the keys of all hierarchically lower nodes.
+    */
+
+   Stream<K> streamChildKeysDeep() {
+      return StreamSupport.stream(this.spliteratorChildKeysDeep(), false);
+   }
+
    // Navigation Horizontal
 
    /**

@@ -14,6 +14,14 @@
 package org.eclipse.osee.synchronization.rest;
 
 import java.util.Objects;
+import org.eclipse.osee.synchronization.rest.forest.AttributeDefinitionGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.AttributeValueGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.DataTypeDefinitionGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.EnumValueGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecObjectGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecObjectTypeGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecTypeGroveThing;
+import org.eclipse.osee.synchronization.rest.forest.SpecificationGroveThing;
 
 /**
  * An enumeration of the parts of a Synchronization Artifact. The members of the enumeration also serve as a factory for
@@ -43,6 +51,12 @@ public enum IdentifierType {
     */
 
    DATA_TYPE_DEFINITION("DD"),
+
+   /**
+    * The {@link IdentifierType} for {@link EnumValueGroveThing} Synchronization Artifact things.
+    */
+
+   ENUM_VALUE("EV"),
 
    /**
     * The {@link IdentifierType} for {@link ReqIfHeader} Synchronization Artifact things.
@@ -139,7 +153,7 @@ public enum IdentifierType {
        * @return numeric portion of the identifier.
        */
 
-      long getCount() {
+      public long getCount() {
          return this.identifierCount;
       }
 
@@ -242,7 +256,7 @@ public enum IdentifierType {
     * @return a new {@link Identifier}.
     */
 
-   Identifier createIdentifier() {
+   public Identifier createIdentifier() {
       var identifierCount = this.identifierCount.get();
       var stringBuilder = this.stringBuilder.get();
 

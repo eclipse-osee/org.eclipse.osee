@@ -60,6 +60,7 @@ Import-Package: javax.activation,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.rmf.reqif10,
  org.eclipse.rmf.reqif10.serialization,
+ org.eclipse.rmf.reqif10.xhtml,
  org.eclipse.swt.graphics,
  org.eclipse.ui.dialogs,
  org.osgi.framework
