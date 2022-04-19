@@ -28,6 +28,9 @@ import org.eclipse.osee.framework.core.data.computed.ComputedSoftwareCriticality
 import org.eclipse.osee.framework.core.enums.token.ComponentAttributeType;
 import org.eclipse.osee.framework.core.enums.token.CsciAttributeType;
 import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
+import org.eclipse.osee.framework.core.enums.token.FACEOSSProfileAttributeType;
+import org.eclipse.osee.framework.core.enums.token.FACESegmentAttributeType;
+import org.eclipse.osee.framework.core.enums.token.FACETechStandardVersionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FeatureValueAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FunctionalGroupingAttributeType;
@@ -95,6 +98,9 @@ public interface CoreAttributeTypes {
    AttributeTypeString Email = osee.createString(1152921504606847082L, "Email", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExcludePath = osee.createString(1152921504606847708L, "Exclude Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Extension = osee.createString(1152921504606847064L, "Extension", MediaType.TEXT_PLAIN, "");
+   FACETechStandardVersionAttributeType FACEVersion = osee.createEnum(new FACETechStandardVersionAttributeType());
+   FACEOSSProfileAttributeType FACEProfile = osee.createEnum(new FACEOSSProfileAttributeType());
+   FACESegmentAttributeType FACESegment = osee.createEnum(new FACESegmentAttributeType());
    AttributeTypeString FavoriteBranch = osee.createStringNoTag(1152921504606847074L, "Favorite Branch", MediaType.TEXT_PLAIN, "");
    AttributeTypeString FaxPhone = osee.createString(1152921504606847081L, "Fax Phone", MediaType.TEXT_PLAIN, "");
    FdalAttributeType FDAL = osee.createEnum(new FdalAttributeType());
