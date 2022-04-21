@@ -195,6 +195,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Title = CoreAttributeTypes.Name;
    AttributeTypeDate ReviewedByDate = ats.createDate(2436278456841462630L, "ats.Reviewed Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString QuantityUnderReview = ats.createString(489717926240421171L, "ats.Quantity Under Review", MediaType.TEXT_PLAIN, "Total Pages, LOCs, Documents, etc Changed");
    AttributeTypeInteger UnplannedPoints = ats.createInteger(284254492767020802L, "ats.Unplanned Points", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean UnplannedWork = ats.createBoolean(2421093774890249189L, "ats.Unplanned Work", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean UsesResolutionOptions = ats.createBoolean(1152921504606847154L, "ats.Uses Resolution Options", MediaType.TEXT_PLAIN, "");
@@ -225,7 +226,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString BurnDownData = ats.createString(1152921504606851667L, "burndown.data", MediaType.TEXT_PLAIN, "Stores the modified remaining time and date");   AttributeTypeString Prefix = ats.createString(1152921504606851670L, "prefix", MediaType.TEXT_PLAIN, "Prefix");
    AttributeTypeString Identifier = ats.createString(1152921504606851671L, "id", MediaType.TEXT_PLAIN, "Identifier");
    AttributeTypeString LastChange = ats.createString(1152921504606851672L, "last.change", MediaType.TEXT_PLAIN, "LastChange");
-   AttributeTypeString MaxLength = ats.createString(1152921504606851673L, "max.length", MediaType.TEXT_PLAIN, "MaxLength");   
+   AttributeTypeString MaxLength = ats.createString(1152921504606851673L, "max.length", MediaType.TEXT_PLAIN, "MaxLength");
    AttributeTypeString LongName = ats.createString(1152921504606851674L, "long.name", MediaType.TEXT_PLAIN, "LongName");
 
    // Remove after 1.0.0 full release

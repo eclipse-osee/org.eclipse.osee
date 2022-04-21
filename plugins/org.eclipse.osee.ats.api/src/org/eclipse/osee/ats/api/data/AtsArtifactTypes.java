@@ -314,6 +314,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(MeetingLocation)
       .zeroOrOne(PagesChanged)
       .zeroOrOne(PagesReviewed)
+      .zeroOrOne(QuantityUnderReview)
       .any(ReviewDefect)
       .zeroOrOne(ReviewFormalType, ReviewFormalType.Formal)
       .any(Role)

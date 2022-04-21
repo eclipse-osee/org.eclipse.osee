@@ -105,6 +105,8 @@ public class AtsColumnService implements IAtsColumnService {
           */
          if (id.equals(AtsColumnTokens.LegacyPcrIdColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.LegacyPcrIdColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.QuantityUnderReviewColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.QuantityUnderReviewColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.ChangeTypeColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ChangeTypeColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.NotesColumn.getId())) {
