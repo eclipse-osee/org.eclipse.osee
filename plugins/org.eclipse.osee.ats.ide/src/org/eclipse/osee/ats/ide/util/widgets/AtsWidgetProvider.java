@@ -53,6 +53,8 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
       register(XHyperlinkWfdForProgramAi.class);
       register(XHyperlinkWfdForConfiguration.class);
       register(XHyperlinkWfdForConfigurationDam.class);
+      register(XHyperlinkWfdForRelatedState.class);
+      register(XHyperlinkWfdForRelatedStateDam.class);
       register(XHyperlinkWfdForActiveAis.class);
       register(XHyperlinkOpenBitTab.class);
       register(XReviewedWidget.class);
