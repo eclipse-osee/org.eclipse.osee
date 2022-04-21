@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
@@ -45,31 +44,6 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
    }
 
    @Override
-   protected void createControls(Composite parent, int horizontalSpan) {
-      super.createControls(parent, horizontalSpan);
-      if (isAutoSave()) {
-         addXModifiedListener(new XModifiedListener() {
-
-            @Override
-            public void widgetModified(XWidget widget) {
-               if (artifact != null && artifact.isValid()) {
-                  saveToArtifact();
-                  if (artifact.isDirty()) {
-                     String comment = null;
-                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
-                     } else {
-                        comment = "XComboDam Auto-Save";
-                     }
-                     getArtifact().persistInThread(comment);
-                  }
-               }
-            }
-         });
-      }
-   }
-
-   @Override
    public String getCurrentValue() {
       dateValue = artifact.getSoleAttributeValue(attributeTypeToken, null);
       if (dateValue == null) {
@@ -85,6 +59,20 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
             "Select " + attributeTypeToken.getName(), dateValue);
          if (diag.open() == Window.OK) {
             dateValue = diag.getSelectedDate();
+            if (isAutoSave()) {
+               if (artifact != null && artifact.isValid()) {
+                  artifact.setSoleAttributeValue(attributeTypeToken, dateValue);
+                  if (artifact.isDirty()) {
+                     String comment = null;
+                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                        comment = editorData.getEditorName() + " Auto-Save";
+                     } else {
+                        comment = "Date Auto-Save";
+                     }
+                     getArtifact().persistInThread(comment);
+                  }
+               }
+            }
             refresh();
             return true;
          }
