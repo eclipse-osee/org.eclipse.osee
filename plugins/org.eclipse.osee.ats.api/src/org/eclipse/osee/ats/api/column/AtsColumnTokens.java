@@ -98,6 +98,7 @@ public class AtsColumnTokens {
     */
    // @formatter:off
 
+   public static AtsAttrValCol QuantityUnderReviewColumn = new AtsAttrValCol(AtsAttributeTypes.QuantityUnderReview, "ats.column.quantity.under.review", AtsAttributeTypes.QuantityUnderReview.getUnqualifiedName(), 50, ColumnType.String, ColumnAlign.Center, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.Yes, "");
    public static AtsAttrValCol ChangeTypeColumn = new AtsAttrValCol(AtsAttributeTypes.ChangeType, "ats.column.changetype", AtsAttributeTypes.ChangeType.getUnqualifiedName(), 22, ColumnType.String, ColumnAlign.Center, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.Yes, "");
    public static AtsAttrValCol LegacyPcrIdColumn = new AtsAttrValCol(AtsAttributeTypes.LegacyPcrId, "ats.column.legacyPcr", AtsAttributeTypes.LegacyPcrId.getUnqualifiedName(), 40, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "");
    public static AtsAttrValCol NotesColumn = new AtsAttrValCol(AtsAttributeTypes.WorkflowNotes, "ats.column.notes", "Notes", 80, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
