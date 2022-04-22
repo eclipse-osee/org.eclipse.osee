@@ -15,10 +15,13 @@ package org.eclipse.osee.ats.ide.util.widgets.role;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -92,6 +95,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    private Label extraInfoLabel;
    private ToolBar toolBar;
    private IAtsPeerReviewRoleManager roleMgr;
+   private final Set<String> handledUserIds = new HashSet<>();
 
    private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<>();
 
@@ -356,9 +360,25 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          return;
       }
       roleMgr = reviewArt.getRoleManager();
-      xViewer.set(roleMgr.getUserRoles());
+      xViewer.set(getRolesAndComputeDuplicates());
       validate();
       refreshActionEnablement();
+   }
+
+   private Collection<UserRole> getRolesAndComputeDuplicates() {
+      handledUserIds.clear();
+      for (UserRole role : roleMgr.getUserRoles()) {
+         if (handledUserIds.contains(role.getUserId())) {
+            for (UserRole role2 : roleMgr.getUserRoles()) {
+               if (!role.equals(role2) && role.getUserId().equals(role2.getUserId())) {
+                  role2.setDuplicateUser(true);
+               }
+            }
+         } else {
+            handledUserIds.add(role.getUserId());
+         }
+      }
+      return roleMgr.getUserRoles();
    }
 
    @Override
@@ -400,7 +420,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          html.append(
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor", "Issues"}));
          ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt, AtsApiService.get());
-         for (UserRole item : roleMgr.getUserRoles()) {
+         for (UserRole item : getRolesAndComputeDuplicates()) {
             AtsUser atsUser = UserRoleManager.getUser(item, AtsApiService.get());
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().getName(),
@@ -511,4 +531,5 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    public IAtsPeerReviewRoleManager getUserRoleMgr() {
       return roleMgr;
    }
+
 }

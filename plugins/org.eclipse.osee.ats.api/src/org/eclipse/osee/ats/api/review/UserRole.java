@@ -30,6 +30,7 @@ public class UserRole {
    private Double hoursSpent = null;
    private String guid = GUID.create();
    private Boolean completed = false;
+   private Boolean duplicateUser = false;
 
    public UserRole(ReviewRole role, UserToken user) {
       this(role, user.getUserId());
@@ -147,5 +148,13 @@ public class UserRole {
 
    public void setUserId(String userId) {
       this.userId = userId;
+   }
+
+   public Boolean isDuplicateUser() {
+      return duplicateUser;
+   }
+
+   public void setDuplicateUser(Boolean duplicateUser) {
+      this.duplicateUser = duplicateUser;
    }
 }
