@@ -40,6 +40,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Donald G. Dunne
  */
 public class UserRoleLabelProvider extends XViewerLabelProvider {
+   private static final String DUPLICATE_USER = "duplicate user";
    private final UserRoleXViewer xViewer;
 
    public UserRoleLabelProvider(UserRoleXViewer xViewer) {
@@ -49,17 +50,17 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
-      UserRole roleItem = (UserRole) element;
+      UserRole role = (UserRole) element;
       try {
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-            return ArtifactImageManager.getImage(UserManager.getUserByUserId(roleItem.getUserId()));
+            return ArtifactImageManager.getImage(UserManager.getUserByUserId(role.getUserId()));
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
             return ImageManager.getImage(AtsImage.ROLE);
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
             return ImageManager.getImage(FrameworkImage.CLOCK);
          } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             return ImageManager.getImage(
-               roleItem.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
+               role.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
          } else if (dCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
             return DefectSeverityToImage.getImage(Severity.Major);
          } else if (dCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
@@ -76,25 +77,34 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) {
 
-      UserRole userRole = (UserRole) element;
-      AtsUser user = UserRoleManager.getUser(userRole, AtsApiService.get());
+      UserRole role = (UserRole) element;
+      AtsUser user = UserRoleManager.getUser(role, AtsApiService.get());
       if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
          return user.getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-         return userRole.getHoursSpent() == null ? "" : AtsUtil.doubleToI18nString(userRole.getHoursSpent(), false);
+         return role.getHoursSpent() == null ? "" : AtsUtil.doubleToI18nString(role.getHoursSpent(), false);
       } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
-         return userRole.getRole().getName();
+         return role.getRole().getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
-         return String.valueOf(userRole.isCompleted());
+         return String.valueOf(role.isCompleted());
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
+         if (role.isDuplicateUser()) {
+            return DUPLICATE_USER;
+         }
          ReviewDefectManager defectMgr =
             new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsApiService.get());
          return defectMgr.getNumMajor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
+         if (role.isDuplicateUser()) {
+            return DUPLICATE_USER;
+         }
          ReviewDefectManager defectMgr =
             new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsApiService.get());
          return defectMgr.getNumMinor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
+         if (role.isDuplicateUser()) {
+            return DUPLICATE_USER;
+         }
          ReviewDefectManager defectMgr =
             new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsApiService.get());
          return defectMgr.getNumIssues(user) + "";
