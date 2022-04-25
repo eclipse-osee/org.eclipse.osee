@@ -15,12 +15,13 @@ package org.eclipse.osee.mim;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 
 /**
  * @author Luciano T. V@todo
  */
-public interface InterfaceElementApi {
+public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructureElementToken> {
 
    List<InterfaceStructureElementToken> getAll(BranchId branch);
 
@@ -33,4 +34,6 @@ public interface InterfaceElementApi {
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 
    InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId);
+
+   List<RelationTypeSide> getFollowRelationDetails();
 }

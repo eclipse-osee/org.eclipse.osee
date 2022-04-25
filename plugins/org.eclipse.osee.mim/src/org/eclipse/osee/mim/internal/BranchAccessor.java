@@ -39,6 +39,7 @@ import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
+import org.eclipse.osee.mim.QueryMIMResourcesEndpoint;
 
 /**
  * @author Luciano T. Vaglienti
@@ -67,8 +68,7 @@ public class BranchAccessor {
    @Path("{branch}/connections/{connectionId}/messages")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceMessageEndpoint getMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new InterfaceMessageEndpointImpl(branch, connectionId, accountId, mimApi.getInterfaceMessageApi(),
-         mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi());
+      return new InterfaceMessageEndpointImpl(branch, connectionId, mimApi.getInterfaceMessageApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/filter")
@@ -153,6 +153,16 @@ public class BranchAccessor {
          mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi(),
          mimApi.getInterfaceConnectionViewApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
          mimApi.getInterfacePlatformTypeApi());
+   }
+
+   @Path("{branch}/query")
+   @Produces(MediaType.APPLICATION_JSON)
+   public QueryMIMResourcesEndpoint getQueryEndpoint(@PathParam("branch") BranchId branch) {
+      return new QueryMIMResourcesEndpointImpl(branch, mimApi.getInterfaceConnectionViewApi(),
+         mimApi.getInterfaceNodeViewApi(), mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(),
+         mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
+         mimApi.getInterfacePlatformTypeApi(), mimApi.getInterfaceEnumerationApi(),
+         mimApi.getInterfaceEnumerationSetApi());
    }
 
    /**

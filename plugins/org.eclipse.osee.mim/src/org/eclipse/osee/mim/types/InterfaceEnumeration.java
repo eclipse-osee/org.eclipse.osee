@@ -31,6 +31,8 @@ public class InterfaceEnumeration extends PLGenericDBObject {
    public InterfaceEnumeration(ArtifactReadable art) {
       super(art);
       this.setOrdinal(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceEnumOrdinal, 0));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceEnumeration(Long id, String name) {

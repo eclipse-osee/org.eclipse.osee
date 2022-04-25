@@ -47,6 +47,8 @@ public class InterfaceConnection extends PLGenericDBObject {
          ArtifactReadable.SENTINEL).getId());
       this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTransportType, "ETHERNET"));
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceConnection(Long id, String name) {

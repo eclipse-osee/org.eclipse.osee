@@ -41,6 +41,8 @@ public class InterfaceSubMessageToken extends PLGenericDBObject {
       this.setName(art.getName());
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setInterfaceSubMessageNumber(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber, ""));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceSubMessageToken(Long id, String name) {

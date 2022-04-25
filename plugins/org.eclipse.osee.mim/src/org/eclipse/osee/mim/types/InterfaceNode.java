@@ -41,6 +41,8 @@ public class InterfaceNode extends PLGenericDBObject {
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setColor(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBackgroundColor, ""));
       this.setAddress(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeAddress, ""));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceNode(Long id, String name) {

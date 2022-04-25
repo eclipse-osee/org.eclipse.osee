@@ -17,7 +17,7 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
 /**
  * @author Luciano T. Vaglienti
  */
-public interface InterfacePlatformTypeApi {
+public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTypeToken> {
 
    ArtifactAccessor<PlatformTypeToken> getAccessor();
 }
