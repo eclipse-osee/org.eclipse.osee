@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
@@ -19,8 +19,11 @@ import {
   concatMap,
   debounceTime,
   distinctUntilChanged,
+  filter,
+  map,
   share,
   switchMap,
+  take,
   tap,
 } from 'rxjs/operators';
 import { applic } from '../../../../../../types/applicability/applic';
@@ -74,7 +77,7 @@ export class NewTypeDialogComponent implements OnInit {
     tap((x) => {
       this.fields.push({
         name: x.attributeType,
-        value: '',
+        value: this.preFillData!==undefined && this.preFillData.length>0 && Object.entries(this.preFillData[0]).map((v)=>v[0]).some((key)=>key.toLowerCase()===x.attributeType.toLowerCase())?Object.entries(this.preFillData[0]).filter((entry)=>entry[0].toLowerCase()===x.attributeType.toLowerCase())[0][1]:'',
       });
     }),
     debounceTime(200),
@@ -100,6 +103,7 @@ export class NewTypeDialogComponent implements OnInit {
   }
   units = this.constantEnumService.units;
   disableClose = false;
+  @Input() preFillData?:PlatformType[]
   constructor(
     public dialogRef: MatDialogRef<NewTypeDialogComponent>,
     private typesService: TypesService,
@@ -116,7 +120,16 @@ export class NewTypeDialogComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.preFillData !== undefined && this.preFillData.length > 0) {
+      this.logicalTypes.pipe(
+        concatMap((lt) => from(lt)),
+        filter((logicalType) => this.preFillData !== undefined && this.preFillData.length > 0 && logicalType.name === this.preFillData[0].interfaceLogicalType),
+        take(1),
+        map(lt => { this.setType(lt.id); this.type = lt.id; this._typeName = lt.name; })
+      ).subscribe();
+    }
+   }
   /**
    * sets the current type to query
    * @param id id of type

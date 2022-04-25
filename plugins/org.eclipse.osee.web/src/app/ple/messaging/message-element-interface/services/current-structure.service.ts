@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, iif, of, OperatorFunction } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, iif, Observable, of, OperatorFunction } from 'rxjs';
 import { concatMap, count, debounceTime, distinct, distinctUntilChanged, filter, map, mergeMap, reduce, repeatWhen, scan, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
@@ -32,6 +32,8 @@ import { ElementService } from '../../shared/services/http/element.service';
 import { MessagesStructureService } from '../../shared/services/http/messages.structure.service';
 import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
+import { MimQuery, PlatformTypeQuery } from '../../shared/types/MimQuery';
+import { QueryService } from '../../shared/services/http/query.service';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +66,7 @@ export class CurrentStructureService {
   private _expandedRows = new BehaviorSubject<structure[]>([]);
   private _expandedRowsDecreasing = new BehaviorSubject<boolean>(false);
 
-  constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesStructureService, private elements: ElementService, private typeService: TypesUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService, private enumListService:EnumsService) { }
+  constructor (private ui: ElementUiService, private structure: StructuresService, private messages: MessagesStructureService, private elements: ElementService, private typeService: TypesUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private diffReportService: DiffReportBranchService, private sideNavService: SideNavService, private enumListService:EnumsService, private queryService: QueryService) { }
   
   get expandedRows() {
     return this._expandedRows.asObservable();
@@ -209,10 +211,11 @@ export class CurrentStructureService {
     )
   }
   get availableStructures() {
-    return this.structureObservable.pipe(
-      reduce((acc, curr) => [...acc, curr], [] as Required<structure>[]),
-      map((structures)=>structures.sort((a,b)=>Number(a.id)-Number(b.id))),
-      shareReplay({ bufferSize: 1, refCount: true }),
+    return this.BranchId.pipe(
+      switchMap(id => this.structure.getStructures(id).pipe(
+        shareReplay({ bufferSize: 1, refCount: true })
+      )),
+      shareReplay({ bufferSize: 1, refCount: true })
     )
   }
 
@@ -1584,5 +1587,12 @@ export class CurrentStructureService {
       (structure as structureWithChanges).changes = {};
     }
     return structure as structureWithChanges;
+  }
+  query<T=unknown>(query:MimQuery<T>) {
+    return this.BranchId.pipe(
+      switchMap(id => this.queryService.query(id, query).pipe(
+        shareReplay({bufferSize:1,refCount:true})
+      ))
+    )
   }
 }

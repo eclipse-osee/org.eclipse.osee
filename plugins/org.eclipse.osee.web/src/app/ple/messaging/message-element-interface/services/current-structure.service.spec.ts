@@ -24,20 +24,20 @@ import { MimPreferencesService } from '../../shared/services/http/mim-preference
 import { TypesService } from '../../shared/services/http/types.service';
 import { platformTypes1 } from '../../type-element-search/testing/MockResponses/PlatformType';
 import { elementsMock } from '../../shared/mocks/element.mock';
-import { platformTypesMock } from '../../shared/mocks/PlatformTypes.mock';
 import { structuresMock, structuresMock2 } from '../../shared/mocks/structure.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
-import { platformTypeServiceMock } from '../mocks/services/platform-type.service.mock';
 import { structureServiceRandomMock } from '../mocks/services/structure.service.mock';
 
 import { CurrentStructureService } from './current-structure.service';
 import { ElementService } from '../../shared/services/http/element.service';
 import { MessagesStructureService } from '../../shared/services/http/messages.structure.service';
-import { PlatformTypeService } from './platform-type.service';
 import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
 import { transactionResultMock } from '../../../../transactions/transaction.mock';
+import { QueryService } from '../../shared/services/http/query.service';
+import { QueryServiceMock } from '../../shared/mocks/query.service.mock';
+import { PlatformTypeQuery } from '../../shared/types/MimQuery';
 
 describe('CurrentStateService', () => {
   let service: CurrentStructureService;
@@ -56,6 +56,7 @@ describe('CurrentStateService', () => {
         { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
         { provide: ElementUiService },
         { provide: DiffReportBranchService, useValue: diffReportBranchServiceMock },
+        { provide: QueryService, useValue: QueryServiceMock},
         CurrentStructureService,
       ],
       imports:[HttpClientTestingModule]
@@ -216,7 +217,7 @@ describe('CurrentStateService', () => {
   it('should get available structures', () => {
     scheduler.run(() => {
       let expectedObservable = { a: structuresMock,b:[structuresMock[0],structuresMock2[0]], c:[structuresMock[0],structuresMock[0],structuresMock[0]],d:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]],e:[structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0],structuresMock[0]], };
-      let expectedMarble = '(b|)';
+      let expectedMarble = '(a)';
       scheduler.expectObservable(service.availableStructures).toBe(expectedMarble, expectedObservable);
     })
   })
@@ -275,6 +276,14 @@ describe('CurrentStateService', () => {
       let delayMarble = '- 100ms a ';
       cold(delayMarble).subscribe(() => service.update = true);
       expectObservable(service.getStructureRepeating('abcdef')).toBe(expectedMarble,expectedObservable)
+    })
+  })
+
+  it('should perform a query', () => {
+    scheduler.run(({ expectObservable }) => {
+      let expectedObservable = { a: "Hello" }
+      let expectedMarble = "a";
+      expectObservable(service.query(new PlatformTypeQuery())).toBe(expectedMarble, expectedObservable);
     })
   })
 });

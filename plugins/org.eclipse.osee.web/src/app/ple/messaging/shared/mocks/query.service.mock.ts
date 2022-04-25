@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,19 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.flex
-    display: flex
-.row
-    flex-direction: row
-.column
-    flex-direction: column
-.align-center
-     align-items: center
-.align-baseline
-    align-items: baseline
-.justify-evenly
-    justify-content: space-evenly
-.width-100
-    width: 100%
-.text-center
-    text-align: center
+import { of } from 'rxjs';
+import { QueryService } from '../services/http/query.service';
+import { MimQuery } from '../types/MimQuery';
+
+export const QueryServiceMock: Partial<QueryService> = {
+    query(branchId: string, query: MimQuery<unknown>) {
+        return of("Hello" as any);
+    }
+}

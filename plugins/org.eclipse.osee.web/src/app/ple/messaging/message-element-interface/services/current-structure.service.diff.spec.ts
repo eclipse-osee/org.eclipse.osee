@@ -26,7 +26,6 @@ import { TypesService } from '../../shared/services/http/types.service';
 import { structureRepeatingWithChanges, structuresMockWithChangesMulti, structuresPreChanges } from '../../shared/mocks/Structures.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
-import { platformTypeServiceMock } from '../mocks/services/platform-type.service.mock';
 import { CurrentStructureService } from './current-structure.service';
 import { ElementService } from '../../shared/services/http/element.service';
 import { MessagesStructureService } from '../../shared/services/http/messages.structure.service';

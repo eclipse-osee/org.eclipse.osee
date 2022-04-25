@@ -13,18 +13,18 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { BehaviorSubject, from, of, OperatorFunction } from 'rxjs';
-import { concatMap, filter, groupBy, mergeMap, reduce, repeatWhen, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { PlatformType } from '../../../shared/types/platformType';
 import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
 import { element } from '../../../shared/types/element';
-import { NewTypeDialogComponent } from '../../../shared/components/dialogs/new-type-dialog/new-type-dialog.component';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../shared/types/newTypeDialogDialogData';
 import { applic } from '../../../../../types/applicability/applic';
 import { enumeration } from '../../../shared/types/enum';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { TypesUIService } from '../../../shared/services/ui/types-ui.service';
+import { MimQuery, PlatformTypeQuery } from '../../../shared/types/MimQuery';
 
 @Component({
   selector: 'osee-messaging-add-element-dialog',
@@ -36,25 +36,40 @@ export class AddElementDialogComponent implements OnInit {
   availableElements = this.structures.availableElements;
   storedId: string = '-1';
   loadingTypes = false;
-  availableTypes = this.structures.types.pipe(
-    switchMap((types) => of(types).pipe(
-      concatMap((array) => from(array).pipe(
-        groupBy((p) => p.interfaceLogicalType),
-        mergeMap((grouped) => grouped.pipe(
-          reduce((acc, curr) => { acc.type = grouped.key; acc.types = [...acc.types, curr]; return acc; }, {type:grouped.key,types:[]} as {type:string,types:PlatformType[]})
-        ))
-      )),
-      reduce((acc,curr)=>[...acc,curr],[] as {type:string,types:PlatformType[]}[])
-    )),
-    tap(() => {
-      this.loadingTypes = false;
-    })
-  );
+  types = this.structures.types;
   typeDialogOpen = false;
-  constructor(public dialog: MatDialog,private structures:CurrentStructureService,public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog, private typeDialogService: TypesUIService, private _ui: UiService) { }
-
-  ngOnInit(): void {
+  searchOpen = false;
+  private queryMode = new BehaviorSubject<boolean>(false);
+  private query = new BehaviorSubject<MimQuery<PlatformType>|undefined>(undefined);
+  availableTypes = combineLatest([this.queryMode, this.query]).pipe(
+    debounceTime(100),
+    switchMap(([mode, query]) => iif(() => mode === true && query !== undefined, this.structures.query(query as MimQuery<PlatformType>).pipe(
+      distinctUntilChanged(),
+      map((result) => {
+        if (result.length === 1) {
+          this.data.type=result[0]
+        } else if (!this.typeDialogOpen) {
+          this.openPlatformTypeDialog();
+        }
+        return result;
+      }),
+    ), of(undefined)),
+    ),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+  platformTypeState = this.availableTypes.pipe(
+    switchMap((types) =>
+      iif(() => types !== undefined,
+        iif(() => types !== undefined && types.length === 1,
+          of(types !== undefined && (types[0].name + ' selected.')),
+          iif(() => types !== undefined && types.length !== 1 && this.data.type.id !== '',
+            of('No exact match found.'), iif(()=>types !== undefined && types.length !== 1 && this.data.type.id === '',of(''),of(this.data.type.name+' selected.')))),
+        of('')))
+  )
+  constructor (public dialog: MatDialog, private structures: CurrentStructureService, public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog, private typeDialogService: TypesUIService, private _ui: UiService) { 
   }
+
+  ngOnInit(): void {}
 
   createNew() {
     this.data.element.id = '-1';
@@ -72,6 +87,9 @@ export class AddElementDialogComponent implements OnInit {
   }
   openPlatformTypeDialog() {
     this.typeDialogOpen = !this.typeDialogOpen;
+  }
+  openSearch() {
+    this.searchOpen = !this.searchOpen;
   }
   receivePlatformTypeData(value: newPlatformTypeDialogReturnData) {
     this.typeDialogOpen = !this.typeDialogOpen;
@@ -96,5 +114,13 @@ export class AddElementDialogComponent implements OnInit {
   }
   compareTypes(o1: PlatformType, o2: PlatformType) {
     return o1?.id === o2?.id && o1?.name === o2?.name;
+  }
+  receiveQuery(query: PlatformTypeQuery) {
+    //close the dialog
+    this.searchOpen = !this.searchOpen;
+    //switch observable to query type
+    this.queryMode.next(true);
+    //set query to query
+    this.query.next(query);
   }
 }

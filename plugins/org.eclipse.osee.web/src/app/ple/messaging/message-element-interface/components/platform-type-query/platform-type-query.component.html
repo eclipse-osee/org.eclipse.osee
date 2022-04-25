@@ -1,0 +1,95 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-label>Query for Platform Type:</mat-label>
+<div class="flex column">
+    <div class="flex row">
+        <ng-container>
+            <mat-form-field class="width-100">
+                <mat-label>Byte Size</mat-label><!--TODO: Replace this with an api function later to handle bit/byte depending on preference-->
+                <input type="number" matInput [(ngModel)]="bitSize">
+                <span matSuffix>
+                    <mat-slider matSuffix [min]="minBitSize" [value]="bitSize" (input)="bitSize=$event.value?$event.value:0" [max]="maxBitSize" [step]="bitSizeSliderStepSize" thumbLabel="true" [displayWith]="bitSizeDisplay" color="primary"></mat-slider>
+                    <button mat-icon-button (click)="queryTypes()" class="query-button"><mat-icon>search</mat-icon></button>
+                </span>
+            </mat-form-field>
+        </ng-container>
+    </div>
+    <div *ngIf="logicalType==='enumeration'">
+        <mat-form-field class="width-100">
+            <mat-label>Name</mat-label>
+            <mat-select [(ngModel)]="name" class="name-select">
+                <mat-option *ngFor="let enum of enumerations" [value]="enum">
+                    <mat-label>{{enum}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+    </div>
+    <br>
+    <div class="flex row">
+        <mat-form-field>
+            <mat-label>Logical Type</mat-label>
+            <mat-select [(ngModel)]="logicalType" class="logical-type-select">
+                <mat-option *ngFor="let lt of logicalTypes" [value]="lt">
+                    <mat-label>{{lt}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Units</mat-label>
+            <mat-select [(ngModel)]="unit" class="unit-select">
+                <mat-option *ngFor="let unit of units|async" [value]="unit">
+                    <mat-label>{{unit}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <br>
+    <div class="flex row">
+        <mat-form-field>
+            <mat-label>Minimum Value</mat-label>
+            <mat-select [(ngModel)]="minimumValue" class="min-val-select">
+                <mat-option *ngFor="let minVal of minValues" [value]="minVal">
+                    <mat-label>{{minVal}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Maximum Value</mat-label>
+            <mat-select [(ngModel)]="maximumValue" class="max-val-select">
+                <mat-option *ngFor="let maxVal of maxValues" [value]="maxVal">
+                    <mat-label>{{maxVal}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <br>
+    <div class="flex row">
+        <mat-form-field>
+            <mat-label>Default Value</mat-label>
+            <mat-select [(ngModel)]="defaultVal" class="default-val-select">
+                <mat-option *ngFor="let defaultValue of defaultValues" [value]="defaultValue">
+                    <mat-label>{{defaultValue}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Msb Value</mat-label>
+            <mat-select [(ngModel)]="msbValue" class="msb-val-select">
+                <mat-option *ngFor="let msbVal of msbValues" [value]="msbVal">
+                    <mat-label>{{msbVal}}</mat-label>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
