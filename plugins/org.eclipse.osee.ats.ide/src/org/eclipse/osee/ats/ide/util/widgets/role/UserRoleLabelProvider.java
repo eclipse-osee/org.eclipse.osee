@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -91,23 +90,11 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          if (role.isDuplicateUser()) {
             return DUPLICATE_USER;
          }
-         ReviewDefectManager defectMgr =
-            new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsApiService.get());
-         return defectMgr.getNumMajor(user) + "";
+         return xViewer.getXUserRoleViewer().getReviewArt().getDefectManager().getNumMajor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
-         if (role.isDuplicateUser()) {
-            return DUPLICATE_USER;
-         }
-         ReviewDefectManager defectMgr =
-            new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsApiService.get());
-         return defectMgr.getNumMinor(user) + "";
+         return xViewer.getXUserRoleViewer().getReviewArt().getDefectManager().getNumMinor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
-         if (role.isDuplicateUser()) {
-            return DUPLICATE_USER;
-         }
-         ReviewDefectManager defectMgr =
-            new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsApiService.get());
-         return defectMgr.getNumIssues(user) + "";
+         return xViewer.getXUserRoleViewer().getReviewArt().getDefectManager().getNumIssues(user) + "";
       }
       return "unhandled column";
    }

@@ -31,13 +31,13 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.review.UserRoleError;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -419,7 +419,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
          html.append(AHTML.startBorderTable(100, normalColor, ""));
          html.append(
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor", "Issues"}));
-         ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt, AtsApiService.get());
+         IAtsPeerReviewDefectManager defectMgr = reviewArt.getDefectManager();
          for (UserRole item : getRolesAndComputeDuplicates()) {
             AtsUser atsUser = UserRoleManager.getUser(item, AtsApiService.get());
             html.append(AHTML.addRowMultiColumnTable(new String[] {

@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 /**
  * @author Donald G. Dunne
  */
-public class ReviewDefectManager {
+public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
 
    private final static String DEFECT_ITEM_TAG = "Item";
 
@@ -51,16 +51,17 @@ public class ReviewDefectManager {
    private Boolean asGuid;
    private IAtsPeerToPeerReview review;
 
-   public ReviewDefectManager(ArtifactToken artifact, AtsApi atsApi) {
+   public ReviewDefectManager(IAtsPeerToPeerReview review, AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.valueProvider = new ArtifactValueProvider(artifact, AtsAttributeTypes.ReviewDefect, atsApi);
-      this.review = (IAtsPeerToPeerReview) artifact;
+      this.valueProvider = new ArtifactValueProvider(review.getStoreObject(), AtsAttributeTypes.ReviewDefect, atsApi);
+      this.review = review;
    }
 
    public ReviewDefectManager(IValueProvider valueProvider) {
       this.valueProvider = valueProvider;
    }
 
+   @Override
    public String getHtml() {
       if (getDefectItems().isEmpty()) {
          return "";
@@ -69,10 +70,6 @@ public class ReviewDefectManager {
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
       sb.append(getTable());
       return sb.toString();
-   }
-
-   public static Set<ReviewDefectItem> getDefectItems(ArtifactToken artifact, AtsApi atsApi) {
-      return new ReviewDefectManager(artifact, atsApi).getDefectItems();
    }
 
    public void ensureLoaded() {
@@ -88,11 +85,13 @@ public class ReviewDefectManager {
       }
    }
 
+   @Override
    public Set<ReviewDefectItem> getDefectItems() {
       ensureLoaded();
       return defectItems;
    }
 
+   @Override
    public int getNumMajor(AtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
@@ -103,6 +102,7 @@ public class ReviewDefectManager {
       return x;
    }
 
+   @Override
    public int getNumMinor(AtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
@@ -113,6 +113,7 @@ public class ReviewDefectManager {
       return x;
    }
 
+   @Override
    public int getNumIssues(AtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
@@ -123,6 +124,7 @@ public class ReviewDefectManager {
       return x;
    }
 
+   @Override
    public int getNumMajor() {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
@@ -133,6 +135,7 @@ public class ReviewDefectManager {
       return x;
    }
 
+   @Override
    public int getNumMinor() {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
@@ -143,6 +146,7 @@ public class ReviewDefectManager {
       return x;
    }
 
+   @Override
    public int getNumIssues() {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
@@ -170,6 +174,7 @@ public class ReviewDefectManager {
       return storedDefectItems;
    }
 
+   @Override
    public void saveToArtifact(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes) {
       // Change existing ones
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.ReviewDefect)) {
@@ -201,6 +206,7 @@ public class ReviewDefectManager {
       }
    }
 
+   @Override
    public void addOrUpdateDefectItem(ReviewDefectItem defectItem) {
       Set<ReviewDefectItem> defectItems = getDefectItems();
       boolean found = false;
@@ -215,11 +221,13 @@ public class ReviewDefectManager {
       }
    }
 
+   @Override
    public void removeDefectItem(ReviewDefectItem defectItem) {
       Set<ReviewDefectItem> defectItems = getDefectItems();
       defectItems.remove(defectItem);
    }
 
+   @Override
    public void addDefectItem(String description) {
       ReviewDefectItem item = new ReviewDefectItem();
       item.setUserId(atsApi.getUserService().getCurrentUserId());
@@ -227,6 +235,7 @@ public class ReviewDefectManager {
       addOrUpdateDefectItem(item);
    }
 
+   @Override
    public String getTable() {
       StringBuilder builder = new StringBuilder();
       builder.append(

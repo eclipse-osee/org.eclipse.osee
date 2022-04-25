@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.column.ReviewAuthorColumn;
 import org.eclipse.osee.ats.ide.column.ReviewModeratorColumn;
 import org.eclipse.osee.ats.ide.column.ReviewNumIssuesColumn;
@@ -81,7 +81,7 @@ public class PeerToPeerReviewColumnsTest {
       changes.clear();
       ReviewDefectItem item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None,
          InjectionActivity.Code, "description", "resolution", "location", new Date(), "notes");
-      ReviewDefectManager defectManager = new ReviewDefectManager(peerArt, AtsApiService.get());
+      IAtsPeerReviewDefectManager defectManager = peerArt.getDefectManager();
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None, InjectionActivity.Code,
          "description 2", "resolution", "location", new Date(), "notes 2");

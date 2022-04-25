@@ -19,9 +19,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.review.ReviewDefectError;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,8 +34,7 @@ public class ReviewDefectValidator {
       try {
          if (artifact instanceof PeerToPeerReviewArtifact) {
             PeerToPeerReviewArtifact peerToPeerReviewArtifact = (PeerToPeerReviewArtifact) artifact;
-            ReviewDefectError result =
-               isValid(ReviewDefectManager.getDefectItems(peerToPeerReviewArtifact, AtsApiService.get()));
+            ReviewDefectError result = isValid(peerToPeerReviewArtifact.getDefectManager().getDefectItems());
             if (!result.isOK()) {
                return result;
             }

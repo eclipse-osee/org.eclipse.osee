@@ -51,6 +51,10 @@ public class TransitionResult {
       new TransitionResult("Tasks Must be Completed/Cancelled to Transition");
    public static TransitionResult WORKITEM_DELETED =
       new TransitionResult("Work Item has been deleted.  Transition is invalid.");
+   public static TransitionResult REVIEW_ROLES_NOT_COMPLETED =
+      new TransitionResult("Peer Review Roles must be completed.");
+   public static TransitionResult REVIEW_DEFECTS_NOT_CLOSED =
+      new TransitionResult("Peer Review Defects must be closed.");
 
    private String details;
    private String exception;

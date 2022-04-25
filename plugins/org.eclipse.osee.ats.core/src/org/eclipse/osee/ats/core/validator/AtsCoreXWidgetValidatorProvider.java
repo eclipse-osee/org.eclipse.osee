@@ -26,24 +26,23 @@ public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProv
 
    private static List<IAtsXWidgetValidator> atsValidators;
 
-   static {
-      atsValidators = new ArrayList<>();
-      atsValidators.add(new AtsXNumberValidator());
-      atsValidators.add(new AtsXTextValidator());
-      atsValidators.add(new AtsXDateValidator());
-      atsValidators.add(new AtsXComboValidator());
-      atsValidators.add(new AtsXComboBooleanValidator());
-      atsValidators.add(new AtsXListValidator());
-      atsValidators.add(new AtsXWidgetAttrValidator());
-      atsValidators.add(new AtsXPointsAttrValidator());
-      atsValidators.add(new AtsXHyperlinkLabelValueSelectionValidator());
-      atsValidators.add(new AtsXCheckBoxThreeStateValidator());
-      atsValidators.add(new AtsXHyperlinkTriStateBooleanValidator());
-      atsValidators.add(new AtsWalktrhoughAttrValidator());
-   }
-
    @Override
    public synchronized Collection<IAtsXWidgetValidator> getValidators() {
+      if (atsValidators == null) {
+         atsValidators = new ArrayList<>();
+         atsValidators.add(new AtsXNumberValidator());
+         atsValidators.add(new AtsXTextValidator());
+         atsValidators.add(new AtsXDateValidator());
+         atsValidators.add(new AtsXComboValidator());
+         atsValidators.add(new AtsXComboBooleanValidator());
+         atsValidators.add(new AtsXListValidator());
+         atsValidators.add(new AtsXWidgetAttrValidator());
+         atsValidators.add(new AtsXPointsAttrValidator());
+         atsValidators.add(new AtsXHyperlinkLabelValueSelectionValidator());
+         atsValidators.add(new AtsXCheckBoxThreeStateValidator());
+         atsValidators.add(new AtsXHyperlinkTriStateBooleanValidator());
+         atsValidators.add(new AtsWalktrhoughAttrValidator());
+      }
       return atsValidators;
    }
 

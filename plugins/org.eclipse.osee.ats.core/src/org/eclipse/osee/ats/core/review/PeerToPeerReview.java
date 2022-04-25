@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.review;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -34,4 +35,8 @@ public class PeerToPeerReview extends AbstractReview implements IAtsPeerToPeerRe
       return atsApi.getReviewService().createPeerReviewRoleManager(this);
    }
 
+   @Override
+   public IAtsPeerReviewDefectManager getDefectManager() {
+      return new ReviewDefectManager(this, atsApi);
+   }
 }

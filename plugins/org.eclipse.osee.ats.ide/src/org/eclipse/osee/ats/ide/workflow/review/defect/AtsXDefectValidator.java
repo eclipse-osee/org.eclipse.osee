@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.workflow.review.defect;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -34,7 +35,7 @@ public class AtsXDefectValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
-         ReviewDefectManager mgr = new ReviewDefectManager(provider);
+         IAtsPeerReviewDefectManager mgr = new ReviewDefectManager(provider);
          ReviewDefectError error = ReviewDefectValidator.isValid(mgr.getDefectItems());
          return error.toWidgetResult(widgetDef);
       }
