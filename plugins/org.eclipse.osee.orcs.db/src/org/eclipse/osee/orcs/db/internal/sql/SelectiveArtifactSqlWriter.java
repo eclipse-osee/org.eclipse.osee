@@ -162,8 +162,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       } else {
          artWithAlias = startCommonTableExpression("arts");
          boolean firstAlias = true;
-         if (!rootQueryData.getBranchCategories().isEmpty()
-            && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
+         if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+            CoreBranchCategoryTokens.MIM)) {
             for (String art : artWithAliases) {
                if (!firstAlias) {
                   write(" union ");
@@ -201,8 +201,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          } else {
             writeRelsCommonTableExpression(artWithAlias);
 
-            if (!rootQueryData.getBranchCategories().isEmpty()
-               && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
+            if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+               CoreBranchCategoryTokens.MIM)) {
                writeRelsCommonTableExpression2(artWithAlias);
             }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
@@ -222,9 +222,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       } else if (this.rels2Alias != null) {
          if (this.output.toString().contains("top_rel_type")) {
-            write(" ORDER BY top_rel_type, top_rel_order, rel_order");
+            write(" ORDER BY top desc,top_rel_type, top_rel_order, rel_order");
          } else {
-            write(" ORDER BY rel_order");
+            write(" ORDER BY top desc, rel_order");
          }
       }
    }
@@ -234,8 +234,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       writeSelectAndHint();
       writeSelectFields(attsAlias, "*");
-      if (!rootQueryData.getBranchCategories().isEmpty()
-         && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
+      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
          write(", 0 as rel_type, 0 as rel_order, 0 AS other_art_type_id FROM ");
       } else {
          write(", 0 AS other_art_type_id FROM ");
@@ -269,8 +269,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       relWriter.write(handlers);
       write(relWriter.toSql());
 
-      if (!rootQueryData.getBranchCategories().isEmpty()
-         && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
+      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
          write("\n UNION ALL\n ");
 
          SelectiveArtifactSqlWriter relWriter2 = new SelectiveArtifactSqlWriter(this);
@@ -328,8 +328,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String relTxsAlias = "txs";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
-      if (!rootQueryData.getBranchCategories().isEmpty()
-         && rootQueryData.getBranchCategories().contains(CoreBranchCategoryTokens.MIM)) {
+      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
          write(
             ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, 0 as rel_type, 0 as rel_order");
       } else {
