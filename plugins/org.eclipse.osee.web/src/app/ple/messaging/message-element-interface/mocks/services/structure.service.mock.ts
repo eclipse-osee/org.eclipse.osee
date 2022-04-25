@@ -116,5 +116,8 @@ export const structureServiceRandomMock: Partial<StructuresService> & {i:number}
     },
     deleteStructure(branchId: string, structureId: string) {
         return of(transactionMock);
+    },
+    getStructures(branchId: string) {
+        return of(structuresMock);
     }
 }

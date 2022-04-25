@@ -14,10 +14,10 @@
 <mat-horizontal-stepper #stepper class ="new-submessage-stepper">
     <mat-step label="Select Element options" #step1>
         <mat-dialog-content>
-            <div style="display:flex; flex-direction:row; justify-content: space-evenly; align-items: baseline;">
-                <button mat-raised-button color="primary" style="width:100%;" matStepperNext (click)="createNew()">Create new Element</button>
-                <p style="width:100%; text-align:center;">or</p>
-                <mat-form-field style="width:100%;">
+            <div class="flex row justify-evenly align-baseline">
+                <button mat-raised-button color="primary" class="width-100" matStepperNext (click)="createNew()">Create new Element</button>
+                <p class="width-100 text-center">or</p>
+                <mat-form-field class="width-100">
                     <mat-label>Select a Element to Add to Structure</mat-label>
                     <mat-select [(ngModel)]="data.element" (selectionChange)="storeId($event.value)">
                         <mat-option *ngFor="let option of (availableElements|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
@@ -33,7 +33,7 @@
     </mat-step>
     <mat-step label="Define element" #step2>
         <mat-dialog-content>
-            <div style="display:flex; flex-direction:column">
+            <div class="flex column">
                 <mat-form-field>
                     <mat-label>Name</mat-label>
                     <input matInput [(ngModel)]="data.element.name" required>
@@ -57,29 +57,25 @@
                 <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before'>
                     Alterable
                 </mat-slide-toggle>
-                <div style="width:100%;display:flex;flex-direction:row;gap:10px;">
-                    <mat-form-field style="flex-grow:7; flex-basis: 90%">
-                        <mat-label>Select a Platform Type</mat-label>
-                        <mat-select [(ngModel)]="data.type" data-cy="element-type-field" [compareWith]="compareTypes" typeaheadDebounceInterval="1000">
-                            <ng-container *ngIf="loadingTypes">
-                                <mat-optgroup label="Not loaded">
-                                    <mat-option [value]="data.type" [id]="data.type!==undefined && data.type.id !==undefined ? data.type.id :''" [attr.data-cy]="'type-'+data.type.name">
-                                        {{data.type.name}}
-                                    </mat-option>
-                                </mat-optgroup>
-                            </ng-container>
-                            <mat-optgroup *ngFor="let group of (availableTypes|async)" [label]="group.type">
-                                <mat-option *ngFor="let option of group.types" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" [attr.data-cy]="'type-'+option.name">
-                                    {{option.name}}
-                                </mat-option>
-                            </mat-optgroup>
-                        </mat-select>
-                    </mat-form-field>
-                    <button style="flex-grow:1" mat-icon-button (click)="openPlatformTypeDialog()"><mat-icon color="success">add</mat-icon></button>
+                <mat-label>{{platformTypeState|async}}</mat-label>
+                <div class="flex row align-center">
+                    <mat-label>Find existing element information to create your element or create new type information.</mat-label>
+                    <button mat-icon-button (click)="openPlatformTypeDialog()"><mat-icon color="success">add</mat-icon></button>
+                    <ng-container *ngIf="!searchOpen">
+                        <button mat-icon-button (click)="openSearch()" class="search-button"><mat-icon color="primary">search</mat-icon></button>
+                    </ng-container>
                 </div>
             </div>
+            <ng-container *ngIf="availableTypes|async">
+                <!--Container just to keep available types *alive* while typeDialogOpen is closed-->
+            </ng-container>
+            <ng-container *ngIf="searchOpen">
+                <mat-divider></mat-divider>
+                <app-platform-type-query [platformTypes]="(types|async)||[]" (query)="receiveQuery($event)"></app-platform-type-query>
+            </ng-container>
             <ng-container *ngIf="typeDialogOpen">
-                <app-new-type-dialog (dialogClosed)="receivePlatformTypeData($event)"></app-new-type-dialog>
+                <mat-divider></mat-divider>
+                <app-new-type-dialog (dialogClosed)="receivePlatformTypeData($event)" [preFillData]="(availableTypes|async)||[]"></app-new-type-dialog>
             </ng-container>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
@@ -92,7 +88,7 @@
     </mat-step>
     <mat-step label="Review" #step3>
         <mat-dialog-content>
-            <div style="display:flex;flex-direction:column">
+            <div class="flex column">
                 An element will be related to:
                 <mat-label>{{data.name}}</mat-label> with the following properties:
                 <mat-label>Element Name: {{data.element.name}}</mat-label>

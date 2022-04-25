@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,6 +46,7 @@ import { EnumerationSetService } from '../../../shared/services/http/enumeration
 import { EnumsService } from '../../../shared/services/http/enums.service';
 import { MimPreferencesService } from '../../../shared/services/http/mim-preferences.service';
 import { TypesService } from '../../../shared/services/http/types.service';
+import { PlatformTypeQueryMock } from '../../mocks/components/PlatformTypeQuery.mock';
 import { AddElementDialog } from '../../types/AddElementDialog';
 
 import { AddElementDialogComponent } from './add-element-dialog.component';
@@ -89,8 +91,8 @@ describe('AddElementDialogComponent', () => {
   
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule,MatStepperModule,MatDialogModule,MatButtonModule,FormsModule,MatFormFieldModule,MatSelectModule,MatInputModule,MatSlideToggleModule,NoopAnimationsModule,MatIconModule],
-      declarations: [AddElementDialogComponent,MockNewTypeDialog],
+      imports:[HttpClientTestingModule,MatStepperModule,MatDialogModule,MatButtonModule,FormsModule,MatFormFieldModule,MatSelectModule,MatInputModule,MatSlideToggleModule,NoopAnimationsModule,MatIconModule, MatDividerModule],
+      declarations: [AddElementDialogComponent,MockNewTypeDialog, PlatformTypeQueryMock],
       providers: [{
         provide: MatDialogRef, useValue: {
         
@@ -134,6 +136,17 @@ describe('AddElementDialogComponent', () => {
       fixture.detectChanges();
       nestedDialog.componentInstance.closeDialog();
       expect(spy).toHaveBeenCalled();
+    })
+    it('should open the search form', async() => {
+      const spy = spyOn(component, 'openSearch').and.callThrough();
+      const spy2 = spyOn(component,'receiveQuery').and.callThrough();
+      const searchbtn = await loader.getHarness(MatButtonHarness.with({ selector: '.search-button' }));
+      await searchbtn.click();
+      expect(spy).toHaveBeenCalled();
+      const nestedSearch = fixture.debugElement.query(By.directive(PlatformTypeQueryMock));
+      fixture.detectChanges();
+      nestedSearch.componentInstance.returnQuery.next(new PlatformTypeQueryMock());
+      expect(spy2).toHaveBeenCalled();
     })
   })
 });

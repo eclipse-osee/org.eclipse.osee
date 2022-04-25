@@ -23,6 +23,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
@@ -53,12 +54,14 @@ import { MessageElementInterfaceRoutingModule } from './message-element-interfac
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
 import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module'
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
+import { PlatformTypeQueryComponent } from './components/platform-type-query/platform-type-query.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 
 
 @NgModule({
-  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent, StructureTableComponent, SingleStructureTableComponent, SubElementTableRowComponent, SubElementTableNoEditFieldNameComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldComponent, UsermenuComponent],
+  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent, StructureTableComponent, SingleStructureTableComponent, SubElementTableRowComponent, SubElementTableNoEditFieldNameComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldComponent, UsermenuComponent, PlatformTypeQueryComponent],
   imports: [
     CommonModule,
     MatTableModule,
@@ -72,6 +75,8 @@ import { ActionStateButtonModule } from '../../../shared-components/components/a
     MatListModule,
     MatSlideToggleModule,
     MatSidenavModule,
+    MatSliderModule,
+    MatDividerModule,
     MatIconModule,
     FormsModule,
     DiffViewsModule,

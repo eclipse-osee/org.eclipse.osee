@@ -28,6 +28,9 @@ export class StructuresService {
 
   constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
+  getStructures(branchId: string) {
+    return this.http.get<Required<structure>[]>(apiURL+ "/mim/branch/"+branchId+"/structures/filter")
+  }
   getFilteredStructures(filter: string, branchId: string, messageId:string,subMessageId:string,connectionId:string) {
     return this.http.get<Required<structure>[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/" + subMessageId + "/structures/filter/" + filter);
   }

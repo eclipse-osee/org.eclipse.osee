@@ -252,7 +252,8 @@ export class StructureTableComponent implements OnInit {
       }
     }
     let dialogRef = this.dialog.open(AddElementDialogComponent, {
-      data:dialogData
+      data: dialogData,
+      minWidth:'80%'
     });
     let createElement = dialogRef.afterClosed().pipe(
       filter((val) => (val !== undefined ||val!==null) && val?.element!==undefined),
