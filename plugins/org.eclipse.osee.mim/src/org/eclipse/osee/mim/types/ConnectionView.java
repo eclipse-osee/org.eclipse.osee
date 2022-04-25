@@ -50,6 +50,8 @@ public class ConnectionView extends PLGenericDBObject {
       this.setName(art.getName());
       this.setData(new ConnectionViewData(art));
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public ConnectionView(Long id, String name, String description, String transportType) {

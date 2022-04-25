@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,11 +12,13 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
-import org.eclipse.osee.mim.types.InterfaceConnection;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.MimAttributeQuery;
+import org.eclipse.osee.mim.types.PLGenericDBObject;
 
-/**
- * @author Luciano T. Vaglienti
- */
-public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<InterfaceConnection> {
-   ArtifactAccessor<InterfaceConnection> getAccessor();
+public interface QueryCapableMIMAPI<T extends PLGenericDBObject> {
+
+   Collection<T> query(BranchId branch, MimAttributeQuery query);
+
 }

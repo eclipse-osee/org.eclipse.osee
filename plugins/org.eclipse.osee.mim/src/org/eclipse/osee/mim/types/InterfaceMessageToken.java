@@ -15,9 +15,11 @@ package org.eclipse.osee.mim.types;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -59,6 +61,11 @@ public class InterfaceMessageToken extends PLGenericDBObject {
       this.setInterfaceMessageType(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, ""));
       this.setInterfaceMessageWriteAccess(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false));
+      this.setSubMessages(
+         art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().map(
+            a -> new InterfaceSubMessageToken(a)).collect(Collectors.toList()));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceMessageToken(Long id, String name) {

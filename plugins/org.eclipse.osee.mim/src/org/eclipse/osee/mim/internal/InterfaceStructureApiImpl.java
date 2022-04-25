@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
@@ -28,6 +30,7 @@ import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
+import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -42,6 +45,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    private final InterfaceElementArrayApi interfaceElementArrayApi;
    private final List<AttributeTypeId> structureAttributeList;
    private final List<AttributeTypeId> elementAttributeList;
+   private final List<RelationTypeSide> relations;
 
    InterfaceStructureApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceElementApi interfaceElementApi, InterfaceElementArrayApi interfaceElementArrayApi) {
       this.setAccessor(new InterfaceStructureAccessor(orcsApi));
@@ -50,6 +54,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       this.interfaceElementArrayApi = interfaceElementArrayApi;
       this.structureAttributeList = this.createStructureAttributeList();
       this.elementAttributeList = this.createElementAttributeList();
+      this.relations = this.createRelationTypeSideList();
    }
 
    private ArtifactAccessor<InterfaceStructureToken> getAccessor() {
@@ -61,6 +66,13 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
     */
    public void setAccessor(ArtifactAccessor<InterfaceStructureToken> accessor) {
       this.accessor = accessor;
+   }
+
+   private List<RelationTypeSide> createRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
+      relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      return relations;
    }
 
    private List<AttributeTypeId> createStructureAttributeList() {
@@ -83,10 +95,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       attributes.add(CoreAttributeTypes.InterfaceElementIndexEnd);
       attributes.add(CoreAttributeTypes.InterfaceElementIndexStart);
       return attributes;
-   }
-
-   private InterfaceStructureElementToken defaultSetUpElement(InterfaceStructureElementToken element) {
-      return this.defaultSetUpElement(element, InterfaceStructureElementToken.SENTINEL);
    }
 
    private InterfaceStructureElementToken defaultSetUpElement(InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement) {
@@ -277,9 +285,10 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure);
+            structure = this.parseStructure(branch, structure, structure.getElements());
          }
 
          return structureList;
@@ -293,8 +302,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    public List<InterfaceStructureToken> getAll(BranchId branch) {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
-         structureList =
-            (List<InterfaceStructureToken>) this.getAccessor().getAll(branch, InterfaceStructureToken.class);
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
+            this.getFollowRelationDetails(), InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -310,8 +319,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    public List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch) {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
-         structureList =
-            (List<InterfaceStructureToken>) this.getAccessor().getAll(branch, InterfaceStructureToken.class);
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
+            this.getFollowRelationDetails(), InterfaceStructureToken.class);
          return structureList;
       } catch (Exception ex) {
          System.out.println(ex);
@@ -324,7 +333,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
-            this.structureAttributeList, InterfaceStructureToken.class);
+            this.structureAttributeList, this.getFollowRelationDetails(), InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -341,7 +350,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
-            this.structureAttributeList, InterfaceStructureToken.class);
+            this.structureAttributeList, this.getFollowRelationDetails(), InterfaceStructureToken.class);
          return structureList;
       } catch (Exception ex) {
          System.out.println(ex);
@@ -354,7 +363,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       InterfaceStructureToken structure;
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            InterfaceStructureToken.class);
          structure = this.parseStructure(branch, structure);
 
          return structure;
@@ -382,7 +392,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          List<InterfaceStructureToken> structureList =
             (List<InterfaceStructureToken>) this.getAccessor().getAllByRelationAndFilter(branch,
                CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter,
-               this.structureAttributeList, InterfaceStructureToken.class);
+               this.structureAttributeList, this.getFollowRelationDetails(), InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -394,7 +404,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             List<InterfaceStructureToken> subStructureList =
                (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
                   CoreRelationTypes.InterfaceStructureContent_DataElement, ArtifactId.valueOf(element.getId()),
-                  InterfaceStructureToken.class);
+                  this.getFollowRelationDetails(), InterfaceStructureToken.class);
             for (InterfaceStructureToken alternateStructure : subStructureList) {
                if (totalStructureList.indexOf(alternateStructure) != -1 && totalStructureList.get(
                   totalStructureList.indexOf(alternateStructure)).getElements().indexOf(element) != -1) {
@@ -432,7 +442,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       InterfaceStructureToken structure;
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, InterfaceStructureToken.class);
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            InterfaceStructureToken.class);
          structure = this.parseStructure(branch, structure, filter);
 
          return structure;
@@ -441,6 +452,27 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          structure = new InterfaceStructureToken();
          return structure;
       }
+   }
+
+   @Override
+   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query) {
+      try {
+         List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByQuery(branch, query,
+            this.getFollowRelationDetails(), InterfaceStructureToken.class);
+         for (InterfaceStructureToken structure : structureList) {
+            structure = this.parseStructure(branch, structure);
+         }
+         return structureList;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceStructureToken>();
+   }
+
+   @Override
+   public List<RelationTypeSide> getFollowRelationDetails() {
+      return this.relations;
    }
 
 }

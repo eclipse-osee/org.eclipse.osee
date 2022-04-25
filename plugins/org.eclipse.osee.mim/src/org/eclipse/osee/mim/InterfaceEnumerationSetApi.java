@@ -17,6 +17,6 @@ import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 /**
  * @author Luciano T. Vaglienti
  */
-public interface InterfaceEnumerationSetApi {
+public interface InterfaceEnumerationSetApi extends QueryCapableMIMAPI<InterfaceEnumerationSet> {
    ArtifactAccessor<InterfaceEnumerationSet> getAccessor();
 }

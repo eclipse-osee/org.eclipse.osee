@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -58,6 +59,10 @@ public class InterfaceStructureToken extends PLGenericDBObject {
       this.setInterfaceStructureCategory(
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceStructureCategory, ""));
       this.setInterfaceTaskFileType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTaskFileType, 0));
+      this.setElements(art.getRelated(CoreRelationTypes.InterfaceStructureContent_DataElement).getList().stream().map(
+         a -> new InterfaceStructureElementToken(a)).collect(Collectors.toList()));
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    /**

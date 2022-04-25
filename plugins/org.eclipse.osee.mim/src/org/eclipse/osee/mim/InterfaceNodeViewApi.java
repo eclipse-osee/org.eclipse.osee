@@ -12,11 +12,15 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceNode;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public interface InterfaceNodeViewApi {
+public interface InterfaceNodeViewApi extends QueryCapableMIMAPI<InterfaceNode> {
    ArtifactAccessor<InterfaceNode> getAccessor();
+
+   InterfaceNode getNodeForMessage(BranchId branch, ArtifactId message);
 }

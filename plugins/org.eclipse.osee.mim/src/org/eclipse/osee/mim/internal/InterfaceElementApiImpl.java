@@ -13,18 +13,21 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -36,11 +39,13 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    private ArtifactAccessor<InterfaceStructureElementToken> accessor;
    private final InterfacePlatformTypeApi platformApi;
    private final List<AttributeTypeId> elementAttributeList;
+   private final List<RelationTypeSide> relations;
 
    InterfaceElementApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi platformTypeApi) {
       this.setAccessor(new InterfaceElementAccessor(orcsApi));
       this.platformApi = platformTypeApi;
       this.elementAttributeList = this.createElementAttributeList();
+      this.relations = this.createRelationTypeSideList();
    }
 
    private List<AttributeTypeId> createElementAttributeList() {
@@ -52,6 +57,12 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       attributes.add(CoreAttributeTypes.InterfaceElementIndexEnd);
       attributes.add(CoreAttributeTypes.InterfaceElementIndexStart);
       return attributes;
+   }
+
+   private List<RelationTypeSide> createRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      return relations;
    }
 
    private ArtifactAccessor<InterfaceStructureElementToken> getAccessor() {
@@ -66,6 +77,10 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
+   /**
+    * Leave this one using the legacy parsing methods for Platform Type, data size is too big and causes an out of
+    * memory error.
+    */
    public List<InterfaceStructureElementToken> getAll(BranchId branch) {
       try {
          List<InterfaceStructureElementToken> elements =
@@ -85,7 +100,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceStructureContent_Structure, structureId,
+               CoreRelationTypes.InterfaceStructureContent_Structure, structureId, this.getFollowRelationDetails(),
                InterfaceStructureElementToken.class);
          elements = this.parseElements(branch, elements);
          return elements;
@@ -99,8 +114,9 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    @Override
    public InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId) {
       try {
-         InterfaceStructureElementToken element = this.getAccessor().getByRelation(branch, elementId,
-            CoreRelationTypes.InterfaceStructureContent_Structure, structureId, InterfaceStructureElementToken.class);
+         InterfaceStructureElementToken element =
+            this.getAccessor().getByRelation(branch, elementId, CoreRelationTypes.InterfaceStructureContent_Structure,
+               structureId, this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
          element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL);
          return element;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -165,22 +181,25 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
          InterfaceStructureElementToken currentElement = elementIterator.next();
          this.defaultSetUpElement(branch, previousElement, InterfaceStructureElementToken.SENTINEL,
-            defaultPlatformType);
+            previousElement.getPlatformType().isValid() ? previousElement.getPlatformType() : defaultPlatformType);
          tempElements.add(previousElement);
          if (!elementIterator.hasNext()) {
             /**
              * If currentElement = last, set it up so that it may be added/serialized
              */
-            currentElement = this.defaultSetUpElement(branch, currentElement, previousElement, defaultPlatformType);
+            currentElement = this.defaultSetUpElement(branch, currentElement, previousElement,
+               currentElement.getPlatformType().isValid() ? currentElement.getPlatformType() : defaultPlatformType);
          }
          while (elementIterator.hasNext()) {
             InterfaceStructureElementToken nextElement = elementIterator.next();
-            currentElement = this.defaultSetUpElement(branch, currentElement, previousElement, defaultPlatformType);
+            currentElement = this.defaultSetUpElement(branch, currentElement, previousElement,
+               currentElement.getPlatformType().isValid() ? currentElement.getPlatformType() : defaultPlatformType);
             tempElements.add(currentElement);
             previousElement = currentElement;
             currentElement = nextElement;
          }
-         currentElement = this.defaultSetUpElement(branch, currentElement, previousElement, defaultPlatformType);
+         currentElement = this.defaultSetUpElement(branch, currentElement, previousElement,
+            currentElement.getPlatformType().isValid() ? currentElement.getPlatformType() : defaultPlatformType);
          tempElements.add(currentElement);
          elements = tempElements;
       } else {
@@ -188,8 +207,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
           * less than 2 elements
           */
          for (InterfaceStructureElementToken element : elements) {
-            element =
-               this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL, defaultPlatformType);
+            element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL,
+               element.getPlatformType().isValid() ? element.getPlatformType() : defaultPlatformType);
          }
       }
       return elements;
@@ -232,7 +251,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelationAndFilter(branch,
                CoreRelationTypes.InterfaceStructureContent_Structure, structureId, filter, elementAttributeList,
-               InterfaceStructureElementToken.class);
+               this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
          elements = this.parseElements(branch, elements);
          return elements;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -240,5 +259,24 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          System.out.println(ex);
          return new LinkedList<InterfaceStructureElementToken>();
       }
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByQuery(branch, query,
+               this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceStructureElementToken>();
+   }
+
+   @Override
+   public List<RelationTypeSide> getFollowRelationDetails() {
+      return this.relations;
    }
 }

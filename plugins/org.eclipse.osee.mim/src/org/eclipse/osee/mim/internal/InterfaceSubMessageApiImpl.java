@@ -12,9 +12,19 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -23,18 +33,59 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
 
    private ArtifactAccessor<InterfaceSubMessageToken> accessor;
+   private final List<AttributeTypeId> subMessageAttributes;
 
    InterfaceSubMessageApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceSubMessageAccessor(orcsApi));
+      this.subMessageAttributes = createSubmessageAttributes();
    }
 
    private void setAccessor(InterfaceSubMessageAccessor interfaceSubMessageAccessor) {
       this.accessor = interfaceSubMessageAccessor;
    }
 
+   private List<AttributeTypeId> createSubmessageAttributes() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceSubMessageNumber);
+      return attributes;
+   }
+
    @Override
    public ArtifactAccessor<InterfaceSubMessageToken> getAccessor() {
       return this.accessor;
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            messageId, InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter) {
+      try {
+         return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
    }
 
 }

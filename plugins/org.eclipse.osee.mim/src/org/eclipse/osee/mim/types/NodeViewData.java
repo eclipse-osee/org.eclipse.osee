@@ -34,6 +34,8 @@ public class NodeViewData extends PLGenericDBObject {
 
    public NodeViewData(ArtifactReadable art) {
       super(art);
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public NodeViewData(Long id, String name) {

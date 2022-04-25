@@ -54,29 +54,15 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
 
    @Override
    public Collection<InterfaceMessageToken> getMessages() {
-      try {
-         List<InterfaceMessageToken> messageList =
-            (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, InterfaceMessageToken.class);
-         for (InterfaceMessageToken message : messageList) {
-            List<InterfaceSubMessageToken> submessages = new LinkedList<InterfaceSubMessageToken>();
-            for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
-               InterfaceSubMessageToken.class)) {
-               submessages.add(submessage);
-            }
-            message.setSubMessages(submessages);
-
-            message.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
-               CoreRelationTypes.InterfaceMessageSendingNode_Message, ArtifactId.valueOf(message.getId()),
-               InterfaceNode.class));
-         }
-         return messageList;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return null;
-      }
+      List<InterfaceMessageToken> messageList =
+         (List<InterfaceMessageToken>) messageApi.getAllForConnection(branch, ConnectionId);
+      //      for (InterfaceMessageToken message : messageList) {
+      //         message.setSubMessages((List<InterfaceSubMessageToken>) this.subMessageApi.getAllByRelation(branch,
+      //            ArtifactId.valueOf(message.getId())));
+      //
+      //         message.setInitiatingNode(interfaceNodeApi.getNodeForMessage(branch, ArtifactId.valueOf(message.getId())));
+      //      }
+      return messageList;
    }
 
    private List<AttributeTypeId> createMessageAttributes() {
@@ -114,13 +100,10 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
                CoreRelationTypes.InterfaceConnectionContent_Connection, ConnectionId, filter, messageAttributes,
                InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messageList) {
-            message.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceMessageSubMessageContent_Message, ArtifactId.valueOf(message.getId()),
-               InterfaceSubMessageToken.class));
+            message.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAllByRelation(branch,
+               ArtifactId.valueOf(message.getId())));
 
-            message.setInitiatingNode(interfaceNodeApi.getAccessor().getByRelationWithoutId(branch,
-               CoreRelationTypes.InterfaceMessageSendingNode_Message, ArtifactId.valueOf(message.getId()),
-               InterfaceNode.class));
+            message.setInitiatingNode(interfaceNodeApi.getNodeForMessage(branch, ArtifactId.valueOf(message.getId())));
          }
 
          List<InterfaceNode> nodes = new LinkedList<>();
@@ -137,10 +120,8 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
                   InterfaceMessageToken.class);
             for (InterfaceMessageToken alternateMessage : alternateMessageList) {
                if (!messageList.contains(alternateMessage)) {
-                  alternateMessage.setSubMessages(
-                     (List<InterfaceSubMessageToken>) subMessageApi.getAccessor().getAllByRelation(branch,
-                        CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-                        ArtifactId.valueOf(alternateMessage.getId()), InterfaceSubMessageToken.class));
+                  alternateMessage.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAllByRelation(
+                     branch, ArtifactId.valueOf(alternateMessage.getId())));
                   alternateMessage.setInitiatingNode(node);
                   messageList.add(alternateMessage);
                }
@@ -148,8 +129,7 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
          }
 
          List<InterfaceSubMessageToken> subMessages =
-            (List<InterfaceSubMessageToken>) this.subMessageApi.getAccessor().getAllByFilter(branch, filter,
-               subMessageAttributes, InterfaceSubMessageToken.class);
+            (List<InterfaceSubMessageToken>) this.subMessageApi.getAllByFilter(branch, filter);
          for (InterfaceSubMessageToken subMessage : subMessages) {
             List<InterfaceMessageToken> alternateMessageList =
                (List<InterfaceMessageToken>) messageApi.getAccessor().getAllByRelation(branch,
