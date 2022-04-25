@@ -126,19 +126,20 @@ describe('PlatformTypeCardComponent', () => {
     expect(await card.getText()).toContain('MSB Value: 0')
     expect(await card.getText()).toContain('Resolution: 0')
     expect(await card.getText()).toContain('Analog Accuracy: 0')
-    expect(await card.getText()).toContain('Edit')
+    //expect(await card.getText()).toContain('Edit')
     expect(await card.getText()).toContain('Create New Type From Base')
-    expect(await card.getText()).toContain('Edit Related Enumeration Set Attributes')
+    expect(await card.getText()).toContain('View Related Enumeration Set Attributes')
   });
 
-  it('should open dialog and create an edit of an existing type', async() => {
-    const openDialog = spyOn(component, 'openDialog').and.callThrough();
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<editPlatformTypeDialogData>({mode:editPlatformTypeDialogDataMode.edit,type:{name:'',description:'',interfaceLogicalType:'',interfacePlatform2sComplement:false,interfacePlatformTypeAnalogAccuracy:'',interfacePlatformTypeBitSize:'0',interfacePlatformTypeBitsResolution:'',interfacePlatformTypeCompRate:'',interfacePlatformTypeDefaultValue:'0',interfacePlatformTypeEnumLiteral:'',interfacePlatformTypeMaxval:'',interfacePlatformTypeMinval:'',interfacePlatformTypeMsbValue:'',interfacePlatformTypeUnits:'',interfacePlatformTypeValidRangeDescription:''}}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy)
-    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Edit") }));
-    await button.click();
-    expect(openDialog).toHaveBeenCalledWith(editPlatformTypeDialogDataMode.edit);
-  })
+  //re-enable if we re-activate platform type editing
+  // it('should open dialog and create an edit of an existing type', async() => {
+  //   const openDialog = spyOn(component, 'openDialog').and.callThrough();
+  //   let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<editPlatformTypeDialogData>({mode:editPlatformTypeDialogDataMode.edit,type:{name:'',description:'',interfaceLogicalType:'',interfacePlatform2sComplement:false,interfacePlatformTypeAnalogAccuracy:'',interfacePlatformTypeBitSize:'0',interfacePlatformTypeBitsResolution:'',interfacePlatformTypeCompRate:'',interfacePlatformTypeDefaultValue:'0',interfacePlatformTypeEnumLiteral:'',interfacePlatformTypeMaxval:'',interfacePlatformTypeMinval:'',interfacePlatformTypeMsbValue:'',interfacePlatformTypeUnits:'',interfacePlatformTypeValidRangeDescription:''}}), close: null });
+  //   let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy)
+  //   const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Edit") }));
+  //   await button.click();
+  //   expect(openDialog).toHaveBeenCalledWith(editPlatformTypeDialogDataMode.edit);
+  // })
 
   it('should open dialog and create a copy of an existing type', async() => {
     const openDialog = spyOn(component, 'openDialog').and.callThrough();
@@ -153,7 +154,7 @@ describe('PlatformTypeCardComponent', () => {
     const openEnumDialog = spyOn(component, 'openEnumDialog').and.callThrough();
     let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<enumerationSet>({name:'',description:'',applicability:{id:'1',name:'Base'}}), close: null });
     let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
-    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Edit Related Enumeration Set Attributes") }));
+    const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("View Related Enumeration Set Attributes") }));
     await button.click();
     expect(openEnumDialog).toHaveBeenCalled();
   })
