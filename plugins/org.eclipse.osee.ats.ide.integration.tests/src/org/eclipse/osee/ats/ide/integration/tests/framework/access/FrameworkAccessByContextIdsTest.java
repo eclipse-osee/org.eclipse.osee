@@ -14,11 +14,11 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -69,11 +69,10 @@ public class FrameworkAccessByContextIdsTest {
       /**
        * Test artifact child / type match context id
        */
-      ArtifactToken collabRobotEvents =
-         atsApi.getQueryService().getArtifact(DemoArtifactToken.CollaborativeRobotEvents, reqWorkBrch);
+      ArtifactToken collabRobotEvents = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Collaborative robot events", reqWorkBrch);
 
       Assert.assertNotNull(collabRobotEvents);
-      Assert.assertEquals(DemoArtifactToken.CollaborativeRobotEvents.getName(), collabRobotEvents.getName());
 
       // Joe Smith has FULL access cause ContextIds are only checked on Write
       rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(collabRobotEvents),
@@ -125,11 +124,10 @@ public class FrameworkAccessByContextIdsTest {
       /**
        * Test systems artifact child / type match context id
        */
-      ArtifactToken performanceRequirements =
-         atsApi.getQueryService().getArtifact(DemoArtifactToken.PerformanceRequirements, reqWorkBrch);
+      ArtifactToken performanceRequirements = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SystemRequirementMsWord, "Performance Requirements", reqWorkBrch);
 
       Assert.assertNotNull(performanceRequirements);
-      Assert.assertEquals(DemoArtifactToken.PerformanceRequirements.getName(), performanceRequirements.getName());
 
       // Joe Smith has FULL access cause ContextIds are only checked on Write
       rd = atsApi.getAccessControlService().hasAttributeTypePermission(Collections.singleton(performanceRequirements),
@@ -158,8 +156,8 @@ public class FrameworkAccessByContextIdsTest {
       /**
        * Load Software Requirement which is readonly to Test Wfs except for Qualification attr type
        */
-      ArtifactToken virtualFixesSwReq =
-         atsApi.getQueryService().getArtifact(DemoArtifactToken.VirtualFixes, testWorkBrch);
+      ArtifactToken virtualFixesSwReq = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual fixtures", testWorkBrch);
 
       Assert.assertNotNull(virtualFixesSwReq);
 
@@ -204,8 +202,8 @@ public class FrameworkAccessByContextIdsTest {
       /**
        * Load Software Requirement which is readonly to Test Wfs except for Verification rel type
        */
-      ArtifactToken virtualFixesSwReq =
-         atsApi.getQueryService().getArtifact(DemoArtifactToken.VirtualFixes, testWorkBrch);
+      ArtifactToken virtualFixesSwReq = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual fixtures", testWorkBrch);
 
       Assert.assertNotNull(virtualFixesSwReq);
 

@@ -41,18 +41,6 @@ public final class DemoArtifactToken {
    public static final ArtifactToken MsWordHeadingNoTask = ArtifactToken.valueOf(23238598L, "MS Word Heading - No task should be created", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
    public static final ArtifactToken InBranchArtifactToDelete = ArtifactToken.valueOf(56565656, "In-Branch Artifact to Delete", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
    public static final ArtifactToken SystemReqArtifact = ArtifactToken.valueOf(45454545, "System Req Artifact", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord);
-   public static final ArtifactToken EventsSwReq = ArtifactToken.valueOf(200090, "Events", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
-
-   //////////////////////////////////
-   // Software Requirements
-   //////////////////////////////////
-   public static final ArtifactToken CollaborativeRobotEvents = ArtifactToken.valueOf(200092, "Collaborative robot events", DemoBranches.SAW_Bld_2);
-   public static final ArtifactToken VirtualFixes = ArtifactToken.valueOf(200095, "VirtualFixes", DemoBranches.SAW_PL_Access_Baseline_Test);
-
-   //////////////////////////////////
-   // System Requirements
-   //////////////////////////////////
-   public static final ArtifactToken PerformanceRequirements = ArtifactToken.valueOf(200112, "Performance Requirements", DemoBranches.SAW_Bld_2);
 
    //////////////////////////////////
    // Impl Details Configuration

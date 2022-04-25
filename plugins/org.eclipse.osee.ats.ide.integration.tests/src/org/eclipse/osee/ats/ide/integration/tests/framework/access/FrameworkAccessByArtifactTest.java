@@ -14,11 +14,11 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -234,8 +234,8 @@ public class FrameworkAccessByArtifactTest {
       accessControlService.removePermissions(reqWorkBrch);
       accessControlService.clearCaches();
 
-      ArtifactToken virtualFixesSoftReq =
-         atsApi.getQueryService().getArtifact(DemoArtifactToken.VirtualFixes, reqWorkBrch);
+      ArtifactToken virtualFixesSoftReq = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual fixtures", reqWorkBrch);
 
       Assert.assertNotNull(virtualFixesSoftReq);
 

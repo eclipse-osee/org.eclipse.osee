@@ -13,11 +13,11 @@
 package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -57,8 +57,8 @@ public class AccessControlServiceTest {
       Assert.assertTrue(rd.isSuccess());
       Assert.assertTrue(rd.toString().contains("Branch FULL_ACCESS"));
 
-      ArtifactToken virtualFixesSoftReq =
-         atsApi.getQueryService().getArtifact(DemoArtifactToken.VirtualFixes, reqWorkBrch);
+      ArtifactToken virtualFixesSoftReq = atsApi.getQueryService().getArtifactByName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual fixtures", reqWorkBrch);
 
       // Steven DOES NOT have modify access cause working branch without access set
       rd = atsApi.getAccessControlService().isModifyAccessEnabled(DemoUsers.Steven_Kohn, virtualFixesSoftReq, null);

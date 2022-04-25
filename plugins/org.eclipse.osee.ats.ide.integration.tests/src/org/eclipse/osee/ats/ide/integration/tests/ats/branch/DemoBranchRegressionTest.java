@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -72,10 +73,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    public DemoBranchRegressionTest() {
       super();
-      ArtifactModifiedNames.addAll(
-         Arrays.asList(DemoArtifactToken.EventsSwReq.getName(), DemoArtifactToken.MsWordHeadingNoTask.getName()));
-      NonRelArtifactModifedNames.addAll(
-         Arrays.asList(DemoArtifactToken.MsWordHeadingNoTask.getName(), DemoArtifactToken.EventsSwReq.getName()));
+      ArtifactModifiedNames.addAll(Arrays.asList("Events", DemoArtifactToken.MsWordHeadingNoTask.getName()));
+      NonRelArtifactModifedNames.addAll(Arrays.asList(DemoArtifactToken.MsWordHeadingNoTask.getName(), "Events"));
    }
 
    @Override
@@ -132,7 +131,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       Assert.assertNotNull(headingArt);
 
       // add sw req with paragraph only change; no task should be created
-      Artifact existingEventsSwReq = ArtifactQuery.getArtifactFromId(DemoArtifactToken.EventsSwReq, workingBranch);
+      Artifact existingEventsSwReq =
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Events", workingBranch);
       Assert.assertNotNull(existingEventsSwReq);
       existingEventsSwReq.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.2.2");
       existingEventsSwReq.persist(getClass().getSimpleName());
