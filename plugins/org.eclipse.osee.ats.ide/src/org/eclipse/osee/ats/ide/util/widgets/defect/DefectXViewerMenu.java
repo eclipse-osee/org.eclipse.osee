@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange.Option;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
@@ -32,7 +33,6 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -357,8 +357,7 @@ public class DefectXViewerMenu {
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Modify Review Defects");
-      ReviewDefectManager defectManager =
-         new ReviewDefectManager(AtsApiService.get().getQueryServiceIde().getArtifact(review), AtsApiService.get());
+      IAtsPeerReviewDefectManager defectManager = review.getDefectManager();
       for (ReviewDefectItem defectItem : defectItems) {
          defectManager.addOrUpdateDefectItem(defectItem);
          defectXViewer.update(defectItem, null);

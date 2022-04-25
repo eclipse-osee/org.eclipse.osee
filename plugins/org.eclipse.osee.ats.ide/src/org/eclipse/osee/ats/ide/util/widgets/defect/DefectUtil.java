@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.ide.util.widgets.defect;
 
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -58,7 +58,7 @@ public class DefectUtil {
             if (Strings.isValid(ed.getEntry2())) {
                item.setLocation(ed.getEntry2());
             }
-            ReviewDefectManager defectManager = getDefectManager();
+            IAtsPeerReviewDefectManager defectManager = review.getDefectManager();
             defectManager.addOrUpdateDefectItem(item);
             defectManager.saveToArtifact(review, changes);
             changes.execute();
@@ -66,10 +66,6 @@ public class DefectUtil {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
-   }
-
-   private ReviewDefectManager getDefectManager() {
-      return new ReviewDefectManager(review.getStoreObject(), AtsApiService.get());
    }
 
    public void handleDeleteDefect(boolean persist) {
@@ -88,7 +84,7 @@ public class DefectUtil {
       if (delete) {
          try {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Review Defects");
-            ReviewDefectManager defectManager = getDefectManager();
+            IAtsPeerReviewDefectManager defectManager = review.getDefectManager();
             for (ReviewDefectItem defectItem : items) {
                defectManager.removeDefectItem(defectItem);
                defectManager.saveToArtifact(review, changes);
@@ -107,7 +103,7 @@ public class DefectUtil {
          ed.setFillVertically(true);
          if (ed.open() == 0) {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Import Review Defects");
-            ReviewDefectManager defectManager = getDefectManager();
+            IAtsPeerReviewDefectManager defectManager = review.getDefectManager();
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (Strings.isValid(str)) {

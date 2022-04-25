@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
@@ -548,7 +549,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          roleMgr.saveToArtifact(changes);
       }
       if (defects != null) {
-         ReviewDefectManager defectManager = new ReviewDefectManager(peerRev.getArtifactToken(), atsApi);
+         IAtsPeerReviewDefectManager defectManager = peerRev.getDefectManager();
          for (ReviewDefectItem defect : defects) {
             defectManager.addOrUpdateDefectItem(defect);
          }
