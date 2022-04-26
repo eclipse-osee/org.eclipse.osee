@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.util;
 
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
@@ -79,5 +80,7 @@ public interface IAtsServerEndpointProvider {
    ResourcesEndpoint getResourcesEp();
 
    GitEndpoint getGitEndpoint();
+
+   JiraEndpoint getJiraEndpoint();
 
 }
