@@ -82,4 +82,5 @@ Require-Bundle: org.eclipse.osee.ats.api,
  javax.activation,
  javax.ws.rs
 Export-Package: org.eclipse.osee.ats.rest,
+ org.eclipse.osee.ats.rest.internal.workitem.sync.jira,
  org.eclipse.osee.ats.rest.util

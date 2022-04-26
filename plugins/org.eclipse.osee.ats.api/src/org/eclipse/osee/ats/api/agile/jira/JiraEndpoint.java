@@ -14,13 +14,11 @@ package org.eclipse.osee.ats.api.agile.jira;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Stephen J. Molaro
@@ -39,7 +37,7 @@ public interface JiraEndpoint {
    @POST
    @Path("search")
    @Consumes(MediaType.APPLICATION_JSON)
-   String searchJira(@Encoded String jsonPayload);
+   public String searchJira(@Encoded String jsonPayload);
 
    /**
     * Takes a Json query and uses it to create an issue in Jira.

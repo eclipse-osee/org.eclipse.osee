@@ -17,11 +17,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -89,7 +90,7 @@ public class JiraEndpointImpl implements JiraEndpoint {
          conn.getContent();
          conn.disconnect();
       } catch (Exception ex) {
-         throw new OseeAuthenticationException("JIRA Operation Failed", ex);
+         throw new OseeCoreException("JIRA Operation Failed", ex);
       } finally {
          if (conn != null) {
             conn.disconnect();
@@ -108,5 +109,16 @@ public class JiraEndpointImpl implements JiraEndpoint {
       return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
          CoreArtifactTypes.GeneralData).andNameEquals("JIRA Config").getArtifact().getSoleAttributeValue(
             CoreAttributeTypes.Description);
+   }
+
+   public String getJsonTemplate(String templateName) {
+      return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
+         CoreArtifactTypes.GeneralData).andNameEquals(templateName).getArtifact().getSoleAttributeValue(
+            CoreAttributeTypes.GeneralStringData);
+   }
+
+   public int getNumberOfResults(String searchResults) {
+      searchResults = searchResults.replaceAll("[^0-9]+", " ");
+      return Integer.parseInt(Arrays.asList(searchResults.trim().split(" ")).get(2));
    }
 }

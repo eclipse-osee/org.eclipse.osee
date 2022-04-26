@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.util;
 import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
@@ -64,6 +65,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private ResourcesEndpoint resourcesEp;
    private AtsActionUiEndpointApi actionUiEp;
    private GitEndpoint gitEp;
+   private JiraEndpoint jiraEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -240,4 +242,11 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
       return gitEp;
    }
 
+   @Override
+   public JiraEndpoint getJiraEndpoint() {
+      if (jiraEp == null) {
+         jiraEp = jaxRsApi.newProxy(getAtsTarget(), JiraEndpoint.class);
+      }
+      return jiraEp;
+   }
 }
