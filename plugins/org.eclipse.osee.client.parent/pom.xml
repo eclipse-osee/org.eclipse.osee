@@ -58,15 +58,12 @@
 				<module>../../plugins/org.eclipse.osee.define.ide</module>
 				<module>../../plugins/org.eclipse.osee.define.ide.test</module>
 
-				<module>../../plugins/org.eclipse.osee.doors.connector.core</module>
-				<module>../../plugins/org.eclipse.osee.doors.connector.ui</module>
 
 				<module>../../features/org.eclipse.osee.framework.feature</module>
 
 				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
 
 				
-				<module>../../features/org.eclipse.osee.doors.feature</module>
 
 				<module>../../plugins/org.eclipse.osee.client.demo</module>
 
@@ -124,12 +121,6 @@
 
 				<module>../../features/org.eclipse.osee.framework.feature</module>
 				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
-
-				<module>../../plugins/org.eclipse.osee.doors.connector.core</module>
-				<module>../../plugins/org.eclipse.osee.doors.connector.ui</module>
-
-				
-				<module>../../features/org.eclipse.osee.doors.feature</module>
 
 				<module>../../plugins/org.eclipse.osee.client.demo</module>
 

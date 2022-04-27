@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.server.ide.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.ByteArrayOutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -150,8 +152,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
    @Override
    public TransactionId saveCustomizeData(CustomizeData customizeData) {
       boolean personal = customizeData.isPersonal();
-      ArtifactId customArtId =
-         personal ? orcsApi.userService().getUser() : CoreArtifactTokens.XViewerCustomization;
+      ArtifactId customArtId = personal ? orcsApi.userService().getUser() : CoreArtifactTokens.XViewerCustomization;
       ArtifactReadable customArt = orcsApi.getQueryFactory().fromBranch(COMMON).andId(customArtId).asArtifact();
       List<IAttribute<String>> attributes = customArt.getAttributeList(CoreAttributeTypes.XViewerCustomization);
 
@@ -264,11 +265,10 @@ public class ClientEndpointImpl implements ClientEndpoint {
 
       alive = false;
       try {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         URL url = new URL(
+         WebTarget target = orcsApi.jaxRsApi().newTargetUrl(
             String.format("http://%s:%s/osee/request?cmd=pingId", session.getClientAddress(), session.getClientPort()));
-         AcquireResult result = HttpProcessor.acquire(url, outputStream, 1000);
-         if (result.wasSuccessful()) {
+         Response response = target.request().get();
+         if (response.getStatus() == HttpURLConnection.HTTP_OK || response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
             alive = true;
          }
       } catch (Exception ex) {
@@ -302,8 +302,14 @@ public class ClientEndpointImpl implements ClientEndpoint {
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          URL url = new URL(String.format("http://%s:%s/osee/request?cmd=" + (withLog ? "log" : "info"),
             session.getClientAddress(), session.getClientPort()));
+
          AcquireResult result = HttpProcessor.acquire(url, outputStream, 1000);
-         if (result.wasSuccessful()) {
+
+         WebTarget target = orcsApi.jaxRsApi().newTargetUrl(
+            String.format(String.format("http://%s:%s/osee/request?cmd=" + (withLog ? "log" : "info"),
+               session.getClientAddress(), session.getClientPort())));
+         Response response = target.request().get();
+         if (response.getStatus() == HttpURLConnection.HTTP_OK || response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
             return outputStream.toString(result.getEncoding());
          }
       } catch (Exception ex) {

@@ -41,6 +41,7 @@
 								<plugin id="javax.xml.bind" />
 								<plugin id="org.antlr.runtime" />
 								<plugin id="javax.xml" />
+								<plugin id="org.hsqldb"/>								
 								<plugin id="javax.transaction" />
 								<plugin id="javax.activation" />
 								<plugin id="org.eclipse.osgi.services" />																
