@@ -19,7 +19,6 @@
 
    <requires>
       <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.osgi"/>

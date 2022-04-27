@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.util.internal;
 
 import java.io.ByteArrayOutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -34,6 +37,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -46,8 +50,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -64,7 +66,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 public class AtsStoreService implements IAtsStoreService {
    private final IAtsUserService userService;
    private final JdbcService jdbcService;
-   private final AtsApi atsApi;
+   public final AtsApi atsApi;
 
    public AtsStoreService(AtsApi atsApi, IAtsUserService userService, JdbcService jdbcService) {
       this.atsApi = atsApi;
@@ -334,11 +336,14 @@ public class AtsStoreService implements IAtsStoreService {
       } else {
          rd.log("\n");
          for (String server : servers) {
+            atsApi.getServerEndpoints().getConfigEndpoint().requestCacheReload();
             try {
                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                URL url = new URL(String.format("http://%s%s", server, "/ats/config/clearcache"));
-               AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
-               if (result.wasSuccessful()) {
+               WebTarget target = AtsApiService.get().jaxRsApi().newTargetUrl(
+                  String.format("http://%s%s", server, "/ats/config/clearcache"));
+               Response response = target.request().get();
+               if (response.getStatus() == HttpURLConnection.HTTP_OK || response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
                   rd.logf("ATS server %s cache update was successful.\n", server);
                } else {
                   rd.logf("ERROR: ATS server %s cache update was not successful.\n", server);

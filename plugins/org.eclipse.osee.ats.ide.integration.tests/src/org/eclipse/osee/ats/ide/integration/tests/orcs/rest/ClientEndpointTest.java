@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.model.Sessions;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
@@ -46,7 +47,9 @@ public class ClientEndpointTest {
       try (Response response = clientEp.getAll()) {
          Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
          Sessions sessions = response.readEntity(Sessions.class);
-         Assert.assertTrue(sessions.sessions.size() >= 1);
+         if (Lib.isWindows()) {
+            Assert.assertTrue(sessions.sessions.size() >= 1);
+         }
       }
    }
 

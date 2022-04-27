@@ -7,6 +7,7 @@ Bundle-Version: 1.0.0.qualifier
 Import-Package: javax.servlet,
  javax.servlet.http,
  javax.ws.rs,
+ javax.ws.rs.client,
  javax.ws.rs.core,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,

@@ -20,8 +20,7 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.search,
  org.eclipse.core.jobs,
  org.eclipse.osee.ats.api,
- org.junit,
- org.apache.commons.httpclient
+ org.junit
 Export-Package: org.eclipse.osee.ats.ide,
  org.eclipse.osee.ats.ide.actions,
  org.eclipse.osee.ats.ide.actions.wizard,
