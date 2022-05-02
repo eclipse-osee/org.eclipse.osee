@@ -70,7 +70,11 @@ public class TransitionResult {
    }
 
    public TransitionResult(String details) {
-      this(details, null);
+      this(details, (Exception) null);
+   }
+
+   public TransitionResult(String format, Object... args) {
+      this(String.format(format, args), (Exception) null);
    }
 
    public String getDetails() {
