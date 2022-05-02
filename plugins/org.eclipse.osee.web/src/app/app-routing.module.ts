@@ -22,7 +22,6 @@ const routes: Routes = [
   },
   { path: '404', loadChildren: () => import('./page-not-found/page-not-found.module').then(m => m.PageNotFoundModule) },
   { path: 'about', loadChildren: () => import('./about/about.module').then(m => m.AboutModule) },
-  { path: 'gc', loadChildren: () => import('./grid-commander/grid-commander.module').then(m => m.GridCommanderModule) },
   {
     path: '**',
     redirectTo:'404',
