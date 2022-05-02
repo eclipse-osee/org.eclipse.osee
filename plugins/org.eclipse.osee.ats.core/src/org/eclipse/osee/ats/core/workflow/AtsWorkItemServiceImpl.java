@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.core.util.hooks.AtsNotificationTransitionHook;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsCommitBranchWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsHoldOrBlockedTransitionHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
@@ -183,6 +184,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
          transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
          transitionHooks.add(new AtsCommitBranchWhenCompleteHook());
+         transitionHooks.add(new AtsHoldOrBlockedTransitionHook());
       }
       return transitionHooks;
    }
@@ -609,5 +611,17 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return journalData;
+   }
+
+   @Override
+   public boolean isBlocked(IAtsWorkItem workItem) {
+      return Strings.isValid(atsApi.getAttributeResolver().getSoleAttributeValue(workItem.getStoreObject(),
+         AtsAttributeTypes.BlockedReason, ""));
+   }
+
+   @Override
+   public boolean isOnHold(IAtsWorkItem workItem) {
+      return Strings.isValid(atsApi.getAttributeResolver().getSoleAttributeValue(workItem.getStoreObject(),
+         AtsAttributeTypes.HoldReason, ""));
    }
 }

@@ -153,4 +153,8 @@ public interface IAtsWorkItemService {
 
    JournalData getJournalSubscribed(IAtsWorkItem workItem, JournalData journalData);
 
+   boolean isBlocked(IAtsWorkItem workItem);
+
+   boolean isOnHold(IAtsWorkItem workItem);
+
 }
