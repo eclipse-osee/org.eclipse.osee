@@ -55,6 +55,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -213,7 +214,15 @@ public class QueryEngineImpl implements QueryEngine {
             AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
             Attribute<?> attribute =
                new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, resourceManager);
-            artifact.putAttributeValue(attributeType, attribute);
+            // Check if the attribute value has been added already to the artifact to prevent duplicate values.
+            // This can happen when the same object is returned multiple times when following relations.
+            if (queryData.hasCriteriaType(CriteriaRelationTypeFollow.class)) {
+               if (artifact.getSoleAttributeId(attributeType, -1L) == -1L) {
+                  artifact.putAttributeValue(attributeType, attribute);
+               }
+            } else {
+               artifact.putAttributeValue(attributeType, attribute);
+            }
          } else {
             Long otherArtType = stmt.getLong("other_art_type_id");
             RelationSide side = value.equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
