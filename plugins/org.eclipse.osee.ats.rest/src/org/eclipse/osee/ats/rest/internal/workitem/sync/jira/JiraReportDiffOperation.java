@@ -58,7 +58,7 @@ public class JiraReportDiffOperation {
    public XResultData run() {
       ElapsedTime allTime = new ElapsedTime(getClass().getSimpleName(), true);
 
-      JiraEndpointImpl jiraEp = new JiraEndpointImpl(atsApi, orcsApi);
+      JiraEndpointImpl jiraEp = new JiraEndpointImpl(atsApi);
       String epicQuery =
          String.format("{ \"jql\": \"issuetype = Epic AND Team = %s AND summary ~ %s\", \"fields\": [ \"summary\" ] }",
             data.getTeamId(), data.getProgramIncrement());
