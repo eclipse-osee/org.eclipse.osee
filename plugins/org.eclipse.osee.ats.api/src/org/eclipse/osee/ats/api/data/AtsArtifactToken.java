@@ -58,6 +58,9 @@ public final class AtsArtifactToken {
 
    // Agile
    public static ArtifactToken TopAgileFolder = ArtifactToken.valueOf(6915493, "Agile", COMMON, CoreArtifactTypes.Folder);
+
+   // JIRA
+   public static ArtifactToken JiraConfig = ArtifactToken.valueOf(9501446, "JIRA Config", COMMON, CoreArtifactTypes.GeneralData);
    // @formatter:on
 
    private AtsArtifactToken() {

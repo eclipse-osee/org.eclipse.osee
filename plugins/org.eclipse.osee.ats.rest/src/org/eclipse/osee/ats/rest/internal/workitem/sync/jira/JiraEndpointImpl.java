@@ -20,10 +20,10 @@ import java.net.URL;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Stephen J. Molaro
@@ -32,13 +32,11 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class JiraEndpointImpl implements JiraEndpoint {
 
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
    static final String JIRA_SEARCH = "/rest/api/2/search";
    static final String JIRA_ISSUE = "/rest/api/2/issue";
 
-   public JiraEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
+   public JiraEndpointImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -100,21 +98,16 @@ public class JiraEndpointImpl implements JiraEndpoint {
    }
 
    private String getPersonalAccessToken() {
-      return "Bearer " + orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
-         CoreArtifactTypes.GeneralData).andNameEquals("JIRA Config").getArtifact().getSoleAttributeValue(
-            CoreAttributeTypes.GeneralStringData);
+      ArtifactToken jiraConfig =
+         atsApi.getQueryService().getArtifact(AtsArtifactToken.JiraConfig, atsApi.getAtsBranch());
+      return "Bearer " + atsApi.getAttributeResolver().getSoleAttributeValue(jiraConfig,
+         CoreAttributeTypes.GeneralStringData, "");
    }
 
    private String getJiraUrl() {
-      return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
-         CoreArtifactTypes.GeneralData).andNameEquals("JIRA Config").getArtifact().getSoleAttributeValue(
-            CoreAttributeTypes.Description);
-   }
-
-   public String getJsonTemplate(String templateName) {
-      return orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
-         CoreArtifactTypes.GeneralData).andNameEquals(templateName).getArtifact().getSoleAttributeValue(
-            CoreAttributeTypes.GeneralStringData);
+      ArtifactToken jiraConfig =
+         atsApi.getQueryService().getArtifact(AtsArtifactToken.JiraConfig, atsApi.getAtsBranch());
+      return atsApi.getAttributeResolver().getSoleAttributeValue(jiraConfig, CoreAttributeTypes.Description, "");
    }
 
    public int getNumberOfResults(String searchResults) {

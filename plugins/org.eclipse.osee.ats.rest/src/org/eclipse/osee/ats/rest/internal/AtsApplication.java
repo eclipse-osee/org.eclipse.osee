@@ -149,7 +149,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsWorkPackageEndpointImpl(atsApiServer));
       singletons.add(new AtsTeamWfEndpointImpl(atsApiServer));
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
-      singletons.add(new JiraEndpointImpl(atsApiServer, orcsApi));
+      singletons.add(new JiraEndpointImpl(atsApiServer));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));
