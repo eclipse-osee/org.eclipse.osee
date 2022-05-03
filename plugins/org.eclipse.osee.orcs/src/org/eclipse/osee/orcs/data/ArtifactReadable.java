@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -47,7 +48,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
    ArtifactReadableImpl SENTINEL = new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ArtifactId.SENTINEL,
-      ApplicabilityId.BASE, TransactionId.SENTINEL, ModificationType.SENTINEL, null);
+      ApplicabilityToken.BASE, TransactionId.SENTINEL, ModificationType.SENTINEL, null);
 
    TransactionId getLastModifiedTransaction();
 
@@ -176,6 +177,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    boolean isHistorical();
 
    ApplicabilityId getApplicability();
+
+   ApplicabilityToken getApplicabilityToken();
 
    String getSafeName();
 

@@ -112,6 +112,10 @@ public interface QueryBuilder extends Query {
 
    boolean areDeletedRelationsIncluded();
 
+   QueryBuilder includeApplicabilityTokens();
+
+   boolean areApplicabilityTokensIncluded();
+
    QueryBuilder fromTransaction(TransactionId transaction);
 
    TransactionId getFromTransaction();

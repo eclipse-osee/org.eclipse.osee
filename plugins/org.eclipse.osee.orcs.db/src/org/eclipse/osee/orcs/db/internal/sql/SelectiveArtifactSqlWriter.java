@@ -27,6 +27,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -369,6 +370,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
             txAlias, "mod_type");
+         if (OptionsUtil.getIncludeApplicabilityTokens(getOptions())) {
+            writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
+         } else if (queryDataCursor.getParentQueryData() != null && OptionsUtil.getIncludeApplicabilityTokens(
+            queryDataCursor.getParentQueryData().getOptions())) {
+            writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
+         }
+
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");

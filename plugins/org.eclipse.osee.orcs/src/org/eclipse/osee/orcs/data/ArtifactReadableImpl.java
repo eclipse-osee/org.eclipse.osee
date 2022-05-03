@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -62,16 +63,27 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final BranchToken branch;
    private final ArtifactId view;
    private final QueryFactory queryFactory;
-   private final ApplicabilityId applicability;
+   private final ApplicabilityToken applicability;
    private final TransactionId txId;
    private final ModificationType modType;
+
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
+      super(id);
+      this.artifactType = artifactType;
+      this.branch = branch;
+      this.view = view;
+      this.applicability = applicability;
+      this.txId = txId;
+      this.modType = modType;
+      this.queryFactory = queryFactory;
+   }
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
       this.view = view;
-      this.applicability = applicability;
+      this.applicability = ApplicabilityToken.valueOf(applicability.getId(), "");
       this.txId = txId;
       this.modType = modType;
       this.queryFactory = queryFactory;
@@ -423,7 +435,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    public List<ArtifactId> getRelatedIds(RelationTypeSide relationTypeSide) {
       List<ArtifactReadable> relatedList = getRelatedList(relationTypeSide);
       return relatedList.stream().map(p -> ArtifactId.valueOf(p.getId())).collect(Collectors.toList());
-   
+
    }
 
    @Override
@@ -432,8 +444,13 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public ApplicabilityId getApplicability() {
+   public ApplicabilityToken getApplicabilityToken() {
       return applicability;
+   }
+
+   @Override
+   public ApplicabilityId getApplicability() {
+      return ApplicabilityId.valueOf(applicability.getId());
    }
 
    /**
