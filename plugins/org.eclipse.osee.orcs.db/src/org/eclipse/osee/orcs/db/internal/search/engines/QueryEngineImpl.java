@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -244,7 +245,12 @@ public class QueryEngineImpl implements QueryEngine {
       TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
       ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
       ArtifactTypeToken artifactType = tokenService.getArtifactTypeOrCreate(artifactTypeId);
-      ApplicabilityId applic = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+      String appValue = "";
+      if (queryData.mainTableAliasExists(OseeDb.OSEE_KEY_VALUE_TABLE)) {
+         appValue = stmt.getString("app_value");
+      }
+      ApplicabilityToken applic = ApplicabilityToken.valueOf(stmt.getLong("app_id"), appValue);
+
       return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
          modType, queryFactory);
    }

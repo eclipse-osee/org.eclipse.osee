@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.orcs.OseeDb;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -43,6 +44,9 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
       }
       artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
       txsAlias = writer.getMainTableAlias(OseeDb.TXS_TABLE);
+      if (OptionsUtil.getIncludeApplicabilityTokens(writer.getOptions())) {
+         writer.getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE);
+      }
    }
 
    @Override

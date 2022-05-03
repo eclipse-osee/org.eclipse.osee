@@ -33,6 +33,7 @@ public final class OptionsUtil {
    private static final String LOAD_LEVEL = "load.level";
    private static final String SHOW_HIDDEN_FIELDS = "show.hidden.fields";
    private static final String BRANCH_VIEW = "from.branch.view";
+   private static final String INCLUDE_APPLICABILITY_TOKENS = "include.applicability.tokens";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -41,6 +42,7 @@ public final class OptionsUtil {
       setIncludeDeletedAttributes(options, false);
       setIncludeDeletedRelations(options, false);
       setLoadLevel(options, LoadLevel.ARTIFACT_DATA);
+      setIncludeApplicabilityTokens(options, false);
       return options;
    }
 
@@ -59,6 +61,7 @@ public final class OptionsUtil {
       setHeadTransaction(options);
       setLoadLevel(options, LoadLevel.ALL);
       setFromBranchView(options, ArtifactId.SENTINEL);
+      setIncludeApplicabilityTokens(options, false);
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -171,5 +174,13 @@ public final class OptionsUtil {
 
    public static void setShowHiddenFields(Options options, boolean enabled) {
       options.put(SHOW_HIDDEN_FIELDS, enabled);
+   }
+
+   public static void setIncludeApplicabilityTokens(Options options, boolean enabled) {
+      options.put(INCLUDE_APPLICABILITY_TOKENS, enabled);
+   }
+
+   public static boolean getIncludeApplicabilityTokens(Options options) {
+      return options.getBoolean(INCLUDE_APPLICABILITY_TOKENS);
    }
 }

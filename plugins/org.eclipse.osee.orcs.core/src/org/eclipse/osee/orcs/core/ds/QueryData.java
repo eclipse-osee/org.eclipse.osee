@@ -308,6 +308,17 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return this;
    }
 
+   @Override
+   public QueryBuilder includeApplicabilityTokens() {
+      OptionsUtil.setIncludeApplicabilityTokens(getOptions(), true);
+      return this;
+   }
+
+   @Override
+   public boolean areApplicabilityTokensIncluded() {
+      return OptionsUtil.getIncludeApplicabilityTokens(getOptions());
+   }
+
    public AttributeTypeId getAttributeType() {
       return attributeType;
    }

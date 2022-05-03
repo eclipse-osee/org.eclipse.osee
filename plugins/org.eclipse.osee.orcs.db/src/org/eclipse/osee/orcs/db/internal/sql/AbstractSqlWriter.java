@@ -328,6 +328,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
          String mainTableAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
          String mainTxsAlias = getMainTableAlias(OseeDb.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
+         if (mainTableAliasExists(OseeDb.OSEE_KEY_VALUE_TABLE)) {
+            String mainKvAlias = getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE);
+            writeEqualsAnd(mainTxsAlias, "app_id", mainKvAlias, "key");
+         }
+
          writeTxBranchFilter(mainTxsAlias);
          if (queryDataCursor.getAppId().isValid()) {
             write(" AND ");
