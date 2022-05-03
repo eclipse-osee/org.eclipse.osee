@@ -430,8 +430,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    private void createMetricsTab() {
       try {
-         metricsTab = new WfeMetricsTab(this, this, workItem);
-         addPage(metricsTab);
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
+            metricsTab = new WfeMetricsTab(this, this, workItem);
+            addPage(metricsTab);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
