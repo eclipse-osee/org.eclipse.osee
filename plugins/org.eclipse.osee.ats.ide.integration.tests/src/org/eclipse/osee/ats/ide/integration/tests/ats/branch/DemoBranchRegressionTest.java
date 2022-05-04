@@ -257,10 +257,11 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    private IAtsTeamWorkflow runCreateCodeTestTasks() {
       IAtsTeamWorkflow codeWf = getCodeTeamWf();
+      AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       ChangeReportTaskData data = CreateChangeReportTaskTransitionHook.runChangeReportTaskOperation(codeWf,
-         TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges, changes);
+         TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges, changes, asUser);
       changes.executeIfNeeded();
 
       Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());

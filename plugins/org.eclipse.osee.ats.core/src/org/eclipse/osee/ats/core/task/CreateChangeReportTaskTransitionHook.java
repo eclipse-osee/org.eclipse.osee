@@ -44,6 +44,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       if (!workItem.isTeamWorkflow()) {
          return;
       }
+      AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
       Thread thread = new Thread("Create/Update Tasks") {
          @Override
          public void run() {
@@ -52,7 +53,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
                AtsApiService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
             if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(workItem,
                AtsApiService.get())) {
-               ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, changes);
+               ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, changes, asUser);
                if (data.getResults().isErrors()) {
                   throw new OseeArgumentException(data.getResults().toString());
                }
@@ -66,11 +67,11 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       }
    }
 
-   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken, IAtsChangeSet changes) {
+   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken, IAtsChangeSet changes, AtsUser asUser) {
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(workItem.getStoreObject());
-      data.setAsUser(AtsApiService.get().getUserService().getCurrentUser());
+      data.setAsUser(asUser);
 
       /**
        * Until all transitions are done on server, need to directly call this operation so it's part of the full
