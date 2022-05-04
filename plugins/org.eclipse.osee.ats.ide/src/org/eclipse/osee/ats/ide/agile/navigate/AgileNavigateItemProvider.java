@@ -67,7 +67,7 @@ public class AgileNavigateItemProvider implements XNavigateItemProvider {
          items.add(new SortAgileBacklog());
 
          // Reports
-         items.add(new XNavigateItemAction(new SprintReportAction(), FrameworkImage.REPORT, AGILE_REPORTS));
+         items.add(new XNavigateItemAction(new SprintReportAction(null, true), FrameworkImage.REPORT, AGILE_REPORTS));
          items.add(new OpenAgileSprintReports());
          items.add(new OpenAgileStoredSprintReports());
          items.add(new XNavigateItemBlam(new SyncJiraAndOseeByEpicBlam(), AGILE_REPORTS));
