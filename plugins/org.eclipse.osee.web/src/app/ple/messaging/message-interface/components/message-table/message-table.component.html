@@ -100,7 +100,7 @@
         </ng-container>
         <ng-container *ngIf="(inEditMode | async)===true && !message.deleted">
             <button mat-menu-item (click)="removeMessage(message)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove message from connection</button>
-            <button mat-menu-item (click)="deleteMessage(message)"><mat-icon color="warn">delete_forever</mat-icon>Delete message globally</button>
+            <button mat-menu-item (click)="deleteMessage(message)" *ngIf="message.subMessages.length===0"><mat-icon color="warn">delete_forever</mat-icon>Delete message globally</button>
         </ng-container>
 
     </ng-template>
