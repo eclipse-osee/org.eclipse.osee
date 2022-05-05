@@ -39,7 +39,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link LdapAuthenticationManager}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class LdapAuthenticationManagerTest {
@@ -77,7 +77,7 @@ public class LdapAuthenticationManagerTest {
 
    //@formatter:off
    @Mock private LdapClient client;
-   
+
    @Mock private LdapConfiguration config;
    @Mock private AuthenticationRequest request;
    @Mock private LdapConnection connection;
@@ -128,7 +128,9 @@ public class LdapAuthenticationManagerTest {
       when(request.getPassword()).thenReturn(PASSWORD);
 
       when(account.getDistinguishedName()).thenReturn(USERNAME);
-      when(client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)).thenReturn(connection);
+      try (LdapConnection LConn = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
+         when(LConn).thenReturn(connection);
+      }
       when(connection.findAccount(any(LdapFilter.class), eq(USERNAME))).thenReturn(account);
       when(connection.authenticate(USERNAME, PASSWORD)).thenReturn(true);
       when(account.getDisplayName()).thenReturn(DISPLAY_NAME);
@@ -169,7 +171,9 @@ public class LdapAuthenticationManagerTest {
       when(request.getPassword()).thenReturn(PASSWORD);
 
       when(account.getDistinguishedName()).thenReturn(USERNAME);
-      when(client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)).thenReturn(connection);
+      try (LdapConnection LConn = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
+         when(LConn).thenReturn(connection);
+      }
       when(connection.findAccount(any(LdapFilter.class), eq(USERNAME))).thenReturn(account);
       when(connection.authenticate(USERNAME, PASSWORD)).thenReturn(false);
       when(account.getDisplayName()).thenReturn(DISPLAY_NAME);
@@ -212,8 +216,9 @@ public class LdapAuthenticationManagerTest {
       // Change Configuration
       when(config.getCredentialsSource()).thenReturn(LdapCredentialsSource.USER_CREDENTIALS);
       manager.configure(config);
-
-      when(client.getConnection(LdapAuthenticationType.SIMPLE, USERNAME, PASSWORD)).thenReturn(connection);
+      try (LdapConnection LConn = client.getConnection(LdapAuthenticationType.SIMPLE, USERNAME, PASSWORD)) {
+         when(LConn).thenReturn(connection);
+      }
       when(connection.findAccount(any(LdapFilter.class), eq(USERNAME))).thenReturn(account);
 
       when(account.getDisplayName()).thenReturn(DISPLAY_NAME);

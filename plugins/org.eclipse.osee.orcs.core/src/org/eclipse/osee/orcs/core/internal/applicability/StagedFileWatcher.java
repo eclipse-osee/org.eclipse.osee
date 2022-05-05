@@ -55,9 +55,8 @@ public class StagedFileWatcher {
    }
 
    public void runWatcher(BlockApplicabilityStageRequest data, String directory) {
-      try {
-         watchService = FileSystems.getDefault().newWatchService();
 
+      try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
          Path dir = Paths.get(directory);
 
          Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
@@ -100,7 +99,6 @@ public class StagedFileWatcher {
             key.reset();
          }
 
-         watchService.close();
       } catch (ClosedWatchServiceException ex) {
          return;
       } catch (IOException | InterruptedException ex) {
