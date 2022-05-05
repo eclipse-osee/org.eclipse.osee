@@ -136,19 +136,6 @@ describe('MessageTableComponent', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(function () {
-    var store:any = {10:'{mim:{editMode:true}}'};
-  
-    spyOn(localStorage, 'getItem').and.callFake(function (key) {
-      return store[key];
-    });
-    spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
-      return store[key] = value + '';
-    });
-    spyOn(localStorage, 'clear').and.callFake(function () {
-        store = {};
-    });
-  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -289,7 +276,7 @@ describe('MessageTableComponent', () => {
     })
 
     it('should open a dialog and delete a message', async() => {
-      component.openMenu(mEvent, messagesMock[0],'','');
+      component.openMenu(mEvent, messagesMock[1],'','');
       await fixture.whenStable();
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteMessage').and.callThrough();
