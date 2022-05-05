@@ -370,17 +370,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
             txAlias, "mod_type");
-         if (OptionsUtil.getIncludeApplicabilityTokens(getOptions())) {
-            writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
-         } else if (queryDataCursor.getParentQueryData() != null && OptionsUtil.getIncludeApplicabilityTokens(
-            queryDataCursor.getParentQueryData().getOptions())) {
+         if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
             writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
          }
 
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
-
          if (this.rootQueryData.hasCriteriaType(CriteriaRelatedTo.class)) {
             List<CriteriaRelatedTo> crt = this.rootQueryData.getCriteriaByType(CriteriaRelatedTo.class);
             if (crt.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
