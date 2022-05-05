@@ -1419,14 +1419,11 @@ public final class Lib {
          destination.getParentFile().mkdirs();
       }
 
-      InputStream inputStream = null;
-      OutputStream outputStream = null;
-      try {
-         JarFile jarfile = new JarFile(jarFile.getAbsolutePath());
-         JarEntry jarEntry = jarfile.getJarEntry(entry);
+      JarFile jarfile = new JarFile(jarFile.getAbsolutePath());
+      JarEntry jarEntry = jarfile.getJarEntry(entry);
 
-         inputStream = new BufferedInputStream(jarfile.getInputStream(jarEntry));
-         outputStream = new BufferedOutputStream(new FileOutputStream(destination));
+      try (InputStream inputStream = new BufferedInputStream(jarfile.getInputStream(jarEntry));
+         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination))) {
          inputStreamToOutputStream(inputStream, outputStream);
 
          outputStream.flush();
@@ -1434,9 +1431,6 @@ public final class Lib {
          String information = String.format("JarFile: %s\nEntry: %s\nDestination: %s\n", jarFile.getAbsolutePath(),
             entry, destination.getAbsolutePath());
          throw new IOException(information + ex.getMessage());
-      } finally {
-         Lib.close(outputStream);
-         Lib.close(inputStream);
       }
    }
 

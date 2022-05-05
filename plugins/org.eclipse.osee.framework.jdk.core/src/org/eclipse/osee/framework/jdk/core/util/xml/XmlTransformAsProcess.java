@@ -181,8 +181,8 @@ public class XmlTransformAsProcess {
    }
 
    public static void main(String[] args) throws Exception {
-      InputStream xmlInput = new FileInputStream(args[0]);
-      InputStream xsltInput = new FileInputStream(args[1]);
-      getHtmlFromXml(xmlInput, xsltInput, new PrintWriter(System.out));
+      try (InputStream xmlInput = new FileInputStream(args[0]); InputStream xsltInput = new FileInputStream(args[1])) {
+         getHtmlFromXml(xmlInput, xsltInput, new PrintWriter(System.out));
+      }
    }
 }

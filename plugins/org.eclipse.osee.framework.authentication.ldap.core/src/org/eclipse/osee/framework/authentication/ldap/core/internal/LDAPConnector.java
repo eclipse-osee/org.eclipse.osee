@@ -250,21 +250,17 @@ public class LDAPConnector {
       if (ctxInstance == null) {
          JdbcStatement statement = null;
          final String FETCH_USER_COMMAND = "SELECT * FROM ldap_details";
-
          try {
             statement = LDAPAuthenticationProvider.getAtsApi().getJdbcService().getClient().getStatement();
-        statement.runPreparedQuery(FETCH_USER_COMMAND);
-
+            statement.runPreparedQuery(FETCH_USER_COMMAND);
             while (statement.next()) {
                String ServerName = statement.getString("server_name");
                int Port = statement.getInt("port");
                String LDAPServerPrefix = "ldap://";
                String sUserName = statement.getString("user_name");
-
                String sPasswordEnc = statement.getString("password");
                byte[] decodeBase64 = Base64.decodeBase64(sPasswordEnc.getBytes());
                String sPassword = new String(decodeBase64);
-
                Hashtable<String, String> env = new Hashtable<String, String>();
                // The factory responsible to LDAPContext creation
                env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -274,15 +270,12 @@ public class LDAPConnector {
                env.put(Context.SECURITY_PRINCIPAL, sUserName);
                // LDAP Root or Fixed or User crendtials(pwd) to connect
                env.put(Context.SECURITY_CREDENTIALS, sPassword);
-
                // LDAP server URL , the url always starts with ldap:// then we
                // append
                // the server and port details
                String ldapURL = LDAPServerPrefix + ServerName + ":" + Port;
                env.put(Context.PROVIDER_URL, ldapURL);
-
                ctxInstance = new InitialLdapContext(env, null);
-
             }
          } catch (NamingException e) {
             OseeLog.logf(Activator.class, Level.SEVERE, "Failed to establish LDAP connection", (Object) null);
@@ -296,7 +289,6 @@ public class LDAPConnector {
             Lib.close(statement);
          }
       }
-
       return ctxInstance;
    }
 
@@ -314,7 +306,7 @@ public class LDAPConnector {
 
       try {
          statement = LDAPAuthenticationProvider.getAtsApi().getJdbcService().getClient().getStatement();
-      statement.runPreparedQuery(FETCH_USER_COMMAND);
+         statement.runPreparedQuery(FETCH_USER_COMMAND);
 
          while (statement.next()) {
             String SearchBase = statement.getString("search_base");
