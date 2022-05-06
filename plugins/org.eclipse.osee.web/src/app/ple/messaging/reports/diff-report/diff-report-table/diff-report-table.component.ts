@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { HeaderService } from '../../shared/services/ui/header.service';
-import { diffItem, diffItemKey } from '../../shared/types/DifferenceReport';
+import { HeaderService } from '../../../shared/services/ui/header.service';
+import { diffItem, diffItemKey } from '../../../shared/types/DifferenceReport';
 
 @Component({
   selector: 'app-diff-report-table',

@@ -11,28 +11,28 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DiffReportServiceMock } from '../../shared/mocks/diff-report-service.mock';
-import { DiffReportService } from '../../shared/services/ui/diff-report.service';
+import { DiffReportServiceMock } from '../../../shared/mocks/diff-report-service.mock';
+import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
 import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
 
-import { NodeDiffsComponent } from './node-diffs.component';
+import { ConnectionDiffsComponent } from './connection-diffs.component';
 
-describe('NodeDiffsComponent', () => {
-  let component: NodeDiffsComponent;
-  let fixture: ComponentFixture<NodeDiffsComponent>;
+describe('ConnectionDiffsComponent', () => {
+  let component: ConnectionDiffsComponent;
+  let fixture: ComponentFixture<ConnectionDiffsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: DiffReportService, useValue: DiffReportServiceMock },
       ],
-      declarations: [ NodeDiffsComponent, DiffReportTableComponent ]
+      declarations: [ ConnectionDiffsComponent, DiffReportTableComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NodeDiffsComponent);
+    fixture = TestBed.createComponent(ConnectionDiffsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
