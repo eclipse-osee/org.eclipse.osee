@@ -29,6 +29,10 @@ export class ConnectionService {
 
   constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
   
+  getConnections(branchId: string) {
+    return this.http.get<connection[]>(apiURL + "/mim/branch/" + branchId + "/connections");
+  }
+
   /**
    * 
    * @param nodeId Id of node to create a connection-node relationship

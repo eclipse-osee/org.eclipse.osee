@@ -13,13 +13,13 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { mimReportsMock } from 'src/app/ple-services/http/mim-reports.mock';
+import { HttpMethods } from 'src/app/types/http-methods';
 import { apiURL } from 'src/environments/environment';
 
-import { ReportsService } from './reports.service';
+import { FilesService } from './files.service';
 
-describe('ReportsService', () => {
-  let service: ReportsService;
+describe('FilesService', () => {
+  let service: FilesService;
   let scheduler: TestScheduler;
   let httpTestingController: HttpTestingController;
 
@@ -27,7 +27,7 @@ describe('ReportsService', () => {
     TestBed.configureTestingModule({
       imports:[HttpClientTestingModule]
     });
-    service = TestBed.inject(ReportsService);
+    service = TestBed.inject(FilesService);
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
@@ -39,31 +39,13 @@ describe('ReportsService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get the difference report route', () => {
-    scheduler.run(() => {
-      service.BranchId = '10';
-      service.BranchType = 'working';
-      let expectedObservable = { a: "/ple/messaging/reports/working/10/differences" };
-      let expectedMarble = '(a)';
-      scheduler.expectObservable(service.diffReportRoute).toBe(expectedMarble, expectedObservable);
-    })
-  })
-
-  it('should get reports', () => {
-    const reports = mimReportsMock;
-    service.getReports().subscribe();
-    const req = httpTestingController.expectOne(apiURL+'/mim/reports');
+  it('should get a file as a blob', () => {
+    const file = new Blob();
+    service.getFileAsBlob(HttpMethods.GET, 'url', '{}').subscribe();
+    const req = httpTestingController.expectOne(apiURL+'url');
     expect(req.request.method).toEqual('GET');
-    req.flush(reports);
+    req.flush(file);
     httpTestingController.verify();
   });
-
-  it('should get a diff report path', () => {
-    scheduler.run(({expectObservable}) => {
-      service.BranchId = "10"
-      service.BranchType = "abc"
-      expectObservable(service.diffReportRoute).toBe("a", {a: "/ple/messaging/reports/abc/10/differences"})
-    })
-  })
 
 });

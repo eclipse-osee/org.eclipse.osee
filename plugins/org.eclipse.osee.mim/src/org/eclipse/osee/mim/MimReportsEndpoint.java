@@ -10,21 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.reports-view-buttons
-    padding-left: 2em
+package org.eclipse.osee.mim;
 
-.reports-view-web-based
-    padding-left: 1em
+import java.util.List;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.mim.types.MimReportToken;
 
-.reports-form
-    padding-left: 1em
-    .mat-form-field
-        display: block
-        width: 200px
-    .reports-form-request-body
-        width: 500px
-    input
-        margin-bottom: 0.5em
+/**
+ * @author Ryan Baldwin
+ */
+@Path("reports")
+public interface MimReportsEndpoint {
 
-.diff-report-button
-    margin-bottom: 2em
+   @GET()
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<MimReportToken> getReports();
+
+}

@@ -10,21 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.reports-view-buttons
-    padding-left: 2em
-
-.reports-view-web-based
-    padding-left: 1em
-
-.reports-form
-    padding-left: 1em
-    .mat-form-field
-        display: block
-        width: 200px
-    .reports-form-request-body
-        width: 500px
-    input
-        margin-bottom: 0.5em
-
-.diff-report-button
-    margin-bottom: 2em
+export const enum HttpMethods {
+    GET = "GET",
+    POST = "POST",
+    PATCH = "PATCH",
+    PUT = "PUT",
+    DELETE = "DELETE"
+}

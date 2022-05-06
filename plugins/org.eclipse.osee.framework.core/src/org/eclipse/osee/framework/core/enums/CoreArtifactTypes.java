@@ -263,6 +263,12 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken IndirectSoftwareRequirementMsWord = osee.add(osee.artifactType(25L, "Indirect Software Requirement - MS Word", false, MsWordTemplate, AbstractSoftwareRequirement));
    ArtifactTypeToken InterfaceRequirementMsWord = osee.add(osee.artifactType(32L, "Interface Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement)
       .exactlyOne(CoreAttributeTypes.Component, CoreAttributeTypes.Component.Unspecified));
+   ArtifactTypeToken OseeReport = osee.add(osee.artifactType(3379299200905896452L, "OSEE Report", false, Artifact)
+      .exactlyOne(CoreAttributeTypes.HttpMethod)
+      .exactlyOne(CoreAttributeTypes.FileExtension)
+      .exactlyOne(CoreAttributeTypes.FileNamePrefix)
+      .exactlyOne(CoreAttributeTypes.ProducesMediaType));
+   ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
    ArtifactTypeToken RootArtifact = osee.add(osee.artifactType(10L, "Root Artifact", false, Artifact));
    ArtifactTypeToken SafetyAssessment = osee.add(osee.artifactType(59L, "Safety Assessment", false, Artifact)
       .zeroOrOne(ParagraphNumber)
