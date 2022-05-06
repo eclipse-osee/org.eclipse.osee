@@ -33,8 +33,10 @@ import org.eclipse.osee.framework.core.enums.token.FACESegmentAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FACETechStandardVersionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FeatureValueAttributeType;
+import org.eclipse.osee.framework.core.enums.token.FileExtensionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FunctionalGroupingAttributeType;
 import org.eclipse.osee.framework.core.enums.token.GfeCfeAttributeType;
+import org.eclipse.osee.framework.core.enums.token.HttpMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.IdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.InterfaceLogicalTypeAttribute;
 import org.eclipse.osee.framework.core.enums.token.InterfaceMessagePeriodicityAttributeType;
@@ -45,6 +47,7 @@ import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAtt
 import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PartitionAttributeType;
+import org.eclipse.osee.framework.core.enums.token.ProducesMediaTypeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.ProductTypeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.QualificationMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.SafetySeverityAttributeType;
@@ -108,6 +111,8 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean FeatureMultivalued = osee.createBoolean(3641431177461038717L, "Feature Multivalued", MediaType.TEXT_PLAIN, "");
    FeatureValueAttributeType FeatureValueType = osee.createEnum(new FeatureValueAttributeType());
    ProductTypeAttributeType ProductApplicability = osee.createEnum(new ProductTypeAttributeType());
+   FileExtensionAttributeType FileExtension = osee.createEnum(new FileExtensionAttributeType());
+   AttributeTypeString FileNamePrefix = osee.createString(1695022067194142778L, "File Name Prefix", MediaType.TEXT_PLAIN, "");
    AttributeTypeString FileSystemPath = osee.createString(1152921504606847707L, "File System Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeString FunctionalCategory = osee.createString(1152921504606847871L, "Functional Category", MediaType.TEXT_PLAIN, "Functional Category in support of System Safety Report");
    FunctionalGroupingAttributeType FunctionalGrouping = osee.createEnum(new FunctionalGroupingAttributeType());
@@ -123,6 +128,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString GraphitiDiagram = osee.createStringNoTag(1152921504606847319L, "Graphiti Diagram", MediaType.TEXT_XML, "xml definition of an Eclipse Graphiti Diagram", "diagram");
    AttributeTypeString Hazard = osee.createString(1152921504606847138L, "Hazard", MediaType.TEXT_PLAIN, "");
    AttributeTypeString HtmlContent = osee.createString(1152921504606847869L, "HTML Content", MediaType.TEXT_HTML, "HTML format text must be a valid xhtml file");
+   HttpMethodAttributeType HttpMethod = osee.createEnum(new HttpMethodAttributeType());
    AttributeTypeBoolean IaPlan = osee.createBoolean(1253931514616857210L, "IA Plan", MediaType.TEXT_PLAIN, "");
    IdalAttributeType IDAL = osee.createEnum(new IdalAttributeType());
    AttributeTypeString IdalRationale = osee.createStringNoTag(2517743638468399405L, "IDAL Rationale", MediaType.TEXT_PLAIN, "Item Development Assurance Level Rationale");
@@ -178,6 +184,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString Phone = osee.createString(1152921504606847079L, "Phone", MediaType.TEXT_PLAIN, "");
    AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
    AttributeTypeBoolean PotentialSecurityImpact = osee.createBoolean(1152921504606847109L, "Potential Security Impact", MediaType.TEXT_PLAIN, "");
+   ProducesMediaTypeAttributeType ProducesMediaType = osee.createEnum(new ProducesMediaTypeAttributeType());
    AttributeTypeString ProductLinePreferences = osee.createStringNoTag(582562585958993670L, "Product Line Preferences", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean PublishInline = osee.createBoolean(1152921504606847122L, "PublishInline", MediaType.TEXT_PLAIN, "");
    QualificationMethodAttributeType QualificationMethod = osee.createEnum(new QualificationMethodAttributeType());

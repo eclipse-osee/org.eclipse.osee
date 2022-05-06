@@ -17,6 +17,10 @@ import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports.component';
 import { BranchPickerModule } from 'src/app/shared-components/components/branch-picker/branch-picker.module';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -26,7 +30,11 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     BranchPickerModule,
     CommonModule,
+    FormsModule,
     MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     ReportsRoutingModule
   ]
 })

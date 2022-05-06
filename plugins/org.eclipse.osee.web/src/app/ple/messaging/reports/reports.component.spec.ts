@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BranchPickerStub } from 'src/app/shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 
 import { ReportsComponent } from './reports.component';
 
@@ -21,8 +23,8 @@ describe('ReportsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [ ReportsComponent ]
+      imports: [RouterTestingModule, HttpClientTestingModule],
+      declarations: [ ReportsComponent, BranchPickerStub ]
     })
     .compileComponents();
   });
