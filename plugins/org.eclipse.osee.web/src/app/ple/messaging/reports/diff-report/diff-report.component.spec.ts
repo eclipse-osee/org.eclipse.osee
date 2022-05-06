@@ -14,8 +14,8 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTableModule } from '@angular/material/table';
 import { TestScheduler } from 'rxjs/testing';
-import { DiffReportServiceMock } from '../shared/mocks/diff-report-service.mock';
-import { DiffReportService } from '../shared/services/ui/diff-report.service';
+import { DiffReportServiceMock } from '../../shared/mocks/diff-report-service.mock';
+import { DiffReportService } from '../../shared/services/ui/diff-report.service';
 import { ConnectionDiffsComponent } from './connection-diffs/connection-diffs.component';
 
 import { DiffReportComponent } from './diff-report.component';

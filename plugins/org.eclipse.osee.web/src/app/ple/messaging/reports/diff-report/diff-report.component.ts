@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { DiffReportService } from '../shared/services/ui/diff-report.service';
-import { branchSummary} from '../shared/types/DifferenceReport';
-import { HeaderService } from '../shared/services/ui/header.service';
+import { DiffReportService } from '../../shared/services/ui/diff-report.service';
+import { branchSummary} from '../../shared/types/DifferenceReport';
+import { HeaderService } from '../../shared/services/ui/header.service';
 import { map } from 'rxjs/operators';
 
 @Component({

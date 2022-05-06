@@ -11,27 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DiffReportServiceMock } from '../../shared/mocks/diff-report-service.mock';
-import { DiffReportService } from '../../shared/services/ui/diff-report.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { SubmessageDiffsComponent } from './submessage-diffs.component';
+import { ReportsComponent } from './reports.component';
 
-describe('SubmessageDiffsComponent', () => {
-  let component: SubmessageDiffsComponent;
-  let fixture: ComponentFixture<SubmessageDiffsComponent>;
+describe('ReportsComponent', () => {
+  let component: ReportsComponent;
+  let fixture: ComponentFixture<ReportsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        { provide: DiffReportService, useValue: DiffReportServiceMock },
-      ],
-      declarations: [ SubmessageDiffsComponent ]
+      imports: [RouterTestingModule],
+      declarations: [ ReportsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SubmessageDiffsComponent);
+    fixture = TestBed.createComponent(ReportsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

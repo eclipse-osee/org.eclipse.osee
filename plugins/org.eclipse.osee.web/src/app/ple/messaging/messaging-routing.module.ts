@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'help', loadChildren: () => import('./messaging-help/messaging-help.module').then(m => m.MessagingHelpModule) },
   { path: 'structureNames', loadChildren: () => import('./structure-names/structure-names.module').then(m => m.StructureNamesModule) },
   { path: ':branchType/:branchId/type/:typeId', loadChildren: () => import('./type-detail/type-detail.module').then(m => m.TypeDetailModule) },
-  { path: 'diff-report', loadChildren: () => import('./diff-report/diff-report.module').then(m => m.DiffReportModule) },
+  { path: 'reports', loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule) },
 ];
 
 @NgModule({

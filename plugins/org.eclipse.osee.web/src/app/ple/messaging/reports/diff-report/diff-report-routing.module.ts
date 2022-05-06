@@ -13,10 +13,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DiffReportComponent } from './diff-report.component';
-import { DiffReportResolver } from '../../../resolvers/diff-report-resolver.resolver';
+import { DiffReportResolver } from '../../../../resolvers/diff-report-resolver.resolver';
 
 const routes: Routes = [
-  { path: ':branchType/:branchId', component: DiffReportComponent, resolve: {
+  { path: '', component: DiffReportComponent, resolve: {
       diff: DiffReportResolver
     } 
   }

@@ -11,28 +11,27 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DiffReportServiceMock } from '../../shared/mocks/diff-report-service.mock';
-import { DiffReportService } from '../../shared/services/ui/diff-report.service';
-import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
+import { DiffReportServiceMock } from '../../../shared/mocks/diff-report-service.mock';
+import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
 
-import { MessageDiffsComponent } from './message-diffs.component';
+import { SubmessageDiffsComponent } from './submessage-diffs.component';
 
-describe('MessageDiffsComponent', () => {
-  let component: MessageDiffsComponent;
-  let fixture: ComponentFixture<MessageDiffsComponent>;
+describe('SubmessageDiffsComponent', () => {
+  let component: SubmessageDiffsComponent;
+  let fixture: ComponentFixture<SubmessageDiffsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: DiffReportService, useValue: DiffReportServiceMock },
       ],
-      declarations: [ MessageDiffsComponent, DiffReportTableComponent ]
+      declarations: [ SubmessageDiffsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MessageDiffsComponent);
+    fixture = TestBed.createComponent(SubmessageDiffsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
