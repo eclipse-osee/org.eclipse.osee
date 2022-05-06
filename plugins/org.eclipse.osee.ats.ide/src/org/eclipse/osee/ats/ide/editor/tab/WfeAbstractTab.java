@@ -170,4 +170,8 @@ public abstract class WfeAbstractTab extends FormPage {
       showBusy(set);
    }
 
+   public void refresh() {
+      // do nothing
+   }
+
 }
