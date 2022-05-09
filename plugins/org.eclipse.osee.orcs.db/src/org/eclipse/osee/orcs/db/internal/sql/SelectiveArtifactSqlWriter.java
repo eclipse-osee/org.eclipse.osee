@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private String fieldAlias;
    private String relsAlias;
    private String rels2Alias;
-
    private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData rootQueryData) {
       super(sqlJoinFactory, jdbcClient, rootQueryData);
       this.parentWriter = parentWriter;
@@ -123,7 +121,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    private void follow(SqlHandlerFactory handlerFactory, List<String> artWithAliases, String sourceArtTable) {
       List<SqlHandler<?>> handlers = new ArrayList<>(queryDataCursor.getOnlyCriteriaSet().size());
-
       FollowRelationSqlHandler previousFollow = null;
       for (Criteria criteria : queryDataCursor.getOnlyCriteriaSet()) {
          if (criteria instanceof CriteriaRelationTypeFollow) {
@@ -133,7 +130,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             } else {
                handlerSlim = new FollowRelationSqlHandler(previousFollow);
             }
-
             handlerSlim.setData((CriteriaRelationTypeFollow) criteria);
             handlers.add(handlerSlim);
             previousFollow = handlerSlim;
@@ -141,10 +137,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             handlers.add(handlerFactory.createHandler(criteria));
          }
       }
-
       String artWithAlias = write(handlers, "artWith");
       artWithAliases.add(artWithAlias);
-
       QueryData tempQueryDataCursor = queryDataCursor;
       for (QueryData childQueryData : queryDataCursor.getChildrenQueryData()) {
          queryDataCursor = childQueryData;
@@ -156,7 +150,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    public void build(SqlHandlerFactory handlerFactory) {
       List<String> artWithAliases = new ArrayList<>();
       follow(handlerFactory, artWithAliases, null);
-
       String artWithAlias;
       if (artWithAliases.size() == 1) {
          artWithAlias = artWithAliases.get(0);
@@ -174,8 +167,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                //for each alias see if osee_relation is within its () and if so do not add top_rel_type and top_rel_order
                //otherwise add
                if (this.output.toString().contains("osee_relation rel")) {
+                  String dataString = this.output.toString().replaceAll("\\/\\*.*?\\*\\/", "");
                   Pattern pattern = Pattern.compile(art + "\\sAS\\s\\((.*?)\\)", Pattern.DOTALL);
-                  Matcher regexMatcher = pattern.matcher(this.output.toString());
+                  Matcher regexMatcher = pattern.matcher(dataString);
                   if (regexMatcher.find()) {//Finds Matching Pattern in String
                      if (regexMatcher.group(1).contains("osee_relation rel")) {
                         write("SELECT " + art + ".* from " + art);
@@ -191,17 +185,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             write(Collections.toString(artWithAliases, "SELECT * FROM ", " UNION SELECT * FROM ", null));
          }
       }
-
       if (rootQueryData.isIdQueryType() || rootQueryData.isCountQueryType()) {
          fieldAlias = artWithAlias;
       } else {
          String attsAlias = writeAttsCommonTableExpression(artWithAlias);
-
          if (rootQueryData.isAttributesOnlyQueryType() || rootQueryData.isTokenQueryType()) {
             fieldAlias = attsAlias;
          } else {
             writeRelsCommonTableExpression(artWithAlias);
-
             if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
                CoreBranchCategoryTokens.MIM)) {
                writeRelsCommonTableExpression2(artWithAlias);
@@ -209,18 +200,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
          }
       }
-
       finishWithClause();
-
       if (rootQueryData.isCountQueryType()) {
          write("SELECT count(*) FROM %s", fieldAlias);
       } else {
          write("SELECT * FROM %s", fieldAlias);
       }
-
       if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
          write(" ORDER BY art_id");
-
       } else if (this.rels2Alias != null) {
          if (this.output.toString().contains("top_rel_type")) {
             write(" ORDER BY top desc,top_rel_type, top_rel_order, rel_order");
@@ -232,7 +219,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    private void writeFieldsCommonTableExpression(String artWithAlias, String attsAlias) {
       fieldAlias = startCommonTableExpression("fields");
-
       writeSelectAndHint();
       writeSelectFields(attsAlias, "*");
       if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
@@ -242,15 +228,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write(", 0 AS other_art_type_id FROM ");
       }
       write(attsAlias);
-
       write("\n UNION ALL\n ");
       SelectiveArtifactSqlWriter relWriter = new SelectiveArtifactSqlWriter(this);
       relWriter.relsAlias = relsAlias;
-
       List<SqlHandler<?>> handlers = new ArrayList<SqlHandler<?>>();
       handlers.add(new SqlHandler<Criteria>() {
          private String artAlias;
-
          @Override
          public void addTables(AbstractSqlWriter writer) {
             writer.addTable(relsAlias);
@@ -269,18 +252,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       });
       relWriter.write(handlers);
       write(relWriter.toSql());
-
       if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
          CoreBranchCategoryTokens.MIM)) {
          write("\n UNION ALL\n ");
-
          SelectiveArtifactSqlWriter relWriter2 = new SelectiveArtifactSqlWriter(this);
          relWriter2.rels2Alias = rels2Alias;
-
          List<SqlHandler<?>> handlers2 = new ArrayList<SqlHandler<?>>();
          handlers2.add(new SqlHandler<Criteria>() {
             private String artAlias;
-
             @Override
             public void addTables(AbstractSqlWriter writer) {
                writer.addTable(rels2Alias);
@@ -313,7 +292,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("\n FROM %s, osee_attribute att, osee_txs txs", artWithAlias);
       write("\n WHERE ");
       writeEqualsAnd(artWithAlias, attAlias, "art_id");
-
       AttributeTypeId attributeType = rootQueryData.getAttributeType();
       if (attributeType.isValid()) {
          writeEqualsParameterAnd(attAlias, "attr_type_id", attributeType);
@@ -365,9 +343,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    protected void writeSelectFields() {
       String artAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
       String txAlias = getMainTableAlias(OseeDb.TXS_TABLE);
-
       if (relsAlias == null && rels2Alias == null) {
-
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
             txAlias, "mod_type");
          if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
@@ -397,7 +373,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeSelectFields(rels2Alias, "*", artAlias, "art_type_id");
          write(" AS other_art_type_id");
       }
-
    }
 
    @Override
