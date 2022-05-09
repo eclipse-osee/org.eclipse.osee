@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CurrentTypesService } from './services/current-types.service';
 import { PlMessagingTypesUIService } from './services/pl-messaging-types-ui.service';
 
 @Component({
@@ -21,12 +22,14 @@ import { PlMessagingTypesUIService } from './services/pl-messaging-types-ui.serv
 })
 export class TypesInterfaceComponent implements OnInit {
   filterValue: string = "";
-  constructor(private route: ActivatedRoute, private uiService: PlMessagingTypesUIService) { }
+  inEditMode = this._typesService.inEditMode;
+  constructor(private route: ActivatedRoute, private uiService: PlMessagingTypesUIService, private _typesService:CurrentTypesService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((values) => {
       this.filterValue = values.get('type')?.trim().toLowerCase() || '';
       this.uiService.BranchIdString = values.get('branchId') || '';
+      this.uiService.branchType = values.get('branchType') || '';
     })
   }
 

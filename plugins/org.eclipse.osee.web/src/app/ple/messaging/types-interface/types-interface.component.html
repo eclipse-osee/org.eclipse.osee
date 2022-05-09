@@ -13,7 +13,12 @@
  <div style="display:flex; flex-direction:row; flex-grow:1; justify-content: space-between; align-items:center;">
     <osee-branch-picker category="3">   
     </osee-branch-picker>
-    <action-dropdown category="3">
-    </action-dropdown>
+    <div style="display:flex; flex-direction:row; gap: 5px">
+        <ng-container *ngIf="(inEditMode | async)===true">
+            <osee-undo-button-branch></osee-undo-button-branch>
+        </ng-container>
+        <action-dropdown category="3">
+        </action-dropdown>
+    </div>
 </div>
 <ple-messaging-types-type-grid [filterValue]="filterValue"></ple-messaging-types-type-grid>

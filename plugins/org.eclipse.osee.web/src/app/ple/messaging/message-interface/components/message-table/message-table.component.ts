@@ -19,6 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
 import { delay, distinctUntilChanged, filter, first, map, share, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { difference } from 'src/app/types/change-report/change-report';
+import { CurrentBranchTransactionService } from '../../../../../ple-services/httpui/current-branch-transaction.service';
 import { HttpLoadingService } from '../../../../../services/http-loading.service';
 import { applic } from '../../../../../types/applicability/applic';
 import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
@@ -255,5 +256,4 @@ export class MessageTableComponent implements OnInit {
       switchMap((z: AddSubMessageDialog) => iif(() => z != undefined && z.subMessage != undefined && z.subMessage.id != undefined && z?.subMessage?.id.length > 0 && z.subMessage.id!=='-1', this.messageService.relateSubMessage(z.id, z?.subMessage?.id || '-1'), this.messageService.createSubMessage(z.subMessage, z.id)))
     ).subscribe();
   }
-
 }
