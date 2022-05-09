@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteStateService } from '../../../services/route-state-service.service';
 import { GraphDummy } from '../../../testing/MockComponents/Graph.mock';
@@ -21,20 +21,17 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 
 import { BaseComponent } from './base.component';
-import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDrawerHarness } from '@angular/material/sidenav/testing'
 import { EditAuthService } from 'src/app/ple/messaging/shared/services/edit-auth-service.service';
 import { editAuthServiceMock } from '../../../mocks/EditAuthService.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
-import { of } from 'rxjs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MimSingleDiffDummy } from 'src/app/ple/diff-views/mocks/mim-single-diff.mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatIconModule } from '@angular/material/icon';
-import { BranchPickerModule } from '../../../../../../shared-components/components/branch-picker/branch-picker.module';
 import { BranchPickerStub } from '../../../../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 import { ActionDropdownStub } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
+import { BranchUndoButtonTestingModule } from '../../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
 
 describe('BaseComponent', () => {
   let component: BaseComponent;
@@ -44,7 +41,7 @@ describe('BaseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule,MatIconModule, MatButtonModule,MatSidenavModule,RouterTestingModule, NoopAnimationsModule],
+      imports: [MatDialogModule,MatIconModule, MatButtonModule,MatSidenavModule,RouterTestingModule, BranchUndoButtonTestingModule, NoopAnimationsModule],
       providers: [
         { provide: EditAuthService, useValue: editAuthServiceMock },
         { provide: CurrentGraphService, useValue: graphServiceMock }

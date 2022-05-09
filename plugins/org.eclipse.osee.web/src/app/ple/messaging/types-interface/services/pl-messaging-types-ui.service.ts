@@ -70,4 +70,8 @@ export class PlMessagingTypesUIService {
   set BranchIdString(value: string) {
     this.ui.idValue = value;
   }
+
+  set branchType(value: string) {
+    this.ui.typeValue = value;
+  }
 }

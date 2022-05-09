@@ -38,6 +38,7 @@ import { UsermenuComponent } from './components/menu/usermenu/usermenu.component
 import { MatIconModule } from '@angular/material/icon';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
+import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import { ActionStateButtonModule } from '../../../shared-components/components/a
     MatSidenavModule,
     MatIconModule,
     ActionStateButtonModule,
+    BranchUndoButtonModule,
     NgxGraphModule
   ]
 })

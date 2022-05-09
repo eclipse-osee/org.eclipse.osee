@@ -57,6 +57,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { TestScheduler } from 'rxjs/testing';
+import { BranchUndoButtonTestingModule } from '../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
 
 describe('StructureTableComponent', () => {
   let component: StructureTableComponent;
@@ -87,6 +88,7 @@ describe('StructureTableComponent', () => {
         OseeStringUtilsPipesModule,
         OseeStringUtilsDirectivesModule,
         GenericButtonsModule,
+        BranchUndoButtonTestingModule,
         RouterTestingModule.withRoutes([{path:'diffOpen',outlet:'rightSideNav',component:StructureTableComponent},{path:'diff',component:StructureTableComponent}]),
         SharedMessagingModule
       ],

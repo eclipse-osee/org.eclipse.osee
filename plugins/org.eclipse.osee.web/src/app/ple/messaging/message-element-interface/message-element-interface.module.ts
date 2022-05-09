@@ -56,6 +56,7 @@ import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.modu
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { PlatformTypeQueryComponent } from './components/platform-type-query/platform-type-query.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 
 
 
@@ -88,6 +89,7 @@ import { MatDividerModule } from '@angular/material/divider';
     GenericButtonsModule,
     MessageElementInterfaceRoutingModule,
     ActionStateButtonModule,
+    BranchUndoButtonModule,
     SharedMessagingModule
   ]
 })

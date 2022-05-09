@@ -236,11 +236,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public XResultData setBranchCategory(BranchId branch, BranchCategoryToken category) {
       if (!getBranchCategories(branch).contains(category)) {
-      return branchOps.setBranchCategory(branch, category);}
-      else {
+         return branchOps.setBranchCategory(branch, category);
+      } else {
          XResultData result = new XResultData();
          result.setTitle("Setting branch category");
-         result.error("Branch already has category: "+category.getName());
+         result.error("Branch already has category: " + category.getName());
          return result;
       }
    }
@@ -813,6 +813,20 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       return BranchId.valueOf(modifiedOnBranchId);
 
+   }
+
+   @Override
+   public boolean undoLatest(BranchId branch) {
+      return undo(newTxQuery().andIsHead(branch).getResultsAsIds().getOneOrDefault(TransactionId.SENTINEL));
+   }
+
+   @Override
+   public boolean undo(BranchId branch, TransactionId transaction) {
+      return undo(transaction);
+   }
+
+   private boolean undo(TransactionId tx) {
+      return orcsApi.getTransactionFactory().purgeTxs(tx.getIdString());
    }
 
 }

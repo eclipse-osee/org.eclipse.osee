@@ -16,6 +16,9 @@
                 <a mat-raised-button class="connections-button" color="primary" [routerLink]="connectionRoute">Connections</a>
             </ng-container>
         <div class="message-interface-header grouped-buttons">
+            <ng-container *ngIf="(inEditMode | async)===true">
+                <osee-undo-button-branch class="message-element-interface-button-header"></osee-undo-button-branch>
+            </ng-container>
             <ng-container *ngIf="(inDiffMode|async) as _diff">
                 <a mat-raised-button class="message-element-interface-button-header" [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:'../'"><mat-icon *ngIf="_diff==='false'">change_history</mat-icon><mat-icon *ngIf="_diff==='true'">visibility_off</mat-icon><span>{{_diff==='false'?"Show Deltas":"Hide Deltas"}}</span></a>
             </ng-container>

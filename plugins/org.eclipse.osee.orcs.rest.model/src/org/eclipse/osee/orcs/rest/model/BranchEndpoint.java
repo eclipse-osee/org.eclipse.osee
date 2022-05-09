@@ -255,4 +255,27 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<BranchId> getOtherBranchesWithModifiedArtifacts(@PathParam("branchId") BranchId branchId, @PathParam("art-id") ArtifactId artifactId);
 
+   /**
+    * Undo the latest commit on a branch by purging the latest transaction.
+    *
+    * @param branch
+    * @return
+    */
+   @DELETE
+   @Path("{branchId}/undo")
+   @Produces(MediaType.APPLICATION_JSON)
+   boolean undoLatest(@PathParam("branchId") BranchId branch);
+
+   /**
+    * Undo a commit on a branch by purging a specific transaction.
+    *
+    * @param branch
+    * @param transaction
+    * @return
+    */
+   @DELETE
+   @Path("{branchId}/undo/{txId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   boolean undo(@PathParam("branchId") BranchId branch, @PathParam("txId") TransactionId transaction);
+
 }

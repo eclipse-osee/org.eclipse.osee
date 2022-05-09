@@ -58,6 +58,7 @@ import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-button
 import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-add-button/two-layer-add-button.harness';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
+import { BranchUndoButtonTestingModule } from '../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
 
 let loader: HarnessLoader;
 
@@ -114,6 +115,7 @@ describe('MessageTableComponent', () => {
         MatMenuModule,
         MatDialogModule,
         GenericButtonsModule,
+        BranchUndoButtonTestingModule,
         RouterTestingModule.withRoutes([{ path: 'diff', component: MessageTableComponent, },{path:'diffOpen',component:MimSingleDiffDummy,outlet:'rightSideNav'}])
       ],
       declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective, ActionDropdownStub],
