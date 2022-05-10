@@ -153,6 +153,9 @@ public class UserServiceImpl implements UserService {
          for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).asArtifacts()) {
             UserToken user = toUser(userArtifact);
 
+            if (user.isValid() && !user.getIdString().isEmpty()) {
+               accountIdToUser.put(UserId.valueOf(user.getId()), user);
+            }
             String userId = user.getUserId();
             if (user.isValid() && !userId.isEmpty()) {
                userIdToUser.put(userId, user);
@@ -309,7 +312,7 @@ public class UserServiceImpl implements UserService {
    public UserToken getUser(Long accountId) {
       ensureLoaded();
 
-      UserToken user = accountIdToUser.get(accountId);
+      UserToken user = accountIdToUser.get(UserId.valueOf(accountId));
       if (user == null) {
          user = UserToken.SENTINEL;
       }
