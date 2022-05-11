@@ -30,13 +30,15 @@ import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service
 import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { ConnectionNode } from '../types/connection-nodes';
+import { CurrentBranchInfoService } from '../../../../ple-services/httpui/current-branch-info.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrentMessagesService {
 
-  private _messagesList = combineLatest([this.ui.filter,this.BranchId,this.connectionId]).pipe(
+  private _messagesList = combineLatest([this.ui.filter, this.BranchId, this.connectionId]).pipe(
+    filter(([filter,branchId,connection])=>connection!==''),
     share(),
     debounceTime(500),
     distinctUntilChanged(),
@@ -102,12 +104,12 @@ export class CurrentMessagesService {
     ))
   )
 
-  private _done = new Subject();
+  private _done = new Subject<boolean>();
   private _differences = new BehaviorSubject<changeInstance[] | undefined>(undefined);
   
   private _expandedRows = new BehaviorSubject<(message | messageWithChanges)[]>([]);
   private _expandedRowsDecreasing = new BehaviorSubject<boolean>(false);
-  constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: MessageUiService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService,private branchInfoService: BranchInfoService, private sideNavService: SideNavService) { }
+  constructor(private messageService: MessagesService, private subMessageService: SubMessagesService, private ui: MessageUiService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService,private branchInfoService: CurrentBranchInfoService, private sideNavService: SideNavService) { }
 
   get messages() {
     return this._messages;
@@ -139,6 +141,22 @@ export class CurrentMessagesService {
 
   get connectionId() {
     return this.ui.connectionId;
+  }
+
+  set messageId(value:string) {
+    this.ui.messageId = value;
+  }
+
+  set subMessageId(value: string) {
+    this.ui.subMessageId = value;
+  }
+
+  set submessageToStructureBreadCrumbs(value: string) {
+    this.ui.subMessageToStructureBreadCrumbs = value;
+  }
+
+  set singleStructureId(value: string) {
+    this.ui.singleStructureId = value;
   }
 
   get connectionNodes() {
@@ -232,73 +250,81 @@ export class CurrentMessagesService {
     return of(message);
   }
   getMessageFromParent(messageId: string) {
-    return combineLatest([this.BranchId, this.connectionId]).pipe(
+    return combineLatest([this.branchInfoService.currentBranchDetail, this.connectionId]).pipe(
       take(1),
-      switchMap(([branchId,connectionId]) => this.branchInfoService.getBranch(branchId).pipe(
-        switchMap((parentBranch) => this.messageService.getMessage(parentBranch.parentBranch.id, messageId, connectionId))
-      ))
-    )
+      switchMap(([details, connectionId]) => this.messageService.getMessage(details.parentBranch.id, messageId, connectionId))
+    );
   }
 
-  getSubMessageFromParent(messageId:string,subMessageId:string) {
-    return combineLatest([this.BranchId, this.connectionId]).pipe(
+  getSubMessageFromParent(messageId: string, subMessageId: string) {
+    return combineLatest([this.branchInfoService.currentBranchDetail, this.connectionId]).pipe(
       take(1),
-      switchMap(([branchId, connectionId]) => this.branchInfoService.getBranch(branchId).pipe(
-        switchMap((parentBranch)=>this.subMessageService.getSubMessage(parentBranch.parentBranch.id,connectionId,messageId,subMessageId))
-      ))
-    )
+      switchMap(([details, connectionId]) => this.subMessageService.getSubMessage(details.parentBranch.id, connectionId, messageId, subMessageId))
+    );
   }
   partialUpdateSubMessage(body: Partial<subMessage>, messageId: string) {
-    return this.subMessageService.changeSubMessage(this.BranchId.getValue(), body).pipe(
+    return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
-      switchMap((transaction) => this.subMessageService.performMutation(this.BranchId.getValue(), this.connectionId.getValue(), messageId, transaction).pipe(
-        tap(() => {
-          this.ui.updateMessages = true;
-        })
+      switchMap(([branch,connection])=>this.subMessageService.changeSubMessage(branch, body).pipe(
+        take(1),
+        switchMap((transaction) => this.subMessageService.performMutation(branch, connection, messageId, transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
       ))
-    )
+    );
   }
 
   partialUpdateMessage(body: Partial<message>) {
-    return this.messageService.changeMessage(this.BranchId.getValue(), body).pipe(
+    return this.BranchId.pipe(
       take(1),
-      switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
-        tap(() => {
-          this.ui.updateMessages = true;
-        })
+      switchMap(branchId => this.messageService.changeMessage(branchId, body).pipe(
+        take(1),
+        switchMap((transaction) => this.messageService.performMutation(transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        ))
       ))
-    )
+    );
   }
 
   relateSubMessage(messageId: string, subMessageId: string, afterSubMessage?: string) {
-    return this.messageService.getMessage(this.BranchId.getValue(), messageId, this.connectionId.getValue()).pipe(
+    return combineLatest([this.BranchId, this.connectionId]).pipe(
       take(1),
-      switchMap((foundMessage) => this.subMessageService.createMessageRelation(foundMessage.id,subMessageId,afterSubMessage).pipe(
+      switchMap(([branch, connection]) => this.messageService.getMessage(branch, messageId, connection).pipe(
         take(1),
-        switchMap((relation) => this.subMessageService.addRelation(this.BranchId.getValue(), relation).pipe(
+        switchMap((foundMessage) => this.subMessageService.createMessageRelation(foundMessage.id, subMessageId, afterSubMessage).pipe(
           take(1),
-          switchMap((transaction) => this.subMessageService.performMutation(this.BranchId.getValue(), this.connectionId.getValue(), messageId, transaction).pipe(
+          switchMap((relation) => this.subMessageService.addRelation(branch, relation).pipe(
+            take(1),
+            switchMap((transaction) => this.subMessageService.performMutation(branch, connection, messageId, transaction).pipe(
+              tap(() => {
+                this.ui.updateMessages = true;
+              })
+            ))
+          ))
+        ))
+      ))
+    );
+  }
+
+  createSubMessage(body: subMessage, messageId: string, afterSubMessage?: string) {
+    return combineLatest([this.BranchId, this.connectionId]).pipe(
+      take(1),
+      switchMap(([branch, connection]) => this.subMessageService.createMessageRelation(messageId, undefined, afterSubMessage).pipe(
+        take(1),
+        switchMap((relation) => this.subMessageService.createSubMessage(branch, body, [relation]).pipe(
+          take(1),
+          switchMap((transaction) => this.subMessageService.performMutation(branch, connection, messageId, transaction).pipe(
             tap(() => {
               this.ui.updateMessages = true;
             })
           ))
         ))
       ))
-    )
-  }
-
-  createSubMessage(body: subMessage, messageId: string, afterSubMessage?: string) {
-    return this.subMessageService.createMessageRelation(messageId,undefined,afterSubMessage).pipe(
-      take(1),
-      switchMap((relation) => this.subMessageService.createSubMessage(this.BranchId.getValue(), body, [relation]).pipe(
-        take(1),
-        switchMap((transaction) => this.subMessageService.performMutation(this.BranchId.getValue(), this.connectionId.getValue(), messageId, transaction).pipe(
-          tap(() => {
-            this.ui.updateMessages = true;
-          })
-        ))
-      ))
-    )
+    );
   }
 
   createMessage(initiatingNode: ConnectionNode, body: message) {
@@ -432,7 +458,7 @@ export class CurrentMessagesService {
   }
 
   set toggleDone(value: any) {
-    this._done.next();
+    this._done.next(true);
     this._done.complete();
   }
 

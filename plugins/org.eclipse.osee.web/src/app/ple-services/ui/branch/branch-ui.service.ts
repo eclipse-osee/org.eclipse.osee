@@ -25,6 +25,13 @@ export class BranchUIService {
     return this.idService.BranchId;
   }
 
+  /**
+   * @deprecated Will be replacing .id with functionality of .idAsObservable()
+   */
+  get idAsObservable() {
+    return this.idService.BranchIdAsObservable;
+  }
+
   get type() {
     return this.typeService.branchType;
   }

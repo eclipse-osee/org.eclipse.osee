@@ -34,8 +34,22 @@ export class ConnectionViewComponent implements OnInit {
       if (mode) {
         this.routerState.branchId = params.get('branchId') || '';
         this.routerState.branchType = params.get('branchType') || '';
+        /**
+         * Set params to uninitalized state for invalid routes
+         */
+        this.routerState.connectionId = '';
+        this.routerState.messageId = '';
+        this.routerState.subMessageId = '';
+        this.routerState.subMessageToStructureBreadCrumbs = '';
+        this.routerState.singleStructureId = '';
+        ///////////////////////////////////////////////////////////
         this.routerState.DiffMode = false;
       } else {
+        this.routerState.connectionId = '';
+        this.routerState.messageId = '';
+        this.routerState.subMessageId = '';
+        this.routerState.subMessageToStructureBreadCrumbs = '';
+        this.routerState.singleStructureId = '';
         this.graph.difference=data.diff;
       }
     })

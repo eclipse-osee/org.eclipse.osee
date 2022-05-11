@@ -134,26 +134,29 @@ export class CurrentGraphService {
   }
 
   updateConnection(connection: Partial<connection>) {
-    return this.connectionService.changeConnection(this.routeStateService.id.getValue(), connection).pipe(
+    return this.routeStateService.id.pipe(
       take(1),
-      switchMap(transaction => this.connectionService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
-        tap(() => {
-          this.update = true;
-        })
+      switchMap(branchId => this.connectionService.changeConnection(branchId, connection).pipe(
+        take(1),
+        switchMap(transaction => this.connectionService.performMutation(branchId, transaction).pipe(
+          tap(() => {
+            this.update = true;
+          })
+        ))
       ))
-    )
+    );
   }
 
   unrelateConnection(nodeId: string, id: string) {
-    return this.nodes.pipe(
+    return combineLatest([this.routeStateService.id, this.nodes]).pipe(
       take(1),
-      switchMap((nodesArray) => from(nodesArray.edges).pipe( //turn into multi-emission
+      switchMap(([branchId, nodesArray]) => from(nodesArray.edges).pipe( //turn into multi-emission
         filter((edge) => edge.source === nodeId || edge.target === nodeId), //only emit source/target edges
-        switchMap((edge) => this.nodeService.getNode(this.routeStateService.id.getValue(), nodeId).pipe( //get node information
+        switchMap((edge) => this.nodeService.getNode(branchId, nodeId).pipe( //get node information
           take(1),
-          switchMap((node) => iif(() => edge.source === nodeId, this.connectionService.createNodeRelation((node?.id)||'', false,id), this.connectionService.createNodeRelation((node?.id)||'', true,id)).pipe( //create primary relation if nodeId==source else nodeId==target create secondary relation
-            switchMap((relation) => this.connectionService.deleteRelation(this.routeStateService.id.getValue(), relation).pipe( //turn into transaction
-              switchMap((transaction) => this.connectionService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+          switchMap((node) => iif(() => edge.source === nodeId, this.connectionService.createNodeRelation((node?.id) || '', false, id), this.connectionService.createNodeRelation((node?.id) || '', true, id)).pipe( //create primary relation if nodeId==source else nodeId==target create secondary relation
+            switchMap((relation) => this.connectionService.deleteRelation(branchId, relation).pipe( //turn into transaction
+              switchMap((transaction) => this.connectionService.performMutation(branchId, transaction).pipe(
                 tap(() => {
                   this.update = true;
                 })
@@ -162,28 +165,34 @@ export class CurrentGraphService {
           ))
         ))
       ))
-    )
+    );
   }
 
-  updateNode(node: Partial<node|nodeData>) {
-    return this.nodeService.changeNode(this.routeStateService.id.getValue(), node).pipe(
+  updateNode(node: Partial<node | nodeData>) {
+    return this.routeStateService.id.pipe(
       take(1),
-      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
-        tap(() => {
+      switchMap(branchId => this.nodeService.changeNode(branchId, node).pipe(
+        take(1),
+        switchMap((transaction) => this.nodeService.performMutation(branchId, transaction).pipe(
+          tap(() => {
             this.update = true;
-        })
+          })
+        ))
       ))
-    )
+    );
   }
   deleteNode(nodeId: string) {
-    return this.nodeService.deleteArtifact(this.routeStateService.id.getValue(), nodeId).pipe(
+    return this.routeStateService.id.pipe(
       take(1),
-      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
-        tap(() => {
-          this.update = true;
-        })
+      switchMap(branchId => this.nodeService.deleteArtifact(branchId, nodeId).pipe(
+        take(1),
+        switchMap((transaction) => this.nodeService.performMutation(branchId, transaction).pipe(
+          tap(() => {
+            this.update = true;
+          })
+        ))
       ))
-    )
+    );
   }
 
   deleteNodeAndUnrelate(nodeId: string, edges: OseeEdge<connection|connectionWithChanges>[]) {
@@ -191,18 +200,18 @@ export class CurrentGraphService {
   }
 
   createNewConnection(connection: connection, sourceId: string, targetId: string) {
-    return this.nodeOptions.pipe(
+    return combineLatest([this.routeStateService.id,this.nodeOptions]).pipe(
       take(1),
-      switchMap((nodes) => from(nodes.sort((a, b) =>((a?.id || '-1') < (b?.id || '-1') ? -1 : (a?.id || '-1') === (b?.id || '-1')?0:1))).pipe( //sorts nodes array
+      switchMap(([branchId,nodes]) => from(nodes.sort((a, b) =>((a?.id || '-1') < (b?.id || '-1') ? -1 : (a?.id || '-1') === (b?.id || '-1')?0:1))).pipe( //sorts nodes array
         filter((val) => val.id === sourceId || val.id === targetId),
         reduce((acc, curr) => [...acc, curr], [] as node[]),
         switchMap((nodeArray) => iif(() => nodeArray[0]?.id === sourceId && nodeArray[1]?.id === targetId,
           combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', false), this.connectionService.createNodeRelation(nodeArray[1].id||'', true)]).pipe(
             take(1),
             map(latest => [latest[0], latest[1]]),
-            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
+            switchMap((relations) => this.connectionService.createConnection(branchId, connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
               take(1),
-              switchMap((newConnection) => this.connectionService.performMutation(this.routeStateService.id.getValue(), newConnection).pipe(
+              switchMap((newConnection) => this.connectionService.performMutation(branchId, newConnection).pipe(
                 tap(() => {
                   this.update = true;
                 })
@@ -212,9 +221,9 @@ export class CurrentGraphService {
           combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', true), this.connectionService.createNodeRelation(nodeArray[1].id||'', false)]).pipe(
             take(1),
             map(latest => [latest[0], latest[1]]),
-            switchMap((relations) => this.connectionService.createConnection(this.routeStateService.id.getValue(), connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
+            switchMap((relations) => this.connectionService.createConnection(branchId, connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
               take(1),
-              switchMap((newConnection) => this.connectionService.performMutation(this.routeStateService.id.getValue(), newConnection).pipe(
+              switchMap((newConnection) => this.connectionService.performMutation(branchId, newConnection).pipe(
                 tap(() => {
                   this.update = true;
                 })
@@ -226,15 +235,18 @@ export class CurrentGraphService {
     )
   }
 
-  createNewNode(node: node|nodeData) {
-    return this.nodeService.createNode(this.routeStateService.id.getValue(), node).pipe(
+  createNewNode(node: node | nodeData) {
+    return this.routeStateService.id.pipe(
       take(1),
-      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
-        tap(() => {
+      switchMap(branchId => this.nodeService.createNode(branchId, node).pipe(
+        take(1),
+        switchMap((transaction) => this.nodeService.performMutation(branchId, transaction).pipe(
+          tap(() => {
             this.update = true;
-        })
+          })
+        ))
       ))
-    )
+    );
   }
   /**
    * Changes edges to have an id containing a+id
@@ -253,9 +265,9 @@ export class CurrentGraphService {
   }
 
   updatePreferences(preferences: settingsDialogData) {
-    return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
+    return combineLatest([this.routeStateService.id,this.createUserPreferenceBranchTransaction(preferences.editable)]).pipe(
       take(1),
-      switchMap((transaction) => this.nodeService.performMutation(this.routeStateService.id.getValue(), transaction).pipe(
+      switchMap(([branchId,transaction]) => this.nodeService.performMutation(branchId, transaction).pipe(
         take(1),
         tap(() => {
           this.update = true

@@ -14,7 +14,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Data, NavigationEnd, ParamMap, Router } from '@angular/router';
 import { combineLatest, iif, of } from 'rxjs';
-import { filter, map, repeatWhen, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, repeatWhen, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { CurrentStructureService } from '../../services/current-structure.service';
 import { structure, structureWithChanges } from '../../../shared/types/structure';
 
@@ -25,55 +25,55 @@ import { structure, structureWithChanges } from '../../../shared/types/structure
 })
 export class SingleStructureTableComponent implements OnInit, OnDestroy {
   messageData = of(new MatTableDataSource<structure|structureWithChanges>())
-  breadCrumb: string = '';
-  structureId: string | null | undefined;
+  breadCrumb = this.structureService.breadCrumbs;
+  structureId = this.structureService.singleStructureId;
 
   constructor (private route: ActivatedRoute,
     private router:Router,
     private structureService: CurrentStructureService,) {
-      this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => this.route),
-        switchMap(route => {
-          while (route.parent && !route.snapshot.paramMap.has('structureId')) {
-            route = route.parent
-          }
-          return of(route);
-        }),
-        filter((activatedRoute) => activatedRoute.outlet === 'primary'),
-        switchMap((route) => combineLatest([route.paramMap, route.firstChild?.data||route.url]).pipe(
-          map(([paramMap, data]) => {
-            this.structureService.BranchType = paramMap.get('branchType') || '';
-            this.structureService.branchId = paramMap.get('branchId') || '';
-            this.structureService.messageId = paramMap.get('messageId') || '';
-            this.structureService.subMessageId = paramMap.get('subMessageId') || '';
-            this.structureService.connection = paramMap.get('connection') || '';
-            this.structureId = paramMap.get('structureId');
-            this.breadCrumb = paramMap.get('name') || '';
-            return data;
-          }),
-          switchMap((data) => iif(() => data.diff !== undefined, of(data).pipe(
-            map(data => {
-              this.structureService.difference = data.diff;
-              return data.diff;
-            })
-          ), of(data).pipe(
-            map(data => {
-              this.structureService.DiffMode = false;
-              this.structureService.difference = [];
-              return data;
-            })
-          )))
-        ))
-      ).subscribe((val) => {
-      });
      }
 
   ngOnInit(): void {
-    this.messageData = this.structureService.getStructureRepeating(this.structureId||'').pipe(
-      switchMap((data) => of(new MatTableDataSource<structure|structureWithChanges>([data]))),
+    of(this.route).pipe(
+      switchMap(route => {
+        while (route.parent && !route.snapshot.paramMap.has('structureId')) {
+          route = route.parent;
+        }
+        return of(route);
+      }),
+      filter(activatedRoute => activatedRoute.outlet === 'primary'),
+      switchMap((route) => combineLatest([route.paramMap, route.firstChild?.data || route.url]).pipe(
+        map(([paramMap, data]) => {
+          this.structureService.BranchType = paramMap.get('branchType') || '';
+          this.structureService.branchId = paramMap.get('branchId') || '';
+          this.structureService.messageId = paramMap.get('messageId') || '';
+          this.structureService.subMessageId = paramMap.get('subMessageId') || '';
+          this.structureService.connection = paramMap.get('connection') || '';
+          this.structureService.singleStructureIdValue = paramMap.get('structureId') || '';
+          this.structureService.BreadCrumb = paramMap.get('name') || '';
+          return data;
+        }),
+        switchMap((data) => iif(() => data.diff !== undefined, of(data).pipe(
+          map(data => {
+            this.structureService.difference = data.diff;
+            return data.diff;
+          })
+        ), of(data).pipe(
+          map(data => {
+            this.structureService.DiffMode = false;
+            this.structureService.difference = [];
+            return data;
+          })
+        )))
+      )),
       takeUntil(this.structureService.done)
-    )
+    ).subscribe();
+    this.messageData = this.structureId.pipe(
+      switchMap(structureId => this.structureService.getStructureRepeating(structureId).pipe(
+        switchMap((data) => of(new MatTableDataSource<structure | structureWithChanges>([data]))),
+        takeUntil(this.structureService.done)
+      ))
+    );
   }
   ngOnDestroy(): void {
     this.structureService.toggleDone = true;

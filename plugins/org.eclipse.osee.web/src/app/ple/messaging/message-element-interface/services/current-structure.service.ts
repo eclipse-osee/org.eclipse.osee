@@ -44,6 +44,7 @@ export class CurrentStructureService {
     share(),
     debounceTime(500),
     distinctUntilChanged(),
+    filter(([filter,branchId,messageId,subMessageId,connectionId])=>branchId!==''&&messageId!==''&&subMessageId!==''&&connectionId!==''),
     switchMap(x => this.structure.getFilteredStructures(...x).pipe(
       repeatWhen(_ => this.ui.UpdateRequired),
       share(),
@@ -152,6 +153,22 @@ export class CurrentStructureService {
   get connectionId() {
     return this.ui.connectionId;
   }
+  
+  get breadCrumbs() {
+    return this.ui.subMessageBreadCrumbs;
+  }
+
+  set BreadCrumb(value: string) {
+    this.ui.subMessageBreadCrumbsString = value;
+  }
+
+  set singleStructureIdValue(value: string) {
+    this.ui.singleStructureIdValue = value;
+  }
+
+  get singleStructureId() {
+    return this.ui.singleStructureId;
+  }
 
   get preferences() {
     return this.preferenceService.preferences;
@@ -189,27 +206,6 @@ export class CurrentStructureService {
     return this.enumListService.units;
   }
 
-  private get structureObservable(){
-    return combineLatest([this.BranchId, this.connectionId]).pipe(
-      take(1),
-      switchMap(([branchId, connectionId]) => this.messages.getMessages(branchId, connectionId).pipe(
-        switchMap((messages) => of(messages).pipe(
-          map((messages) => messages.map((a) => a.subMessages).flat().filter((value, index, self) => self.indexOf(value) === index)),
-          concatMap((submessages) => from(submessages).pipe(
-            distinct((x) => x.id),
-            concatMap((submessage) => this.structure.getFilteredStructures("", branchId, messages.find((m) => m.subMessages.includes(submessage))?.id || '', submessage.id || '', connectionId).pipe(
-              debounceTime(0),
-              shareReplay({ bufferSize: 1, refCount: true }),
-              concatMap((structures) => from(structures).pipe(
-              )),
-            ))
-          ))
-        ))
-      )),
-      distinct((structure) => { return structure.id }),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    )
-  }
   get availableStructures() {
     return this.BranchId.pipe(
       switchMap(id => this.structure.getStructures(id).pipe(
@@ -270,60 +266,57 @@ export class CurrentStructureService {
 
   createStructure(body: Partial<structure>, afterStructure?: string) {
     delete body.elements;
-    return this.structure.createSubMessageRelation(this.SubMessageId.getValue(),undefined,afterStructure).pipe(
+    return combineLatest([this.BranchId, this.SubMessageId]).pipe(
       take(1),
-      switchMap((relation) => this.structure.createStructure(body, this.BranchId.getValue(), [relation]).pipe(
+      switchMap(([branch, submessageId]) => this.structure.createSubMessageRelation(submessageId, undefined, afterStructure).pipe(
         take(1),
-        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
-          tap(() => {
-            this.ui.updateMessages = true;
-          })
+        switchMap((relation) => this.structure.createStructure(body, branch, [relation]).pipe(
+          take(1),
+          switchMap((transaction) => this.structure.performMutation(transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
         ))
       ))
-    )
+    );
+
   }
 
   relateStructure(structureId: string, afterStructure?: string) {
-    return this.structure.createSubMessageRelation(this.SubMessageId.getValue(), structureId, afterStructure).pipe(
+    return combineLatest([this.BranchId, this.SubMessageId]).pipe(
       take(1),
-      switchMap((relation) => this.structure.addRelation(this.BranchId.getValue(), relation).pipe(
+      switchMap(([branch,submessageId]) => this.structure.createSubMessageRelation(submessageId, structureId, afterStructure).pipe(
         take(1),
-        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
-          tap(() => {
-            this.ui.updateMessages = true;
-          })
+        switchMap((relation) => this.structure.addRelation(branch, relation).pipe(
+          take(1),
+          switchMap((transaction) => this.structure.performMutation(transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
         ))
       ))
     );
   }
   partialUpdateStructure(body: Partial<structure>) {
-    return this.structure.changeStructure(body, this.BranchId.getValue()).pipe(
+    return this.BranchId.pipe(
       take(1),
-      switchMap((transaction) => this.structure.performMutation(transaction).pipe(
-        tap(() => {
-          this.ui.updateMessages = true;
-        })
-      ))
-    )
+      switchMap(branchId => this.structure.changeStructure(body, branchId).pipe(
+        take(1),
+        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
+          tap(() => {
+            this.ui.updateMessages = true;
+          })
+        )))
+      )
+    );
   }
 
   partialUpdateElement(body: Partial<element>, structureId: string) {
-    return this.elements.changeElement(body, this.BranchId.getValue()).pipe(
+    return this.BranchId.pipe(
       take(1),
-      switchMap((transaction) => this.elements.performMutation(transaction).pipe(
-        tap(() => {
-          this.ui.updateMessages = true;
-        })
-      ))
-    )
-  }
-
-  createNewElement(body: Partial<element>, structureId: string, typeId: string, afterElement?: string) {
-    const { units,autogenerated, ...element } = body;
-    return combineLatest([this.elements.createStructureRelation(structureId,undefined,afterElement), this.elements.createPlatformTypeRelation(typeId)]).pipe(
-      take(1),
-      map(([structureRelation, platformRelation]) => [structureRelation, platformRelation]),
-      switchMap((relations) => this.elements.createElement(element, this.BranchId.getValue(), relations).pipe(
+      switchMap(branchId => this.elements.changeElement(body, branchId).pipe(
         take(1),
         switchMap((transaction) => this.elements.performMutation(transaction).pipe(
           tap(() => {
@@ -331,41 +324,64 @@ export class CurrentStructureService {
           })
         ))
       ))
-    )
+    );
+  }
+
+  createNewElement(body: Partial<element>, structureId: string, typeId: string, afterElement?: string) {
+    const { units,autogenerated, ...element } = body;
+    return combineLatest([this.BranchId, this.elements.createStructureRelation(structureId, undefined, afterElement), this.elements.createPlatformTypeRelation(typeId)]).pipe(
+      take(1),
+      switchMap(([branchId, structureRelation, platformRelation]) => of([structureRelation, platformRelation]).pipe(
+        switchMap((relations) => this.elements.createElement(element, branchId, relations).pipe(
+          take(1),
+          switchMap((transaction) => this.elements.performMutation(transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
+        ))
+      ))
+    );
   }
 
   relateElement(structureId: string, elementId: string, afterElement?: string) {
-    return this.elements.createStructureRelation(structureId, elementId, afterElement).pipe(
+    return this.BranchId.pipe(
       take(1),
-      switchMap((relation) => this.structure.addRelation(this.BranchId.getValue(), relation).pipe(
+      switchMap(branchId => this.elements.createStructureRelation(structureId, elementId, afterElement).pipe(
         take(1),
-        switchMap((transaction) => this.structure.performMutation(transaction).pipe(
-          tap(() => {
-            this.ui.updateMessages = true;
-          })
+        switchMap((relation) => this.structure.addRelation(branchId, relation).pipe(
+          take(1),
+          switchMap((transaction) => this.structure.performMutation(transaction).pipe(
+            tap(() => {
+              this.ui.updateMessages = true;
+            })
+          ))
         ))
       ))
-    )
+    );
   }
 
   changeElementPlatformType(structureId: string, elementId: string, typeId: string) {
-    return this.elements.getElement(this.BranchId.getValue(), this.MessageId.getValue(), this.SubMessageId.getValue(), structureId, elementId, this.connectionId.getValue()).pipe(
+    return combineLatest([this.BranchId,this.connectionId,this.MessageId, this.SubMessageId]).pipe(
       take(1),
-      switchMap((element) => combineLatest([this.elements.createPlatformTypeRelation("" + (element.platformTypeId || -1), elementId),this.elements.createPlatformTypeRelation(typeId, elementId)]).pipe( //create relations for delete/add ops
+      switchMap(([branchId,connection,message, submessage]) => this.elements.getElement(branchId, message, submessage, structureId, elementId, connection).pipe(
         take(1),
-        switchMap(([deleteRelation, addRelation]) => this.elements.deleteRelation(this.BranchId.getValue(), deleteRelation).pipe( //create delete transaction
+        switchMap((element) => combineLatest([this.elements.createPlatformTypeRelation("" + (element.platformTypeId || -1), elementId), this.elements.createPlatformTypeRelation(typeId, elementId)]).pipe( //create relations for delete/add ops
           take(1),
-          switchMap((deleteTransaction) => this.elements.addRelation(this.BranchId.getValue(), addRelation, deleteTransaction).pipe( //create add transaction and merge with delete transaction
+          switchMap(([deleteRelation, addRelation]) => this.elements.deleteRelation(branchId, deleteRelation).pipe( //create delete transaction
             take(1),
-            switchMap((transaction) => this.elements.performMutation(transaction).pipe(
-              tap(() => {
-                this.ui.updateMessages = true;
-              })
+            switchMap((deleteTransaction) => this.elements.addRelation(branchId, addRelation, deleteTransaction).pipe( //create add transaction and merge with delete transaction
+              take(1),
+              switchMap((transaction) => this.elements.performMutation(transaction).pipe(
+                tap(() => {
+                  this.ui.updateMessages = true;
+                })
+              ))
             ))
           ))
         ))
       ))
-    )
+    );
   }
 
   updatePreferences(preferences: settingsDialogData) {
@@ -445,12 +461,6 @@ export class CurrentStructureService {
           })
         ))
       ))
-    )
-  }
-
-  getStructure(structureId: string) {
-    return combineLatest([this.BranchId, this.MessageId, this.SubMessageId, this.connectionId]).pipe(
-      switchMap(([branch,message,submessage,connection])=>this.structure.getStructure(branch,message,submessage,structureId,connection))
     )
   }
 

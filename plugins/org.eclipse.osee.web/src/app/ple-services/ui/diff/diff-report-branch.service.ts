@@ -32,12 +32,9 @@ export class DiffReportBranchService {
   }
 
   get parentBranch() {
-    return this.branchService.id.pipe(
-      take(1),
-      switchMap((id) => this.differenceService.parentBranch(id).pipe(
-        shareReplay({bufferSize:5,refCount:true})
-      ))
-    )
+    return this.differenceService.parentBranch.pipe(
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
   }
 
   get differenceReport() {

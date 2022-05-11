@@ -14,6 +14,7 @@ import { NgModule } from '@angular/core';
 import { Route, RouterModule, Routes, UrlSegment, UrlSegmentGroup } from '@angular/router';
 import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
 import { MimSingleDiffComponent } from '../../diff-views/mim-single-diff/mim-single-diff.component';
+import { MimHeaderComponent } from '../shared/components/mim-header/mim-header.component';
 import { SingleStructureTableComponent } from './components/single-structure-table/single-structure-table.component';
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
@@ -48,7 +49,8 @@ const routes: Routes = [
   {
     path: '', component: MimSingleDiffComponent, outlet:'rightSideNav'
   },
-  { path: '', component: UsermenuComponent, outlet: 'userMenu' }
+  { path: '', component: UsermenuComponent, outlet: 'userMenu' },
+  { path: '',component: MimHeaderComponent, outlet:'navigationHeader' }
   ];
 
 @NgModule({

@@ -14,12 +14,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { MimRouteService } from '../../shared/services/ui/mim-route.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RouteStateService {
-  constructor (private uiService: UiService) { }
+  constructor (private uiService: MimRouteService) { }
   
   get type() {
     return this.uiService.type;
@@ -43,5 +44,22 @@ export class RouteStateService {
 
   set DiffMode(value: boolean) {
     this.uiService.diffMode = value;
+  }
+
+  set connectionId(value: string) {
+    this.uiService.connectionIdString = value;
+  }
+  set messageId(value: string) {
+    this.uiService.messageIdString = value;
+  }
+  set subMessageId(value: string) {
+    this.uiService.submessageIdString = value;
+  }
+  set subMessageToStructureBreadCrumbs(value: string) {
+    this.uiService.submessageToStructureBreadCrumbsString = value;
+  }
+
+  set singleStructureId(value: string) {
+    this.uiService.singleStructureIdValue = value;
   }
 }

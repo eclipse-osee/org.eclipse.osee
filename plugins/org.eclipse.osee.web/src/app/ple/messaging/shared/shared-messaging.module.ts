@@ -30,10 +30,11 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { PlatformTypeCardComponent } from './components/platform-type-card/platform-type-card.component';
 import { EditTypeDialogComponent } from './components/dialogs/edit-type-dialog/edit-type-dialog.component';
 import { MatCardModule } from '@angular/material/card';
+import { MimHeaderComponent } from './components/mim-header/mim-header.component';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent],
+  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent],
   imports: [
     CommonModule,
     MatDialogModule,

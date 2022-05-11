@@ -25,6 +25,7 @@ import {
 } from 'rxjs/operators';
 import { ActionService } from '../../ple-services/http/action.service';
 import { BranchInfoService } from '../../ple-services/http/branch-info.service';
+import { CurrentBranchInfoService } from '../../ple-services/httpui/current-branch-info.service';
 import { UiService } from '../../ple-services/ui/ui.service';
 import {
   actionImpl,
@@ -47,6 +48,7 @@ export class ActionStateButtonService {
     private uiService: UiService,
     private actionService: ActionService,
     private branchService: BranchInfoService,
+    private currentBranchService: CurrentBranchInfoService,
     private accountService: UserDataAccountService,
     private branchedRouter: BranchRoutedUIService,
     private branchCategoryService: BranchCategoryService
@@ -82,21 +84,7 @@ export class ActionStateButtonService {
   getVersions(actionableItem: string) {
     return this.actionService.getVersions(actionableItem)
   }
-  private _branchState = this.uiService.id.pipe(
-    filter((val) => val !== '0'),
-    switchMap((branchId) =>
-      iif(
-        () => branchId !== '0' && branchId !== '',
-        this.branchService.getBranch(branchId).pipe(
-          repeatWhen((_) => this.uiService.update),
-          share()
-        ),
-        of(new PlConfigBranchListingBranchImpl())
-      )
-    ),
-    share(),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
+  private _branchState =this.currentBranchService.currentBranchDetail;
   private _branchAction = this.branchState.pipe(
     switchMap((val) =>
       iif(
@@ -251,18 +239,16 @@ export class ActionStateButtonService {
     )
   );
   private _doCommitBranch = combineLatest([
-    this.branchState,
     this.branchAction,
     this.user,
   ]).pipe(
     take(1),
-    switchMap(([branch,actions,user]) =>
+    switchMap(([actions,user]) =>
       iif(
         () =>
-          branch.parentBranch.id.length > 0 &&
           actions.length > 0 &&
           user.name.length > 0,
-        this.commitBranch(branch.parentBranch.id, {
+        this.commitBranch({
           committer: user.id,
           archive: 'false',
         }).pipe(
@@ -342,22 +328,9 @@ export class ActionStateButtonService {
     )
   );
   public commitBranch(
-    parentBranchId: string,
     body: { committer: string; archive: string }
   ) {
-    return this.uiService.id.pipe(
-      take(1),
-      filter((val) => val != ''),
-      switchMap((branchId) =>
-        this.branchService.commitBranch(branchId, parentBranchId, body).pipe(
-          tap((val) => {
-            if (val.results.results.length > 0) {
-              this.uiService.error = val.results.results[0];
-            }
-          })
-        )
-      )
-    );
+    return this.currentBranchService.commitBranch(body);
   }
 
   public get branchApprovable() {
