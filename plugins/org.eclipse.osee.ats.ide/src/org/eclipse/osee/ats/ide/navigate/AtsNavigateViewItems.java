@@ -519,6 +519,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - addPleItems", debug);
       try {
          String applicationServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, "");
+         applicationServer = applicationServer.replaceFirst("\\.", "-web.");
          items.add(new XNavigateItemFolder(PLE.getName(), FrameworkImage.PLE, XNavItemCat.TOP, PLE));
          items.add(new XNavigateUrlItem("Product Line (PL) Dashboard", applicationServer + "/osee/ple", true,
             FrameworkImage.PLE, PLE));
