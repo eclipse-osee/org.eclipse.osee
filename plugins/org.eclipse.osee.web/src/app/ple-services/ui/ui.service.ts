@@ -28,6 +28,13 @@ export class UiService {
     return this.branchService.id;
   }
 
+  /**
+   * @deprecated will be replacing id with idAsObservable's functionality
+   */
+  get idAsObservable() {
+    return this.branchService.idAsObservable
+  }
+
   get type() {
     return this.branchService.type;
   }

@@ -15,6 +15,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { changeInstance } from 'src/app/types/change-report/change-report';
+import { MimRouteService } from '../../shared/services/ui/mim-route.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class ElementUiService {
   private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
   private _differences = new BehaviorSubject<changeInstance[] | undefined>(undefined);
   private _done = new Subject();
-  constructor(private ui: UiService) { }
+  constructor(private ui: UiService, private _mimRoute: MimRouteService) { }
 
   get filter() {
     return this._filter
@@ -49,51 +50,51 @@ export class ElementUiService {
   }
 
   get BranchId() {
-    return this.ui.id;
+    return this._mimRoute.id;
   }
 
   set BranchIdString(value: string) {
-    this.ui.idValue = value;
+    this._mimRoute.idValue = value;
   }
 
   get messageId() {
-    return this._messageId;
+    return this._mimRoute.messageId;
   }
 
   set messageIdString(value: string) {
-    this._messageId.next(value);
+    this._mimRoute.messageIdString = value;
   }
 
   get subMessageId() {
-    return this._subMessageId;
+    return this._mimRoute.submessageId;
   }
 
   set subMessageIdString(value: string) {
-    this._subMessageId.next(value);
+    this._mimRoute.submessageIdString = value;
   }
 
   get connectionId() {
-    return this._connectionId;
+    return this._mimRoute.connectionId;
   }
 
   set connectionIdString(value: string) {
-    this._connectionId.next(value);
+    this._mimRoute.connectionIdString = value;
   }
 
   get branchType() {
-    return this.ui.type;
+    return this._mimRoute.type;
   }
 
   set BranchType(value:string) {
-    this.ui.typeValue = value;
+    this._mimRoute.typeValue = value;
   }
 
   set DiffMode(value:boolean) {
-    this.ui.diffMode = value;
+    this._mimRoute.diffMode = value;
   }
 
   get isInDiff() {
-    return this.ui.isInDiff;
+    return this._mimRoute.isInDiff;
   }
   get differences() {
     return this._differences.pipe(shareReplay({refCount:true,bufferSize:1}));
@@ -108,5 +109,20 @@ export class ElementUiService {
 
   get done() {
     return this._done;
+  }
+
+  get subMessageBreadCrumbs() {
+    return this._mimRoute.submessageToStructureBreadCrumbs;
+  }
+
+  set subMessageBreadCrumbsString(value: string) {
+    this._mimRoute.submessageToStructureBreadCrumbsString = value;
+  }
+  get singleStructureId() {
+    return this._mimRoute.singleStructureId;
+  }
+
+  set singleStructureIdValue(value: string) {
+    this._mimRoute.singleStructureIdValue = value;
   }
 }

@@ -25,7 +25,8 @@ import { response } from "../../../connection-view/mocks/Response.mock";
 import { PlatformType } from "../../../shared/types/platformType";
 import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 
-let sideNavContentPlaceholder = new ReplaySubject<{  opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined; }>();
+let sideNavContentPlaceholder = new ReplaySubject<{ opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined; }>();
+let _singleStructureId = new BehaviorSubject<string>("10")
 sideNavContentPlaceholder.next({opened:false,field:'',currentValue:''})
 export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     createStructure(body: Partial<structure>) {
@@ -69,9 +70,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     MessageId: new BehaviorSubject("10"),
     connectionId: new BehaviorSubject("10"),
     units: of(unitsMock),
-    getStructure(structureId: string) {
-        return of(structuresMock[0])
-    },
     getStructureRepeating(structureId: string) {
         return of(structuresMock[0])
     },
@@ -84,5 +82,9 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
         return of(transactionResultMock)
     },
     expandedRows: of([]),
-    expandedRowsDecreasing:new BehaviorSubject<boolean>(false)
+    expandedRowsDecreasing: new BehaviorSubject<boolean>(false),
+    singleStructureId: _singleStructureId,
+    set singleStructureIdValue(value: string) {
+        _singleStructureId.next(value)
+    }
 }

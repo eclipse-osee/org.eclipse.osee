@@ -24,7 +24,7 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
     teamsLeads: of(testNameValuePairArray),
     branchTransitionable: of('true'),
     addActionInitialStep: of(testDataUser),
-    commitBranch(parentBranchId: string, body: { committer: string; archive: string; }) {
+    commitBranch(body: { committer: string; archive: string; }) {
         return of(testCommitResponse)
     },
     branchApprovable: of('true'),

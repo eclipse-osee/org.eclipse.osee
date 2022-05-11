@@ -18,12 +18,14 @@ import { changeReportMock } from '../../http/change-report.mock';
 import { differenceReportMock } from '../../http/difference-report.mock';
 import { DifferenceReportService } from '../../http/difference-report.service';
 import { DifferenceReportServiceMock } from '../../http/difference-report.service.mock';
+import { UiService } from '../ui.service';
 
 import { DifferenceBranchInfoService } from './difference-branch-info.service';
 
 describe('DifferenceService', () => {
   let service: DifferenceBranchInfoService;
   let scheduler: TestScheduler;
+  let uiService: UiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,6 +35,8 @@ describe('DifferenceService', () => {
       ]
     });
     service = TestBed.inject(DifferenceBranchInfoService);
+    uiService = TestBed.inject(UiService);
+    uiService.idValue = '10';
   });
 
   beforeEach(() => scheduler = new TestScheduler((actual, expected) => {

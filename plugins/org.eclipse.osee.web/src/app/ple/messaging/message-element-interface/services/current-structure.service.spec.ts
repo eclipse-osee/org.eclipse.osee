@@ -89,19 +89,6 @@ describe('CurrentStateService', () => {
     })
   });
 
-  it('should get a structure', () => {
-    scheduler.run(({ expectObservable }) => {
-      service.branchId = "0";
-      service.filter = "0";
-      service.messageId = "1";
-      service.subMessageId = "2";
-      service.connection = "3";
-      const expectedObservable = { a: structuresMock[0] };
-      const expectedMarble = 'a'
-      expectObservable(service.getStructure('abcdef')).toBe(expectedMarble, expectedObservable);
-    })
-  })
-
   it('should change an element and get a transactionResultMock back', () => {
     scheduler.run(() => {
       let expectedObservable = { a: transactionResultMock };

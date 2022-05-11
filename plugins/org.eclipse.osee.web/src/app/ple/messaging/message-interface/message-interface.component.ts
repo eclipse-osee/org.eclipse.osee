@@ -36,9 +36,17 @@ export class MessageInterfaceComponent implements OnInit,OnDestroy {
           this.messageService.branchType = values.get('branchType') || '';
           this.messageService.branch = values.get('branchId') || '';
           this.messageService.connection = values.get('connection') || '';
+          this.messageService.messageId = '';
+          this.messageService.subMessageId = '';
+          this.messageService.submessageToStructureBreadCrumbs = '';
+          this.messageService.singleStructureId = '';
           this.messageService.DiffMode = false;
         } else {
           this.messageService.connection = values.get('connection') || '';
+          this.messageService.messageId = '';
+          this.messageService.subMessageId = '';
+          this.messageService.submessageToStructureBreadCrumbs = '';
+          this.messageService.singleStructureId = '';
           this.messageService.difference=data.diff;
         }
     })

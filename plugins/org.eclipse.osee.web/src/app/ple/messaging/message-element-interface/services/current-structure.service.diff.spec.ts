@@ -64,6 +64,11 @@ describe('CurrentStateService', () => {
     ui = TestBed.inject(ElementUiService);
     httpTestingController = TestBed.inject(HttpTestingController);
     ui.DiffMode = false;
+    ui.BranchIdString = '50';
+    ui.messageIdString = '10';
+    ui.subMessageIdString = '20';
+    ui.connectionIdString = '5';
+    ui.subMessageBreadCrumbsString = '10>20';
     ui.difference = [];
   });
 

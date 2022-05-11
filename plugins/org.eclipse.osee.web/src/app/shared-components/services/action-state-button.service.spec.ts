@@ -63,7 +63,7 @@ describe('ActionStateButtonService', () => {
   })
   it('should commit a branch', () => {
     scheduler.run(({ expectObservable }) => {
-      expectObservable(service.commitBranch('123',{committer:'',archive:''})).toBe('(a|)',{a:testCommitResponse})
+      expectObservable(service.commitBranch({committer:'',archive:''})).toBe('(a|)',{a:testCommitResponse})
     })
   })
   it('should approve current branch', () => {

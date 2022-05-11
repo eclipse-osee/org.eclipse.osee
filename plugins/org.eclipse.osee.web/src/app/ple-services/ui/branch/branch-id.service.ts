@@ -19,10 +19,16 @@ import { BehaviorSubject } from 'rxjs';
 export class BranchIdService {
 
   private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
+  id = this._branchId.asObservable();
   constructor () { }
-  
   get BranchId() {
     return this._branchId;
+  }
+  /**
+   * @deprecated will be replacing functionality of BranchId with BranchIdAsObservable()
+   */
+  get BranchIdAsObservable() {
+    return this.id;
   }
 
   set BranchIdValue(value: string|number) {

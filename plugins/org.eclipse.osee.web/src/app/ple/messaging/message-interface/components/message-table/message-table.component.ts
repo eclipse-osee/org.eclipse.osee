@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
@@ -52,7 +52,7 @@ import { AddMessageDialogComponent } from './add-message-dialog/add-message-dial
     ])
   ]
 })
-export class MessageTableComponent implements OnInit {
+export class MessageTableComponent implements OnInit,AfterViewChecked {
   messageData = this.messageService.messages.pipe(
     switchMap((data)=>of(new MatTableDataSource<message|messageWithChanges>(data))),
     takeUntil(this.messageService.done));
@@ -60,7 +60,8 @@ export class MessageTableComponent implements OnInit {
   nonEditableHeaders: (keyof message)[] = ['initiatingNode'];
   expandedElement = this.messageService.expandedRows;
   private _expandedElementData = combineLatest([this.messageService.messages, this.messageService.expandedRows]).pipe(
-    map(([messages,rows])=>messages.filter(m=>rows.map(r=>r.id).includes(m.id)))
+    map(([messages,rows])=>messages.filter(m=>rows.map(r=>r.id).includes(m.id))),
+    takeUntil(this.messageService.done)
   )
   filter: string = "";
   searchTerms: string = "";

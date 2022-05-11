@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { combineLatest, iif, Observable, of } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, iif, Observable, of, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { PlConfigUIStateService } from './services/pl-config-uistate.service';
 
 @Component({
@@ -21,11 +21,12 @@ import { PlConfigUIStateService } from './services/pl-config-uistate.service';
   templateUrl: './plconfig.component.html',
   styleUrls: ['./plconfig.component.sass']
 })
-export class PlconfigComponent implements OnInit {
+export class PlconfigComponent implements OnInit,OnDestroy {
   _updateRequired: Observable<boolean>= this.uiStateService.updateReq;
   _branchType: string = '';
   branchType = this.uiStateService.viewBranchType;
   branchId = this.uiStateService.branchId;
+  private _done = new Subject();
   isAllowedToDiff = combineLatest([this.uiStateService.viewBranchType, this.uiStateService.branchId, this.uiStateService.isInDiff]).pipe(
     //invalid conditions equals false
     switchMap(([branchType,branchId,inDiff])=>iif(()=>inDiff===false && branchId.length!==0&&branchId!=='-1'&&branchId!==undefined,of('true'),of('false')))
@@ -38,12 +39,17 @@ export class PlconfigComponent implements OnInit {
     this.uiStateService.viewBranchType.subscribe((id) => {
       this._branchType = id;
     })
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.route),
+   }
+  ngOnDestroy(): void {
+    this._done.next();
+    this._done.complete();
+  }
+
+  ngOnInit(): void {
+    of(this.route).pipe(
       switchMap(route => {
         while (route.firstChild) {
-          route = route.firstChild
+          route = route.firstChild;
         }
         return of(route);
       }),
@@ -66,10 +72,8 @@ export class PlconfigComponent implements OnInit {
             return data;
           })
         )))
-      ))
+      )),
+      takeUntil(this._done)
     ).subscribe();
-   }
-
-  ngOnInit(): void {
   }
 }

@@ -13,6 +13,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { MimRouteService } from '../../shared/services/ui/mim-route.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,7 @@ import { UiService } from 'src/app/ple-services/ui/ui.service';
 export class MessageUiService {
 
   private _filter: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  constructor(private ui: UiService) { }
+  constructor(private _mimRoute: MimRouteService, private ui: UiService) { }
 
   get filter() {
     return this._filter
@@ -42,34 +42,50 @@ export class MessageUiService {
   }
 
   get BranchId() {
-    return this.ui.id;
+    return this._mimRoute.id;
   }
 
   get type() {
-    return this.ui.type;
+    return this._mimRoute.type;
   }
 
   set typeValue(value: string) {
-    this.ui.typeValue = value;
+    this._mimRoute.typeValue = value;
   }
 
   set BranchIdString(value: string) {
-    this.ui.idValue = value;
+    this._mimRoute.idValue = value;
   }
 
   get connectionId() {
-    return this._connectionId;
+    return this._mimRoute.connectionId;
   }
 
   set connectionIdString(value: string) {
-    this._connectionId.next(value);
+    this._mimRoute.connectionIdString = value;
   }
 
   set DiffMode(value:boolean) {
-    this.ui.diffMode = value;
+    this._mimRoute.diffMode = value;
   }
 
   get isInDiff() {
-    return this.ui.isInDiff;
+    return this._mimRoute.isInDiff;
+  }
+
+  set messageId(value: string) {
+    this._mimRoute.messageIdString = value;
+  }
+
+  set subMessageId(value: string) {
+    this._mimRoute.submessageIdString = value;
+  }
+
+  set subMessageToStructureBreadCrumbs(value: string) {
+    this._mimRoute.submessageToStructureBreadCrumbsString = value;
+  }
+
+  set singleStructureId(value: string) {
+    this._mimRoute.singleStructureIdValue = value;
   }
 }

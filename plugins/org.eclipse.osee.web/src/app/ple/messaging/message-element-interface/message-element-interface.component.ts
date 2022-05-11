@@ -16,7 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { CurrentStructureService } from './services/current-structure.service';
 import { structure } from '../shared/types/structure';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { combineLatest, iif, of } from 'rxjs';
 
 
@@ -32,23 +32,26 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
     map(([table, structures]) => { table.data = structures; return table; }),
     takeUntil(this.structureService.done)
   )
-  breadCrumb: string = '';
+  breadCrumb = this.structureService.breadCrumbs;
   constructor (
     private route: ActivatedRoute,
     private router:Router,
     public dialog: MatDialog,
     private structureService: CurrentStructureService,
-  ) {
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.route),
+  ) {}
+  ngOnDestroy(): void {
+    this.structureService.toggleDone = true;
+  }
+
+  ngOnInit(): void {
+    of(this.route).pipe(
       switchMap(route => {
-        while (route.firstChild && route.firstChild.snapshot.paramMap.keys.length!==0) {
-          route = route.firstChild
+        while (route.firstChild && route.firstChild?.snapshot.paramMap.keys.length !== 0) {
+          route = route.firstChild;
         }
         return of(route);
       }),
-      filter((activatedRoute) => activatedRoute.outlet === 'primary'),
+      filter(activatedRoute => activatedRoute.outlet === 'primary'),
       switchMap((route) => combineLatest([route.paramMap, route.firstChild?.data || route.url]).pipe(
         map(([paramMap, data]) => {
           this.structureService.BranchType = paramMap.get('branchType') || '';
@@ -56,7 +59,8 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
           this.structureService.messageId = paramMap.get('messageId') || '';
           this.structureService.subMessageId = paramMap.get('subMessageId') || '';
           this.structureService.connection = paramMap.get('connection') || '';
-          this.breadCrumb = paramMap.get('name') || '';
+          this.structureService.BreadCrumb = paramMap.get('name') || '';
+          this.structureService.singleStructureIdValue = '';
           return data;
         }),
         switchMap((data) => iif(() => data?.diff !== undefined, of(data).pipe(
@@ -71,15 +75,8 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
             return data;
           })
         )))
-      ))
-    ).subscribe((val) => {
-    });
-
-  }
-  ngOnDestroy(): void {
-    this.structureService.toggleDone = true;
-  }
-
-  ngOnInit(): void {
+      )),
+      takeUntil(this.structureService.done)
+    ).subscribe();
   }
 }
