@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 @JsonSerialize(using = NamedIdSerializer.class)
 public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifactType, Identity<String> {
    public static final ArtifactToken SENTINEL = valueOf(ArtifactId.SENTINEL, BranchToken.SENTINEL);
+   public static final String USE_LONG_IDS_KEY = "use.long.ids";
+   public static boolean USE_LONG_IDS = Boolean.valueOf(System.getProperty(USE_LONG_IDS_KEY, "false"));
 
    @Override
    default String getGuid() {
@@ -93,15 +95,17 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
 
       public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
          super(id, name);
-         // Until artifacts can have long in db, ensure that tokens aren't negative when turned to int
-         int idInt = Long.valueOf(id).intValue();
-         if (idInt <= 0 && idInt != -1) {
-            String msg = String.format(
-               "Token id (as int) must be > 0 or SENTINAL, not int [%s] for long id [%s] name [%s] and type [%s])",
-               idInt, id, name, artifactType.getName());
-            // Log to console which shows the id, name and type on construction where exception doesn't show till loading
-            OseeLog.log(ArtifactToken.class, Level.SEVERE, msg);
-            throw new OseeArgumentException(msg);
+         if (!USE_LONG_IDS) {
+            // Until artifacts can have long in db, ensure that tokens aren't negative when turned to int
+            int idInt = Long.valueOf(id).intValue();
+            if (idInt <= 0 && idInt != -1) {
+               String msg = String.format(
+                  "Token id (as int) must be > 0 or SENTINAL, not int [%s] for long id [%s] name [%s] and type [%s])",
+                  idInt, id, name, artifactType.getName());
+               // Log to console which shows the id, name and type on construction where exception doesn't show till loading
+               OseeLog.log(ArtifactToken.class, Level.SEVERE, msg);
+               throw new OseeArgumentException(msg);
+            }
          }
          this.branch = branch;
          this.artifactType = artifactType;

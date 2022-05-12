@@ -74,16 +74,13 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.internal.event.EventHandlerRemote;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
 /**
  * @author Donald G. Dunne
  */
 public final class FrameworkEventUtil {
-   public static boolean USE_NEW_EVENTS =
-      Boolean.valueOf(System.getProperty(EventHandlerRemote.USE_NEW_EVENTS_KEY, "false"));
-   //Boolean.valueOf(OseeInfo.getValue(EventHandlerRemote.USE_NEW_EVENTS_KEY, "false"));
+   public static boolean USE_NEW_EVENTS = ArtifactToken.USE_LONG_IDS;
 
    private FrameworkEventUtil() {
       // Utility Class

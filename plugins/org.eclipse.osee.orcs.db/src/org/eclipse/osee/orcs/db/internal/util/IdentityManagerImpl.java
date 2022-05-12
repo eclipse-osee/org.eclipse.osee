@@ -14,12 +14,14 @@
 package org.eclipse.osee.orcs.db.internal.util;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
@@ -29,6 +31,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
 public class IdentityManagerImpl implements IdentityManager {
 
    private final JdbcClient client;
+   public static boolean USE_LONG_IDS = ArtifactToken.USE_LONG_IDS;
 
    public IdentityManagerImpl(JdbcClient client) {
       super();
@@ -43,22 +46,38 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public ArtifactId getNextArtifactId() {
-      return ArtifactId.valueOf(client.getNextSequence(OseeData.ART_ID_SEQ, true));
+      if (USE_LONG_IDS) {
+         return ArtifactId.valueOf(Lib.generateUuid());
+      } else {
+         return ArtifactId.valueOf(client.getNextSequence(OseeData.ART_ID_SEQ, true));
+      }
    }
 
    @Override
    public AttributeId getNextAttributeId() {
-      return AttributeId.valueOf(client.getNextSequence(OseeData.ATTR_ID_SEQ, true));
+      if (USE_LONG_IDS) {
+         return AttributeId.valueOf(Lib.generateUuid());
+      } else {
+         return AttributeId.valueOf(client.getNextSequence(OseeData.ATTR_ID_SEQ, true));
+      }
    }
 
    @Override
    public RelationId getNextRelationId() {
-      return RelationId.valueOf(client.getNextSequence(OseeData.REL_LINK_ID_SEQ, true));
+      if (USE_LONG_IDS) {
+         return RelationId.valueOf(Lib.generateUuid());
+      } else {
+         return RelationId.valueOf(client.getNextSequence(OseeData.REL_LINK_ID_SEQ, true));
+      }
    }
 
    @Override
    public GammaId getNextGammaId() {
-      return GammaId.valueOf(client.getNextSequence(OseeData.GAMMA_ID_SEQ, true));
+      if (USE_LONG_IDS) {
+         return GammaId.valueOf(Lib.generateUuid());
+      } else {
+         return GammaId.valueOf(client.getNextSequence(OseeData.GAMMA_ID_SEQ, true));
+      }
    }
 
    @Override
