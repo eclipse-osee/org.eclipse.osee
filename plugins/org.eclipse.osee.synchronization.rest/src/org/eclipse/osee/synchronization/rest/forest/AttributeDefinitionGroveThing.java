@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.forest.morphology.AbstractGroveThing;
 import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
+import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataType;
 import org.eclipse.osee.synchronization.util.IndentedString;
 import org.eclipse.osee.synchronization.util.ParameterArray;
 
@@ -48,7 +49,7 @@ public final class AttributeDefinitionGroveThing extends AbstractGroveThing {
     */
 
    AttributeDefinitionGroveThing(GroveThing parent) {
-      super(IdentifierType.ATTRIBUTE_DEFINITION.createIdentifier(), 2, parent);
+      super(IdentifierType.ATTRIBUTE_DEFINITION.createIdentifier(), 3, parent);
    }
 
    /**
@@ -94,17 +95,30 @@ public final class AttributeDefinitionGroveThing extends AbstractGroveThing {
    /**
     * {@inheritDoc}
     * <p>
-    * When assertions are enabled an assertion error will be thrown when the <code>nativeThing</code> is not an instance
-    * of {@link AttributeTypeToken}.
+    * When assertions are enabled an assertion error will be thrown when the <code>nativeThings</code> array does not
+    * contain:
+    * <dl>
+    * <dt>index 0:</dt>
+    * <dd>An instance of {@link NativeDataType}</dd>
+    * <dt>index 1:</dt>
+    * <dd>An instance of {@link ArtifactTypeToken}</dd>
+    * <dt>index 2:</dt>
+    * <dd>An instance of {@link AttributeTypeToken}</dd>
+    * </dl>
+    *
+    * @param nativeThings The array of native objects to be associated with the {@link AttributeDefinitionGroveThing}.
+    * @return <code>true</code> when the contents of the <code>nativeThings</code> array meets the requirements;
+    * otherwise; <code>false</code>.
     */
 
    @Override
    public boolean validateNativeThings(Object... nativeThings) {
       //@formatter:off
       return
-            ParameterArray.validateNonNullAndSize(nativeThings, 2, 2)
-         && (nativeThings[0] instanceof ArtifactTypeToken )
-         && (nativeThings[1] instanceof AttributeTypeToken);
+            ParameterArray.validateNonNullAndSize(nativeThings, 3, 3)
+         && (nativeThings[0] instanceof IdentifierType )
+         && (nativeThings[1] instanceof ArtifactTypeToken )
+         && (nativeThings[2] instanceof AttributeTypeToken);
       //@formatter:on
    }
 

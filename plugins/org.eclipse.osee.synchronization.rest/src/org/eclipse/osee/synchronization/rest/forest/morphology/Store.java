@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+q * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -86,64 +86,57 @@ interface Store extends ToMessage {
    int size();
 
    /**
-    * Returns an unordered {@link Stream} of the {@link GroveThing} objects in the store.
-    *
-    * @return
-    */
-
-   Stream<GroveThing> streamDeep();
-
-   /**
     * Returns an unordered {@link Stream} of the {@link GroveThing} objects stored in the {@link Grove} under the
-    * provided keys.
+    * provided keys. When no keys are provided the {@link Stream} will contain all of the {@link GroveThing} objects
+    * within the {@link Store}.
     *
     * @param keys an array of keys. The number of keys specified should be less than or equal to the rank of the grove.
+    * This parameter may be <code>null</code> or an empty array.
     * @return a unordered {@link Stream} of the objects stored in the grove under the specified keys.
     */
 
    Stream<GroveThing> stream(Object... keys);
 
    /**
-    * Returns an unordered {@link Stream} of the lowest rank keys for the {@link GroveThing} objects in the
-    * {@link Grove} under the provided keys. The keys provided in the stream may not be sufficient to uniquely
-    * identifier the corresponding {@link GroveThing}.
+    * Returns an unordered {@link Stream} of the keys in the sub-map specified by the provided keys and the keys in all
+    * the sub-maps contained in and below the selected sub-map. The returned {@link Stream} may contain keys from
+    * different levels with different types. If there isn't a sub-map associated with the provided keys an empty
+    * {@link Stream} is returned.
     *
-    * @param keys an array of keys. The number of keys specified should be less than or equal to the rank of the grove.
-    * @return a unordered {@link Stream} of the lowest rank keys associated with the {@link GroveThing} objects stored
-    * in the {@link Grove} under the specified keys.
+    * @param keys an array of keys. The number of keys specified must be less than the rank of the grove. The
+    * <code>keys</code> parameter may be <code>null</code> or an empty array.
+    * @return a unordered {@link Stream} of the keys from the selected sub-maps.
+    * @throws IllegalArgumentException when the number of keys specified is greater than or equal to the rank of the
+    * {@link Store}.
     */
 
-   Stream<Object> streamKeysDeep(Object... keys);
+   Stream<Object> streamKeysAtAndBelow(Object... keys);
 
    /**
-    * Returns an unordered {@link Stream} of the lowest rank keys for the {@link GroveThing} objects in the
-    * {@link Grove} under the provided keys. The keys provided in the stream may not be sufficient to uniquely
-    * identifier the corresponding {@link GroveThing}.
+    * Returns an unordered {@link Stream} of the keys in the sub-map specified by the provided keys. If there isn't a
+    * sub-map associated with the provided keys an empty {@link Stream} is returned.
     *
     * @param keys an array of keys. The number of keys specified should be less than or equal to the rank of the grove.
-    * @return a unordered {@link Stream} of the lowest rank keys associated with the {@link GroveThing} objects stored
-    * in the {@link Grove} under the specified keys.
+    * This parameter may be <code>null</code> or an empty array.
+    * @return a unordered {@link Stream} of the keys from the selected sub-map.
+    * @throws IllegalArgumentException when the number of keys specified is greater than or equal to the rank of the
+    * {@link Store}.
     */
 
-   Stream<Object> streamKeysShallow(Object... keys);
+   Stream<Object> streamKeysAt(Object... keys);
 
    /**
-    * @param keys
-    * @return
-    */
-
-   Stream<Object[]> streamKeySetsDeep(Object... keys);
-
-   /**
-    * Returns an unordered {@link Stream} of the key sets for each {@link GroveThing} stored in the {@link Grove} under
-    * the provided keys.
+    * Returns an unordered {@link Stream} of the key sets for the {@link StoreType} from the {@link GroveThing} objects
+    * stored in the {@link Store} under the provided keys. When no keys are provided the {@link Stream} will contain the
+    * key sets from all of the {@link GroveThing} objects within the {@link Store}.
     *
     * @param keys an array of keys. The number of keys specified should be less than or equal to the rank of the grove.
-    * @return an unordered {@link Stream} of the key sets for each {@link GroveThing} stored in the {@link Grove} under
-    * the provided keys.
+    * This parameter may be <code>null</code> or an empty array.
+    * @return a unordered {@link Stream} of the key sets for the {@link GroveThing} objects stored in the {@link Store}
+    * under the specified keys.
     */
 
-   Stream<Object[]> streamKeySetsShallow(Object... keys);
+   Stream<Object[]> streamKeySets(Object... keys);
 
    /**
     * Factory for obtaining {@link Store} implementations. {@link Grove} implementations provide access to
@@ -175,15 +168,15 @@ interface Store extends ToMessage {
       //@formatter:off
       assert
             Objects.nonNull(storeType)
-         && ParameterArray.validateNonNullAndSize(keyValidators, 1, storeType.equals(StoreType.PRIMARY) ? 3 : 2 );
+         && ParameterArray.validateNonNullAndSize(keyValidators, 1, 3 );
       //@formatter:on
 
       switch (keyValidators.length) {
          case 1:
-            return new StoreRank1(storeType, keyValidators[0]);
+            return new StoreRankN(storeType, 1, keyValidators);
 
          case 2:
-            return new StoreRank2(storeType, keyValidators[0], keyValidators[1]);
+            return new StoreRankN(storeType, 2, keyValidators);
 
          case 3:
             return new StoreRank3(storeType, keyValidators[0], keyValidators[1], keyValidators[2]);

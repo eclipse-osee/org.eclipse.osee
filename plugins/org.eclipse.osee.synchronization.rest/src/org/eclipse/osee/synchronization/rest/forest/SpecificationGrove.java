@@ -96,7 +96,7 @@ public final class SpecificationGrove extends AbstractMapGrove {
          .append( indent0 ).append( "SpecificationGrove:" ).append( "\n" );
       //@formatter:on
 
-      this.streamDeep().forEach(specification -> {
+      this.stream().forEach(specification -> {
          //@formatter:off
          outMessage
             .append( indent1 ).append( "SpecificationGroveThing:" ).append( "\n" )
