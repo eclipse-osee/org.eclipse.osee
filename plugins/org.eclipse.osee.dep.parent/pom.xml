@@ -98,7 +98,7 @@
  	<repository>
 			<id>orbit_new</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/repository</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository</url>
 	  </repository>
 
  	 <repository>
