@@ -277,7 +277,7 @@ public class SynchronizationArtifact implements ToMessage {
          (
             ( grove ) -> this.getSynchronizationArtifactBuilder().getConverter( grove.getType() ).ifPresent
                             (
-                              ( converter ) -> grove.streamDeep().forEach( converter::accept )
+                              ( converter ) -> grove.stream().forEach( converter::accept )
                             )
          );
       //@formatter:on
@@ -427,7 +427,7 @@ public class SynchronizationArtifact implements ToMessage {
       AttributeDefinitionGrove attributeDefinitionGrove = this.forest.getGrove( IdentifierType.ATTRIBUTE_DEFINITION );
       DataTypeDefinitionGrove  dataTypeDefinitionGrove  = this.forest.getGrove( IdentifierType.DATA_TYPE_DEFINITION );
 
-      attributeDefinitionGrove.streamDeep().forEach( ( attributeDefinitionGroveThing ) -> {
+      attributeDefinitionGrove.stream().forEach( ( attributeDefinitionGroveThing ) -> {
 
          var attributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -489,7 +489,8 @@ public class SynchronizationArtifact implements ToMessage {
                   (AttributeDefinitionGroveThing) this.forest.createGroveThing(IdentifierType.ATTRIBUTE_DEFINITION,
                      commonObjectTypeGroveThing);
 
-               attributeDefinitionGroveThing.setNativeThings(artifactTypeToken, attributeTypeToken);
+               //@formatter:off
+               attributeDefinitionGroveThing.setNativeThings( commonObjectTypeGroveThing.getIdentifier().getType(), artifactTypeToken, attributeTypeToken);
 
                commonObjectTypeGroveThing.add(attributeDefinitionGroveThing);
 
@@ -588,7 +589,7 @@ public class SynchronizationArtifact implements ToMessage {
        * children of the SpecificationGroveThings.
        */
 
-      specObjectGrove.streamDeep().forEach
+      specObjectGrove.stream().forEach
          (
             ( groveThing ) ->
             {

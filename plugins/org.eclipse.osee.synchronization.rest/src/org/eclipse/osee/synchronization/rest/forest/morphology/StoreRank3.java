@@ -295,15 +295,6 @@ class StoreRank3 implements Store {
     * {@inheritDoc}
     */
 
-   @Override
-   public Stream<GroveThing> streamDeep() {
-      return this.hierarchyTrees.values().stream().flatMap(HierarchyTree::streamValuesDeep);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
    @SuppressWarnings("null")
    @Override
    public Stream<GroveThing> stream(Object... keys) {
@@ -347,7 +338,7 @@ class StoreRank3 implements Store {
 
    @Override
    @SuppressWarnings({"null", "unchecked"})
-   public Stream<Object> streamKeysDeep(Object... keys) {
+   public Stream<Object> streamKeysAtAndBelow(Object... keys) {
 
       assert ParameterArray.validateSizeAndElements(keys, 0, StoreRank3.rank, this.keyValidators);
 
@@ -398,7 +389,7 @@ class StoreRank3 implements Store {
 
    @Override
    @SuppressWarnings({"null", "unchecked"})
-   public Stream<Object> streamKeysShallow(Object... keys) {
+   public Stream<Object> streamKeysAt(Object... keys) {
 
       assert ParameterArray.validateSizeAndElements(keys, 0, StoreRank3.rank, this.keyValidators);
 
@@ -445,210 +436,32 @@ class StoreRank3 implements Store {
     * {@inheritDoc}
     */
 
-   @SuppressWarnings("null")
    @Override
-   public Stream<Object[]> streamKeySetsDeep(Object... keys) {
+   public Stream<Object[]> streamKeySets(Object... keys) {
 
       //@formatter:off
-      assert ParameterArray.validateSizeAndElements( keys, 0, StoreRank3.rank, this.keyValidators );
-      //@formatter:on
-
-      var keyCount = Objects.nonNull(keys) ? keys.length : 0;
-
-      switch (keyCount) {
-         case 0: {
-            //@formatter:off
-            return
-               this.hierarchyTrees.keySet().stream().flatMap
-                  (
-                     ( treeKey ) ->
-                        this.hierarchyTrees.get( treeKey ).streamKeySetsDeep().map
-                           (
-                              ( keySet ) ->
-                              {
-                                 var keyClass = treeKey.getClass();
-                                 var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                                 keyArray[0] = treeKey;
-                                 keyArray[1] = keySet[ 0 ];
-                                 keyArray[2] = keySet[ 1 ];
-                                 return keyArray;
-                              }
-                           )
-                  );
-            //@formatter:on
-         }
-
-         case 1: {
-            //@formatter:off
-            var hierarchyTree = this.hierarchyTrees.get( keys[0] );
-
-            return
-               Objects.nonNull( hierarchyTree )
-                  ? hierarchyTree.streamKeySetsDeep().map
-                       (
-                          ( keySet ) ->
-                          {
-                             var keyClass = keys[0].getClass();
-                             var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                             keyArray[0] = keys[0];
-                             keyArray[1] = keySet[0];
-                             keyArray[2] = keySet[1];
-                             return keyArray;
-                          }
-                       )
-                  : Stream.empty();
-            //@formatter:on
-         }
-
-         case 2: {
-            //@formatter:off
-            var hierarchyTree = this.hierarchyTrees.get( keys[0] );
-
-            return
-               Objects.nonNull( hierarchyTree )
-                  ? hierarchyTree.streamKeySetsDeep( (Identifier) keys[1] ).map
-                       (
-                          ( keySet ) ->
-                          {
-                             var keyClass = keys[0].getClass();
-                             var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                             keyArray[0] = keys[0];
-                             keyArray[1] = keySet[0];
-                             keyArray[2] = keySet[1];
-                             return keyArray;
-                          }
-                       )
-                  : Stream.empty();
-            //@formatter:on
-         }
-
-         case 3: {
-            //@formatter:off
-            var hierarchyTree = this.hierarchyTrees.get( keys[0] );
-
-            return
-               Objects.nonNull( hierarchyTree )
-                  ? hierarchyTree.get( (Identifier) keys[1], (Identifier) keys[2] ).map
-                       (
-                          ( value ) ->
-                          {
-                             var keyClass = keys[0].getClass();
-                             var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                             keyArray[0] = keys[0];
-                             keyArray[1] = keys[1];
-                             keyArray[2] = keys[2];
-                             return Stream.<Object[]>of( keyArray );
-                          }
-                       ).orElseGet( Stream::empty )
-                  : Stream.empty();
-            //@formatter:on
-         }
-
-         default:
-            throw new IllegalArgumentException();
-      }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @SuppressWarnings("null")
-   @Override
-   public Stream<Object[]> streamKeySetsShallow(Object... keys) {
-
-      //@formatter:off
-      assert ParameterArray.validateSizeAndElements( keys, 0, StoreRank3.rank, this.keyValidators );
-      //@formatter:on
-
-      var keyCount = Objects.nonNull(keys) ? keys.length : 0;
-
-      switch (keyCount) {
-         case 0: {
-            //@formatter:off
-            return
-               this.hierarchyTrees.keySet().stream().map
-                  (
-                     ( treeKey ) ->
-                     {
-                        var keyClass = treeKey.getClass();
-                        var keyArray = (Object[]) Array.newInstance( keyClass, 1 );
-                        keyArray[0] = treeKey;
-                        return keyArray;
-                      }
-                  );
-            //@formatter:on
-         }
-
-         case 1: {
-            //@formatter:off
-            var hierarchyTree = this.hierarchyTrees.get( keys[0] );
-
-            return
-               Objects.nonNull( hierarchyTree )
-                  ? hierarchyTree.streamKeySetsShallow( (Identifier) keys[0] ).map
-                       (
-                          ( keySet ) ->
-                          {
-                             var keyClass = keys[0].getClass();
-                             var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                             keyArray[0] = keys[0];
-                             keyArray[1] = keySet[0];
-                             keyArray[2] = keySet[1];
-                             return keyArray;
-                          }
-                       )
-                  : Stream.empty();
-            //@formatter:on
-         }
-
-         case 2: {
-            //@formatter:off
-            var hierarchyTree = this.hierarchyTrees.get( keys[0] );
-
-            return
-               Objects.nonNull( hierarchyTree )
-                  ? hierarchyTree.streamKeySetsShallow( (Identifier) keys[1] ).map
-                       (
-                          ( keySet ) ->
-                          {
-                             var keyClass = keys[0].getClass();
-                             var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                             keyArray[0] = keys[0];
-                             keyArray[1] = keySet[0];
-                             keyArray[2] = keySet[1];
-                             return keyArray;
-                          }
-                       )
-                  : Stream.empty();
-            //@formatter:on
-         }
-
-         case 3: {
-            //@formatter:off
-            var hierarchyTree = this.hierarchyTrees.get( keys[0] );
-
-            return
-               Objects.nonNull( hierarchyTree )
-                  ? hierarchyTree.get( (Identifier) keys[1], (Identifier) keys[2] ).map
-                       (
-                          ( value ) ->
-                          {
-                             var keyClass = keys[0].getClass();
-                             var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
-                             keyArray[0] = keys[0];
-                             keyArray[1] = keys[1];
-                             keyArray[2] = keys[2];
-                             return Stream.<Object[]>of( keyArray );
-                          }
-                       ).orElseGet( Stream::empty )
-                  : Stream.empty();
-            //@formatter:on
-         }
-
-         default:
-            throw new IllegalArgumentException();
-      }
+      return
+         this.stream( keys )
+            .map    ( GroveThing::getPrimaryKeys )
+            .filter ( Optional::isPresent )
+            .map    ( Optional::get )
+            .map    ( ( lowerKeys ) ->
+                      {
+                         var keyClass = lowerKeys[0].getClass();
+                         var keyArray = (Object[]) Array.newInstance( keyClass, 3 );
+                         keyArray[0] = keys[0];
+                         if( lowerKeys.length == 1 )
+                         {
+                            keyArray[1] = lowerKeys[ 0 ];
+                            keyArray[2] = lowerKeys[ 0 ];
+                         }
+                         else
+                         {
+                            keyArray[1] = lowerKeys[ 0 ];
+                            keyArray[2] = lowerKeys[ 1 ];
+                         }
+                         return keyArray;
+                      });
    }
 
    /**

@@ -52,7 +52,7 @@ public class AbstractMapGrove implements Grove {
     * Assertion guard rail for the maximum rank of a grove's native store.
     */
 
-   private static int maxNativeRank = 2;
+   private static int maxNativeRank = 3;
 
    /**
     * The {@link IdentifierType} the grove is associated with.
@@ -264,7 +264,14 @@ public class AbstractMapGrove implements Grove {
          }
       }
 
-      return Store.create(StoreType.PRIMARY, primaryKeyValidators);
+      //@formatter:off
+      return
+         Store.create
+            (
+              this.identifierType.equals(IdentifierType.SPEC_OBJECT) ? StoreType.PRIMARY_HIERARCHY : StoreType.PRIMARY,
+              primaryKeyValidators
+            );
+      //@ofrmatter:on
    }
 
    /**
@@ -320,16 +327,7 @@ public class AbstractMapGrove implements Grove {
     */
 
    @Override
-   public Stream<GroveThing> streamDeep() {
-      return this.primaryStore.stream();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Stream<GroveThing> streamDeep(Identifier... primaryKeys) {
+   public Stream<GroveThing> stream(Identifier... primaryKeys) {
       return this.primaryStore.stream((Object[]) primaryKeys);
    }
 
@@ -340,7 +338,7 @@ public class AbstractMapGrove implements Grove {
    @SuppressWarnings("unchecked")
    @Override
    public Stream<Identifier> streamIdentifiersDeep(Identifier... primaryKeys) {
-      return (Stream<Identifier>) (Object) this.primaryStore.streamKeysDeep((Object[]) primaryKeys);
+      return (Stream<Identifier>) (Object) this.primaryStore.streamKeysAtAndBelow((Object[]) primaryKeys);
    }
 
    /**
@@ -350,7 +348,7 @@ public class AbstractMapGrove implements Grove {
    @SuppressWarnings("unchecked")
    @Override
    public Stream<Identifier> streamIdentifiersShallow(Identifier... primaryKeys) {
-      return (Stream<Identifier>) (Object) this.primaryStore.streamKeysShallow((Object[]) primaryKeys);
+      return (Stream<Identifier>) (Object) this.primaryStore.streamKeysAt((Object[]) primaryKeys);
    }
 
    /**
@@ -359,8 +357,8 @@ public class AbstractMapGrove implements Grove {
 
    @SuppressWarnings("unchecked")
    @Override
-   public Stream<Identifier[]> streamKeySetsShallow(Identifier... primaryKeys) {
-      return (Stream<Identifier[]>) (Object) this.primaryStore.streamKeySetsShallow((Object[]) primaryKeys);
+   public Stream<Identifier[]> streamKeySets(Identifier... primaryKeys) {
+      return (Stream<Identifier[]>) (Object) this.primaryStore.streamKeySets((Object[]) primaryKeys);
    }
 
    /**

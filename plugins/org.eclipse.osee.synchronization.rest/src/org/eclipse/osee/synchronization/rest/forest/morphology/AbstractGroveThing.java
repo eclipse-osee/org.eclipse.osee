@@ -73,7 +73,7 @@ public abstract class AbstractGroveThing implements GroveThing {
     * @implNote This value cannot exceed the maximum rank {@link Store} that is implemented.
     */
 
-   private static int maxNativeGroveThingRank = 2;
+   private static int maxNativeGroveThingRank = 3;
 
    /**
     * The number of parent references plus one saved for this {@link GroveThing}.

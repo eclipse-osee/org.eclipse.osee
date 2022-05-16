@@ -37,7 +37,14 @@ enum StoreType {
     * {@link Identifier}s as keys.
     */
 
-   PRIMARY(GroveThing::getPrimaryKeys);
+   PRIMARY(GroveThing::getPrimaryKeys),
+
+   /**
+    * Descriptor for hierarchical {@link Store}s that use the {@link GroveThing} and it's parents Synchronization
+    * Artifact {@link Identifier}s as keys.
+    */
+
+   PRIMARY_HIERARCHY(GroveThing::getPrimaryKeys);
 
    /**
     * Saves the {@Function} to extract store key(s) from a {@link GroveThing} for the type of store.

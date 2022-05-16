@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JDK Core Test
+Bundle-SymbolicName: org.eclipse.osee.synchronization.rest.test;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Fragment-Host: org.eclipse.osee.synchronization.rest
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.osee.synchronization.rest.test
+Require-Bundle: org.junit

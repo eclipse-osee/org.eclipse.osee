@@ -139,14 +139,6 @@ public interface Grove extends ToMessage {
    int rank();
 
    /**
-    * Returns an unordered {@link Stream} of all the {@link GroveThing} implementations stored in the {@link Grove}.
-    *
-    * @return an unordered {@link Stream} of all the {@link GroveThing} implementations stored in the {@link Grove}.
-    */
-
-   Stream<GroveThing> streamDeep();
-
-   /**
     * Returns an unordered {@link Stream} of the {@link GroveThing} implementations stored in the {@link Grove} under
     * the provided primary keys. The provided primary key set can be a <code>null</code> array, empty array, or an array
     * of up to the {@link Grove}'s rank number of keys. When less than the full set (rank number of keys) of primary
@@ -173,7 +165,7 @@ public interface Grove extends ToMessage {
     * keys.
     */
 
-   Stream<GroveThing> streamDeep(Identifier... primaryKeys);
+   Stream<GroveThing> stream(Identifier... primaryKeys);
 
    /**
     * Returns an unordered {@link Stream} of the unique primary {@link Identifier} for each {@link GroveThing} stored in
@@ -236,7 +228,7 @@ public interface Grove extends ToMessage {
 
    /**
     * Returns an unordered {@link Stream} of the primary key sets for each {@link GroveThing} stored in the
-    * {@link Grove} for the level under the provided primary key set. The primary key sets in the {@link Stream} will be
+    * {@link Grove} under the provided primary key set. The primary key sets in the {@link Stream} will be
     * {@link Identifier} arrays with all the primary keys for each of the {@link GroveThing}s in the {@link Stream}. The
     * provided primary key set can be a <code>null</code> array, empty array, or an array of up to the {@link Grove}'s
     * rank number of keys. When less than the full set (rank number of keys) of primary keys is provided the keys are
@@ -247,10 +239,10 @@ public interface Grove extends ToMessage {
     * notion is as follows:
     * <dl>
     * <dt>Key Count 0:</dt>
-    * <dd>An unordered {@link Stream} of all the full primary key sets for each {@link GroveThing} in the {@link Grove}
-    * is returned.</dd>
+    * <dd>An unordered {@link Stream} of all the primary key sets for each {@link GroveThing} in the {@link Grove} is
+    * returned.</dd>
     * <dt>Key Count 1 to Grove Primary Rank - 1:</dt>
-    * <dd>An unordered {@link Stream} of all the full primary key sets for each {@link GroveThing} implementation in the
+    * <dd>An unordered {@link Stream} of all the primary key sets for each {@link GroveThing} implementation in the
     * {@link Grove} that are associated with the high order keys in the provided partial primary key set.</dd>
     * <dt>Key Count Equals Grove Primary Rank:</dt>
     * <dd>A stream consisting of just the full primary key set of the single {@link GroveThing} implementation in the
@@ -262,7 +254,7 @@ public interface Grove extends ToMessage {
     * stored in the {@link Grove} under the provided primary keys.
     */
 
-   Stream<Identifier[]> streamKeySetsShallow(Identifier... groveThingKeys);
+   Stream<Identifier[]> streamKeySets(Identifier... groveThingKeys);
 
 }
 

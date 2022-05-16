@@ -233,7 +233,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       // HeaderGroveThing
 
-      headerGrove.streamDeep().forEach(header -> {
+      headerGrove.stream().forEach(header -> {
          this.reqIf.setTheHeader((ReqIFHeader) header.getForeignThing());
       });
 
@@ -247,7 +247,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var reqifDatatypeDefinitionList = reqifContent.getDatatypes();
 
-      datatypeDefinitionGrove.streamDeep().forEach(groveThing -> {
+      datatypeDefinitionGrove.stream().forEach(groveThing -> {
 
          var dataTypeDefinitionGroveThing = (DataTypeDefinitionGroveThing) groveThing;
          var reqifDatatypeDefinition = (DatatypeDefinition) dataTypeDefinitionGroveThing.getForeignThing();
@@ -273,7 +273,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var reqifSpecTypeList = reqifContent.getSpecTypes();
 
-      Stream.concat(specTypeGrove.streamDeep(), specObjectTypeGrove.streamDeep()).forEach(groveThing -> {
+      Stream.concat(specTypeGrove.stream(), specObjectTypeGrove.stream()).forEach(groveThing -> {
 
          var commonObjectType = (CommonObjectTypeGroveThing) groveThing;
          var reqifSpecType = (SpecType) groveThing.getForeignThing();
@@ -303,7 +303,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var reqifSpecificationList = reqifContent.getSpecifications();
 
-      specificationGrove.streamDeep().forEach(groveThing -> {
+      specificationGrove.stream().forEach(groveThing -> {
 
          var specification = (SpecificationGroveThing) groveThing;
          var reqifSpecification = (Specification) groveThing.getForeignThing();
@@ -320,7 +320,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var reqifSpecObjectList = reqifContent.getSpecObjects();
 
-      specObjectGrove.streamDeep().forEach(groveThing -> {
+      specObjectGrove.stream().forEach(groveThing -> {
 
          if (groveThing instanceof SpecificationGroveThing) {
             return;
@@ -345,7 +345,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
        */
 
       //@formatter:off
-      attributeValueGrove.streamDeep().forEach
+      attributeValueGrove.stream().forEach
          (
             ( groveThing ) ->
             {
@@ -397,7 +397,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
                specificationGroveThing.setForeignHierarchy( reqifSpecificationChildreny );
 
-               specObjectGrove.streamKeySetsShallow( specificationIdentifier )
+               specObjectGrove.streamKeySets( specificationIdentifier ).filter( keySet -> keySet[2].getType().equals( IdentifierType.SPEC_OBJECT ) )
                   .forEach
                      (
                         ( keySet ) ->

@@ -75,6 +75,48 @@ public class ParameterArray {
    }
 
    /**
+    * Validates the array is non-null, has a length greater than or equal to the minimum size, and that all elements of
+    * the array are non-null.
+    *
+    * @param objects the array to validate.
+    * @param minSize the minimum number of array elements allowed.
+    * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
+    */
+
+   public static boolean validateNonNullAndSize(Object[] objects, int minSize) {
+
+      /*
+       * Assert check limits are sane
+       */
+
+      assert (minSize >= 0);
+
+      /*
+       * Validate array is non-null and within size limits
+       */
+
+      if (Objects.isNull(objects) || (objects.length < minSize)) {
+         return false;
+      }
+
+      /*
+       * Validate members are non-null
+       */
+
+      for (int i = 0; i < objects.length; i++) {
+         if (Objects.isNull(objects[i])) {
+            return false;
+         }
+      }
+
+      /*
+       * Array is OK
+       */
+
+      return true;
+   }
+
+   /**
     * Validates the array according to the following rules:
     * <ul>
     * <li>the array cannot be <code>null</code>,</li>
@@ -100,7 +142,11 @@ public class ParameterArray {
       assert
             (minSize >= 0)
          && (maxSize >= minSize)
-         && ParameterArray.validateNonNullAndSize( elementValidator, maxSize, maxSize );
+         && ParameterArray.validateNonNullAndSize
+               (
+                  elementValidator,
+                  maxSize              /* minimum size of elementValidator array */
+               );
       //@formatter:on
 
       /*
@@ -155,7 +201,11 @@ public class ParameterArray {
       assert
             (minSize >= 0)
          && (maxSize >= minSize)
-         && ParameterArray.validateNonNullAndSize( elementValidator, maxSize, maxSize );
+         && ParameterArray.validateNonNullAndSize
+               (
+                  elementValidator,
+                  maxSize             /* minimum size of elementValidator array */
+               );
       //@formatter:on
 
       /*
