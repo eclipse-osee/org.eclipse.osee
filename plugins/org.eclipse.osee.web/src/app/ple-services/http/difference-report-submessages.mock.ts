@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-// @ts-nocheck
 import { submessageDiffItem } from "src/app/ple/messaging/shared/types/DifferenceReport";
 export const submessageDiffsMock: submessageDiffItem[] = [
     {
@@ -58,6 +57,25 @@ export const submessageDiffsMock: submessageDiffItem[] = [
         }
     },
     {
+        "id": "200436",
+        "name": "Submessage A",
+        "applicability": {
+            "id": "1",
+            "name": "Base"
+        },
+        "description": "Added this submessage",
+        "interfaceSubMessageNumber": "3",
+        "diffInfo": {
+            "added": true,
+            "deleted": false,
+            "fieldsChanged": {},
+            "url": {
+                "label": "",
+                "url": ""
+            }
+        }
+    },
+    {
         "id": "200405",
         "name": "Submessage UR Edited",
         "applicability": {
@@ -72,25 +90,6 @@ export const submessageDiffsMock: submessageDiffItem[] = [
             "fieldsChanged": {
                 "name": "Submessage UR"
             },
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200436",
-        "name": "Submessage A",
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "description": "Added this submessage",
-        "interfaceSubMessageNumber": "3",
-        "diffInfo": {
-            "added": true,
-            "deleted": false,
-            "fieldsChanged": {},
             "url": {
                 "label": "",
                 "url": ""

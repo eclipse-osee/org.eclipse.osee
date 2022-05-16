@@ -14,9 +14,12 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTableModule } from '@angular/material/table';
 import { TestScheduler } from 'rxjs/testing';
+import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
+import { ScrollToTopButtonComponent } from 'src/app/ple/generic-buttons/scroll-to-top-button/scroll-to-top-button.component';
 import { DiffReportServiceMock } from '../../shared/mocks/diff-report-service.mock';
 import { DiffReportService } from '../../shared/services/ui/diff-report.service';
 import { ConnectionDiffsComponent } from './connection-diffs/connection-diffs.component';
+import { DiffReportTableComponent } from './diff-report-table/diff-report-table.component';
 
 import { DiffReportComponent } from './diff-report.component';
 import { MessageDiffsComponent } from './message-diffs/message-diffs.component';
@@ -36,10 +39,12 @@ describe('DiffReportComponent', () => {
       ],
       imports: [
         CommonModule,
+        GenericButtonsModule,
         MatTableModule],
       declarations: [  
         ConnectionDiffsComponent, 
         DiffReportComponent,
+        DiffReportTableComponent,
         MessageDiffsComponent, 
         NodeDiffsComponent, 
         StructureDiffsComponent,
@@ -66,7 +71,7 @@ describe('DiffReportComponent', () => {
     scheduler.run(() => {
       let expectedObservable = { a: { header: 'description', description: 'Description of the branch', humanReadable: 'Description' } };
       let expectedMarble = '(a)';
-      scheduler.expectObservable(component.getHeaderByName('description')).toBe(expectedMarble, expectedObservable);
+      scheduler.expectObservable(component.getHeaderByName('description', 'branchSummary')).toBe(expectedMarble, expectedObservable);
     })
   })
 

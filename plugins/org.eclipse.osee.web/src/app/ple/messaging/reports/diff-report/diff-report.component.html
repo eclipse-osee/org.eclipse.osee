@@ -10,13 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+<osee-scroll-to-top-button></osee-scroll-to-top-button>
 <ng-container>
     <h1 class="mat-headline diff-report-header">Difference Report</h1>
     <ng-container *ngIf="(branchSummary|async) as _branchSummary">
         <table mat-table [dataSource]="_branchSummary||[]" class="mat-elevation-z1">
             <ng-container [matColumnDef]="header" *ngFor="let header of branchSummaryHeaders">
                 <th mat-header-cell *matHeaderCellDef class="diff-table-cell message-element-interface-table-view-message-header">
-                    {{(getHeaderByName(header)|async)?.humanReadable||''}}
+                    {{(getHeaderByName(header, branchSummaryKey)|async)?.humanReadable||''}}
                 </th>
                 <td mat-cell *matCellDef="let item;" class="diff-table-cell" [ngClass]="'message-table-row-even'">
                     <ng-container *ngIf="header === 'reportDate'; else other">
@@ -30,6 +31,30 @@
             <tr mat-header-row *matHeaderRowDef="branchSummaryHeaders"></tr>
             <tr mat-row *matRowDef="let row; columns: branchSummaryHeaders;"
                 class="message-detail-row"></tr>
+        </table>
+    </ng-container>
+    <ng-container *ngIf="(diffReportSummary|async) as _diffReportSummary">
+        <h2 class="mat-title diff-report-section-header">Summary</h2>
+        <table mat-table [dataSource]="_diffReportSummary||[]" class="mat-elevation-z1">
+            <ng-container [matColumnDef]="header" *ngFor="let header of reportSummaryHeaders">
+                <th mat-header-cell *matHeaderCellDef class="diff-table-cell message-element-interface-table-view-message-header">
+                    {{(getHeaderByName(header, reportSummaryKey)|async)?.humanReadable||''}}
+                </th>
+                <td mat-cell *matCellDef="let item;" class="diff-table-cell" [ngClass]="'message-table-row-even'">
+                    <ng-container *ngIf="header === 'details'; else other">
+                        <ng-container *ngFor="let detail of item[header]">
+                            <span>{{detail}}; </span>
+                        </ng-container>
+                    </ng-container>
+                    <ng-template #other>
+                        {{item[header]}}
+                    </ng-template>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="reportSummaryHeaders"></tr>
+            <tr mat-row *matRowDef="let row; columns: reportSummaryHeaders;"
+                (click)="scrollTo(row.id)"
+                class="message-detail-row diff-report-summary-row"></tr>
         </table>
     </ng-container>
 </ng-container>
@@ -48,3 +73,5 @@
 <ng-template #diffReportLoading>
     <h3 class="mat-h3 diff-report-message">Loading report...</h3>
 </ng-template>
+<!--This div is here so the scroll button doesn't cover content when scrolled all the way down-->
+<div style="height:5em"></div>

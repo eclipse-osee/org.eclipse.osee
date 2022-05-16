@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-// @ts-nocheck
 import { messageDiffItem } from "src/app/ple/messaging/shared/types/DifferenceReport";
 export const messageDiffsMock: messageDiffItem[] = [
     {
@@ -25,8 +24,8 @@ export const messageDiffsMock: messageDiffItem[] = [
         "description": "Delete this message",
         "interfaceMessageNumber": "4",
         "interfaceMessagePeriodicity": "Periodic",
-        "interfaceMessageRate": "10",
         "interfaceMessageType": "Operational",
+        "interfaceMessageRate": "10",
         "interfaceMessageWriteAccess": false,
         "diffInfo": {
             "added": false,
@@ -50,8 +49,8 @@ export const messageDiffsMock: messageDiffItem[] = [
         "description": "Added this message",
         "interfaceMessageNumber": "3",
         "interfaceMessagePeriodicity": "Periodic",
-        "interfaceMessageRate": "20",
         "interfaceMessageType": "Connection",
+        "interfaceMessageRate": "20",
         "interfaceMessageWriteAccess": true,
         "diffInfo": {
             "added": true,
@@ -75,8 +74,8 @@ export const messageDiffsMock: messageDiffItem[] = [
         "description": "This is message 1",
         "interfaceMessageNumber": "1",
         "interfaceMessagePeriodicity": "Aperiodic",
-        "interfaceMessageRate": "5",
         "interfaceMessageType": "Connection",
+        "interfaceMessageRate": "5",
         "interfaceMessageWriteAccess": false,
         "diffInfo": {
             "added": false,

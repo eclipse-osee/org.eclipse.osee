@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { DiffReportService } from '../../shared/services/ui/diff-report.service';
-import { branchSummary} from '../../shared/types/DifferenceReport';
+import { branchSummary, diffReportSummaryItem} from '../../shared/types/DifferenceReport';
 import { HeaderService } from '../../shared/services/ui/header.service';
 import { map } from 'rxjs/operators';
 
@@ -29,17 +29,27 @@ export class DiffReportComponent implements OnInit {
   ngOnInit(): void {}
 
   date = new Date();
-
+  
+  branchSummaryKey = 'branchSummary';
   branchSummaryHeaders:(keyof branchSummary)[] = [
     'pcrNo',
     'description',
     'compareBranch',
     'reportDate'
   ]
+  
+  reportSummaryKey = 'diffReportSummary'
+  reportSummaryHeaders:(keyof diffReportSummaryItem)[] = [
+    'changeType',
+    'action',
+    'name',
+    'details'
+  ]
 
   branchInfo = this.diffReportService.branchInfo;
   parentBranchInfo = this.diffReportService.parentBranchInfo;
   branchSummary = this.diffReportService.branchSummary;
+  diffReportSummary = this.diffReportService.diffReportSummary;
   differenceReport = this.diffReportService.diffReport;
   nodes = this.diffReportService.nodes;
 
@@ -49,8 +59,15 @@ export class DiffReportComponent implements OnInit {
     })
   )
 
-  getHeaderByName(value: keyof branchSummary) {
-    return this.headerService.getHeaderByName(value, 'branchSummary');
+  getHeaderByName(value: keyof branchSummary|keyof diffReportSummaryItem, key: string) {
+    return this.headerService.getHeaderByName(value, key);
+  }
+
+  scrollTo(id: string) {
+    document.getElementById(id)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
   }
 
 }

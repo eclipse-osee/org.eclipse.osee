@@ -15,7 +15,7 @@ import { switchMap, take, filter, share, reduce, shareReplay, map, tap } from 'r
 import { combineLatest, from, of, OperatorFunction } from 'rxjs';
 import { changeInstance, changeTypeNumber, ModificationType } from 'src/app/types/change-report/change-report.d';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
-import { branchSummary, connectionDiffItem, DifferenceReport, DifferenceReportItem, diffItem, diffUrl, elementDiffItem, enumDiffItem, enumSetDiffItem, fieldsChanged, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport';
+import { branchSummary, connectionDiffItem, DifferenceReport, DifferenceReportItem, diffItem, diffReportSummaryItem, diffUrl, elementDiffItem, enumDiffItem, enumSetDiffItem, fieldsChanged, messageDiffItem, nodeDiffItem, platformTypeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport';
 import { ATTRIBUTETYPEID } from 'src/app/types/constants/AttributeTypeId.enum';
 import { ActionService } from 'src/app/ple-services/http/action.service';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
@@ -293,7 +293,28 @@ export class DiffReportService {
             item.diffInfo!.added = false;
           }
           if (c.changeType.id === changeTypeNumber.RELATION_CHANGE) {
-            // TODO implement relation changes
+            let pTypeDiff: DifferenceReportItem = report.changeItems[c.artIdB];
+            if (pTypeDiff) {
+              let pTypeDiffItem: platformTypeDiffItem = pTypeDiff.item as platformTypeDiffItem;
+              if (item.logicalType !== pTypeDiffItem.interfaceLogicalType) {
+                item.diffInfo!.fieldsChanged['logicalType'] = pTypeDiffItem.interfaceLogicalType;
+              }
+              if (item.elementSizeInBits+"" !== pTypeDiffItem.interfacePlatformTypeBitSize) {
+                item.diffInfo!.fieldsChanged['elementSizeInBits'] = pTypeDiffItem.interfacePlatformTypeBitSize;
+              }
+              if (item.interfacePlatformTypeDefaultValue !== pTypeDiffItem.interfacePlatformTypeDefaultValue) {
+                item.diffInfo!.fieldsChanged['interfacePlatformTypeDefaultValue'] = pTypeDiffItem.interfacePlatformTypeDefaultValue;
+              }
+              if (item.interfacePlatformTypeMaxval !== pTypeDiffItem.interfacePlatformTypeMaxval) {
+                item.diffInfo!.fieldsChanged['interfacePlatformTypeMaxval'] = pTypeDiffItem.interfacePlatformTypeMaxval;
+              }
+              if (item.interfacePlatformTypeMinval !== pTypeDiffItem.interfacePlatformTypeMinval) {
+                item.diffInfo!.fieldsChanged['interfacePlatformTypeMinval'] = pTypeDiffItem.interfacePlatformTypeMinval;
+              }
+              if (item.units !== pTypeDiffItem.interfacePlatformTypeUnits) {
+                item.diffInfo!.fieldsChanged['units'] = pTypeDiffItem.interfacePlatformTypeUnits;
+              }
+            }
           } else if (c.changeType.id !== changeTypeNumber.ARTIFACT_CHANGE) {
             if (c.itemTypeId === ATTRIBUTETYPEID.NAME && c.artId === element) {
               item.diffInfo!.fieldsChanged['name'] = c.baselineVersion.value;
@@ -367,7 +388,14 @@ export class DiffReportService {
             item.diffInfo!.added = false;
           }
           if (c.changeType.id === changeTypeNumber.RELATION_CHANGE) {
-            // TODO implement relation changes
+            let elementDiff: DifferenceReportItem = report.changeItems[c.artIdB];
+            if (elementDiff) {
+              let elementCopy: elementDiffItem = JSON.parse(JSON.stringify(elementDiff.item));
+              elementCopy.diffInfo = this.getDefaultDiffInfo(elementDiff);
+              elementCopy.diffInfo.added = !c.deleted;
+              elementCopy.diffInfo.deleted = c.deleted;
+              item.elementChanges?.push(elementCopy);
+            }
           } else if (c.changeType.id != changeTypeNumber.ARTIFACT_CHANGE) {
             if (c.itemTypeId === ATTRIBUTETYPEID.NAME) {
               item.diffInfo!.fieldsChanged['name'] = c.baselineVersion.value;
@@ -390,7 +418,7 @@ export class DiffReportService {
         }
         return item;
       }),
-      filter(item => !this.isNoChanges(item)),
+    filter(item => !this.isNoChanges(item) || item.elementChanges!.length > 0),
       reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[]),
     )),
     shareReplay(1)
@@ -417,13 +445,38 @@ export class DiffReportService {
             } else {
               struct = structs[0];
             }
-            struct.elementChanges?.push(e);
+            if (struct.elementChanges?.filter(ec => ec.id === e.id).length == 0) {
+              struct.elementChanges?.push(e);
+            }
           });
         })
       }),
       map(_ => this.structsWithElements)
     )),
     shareReplay(1)
+  )
+
+  // The report summary only shows differences in 
+  private _diffReportSummary = this._structuresWithElements.pipe(
+    switchMap(structures => from(structures).pipe(
+      map(structure => {
+        let summaryItem: diffReportSummaryItem = {
+          id: structure.id,
+          changeType: 'Structure',
+          action: structure.diffInfo?.added ? 'Added' : structure.diffInfo?.deleted ? 'Deleted' : 'Edited',
+          name: structure.name,
+          details: []
+        }
+        if (Object.keys(structure.diffInfo!.fieldsChanged).length > 0) {
+          summaryItem.details.push("Attribute changes");
+        }
+        if (structure.elementChanges!.length > 0) {
+          summaryItem.details.push("Element changes")
+        }
+        return summaryItem;
+      }),
+      reduce((acc, curr) => [...acc, curr], [] as diffReportSummaryItem[]),
+    ))
   )
 
   private isDeleted(change: changeInstance) {
@@ -440,7 +493,7 @@ export class DiffReportService {
 
   private getDefaultDiffInfo(item: DifferenceReportItem) {
     // Default added to true if there are changes, false if there are no changes.
-    return {added: item.changes.length !== 0, 
+    return {added: item.changes.filter(c => c.changeType.id !== changeTypeNumber.RELATION_CHANGE).length > 0, 
       deleted:false, 
       fieldsChanged: {} as fieldsChanged, 
       url: {label: '', url: ''} as diffUrl};
@@ -491,6 +544,10 @@ export class DiffReportService {
 
   get branchSummary() {
     return this._branchSummary;
+  }
+
+  get diffReportSummary() {
+    return this._diffReportSummary;
   }
 
   get diffReport() {

@@ -12,30 +12,23 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { DiffReportServiceMock } from '../../../shared/mocks/diff-report-service.mock';
-import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
-import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
 
-import { StructureDiffsComponent } from './structure-diffs.component';
+import { ScrollToTopButtonComponent } from './scroll-to-top-button.component';
 
-describe('StructureDiffsComponent', () => {
-  let component: StructureDiffsComponent;
-  let fixture: ComponentFixture<StructureDiffsComponent>;
+describe('ScrollToTopButtonComponent', () => {
+  let component: ScrollToTopButtonComponent;
+  let fixture: ComponentFixture<ScrollToTopButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        { provide: DiffReportService, useValue: DiffReportServiceMock },
-      ],
-      imports: [MatIconModule, MatTableModule],
-      declarations: [ StructureDiffsComponent, DiffReportTableComponent ]
+      imports: [MatIconModule],
+      declarations: [ ScrollToTopButtonComponent ],
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StructureDiffsComponent);
+    fixture = TestBed.createComponent(ScrollToTopButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

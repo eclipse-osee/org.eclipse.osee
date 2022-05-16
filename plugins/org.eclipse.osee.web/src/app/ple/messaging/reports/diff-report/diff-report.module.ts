@@ -24,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SubmessageDiffsComponent } from './submessage-diffs/submessage-diffs.component';
 import { StructureDiffsComponent } from './structure-diffs/structure-diffs.component';
 import { MatIconModule } from '@angular/material/icon';
+import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     DiffReportRoutingModule,
+    GenericButtonsModule,
     MatButtonModule,
     MatIconModule,
     MatTableModule

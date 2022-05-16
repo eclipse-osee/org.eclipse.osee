@@ -10,29 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-table
-    width: 100%
-    margin-bottom: 2em
+import { Component, OnInit } from '@angular/core';
 
-.diff-table-cell
-    padding: 0.5em 1em 0.5em 1em
-    position: relative
+@Component({
+  selector: 'osee-scroll-to-top-button',
+  templateUrl: './scroll-to-top-button.component.html',
+  styleUrls: ['./scroll-to-top-button.component.sass']
+})
+export class ScrollToTopButtonComponent implements OnInit {
 
-.diff-table-title-header
-    text-align: center
-    font-size: 1em
+  constructor() { }
 
-.diff-table-no-change
-    display: none
+  ngOnInit(): void {
+  }
 
-.diff-table-changed-from-to
-    display: flex
-    flex-direction: row
-    align-items: center
-    .mat-icon
-        padding-right: 0.25em
+  scrollToTop() {
+    document.getElementById('app-top')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
 
-.diff-table-row-anchor
-    position: absolute
-    top: -45px
-    left: 0
+}

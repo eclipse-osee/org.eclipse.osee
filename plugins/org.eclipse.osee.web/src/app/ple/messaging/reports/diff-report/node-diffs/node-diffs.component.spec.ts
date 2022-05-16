@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { DiffReportServiceMock } from '../../../shared/mocks/diff-report-service.mock';
 import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
 import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
@@ -26,6 +28,7 @@ describe('NodeDiffsComponent', () => {
       providers: [
         { provide: DiffReportService, useValue: DiffReportServiceMock },
       ],
+      imports: [MatIconModule, MatTableModule],
       declarations: [ NodeDiffsComponent, DiffReportTableComponent ]
     })
     .compileComponents();
