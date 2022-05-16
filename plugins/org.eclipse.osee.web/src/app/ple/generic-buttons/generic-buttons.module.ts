@@ -15,18 +15,22 @@ import { CommonModule } from '@angular/common';
 import { TwoLayerAddButtonComponent } from './two-layer-add-button/two-layer-add-button.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ScrollToTopButtonComponent } from './scroll-to-top-button/scroll-to-top-button.component';
 
 
 
 @NgModule({
   declarations: [
-    TwoLayerAddButtonComponent
+    TwoLayerAddButtonComponent,
+    ScrollToTopButtonComponent
   ],
   imports: [
     CommonModule,
     MatButtonModule,
     MatIconModule,
   ],
-  exports:[TwoLayerAddButtonComponent]
+  exports:[
+  ScrollToTopButtonComponent,
+  TwoLayerAddButtonComponent]
 })
 export class GenericButtonsModule { }

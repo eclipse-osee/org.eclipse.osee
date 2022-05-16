@@ -67,14 +67,15 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    private final InterfaceEnumerationApi interfaceEnumerationApi;
 
    private Map<ArtifactId, List<ChangeItem>> changeMap;
-   private Map<ArtifactId, List<ChangeItem>> nodeMap;
-   private Map<ArtifactId, List<ChangeItem>> connectionMap;
-   private Map<ArtifactId, List<ChangeItem>> messageMap;
-   private Map<ArtifactId, List<ChangeItem>> submessageMap;
-   private Map<ArtifactId, List<ChangeItem>> structureMap;
-   private Map<ArtifactId, List<ChangeItem>> elementMap;
-   private Map<ArtifactId, List<ChangeItem>> typeMap;
-   private Map<ArtifactId, List<ChangeItem>> enumMap;
+
+   private List<ArtifactId> nodeList;
+   private List<ArtifactId> connectionList;
+   private List<ArtifactId> messageList;
+   private List<ArtifactId> submessageList;
+   private List<ArtifactId> structureList;
+   private List<ArtifactId> elementList;
+   private List<ArtifactId> pTypeList;
+   private List<ArtifactId> enumList;
 
    private MimDifferenceReport diffReport;
 
@@ -96,17 +97,18 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       this.branch1 = branch1;
       this.branch2 = branch2;
 
-      // Initialize maps
+      // Initialize
       this.changeMap = new HashMap<>();
-      this.nodeMap = new HashMap<>();
-      this.connectionMap = new HashMap<>();
-      this.messageMap = new HashMap<>();
-      this.submessageMap = new HashMap<>();
-      this.structureMap = new HashMap<>();
-      this.elementMap = new HashMap<>();
-      this.typeMap = new HashMap<>();
-      this.enumMap = new HashMap<>();
       this.diffReport = new MimDifferenceReport();
+
+      this.nodeList = new LinkedList<>();
+      this.connectionList = new LinkedList<>();
+      this.messageList = new LinkedList<>();
+      this.submessageList = new LinkedList<>();
+      this.structureList = new LinkedList<>();
+      this.elementList = new LinkedList<>();
+      this.pTypeList = new LinkedList<>();
+      this.enumList = new LinkedList<>();
 
       TransactionToken sourceTx =
          orcsApi.getQueryFactory().transactionQuery().andIsHead(branch1).getResults().getExactlyOne();
@@ -115,57 +117,54 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       List<ChangeItem> changes = orcsApi.getBranchOps().compareBranch(sourceTx, destinationTx);
 
       // First, add all of the artifact changes to the correct maps. Every diff should have an artifact change.
-      changes.stream().filter(c -> c.getChangeType().getId() == ChangeType.Artifact.getId()).forEach(
-         c -> addChangeToMap(c));
+      changes.stream().filter(
+         c -> c.getChangeType().getId() == ChangeType.Artifact.getId() || c.getChangeType().getId() == ChangeType.Relation.getId()).forEach(
+            c -> addChangeToMap(c));
 
       // Add all change items to the changeMap. These are the lists that will be put into the diff report.
       for (ChangeItem change : changes) {
-         List<ChangeItem> list = getListOrDefault(changeMap, change.getArtId().getId());
+         List<ChangeItem> list = getChangeList(change.getArtId());
          list.add(change);
          changeMap.put(change.getArtId(), list);
       }
 
       // NODES
-      for (ArtifactId artId : nodeMap.keySet()) {
+      for (ArtifactId artId : nodeList) {
          processNode(artId);
       }
 
       // CONNECTIONS
-      for (ArtifactId artId : connectionMap.keySet()) {
+      for (ArtifactId artId : connectionList) {
          processConnection(artId);
       }
 
       // MESSAGES
-      for (ArtifactId artId : messageMap.keySet()) {
+      for (ArtifactId artId : messageList) {
          processMessage(artId);
       }
 
       // SUBMESSAGES
-      for (ArtifactId artId : submessageMap.keySet()) {
+      for (ArtifactId artId : submessageList) {
          processSubMessage(artId);
       }
 
       // STRUCTURES
-      for (ArtifactId artId : structureMap.keySet()) {
+      for (ArtifactId artId : structureList) {
          processStructure(artId);
       }
 
       // ELEMENTS
-      for (ArtifactId artId : elementMap.keySet()) {
+      for (ArtifactId artId : elementList) {
          processElement(artId, ArtifactId.SENTINEL);
       }
 
       // PLATFORM TYPES
-      for (ArtifactId artId : typeMap.keySet()) {
-         List<InterfaceStructureElementToken> elements =
-            interfaceElementApi.getElementsByType(getBranchId(artId), artId);
-         for (InterfaceStructureElementToken element : elements) {
-            processElement(ArtifactId.valueOf(element.getId()), artId, element);
-         }
+      for (ArtifactId artId : pTypeList) {
+         processPlatformType(artId);
       }
 
       // ENUMS
-      for (ArtifactId artId : enumMap.keySet()) {
+      for (ArtifactId artId : enumList) {
          processEnumeration(artId);
       }
 
@@ -184,7 +183,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    private void processConnection(ArtifactId connectionId) {
       InterfaceConnection connection = interfaceConnectionApi.get(getBranchId(connectionId), connectionId);
       if (connection.isValid()) {
-         diffReport.addItem(connection, getListOrDefault(changeMap, connectionId.getId()));
+         diffReport.addItem(connection, getChangeList(connectionId));
          diffReport.getConnections().add(connectionId);
       }
    }
@@ -193,7 +192,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       InterfaceMessageToken message = interfaceMessageApi.getWithAllParentRelations(getBranchId(messageId), messageId);
 
       if (message.isValid()) {
-         diffReport.addItem(message, getListOrDefault(changeMap, messageId.getId()));
+         diffReport.addItem(message, getChangeList(messageId));
 
          addMessageParent(message);
 
@@ -206,7 +205,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          interfaceSubMessageApi.getWithAllParentRelations(getBranchId(submessageId), submessageId);
 
       if (subMessage.isValid()) {
-         diffReport.addItem(subMessage, getListOrDefault(changeMap, submessageId.getId()));
+         diffReport.addItem(subMessage, getChangeList(submessageId));
 
          addSubMessageParents(subMessage);
 
@@ -219,7 +218,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          interfaceStructureApi.getWithAllParentRelations(getBranchId(structureId), structureId);
 
       if (structure.isValid()) {
-         diffReport.addItem(structure, getListOrDefault(changeMap, structureId.getId()));
+         diffReport.addItem(structure, getChangeList(structureId));
 
          addStructureParents(structure);
 
@@ -229,15 +228,16 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    private void processElement(ArtifactId elementId, ArtifactId typeId) {
       InterfaceStructureElementToken element = interfaceElementApi.get(getBranchId(elementId), elementId);
+      pTypeList.add(ArtifactId.valueOf(element.getPlatformTypeId())); // Add platform type id to list to process later
       processElement(elementId, typeId, element);
    }
 
    private void processElement(ArtifactId elementId, ArtifactId typeId, InterfaceStructureElementToken element) {
       if (element.isValid()) {
-         diffReport.addItem(element, getListOrDefault(changeMap, element.getId()));
+         diffReport.addItem(element, getChangeList(elementId));
 
          if (typeId.isValid()) {
-            diffReport.addItem(element, getListOrDefault(changeMap, typeId.getId()));
+            diffReport.addItem(element, getChangeList(typeId));
          }
 
          if (!diffReport.hasParents(elementId)) {
@@ -246,7 +246,23 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             addElementParents(elementWithParentRelations);
          }
 
-         diffReport.getElements().add(elementId);
+         if (!diffReport.getElements().contains(elementId)) {
+            diffReport.getElements().add(elementId);
+         }
+      }
+   }
+
+   private void processPlatformType(ArtifactId pTypeId) {
+      PlatformTypeToken pType = interfacePlatformApi.get(getBranchId(pTypeId), pTypeId);
+      if (pType.isValid()) {
+         diffReport.addItem(pType, getChangeList(pTypeId));
+
+         // Process Elements
+         List<InterfaceStructureElementToken> elements =
+            interfaceElementApi.getElementsByType(getBranchId(pTypeId), pTypeId);
+         for (InterfaceStructureElementToken element : elements) {
+            processElement(ArtifactId.valueOf(element.getId()), pTypeId, element);
+         }
       }
    }
 
@@ -265,7 +281,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          // Get enum set with populated enum list
          ArtifactId enumSetId = ArtifactId.valueOf(enumSet.getId());
          InterfaceEnumerationSet populatedSet = interfaceEnumerationSetApi.get(getBranchId(enumId), enumSetId);
-         diffReport.addItem(populatedSet, getListOrDefault(changeMap, enumId.getId()));
+         diffReport.addItem(populatedSet, getChangeList(enumId));
          diffReport.getEnumSets().add(enumSetId);
          addEnumSetParents(enumSet); // Use the non-populated enum set that has the parent relations here
       }
@@ -341,38 +357,51 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       ChangeItem change =
          changes.stream().filter(c -> c.getChangeType().getId() == ChangeType.Artifact.getId()).findFirst().orElse(
             null);
+      // If no artifact change is found, look for a relation change
+      change = change == null ? changes.stream().filter(
+         c -> c.getChangeType().getId() == ChangeType.Relation.getId()).findFirst().orElse(null) : change;
       return change != null && change.isDeleted() ? branch2 : branch1;
    }
 
-   private List<ChangeItem> getListOrDefault(Map<ArtifactId, List<ChangeItem>> changeMap, Long artId) {
-      return changeMap.getOrDefault(ArtifactId.valueOf(artId), new LinkedList<>());
+   private List<ChangeItem> getChangeList(ArtifactId artId) {
+      return changeMap.getOrDefault(artId, new LinkedList<>());
    }
 
    private void addChangeToMap(ChangeItem changeItem) {
-      Map<ArtifactId, List<ChangeItem>> map = null;
+      ArtifactId artId = changeItem.getArtId();
       long itemTypeId = changeItem.getItemTypeId().getId();
-      if (itemTypeId == CoreArtifactTypes.InterfaceNode.getId()) {
-         map = nodeMap;
+      if (itemTypeId == CoreArtifactTypes.InterfaceNode.getId() || itemTypeId == CoreRelationTypes.InterfaceConnectionPrimary_Node.getId() || itemTypeId == CoreRelationTypes.InterfaceConnectionSecondary_Node.getId()) {
+         if (!nodeList.contains(artId)) {
+            nodeList.add(artId);
+         }
       } else if (itemTypeId == CoreArtifactTypes.InterfaceConnection.getId()) {
-         map = connectionMap;
+         if (!connectionList.contains(artId)) {
+            connectionList.add(artId);
+         }
       } else if (itemTypeId == CoreArtifactTypes.InterfaceMessage.getId()) {
-         map = messageMap;
+         if (!messageList.contains(artId)) {
+            messageList.add(artId);
+         }
       } else if (itemTypeId == CoreArtifactTypes.InterfaceSubMessage.getId()) {
-         map = submessageMap;
-      } else if (itemTypeId == CoreArtifactTypes.InterfaceStructure.getId()) {
-         map = structureMap;
-      } else if (itemTypeId == CoreArtifactTypes.InterfaceDataElementArray.getId() || itemTypeId == CoreArtifactTypes.InterfaceDataElement.getId()) {
-         map = elementMap;
+         if (!submessageList.contains(artId)) {
+            submessageList.add(artId);
+         }
+      } else if (itemTypeId == CoreArtifactTypes.InterfaceStructure.getId() || itemTypeId == CoreRelationTypes.InterfaceStructureContent.getId()) {
+         if (!structureList.contains(artId)) {
+            structureList.add(artId);
+         }
+      } else if (itemTypeId == CoreArtifactTypes.InterfaceDataElementArray.getId() || itemTypeId == CoreArtifactTypes.InterfaceDataElement.getId() || itemTypeId == CoreRelationTypes.InterfaceElementPlatformType.getId()) {
+         if (!elementList.contains(artId)) {
+            elementList.add(artId);
+         }
       } else if (itemTypeId == CoreArtifactTypes.InterfacePlatformType.getId()) {
-         map = typeMap;
+         if (!pTypeList.contains(artId)) {
+            pTypeList.add(artId);
+         }
       } else if (itemTypeId == CoreArtifactTypes.InterfaceEnum.getId()) {
-         map = enumMap;
-      }
-
-      if (map != null) {
-         List<ChangeItem> changes = getListOrDefault(map, changeItem.getArtId().getId());
-         changes.add(changeItem);
-         map.put(changeItem.getArtId(), changes);
+         if (!enumList.contains(artId)) {
+            enumList.add(artId);
+         }
       }
    }
 

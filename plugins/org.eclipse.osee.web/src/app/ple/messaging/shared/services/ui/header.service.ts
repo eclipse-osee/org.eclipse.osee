@@ -17,8 +17,8 @@ import { element } from '../../types/element';
 import { structure } from '../../types/structure';
 import { message } from '../../../message-interface/types/messages';
 import { subMessage } from '../../../message-interface/types/sub-messages';
-import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
-import { branchSummary, connectionDiffItem, DiffHeaderType, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport.d';
+import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, diffReportSummaryHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
+import { branchSummary, connectionDiffItem, DiffHeaderType, diffReportSummaryItem, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport.d';
 
 @Injectable({
   providedIn: 'root'
@@ -136,7 +136,7 @@ export class HeaderService {
     { header: 'interfaceElementIndexEnd', description: 'Minimum value of element', humanReadable: 'Min. Val' },
     { header: 'interfacePlatformTypeMinval', description: 'Minimum value of element', humanReadable: 'Min. Val' },
     { header: 'interfacePlatformTypeMaxval', description: 'Maximum value of element', humanReadable: 'Max. Val' },
-    { header: 'interfacePlatformTypeDefaultValue', description: 'Default value of element', humanReadable: 'Devault Val' },
+    { header: 'interfacePlatformTypeDefaultValue', description: 'Default value of element', humanReadable: 'Default Val' },
     { header: 'units', description: 'Element units', humanReadable: 'Units' },
     { header: 'enumeration', description: 'Element enumeration', humanReadable: 'Enumeration' },
     { header: 'interfaceElementAlterable', description: 'Alterability of element', humanReadable: 'Alterable' },
@@ -149,6 +149,13 @@ export class HeaderService {
     { header: 'description', description: 'Description of the branch', humanReadable: 'Description' },
     { header: 'compareBranch', description: 'Branch being compared against', humanReadable: 'Compare Against' },
     { header: 'reportDate', description: 'Date the report was generated', humanReadable: 'Report Date' },
+  ]) 
+
+  private _allDiffReportSummary = new BehaviorSubject<diffReportSummaryHeaderDetail[]>([
+    { header: 'changeType', description: 'Type of object that was changed', humanReadable: 'Change Type' },
+    { header: 'action', description: 'Action taken on the changed object', humanReadable: 'Action' },
+    { header: 'name', description: 'Name of the changed object', humanReadable: 'Name' },
+    { header: 'details', description: 'Change details', humanReadable: 'Details' },
   ]) 
 
 
@@ -204,6 +211,14 @@ export class HeaderService {
     mergeMap((summary) => from(summary).pipe(
       map((sum) => sum.header),
       reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof branchSummary,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
+
+  private _allDiffReportSummaryHeaders = this._allDiffReportSummary.pipe(
+    mergeMap((summary) => from(summary).pipe(
+      map((sum) => sum.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof diffReportSummaryItem,string>)[])
     )),
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -295,6 +310,14 @@ export class HeaderService {
 
   get AllBranchSummary() {
     return this._allBranchSummary;
+  }
+
+  get AllDiffReportSummaryHeaders() {
+    return this._allDiffReportSummaryHeaders;
+  }
+
+  get AllDiffReportSummary() {
+    return this._allDiffReportSummary;
   }
 
   get AllElementHeaders() {
@@ -396,6 +419,13 @@ export class HeaderService {
                               filter((sum)=>sum.header===value)
                             ))
                           ), //branchSummary obs
+                          iif(() => type === 'diffReportSummary',
+                            this.AllDiffReportSummary.pipe(
+                              mergeMap((summary) => from(summary).pipe(
+                                filter((sum)=>sum.header===value)
+                              ))
+                            ), //diffReportSummary obs
+                          )
                         )
                       )
                     )

@@ -10,9 +10,78 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-// @ts-nocheck
 import { nodeDiffItem } from "src/app/ple/messaging/shared/types/DifferenceReport";
 export const nodeDiffsMock: nodeDiffItem[] = [
+    {
+        "id": "200394",
+        "name": "Node4",
+        "applicability": {
+            "id": "1009971623404681232",
+            "name": "Config = Product C"
+        },
+        "address": "444",
+        "color": "Default",
+        "description": "Node      4",
+        "diffInfo": {
+            "added": false,
+            "deleted": false,
+            "fieldsChanged": {
+                "applicability": {
+                    "id": "1",
+                    "name": "Base"
+                }
+            },
+            "url": {
+                "label": "",
+                "url": ""
+            }
+        }
+    },
+    {
+        "id": "200396",
+        "name": "Node D",
+        "applicability": {
+            "id": "1",
+            "name": "Base"
+        },
+        "address": "000",
+        "color": "Default",
+        "description": "Delete this",
+        "diffInfo": {
+            "added": false,
+            "deleted": true,
+            "fieldsChanged": {
+                "name": "Node D",
+                "description": "Delete this",
+                "address": "000",
+                "color": "Default"
+            },
+            "url": {
+                "label": "",
+                "url": ""
+            }
+        }
+    },
+    {
+        "id": "200430",
+        "name": "Node A",
+        "applicability": {
+            "id": "1",
+            "name": "Base"
+        },
+        "address": "555",
+        "color": "#2c5926",
+        "description": "Added this node",
+        "diffInfo": {
+            "added": true,
+            "deleted": false,
+            "fieldsChanged": {},
+            "url": {
+                "label": "",
+                "url": ""
+            }
+        }
+    },
     {
         "id": "200391",
         "name": "Node2(Edit)",
@@ -52,76 +121,6 @@ export const nodeDiffsMock: nodeDiffItem[] = [
                 "description": "Node 1 description",
                 "address": "111",
                 "color": "#854c4c"
-            },
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200394",
-        "name": "Node4",
-        "applicability": {
-            "id": "1009971623404681232",
-            "name": "Config = Product C"
-        },
-        "address": "444",
-        "color": "Default",
-        "description": "Node      4",
-        "diffInfo": {
-            "added": false,
-            "deleted": false,
-            "fieldsChanged": {
-                "applicability": {
-                    "id": "1",
-                    "name": "Base"
-                }
-            },
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200430",
-        "name": "Node A",
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "address": "555",
-        "color": "#2c5926",
-        "description": "Added this node",
-        "diffInfo": {
-            "added": true,
-            "deleted": false,
-            "fieldsChanged": {},
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200396",
-        "name": "Node D",
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "address": "000",
-        "color": "Default",
-        "description": "Delete this",
-        "diffInfo": {
-            "added": false,
-            "deleted": true,
-            "fieldsChanged": {
-                "name": "Node D",
-                "description": "Delete this",
-                "address": "000",
-                "color": "Default"
             },
             "url": {
                 "label": "",

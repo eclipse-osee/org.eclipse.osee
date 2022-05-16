@@ -43,6 +43,7 @@
     @include ple.messages-messaging-message-interface-types-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-interface-graph-theme($modern-ple-light-theme,$modern-ple-typography);
     @include ple.messages-messaging-message-typeSearch-theme($modern-ple-light-theme);
+    @include ple.messages-messaging-message-reports-diffReport-theme($modern-ple-light-theme, $modern-ple-typography);
     .mat-success{
         color:mat.get-color-from-palette(map-get(mat.get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
     }
