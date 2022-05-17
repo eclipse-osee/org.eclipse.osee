@@ -96,7 +96,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       String xml = customizeData.getXml(true);
       CustomizeData newCustData = new CustomizeData(xml);
       newCustData.setPersonal(customizeData.isPersonal());
-      ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(newCustData);
+      ServiceUtil.getOseeClient().getClientEndpoint().saveCustomizeData(newCustData.getXml(true));
       if (customizeData.isPersonal()) {
          UserManager.reloadUser();
       } else {
@@ -178,7 +178,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    }
 
    public void deleteCustomization(CustomizeData custData, Artifact deleteArt) {
-      Pattern pattern = Pattern.compile("name=\"(.*?)\".*?NAMESPACE=\"" + custData.getNameSpace() + "\"");
+      Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
       for (Attribute<?> attribute : deleteArt.getAttributes(CoreAttributeTypes.XViewerCustomization)) {
          String str = attribute.getDisplayableString();
          Matcher m = pattern.matcher(str);
@@ -188,6 +188,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
             break;
          }
       }
+      deleteArt.reloadAttributesAndRelations();
    }
 
    @Override

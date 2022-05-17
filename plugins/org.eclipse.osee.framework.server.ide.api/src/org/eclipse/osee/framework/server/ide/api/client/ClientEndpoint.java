@@ -21,7 +21,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
 
@@ -61,7 +60,7 @@ public interface ClientEndpoint {
 
    @POST
    @Path("customize")
-   @Consumes(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionId saveCustomizeData(CustomizeData customizeData);
+   TransactionId saveCustomizeData(String customizeData);
 }
