@@ -150,7 +150,8 @@ public class ClientEndpointImpl implements ClientEndpoint {
    }
 
    @Override
-   public TransactionId saveCustomizeData(CustomizeData customizeData) {
+   public TransactionId saveCustomizeData(String xml) {
+      CustomizeData customizeData = new CustomizeData(xml);
       boolean personal = customizeData.isPersonal();
       ArtifactId customArtId = personal ? orcsApi.userService().getUser() : CoreArtifactTokens.XViewerCustomization;
       ArtifactReadable customArt = orcsApi.getQueryFactory().fromBranch(COMMON).andId(customArtId).asArtifact();
