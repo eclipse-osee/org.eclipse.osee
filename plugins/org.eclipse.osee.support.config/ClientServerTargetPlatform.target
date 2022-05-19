@@ -379,7 +379,7 @@
 <plugin id="org.eclipse.help.webapp.source"/>
 <plugin id="org.eclipse.jdt"/>
 <plugin id="org.eclipse.jdt.annotation" version="2.2.600.v20200408-1511"/>
-<plugin id="org.eclipse.jdt.annotation.source" version="1.1.500.v20200407-1355"/>
+<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
 <plugin id="org.eclipse.jdt.apt.core"/>
 <plugin id="org.eclipse.jdt.apt.core.source"/>
 <plugin id="org.eclipse.jdt.apt.pluggable.core"/>
@@ -470,7 +470,7 @@
 <plugin id="org.eclipse.osgi"/>
 <plugin id="org.eclipse.osgi.compatibility.state"/>
 <plugin id="org.eclipse.osgi.compatibility.state.source"/>
-<plugin id="org.eclipse.osgi.services" version="3.9.0.v20200511-1725"/>
+<plugin id="org.eclipse.osgi.services"/>
 <plugin id="org.eclipse.osgi.services.source"/>
 <plugin id="org.eclipse.osgi.source"/>
 <plugin id="org.eclipse.osgi.util"/>
@@ -655,7 +655,7 @@
 	<plugin id="org.eclipse.equinox.concurrent.source"/>
 	<plugin id="org.eclipse.equinox.http.jetty.source"/>
 	<plugin id="org.eclipse.help.source"/>
-	<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
+	<plugin id="org.eclipse.jdt.annotation.source" version="1.1.500.v20200407-1355"/>
 	<plugin id="org.eclipse.jdt.apt.ui.source"/>
 	<plugin id="org.eclipse.jdt.ui.source"/>
 	<plugin id="org.eclipse.jetty.http.source"/>
