@@ -879,14 +879,6 @@
 		</profile>
 
 	<profile>
-		<id>CliInt</id>
-		
-		<modules>
-			<module> ../org.eclipse.osee.client.integration.tests</module>
-		</modules>
-	</profile>
-
-	<profile>
 		<id>AtsInt</id>
 		
 		<modules>

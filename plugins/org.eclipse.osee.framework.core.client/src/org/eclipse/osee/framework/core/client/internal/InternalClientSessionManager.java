@@ -109,7 +109,22 @@ public class InternalClientSessionManager {
             userService.setUserLoading(true);
             OseeCredential credential = credentialProvider.getCredential();
             clearData();
-            oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
+
+            /**
+             * This gets us through initial dbinit; after that credential that isn't OSEE System (eg Joe Smith) should
+             * authenticate normally. After initial db creation, you can move this to only if oseeSessionGrant == null
+             * and you'll get Joe Smith on next db init. BUT, it doesn't work if database is deleted. Somehow have to
+             * re-authenticate in AtsDbConfigBaseIde so get Joe Smith. releaseUser doesn't seem to do that.
+             */
+            if (OseeProperties.isInDbInit() && credential.getUserName().equals("OSEE System")) {
+               oseeSessionGrant = new OseeSessionGrant();
+               oseeSessionGrant.setAuthenticationProtocol(credential.getAuthenticationProtocol());
+               oseeSessionGrant.setSessionId("-1");
+               oseeSessionGrant.setUserToken(SystemUser.OseeSystem);
+               oseeSessionGrant.setUseOracleHints(credential.getUseOracleHints());
+            } else {
+               oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
+            }
             if (oseeSessionGrant == null) {
                return;
             }
@@ -163,7 +178,9 @@ public class InternalClientSessionManager {
 
    public void releaseSession() {
       if (isSessionValid()) {
-         getSessionEndpoint().releaseIdeClientSession(getOseeSessionGrant().getSessionId());
+         if (!getOseeSessionGrant().getSessionId().equals("-1")) {
+            getSessionEndpoint().releaseIdeClientSession(getOseeSessionGrant().getSessionId());
+         }
          clearData();
       }
    }

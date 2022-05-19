@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.workflow.cr;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -48,6 +49,22 @@ public class CreateNewChangeRequestTestUtility {
 
          @Override
          public void run() {
+            IAtsActionableItem programAi = null;
+            int count = 0;
+            while (programAi == null) {
+               programAi = fBlam.getSelectedProgramAiOrSentinel();
+               if (programAi == null) {
+                  try {
+                     Thread.sleep(1000);
+                  } catch (InterruptedException ex) {
+                     // do nothing
+                  }
+                  if (count < 5) {
+                     count++;
+                     System.err.println("count: " + count);
+                  }
+               }
+            }
             fBlam.handlePopulateWithDebugInfo();
             try {
                Thread.sleep(5000);

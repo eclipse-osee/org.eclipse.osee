@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
  * Applies product line engineering block applicability to file of the configured file extensions. Formerly modeled
@@ -54,7 +55,9 @@ public class BatFileProcessor {
       this.fileTypeApplicabilityData = fileTypeApplicabilityData;
       this.isConfig = isConfig;
       this.commentNonApplicableBlocks = commentNonApplicableBlocks;
-      this.results.setLogToSysErr(true);
+      if (!OseeProperties.isInTest()) {
+         this.results.setLogToSysErr(true);
+      }
    }
 
    public boolean processFile(File inFile, File outFile) throws IOException {
@@ -156,28 +159,28 @@ public class BatFileProcessor {
        * potential leftover empty comments.
        */
       if (!replacementText.isEmpty()) {
-         if (!fileTypeApplicabilityData.getCommentPrefixRegex().isEmpty()
-            && !fileTypeApplicabilityData.getCommentSuffixRegex().isEmpty()) {
-            replacementText = replacementText.replaceAll(System.getProperty("line.separator")
-               + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex()
-               + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentSuffixRegex()
-               + BlockApplicabilityOps.INLINE_WHITESPACE + System.getProperty("line.separator"), "");
+         if (!fileTypeApplicabilityData.getCommentPrefixRegex().isEmpty() && !fileTypeApplicabilityData.getCommentSuffixRegex().isEmpty()) {
+            replacementText = replacementText.replaceAll(System.getProperty(
+               "line.separator") + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE + System.getProperty(
+                  "line.separator"),
+               "");
          }
          if (!fileTypeApplicabilityData.getCommentPrefixRegex().isEmpty()) {
             replacementText = replacementText.replaceAll(
-               BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex()
-                  + BlockApplicabilityOps.INLINE_WHITESPACE + System.getProperty("line.separator"),
+               BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE + System.getProperty(
+                  "line.separator"),
                System.getProperty("line.separator"));
-            replacementText = replacementText.replaceAll(BlockApplicabilityOps.INLINE_WHITESPACE
-               + fileTypeApplicabilityData.getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE + '$', "");
+            replacementText = replacementText.replaceAll(
+               BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentPrefixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE + '$',
+               "");
          }
          if (!fileTypeApplicabilityData.getCommentSuffixRegex().isEmpty()) {
-            replacementText = replacementText.replaceAll(
-               System.getProperty("line.separator") + BlockApplicabilityOps.INLINE_WHITESPACE
-                  + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
+            replacementText = replacementText.replaceAll(System.getProperty(
+               "line.separator") + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
                System.getProperty("line.separator"));
-            replacementText = replacementText.replaceAll('^' + BlockApplicabilityOps.INLINE_WHITESPACE
-               + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE, "");
+            replacementText = replacementText.replaceAll(
+               '^' + BlockApplicabilityOps.INLINE_WHITESPACE + fileTypeApplicabilityData.getCommentSuffixRegex() + BlockApplicabilityOps.INLINE_WHITESPACE,
+               "");
          }
       }
 

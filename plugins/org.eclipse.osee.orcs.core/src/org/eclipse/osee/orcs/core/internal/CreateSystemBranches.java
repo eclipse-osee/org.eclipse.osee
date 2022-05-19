@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.orcs.core.internal.access.BootstrapUsers.getBoostrapUsers;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -119,8 +122,13 @@ public class CreateSystemBranches {
       Set<UserToken> users = new HashSet<>(SystemUser.values());
       users.remove(userWithRoles); // Replace existing entry, if any
       users.add(userWithRoles);
+      Set<UserToken> bootsrapUsers = getBoostrapUsers();
+      Conditions.assertFalse(bootsrapUsers.isEmpty(), "Bootstrap Users should NOT be empty.");
+      users.addAll(bootsrapUsers);
+      OseeProperties.setIsInTest(true);
       TransactionId txId = userService.createUsers(users, "Create System Users");
       userService.setUserForCurrentThread(userWithRoles.getLoginIds().get(0));
+      OseeProperties.setIsInTest(false);
       return txId;
    }
 

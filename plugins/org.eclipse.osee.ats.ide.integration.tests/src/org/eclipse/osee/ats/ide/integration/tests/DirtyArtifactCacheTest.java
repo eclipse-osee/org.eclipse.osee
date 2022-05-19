@@ -15,14 +15,14 @@ package org.eclipse.osee.ats.ide.integration.tests;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This test should be run as the last test of a suite to make sure that the ArtifactCache has no dirty artifacts.
@@ -31,17 +31,10 @@ import org.junit.BeforeClass;
  */
 public class DirtyArtifactCacheTest {
 
-   @BeforeClass
-   public static void setUp() throws Exception {
-      DemoUtil.checkDbInitAndPopulateSuccess();
-   }
+   @Rule
+   public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
-   @AfterClass
-   public static void cleanup() throws Exception {
-      System.out.println("End Integration Tests");
-   }
-
-   @org.junit.Test
+   @Test
    public void testArtifactCacheNotDirty() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
       for (Artifact artifact : dirtyArtifacts) {

@@ -75,7 +75,7 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public void setArtifact(ArtifactToken artifact);
 
-   static final class UserTokenImpl extends NamedIdBase implements UserToken {
+   public final class UserTokenImpl extends NamedIdBase implements UserToken {
       private final String userId;
       private final boolean active;
       private final boolean admin;

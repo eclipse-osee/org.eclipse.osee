@@ -21,7 +21,9 @@ import org.eclipse.osee.framework.core.access.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
@@ -116,16 +118,20 @@ public final class SessionContributionItem extends OseeStatusContributionItem {
 
    @Override
    protected String getEnabledToolTip() {
-      if (ClientSessionManager.isSessionValid()) {
+      if (ClientSessionManager.isSessionValid() && !OseeProperties.isInTest()) {
          String skynetName = "Unknown";
          String userId = "-";
          String sessionId = "-";
          try {
-            skynetName = UserManager.getUser().getName();
-            userId = UserManager.getUser().getUserId();
-            sessionId = ClientSessionManager.getSessionId();
+            // Get user without exceptioning if user not in database
+            User user = UserManager.getUserOrNull();
+            if (user != null) {
+               skynetName = UserManager.getUser().getName();
+               userId = UserManager.getUser().getUserId();
+               sessionId = ClientSessionManager.getSessionId();
+            }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            skynetName = "Exception: " + ex.getLocalizedMessage();
          }
          return String.format(ENABLED_TOOLTIP, skynetName, userId, sessionId);
       }

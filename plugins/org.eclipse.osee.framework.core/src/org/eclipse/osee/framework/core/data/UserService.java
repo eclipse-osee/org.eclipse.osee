@@ -104,7 +104,7 @@ public interface UserService {
 
    /**
     * @return the UserToken for the user whose org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId attribute
-    *         equals the userId parameter
+    * equals the userId parameter
     */
    UserToken getUserByUserId(String userId);
 

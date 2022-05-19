@@ -109,6 +109,16 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
+   public User getCurrentUserOrNull() {
+      for (User user : getUsersAll()) {
+         if (user.getUserId().equals(ClientSessionManager.getCurrentUserToken().getUserId())) {
+            return user;
+         }
+      }
+      return null;
+   }
+
+   @Override
    public void releaseCurrentUser() {
       currentUserProvider.invalidate();
    }

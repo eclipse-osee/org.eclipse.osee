@@ -52,4 +52,6 @@ public interface UserAdmin {
 
    boolean isDuringCurrentUserCreation();
 
+   User getCurrentUserOrNull();
+
 }
