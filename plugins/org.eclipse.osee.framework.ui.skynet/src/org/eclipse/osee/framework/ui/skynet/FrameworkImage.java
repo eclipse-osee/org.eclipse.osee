@@ -76,7 +76,7 @@ public enum FrameworkImage implements KeyedImage {
    COPYTOCLIPBOARD("copyToClipboard.gif"),
    CUSTOMIZE("customize.gif"),
    DELTAS("compare.GIF"),
-   DELTAS_BASE_TO_HEAD_TXS("compareBaseToHeadTxs.GIF"),
+   DELTAS_BASE_TO_HEAD_TXS("compareBaseToHeadTxs.gif"),
    DELTAS_DIFFERENT_BRANCHES_WITH_MERGE("compareBranchesWithMerge.GIF"),
    DELTAS_DIFFERENT_BRANCHES("compareBranches.GIF"),
    DELTAS_TXS_SAME_BRANCH("compareTxs.GIF"),

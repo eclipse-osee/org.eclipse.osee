@@ -195,6 +195,10 @@ public final class Conditions {
       checkExpressionFailOnTrue(value1 != value2, message + " - Expected %d; Actual %d", value1, value2);
    }
 
+   public static void assertNotEquals(int value1, int value2, String message) {
+      checkExpressionFailOnTrue(value1 == value2, message + " - Expected %d; Actual %d", value1, value2);
+   }
+
    public static void assertEquals(int value1, int value2) {
       assertEquals(value1, value2, "");
    }

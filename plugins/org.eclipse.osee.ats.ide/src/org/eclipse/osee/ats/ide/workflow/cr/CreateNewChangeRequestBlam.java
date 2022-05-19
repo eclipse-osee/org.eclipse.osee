@@ -308,11 +308,14 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    }
 
    public IAtsActionableItem getSelectedProgramAiOrSentinel() {
-      IAtsActionableItem selected = programWidget.getSelected();
+      IAtsActionableItem selected = IAtsActionableItem.SENTINEL;
       if (selected != null) {
-         return selected;
+         IAtsActionableItem selAi = programWidget.getSelected();
+         if (selAi != null) {
+            selected = selAi;
+         }
       }
-      return IAtsActionableItem.SENTINEL;
+      return selected;
    }
 
    @Override

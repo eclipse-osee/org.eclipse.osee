@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.util;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -40,6 +41,9 @@ public class DbInitTest {
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+
+      checkNotProductionDataStore();
+
       RenderingUtil.setPopupsAllowed(false);
    }
 
@@ -85,4 +89,13 @@ public class DbInitTest {
       System.out.println("End Database Initialization\n");
 
    }
+
+   private static void checkNotProductionDataStore() {
+      assertFalse("Not to be run on a production database.", isProductionDataStore());
+   }
+
+   private static boolean isProductionDataStore() {
+      return ClientSessionManager.isProductionDataStore();
+   }
+
 }

@@ -221,4 +221,6 @@ public interface TransactionBuilder {
 
    void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma);
 
+   <T> AttributeId createAttributeNoAccess(ArtifactId artifact, AttributeTypeToken attributeType, T value);
+
 }

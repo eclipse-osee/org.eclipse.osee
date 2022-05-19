@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -229,9 +231,11 @@ public class UserServiceImpl implements UserService {
    @Override
    public TransactionId createUsers(Iterable<UserToken> users, String comment) {
       ensureLoaded();
-      if (loginIdToUser.isEmpty()) {
-         // During bootstrap allow user creation when no users have yet been created
-      } else {
+      UserToken currentUser = getUser();
+
+      boolean isBootstrap = loginIdToUser.isEmpty();
+      // During bootstrap allow user creation when no users have yet been created
+      if (!isBootstrap) {
          requireRole(CoreUserGroups.AccountAdmin);
       }
 
@@ -248,10 +252,12 @@ public class UserServiceImpl implements UserService {
       List<ArtifactReadable> existingUsers = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
          CoreArtifactTypes.User).getResults().getList();
 
+      Set<UserToken> bootstrapUsers = BootstrapUsers.getBoostrapUsers();
       for (UserToken userToken : users) {
          if (existingUsers.contains(userToken)) {
             continue;
          }
+
          ArtifactId user = null;
          if (userToken.isValid()) {
             user = tx.createArtifact(userToken);
@@ -262,8 +268,10 @@ public class UserServiceImpl implements UserService {
          tx.setSoleAttributeValue(user, CoreAttributeTypes.UserId, userToken.getUserId());
          tx.setSoleAttributeValue(user, CoreAttributeTypes.Email, userToken.getEmail());
          for (String loginId : userToken.getLoginIds()) {
-            if (userToken.getRoles().contains(CoreUserGroups.AccountAdmin)) {
-               tx.createAttribute(user, CoreAttributeTypes.LoginId, userToken, loginId);
+            if (bootstrapUsers.contains(userToken) && OseeProperties.isInTest()) {
+               tx.createAttributeNoAccess(user, CoreAttributeTypes.LoginId, loginId);
+            } else if (currentUser.getRoles().contains(CoreUserGroups.AccountAdmin)) {
+               tx.createAttribute(user, CoreAttributeTypes.LoginId, currentUser, loginId);
             }
          }
          for (ArtifactToken userGroup : userToken.getRoles()) {

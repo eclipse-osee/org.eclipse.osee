@@ -79,6 +79,10 @@ public final class UserManager {
       return getUserAdmin().getCurrentUser();
    }
 
+   public static User getUserOrNull() {
+      return getUserAdmin().getCurrentUserOrNull();
+   }
+
    public static void releaseUser() {
       getUserAdmin().releaseCurrentUser();
    }

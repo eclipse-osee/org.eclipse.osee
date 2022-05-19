@@ -21,14 +21,16 @@ import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAccessAdm
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAdmin;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BootstrapUserProvider;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
  * @author Donald G. Dunne
  */
-public final class DemoUsers {
+public class DemoUsers implements BootstrapUserProvider {
 
    public static List<UserToken> values = new ArrayList<UserToken>();
 
@@ -69,11 +71,16 @@ public final class DemoUsers {
       return token;
    }
 
-   private DemoUsers() {
-      // Constants
+   public DemoUsers() {
+      // Constants; for jax-rs
    }
 
    public static List<UserToken> values() {
+      return values;
+   }
+
+   @Override
+   public Collection<UserToken> getBootsrapUsers() {
       return values;
    }
 

@@ -52,10 +52,12 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -275,6 +277,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, UserToken user, T value) {
       checkPermissionsForLoginId(attributeType, user);
+      validateBuilder();
+      Artifact asArtifact = getForWrite(sourceArtifact);
+      return asArtifact.createAttribute(attributeType, value);
+   }
+
+   @Override
+   public <T> AttributeId createAttributeNoAccess(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
+      if (!OseeProperties.isInTest()) {
+         throw new OseeArgumentException("createAttributeNoAccess can only be used in tests or bootstrapping");
+      }
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType, value);
@@ -611,7 +623,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public List<ArtifactReadable> getTxDataReadables() {
-      List list = new ArrayList(txData.getAllReadables());
+      List<ArtifactReadable> list = new ArrayList<ArtifactReadable>(txData.getAllReadables());
       return list;
    }
 
