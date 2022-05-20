@@ -16,15 +16,15 @@
         <mat-dialog-content>
             <mat-form-field>
                 <mat-label>Logical Type</mat-label>
-                <mat-select [(ngModel)]="type" (selectionChange)="setType($event.value)">
-                    <mat-option *ngFor="let logicaltype of (logicalTypes |async)" [value]="logicaltype.id" >
+                <mat-select [(ngModel)]="type" (selectionChange)="setType($event.value)" data-cy="logical-type-selector">
+                    <mat-option *ngFor="let logicaltype of (logicalTypes |async)" [value]="logicaltype.id" [attr.data-cy]="'logical-type-'+logicaltype.name">
                         {{logicaltype.name |titlecase}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button mat-button matStepperNext [disabled]="type.length === 0">Next</button>
+            <button mat-button matStepperNext [disabled]="type.length === 0" data-cy="stepper-next-1">Next</button>
         </mat-dialog-actions>
     </mat-step>
     <mat-step label="Fill out type information" [completed]="isStep2Complete()">
@@ -36,7 +36,7 @@
                     <ng-container *ngIf="form.name==='Units'; else genericInput">
                         <mat-form-field>
                             <mat-label>{{form.name}}</mat-label>
-                            <mat-select [(ngModel)]="fields[i].value" #input [required]="form.required">
+                            <mat-select [(ngModel)]="fields[i].value" #input [required]="form.required" [attr.data-cy]="'field-'+form.attributeType">
                                 <mat-option *ngFor="let unit of (units|async)" [value]="unit">
                                     {{unit}}
                                 </mat-option>
@@ -49,7 +49,7 @@
                     <ng-template #genericInput>
                         <mat-form-field>
                             <mat-label>{{form.name}}</mat-label>
-                            <input matInput type="text" [(ngModel)]="fields[i].value" #input [required]="form.required">
+                            <input matInput type="text" [(ngModel)]="fields[i].value" #input [required]="form.required" [attr.data-cy]="'field-'+form.attributeType">
                             <ng-container *ngIf="form.defaultValue">
                                 <mat-hint align="end">Default Value: {{form.defaultValue}}</mat-hint>
                             </ng-container>
@@ -144,7 +144,7 @@
         <mat-dialog-actions align="end">
             <button mat-button matStepperPrevious>Back</button>
             <ng-container *ngIf="isStep2Complete()">
-                <button mat-raised-button matStepperNext [disabled]="!isStep2Complete()" [color]="isStep2Complete() ? 'primary': ''">Next</button>
+                <button mat-raised-button matStepperNext [disabled]="!isStep2Complete()" [color]="isStep2Complete() ? 'primary': ''" data-cy="stepper-next-2">Next</button>
             </ng-container>
             <ng-container *ngIf="!isStep2Complete()">
                 <button mat-button matStepperNext [disabled]="!isStep2Complete()" [color]="isStep2Complete() ? 'primary': ''">Next</button>
@@ -167,7 +167,7 @@
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button mat-button matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" *ngIf="!disableClose" [mat-dialog-close]="closeDialog()">
+            <button mat-raised-button color="primary" *ngIf="!disableClose" [mat-dialog-close]="closeDialog()" data-cy="close-new-platform-menu">
                 Ok
             </button>
             <button mat-raised-button color="primary" *ngIf="disableClose" (click)="hideTypeDialog()">

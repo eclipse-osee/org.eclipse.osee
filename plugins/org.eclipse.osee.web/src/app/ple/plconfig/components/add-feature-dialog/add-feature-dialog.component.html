@@ -14,38 +14,38 @@
 <div mat-dialog-content>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Title</mat-label>
-        <input matInput type="text" [(ngModel)]="data.feature.name" #input required>
+        <input matInput type="text" [(ngModel)]="data.feature.name" #input required data-cy="field-name" [attr.data-cy-value]="'field-name-'+data.feature.name">
     </mat-form-field>
     <br>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Description</mat-label>
-        <input matInput type="text" [(ngModel)]="data.feature.description" #input required>
+        <input matInput type="text" [(ngModel)]="data.feature.description" #input required data-cy="field-description" [attr.data-cy-value]="'field-description-'+data.feature.description">
     </mat-form-field>
     <br>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Select a Value Type</mat-label>
-        <mat-select [(ngModel)]="data.feature.valueType" required>
-            <mat-option *ngFor="let type of (valueTypes |async)" [value]="type" >
+        <mat-select [(ngModel)]="data.feature.valueType" required data-cy="field-valueType" [attr.data-cy-value]="'field-valueType-'+data.feature.valueType">
+            <mat-option *ngFor="let type of (valueTypes |async)" [value]="type" [attr.data-cy]="'option-'+type">
                 {{type}}
             </mat-option>
         </mat-select>
     </mat-form-field>
     <br>
-    <mat-slide-toggle [(ngModel)]="data.feature.multiValued" labelPosition='before' (change)="selectMultiValued()" [style.fontSize.px]="18">
+    <mat-slide-toggle [(ngModel)]="data.feature.multiValued" labelPosition='before' (change)="selectMultiValued()" [style.fontSize.px]="18" data-cy="field-multiValued" [attr.data-cy-value]="'field-multiValued-'+data.feature.multiValued">
         Multi-Valued
     </mat-slide-toggle>
     <br>
     <mat-form-field *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker " [style.fontSize.px]="18">
         <mat-label>Value</mat-label>
-        <input matInput type="text" #input [(ngModel)]="data.feature.values[i]" (keyup)="data.feature.setValueStr()" required>
+        <input matInput type="text" #input [(ngModel)]="data.feature.values[i]" (keyup)="data.feature.setValueStr()" required [attr.data-cy]="'field-value-'+i" [attr.data-cy-value]="'field-value-'+data.feature.values[i]">
     </mat-form-field>
     <br>
-    <button mat-stroked-button (click)="increaseValueArray()" [style.fontSize.px]="18">Add a Value</button>
+    <button mat-stroked-button (click)="increaseValueArray()" [style.fontSize.px]="18" data-cy="add-value-btn">Add a Value</button>
     <br>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Select a Default Value</mat-label>
-        <mat-select [(ngModel)]="data.feature.defaultValue" required>
-            <mat-option *ngFor="let value of data.feature.values" [value]="value">
+        <mat-select [(ngModel)]="data.feature.defaultValue" required data-cy="field-defaultValue" [attr.data-cy-value]="'field-defaultValue-'+data.feature.defaultValue">
+            <mat-option *ngFor="let value of data.feature.values" [value]="value" [attr.data-cy]="'option-'+value">
                 {{value}}
             </mat-option>
         </mat-select>
@@ -54,20 +54,20 @@
     <div>
         <mat-label [style.fontSize.px]="18">Select Product Types</mat-label>
         <mat-selection-list [(ngModel)]="data.feature.productApplicabilities" color="primary" [style.fontSize.px]="18">
-            <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type">
+            <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type" [attr.data-cy]="'field-product-type-'+type+'-'+data.feature.productApplicabilities.includes(type)">
                 {{type}}
             </mat-list-option>
         </mat-selection-list>
     </div>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">
+    <button mat-button (click)="onNoClick()" data-cy="cancel-btn">
         Cancel
     </button>
-    <button mat-button (click)="clearFeatureData()">
+    <button mat-button (click)="clearFeatureData()" data-cy="clear-btn">
         Clear Feature Data
     </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.feature.name.length === 0 || data.feature.description.length === 0 || data.feature.valueType.length === 0 || data.feature.defaultValue.length === 0">
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.feature.name.length === 0 || data.feature.description.length === 0 || data.feature.valueType.length === 0 || data.feature.defaultValue.length === 0" data-cy="submit-btn">
         Ok
     </button>
 </div>

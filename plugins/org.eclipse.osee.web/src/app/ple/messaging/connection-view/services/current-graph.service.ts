@@ -81,7 +81,7 @@ export class CurrentGraphService {
   private _branchPrefs = this.preferenceService.BranchPrefs;
   private _preferences = this.preferenceService.preferences;
 
-  private _update = new Subject<boolean>();
+  private _update = this.routeStateService.updated;
   private _differences = new BehaviorSubject<changeInstance[]|undefined>(undefined);
   constructor (private graphService: GraphService, private nodeService: NodeService, private connectionService: ConnectionService, private routeStateService: RouteStateService, private applicabilityService: ApplicabilityListService, private diffService: DiffUIService, private sideNavService: SideNavService, private preferenceService: PreferencesUIService) {}
   get differences() {
@@ -99,7 +99,7 @@ export class CurrentGraphService {
   }
 
   set update(value: boolean) {
-    this._update.next(true);
+    this.routeStateService.update = value;
   }
 
   get nodeOptions() {

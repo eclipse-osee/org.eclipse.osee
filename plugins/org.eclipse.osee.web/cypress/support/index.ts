@@ -26,5 +26,27 @@
 // ***********************************************************
 
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
-// import './commands';
+import './commands';
+import './branch.commands';
+import './messaging/platform.types.commands';
+import './messaging/mim.preferences.commands';
+import './messaging/node.commands';
+import './messaging/connection.commands';
+import './undo.commands';
+import './messaging/message.commands';
+import './messaging/submessage.commands';
+import './freetext.commands';
+import './messaging/structure.commands';
+import './messaging/element.commands';
+import './messaging/value.commands';
+import './nested-add-button.commands';
+import './plconfig/feature.commands';
+import './plconfig/config.commands';
+import './plconfig/product.types.commands';
+import './plconfig/group.commands';
+import './plconfig/values.commands';
 import '@jscutlery/cypress-harness/support';
+
+Cypress.Screenshot.defaults({
+  disableTimersAndAnimations: false,
+});

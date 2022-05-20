@@ -71,4 +71,12 @@ export class MimRouteService {
   set singleStructureIdValue(value: string) {
     this._singleStructureId.next(value);
   }
+
+  get updated() {
+    return this._ui.update;
+  }
+
+  set update(value: boolean) {
+    this._ui.updated = value;
+  }
 }

@@ -14,15 +14,15 @@
 <div mat-dialog-content>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Title</mat-label>
-        <input matInput type="text" [(ngModel)]="data.title" #input required>
+        <input matInput type="text" [(ngModel)]="data.title" #input required data-cy="field-title">
     </mat-form-field>
     <br>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">
+    <button mat-button (click)="onNoClick()" data-cy="cancel-btn">
         Cancel
     </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.title.length===0">
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.title.length===0" data-cy="submit-btn">
         Ok
     </button>
 </div>

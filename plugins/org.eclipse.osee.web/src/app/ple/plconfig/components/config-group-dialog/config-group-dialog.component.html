@@ -22,7 +22,7 @@
         <div>
             <mat-label [style.fontSize.px]="18">Select Views</mat-label>
             <mat-selection-list [(ngModel)]="data.configGroup.views" color="warn" [style.fontSize.px]="18">
-                <mat-list-option *ngFor="let view of totalConfigurations" [value]="view">
+                <mat-list-option *ngFor="let view of totalConfigurations" [value]="view" [attr.data-cy]="'view-'+view.name">
                     {{view.name}}
                 </mat-list-option>
             </mat-selection-list>
@@ -43,15 +43,15 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">
-        <div *ngIf="(data.editable)===true">
+        <div *ngIf="(data.editable)===true" data-cy="cancel-btn">
             Cancel
         </div>
-        <div *ngIf="(data.editable)===false">
+        <div *ngIf="(data.editable)===false" data-cy="ok-btn">
             Ok
         </div>
     </button>
     <div *ngIf="data.editable===true">
-        <button mat-button [mat-dialog-close]="data" cdkFocusInitial color=primary [disabled]="data.configGroup.name.length<=0">
+        <button mat-button [mat-dialog-close]="data" cdkFocusInitial color=primary [disabled]="data.configGroup.name.length<=0" data-cy="submit-btn">
             Ok
         </button>
     </div>

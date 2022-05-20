@@ -16,49 +16,49 @@
     <div *ngIf="(editable | async) === 'true';">
         <mat-form-field [style.fontSize.px]="18">
             <mat-label>Title</mat-label>
-            <input matInput type="text" [(ngModel)]="data.feature.name" #input [disabled]="(editable|async)==='false'">
+            <input matInput type="text" [(ngModel)]="data.feature.name" #input [disabled]="(editable|async)==='false'" data-cy="field-name" [attr.data-cy-value]="'field-name-'+data.feature.name">
         </mat-form-field>
         <br>
         <mat-form-field [style.fontSize.px]="18">
             <mat-label>Description</mat-label>
-            <input matInput type="text" [(ngModel)]="data.feature.description" #input [disabled]="(editable|async)==='false'">
+            <input matInput type="text" [(ngModel)]="data.feature.description" #input [disabled]="(editable|async)==='false'" data-cy="field-description" [attr.data-cy-value]="'field-description-'+data.feature.description">
         </mat-form-field>
         <br>
         <mat-form-field [style.fontSize.px]="18">
             <mat-label>Select a Value Type</mat-label>
-            <mat-select [(ngModel)]="data.feature.valueType" [disabled]="(editable|async)==='false'">
-                <mat-option *ngFor="let type of (valueTypes |async)" [value]="type" >
+            <mat-select [(ngModel)]="data.feature.valueType" [disabled]="(editable|async)==='false'" data-cy="field-valueType" [attr.data-cy-value]="'field-valueType-'+data.feature.valueType">
+                <mat-option *ngFor="let type of (valueTypes |async)" [value]="type" [attr.data-cy]="'option-'+type">
                     {{type}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
         <br>
-        <mat-slide-toggle [(ngModel)]="data.feature.multiValued" labelPosition='before' (change)="selectMultiValued()" [disabled]="(editable|async)==='false'" [style.fontSize.px]="18">
+        <mat-slide-toggle [(ngModel)]="data.feature.multiValued" labelPosition='before' (change)="selectMultiValued()" [disabled]="(editable|async)==='false'" [style.fontSize.px]="18" data-cy="field-multiValued" [attr.data-cy-value]="'field-multiValued-'+data.feature.multiValued">
             Multi-Valued
         </mat-slide-toggle>
         <br>
         <mat-form-field *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker " [style.fontSize.px]="18">
             <mat-label>Value</mat-label>
-            <input matInput type="text" #input [(ngModel)]="data.feature.values[i]" (keyup)="data.feature.setValueStr()" [disabled]="(editable|async)==='false'">
+            <input matInput type="text" #input [(ngModel)]="data.feature.values[i]" (keyup)="data.feature.setValueStr()" [disabled]="(editable|async)==='false'" [attr.data-cy]="'field-value-'+i" [attr.data-cy-value]="'field-value-'+data.feature.values[i]">
         </mat-form-field>
         <br>
         <div *ngIf="(editable|async)==='true'">
-            <button mat-stroked-button (click)="increaseValueArray()" [disabled]="(editable|async)==='false'" [style.fontSize.px]="18">Add a Value</button>
+            <button mat-stroked-button (click)="increaseValueArray()" [disabled]="(editable|async)==='false'" [style.fontSize.px]="18" data-cy="add-value-btn">Add a Value</button>
             <br>
         </div>
         <mat-form-field [style.fontSize.px]="18">
             <mat-label>Select a Default Value</mat-label>
-            <mat-select [(ngModel)]="data.feature.defaultValue" [disabled]="(editable|async)==='false'">
-                <mat-option *ngFor="let value of data.feature.values" [value]="value">
+            <mat-select [(ngModel)]="data.feature.defaultValue" [disabled]="(editable|async)==='false'" data-cy="field-defaultValue" [attr.data-cy-value]="'field-defaultValue-'+data.feature.defaultValue">
+                <mat-option *ngFor="let value of data.feature.values" [value]="value" [attr.data-cy]="'option-'+value">
                     {{value}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
         <br>
         <div>
-            <mat-label [style.fontSize.px]="18">Select Product Types</mat-label>
+            <mat-label [style.fontSize.px]="18" data-cy="product-types-selection">Select Product Types</mat-label>
             <mat-selection-list [(ngModel)]="data.feature.productApplicabilities" color="primary" [style.fontSize.px]="18">
-                <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type">
+                <mat-list-option *ngFor="let type of (productApplicabilities|async)" [value]="type" [attr.data-cy]="'field-product-type-'+type+'-'+data.feature.productApplicabilities.includes(type)">
                     {{type}}
                 </mat-list-option>
             </mat-selection-list>
@@ -66,40 +66,40 @@
     </div>
     <div *ngIf="(editable | async) === 'false';">
         <div>
-            <mat-label><b>Title:</b></mat-label>
+            <mat-label data-cy="field-name" [attr.data-cy-value]="'field-name-'+data.feature.name"><b>Title:</b></mat-label>
             {{data.feature.name}}
         </div>
         <br>
         <div>
-            <mat-label><b>Description:</b></mat-label>
+            <mat-label data-cy="field-description" [attr.data-cy-value]="'field-description-'+data.feature.description"><b>Description:</b></mat-label>
             {{data.feature.description}}
         </div>
         <br>
         <div>
-            <mat-label><b>Value Type:</b></mat-label>
+            <mat-label [attr.data-cy-value]="'field-valueType-'+data.feature.valueType"><b>Value Type:</b></mat-label>
             {{data.feature.valueType}}
         </div>
         <br>
         <div>
-            <mat-label><b>Multi-Valued:</b></mat-label>
+            <mat-label data-cy="field-multiValued" [attr.data-cy-value]="'field-multiValued-'+data.feature.multiValued"><b>Multi-Valued:</b></mat-label>
             {{data.feature.multiValued}}
         </div>
         <br>
         <div>
             <mat-label><b>Values:</b></mat-label>
-            <div *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker ">
+            <div *ngFor="let value of data.feature.values;index as i; trackBy:valueTracker " [attr.data-cy]="'field-value-'+i" [attr.data-cy-value]="'field-value-'+data.feature.values[i]">
                 {{value}}
             </div> 
         </div>
         <br>
         <div>
-            <mat-label><b>Default Value:</b></mat-label>
+            <mat-label data-cy="field-defaultValue" [attr.data-cy-value]="'field-defaultValue-'+data.feature.defaultValue"><b>Default Value:</b></mat-label>
             {{data.feature.defaultValue}}
         </div>
         <br>
         <div>
-            <mat-label><b>Product Types:</b></mat-label>
-            <div *ngFor="let value of data.feature.productApplicabilities;index as i; trackBy:valueTracker ">
+            <mat-label data-cy="product-types-selection"><b>Product Types:</b></mat-label>
+            <div *ngFor="let value of data.feature.productApplicabilities;index as i; trackBy:valueTracker " [attr.data-cy]="'field-product-type-'+value">
                 {{value}}
             </div>
             <div *ngIf="data.feature.productApplicabilities.length===0">
@@ -110,15 +110,15 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">
-        <div *ngIf="(editable|async)==='true'">
+        <div *ngIf="(editable|async)==='true'" data-cy="cancel-btn">
             Cancel
         </div>
-        <div *ngIf="(editable|async)==='false'">
+        <div *ngIf="(editable|async)==='false'" data-cy="ok-btn">
             Ok
         </div>
     </button>
     <div *ngIf="(editable|async)==='true'">
-        <button mat-button [mat-dialog-close]="data" cdkFocusInitial>
+        <button mat-button [mat-dialog-close]="data" cdkFocusInitial data-cy="submit-btn">
             Ok
         </button>
     </div>

@@ -13,9 +13,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { Observable } from 'rxjs';
+import { combineLatest, from, Observable } from 'rxjs';
+import { map, reduce, switchMap } from 'rxjs/operators';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
-import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
+import { PlConfigApplicUIBranchMapping, view, viewWithChanges, viewWithChangesAndGroups, viewWithGroups } from '../../types/pl-config-applicui-branch-mapping';
+import { configGroup, configGroupWithChanges } from '../../types/pl-config-configurations';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
 
 @Component({
@@ -25,8 +27,29 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 })
 export class CopyConfigurationDialogComponent implements OnInit {
   branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
+  private _groups: Observable<(configGroup|configGroupWithChanges)[]>;
+  private _untouchedViews: Observable<(view | viewWithChanges)[]>;
+  views: Observable<(viewWithChangesAndGroups|viewWithGroups)[]>;
   constructor(public dialogRef: MatDialogRef<CopyConfigurationDialogComponent>,@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,private branchService: PlConfigBranchService) {
     this.branchApplicability = this.branchService.getBranchApplicability(data.currentBranch);
+    this._groups = this.branchApplicability.pipe(
+      map(applic=>applic.groups)
+    )
+    this._untouchedViews = this.branchApplicability.pipe(
+      map(applic=>applic.views)
+    )
+    this.views=combineLatest([this._groups, this._untouchedViews]).pipe(
+      switchMap(([groups, notModified]) => from(notModified).pipe(
+        map(view => {
+          let newView:viewWithChangesAndGroups|viewWithGroups={...view,groups:[]}
+          if (groups.map(g=>g.configurations).flat().includes(view.id)) {
+            newView.groups=groups.filter(g=>g.configurations.includes(view.id))
+          }
+          return newView;
+        })
+      )),
+      reduce((acc,curr)=>[...acc,curr],[] as (viewWithChangesAndGroups|viewWithGroups)[])
+    )
    }
 
   ngOnInit(): void {

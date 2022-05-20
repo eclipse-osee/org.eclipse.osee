@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-fab *ngIf="(inEditMode|async)===true" (click)="openNewTypeDialog()" class="new-platform-type-button" color="primary"><mat-icon>add</mat-icon></button>
+<button mat-fab *ngIf="(inEditMode|async)===true" (click)="openNewTypeDialog()" class="new-platform-type-button" color="primary" data-cy="add-type-bottom-button"><mat-icon>add</mat-icon></button>
 <mat-form-field class="ple-messaging-type-grid-filter">
     <mat-label>Filter Types</mat-label>
     <input matInput type="text" (keyup)="applyFilter($event)" #input [value]="filterValue">

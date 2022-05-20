@@ -95,7 +95,9 @@ export class TypesUIService {
     )
     ),this._typesService.createPlatformType(this._ui.id.getValue(),body,[]))
     .pipe(
-      switchMap((transaction) => this._typesService.performMutation(transaction)),
+      switchMap((transaction) => this._typesService.performMutation(transaction).pipe(
+        tap(_=>this._ui.updated=true)
+      )),
     )
   }
   private fixEnum(enumeration:enumeration) {

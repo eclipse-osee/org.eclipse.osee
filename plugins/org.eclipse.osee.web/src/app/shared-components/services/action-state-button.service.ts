@@ -34,7 +34,6 @@ import {
   teamWorkflowImpl,
   transitionAction,
 } from '../../ple/plconfig/types/pl-config-actions';
-import { PlConfigBranchListingBranchImpl } from '../../ple/plconfig/types/pl-config-branch';
 import { BranchCategoryService } from '../../shared-services/ui/branch-category.service';
 import { UserDataAccountService } from '../../userdata/services/user-data-account.service';
 import { BranchRoutedUIService } from './branch-routed-ui.service';
@@ -93,7 +92,7 @@ export class ActionStateButtonService {
           typeof val !== 'undefined' &&
           val.associatedArtifact !== '',
         this.actionService.getAction(val.associatedArtifact).pipe(
-          repeatWhen((_) => this.uiService.update),
+          //repeatWhen((_) => this.uiService.update),
           share()
         ),
         of([new actionImpl()])
@@ -110,7 +109,7 @@ export class ActionStateButtonService {
           val[0]?.TeamWfAtsId != '' &&
           typeof val[0]?.id !== 'undefined',
         this.actionService.getWorkFlow(val[0]?.id).pipe(
-          repeatWhen((_) => this.uiService.update),
+          //repeatWhen((_) => this.uiService.update),
           share()
         ),
         of(new teamWorkflowImpl())
@@ -297,49 +296,38 @@ export class ActionStateButtonService {
     )
   );
 
-  private _branchApprovable = combineLatest([
+  get approvedState() {
+    return this._approvableOrCommittable;
+  }
+  private _approvableOrCommittable=combineLatest([
     this.branchApproved,
     this.teamsLeads,
     this.branchWorkFlow,
     this._user,
   ]).pipe(
-    switchMap(([approved, leads, workflow, currentUser]) =>
-      iif(
-        () =>
-          leads.filter((e) => e.id === currentUser.id).length > 0 &&
-          approved === 'false' &&
-          workflow.State === 'Review',
-        of('true'),
-        of('false')
+    switchMap(([approved, leads, workflow, user]) =>
+      iif(() =>
+      workflow.State === 'Review',
+      iif(() =>
+        leads.filter(lead => lead.id === user.id).length > 0 &&
+        approved === 'false',
+        of('approvable'),
+        iif(() =>
+          approved === 'true',
+          of('committable'),
+          of('false')
+        )
+      ),
+      of('false')
       )
     )
-  );
-
-  private _branchCommitable = combineLatest([
-    this.branchApproved,
-    this.branchWorkFlow,
-  ]).pipe(
-    switchMap(([approved, workflow]) =>
-      iif(
-        () => approved === 'true' && workflow.State === 'Review',
-        of('true'),
-        of('false')
-      )
-    )
-  );
+  )
   public commitBranch(
     body: { committer: string; archive: string }
   ) {
     return this.currentBranchService.commitBranch(body);
   }
 
-  public get branchApprovable() {
-    return this._branchApprovable;
-  }
-
-  public get branchCommitable() {
-    return this._branchCommitable;
-  }
   public get doCommitBranch() {
     return this._doCommitBranch;
   }

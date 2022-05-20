@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
+import { PlConfigBranchServiceMock } from '../../testing/pl-config-branch-service.mock';
 
 import { CopyConfigurationDialogComponent } from './copy-configuration-dialog.component';
 
@@ -25,12 +26,11 @@ describe('CopyConfigurationDialogComponent', () => {
   let fixture: ComponentFixture<CopyConfigurationDialogComponent>;
 
   beforeEach(async () => {
-    const branchService = jasmine.createSpyObj('PlConfigBranchService', ['getBranchApplicability']);
     await TestBed.configureTestingModule({
       imports:[MatSelectModule,MatFormFieldModule,NoopAnimationsModule,MatDialogModule,MatButtonModule],
       declarations: [CopyConfigurationDialogComponent],
       providers: [
-        { provide: PlConfigBranchService, useValue: branchService },
+        { provide: PlConfigBranchService, useValue: PlConfigBranchServiceMock },
         { provide: MatDialogRef, useValue: {} },
         {
           provide: MAT_DIALOG_DATA, useValue: {

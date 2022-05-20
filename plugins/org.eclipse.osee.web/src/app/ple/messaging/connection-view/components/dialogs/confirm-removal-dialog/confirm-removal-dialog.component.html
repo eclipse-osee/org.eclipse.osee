@@ -23,6 +23,6 @@
 </mat-label>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()"> Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0">Ok</button>
+    <button mat-button (click)="onNoClick()" data-cy="cancel-btn"> Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0" data-cy="submit-btn">Ok</button>
 </div>

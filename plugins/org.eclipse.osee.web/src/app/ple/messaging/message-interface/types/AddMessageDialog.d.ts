@@ -18,7 +18,7 @@ export interface AddMessageDialog{
     description: string,
     interfaceMessageRate: string,
     interfaceMessagePeriodicity: string,
-    interfaceMessageWriteAccess: string,
+    interfaceMessageWriteAccess: boolean,
     interfaceMessageType: string,
     interfaceMessageNumber:string,
     initiatingNode: ConnectionNode
