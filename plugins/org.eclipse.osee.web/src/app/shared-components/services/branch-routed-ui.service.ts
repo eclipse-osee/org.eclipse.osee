@@ -60,8 +60,8 @@ export class BranchRoutedUIService {
     } else {
       baseUrl = this.router.url;
     }
-    const [initialURL, idURL] = baseUrl
-    const remainingURL = idURL.split("/"+this.branchService.id.getValue()+"/")[1].replace(/ /g,"%20").split("/")
+    const [initialURL, idURL] = baseUrl;
+    const remainingURL = idURL.includes("/"+this.branchService.id.getValue()+"/")?idURL.split("/"+this.branchService.id.getValue()+"/")[1].replace(/ /g,"%20").split("/"):''
     this.branchService.typeValue = value.type;
     this.branchService.idValue = value.id;
     this.router.navigate([initialURL,value.type,value.id,...remainingURL])

@@ -62,4 +62,12 @@ export class RouteStateService {
   set singleStructureId(value: string) {
     this.uiService.singleStructureIdValue = value;
   }
+
+  get updated() {
+    return this.uiService.updated;
+  }
+
+  set update(value: boolean) {
+    this.uiService.update = value;
+  }
 }

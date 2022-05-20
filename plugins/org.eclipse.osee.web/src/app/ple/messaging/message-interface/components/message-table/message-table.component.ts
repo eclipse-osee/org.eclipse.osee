@@ -153,7 +153,7 @@ export class MessageTableComponent implements OnInit,AfterViewChecked {
       interfaceMessagePeriodicity: '',
       interfaceMessageRate: '',
       interfaceMessageType: '',
-      interfaceMessageWriteAccess: '',
+      interfaceMessageWriteAccess: false,
       initiatingNode: {
         id: '',
         name: ''

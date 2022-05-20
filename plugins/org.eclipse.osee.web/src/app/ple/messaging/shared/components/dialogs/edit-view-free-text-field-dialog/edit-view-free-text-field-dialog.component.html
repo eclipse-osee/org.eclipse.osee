@@ -20,22 +20,22 @@
         <mat-form-field class="full-width full-height">
             <mat-label>Description</mat-label>
             <textarea matInput [(ngModel)]="data.return" cdkTextareaAutosize
-            cdkAutosizeMinRows="1"></textarea>
+            cdkAutosizeMinRows="1" data-cy="field-description"></textarea>
         </mat-form-field>
     </ng-container>
-    <ng-template #noEditContent>{{data.original}}</ng-template>
+    <ng-template #noEditContent data-cy="field-description">{{data.original}}</ng-template>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button mat-dialog-close=cancel>
+    <button mat-button mat-dialog-close=cancel data-cy="cancel-btn">
         Cancel
     </button>
     <ng-container *ngIf="(editMode|async)===true; else noEditSubmit">
-        <button mat-raised-button color="primary" [mat-dialog-close]="data">
+        <button mat-raised-button color="primary" [mat-dialog-close]="data" data-cy="submit-btn">
             <mat-icon>save</mat-icon><span>Save Changes</span>
         </button>
     </ng-container>
     <ng-template #noEditSubmit>
-        <button mat-raised-button color="primary" mat-dialog-close="ok">
+        <button mat-raised-button color="primary" mat-dialog-close="ok" data-cy="submit-btn">
             Ok
         </button>
     </ng-template>

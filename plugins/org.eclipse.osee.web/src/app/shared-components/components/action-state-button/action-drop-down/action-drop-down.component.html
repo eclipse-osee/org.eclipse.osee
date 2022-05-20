@@ -12,6 +12,12 @@
  -->
 <button mat-raised-button (click)="addAction()" *ngIf = "(branchInfo|async)?.branchType === '2' " color="primary"><mat-icon>add</mat-icon>Create an ATS Action</button>
 <button mat-raised-button (click)="transitionToReview()" *ngIf = "(branchTransitionable | async) === 'true'" color="accent"><mat-icon>feedback</mat-icon>Transition To Review</button>
-<button mat-raised-button (click)="commitBranch()" *ngIf = "(branchCommitable | async) === 'true'" color="warn"><mat-icon>call_merge</mat-icon>Commit Working Branch {{(branchInfo|async)?.name}} </button>
-<button mat-raised-button (click)="approveBranch()" *ngIf="(branchApprovable | async) === 'true'" color="primary"><mat-icon>check</mat-icon>Approve Working Branch {{(branchInfo|async)?.name}} </button>
+<ng-container *ngIf="(branchApprovableOrCommittable|async) as _state">
+    <ng-container *ngIf="_state==='committable'">
+        <button mat-raised-button (click)="commitBranch()" color="warn"><mat-icon>call_merge</mat-icon>Commit Working Branch {{(branchInfo|async)?.name}} </button>
+    </ng-container>
+    <ng-container *ngIf="_state==='approvable'">
+        <button mat-raised-button (click)="approveBranch()" color="primary"><mat-icon>check</mat-icon>Approve Working Branch {{(branchInfo|async)?.name}} </button>
+    </ng-container>
+</ng-container>
 

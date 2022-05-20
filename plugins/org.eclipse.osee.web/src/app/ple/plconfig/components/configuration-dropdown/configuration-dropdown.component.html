@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-configuration-dropdown-dd-button">Change Configurations</button>
+<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-configuration-dropdown-dd-button" data-cy="change-config-dropdown-btn">Change Configurations</button>
 <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item (click)="addConfiguration()"><mat-icon color="success">create</mat-icon>Add Configuration</button>
-    <button mat-menu-item *ngIf="(editable|async)===true" (click)="copyConfiguration()"><mat-icon color="success">add</mat-icon>Copy Configuration</button>
-    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(editable|async)===true"><mat-icon color="primary">edit</mat-icon>Edit Configuration</button>
-    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(editable|async)===true"><mat-icon color="warn">delete_forever</mat-icon>Delete Configuration</button>
+    <button mat-menu-item (click)="addConfiguration()"><mat-icon color="success" data-cy="add-menu-btn">create</mat-icon>Add Configuration</button>
+    <button mat-menu-item *ngIf="(editable|async)===true" (click)="copyConfiguration()" data-cy="copy-menu-btn"><mat-icon color="success">add</mat-icon>Copy Configuration</button>
+    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(editable|async)===true"  data-cy="edit-menu-btn"><mat-icon color="primary">edit</mat-icon>Edit Configuration</button>
+    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(editable|async)===true" data-cy="delete-menu-btn"><mat-icon color="warn">delete_forever</mat-icon>Delete Configuration</button>
 </mat-menu>
 <mat-menu #deleteConfigMenu="matMenu">
-    <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="deleteConfig(configuration)">{{configuration.name}}</button>
+    <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="deleteConfig(configuration)" [attr.data-cy]="'delete-config-'+configuration.name+'-btn'">{{configuration.name}}</button>
 </mat-menu>
 <mat-menu #editConfigMenu="matMenu">
-    <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="openEditDialog(configuration, configuration?.productApplicabilities, configuration?.group)">{{configuration.name}}</button>
+    <button *ngFor="let configuration of (configs|async)" mat-menu-item (click)="openEditDialog(configuration, configuration?.productApplicabilities, configuration?.group)" [attr.data-cy]="'edit-config-'+configuration.name+'-btn'">{{configuration.name}}</button>
 </mat-menu>
 <mat-label *ngIf="!(editable|async)===true" style="align-items:center; text-align:center;">Branch is not editable</mat-label>

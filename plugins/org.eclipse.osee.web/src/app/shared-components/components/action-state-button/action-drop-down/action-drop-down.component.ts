@@ -29,19 +29,11 @@ export class ActionDropDownComponent implements OnInit,OnChanges {
   @Input() category: string = "0"
   @Input() workType:string=""
   branchInfo = this.actionService.branchState;
-  branchAction = this.actionService.branchAction;
-  branchWorkflow = this.actionService.branchWorkFlow;
-
-  branchApproved = this.actionService.branchApproved;
-
-  teamsLeads = this.actionService.teamsLeads;
 
   branchTransitionable = this.actionService.branchTransitionable;
 
 
-  branchApprovable = this.actionService.branchApprovable;
-
-  branchCommitable = this.actionService.branchCommitable;
+  branchApprovableOrCommittable = this.actionService.approvedState;
   doAddAction = this.actionService.addActionInitialStep.pipe(
     switchMap((thisUser) =>
       this.dialog

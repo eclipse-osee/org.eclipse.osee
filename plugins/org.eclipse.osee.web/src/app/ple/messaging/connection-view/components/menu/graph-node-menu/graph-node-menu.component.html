@@ -15,8 +15,8 @@
 </ng-container>
 <ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
     <button mat-menu-item (click)="openEditNodeDialog(data)"><mat-icon color="primary">edit</mat-icon>Edit {{data.name}}</button>
-    <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove {{data.name}} & Connection</button>
-    <button mat-menu-item (click)="createConnectionToNode(data)"><mat-icon color="success">show_chart</mat-icon><span>Create Connection To {{data.name}}</span></button>
+    <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)"><mat-icon color="warn" data-cy="delete-node-btn">remove_circle_outline</mat-icon>Remove {{data.name}} & Connection</button>
+    <button mat-menu-item (click)="createConnectionToNode(data)"><mat-icon color="success" data-cy="create-connection-btn">show_chart</mat-icon><span>Create Connection To {{data.name}}</span></button>
 </ng-container>
 <ng-container *ngIf="!(hasChanges(data) || editMode)">
     <mat-label mat-menu-item [disabled]=true>No options available.</mat-label>

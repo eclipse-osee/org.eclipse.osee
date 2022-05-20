@@ -56,4 +56,23 @@ export class ColumnPreferencesDialogComponent implements OnInit {
     this.data.allowedHeaders1 = defaultViewStructureProfile;
     this.data.allowedHeaders2 = defaultViewElementProfile;
   }
+
+  /**
+   * solely for generating test attributes for integration tests, do not use elsewhere
+   */
+  /* istanbul ignore next */ 
+  isChecked(columnNumber:0|1, preference:(keyof structure | keyof element) ) {
+    const headerList = this.getHeaderList(columnNumber);
+    return headerList.includes(preference);
+  }
+  /**
+   * solely for generating test attributes for integration tests, do not use elsewhere
+   */
+  /* istanbul ignore next */ 
+  getHeaderList(columnNumber: 0 | 1): (keyof element)[]|(keyof structure)[] {
+    if (columnNumber) {
+      return this.data.allowedHeaders2;
+    }
+    return this.data.allowedHeaders1;
+  }
 }

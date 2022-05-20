@@ -12,7 +12,7 @@
  **********************************************************************/
 describe('Initial Visit', () => {
   it('Visits the ple page', () => {
-    cy.visit('/ple')
-    cy.contains('Product Line Engineering')
-  })
-})
+    cy.visit('/ple');
+    cy.contains('Product Line Engineering');
+  });
+});

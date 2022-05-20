@@ -40,7 +40,7 @@ describe('AddMessageDialogComponent', () => {
     interfaceMessagePeriodicity: '',
     interfaceMessageRate: '',
     interfaceMessageType: '',
-    interfaceMessageWriteAccess: '',
+    interfaceMessageWriteAccess: false,
     initiatingNode: {
       id:'',
       name: ''

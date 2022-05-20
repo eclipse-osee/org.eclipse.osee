@@ -47,4 +47,8 @@ export class EditConfigurationDialogComponent implements OnInit {
   compareCfgGroup(o1: ConfigGroup, o2: ConfigGroup) {
     return o1.id===o2.id
   }
+  /**istanbul ignore next */
+  containsGroup(groups: ConfigGroup[], group: ConfigGroup) {
+    return groups.map(g => g.id).includes(group.id);
+  }
 }

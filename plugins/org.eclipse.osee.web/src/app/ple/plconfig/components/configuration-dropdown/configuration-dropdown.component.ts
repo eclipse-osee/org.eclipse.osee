@@ -113,12 +113,13 @@ export class ConfigurationDropdownComponent implements OnInit {
       }).afterClosed().pipe(
         take(1),
         filter((val) => val !== undefined) as OperatorFunction<PLEditConfigData | undefined, PLEditConfigData>,
+        tap(v=>console.log(v)),
         switchMap((dialog) => iif(() => dialog !== undefined,
           this.currentBranchService.editConfigurationDetails(
             {
           ...dialog.currentConfig,
           copyFrom: dialog.copyFrom && dialog.copyFrom.id || '',
-          configurationGroup: dialog.group.map(a=>a.id)
+          configurationGroup:dialog.currentConfig.groups.map(g=>g.id)
             }).pipe(take(1)),
           of(undefined)
         ))

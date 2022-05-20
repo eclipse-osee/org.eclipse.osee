@@ -14,7 +14,7 @@
 <mat-horizontal-stepper #stepper class ="new-submessage-stepper">
     <mat-step label="Select Sub Message options" #step1>
         <div style="display:flex; flex-direction:row; justify-content: space-evenly; align-items: baseline;">
-            <button mat-raised-button color="primary" style="width:100%;" matStepperNext (click)="createNew()">Create new Sub Message</button>
+            <button mat-raised-button color="primary" style="width:100%;" matStepperNext (click)="createNew()" data-cy="create-new-btn">Create new Sub Message</button>
             <p style="width:100%; text-align:center;">or</p>
             <mat-form-field style="width:100%;">
                 <mat-label>Select a Sub Message to Add to Message</mat-label>
@@ -31,11 +31,11 @@
         <div style="display:flex; flex-direction:column">
             <mat-form-field>
                 <mat-label>Name</mat-label>
-                <input matInput [(ngModel)]="data.subMessage.name" required>
+                <input matInput [(ngModel)]="data.subMessage.name" required data-cy="field-name">
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Description</mat-label>
-                <textarea matInput cdkTextareaAutosize [(ngModel)]="data.subMessage.description" required></textarea>
+                <textarea matInput cdkTextareaAutosize [(ngModel)]="data.subMessage.description" required data-cy="field-description"></textarea>
             </mat-form-field>
             <!-- <mat-form-field>
                 <mat-label>Message Rate</mat-label>
@@ -43,11 +43,11 @@
             </mat-form-field> -->
             <mat-form-field>
                 <mat-label>Sub Message Number</mat-label>
-                <input matInput type="number" [(ngModel)]="data.subMessage.interfaceSubMessageNumber" required>
+                <input matInput type="number" [(ngModel)]="data.subMessage.interfaceSubMessageNumber" required data-cy="field-sub-message-number">
             </mat-form-field>
         </div>
         <button mat-raised-button matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0  && data.subMessage.interfaceSubMessageNumber!==undefined && data.subMessage.interfaceSubMessageNumber!==''" matStepperNext>Next</button>
+        <button mat-raised-button color="primary" *ngIf="data.subMessage.name.length>0 && data.subMessage.description.length>0  && data.subMessage.interfaceSubMessageNumber!==undefined && data.subMessage.interfaceSubMessageNumber!==''" matStepperNext data-cy="stepper-next">Next</button>
     </mat-step>
     <mat-step label="Review" #step3>
         <div style="display:flex;flex-direction:column">
@@ -58,8 +58,8 @@
             <mat-label>Sub Message Number: {{data.subMessage?.interfaceSubMessageNumber}}</mat-label>
         </div>
         <mat-dialog-actions align="end">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="data">
+            <button mat-button matStepperPrevious data-cy="cancel-btn">Back</button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="data" data-cy="submit-btn">
                 Ok
             </button>
         </mat-dialog-actions>

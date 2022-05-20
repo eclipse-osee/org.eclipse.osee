@@ -12,7 +12,7 @@
  -->
 <mat-form-field appearance="fill">
     <mat-label>Select a Branch</mat-label>
-    <mat-select (selectionChange)="selectBranch($event)" [disabled]="(selectedBranchType |async)==='' || (loading|async)==='true'" [(value)]="selectedBranchId" data-cy="branch-select" required>
+    <mat-select (selectionChange)="selectBranch($event)" [disabled]="(selectedBranchType |async)==='' || (loading|async)==='true'" [(value)]="selectedBranchId" [attr.data-cy]="(loading|async)==='true'?'branch-select-disabled':'branch-select'" required>
         <mat-option *ngFor="let option of (options |async)" [value]="option.id" [id]="option.id" [attr.data-cy]="'option-'+option.name">
             {{option.name}}
         </mat-option>

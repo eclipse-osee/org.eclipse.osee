@@ -12,7 +12,9 @@
  -->
 <mat-radio-group
 (change)="selectType($event)" [(ngModel)]="branchType">
-    <mat-radio-button *ngFor="let type of branchTypes" [value]="normalizeType(type.toLowerCase())" [id]="normalizeType(type.toLowerCase())" [name]="type.toLowerCase()" [ngClass]="branchType ===type.toLowerCase() ? 'messaging-typeSearch-radio-option-selected' : 'messaging-typeSearch-radio-option'" color="primary">
-        {{type}}
-    </mat-radio-button>
+    <div class="branch-types">
+        <mat-radio-button *ngFor="let type of branchTypes" [attr.data-cy]="normalizeType(type.toLowerCase())" [value]="normalizeType(type.toLowerCase())" [id]="normalizeType(type.toLowerCase())" [name]="type.toLowerCase()" [ngClass]="branchType ===type.toLowerCase() ? 'messaging-typeSearch-radio-option-selected' : 'messaging-typeSearch-radio-option'" color="primary">
+            {{type}}
+        </mat-radio-button>
+    </div>
 </mat-radio-group>

@@ -274,4 +274,9 @@ export class ApplicabilityTableComponent implements OnInit, AfterViewInit, OnCha
   getUniqueConfigurations(configurations: (ExtendedNameValuePairWithChanges)[]) {
     return configurations.filter((v,i,a)=>a.map(z=>z.name).indexOf(v.name)==i)
   }
+
+  /**istanbul ignore next */
+  sortMultiValue(values: string[]) {
+    return values.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).toString();
+  }
 }

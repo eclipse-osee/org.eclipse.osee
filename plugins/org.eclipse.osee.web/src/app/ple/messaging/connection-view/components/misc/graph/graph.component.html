@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="(data|async) as graphData">
-    <div style="width:100vw;height:80vh" (contextmenu)="openGraphDialog($event)">
+    <div style="width:100vw;height:80vh" (contextmenu)="openGraphDialog($event)" data-cy="graph">
         <ngx-graph class="chart-container" layout="dagre"
         [nodes]="graphData.nodes" [links]="graphData.edges" [update$]="update">
 
@@ -38,7 +38,7 @@
           </ng-template>
   
           <ng-template #nodeTemplate let-node>
-            <svg:g class="node" (contextmenu)="openNodeDialog($event,node,graphData.edges)">
+            <svg:g class="node" (contextmenu)="openNodeDialog($event,node,graphData.edges)" [attr.data-cy]="'node-'+node.data.name">
               <ng-container *ngIf="node.data.interfaceNodeBgColor!==''; else noBgColor">
                 <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.interfaceNodeBgColor?node.data.interfaceNodeBgColor:''" />
               </ng-container>
@@ -51,7 +51,7 @@
           </ng-template>
   
           <ng-template #linkTemplate let-link>
-            <svg:g class="edge" (contextmenu)="openLinkDialog($event,link,graphData.nodes)">
+            <svg:g class="edge" (contextmenu)="openLinkDialog($event,link,graphData.nodes)" [attr.data-cy]="'link-'+link.label">
               <ng-template #linkView>
                 <ng-container *ngIf="link.data.dashed">
                   <svg:path class="line" stroke-width="2" marker-end="url(#ethEnd)" stroke-dasharray="4" marker-start="url(#ethBeg)">
@@ -102,7 +102,7 @@
 <mat-menu #graphMenu="matMenu">
   <ng-template matMenuContent>
     <ng-container *ngIf="editMode">
-      <button mat-menu-item (click)="createNewNode()"><mat-icon color="success">add_circle_outline</mat-icon>Create New Node</button>
+      <button mat-menu-item (click)="createNewNode()"><mat-icon color="success" data-cy="create-new-node-btn">add_circle_outline</mat-icon>Create New Node</button>
     </ng-container>
     <ng-container *ngIf="!editMode">
       <mat-label>

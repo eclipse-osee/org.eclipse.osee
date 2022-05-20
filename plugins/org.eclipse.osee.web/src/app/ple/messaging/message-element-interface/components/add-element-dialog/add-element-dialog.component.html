@@ -15,7 +15,7 @@
     <mat-step label="Select Element options" #step1>
         <mat-dialog-content>
             <div class="flex row justify-evenly align-baseline">
-                <button mat-raised-button color="primary" class="width-100" matStepperNext (click)="createNew()">Create new Element</button>
+                <button mat-raised-button color="primary" class="width-100" matStepperNext (click)="createNew()" data-cy="create-new-btn">Create new Element</button>
                 <p class="width-100 text-center">or</p>
                 <mat-form-field class="width-100">
                     <mat-label>Select a Element to Add to Structure</mat-label>
@@ -36,25 +36,25 @@
             <div class="flex column">
                 <mat-form-field>
                     <mat-label>Name</mat-label>
-                    <input matInput [(ngModel)]="data.element.name" required>
+                    <input matInput [(ngModel)]="data.element.name" required data-cy="field-name">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Description</mat-label>
-                    <textarea cdkTextareaAutosize matInput [(ngModel)]="data.element.description" required></textarea>
+                    <textarea cdkTextareaAutosize matInput [(ngModel)]="data.element.description" required data-cy="field-description"></textarea>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Notes</mat-label>
-                    <input matInput [(ngModel)]="data.element.notes">
+                    <input matInput [(ngModel)]="data.element.notes" data-cy="field-notes">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Start Index</mat-label>
-                    <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexStart" required>
+                    <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexStart" required data-cy="field-index-start">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>End Index</mat-label>
-                    <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexEnd" required>
+                    <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexEnd" required data-cy="field-index-end">
                 </mat-form-field>
-                <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before'>
+                <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before' data-cy="field-alterable">
                     Alterable
                 </mat-slide-toggle>
                 <mat-label>{{platformTypeState|async}}</mat-label>
@@ -62,7 +62,7 @@
                     <mat-label>Find existing element information to create your element or create new type information.</mat-label>
                     <button mat-icon-button (click)="openPlatformTypeDialog()"><mat-icon color="success">add</mat-icon></button>
                     <ng-container *ngIf="!searchOpen">
-                        <button mat-icon-button (click)="openSearch()" class="search-button"><mat-icon color="primary">search</mat-icon></button>
+                        <button mat-icon-button (click)="openSearch()" class="search-button"><mat-icon color="primary" data-cy="search-type-menu">search</mat-icon></button>
                     </ng-container>
                 </div>
             </div>
@@ -79,11 +79,11 @@
             </ng-container>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button mat-raised-button matStepperPrevious>Back</button>
+            <button mat-raised-button matStepperPrevious data-cy="back-2">Back</button>
             <button mat-raised-button color="primary" *ngIf="data.element.name.length>0 && 
                                                             data.element.description.length>0 &&
                                                             data.type.name.length>0 &&
-                                                            +(data.type.id!==undefined && data.type.id)>0" matStepperNext>Next</button>
+                                                            +(data.type.id!==undefined && data.type.id)>0" matStepperNext data-cy="stepper-next">Next</button>
         </mat-dialog-actions>
     </mat-step>
     <mat-step label="Review" #step3>
@@ -101,8 +101,8 @@
             </div>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="data">
+            <button mat-button matStepperPrevious data-cy="cancel-btn">Back</button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="data" data-cy="submit-btn">
                 Ok
             </button>
         </mat-dialog-actions>

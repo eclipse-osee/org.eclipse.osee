@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { from } from 'rxjs';
-import { filter, scan, share, switchMap } from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { concatMap, filter, reduce, scan, share, switchMap, take } from 'rxjs/operators';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { newConnection, transportType } from '../../../../shared/types/connection';
 import { node } from '../../../../shared/types/node';
@@ -27,10 +27,13 @@ import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.s
 export class CreateConnectionDialogComponent implements OnInit {
 
   nodes = this.graphService.nodeOptions.pipe(
-    switchMap((nodeList) => from(nodeList).pipe(
-      filter((node)=>node.id!==this.data.id)
+    switchMap(nodes => of(nodes).pipe(
+      concatMap((nodeList) => from(nodeList).pipe(
+        filter((node)=>node.id!==this.data.id)
+      )),
+      take(nodes.length),
+      reduce((acc, curr) => [...acc, curr], [] as node[]),
     )),
-    scan((acc, curr) => [...acc, curr], [] as node[]),
     share()
   );
   title: string = "";

@@ -96,7 +96,8 @@ public class MimUserPreference extends PLGenericDBObject {
    @JsonIgnore
    private boolean filterBranches(List<String> branches, BranchId branch) {
       for (String editValues : branches) {
-         if (editValues.contains(branch.getIdString())) {
+         if ((editValues.contains(branch.getIdString() + ":true") || (editValues.contains(
+            branch.getIdString() + ":false"))) && editValues.contains(":")) {
             return Boolean.parseBoolean(editValues.split(branch.getIdString() + ":")[1].split("\"")[0]);
          }
       }

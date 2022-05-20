@@ -17,6 +17,7 @@ import { actionableItem, PLConfigCreateAction} from '../../ple/plconfig/types/pl
 import { ActionStateButtonService } from './action-state-button.service';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
+    approvedState:of('false'),
     branchAction: of(testBranchActions),
     branchWorkFlow: of(testWorkFlow),
     branchState: of(testBranchInfo),
@@ -27,8 +28,62 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
     commitBranch(body: { committer: string; archive: string; }) {
         return of(testCommitResponse)
     },
-    branchApprovable: of('true'),
-    branchCommitable: of('true'),
+    doCommitBranch: of(testDataTransitionResponse),
+    doTransition: of(testDataTransitionResponse),
+    doApproveBranch: of(testDataResponse),
+    doAddAction(value: PLConfigCreateAction, category: string) {
+        return of(testnewActionResponse)
+    },
+    actionableItems:of([{
+        id: "123",
+        name:"First ARB"
+      },
+        {
+          id: "456",              
+          name: "Second ARB"
+      }
+      ])
+}
+export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonService> = {
+    approvedState:of('approvable'),
+    branchAction: of(testBranchActions),
+    branchWorkFlow: of(testWorkFlow),
+    branchState: of(testBranchInfo),
+    branchApproved: of('true'),
+    teamsLeads: of(testNameValuePairArray),
+    branchTransitionable: of('true'),
+    addActionInitialStep: of(testDataUser),
+    commitBranch(body: { committer: string; archive: string; }) {
+        return of(testCommitResponse)
+    },
+    doCommitBranch: of(testDataTransitionResponse),
+    doTransition: of(testDataTransitionResponse),
+    doApproveBranch: of(testDataResponse),
+    doAddAction(value: PLConfigCreateAction, category: string) {
+        return of(testnewActionResponse)
+    },
+    actionableItems:of([{
+        id: "123",
+        name:"First ARB"
+      },
+        {
+          id: "456",              
+          name: "Second ARB"
+      }
+      ])
+}
+export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonService> = {
+    approvedState:of('committable'),
+    branchAction: of(testBranchActions),
+    branchWorkFlow: of(testWorkFlow),
+    branchState: of(testBranchInfo),
+    branchApproved: of('true'),
+    teamsLeads: of(testNameValuePairArray),
+    branchTransitionable: of('true'),
+    addActionInitialStep: of(testDataUser),
+    commitBranch(body: { committer: string; archive: string; }) {
+        return of(testCommitResponse)
+    },
     doCommitBranch: of(testDataTransitionResponse),
     doTransition: of(testDataTransitionResponse),
     doApproveBranch: of(testDataResponse),

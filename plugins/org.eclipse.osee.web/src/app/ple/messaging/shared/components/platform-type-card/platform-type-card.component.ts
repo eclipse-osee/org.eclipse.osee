@@ -50,7 +50,7 @@ export class PlatformTypeCardComponent implements OnInit {
       mode: value,
       type:this.typeData
     }
-    const copy = JSON.parse(JSON.stringify(this.typeData));
+    const copy = JSON.parse(JSON.stringify(this.typeData)); //can't remember what this line does
     const dialogRef=this.dialog.open(EditTypeDialogComponent, {
       data: dialogData,
       minWidth:"70%"
@@ -58,7 +58,7 @@ export class PlatformTypeCardComponent implements OnInit {
     dialogRef.afterClosed()
       .pipe(
         filter((val)=>val!==undefined),
-        switchMap( ({mode, type})=>iif(()=>mode===copy,this.typesService.copyType(type),this.getEditObservable(copy,{mode,type}))
+        switchMap( ({mode, type})=>iif(()=>mode===this.copy,this.typesService.copyType(type),this.getEditObservable(copy,{mode,type}))
       )
     ).subscribe()
   }
