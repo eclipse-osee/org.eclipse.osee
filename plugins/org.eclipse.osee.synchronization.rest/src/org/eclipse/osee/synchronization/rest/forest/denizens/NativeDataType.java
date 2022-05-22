@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.rest.nativedatatype;
+package org.eclipse.osee.synchronization.rest.forest.denizens;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;

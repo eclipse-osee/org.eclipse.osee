@@ -21,10 +21,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.eclipse.osee.framework.jdk.core.util.EnumBiConsumerMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumSupplierMap;
-import org.eclipse.osee.synchronization.rest.forest.DataTypeDefinitionGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
-import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataType;
-import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataTypeKey;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
+import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataType;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataTypeKey;
 import org.eclipse.rmf.reqif10.DatatypeDefinition;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionInteger;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionReal;
@@ -153,7 +154,7 @@ class DataTypeDefinitionConverter {
     */
 
    //@formatter:off
-   private static final EnumBiConsumerMap<NativeDataType, DataTypeDefinitionGroveThing, DatatypeDefinition> reqifDatatypeDefinitionDatatypeConverterMap =
+   private static final EnumBiConsumerMap<NativeDataType, GroveThing, DatatypeDefinition> reqifDatatypeDefinitionDatatypeConverterMap =
       EnumBiConsumerMap.ofEntries
          (
             NativeDataType.class,
@@ -199,26 +200,29 @@ class DataTypeDefinitionConverter {
 
    static void convert(GroveThing groveThing) {
 
-      assert Objects.nonNull(groveThing) && (groveThing instanceof DataTypeDefinitionGroveThing);
+      //@formatter:off
+      assert
+            Objects.nonNull(groveThing)
+         && groveThing.isType( IdentifierType.DATA_TYPE_DEFINITION )
+         : UnexpectedGroveThingTypeException.buildMessage( groveThing, IdentifierType.DATA_TYPE_DEFINITION );
+      //@formatter:on
 
-      var dataTypeDefinitionGroveThing = (DataTypeDefinitionGroveThing) groveThing;
       var nativeDataType = ((NativeDataTypeKey) groveThing.getNativeThing()).getNativeDataType();
 
       var reqifDatatypeDefinition = DataTypeDefinitionConverter.reqifDatatypeDefinitionFactoryMap.get(nativeDataType);
 
       // Set common data type definition attributes
 
-      DataTypeDefinitionConverter.convertDataTypeDefinitionReqIfDatatypeDefinition(dataTypeDefinitionGroveThing,
-         reqifDatatypeDefinition);
+      DataTypeDefinitionConverter.convertDataTypeDefinitionReqIfDatatypeDefinition(groveThing, reqifDatatypeDefinition);
 
       // Set data type specific attributes
 
       if (DataTypeDefinitionConverter.reqifDatatypeDefinitionDatatypeConverterMap.containsKey(nativeDataType)) {
-         DataTypeDefinitionConverter.reqifDatatypeDefinitionDatatypeConverterMap.accept(nativeDataType,
-            dataTypeDefinitionGroveThing, reqifDatatypeDefinition);
+         DataTypeDefinitionConverter.reqifDatatypeDefinitionDatatypeConverterMap.accept(nativeDataType, groveThing,
+            reqifDatatypeDefinition);
       }
 
-      dataTypeDefinitionGroveThing.setForeignThing(reqifDatatypeDefinition);
+      groveThing.setForeignThing(reqifDatatypeDefinition);
 
    }
 
@@ -229,7 +233,7 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinition(DataTypeDefinitionGroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinition(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
       var nativeDataTypeKey = (NativeDataTypeKey) dataTypeDefinitionGroveThing.getNativeThing();
       var nativeDataType = nativeDataTypeKey.getNativeDataType();
 
@@ -247,7 +251,7 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionInteger(DataTypeDefinitionGroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionInteger(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
 
       assert (reqifDatatypeDefinition instanceof DatatypeDefinitionInteger);
 
@@ -273,7 +277,7 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionReal(DataTypeDefinitionGroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionReal(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
 
       assert (reqifDatatypeDefinition instanceof DatatypeDefinitionReal);
 
@@ -300,7 +304,7 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionString(DataTypeDefinitionGroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionString(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
 
       assert (reqifDatatypeDefinition instanceof DatatypeDefinitionString);
 

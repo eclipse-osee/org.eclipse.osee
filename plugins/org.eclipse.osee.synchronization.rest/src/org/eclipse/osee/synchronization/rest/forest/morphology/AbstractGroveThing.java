@@ -13,14 +13,26 @@
 
 package org.eclipse.osee.synchronization.rest.forest.morphology;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
+import org.eclipse.osee.synchronization.rest.IdentifierTypeGroup;
+import org.eclipse.osee.synchronization.rest.LinkType;
+import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.osee.synchronization.util.IndentedString;
-import org.eclipse.osee.synchronization.util.ParameterArray;
 import org.eclipse.osee.synchronization.util.ToMessage;
 
 /**
@@ -45,7 +57,33 @@ import org.eclipse.osee.synchronization.util.ToMessage;
  * @author Loren K. Ashley
  */
 
-public abstract class AbstractGroveThing implements GroveThing {
+public class AbstractGroveThing implements GroveThing {
+
+   /**
+    * Enumeration used to indicate what type of storage is used for linked {@link GroveThing} instances of a particular
+    * {@link IdentiferType}.
+    */
+
+   public enum LinkRank {
+
+      /**
+       * Only one {@link GroveThing} instance is saved.
+       */
+
+      SCALAR,
+
+      /**
+       * Multiple {@link GroveThing} instances with a unique {@link Identifier} are saved in an unordered collection.
+       */
+
+      MAP,
+
+      /**
+       * Multiple {@link GroveThing} instances are saved in an ordered collection.
+       */
+
+      VECTOR;
+   }
 
    /**
     * The minimum storage rank for the {@link AbstractGroveThing}.
@@ -76,41 +114,10 @@ public abstract class AbstractGroveThing implements GroveThing {
    private static int maxNativeGroveThingRank = 3;
 
    /**
-    * The number of parent references plus one saved for this {@link GroveThing}.
+    * A reference to a foreign hierarchy thing. Used for building the Spec Object hierarchy in the foreign DOM.
     */
 
-   protected int groveThingRank;
-
-   /**
-    * The number of native things saved for the {@link GroveThing}.
-    */
-
-   protected int nativeGroveThingRank;
-
-   /**
-    * Saves the unique identifier for the thing and it's parents. The thing's key is located in the high index and the
-    * most senior parent key is at the low index.
-    */
-
-   protected Identifier[] groveThingKeys;
-
-   /**
-    * Saves the parents of the grove thing. The most senior parent is at the low index.
-    */
-
-   protected GroveThing[] parentGroveThings;
-
-   /**
-    * Saves the keys for the native things.
-    */
-
-   protected Optional<Object[]> nativeThingKeys;
-
-   /**
-    * Saves the native thing or things associated with this {@link GroveThing}.
-    */
-
-   protected Object[] nativeThings;
+   private Object foreignHierarchy;
 
    /**
     * Saves a the foreign thing associated with this {@link GroveThing}.
@@ -119,15 +126,123 @@ public abstract class AbstractGroveThing implements GroveThing {
    protected Object foreignThing;
 
    /**
-    * Creates a new {@link GroveThing} with the assigned {@link Identifier}, native storage rank, and the specified
-    * {@link GroveThing} parents.
-    *
-    * @param groveThingKey a unique {@link Identifier} for the {@link GroveThing}.
-    * @param nativeGroveThingRank the number of native things to be associated with this {@link GroveThing}.
-    * @param an array of the parent {@link GroveThing}s. This parameter may be a <code>null</code> or empty array.
+    * A {@link Map} used to save the linked {@link GroveThing} instances for each {@link IdentifierType}.
     */
 
-   public AbstractGroveThing(Identifier groveThingKey, int nativeGroveThingRank, GroveThing... parents) {
+   protected Map<LinkType, Object> links;
+
+   /**
+    * A {@link Map} of the {@link LinkRank} enumeration members indicating the type of {@link Object} stored in the
+    * {@link #links} {@link Map} for each {@link IdentifierType}.
+    */
+
+   protected Map<LinkType, LinkRank> linkRank;
+
+   /**
+    * A {@link Predicate} used to validate a specified link type is valid for the {@link GroveThing}.
+    */
+
+   protected Predicate<LinkType> linkTypeValidator;
+
+   /**
+    * An array of {@link Function} implementations used to extract the native keys from the native things.
+    */
+
+   protected Function<Object, Object>[] nativeKeyFunctions;
+
+   /**
+    * Saves the keys for the native things.
+    */
+
+   protected Optional<Object[]> nativeKeys;
+
+   /**
+    * The number of native things that can be stored by the {@link GroveThing}. This is also the number of native keys
+    * that will be provided by {@link GroveThing}s that can provide native keys.
+    */
+
+   protected int nativeRank;
+
+   /**
+    * Saves the native thing or things associated with this {@link GroveThing}.
+    */
+
+   protected Object[] nativeThings;
+
+   /**
+    * Saves a {@link Predicate} used to validate an array of native things is the correct size and contains
+    * {@link Objects} with the correct classes.
+    */
+
+   protected Predicate<Object[]> nativeThingValidator;
+
+   /**
+    * Saves the parents of the grove thing. The most senior parent is at the low index.
+    */
+
+   protected GroveThing[] parentGroveThings;
+
+   /**
+    * Saves a {@link Predicate} used to validate an array of the {@link GroveThing} parents is the correct size and
+    * contains {@link GroveThing} instances with the correct {@link IdentifierType}.
+    */
+
+   protected Predicate<GroveThing[]> parentsValidator;
+
+   /**
+    * Saves the unique identifier for the thing and it's parents. The thing's key is located in the high index and the
+    * most senior parent key is at the low index.
+    */
+
+   protected Identifier[] primaryKeys;
+
+   /**
+    * The number of primary keys provided by the {@link GroveThing}.
+    */
+
+   protected int primaryRank;
+
+   /**
+    * <code>true</code> indicates the {@link GroveThing} can provide native keys when the native things have been set.
+    * <code>false</code> indicates the {@link GroveThing} will not provide native keys.
+    */
+
+   protected boolean providesNativeKeys;
+
+   /**
+    * Creates a new {@link GroveThing} with the specified properties.
+    *
+    * @param groveThingKey a unique {@link Identifier} for the {@link GroveThing}.
+    * @param primaryRank the number of primary keys to be provided by the {@link GroveThing}.
+    * @param nativeRank the number of native things to be associated with this {@link GroveThing}.
+    * @param providesNativeKeys set <code>true</code> when the {@link GroveThing} can provide native keys when the
+    * native things have been set; otherwise, <code>false</code>.
+    * @param linkTypeValidator {@link Predicate} to validate a specified link type is valid for the {@link GroveThing}.
+    * @param linkRank a {@link Map} of the {@link LinkType} indicators for each {@link IdentifierType}.
+    * @param parentsValidator {@link Predicate} to validate the specified parents are valid.
+    * @param nativeThingValidator {@link Predicate} to validate native things are valid.
+    * @param nativeKeyFunctions an array of {@link Function} implementations used to extract native keys from native
+    * things.
+    * @param parents an array of the parent {@link GroveThing}s. This parameter may be a <code>null</code> or empty
+    * array.
+    */
+
+   //@formatter:off
+   public
+      AbstractGroveThing
+         (
+            Identifier                  groveThingKey,
+            int                         primaryRank,
+            int                         nativeRank,
+            boolean                     providesNativeKeys,
+            Predicate<LinkType>         linkTypeValidator,
+            Map<LinkType,LinkRank>      linkRank,
+            Predicate<GroveThing[]>     parentsValidator,
+            Predicate<Object[]>         nativeThingValidator,
+            Function<Object,Object>[]   nativeKeyFunctions,
+            GroveThing...               parents
+         ) {
+   //@formatter:on
 
       //@formatter:off
       /*
@@ -138,48 +253,76 @@ public abstract class AbstractGroveThing implements GroveThing {
        */
 
       assert
-            Objects.nonNull(groveThingKey)
-         && ( nativeGroveThingRank >= AbstractGroveThing.minNativeGroveThingRank )
-         && ( nativeGroveThingRank <= AbstractGroveThing.maxNativeGroveThingRank )
-         && ParameterArray.validateSizeAndType( parents, AbstractGroveThing.minGroveThingRank - 1, AbstractGroveThing.maxGroveThingRank - 1, GroveThing.class );
+            Objects.nonNull( groveThingKey )
+         : "AbstractGroveThing constructor GroveThingKey is null.";
+
+      assert
+            ( primaryRank >= AbstractGroveThing.minGroveThingRank       )
+         && ( primaryRank <= AbstractGroveThing.maxGroveThingRank       )
+         : "AbstractGroveThing constructor Priamry Rank is out of range.";
+
+      assert
+            ( nativeRank  >= AbstractGroveThing.minNativeGroveThingRank )
+         && ( nativeRank  <= AbstractGroveThing.maxNativeGroveThingRank )
+         : "AbstractGroveThing constructor Priamry Rank is out of range.";
+
+      assert
+           Objects.nonNull( linkRank )
+         : "AbstractGroveThing constructor Link Rank is null.";
+
+      assert
+           Objects.nonNull( parentsValidator )
+         : "AbstractGroveThing constructor Parent Validator is null.";
+
+      assert
+           parentsValidator.test( parents )
+         : "AbstractGroveThing constructor parents failed to validate.";
+
+      assert
+           Objects.nonNull( nativeThingValidator )
+         : "AbstractGroveThing constructor Native Thing Validator is null.";
+
       //@formatter:on
 
+      this.primaryRank = primaryRank;
+      this.nativeRank = nativeRank;
+      this.providesNativeKeys = providesNativeKeys;
+      this.linkTypeValidator = linkTypeValidator;
+      this.parentsValidator = parentsValidator;
+      this.nativeThingValidator = nativeThingValidator;
+      this.nativeKeyFunctions = nativeKeyFunctions;
+      this.foreignHierarchy = null;
       this.foreignThing = null;
+      this.links = new HashMap<>();
+      this.linkRank = Objects.requireNonNull(linkRank);
       this.nativeThings = null;
+      this.nativeKeys = Optional.empty();
+      this.parentGroveThings = Objects.nonNull(parents) && (parents.length > 0) ? parents : null;
 
       /*
-       * Save the size of the native things array
+       * Compute the contents of the primary keys array
        */
 
-      this.nativeGroveThingRank = nativeGroveThingRank;
-
-      /*
-       * Save the size of the grove things key array and save the parents array if it was non-null and non-empty
-       */
-
-      if (Objects.nonNull(parents) && (parents.length > 0)) {
-         this.groveThingRank = parents.length + 1;
-         this.parentGroveThings = parents;
+      if (this.rank() == 1) {
+         this.primaryKeys = new Identifier[] {groveThingKey};
       } else {
-         this.groveThingRank = 1;
-         this.parentGroveThings = null;
-      }
+         this.primaryKeys = new Identifier[this.rank()];
 
-      /*
-       * Compute the contents of the grove things key array
-       */
-
-      if (this.groveThingRank == 1) {
-         this.groveThingKeys = new Identifier[] {groveThingKey};
-      } else {
-         this.groveThingKeys = new Identifier[this.groveThingRank];
-
-         for (int i = 0; i < parents.length; i++) {
-            this.groveThingKeys[i] = parents[i].getIdentifier();
+         for (int i = 0; i < this.rank() - 1; i++) {
+            this.primaryKeys[i] = parents[i].getIdentifier();
          }
 
-         this.groveThingKeys[this.groveThingRank - 1] = groveThingKey;
+         this.primaryKeys[this.rank() - 1] = groveThingKey;
       }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Object getForeignHierarchy() {
+      return this.foreignHierarchy;
    }
 
    /**
@@ -196,8 +339,94 @@ public abstract class AbstractGroveThing implements GroveThing {
     */
 
    @Override
+   public Optional<GroveThing> getLinkScalar(LinkType linkType) {
+      //@formatter:off
+      assert
+            Objects.nonNull( linkType )
+         && AbstractGroveThing.LinkRank.SCALAR.equals( this.linkRank.get( linkType ) )
+         && ( Objects.isNull( this.linkTypeValidator ) || this.linkTypeValidator.test( linkType ) );
+
+      return
+         AbstractGroveThing.LinkRank.SCALAR.equals( this.linkRank.get( linkType ) )
+            ? Optional.ofNullable((GroveThing)this.links.get(Objects.requireNonNull(linkType)))
+            : Optional.empty();
+      //@formatter:on
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public Optional<Collection<GroveThing>> getLinkVector(LinkType linkType) {
+      //@formatter:off
+      assert
+            Objects.nonNull( linkType )
+         && (    AbstractGroveThing.LinkRank.VECTOR.equals( this.linkRank.get( linkType ) )
+              || AbstractGroveThing.LinkRank.MAP.equals( this.linkRank.get( linkType ) ) )
+         && ( Objects.isNull( this.linkTypeValidator ) || this.linkTypeValidator.test( linkType ) );
+
+      switch( this.linkRank.get( linkType ) )
+      {
+         case MAP:
+            return Optional.ofNullable( ((Map<Identifier,GroveThing>) this.links.get(Objects.requireNonNull(linkType))).values() );
+
+         case VECTOR:
+            return Optional.ofNullable( ((List<GroveThing>) this.links.get(Objects.requireNonNull(linkType))) );
+
+         default:
+            return Optional.empty();
+      }
+      //@formatter:on
+   }
+
+   @Override
+   @SuppressWarnings("unchecked")
+   public Optional<GroveThing> getLinkVectorElement(LinkType linkType, int index) {
+      //@formatter:off
+      assert
+            Objects.nonNull( linkType )
+         && AbstractGroveThing.LinkRank.VECTOR.equals( this.linkRank.get( linkType ) )
+         && ( Objects.isNull( this.linkTypeValidator ) || this.linkTypeValidator.test( linkType ) );
+
+      switch( this.linkRank.get( linkType ) )
+      {
+         case MAP:
+            return Optional.empty();
+
+         case VECTOR:
+            return Optional.ofNullable( ((List<GroveThing>) this.links.get(Objects.requireNonNull(linkType))).get( index ) );
+
+         default:
+            return Optional.empty();
+      }
+      //@formatter:on
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public Identifier getIdentifier() {
-      return this.groveThingKeys[this.groveThingRank - 1];
+      return this.primaryKeys[this.rank() - 1];
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Optional<GroveThing> getParent(int selector) {
+      //@formatter:off
+      return
+         ( selector >= 0 ) && ( selector <= this.rank() - 1 )
+            ? Optional.of( this.parentGroveThings[ selector ] )
+            : ( selector <= -1 ) && ( selector >= 1 - this.rank() )
+                 ? Optional.of( this.parentGroveThings[ this.rank() - 1 + selector ] )
+                 : Optional.empty();
+      //@formatter:on
    }
 
    /**
@@ -206,7 +435,7 @@ public abstract class AbstractGroveThing implements GroveThing {
 
    @Override
    public Optional<Object[]> getPrimaryKeys() {
-      return Optional.ofNullable(this.groveThingKeys);
+      return Optional.of(this.primaryKeys);
    }
 
    /**
@@ -215,7 +444,7 @@ public abstract class AbstractGroveThing implements GroveThing {
 
    @Override
    public Optional<Object[]> getNativeKeys() {
-      return this.nativeThingKeys;
+      return this.nativeKeys;
    }
 
    /**
@@ -224,7 +453,59 @@ public abstract class AbstractGroveThing implements GroveThing {
 
    @Override
    public Object getNativeThing() {
-      return this.nativeThings[this.nativeGroveThingRank - 1];
+      return this.nativeThings[this.nativeRank() - 1];
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public IdentifierType getType() {
+      return this.getIdentifier().getType();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public boolean mayProvideNativeKeys() {
+      return this.providesNativeKeys;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public boolean hasNativeKeys() {
+      return this.providesNativeKeys && this.nativeKeys.isPresent();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
+      return this.getIdentifier().isInGroup(identifierTypeGroup);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public boolean isType(LinkType linkType) {
+      //@formatter:off
+      return
+         ( linkType instanceof IdentifierType )
+            ? this.getIdentifier().isType( (IdentifierType) linkType )
+            : ( linkType instanceof IdentifierTypeGroup )
+                 ? this.getIdentifier().isInGroup( (IdentifierTypeGroup) linkType )
+                 : false;
+      //@formatter:on
    }
 
    /**
@@ -233,7 +514,7 @@ public abstract class AbstractGroveThing implements GroveThing {
 
    @Override
    public int nativeRank() {
-      return this.nativeGroveThingRank;
+      return this.nativeRank;
    }
 
    /**
@@ -242,7 +523,16 @@ public abstract class AbstractGroveThing implements GroveThing {
 
    @Override
    public int rank() {
-      return this.groveThingRank;
+      return this.primaryRank;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public void setForeignHierarchy(Object foreignHierarchy) {
+      this.foreignHierarchy = foreignHierarchy;
    }
 
    /**
@@ -257,7 +547,79 @@ public abstract class AbstractGroveThing implements GroveThing {
       this.foreignThing = foreignThing;
    }
 
-   public abstract boolean validateNativeThings(Object... nativeThings);
+   /**
+    * @param parents
+    * @return
+    */
+
+   @Override
+   public void setLinkScalar(LinkType linkType, GroveThing linkedGroveThing) {
+
+      //@formatter:off
+      assert
+            Objects.nonNull( linkType )
+         && Objects.nonNull( linkedGroveThing )
+         && ( Objects.isNull( this.linkTypeValidator ) || this.linkTypeValidator.test( linkType ) )
+         && AbstractGroveThing.LinkRank.SCALAR.equals( this.linkRank.get( linkType ) )
+         && !this.links.containsKey( linkType );
+      //@formatter:on
+
+      if (!Objects.requireNonNull(linkedGroveThing).isType(Objects.requireNonNull(linkType))) {
+         throw new UnexpectedGroveThingTypeException(linkedGroveThing, linkType);
+      }
+
+      this.links.put(linkType, linkedGroveThing);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @SuppressWarnings("incomplete-switch")
+   @Override
+   public void setLinkVectorElement(LinkType linkType, GroveThing linkedGroveThing) {
+
+      //@formatter:off
+      assert
+            Objects.nonNull( linkType )
+         && Objects.nonNull( linkedGroveThing )
+         && ( Objects.isNull( this.linkTypeValidator ) || this.linkTypeValidator.test( linkType ) )
+         && (    AbstractGroveThing.LinkRank.MAP.equals( this.linkRank.get( linkType ) )
+              || AbstractGroveThing.LinkRank.VECTOR.equals( this.linkRank.get( linkType ) ) );
+      //@formatter:on
+
+      if (!Objects.requireNonNull(linkedGroveThing).isType(Objects.requireNonNull(linkType))) {
+         throw new UnexpectedGroveThingTypeException(linkedGroveThing, linkType);
+      }
+
+      switch (this.linkRank.get(linkType)) {
+         case MAP: {
+            @SuppressWarnings("unchecked")
+            var map = (Map<Identifier, GroveThing>) this.links.get(Objects.requireNonNull(linkType));
+
+            if (Objects.isNull(map)) {
+               map = new HashMap<Identifier, GroveThing>();
+               this.links.put(linkType, map);
+            }
+
+            map.put(Objects.requireNonNull(linkedGroveThing).getIdentifier(), linkedGroveThing);
+            break;
+         }
+
+         case VECTOR: {
+            @SuppressWarnings("unchecked")
+            var list = (List<GroveThing>) this.links.get(Objects.requireNonNull(linkType));
+
+            if (Objects.isNull(list)) {
+               list = new ArrayList<GroveThing>();
+               this.links.put(linkType, list);
+            }
+
+            list.add(Objects.requireNonNull(linkedGroveThing));
+            break;
+         }
+      }
+   }
 
    /**
     * {@inheritDoc}
@@ -266,29 +628,71 @@ public abstract class AbstractGroveThing implements GroveThing {
    @Override
    public GroveThing setNativeThings(Object... nativeThings) {
 
-      assert Objects.isNull(this.nativeThings) && this.validateNativeThings(nativeThings);
+      //@formatter:off
+      assert
+            Objects.isNull( this.nativeThings )
+         && ( Objects.isNull( this.nativeThingValidator ) || this.nativeThingValidator.test( nativeThings ) );
 
       this.nativeThings = nativeThings;
 
-      var nativeThingKeys = new Object[this.nativeThings.length];
-
-      for (int i = 0; i < this.nativeThings.length; i++) {
-         if (!(this.nativeThings[i] instanceof Id)) {
-            nativeThingKeys = null;
-            break;
-         }
-         nativeThingKeys[i] = ((Id) this.nativeThings[i]).getId();
+      if( !this.providesNativeKeys || Objects.isNull( this.nativeKeyFunctions ) )
+      {
+         this.nativeKeys = Optional.empty();
+         return this;
       }
 
-      this.nativeThingKeys = Optional.ofNullable(nativeThingKeys);
+      var nativeThingKeys = new Object[ this.nativeRank() ];
+
+      for( int i = 0;
+               i < this.nativeRank();
+               i++ )
+      {
+         nativeThingKeys[i] = this.nativeKeyFunctions[ i ].apply( this.nativeThings[i] );
+      }
+
+      this.nativeKeys = Optional.of( nativeThingKeys );
 
       return this;
+      //@formatter:on
    }
 
    /**
     * {@inheritDoc}
     */
 
+   @Override
+   @SuppressWarnings("unchecked")
+   public Stream<GroveThing> streamLinks(LinkType linkType) {
+      //@formatter:off
+      assert
+            Objects.nonNull( linkType )
+         && ( Objects.isNull( this.linkTypeValidator ) || this.linkTypeValidator.test( linkType ) )
+         && this.links.containsKey( linkType );
+      //@formatter:on
+
+      var object = this.links.get(linkType);
+
+      if (Objects.isNull(object)) {
+         return Stream.empty();
+      }
+
+      switch (this.linkRank.get(linkType)) {
+         case SCALAR:
+            return Stream.of((GroveThing) this.links.get(linkType));
+         case MAP:
+            return ((Map<Identifier, GroveThing>) this.links.get(linkType)).values().stream();
+         case VECTOR:
+            return ((List<GroveThing>) this.links.get(linkType)).stream();
+         default:
+            return Stream.empty();
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @SuppressWarnings("unchecked")
    @Override
    public StringBuilder toMessage(int indent, StringBuilder message) {
       var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
@@ -301,19 +705,51 @@ public abstract class AbstractGroveThing implements GroveThing {
       //@formatter:off
       outMessage.append( indent0 ).append( name ).append( "\n" );
 
-      if( Objects.nonNull(this.groveThingKeys) )
+      /*
+       * Primary Keys
+       */
+      if( Objects.nonNull(this.primaryKeys) )
       {
-         outMessage.append( indent1 ).append( "Grove Thing Keys: " ).append( Arrays.stream( this.groveThingKeys ).map( Identifier::toString ).collect( Collectors.joining( ", ") ) ).append( "\n" );
+         outMessage
+            .append( indent1 ).append( "Grove Thing Keys: " ).append( Arrays.stream( this.primaryKeys ).map( Identifier::toString ).collect( Collectors.joining( ", ") ) ).append( "\n" )
+            ;
       }
+
+      /*
+       * Links
+       */
+
+      if( Objects.nonNull( this.links ) )
+      {
+         outMessage
+            .append( indent1 )
+            .append( "Links:            " )
+            .append( this.links.values().stream()
+                        .flatMap( ( linkObject ) -> ( linkObject instanceof GroveThing  )
+                                                       ? Stream.of( (GroveThing) linkObject )
+                                                       : linkObject instanceof List
+                                                            ? ((List<GroveThing>) linkObject).stream()
+                                                            : ((Map<Identifier,GroveThing>) linkObject).values().stream()
+                                )
+                        .map( GroveThing::getIdentifier )
+                        .map( Identifier::toString )
+                        .collect( Collectors.joining( ", ", "[ ", " ]" ) )
+                   )
+            .append( "\n" );
+      }
+
+      /*
+       * Native Things
+       */
 
       if( Objects.nonNull( this.nativeThings ) )
       {
 
          outMessage
-            .append( indent1 ).append( "Native Things:   " ).append( "\n" )
+            .append( indent1 ).append( "Native Things:    " ).append( "\n" )
             ;
 
-         for( int i = 0; i < this.nativeGroveThingRank; i++ )
+         for( int i = 0; i < this.nativeRank(); i++ )
          {
             outMessage.append( indent2 ).append( "Native Thing[ " ).append( i ).append( " ]: " );
 
@@ -346,7 +782,7 @@ public abstract class AbstractGroveThing implements GroveThing {
                .append( indent1 ).append( "Native Thing Keys: " ).append( "\n" )
                ;
 
-            for( int i = 0; i < this.nativeGroveThingRank; i++ )
+            for( int i = 0; i < this.nativeRank(); i++ )
             {
                outMessage.append( indent2 ).append( "Key[ " ).append( i ).append( " ]: ");
 
@@ -376,7 +812,8 @@ public abstract class AbstractGroveThing implements GroveThing {
       }
 
       outMessage
-         .append( indent1 ).append( "Foreign Thing:   " ).append( Objects.nonNull( this.foreignThing ) ? this.foreignThing : "(null)" ).append( "\n" )
+         .append( indent1 ).append( "Foreign Hierarchy: " ).append( Objects.nonNull( this.foreignHierarchy ) ? this.foreignHierarchy : "(null)" ).append( "\n" )
+         .append( indent1 ).append( "Foreign Thing:     " ).append( Objects.nonNull( this.foreignThing     ) ? this.foreignThing     : "(null)" ).append( "\n" )
          ;
       //@formatter:on
 

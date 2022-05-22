@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.rest.nativedatatype;
+package org.eclipse.osee.synchronization.rest.forest.denizens;
 
 import java.util.Objects;
 import java.util.Optional;

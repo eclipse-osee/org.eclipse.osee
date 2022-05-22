@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.synchronization.rest.forest.morphology;
 
+import org.eclipse.osee.synchronization.rest.forest.Grove;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
+
 /**
  * {@link RuntimeException} thrown to indicate that an attempt was made to add a {@link GroveThing} to a {@link Grove}
  * that already has an entry for the {@link GroveThing}.

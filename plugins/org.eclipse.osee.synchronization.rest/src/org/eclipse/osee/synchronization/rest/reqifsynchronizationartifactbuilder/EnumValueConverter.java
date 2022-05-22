@@ -16,8 +16,9 @@ package org.eclipse.osee.synchronization.rest.reqifsynchronizationartifactbuilde
 import java.math.BigInteger;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.synchronization.rest.forest.EnumValueGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
+import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.rmf.reqif10.EmbeddedValue;
 import org.eclipse.rmf.reqif10.EnumValue;
 import org.eclipse.rmf.reqif10.ReqIF10Factory;
@@ -48,10 +49,14 @@ class EnumValueConverter {
 
    static void convert(GroveThing groveThing) {
 
-      assert Objects.nonNull(groveThing) && (groveThing instanceof EnumValueGroveThing);
+      //@formatter:off
+      assert
+            Objects.nonNull(groveThing)
+         && groveThing.isType( IdentifierType.ENUM_VALUE )
+         : UnexpectedGroveThingTypeException.buildMessage( groveThing, IdentifierType.ENUM_VALUE );
+      //@formatter:on
 
-      var enumValueGroveThing = (EnumValueGroveThing) groveThing;
-      var nativeEnumToken = (EnumToken) enumValueGroveThing.getNativeThing();
+      var nativeEnumToken = (EnumToken) groveThing.getNativeThing();
 
       var reqifEmbeddedValue = ReqIF10Factory.eINSTANCE.createEmbeddedValue();
 
@@ -62,11 +67,11 @@ class EnumValueConverter {
 
       reqifEnumValue.setDesc("OSEE Enumeration Member Value");
       reqifEnumValue.setLongName(nativeEnumToken.getName());
-      reqifEnumValue.setIdentifier(enumValueGroveThing.getIdentifier().toString());
+      reqifEnumValue.setIdentifier(groveThing.getIdentifier().toString());
       reqifEnumValue.setLastChange(ReqIFSynchronizationArtifactBuilder.lastChangeEpoch);
       reqifEnumValue.setProperties(reqifEmbeddedValue);
 
-      enumValueGroveThing.setForeignThing(reqifEnumValue);
+      groveThing.setForeignThing(reqifEnumValue);
    }
 
 }

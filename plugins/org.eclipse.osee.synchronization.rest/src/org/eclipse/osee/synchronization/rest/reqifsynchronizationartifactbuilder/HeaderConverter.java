@@ -14,8 +14,10 @@
 package org.eclipse.osee.synchronization.rest.reqifsynchronizationartifactbuilder;
 
 import java.util.Objects;
-import org.eclipse.osee.synchronization.rest.forest.HeaderGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
+import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeHeader;
 import org.eclipse.rmf.reqif10.ReqIF10Factory;
 import org.eclipse.rmf.reqif10.ReqIFHeader;
 
@@ -35,30 +37,35 @@ public class HeaderConverter {
    }
 
    /**
-    * Converter method for {@link HeaderGroveThing}s. This method creates the foreign ReqIF {@link ReqIFHeader} from the
-    * native {@link HeaderGroveThing} thing.
+    * Converter method for {@link NativeHeader}s. This method creates the foreign ReqIF {@link ReqIFHeader} from the
+    * native {@link NativeHeader} thing.
     *
-    * @param groveThing the {@link HeaderGroveThing} to be converted.
+    * @param groveThing the {@link NativeHeader} to be converted.
     */
 
    static void convert(GroveThing groveThing) {
 
-      assert Objects.nonNull(groveThing) && (groveThing instanceof HeaderGroveThing);
+      //@formatter:off
+      assert
+            Objects.nonNull(groveThing)
+         && groveThing.isType(IdentifierType.HEADER)
+         : UnexpectedGroveThingTypeException.buildMessage( groveThing, IdentifierType.HEADER );
+      //@formatter:on
 
-      var header = (HeaderGroveThing) groveThing;
+      var nativeHeader = (NativeHeader) groveThing.getNativeThing();
       var reqifHeader = ReqIF10Factory.eINSTANCE.createReqIFHeader();
 
-      reqifHeader.setComment(header.getComment());
-      reqifHeader.setIdentifier(header.getIdentifier().toString());
-      reqifHeader.setRepositoryId(header.getRepositoryId());
+      reqifHeader.setComment(nativeHeader.getComment());
+      reqifHeader.setIdentifier(nativeHeader.getId().toString());
+      reqifHeader.setRepositoryId(nativeHeader.getRepositoryId());
       reqifHeader.setReqIFVersion("1.0.1");
-      reqifHeader.setSourceToolId(header.getSourceToolId());
+      reqifHeader.setSourceToolId(nativeHeader.getSourceToolId());
       reqifHeader.setReqIFToolId(
          ReqIFSynchronizationArtifactBuilder.class.getName() + ":" + ReqIFSynchronizationArtifactBuilder.version);
-      reqifHeader.setCreationTime(header.getTime());
-      reqifHeader.setTitle(header.getTitle());
+      reqifHeader.setCreationTime(nativeHeader.getTime());
+      reqifHeader.setTitle(nativeHeader.getTitle());
 
-      header.setForeignThing(reqifHeader);
+      groveThing.setForeignThing(reqifHeader);
    }
 
 }

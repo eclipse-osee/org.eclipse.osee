@@ -37,6 +37,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -60,6 +62,17 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Collection<AttributeTypeToken> getExistingAttributeTypes();
 
+   /**
+    * Gets the non-deleted attribute values for the specified attribute type and asserts that one and only one attribute
+    * value is present.
+    *
+    * @param <T> The type of value returned.
+    * @param attributeType the type of attribute to get the value of.
+    * @return the sole value of the specified attribute type.
+    * @throws AttributeDoesNotExist when a value is not present for the specified attribute type.
+    * @throws MultipleAttributesExist when more than one value is present for the specified attribute.
+    */
+
    <T> T getSoleAttributeValue(AttributeTypeToken attributeType);
 
    <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue);
@@ -75,6 +88,10 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue);
 
    /**
+    * Gets the non-deleted attributes values for the specified attribute type.
+    *
+    * @param <T> The type of attribute value returned.
+    * @param attributeType the type of attribute to the values of.
     * @return List of attribute values of non-deleted attributes of the type attributeType or an empty list if no such
     * attributes exist
     */

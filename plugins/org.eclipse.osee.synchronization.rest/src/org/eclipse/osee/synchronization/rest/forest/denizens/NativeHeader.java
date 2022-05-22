@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.rest.forest;
+package org.eclipse.osee.synchronization.rest.forest.denizens;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -20,76 +20,62 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.RootList;
-import org.eclipse.osee.synchronization.rest.forest.morphology.AbstractGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.osee.synchronization.util.IndentedString;
-import org.eclipse.osee.synchronization.util.ParameterArray;
+import org.eclipse.osee.synchronization.util.ToMessage;
 
 /**
- * A {@link GroveThing} to represent the header material for a Synchronization Artifact. This class is also used as the
- * native OSEE thing in the Synchronization Artifact DOM.
+ * Class to represent the header material for a Synchronization Artifact. This class is also used as the native OSEE
+ * thing in the Synchronization Artifact DOM Header {@link GroveThing}.
  *
  * @author Loren K. Ashley
  */
 
-public final class HeaderGroveThing extends AbstractGroveThing implements Id {
+public final class NativeHeader implements Id, ToMessage {
+
+   /**
+    * Saves the identifier for the native header thing.
+    */
+
+   Long id;
 
    /**
     * Handle to the OSEE ORCS API used to obtain OSEE database information.
     */
 
-   private OrcsApi orcsApi;
+   private final OrcsApi orcsApi;
 
    /**
     * The list of OSEE artifacts for Specifications in the Synchronization Artifact.
     */
 
-   private RootList rootList;
+   private final RootList rootList;
 
    /**
-    * Creates a new {@link HeaderGroveThing} object with an unique identifier.
-    */
-
-   HeaderGroveThing(GroveThing parent) {
-      super(IdentifierType.HEADER.createIdentifier(), 1);
-
-      this.orcsApi = null;
-   }
-
-   /**
-    * Sets the OSEE ORCS API handle used to get database information.
+    * Creates a new {@link NativeHeader} object with an unique identifier.
     *
-    * @param orcsApi handle to the OSEE ORCS API
-    */
-
-   public void setOrcsApi(OrcsApi orcsApi) {
-      assert Objects.nonNull(orcsApi) && Objects.isNull(this.orcsApi);
-      this.orcsApi = orcsApi;
-   }
-
-   /**
-    * Sets the list of OSEE artifacts that are roots for Synchronization Artifact Specifications.
-    *
+    * @param id the unique identifier for the {@link NativeHeader}.
+    * @param orcsApi the OSEE ORCS API handle used to get database information.
     * @param rootList list of OSEE artifacts by branch and artifact identifiers.
     */
 
-   public void setRootListImpl(RootList rootList) {
-      assert Objects.nonNull(rootList) && Objects.isNull(this.rootList);
-      this.rootList = rootList;
+   public NativeHeader(Long id, OrcsApi orcsApi, RootList rootList) {
+
+      this.id = Objects.requireNonNull(id);
+      this.orcsApi = Objects.requireNonNull(orcsApi);
+      this.rootList = Objects.requireNonNull(rootList);
    }
 
    /**
-    * Returns the numeric portion of the {@link HeaderGroveThing} thing unique identifier as the native OSEE thing
-    * identifier.
+    * Returns the identifier of the {@link NativeHeader} instance.
     *
-    * @return an identifier unique among {@link HeaderGroveThing} things.
+    * @return an identifier unique among {@link NativeHeader} things.
     */
 
    @Override
    public Long getId() {
-      return this.groveThingKeys[this.groveThingRank - 1].getCount();
+      return this.id;
    }
 
    /**
@@ -151,22 +137,6 @@ public final class HeaderGroveThing extends AbstractGroveThing implements Id {
 
    public String getTitle() {
       return "OSEE Synchronization Artifact";
-   }
-
-   /**
-    * {@inheritDoc}<br>
-    * <br>
-    * When assertions are enabled an assertion error will be thrown when the <code>nativeThing</code> is not an instance
-    * of {@link HeaderGroveThing}.
-    */
-
-   @Override
-   public boolean validateNativeThings(Object... nativeThings) {
-      //@formatter:off
-      return
-            ParameterArray.validateNonNullAndSize(nativeThings, 1, 1)
-         && (nativeThings[0] instanceof HeaderGroveThing);
-      //@formatter:on
    }
 
    /**

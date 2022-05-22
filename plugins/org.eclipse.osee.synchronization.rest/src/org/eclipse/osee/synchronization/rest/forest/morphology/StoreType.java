@@ -16,6 +16,7 @@ package org.eclipse.osee.synchronization.rest.forest.morphology;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 
 /**
  * Enumeration used to indicate if a {@link Store} uses Synchronization Artifact {@link GroveThing} {@link Identifier}

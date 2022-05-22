@@ -25,9 +25,9 @@
  * <h2>Terminology</h2>
  * <dl>
  * <dt>Thing</dt>
- * <dd style="margin-bottom:1em">To disambiguate the use of "object" from Java Objects and from ReqIF SpecificationGroveThing
- * Objects, the classes used as components of the Synchronization Artifact DOM, the native OSEE DOM, and the foreign
- * (ReqIF) DOM are referred to as "things".</dd>
+ * <dd style="margin-bottom:1em">To disambiguate the use of "object" from Java Objects and from ReqIF
+ * SpecificationGroveThing Objects, the classes used as components of the Synchronization Artifact DOM, the native OSEE
+ * DOM, and the foreign (ReqIF) DOM are referred to as "things".</dd>
  * <dt>Grove</dt>
  * <dd style="margin-bottom:1em">A grove refers to a collection of map like or tree like data structures.</dd>
  * <dt>Synchronization Artifact DOM</dt>
@@ -52,7 +52,7 @@ API request              |           create()                      |
                                         |
                                         V
                          +-----------------------------------------+
-                         | SynchronizationArtifact             |
+                         | SynchronizationArtifact                 |
 ORCS API---------------->|           build()                       |
                          | Get native OSEE things from ORCS API    |
                          | and populate the Synchronization        |
@@ -63,7 +63,7 @@ ORCS API---------------->|           build()                       |
                                         |
                                         V
                          +-----------------------------------------+                        +----------------------------------+
-                         | SynchronizationArtifact             |<---- Converters--------| SynchronizationArtifactBuilder   |
+                         | SynchronizationArtifact                 |<---- Converters--------| SynchronizationArtifactBuilder   |
                          |           build()                       |                        |           getConverter()         |
                          | Applies converters to each native thing |                        | Supplies methods to convert from |
                          | in the Synchronization Artifact DOM to  |                        | native OSEE things to foreign    |
@@ -85,7 +85,7 @@ ORCS API---------------->|           build()                       |
                                         |
                                         V
                          +-----------------------------------------+
-                         | SynchronizationArtifact             |
+                         | SynchronizationArtifact                 |
                          |          serialize()                    |
                          +-----------------------------------------+
                                         |
