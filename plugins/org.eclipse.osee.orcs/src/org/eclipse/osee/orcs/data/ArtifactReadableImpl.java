@@ -142,6 +142,14 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return attributes.keySet();
    }
 
+   /**
+    * {@inheritDoc}
+    *
+    * @throws AttributeDoesNotExist {@inheritDoc}
+    * @throws MultipleAttributesExist {@inheritDoc}
+    * @throws OseeStateException when the attribute values have not been loaded for the artifact.
+    */
+
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
       List<T> values = getAttributeValues(attributeType);
@@ -211,6 +219,12 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       ensureNotMoreThanOne(attributeType, list.size());
       return list.iterator().next().getId();
    }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws OseeStateException when attribute values have not been loaded for the artifact.
+    */
 
    @SuppressWarnings("unchecked")
    @Override

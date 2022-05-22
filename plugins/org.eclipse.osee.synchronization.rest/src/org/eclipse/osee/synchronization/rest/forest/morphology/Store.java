@@ -13,13 +13,10 @@ q * Copyright (c) 2022 Boeing
 
 package org.eclipse.osee.synchronization.rest.forest.morphology;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
-import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
-import org.eclipse.osee.synchronization.util.ParameterArray;
+import org.eclipse.osee.synchronization.rest.forest.Grove;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.osee.synchronization.util.ToMessage;
 
 /**
@@ -138,55 +135,6 @@ interface Store extends ToMessage {
 
    Stream<Object[]> streamKeySets(Object... keys);
 
-   /**
-    * Factory for obtaining {@link Store} implementations. {@link Grove} implementations provide access to
-    * {@link GroveThing}s with key sets composed of {@link GroveThing} {@link Identifier} objects or with key sets
-    * composed of native OSEE keys. {@link Grove} implementations use two {@link Store} implementations. One for the
-    * {@link Identifier} key sets and the other for the native OSEE key sets. The {@link StoreType} enumeration member
-    * contains one of the following methods for extracting keys:
-    * <ul>
-    * <li>{@link GroveThing#getPrimaryKeys()}</li>
-    * <li>{@link GroveThing#getNativeKeys()}</li>
-    * </ul>
-    * The superclass of everything the {@link Object} provides the methods <code>hashCode</code> and <code>equals</code>
-    * which makes an object of any class suitable for use as a map key. The <code>keyValidators</code> are predicate
-    * {@link Function} implementations that are applied to each key when assertions are enabled. The provided predicates
-    * can be used to ensure that keys are non-null, of a particular class, or even if other expected properties are
-    * present. The key validator function from the same array position as key will be used to check that key.
-    *
-    * @implNote General map stores of rank 1 ({@link Map}) &amp; 2 ({@link DoupbleMap}) are supported for both primary
-    * and native stores. A rank 3 map of hierarchical trees is implemented for primary stores.
-    * @param storeType specifies if the store is to use for primary or native keys.
-    * @param keyValidators an array of predicate {@link Function}s that will be used to validate keys passed when
-    * assertions are enabled.
-    * @return an implementation of the {@link Store} interface with a rank matching the number of provided key
-    * validators.
-    */
-
-   @SafeVarargs
-   static Store create(StoreType storeType, Function<Object, Boolean>... keyValidators) {
-      //@formatter:off
-      assert
-            Objects.nonNull(storeType)
-         && ParameterArray.validateNonNullAndSize(keyValidators, 1, 3 );
-      //@formatter:on
-
-      switch (keyValidators.length) {
-         case 1:
-            return new StoreRankN(storeType, 1, keyValidators);
-
-         case 2:
-            return new StoreRankN(storeType, 2, keyValidators);
-
-         case 3:
-            return new StoreRank3(storeType, keyValidators[0], keyValidators[1], keyValidators[2]);
-
-         default:
-            //When assertions are enabled, execution should never reach here
-            return null;
-      }
-
-   }
 }
 
 /* EOF */

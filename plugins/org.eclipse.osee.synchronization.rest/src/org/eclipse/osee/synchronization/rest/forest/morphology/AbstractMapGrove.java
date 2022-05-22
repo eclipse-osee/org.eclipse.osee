@@ -19,6 +19,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
+import org.eclipse.osee.synchronization.rest.forest.Grove;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
+import org.eclipse.osee.synchronization.rest.forest.GroveThingNotFoundWithNativeKeysException;
 import org.eclipse.osee.synchronization.util.IndentedString;
 
 /**
@@ -29,30 +32,6 @@ import org.eclipse.osee.synchronization.util.IndentedString;
  */
 
 public class AbstractMapGrove implements Grove {
-
-   /**
-    * Assertion guard rail for the minimum rank of a grove's primary store.
-    */
-
-   private static int minPrimaryRank = 1;
-
-   /**
-    * Assertion guard rail for the maximum rank of a grove's primary store.
-    */
-
-   private static int maxPrimaryRank = 3;
-
-   /**
-    * Assertion guard rail for the minimum rank of a grove's native store.
-    */
-
-   private static int minNativeRank = 1;
-
-   /**
-    * Assertion guard rail for the maximum rank of a grove's native store.
-    */
-
-   private static int maxNativeRank = 3;
 
    /**
     * The {@link IdentifierType} the grove is associated with.
@@ -94,11 +73,19 @@ public class AbstractMapGrove implements Grove {
     * @throws NullPointerException when the parameter <code>identifierType</code> is <code>null</code>.
     */
 
-   public AbstractMapGrove(IdentifierType identifierType, IdentifierType[][] identifierTypes, Class<?>[] nativeKeyTypes) {
+   public AbstractMapGrove(IdentifierType identifierType, boolean groveThingProvidesNativeKeys, Function<Object, Boolean>[] primaryKeyValidators, Function<Object, Boolean>[] nativeKeyValidators) {
 
+      //@formatter:off
       this.identifierType = identifierType;
-      this.primaryStore = this.createPrimaryStorage(identifierTypes);
-      this.nativeStore = this.createNativeStorage(nativeKeyTypes);
+      this.primaryStore   = this.createPrimaryStorage
+                               (
+                                 identifierType == IdentifierType.SPEC_OBJECT ? StoreType.PRIMARY_HIERARCHY : StoreType.PRIMARY,
+                                 primaryKeyValidators
+                               );
+      this.nativeStore    = groveThingProvidesNativeKeys
+                               ? this.createNativeStorage( nativeKeyValidators )
+                               : null;
+      //@formatter:off
    }
 
    /**
@@ -155,39 +142,11 @@ public class AbstractMapGrove implements Grove {
     * @return a {@link Store} implementation for the grove's primary store.
     */
 
-   private Store createNativeStorage(Class<?>[] nativeKeyTypes) {
+   private Store createNativeStorage(Function<Object, Boolean>[] keyValidators) {
 
-      if (Objects.isNull(nativeKeyTypes)) {
-         return null;
-      }
+      var keyCount = Objects.nonNull(keyValidators) ? keyValidators.length : 0;
 
-      int nativeRank = nativeKeyTypes.length;
-
-      if ((nativeRank < AbstractMapGrove.minNativeRank) || (nativeRank > AbstractMapGrove.maxNativeRank)) {
-         throw new IllegalArgumentException();
-      }
-
-      @SuppressWarnings("unchecked")
-      Function<Object, Boolean>[] nativeKeyValidators = new Function[nativeRank];
-
-      for (int i = 0; i < nativeRank; i++) {
-         var keyClassForRank = nativeKeyTypes[i];
-         nativeKeyValidators[i] = new Function<Object, Boolean>() {
-            Class<?> keyClass = keyClassForRank;
-
-            @Override
-            public Boolean apply(Object key) {
-
-               //@formatter:off
-                  return
-                     Objects.nonNull( key )
-                     && keyClass.isInstance( key );
-                  //@formatter:on
-            }
-         };
-      }
-
-      return Store.create(StoreType.NATIVE, nativeKeyValidators);
+      return keyCount > 0 ? new StoreRankN(StoreType.NATIVE, keyCount, keyValidators) : null;
    }
 
    /**
@@ -204,74 +163,15 @@ public class AbstractMapGrove implements Grove {
     * @return a {@link Store} implementation for the grove's primary store.
     */
 
-   private Store createPrimaryStorage(IdentifierType[][] identifierTypes) {
-      Objects.requireNonNull(identifierTypes);
-
-      int rank = identifierTypes.length;
-
-      if ((rank < AbstractMapGrove.minPrimaryRank) || (rank > AbstractMapGrove.maxPrimaryRank)) {
-         throw new IllegalArgumentException();
-      }
-
-      @SuppressWarnings("unchecked")
-      Function<Object, Boolean>[] primaryKeyValidators = new Function[rank];
-
-      for (int i = 0; i < rank; i++) {
-         var identifierTypesForRank = identifierTypes[i];
-
-         if (identifierTypesForRank.length == 1) {
-
-            primaryKeyValidators[i] = new Function<Object, Boolean>() {
-
-               IdentifierType identifierType = identifierTypesForRank[0];
-
-               @Override
-               public Boolean apply(Object key) {
-               //@formatter:off
-                  return
-                     Objects.nonNull( key )
-                     && ( key instanceof Identifier )
-                     && ((Identifier)key).getType().equals( identifierType );
-                  //@formatter:on
-               }
-            };
-
-         } else {
-
-            primaryKeyValidators[i] = new Function<Object, Boolean>() {
-
-               IdentifierType[] identifierTypes = identifierTypesForRank;
-
-               @Override
-               public Boolean apply(Object key) {
-
-                  if (Objects.isNull(key) || !(key instanceof Identifier)) {
-                     return false;
-                  }
-
-                  var keyType = ((Identifier) key).getType();
-
-                  for (int i = 0; i < identifierTypes.length; i++) {
-                     if (keyType.equals(identifierTypes[i])) {
-                        return true;
-                     }
-                  }
-
-                  return false;
-               }
-            };
-
-         }
-      }
-
+   @SuppressWarnings("null")
+   private Store createPrimaryStorage(StoreType storeType, Function<Object, Boolean>[] keyValidators) {
       //@formatter:off
-      return
-         Store.create
-            (
-              this.identifierType.equals(IdentifierType.SPEC_OBJECT) ? StoreType.PRIMARY_HIERARCHY : StoreType.PRIMARY,
-              primaryKeyValidators
-            );
-      //@ofrmatter:on
+      var keyCount = Objects.nonNull(keyValidators) ? keyValidators.length : 0;
+
+      return storeType == StoreType.PRIMARY_HIERARCHY
+                ? new StoreRank3( StoreType.PRIMARY_HIERARCHY, keyValidators[0], keyValidators[1], keyValidators[2] )
+                : new StoreRankN( StoreType.PRIMARY, keyCount, keyValidators );
+      //@formatter:off
    }
 
    /**
@@ -292,6 +192,18 @@ public class AbstractMapGrove implements Grove {
    public Optional<GroveThing> getByNativeKeys(Object... nativeKeys) {
 
       return this.nativeStore.get(nativeKeys);
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws GroveThingNotFoundWithNativeKeysException {@inheritDoc}
+    */
+
+   @Override
+   public GroveThing getByNativeKeysOrElseThrow(Object... nativeKeys) {
+
+      return this.nativeStore.get(nativeKeys).orElseThrow( () -> new GroveThingNotFoundWithNativeKeysException( this, nativeKeys ) );
    }
 
    /**
@@ -371,12 +283,11 @@ public class AbstractMapGrove implements Grove {
       var indent0 = IndentedString.indentString(indent + 0);
       var indent1 = IndentedString.indentString(indent + 1);
 
-      var name = this.getClass().getName();
-
       //@formatter:off
       outMessage
-         .append( indent0 ).append( name ).append( ":" ).append( "\n" )
-         .append( indent1 ).append( "Primary Store:" ).append( "\n" )
+         .append( indent0 ).append( "Grove:" ).append( "\n" )
+         .append( indent1 ).append( "Type:          " ).append( this.getType() ).append( "\n" )
+         .append( indent1 ).append( "Primary Store: " ).append( "\n" )
          ;
       //@formatter:on
 
@@ -384,7 +295,7 @@ public class AbstractMapGrove implements Grove {
 
       //@formatter:off
       outMessage
-         .append( indent1 ).append( "Native Store:" ).append( "\n" )
+         .append( indent1 ).append( "Native Store:  " ).append( "\n" )
          ;
       //@formatter:on
 

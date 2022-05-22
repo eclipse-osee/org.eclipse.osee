@@ -15,13 +15,18 @@
 package org.eclipse.osee.synchronization.rest.forest.morphology;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.osee.framework.jdk.core.util.DoubleMap;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
+import org.eclipse.osee.synchronization.rest.IdentifierTypeGroup;
+import org.eclipse.osee.synchronization.rest.LinkType;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -126,6 +131,11 @@ public class StoreTest {
       }
 
       @Override
+      public Object getForeignHierarchy() {
+         return null;
+      }
+
+      @Override
       public Object getForeignThing() {
          return this.foreignThing;
       }
@@ -161,6 +171,11 @@ public class StoreTest {
       }
 
       @Override
+      public void setForeignHierarchy(Object foreignHierarchy) {
+         return;
+      }
+
+      @Override
       public void setForeignThing(Object foreignThing) {
          this.foreignThing = foreignThing;
       }
@@ -172,6 +187,66 @@ public class StoreTest {
 
       public String getName() {
          return this.name;
+      }
+
+      @Override
+      public Optional<GroveThing> getLinkScalar(LinkType linkType) {
+         return null;
+      }
+
+      @Override
+      public Optional<Collection<GroveThing>> getLinkVector(LinkType linkType) {
+         return null;
+      }
+
+      @Override
+      public Optional<GroveThing> getParent(int selector) {
+         return null;
+      }
+
+      @Override
+      public IdentifierType getType() {
+         return null;
+      }
+
+      @Override
+      public boolean hasNativeKeys() {
+         return false;
+      }
+
+      @Override
+      public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
+         return false;
+      }
+
+      @Override
+      public boolean isType(LinkType identifierType) {
+         return false;
+      }
+
+      @Override
+      public boolean mayProvideNativeKeys() {
+         return false;
+      }
+
+      @Override
+      public void setLinkScalar(LinkType linkType, GroveThing linkedGroveThing) {
+         return;
+      }
+
+      @Override
+      public void setLinkVectorElement(LinkType linkType, GroveThing linkedGroveThing) {
+         return;
+      }
+
+      @Override
+      public Stream<GroveThing> streamLinks(LinkType linkType) {
+         return null;
+      }
+
+      @Override
+      public Optional<GroveThing> getLinkVectorElement(LinkType linkType, int index) {
+         return null;
       }
 
    }

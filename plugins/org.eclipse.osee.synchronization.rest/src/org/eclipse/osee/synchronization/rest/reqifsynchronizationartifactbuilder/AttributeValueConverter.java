@@ -22,11 +22,11 @@ import java.util.function.Supplier;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.EnumBiConsumerMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumSupplierMap;
-import org.eclipse.osee.synchronization.rest.forest.AttributeValueGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.EnumValueGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
-import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataType;
-import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataTypeKey;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
+import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataType;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataTypeKey;
 import org.eclipse.osee.synchronization.util.DataConverters;
 import org.eclipse.rmf.reqif10.AttributeValue;
 import org.eclipse.rmf.reqif10.AttributeValueBoolean;
@@ -93,7 +93,7 @@ public class AttributeValueConverter {
                                                           {
                                                             var attributeValueEnumerationEList = ((AttributeValueEnumeration) attributeValue).getValues();
                                                             @SuppressWarnings("unchecked")
-                                                            var enumValueGroveThingList = (List<EnumValueGroveThing>) value;
+                                                            var enumValueGroveThingList = (List<GroveThing>) value;
                                                             enumValueGroveThingList.stream().map( ( enumValueGroveThing ) -> (EnumValue) enumValueGroveThing.getForeignThing() ).forEach( attributeValueEnumerationEList::add );
                                                           } ),
            Map.entry( NativeDataType.INTEGER,             ( value, attributeValue ) -> ((AttributeValueInteger)     attributeValue).setTheValue( DataConverters.integerToBigInteger( (Integer) value ) ) ),
@@ -120,22 +120,43 @@ public class AttributeValueConverter {
 
    static void convert(GroveThing groveThing) {
 
-      assert Objects.nonNull(groveThing) && (groveThing instanceof AttributeValueGroveThing);
+      //@formatter:off
+      assert
+            Objects.nonNull(groveThing)
+         && groveThing.isType( IdentifierType.ATTRIBUTE_VALUE )
+         : UnexpectedGroveThingTypeException.buildMessage( groveThing, IdentifierType.ATTRIBUTE_VALUE );
+      //@formatter:on
 
-      var attributeValueGroveThing = (AttributeValueGroveThing) groveThing;
-      var nativeAttributeValue = attributeValueGroveThing.getNativeThing();
-      var attributeDefinitionGroveThing = attributeValueGroveThing.getAttributeDefinition();
-      var datatypeDefinitionGroveThing = attributeDefinitionGroveThing.getDataTypeDefinition();
-      var nativeDataType = ((NativeDataTypeKey) datatypeDefinitionGroveThing.getNativeThing()).getNativeDataType();
+      try {
+         var nativeAttributeValue = groveThing.getNativeThing();
+         var attributeDefinitionGroveThing = groveThing.getLinkScalar(IdentifierType.ATTRIBUTE_DEFINITION).get();
+         var datatypeDefinitionGroveThing =
+            attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
+         var nativeDataType = ((NativeDataTypeKey) datatypeDefinitionGroveThing.getNativeThing()).getNativeDataType();
 
-      var reqifAttributeValue = AttributeValueConverter.reqifAttributeValueFactoryMap.get(nativeDataType);
+         var reqifAttributeValue = AttributeValueConverter.reqifAttributeValueFactoryMap.get(nativeDataType);
 
-      if (AttributeValueConverter.reqifAttributeValueSetterMap.containsKey(nativeDataType)) {
-         AttributeValueConverter.reqifAttributeValueSetterMap.accept(nativeDataType, nativeAttributeValue,
-            reqifAttributeValue);
+         if (AttributeValueConverter.reqifAttributeValueSetterMap.containsKey(nativeDataType)) {
+            AttributeValueConverter.reqifAttributeValueSetterMap.accept(nativeDataType, nativeAttributeValue,
+               reqifAttributeValue);
+         }
+
+         groveThing.setForeignThing(reqifAttributeValue);
+      } catch (Exception e) {
+         var message = new StringBuilder(1024);
+
+         //@formatter:off
+         message
+            .append( "\n" )
+            .append( "Failed to convert attribute value." ).append( "\n" )
+            .append( "   Identifier: " ).append( groveThing.getIdentifier() ).append( "\n" )
+            ;
+         //@formatter:on
+
+         groveThing.toMessage(1, message);
+
+         throw new RuntimeException(message.toString(), e);
       }
-
-      attributeValueGroveThing.setForeignThing(reqifAttributeValue);
    }
 
 }

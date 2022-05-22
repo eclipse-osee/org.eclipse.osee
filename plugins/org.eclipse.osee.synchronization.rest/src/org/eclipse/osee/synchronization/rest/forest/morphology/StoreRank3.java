@@ -23,7 +23,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.osee.synchronization.util.HierarchyTree;
 import org.eclipse.osee.synchronization.util.IndentedString;
 import org.eclipse.osee.synchronization.util.ParameterArray;
@@ -124,11 +126,13 @@ class StoreRank3 implements Store {
    @Override
    public void add(GroveThing groveThing) {
 
-      assert Objects.nonNull(groveThing);
+      //@formatter:off
+      assert
+         Objects.nonNull(groveThing)
+         : "StoreRank3::add, groveThing is null.";
+      //@formatter:on
 
-      if (groveThing instanceof HierarchyRootGroveThing) {
-
-         ((HierarchyRootGroveThing) groveThing).validate();
+      if (groveThing.isType(IdentifierType.SPECIFICATION)) {
 
          var key = groveThing.getIdentifier();
 
@@ -147,7 +151,19 @@ class StoreRank3 implements Store {
          groveThing.getPrimaryKeys().ifPresent(keys -> {
 
             //@formatter:off
-            assert ParameterArray.validateNonNullSizeAndElements( keys, StoreRank3.rank, StoreRank3.rank, this.keyValidators );
+            assert
+               ParameterArray.validateNonNullSizeAndElements
+                  (
+                     keys,
+                     StoreRank3.rank,
+                     StoreRank3.rank,
+                     this.keyValidators
+                  )
+               : new StringBuilder( 1024 )
+                        .append( "\n" )
+                        .append( "StoreRank3::add, primary keys failed to validate for GroveThing" ).append( "\n")
+                        .append( "   GroveThing folows:" ).append( "\n" )
+                        .append( groveThing ).append( "\n" );
             //@formatter:on
 
             if (this.quickDuplicateSet.contains(keys[2])) {
@@ -457,8 +473,8 @@ class StoreRank3 implements Store {
                          }
                          else
                          {
-                            keyArray[1] = lowerKeys[ 0 ];
-                            keyArray[2] = lowerKeys[ 1 ];
+                            keyArray[1] = lowerKeys[ 1 ];
+                            keyArray[2] = lowerKeys[ 2 ];
                          }
                          return keyArray;
                       });

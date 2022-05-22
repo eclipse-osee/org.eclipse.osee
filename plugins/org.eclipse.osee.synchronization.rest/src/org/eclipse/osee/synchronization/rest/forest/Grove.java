@@ -11,12 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.rest.forest.morphology;
+package org.eclipse.osee.synchronization.rest.forest;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
+import org.eclipse.osee.synchronization.rest.forest.morphology.DuplicateGroveEntryException;
 import org.eclipse.osee.synchronization.util.ToMessage;
 
 /**
@@ -110,6 +111,19 @@ public interface Grove extends ToMessage {
     */
 
    Optional<GroveThing> getByNativeKeys(Object... nativeKeys);
+
+   /**
+    * Get the {@link GroveThing} associated with the specified native key set. Although the highest index key may
+    * uniquely identify the {@link GroveThing}, this method may still throw an exception when the {@link GroveThing} is
+    * not also associated with or organizationally under the lower index keys.
+    *
+    * @param nativeKeys an array of the native keys. The number of keys specified should match the rank of the grove.
+    * @return the associated {@link GroveThing}
+    * @throws GroveThingNotFoundWithNativeKeysException when the {@link Grove} does not contain a {@link GroveThing}
+    * associated with the provided <code>nativeKeys</code>.
+    */
+
+   GroveThing getByNativeKeysOrElseThrow(Object... nativeKeys);
 
    /**
     * Gets the {@link IdentifierType} associated with the {@link Grove}. In a Synchronization Artifact DOM there is a

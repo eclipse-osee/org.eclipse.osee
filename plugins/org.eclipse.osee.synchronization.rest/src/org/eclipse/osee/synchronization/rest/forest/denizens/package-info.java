@@ -21,6 +21,6 @@
  * @author Loren K. Ashley
  */
 
-package org.eclipse.osee.synchronization.rest.nativedatatype;
+package org.eclipse.osee.synchronization.rest.forest.denizens;
 
 /* EOF */

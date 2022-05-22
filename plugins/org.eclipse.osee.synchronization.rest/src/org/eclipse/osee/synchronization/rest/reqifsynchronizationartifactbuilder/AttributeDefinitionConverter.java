@@ -29,10 +29,11 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.EnumBiConsumerMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumSupplierMap;
-import org.eclipse.osee.synchronization.rest.forest.AttributeDefinitionGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.morphology.GroveThing;
-import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataType;
-import org.eclipse.osee.synchronization.rest.nativedatatype.NativeDataTypeKey;
+import org.eclipse.osee.synchronization.rest.IdentifierType;
+import org.eclipse.osee.synchronization.rest.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataType;
+import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataTypeKey;
 import org.eclipse.osee.synchronization.util.DataConverters;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeDefinitionBoolean;
@@ -70,7 +71,7 @@ public class AttributeDefinitionConverter {
     */
 
    //@formatter:off
-   private static final EnumBiConsumerMap<NativeDataType, AttributeDefinitionGroveThing, AttributeDefinition> reqifAttributeDefinitionDatatypeConverterMap =
+   private static final EnumBiConsumerMap<NativeDataType, GroveThing, AttributeDefinition> reqifAttributeDefinitionDatatypeConverterMap =
       EnumBiConsumerMap.ofEntries
          (
            NativeDataType.class,
@@ -123,11 +124,14 @@ public class AttributeDefinitionConverter {
 
    static void convert(GroveThing groveThing) {
 
-      assert Objects.nonNull(groveThing) && (groveThing instanceof AttributeDefinitionGroveThing);
+      //@formatter:off
+      assert
+            Objects.nonNull(groveThing)
+         && groveThing.isType( IdentifierType.ATTRIBUTE_DEFINITION )
+         : UnexpectedGroveThingTypeException.buildMessage( groveThing, IdentifierType.ATTRIBUTE_DEFINITION );
+      //@formatter:on
 
-      var attributeDefinition = (AttributeDefinitionGroveThing) groveThing;
-
-      var datatypeDefinition = attributeDefinition.getDataTypeDefinition();
+      var datatypeDefinition = groveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       var reqifAttributeDefinition =
@@ -135,17 +139,17 @@ public class AttributeDefinitionConverter {
 
       // Set common attribute definition attributes
 
-      AttributeDefinitionConverter.convertAttributeDefinitionReqIfAttributeDefinition(attributeDefinition,
+      AttributeDefinitionConverter.convertAttributeDefinitionReqIfAttributeDefinition(groveThing,
          reqifAttributeDefinition);
 
       // Set attribute definition type specific attributes
 
       if (AttributeDefinitionConverter.reqifAttributeDefinitionDatatypeConverterMap.containsKey(nativeDataType)) {
-         AttributeDefinitionConverter.reqifAttributeDefinitionDatatypeConverterMap.accept(nativeDataType,
-            attributeDefinition, reqifAttributeDefinition);
+         AttributeDefinitionConverter.reqifAttributeDefinitionDatatypeConverterMap.accept(nativeDataType, groveThing,
+            reqifAttributeDefinition);
       }
 
-      attributeDefinition.setForeignThing(reqifAttributeDefinition);
+      groveThing.setForeignThing(reqifAttributeDefinition);
    }
 
    /**
@@ -158,7 +162,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to be initialized.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinition(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinition(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
       var description = nativeAttributeTypeToken.getDescription();
@@ -188,7 +192,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionBoolean(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionBoolean(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -202,7 +206,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionBoolean = (AttributeDefinitionBoolean) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.BOOLEAN);
@@ -224,7 +228,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionDate(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionDate(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -238,7 +242,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionDate = (AttributeDefinitionDate) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.DATE);
@@ -260,7 +264,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionDouble(AttributeDefinitionGroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionDouble(GroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -274,7 +278,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionReal = (AttributeDefinitionReal) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.DOUBLE);
@@ -296,7 +300,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForArtifactId(AttributeDefinitionGroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForArtifactId(GroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -310,7 +314,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionInteger = (AttributeDefinitionInteger) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.ARTIFACT_IDENTIFIER);
@@ -332,7 +336,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForBranchId(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForBranchId(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -346,7 +350,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionInteger = (AttributeDefinitionInteger) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.ARTIFACT_IDENTIFIER);
@@ -368,7 +372,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForInteger(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForInteger(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -382,7 +386,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionInteger = (AttributeDefinitionInteger) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.INTEGER);
@@ -404,7 +408,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -418,7 +422,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionInteger = (AttributeDefinitionInteger) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       assert nativeDataType.equals(NativeDataType.LONG);
@@ -440,7 +444,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionString(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionString(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -458,7 +462,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionString = (AttributeDefinitionString) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       var defaultAttributeValue =
@@ -478,7 +482,7 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionXHTML(AttributeDefinitionGroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionXHTML(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -496,7 +500,7 @@ public class AttributeDefinitionConverter {
 
       var reqifAttributeDefinitionXHTML = (AttributeDefinitionXHTML) reqifAttributeDefinition;
 
-      var datatypeDefinition = attributeDefinitionGroveThing.getDataTypeDefinition();
+      var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
       var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
 
       var defaultAttributeValue =

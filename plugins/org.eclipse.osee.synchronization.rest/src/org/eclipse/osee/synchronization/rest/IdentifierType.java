@@ -13,15 +13,14 @@
 
 package org.eclipse.osee.synchronization.rest;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.Objects;
-import org.eclipse.osee.synchronization.rest.forest.AttributeDefinitionGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.AttributeValueGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.DataTypeDefinitionGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.EnumValueGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.SpecObjectGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.SpecObjectTypeGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.SpecTypeGroveThing;
-import org.eclipse.osee.synchronization.rest.forest.SpecificationGroveThing;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 
 /**
  * An enumeration of the parts of a Synchronization Artifact. The members of the enumeration also serve as a factory for
@@ -32,61 +31,88 @@ import org.eclipse.osee.synchronization.rest.forest.SpecificationGroveThing;
  * @author Loren.K.Ashley
  */
 
-public enum IdentifierType {
+public enum IdentifierType implements LinkType {
 
    /**
-    * The {@link IdentifierType} for {@link AttributeDefinitionGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Attribute Definition {@link GroveThing} Synchronization Artifact things.
     */
 
    ATTRIBUTE_DEFINITION("AD"),
 
    /**
-    * The {@link IdentifierType} for {@link AttributeValueGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Attribute Value {@link GroveThing} Synchronization Artifact things.
     */
 
    ATTRIBUTE_VALUE("AV"),
 
    /**
-    * The {@link IdentifierType} for {@link DataTypeDefinitionGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Data Type Definition {@link GroveThing} Synchronization Artifact things.
     */
 
    DATA_TYPE_DEFINITION("DD"),
 
    /**
-    * The {@link IdentifierType} for {@link EnumValueGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Enum Value {@link GroveThing} Synchronization Artifact things.
     */
 
    ENUM_VALUE("EV"),
 
    /**
-    * The {@link IdentifierType} for {@link ReqIfHeader} Synchronization Artifact things.
+    * The {@link IdentifierType} for Header {@link GroveThing} Synchronization Artifact things.
     */
 
    HEADER("H"),
 
    /**
-    * The {@link IdentifierType} for {@link SpecificationGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Specification {@link GroveThing} Synchronization Artifact things. Specifications
+    * are members of the {@link IdentifierTypeGroup#OBJECT} group.
     */
 
-   SPECIFICATION("S"),
+   SPECIFICATION("S", IdentifierTypeGroup.OBJECT),
 
    /**
-    * The {@link IdentifierType} for {@link SpecTypeGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Spec Type {@link GroveThing} Synchronization Artifact things. Specification Types
+    * are members of the {@link IdentifierTypeGroup#TYPE} group.
     */
 
-   SPECIFICATION_TYPE("ST"),
+   SPECIFICATION_TYPE("ST", IdentifierTypeGroup.TYPE),
 
    /**
-    * The {@link IdentifierType} for {@link SpecObjectGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Specter Spec Object {@link GroveThing} Synchronization Artifact things. Specter
+    * Spec Objects are members of the {@link IdentifierTypeGroup#OBJECT} and
+    * {@link IdentifierTypeGroup#RELATABLE_OBJECT} groups. Specter Spec Objects represent Spec Objects that are not in
+    * the Synchronization Artifact that are related to a Spec Object in the Synchronization Artifact.
     */
 
-   SPEC_OBJECT("SO"),
+   SPECTER_SPEC_OBJECT("SSO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
 
    /**
-    * The {@link IdentifierType} for {@link SpecObjectTypeGroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Spec Object {@link GroveThing} Synchronization Artifact things. Spec Objects are
+    * members of the {@link IdentifierTypeGroup#OBJECT} and {@link IdentifierTypeGroup#RELATABLE_OBJECT} groups.
     */
 
-   SPEC_OBJECT_TYPE("SOT");
+   SPEC_OBJECT("SO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
+
+   /**
+    * The {@link IdentifierType} for Spec Object Type {@link GroveThing} Synchronization Artifact things. Spec Object
+    * Types are members of the {@link IdentifierTypeGroup#TYPE} group.
+    */
+
+   SPEC_OBJECT_TYPE("SOT", IdentifierTypeGroup.TYPE),
+
+   /**
+    * The {@link IdentifierType} for Spec Relation {@link GroveThing} Synchronization Artifact things. Spec Relations
+    * are members of the {@link IdentifierTypeGroup#OBJECT} group.
+    */
+
+   SPEC_RELATION("SR", IdentifierTypeGroup.OBJECT),
+
+   /**
+    * The {@link IdentifierType} for Spec Relation Type {@link GroveThing} Synchronization Artifact things. Spec
+    * Relation Types are members of the {@link IdentifierTypeGroup#TYPE} group.
+    */
+
+   SPEC_RELATION_TYPE("SRT", IdentifierTypeGroup.TYPE);
 
    /**
     * Class implements a unique identifier for each object representing a part of the Synchronization Artifact. The
@@ -189,6 +215,32 @@ public enum IdentifierType {
       }
 
       /**
+       * Predicate to determine if the {@link IdentifierType} of this {@link Identifier} is a part of the specified
+       * {@link IdentifierTypeGroup}.
+       *
+       * @param identifierTypeGroup the identifier type group to check for membership in.
+       * @return <code>true</code> when the {@link IdentifierType} of this {@link Identifier} is a member of the
+       * specified {@link IdentifierTypeGroup}; otherwise, <code>false</code>.
+       */
+
+      public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
+         return this.identifierType.isInGroup(identifierTypeGroup);
+      }
+
+      /**
+       * Predicate to determine if the {@link IdentifierType} of the {@link Identifier} is the specified
+       * {@link IdentifierType}.
+       *
+       * @param identifierType the {@link IdentifierType} to check
+       * @return <code>true</code>, when the {@link IdentifierType} of this {@link Identifier} matches the specified
+       * {@link IdentifierType}; otherwise, <code>false</code>.
+       */
+
+      public boolean isType(IdentifierType identifierType) {
+         return this.identifierType.equals(identifierType);
+      }
+
+      /**
        * Get a {@link String} representation of the {@link Identifier} for debugging purposes. There is no contract for
        * the format of the returned string.
        *
@@ -202,6 +254,60 @@ public enum IdentifierType {
    }
 
    /**
+    * Map of identifier type associations. Each Synchronization Artifact {@link GroveThing} that represents an object
+    * has an associated Synchronization Artifact {@link GroveThing} that defines the attributes for that object.
+    */
+
+   //@formatter:off
+   private static final Map<IdentifierType,IdentifierType> associatedTypeMap =
+      Map.of
+         (
+            /* Type */                          /* Associated Type */
+            IdentifierType.SPECIFICATION,       IdentifierType.SPECIFICATION_TYPE,
+            IdentifierType.SPECTER_SPEC_OBJECT, IdentifierType.SPEC_OBJECT_TYPE,
+            IdentifierType.SPEC_OBJECT,         IdentifierType.SPEC_OBJECT_TYPE,
+            IdentifierType.SPEC_RELATION,       IdentifierType.SPEC_RELATION_TYPE
+         );
+   //@formatter:on
+
+   /**
+    * A map of {@link String}s enumerating the {@link IdentifierType} members in each {@link IdentifierTypeGroup}.
+    */
+
+   //@formatter:off
+   private static final Map<IdentifierTypeGroup,String> identifierTypeGroupMembersMessageMap =
+      Stream.of( IdentifierTypeGroup.values() )
+         .map
+            (
+               ( IdentifierTypeGroup identifierTypeGroup ) -> Map.entry
+                                             (
+                                                identifierTypeGroup,
+                                                Stream.of( IdentifierType.values() )
+                                                   .filter
+                                                      (
+                                                        ( identifierType ) -> identifierType.isInGroup( identifierTypeGroup )
+                                                      )
+                                                   .map( IdentifierType::name )
+                                                   .collect( Collectors.joining( ", ", "[ ", " ]" ) )
+                                             )
+            )
+         .collect
+            (
+               Collectors.toMap
+                  (
+                     Map.Entry::getKey,
+                     Map.Entry::getValue
+                  )
+             );
+   //@formatter:on
+
+   /**
+    * The number of members in the {@link IdentifierType} enumeration.
+    */
+
+   private static final int size = IdentifierType.values().length;
+
+   /**
     * Thread local storage to track the number of identifiers produced.
     */
 
@@ -212,6 +318,12 @@ public enum IdentifierType {
     */
 
    private String identifierPrefix;
+
+   /**
+    * Saves the {@link IdentifierTypeGroup}s the {@link IdentifierType} is a member of.
+    */
+
+   private Set<IdentifierTypeGroup> identifierTypeGroups;
 
    /**
     * Thread local storage used for building the identifier strings.
@@ -227,10 +339,18 @@ public enum IdentifierType {
     * constructed.
     */
 
-   private IdentifierType(String identifierPrefix) {
+   private IdentifierType(String identifierPrefix, IdentifierTypeGroup... identifierTypeGroups) {
       assert Objects.nonNull(identifierPrefix);
 
       this.identifierPrefix = identifierPrefix;
+
+      this.identifierTypeGroups = EnumSet.noneOf(IdentifierTypeGroup.class);
+
+      if (Objects.nonNull(identifierTypeGroups)) {
+         for (var identifierTypeGroup : identifierTypeGroups) {
+            this.identifierTypeGroups.add(identifierTypeGroup);
+         }
+      }
 
       this.identifierCount = new ThreadLocal<Long>() {
          @Override
@@ -246,6 +366,38 @@ public enum IdentifierType {
          }
       };
 
+   }
+
+   /**
+    * Gets a {@link String} enumerating the {@link IdentifierType} members that are in the specified
+    * {@link IdentifierTypeGroup}.
+    *
+    * @param identifierTypeGroup the {@link IdentifierTypeGroup} to get a message for.
+    * @return a {@link String} describing the {@link IdentifierType} members that are in the specified
+    * {@link IdentifierTypeGroup}.
+    */
+
+   public static String getIdentifierTypeGroupMembersMessage(IdentifierTypeGroup identifierTypeGroup) {
+      return IdentifierType.identifierTypeGroupMembersMessageMap.get(identifierTypeGroup);
+   }
+
+   /**
+    * The number of members in the {@link IdentifierType} enumeration.
+    *
+    * @return the number of members in the {@link IdentifierType} enumeration.
+    */
+
+   public static int size() {
+      return IdentifierType.size;
+   }
+
+   public static void resetIdentifierCounts() {
+
+      Arrays.stream(IdentifierType.values()).forEach(IdentifierType::resetIdentifierCount);
+   }
+
+   private void resetIdentifierCount() {
+      this.identifierCount.set(0L);
    }
 
    /**
@@ -276,6 +428,43 @@ public enum IdentifierType {
       return identifier;
    }
 
+   /**
+    * For {@link #SPECIFICATION}, {@link #SPEC_OBJECT}, and {@link #SPEC_RELATION} {@link IdentifierTypes} gets the
+    * {@link IdentifierType} representing the associated {@link #SPECIFICATION_TYPE}, {@link #SPEC_OBJECT_TYPE}, or
+    * {@link #SPEC_RELATION_TYPE} respectively.
+    *
+    * @return the {@link IdentifierType} associated with this {@link IdentifierType}.
+    * @throws RuntimeException when the {@link IdentifierType} represented by this object does not have an associated
+    * {@link IdentifierType}.
+    */
+
+   public IdentifierType getAssociatedType() {
+      var associatedType = IdentifierType.associatedTypeMap.get(this);
+
+      if (Objects.isNull(associatedType)) {
+         var message = new StringBuilder(1024);
+
+         message.append("\n").append(
+            "Requested the associated type for an IdentifierType other than SPECIFICATION, SPECTER_SPEC_OBJECT, SPEC_OBJECT, or SPEC_RELATION.").append(
+               "\n").append("   Identifier Type: ").append(this).append("\n");
+
+         throw new RuntimeException(message.toString());
+      }
+
+      return associatedType;
+   }
+
+   /**
+    * Predicate to determine if the {@link IdentifierType} is a part of the specified {@link IdentifierTypeGroup}.
+    *
+    * @param identifierTypeGroup the identifier type group to check for membership in.
+    * @return <code>true</code> when the {@link IdentifierType} is a member of the specified
+    * {@link IdentifierTypeGroup}; otherwise, <code>false</code>.
+    */
+
+   public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
+      return this.identifierTypeGroups.contains(identifierTypeGroup);
+   }
 }
 
 /* EOF */
