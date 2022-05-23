@@ -96,6 +96,17 @@ public class PlatformTypeToken extends PLGenericDBObject {
       this.artifactReadable = art;
    }
 
+   public PlatformTypeToken(Long id, String name, String logicalType, String bitSize, String minVal, String maxVal, String units) {
+      super(id, name);
+      this.setInterfaceLogicalType(logicalType);
+      this.setinterfacePlatformTypeBitSize(bitSize);
+      this.setInterfacePlatformTypeMinval(minVal);
+      this.setInterfacePlatformTypeMaxval(maxVal);
+      this.setInterfacePlatformTypeValidRangeDescription(
+         !minVal.equals("") && !maxVal.equals("") ? minVal + "-" + maxVal : "Calculated");
+      this.setInterfacePlatformTypeUnits(units);
+   }
+
    public PlatformTypeToken() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything

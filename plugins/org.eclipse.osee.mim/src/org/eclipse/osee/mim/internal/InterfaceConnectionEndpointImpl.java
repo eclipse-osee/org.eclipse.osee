@@ -16,10 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
-import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 
 /**
@@ -28,14 +26,10 @@ import org.eclipse.osee.mim.types.InterfaceConnection;
 public class InterfaceConnectionEndpointImpl implements InterfaceConnectionEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
-   private final InterfaceNodeViewApi interfaceNodeApi;
    private final InterfaceConnectionViewApi interfaceConnectionApi;
 
-   public InterfaceConnectionEndpointImpl(BranchId branch, UserId account, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi) {
-      this.account = account;
+   public InterfaceConnectionEndpointImpl(BranchId branch, InterfaceConnectionViewApi interfaceConnectionViewApi) {
       this.branch = branch;
-      this.interfaceNodeApi = interfaceNodeApi;
       this.interfaceConnectionApi = interfaceConnectionViewApi;
    }
 

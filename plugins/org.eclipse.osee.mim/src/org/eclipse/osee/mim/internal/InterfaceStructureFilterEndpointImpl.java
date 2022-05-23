@@ -12,10 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
@@ -26,13 +26,11 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureFilterEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final ArtifactId messageId;
    private final ArtifactId subMessageId;
    private final InterfaceStructureApi interfaceStructureApi;
 
-   public InterfaceStructureFilterEndpointImpl(BranchId branch, UserId account, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
-      this.account = account;
+   public InterfaceStructureFilterEndpointImpl(BranchId branch, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
       this.branch = branch;
       this.messageId = messageId;
       this.subMessageId = subMessageId;
@@ -41,11 +39,17 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
 
    @Override
    public Collection<InterfaceStructureToken> getStructures() {
+      if (subMessageId.getId() == 0) {
+         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
+      }
       return this.interfaceStructureApi.getAllRelated(branch, subMessageId);
    }
 
    @Override
    public Collection<InterfaceStructureToken> getStructures(String filter) {
+      if (subMessageId.getId() == 0) {
+         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
+      }
       return this.interfaceStructureApi.getAllRelatedAndFilter(branch, subMessageId, filter);
    }
 }
