@@ -76,11 +76,10 @@ public class AtsHealthCheckOperation {
    public XResultData run() {
       XResultData rd = new XResultData();
       try {
-         ElapsedTime time = new ElapsedTime("ATS Health Check");
+         ElapsedTime time = new ElapsedTime("ATS Health Check", false, true);
          runIt(rd);
          String elapsedStr = time.end(Units.SEC);
          rd.log("\n\n" + elapsedStr);
-         time.end();
          emailResults(rd);
       } catch (Exception ex) {
          rd.errorf("Exception running reports [%s]", Lib.exceptionToString(ex));

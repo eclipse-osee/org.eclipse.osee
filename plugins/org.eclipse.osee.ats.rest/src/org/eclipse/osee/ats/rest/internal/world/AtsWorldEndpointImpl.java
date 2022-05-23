@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -126,12 +125,10 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          atsApiServer.getUserService().getUserByUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Conditions.checkNotNull(userById, "User by Id " + userArtId);
 
-      ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");
       CustomizeData customization = atsApiServer.getStoreService().getCustomizationByGuid(customizeGuid);
       if (customization == null) {
          return AHTML.simplePage(String.format("No customization found with id [%s]", customizeGuid));
       }
-      getCustomization.end();
 
       Collection<IAtsWorkItem> myWorldItems =
          atsApiServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
@@ -182,22 +179,16 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    @Path("coll/{collectorId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
    public String getCollectionUICustomized(@PathParam("collectorId") ArtifactId collectorId, @PathParam("customizeGuid") String customizeGuid) {
-      ElapsedTime time = new ElapsedTime("start");
 
-      ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");
       CustomizeData customization = atsApiServer.getStoreService().getCustomizationByGuid(customizeGuid);
-      getCustomization.end();
 
       // get work items
-      ElapsedTime getWorkItems = new ElapsedTime("get work items");
       ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
-      getWorkItems.end();
 
       String table = getCustomizedTable(atsApiServer,
          "Collector - " + collectorArt.getName() + " - Customization: " + customization.getName(), customization,
          collectorItems);
-      time.end();
       return table;
    }
 
