@@ -12,10 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
@@ -26,13 +26,11 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final ArtifactId messageId;
    private final ArtifactId subMessageId;
    private final InterfaceStructureApi interfaceStructureApi;
 
-   public InterfaceStructureEndpointImpl(BranchId branch, UserId accountId, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
-      this.account = accountId;
+   public InterfaceStructureEndpointImpl(BranchId branch, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
       this.branch = branch;
       this.messageId = messageId;
       this.subMessageId = subMessageId;
@@ -42,6 +40,9 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
 
    @Override
    public Collection<InterfaceStructureToken> getAllStructures() {
+      if (subMessageId.getId() == 0) {
+         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
+      }
       return this.interfaceStructureApi.getAllRelated(branch, subMessageId);
    }
 

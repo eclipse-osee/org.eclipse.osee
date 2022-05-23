@@ -15,7 +15,6 @@ package org.eclipse.osee.mim.internal;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
@@ -27,12 +26,10 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 public class InterfaceSubMessageEndpointImpl implements InterfaceSubMessageEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final ArtifactId messageId;
    private final InterfaceSubMessageApi subMessageApi;
 
-   public InterfaceSubMessageEndpointImpl(BranchId branch, UserId account, ArtifactId messageId2, InterfaceSubMessageApi interfaceSubMessageApi) {
-      this.account = account;
+   public InterfaceSubMessageEndpointImpl(BranchId branch, ArtifactId messageId2, InterfaceSubMessageApi interfaceSubMessageApi) {
       this.branch = branch;
       this.messageId = messageId2;
       this.subMessageApi = interfaceSubMessageApi;

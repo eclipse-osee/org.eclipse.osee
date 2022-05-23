@@ -50,4 +50,6 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId);
 
+   InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId messageId);
+
 }

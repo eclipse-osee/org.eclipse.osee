@@ -57,9 +57,6 @@ export class CurrentStructureService {
       this._parseDifferencesMulti(differences,structures,parentBranch,branchId,messageId,subMessageId,connectionId),
       of(structures)
     )),
-    // tap((val) => {
-    //   console.log(val)
-    // })
   )
 
   private _types = this.typeService.types;
