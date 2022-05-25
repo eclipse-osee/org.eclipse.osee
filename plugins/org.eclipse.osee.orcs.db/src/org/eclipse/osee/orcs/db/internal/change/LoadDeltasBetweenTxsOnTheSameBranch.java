@@ -67,7 +67,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       "from osee_tuple3 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
       "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
-      "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id";
+      "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+      "UNION ALL\n" +
+      "SELECT 7 as table_type, rel_type as item_type_id, 0 as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+      "from osee_relation item, txsOuter where txsOuter.gamma_id = item.gamma_id";
    // @formatter:on
 
    private final OrcsTokenService tokenService;
@@ -168,6 +171,17 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                   gammaId, getApplicabilityToken(appId), modType, txToken, e1, e2, e3, e4));
                break;
             }
+            case 7: {
+               ArtifactId relType = ArtifactId.valueOf(stmt.getLong("item_type"));
+               ArtifactId a_art_id = ArtifactId.valueOf(stmt.getLong("item_first"));
+               ArtifactId b_art_id = ArtifactId.valueOf(stmt.getLong("item_second"));
+               ArtifactId rel_art_id = ArtifactId.valueOf(stmt.getLong("item_third"));
+               int rel_order = stmt.getInt("item_fourth");
+               hashChangeData.put(7, gammaId.getId(),
+                  ChangeItemUtil.newRelationChange2(tokenService.getRelationType(relType.getId()), gammaId, modType,
+                     a_art_id, b_art_id, rel_art_id, rel_order, getApplicabilityToken(appId), txToken));
+               break;
+            }
          }
       };
       String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, OseeDb.getTxsTable(isArchived));
@@ -229,13 +243,17 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 6 as table_type, transaction_id from osee_join_export_import idj," + //
             " osee_tuple4 item, %s txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 6" + //
             " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 7 as table_type, transaction_id from osee_join_export_import idj," + //
+            " osee_relation item, %s txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7" + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?" + //
             " ORDER BY transaction_id",
-         archiveTable, archiveTable, archiveTable, archiveTable, archiveTable, archiveTable);
+         archiveTable, archiveTable, archiveTable, archiveTable, archiveTable, archiveTable, archiveTable);
 
       jdbcClient.runQueryWithMaxFetchSize(consumer, query, queryId, transactionLimit.getBranch(), transactionLimit,
          queryId, transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(),
          transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit, queryId,
-         transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit);
+         transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit,
+         queryId, transactionLimit.getBranch(), transactionLimit);
    }
 
    public List<ChangeItem> compareTransactions() {

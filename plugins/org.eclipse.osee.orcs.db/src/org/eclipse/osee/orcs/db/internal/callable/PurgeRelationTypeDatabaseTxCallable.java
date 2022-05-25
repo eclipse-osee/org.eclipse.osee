@@ -37,7 +37,7 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
    private static final String RETRIEVE_GAMMAS_OF_REL_LINK_TXS =
-      "SELECT rel_link.gamma_id FROM osee_relation_link rel_link WHERE rel_link.rel_link_type_id = ?";
+      "SELECT rel_link.gamma_id FROM osee_relation_link rel_link WHERE rel_link.rel_link_type_id = ? union select rel.gamma_id from osee_relation where rel.rel_type = ?";
 
    private static final String DELETE_BY_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
    private static final String DELETE_FROM_CONFLICT_TABLE_SOURCE_SIDE =
@@ -80,6 +80,7 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs"), gammas);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs_archived"), gammas);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_relation_link"), gammas);
+      getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_relation"), gammas);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_SOURCE_SIDE), gammas);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_DEST_SIDE), gammas);
    }
