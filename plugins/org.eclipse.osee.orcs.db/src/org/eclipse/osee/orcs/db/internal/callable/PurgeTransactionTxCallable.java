@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -36,6 +37,7 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
@@ -54,8 +56,14 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private static final String SELECT_AFFECTED_ITEMS =
       "SELECT %s as item_id from osee_txs txs, %s item where txs.branch_id = ? and txs.transaction_id = ? AND txs.gamma_id = item.gamma_id";
 
+   private static final String SELECT_AFFECTED_ITEMS_REL2 =
+      "SELECT %s as id1, %s as id2, %s as id3, %s as id4 from osee_txs txs, %s item where txs.branch_id = ? and txs.transaction_id = ? AND txs.gamma_id = item.gamma_id";
+
    private static final String FIND_NEW_TX_CURRENTS =
       "SELECT oj.id as item_id, txs.mod_type, txs.gamma_id, txs.transaction_id from osee_join_id oj, %s item, osee_txs txs where oj.query_id = ? and oj.id = item.%s and item.gamma_id = txs.gamma_id and txs.branch_id = ? order by oj.id desc, txs.transaction_id desc";
+
+   private static final String FIND_NEW_TX_CURRENTS_REL2 =
+      "SELECT oj.id1 as rel_type, oj.id2 as a_art_id, oj.id3 as b_art_id, txs.mod_type, txs.gamma_id, txs.transaction_id from osee_join_id4 oj, %s item, osee_txs txs where oj.query_id = ? and oj.id1 = item.%s and oj.id2 = item.%s and oj.id3 = item.%s and item.gamma_id = txs.gamma_id and txs.branch_id = ? order by oj.id1, oj.id2, oj.id3, txs.transaction_id desc";
 
    private static final String UPDATE_TX_CURRENT =
       "update osee_txs set tx_current = ? where branch_id = ? and transaction_id = ? and gamma_id = ?";
@@ -70,6 +78,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private final Collection<? extends TransactionId> txIdsToDelete;
    private final ActivityLog activityLog;
    private int previousItem;
+   private String previousItemId4;
 
    public PurgeTransactionTxCallable(ActivityLog activityLog, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends TransactionId> txIdsToDelete) {
       super(null, session, jdbcClient);
@@ -77,6 +86,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
       previousItem = -1;
+      previousItemId4 = "-1";
    }
 
    private List<TransactionId> sortTxs(Collection<? extends TransactionId> txIdsToDelete) {
@@ -128,7 +138,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete, null);
          Map<BranchId, IdJoinQuery> rels =
             findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete, null);
-
+         Map<BranchId, Id4JoinQuery> rels2 =
+            findAffectedItemsRel2(connection, "rel_type", "a_art_id", "b_art_id", "osee_relation", txsToDelete, null);
          //Update Baseline txs for Child Branches
          setChildBranchBaselineTxs(connection, txIdToDelete, previousTransactionId);
 
@@ -141,6 +152,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          computeNewTxCurrents(connection, updateData, "art_id", "osee_artifact", arts);
          computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
+         computeNewTxCurrentsRel2(connection, updateData, "rel_type", "a_art_id", "b_art_id", "osee_relation", rels2);
          getJdbcClient().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
          purgeCount++;
 
@@ -173,6 +185,28 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       }
    }
 
+   private void computeNewTxCurrentsRel2(JdbcConnection connection, Collection<Object[]> updateData, String id1, String id2, String id3, String tableName, Map<BranchId, Id4JoinQuery> affected) {
+      String query = String.format(FIND_NEW_TX_CURRENTS_REL2, tableName, id1, id2, id3);
+
+      for (Entry<BranchId, Id4JoinQuery> entry : affected.entrySet()) {
+         BranchId branch = entry.getKey();
+         try (Id4JoinQuery joinQuery = entry.getValue()) {
+
+            Consumer<JdbcStatement> consumer = stmt -> {
+               String currentItemId4 = stmt.getLong(id1) + "/" + stmt.getLong(id2) + "/" + stmt.getLong(id3);
+               if (!previousItemId4.equals(currentItemId4)) {
+                  ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
+                  TxCurrent txCurrent = TxCurrent.getCurrent(modType);
+                  updateData.add(
+                     new Object[] {txCurrent, branch, stmt.getLong("transaction_id"), stmt.getLong("gamma_id")});
+                  previousItemId4 = currentItemId4;
+               }
+            };
+            getJdbcClient().runQuery(connection, consumer, joinQuery.size() * 2, query, joinQuery.getQueryId(), branch);
+         }
+      }
+   }
+
    private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
       Map<BranchId, IdJoinQuery> items = new HashMap<>();
       JdbcStatement statement = getJdbcClient().getStatement(connection);
@@ -191,6 +225,36 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                   artsMsg.append(",");
                }
                joinId.add(id);
+            }
+            joinId.store();
+         }
+      } finally {
+         statement.close();
+      }
+
+      return items;
+   }
+
+   private Map<BranchId, Id4JoinQuery> findAffectedItemsRel2(JdbcConnection connection, String id1, String id2, String id3, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
+      Map<BranchId, Id4JoinQuery> items = new HashMap<>();
+      JdbcStatement statement = getJdbcClient().getStatement(connection);
+
+      try {
+         for (Object[] bindData : bindDataList) {
+            String query = String.format(SELECT_AFFECTED_ITEMS_REL2, id1, id2, id3, null, itemTable);
+            statement.runPreparedQueryWithMaxFetchSize(query, bindData);
+            Id4JoinQuery joinId = joinFactory.createId4JoinQuery();
+            items.put((BranchId) bindData[0], joinId);
+
+            while (statement.next()) {
+               Id relType = Id.valueOf(statement.getLong("id1"));
+               Id artA = Id.valueOf(statement.getLong("id2"));
+               Id artB = Id.valueOf(statement.getLong("id3"));
+               if (artsMsg != null && artsMsg.length() < JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+                  artsMsg.append(relType.toString() + '/' + artA.toString() + "/" + artB.toString());
+                  artsMsg.append(",");
+               }
+               joinId.add(relType, artA, artB);
             }
             joinId.store();
          }
