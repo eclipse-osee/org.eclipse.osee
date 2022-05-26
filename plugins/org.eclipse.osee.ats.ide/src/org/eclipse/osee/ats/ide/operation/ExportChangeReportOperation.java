@@ -104,8 +104,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             logf("Exporting: %s -- %s", workflow.toString(), workflow.getAtsId());
-            String id = AtsApiService.get().getAttributeResolver().getSoleAttributeValueAsString(workflow,
-               AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
+            String id = workflow.getAtsId();
             String prefix = "/" + id;
             if (writeChangeReports) {
 
@@ -128,7 +127,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   }
                }
                if (artifactDeltas.isEmpty()) {
-                  logf("Nothing exported for RPCR[%s]", id);
+                  logf("Nothing exported for Workflow[%s]", id);
                   continue;
                }
 
@@ -165,12 +164,12 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          @Override
          public int compare(IAtsTeamWorkflow workflow1, IAtsTeamWorkflow workflow2) {
             try {
-               String legacyId1 = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workflow1,
-                  AtsAttributeTypes.LegacyPcrId, "");
-               String legacyId2 = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workflow2,
-                  AtsAttributeTypes.LegacyPcrId, "");
+               String atsId1 = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workflow1,
+                  AtsAttributeTypes.AtsId, "");
+               String atsId2 = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workflow2,
+                  AtsAttributeTypes.AtsId, "");
 
-               int compare = legacyId1.compareTo(legacyId2);
+               int compare = atsId1.compareTo(atsId2);
                return reverse ? -1 * compare : compare;
             } catch (OseeCoreException ex) {
                return -1;
