@@ -15,8 +15,6 @@ package org.eclipse.osee.mim.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAtt
 import org.eclipse.osee.framework.jdk.core.util.CellData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter.STYLE;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -43,8 +42,8 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 public class IcdGenerator {
 
    private final OrcsApi orcsApi;
-   private class StructureInfo {
 
+   private class StructureInfo {
       final String name;
       final String category;
       final String rate;
@@ -141,7 +140,7 @@ public class IcdGenerator {
       int columnCount = 3;
       writer.startSheet("Structures Names", columnCount);
       writer.writeHeaderRow(headings);
-      Iterator iterator = structures.keySet().iterator();
+      Iterator<String> iterator = structures.keySet().iterator();
       int size = structures.size();
       int firstCol = Math.floorDiv(size, 3);
       int secCol = firstCol * 2;
@@ -150,7 +149,7 @@ public class IcdGenerator {
       SortedMap<String, String> col2 = new TreeMap<String, String>();
       SortedMap<String, String> col3 = new TreeMap<String, String>();
       while (iterator.hasNext()) {
-         String sName = (String) iterator.next();
+         String sName = iterator.next();
          String sLink = structures.get(sName);
          if (count < firstCol) {
             col1.put(sName, sLink);
@@ -161,21 +160,21 @@ public class IcdGenerator {
          }
          count++;
       }
-      Iterator col1Iterator = col1.keySet().iterator();
-      Iterator col2Iterator = col2.keySet().iterator();
-      Iterator col3Iterator = col3.keySet().iterator();
+      Iterator<String> col1Iterator = col1.keySet().iterator();
+      Iterator<String> col2Iterator = col2.keySet().iterator();
+      Iterator<String> col3Iterator = col3.keySet().iterator();
       while (col1Iterator.hasNext()) {
          CellData name = new CellData();
-         name.setText((String) col1Iterator.next());
+         name.setText(col1Iterator.next());
          name.setHyperlink(col1.get(name.getText()));
          writer.writeCell(name);
          if (col2Iterator.hasNext()) {
-            name.setText((String) col2Iterator.next());
+            name.setText(col2Iterator.next());
             name.setHyperlink(col2.get(name.getText()));
             writer.writeCell(name);
          }
          if (col3Iterator.hasNext()) {
-            name.setText((String) col3Iterator.next());
+            name.setText(col3Iterator.next());
             name.setHyperlink(col3.get(name.getText()));
             writer.writeCell(name);
          }
@@ -185,6 +184,14 @@ public class IcdGenerator {
    }
 
    private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages, List<ArtifactReadable> structures, SortedMap<String, String> structureLinks) throws IOException {
+      int totalMinSim = 0;
+      int totalMaxSim = 0;
+      int totalNumAttrs = 0;
+      int totalMinBps = 0;
+      int totalMaxBps = 0;
+      int maxAttrs = 0;
+      int totalStructs = 0;
+
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 14;
       headingsList.add("Category");
@@ -202,7 +209,7 @@ public class IcdGenerator {
       headingsList.add("Taskfile Type");
       headingsList.add("Description");
       Object[] headings = headingsList.toArray();
-      writer.startSheet("SubMessage Summary", columnCount);
+      writer.startSheet("Structure Summary", columnCount);
       writer.writeHeaderRow(headings);
       for (ArtifactReadable artifact : subMessages) {
          final ArtifactReadable subMessage = artifact;
@@ -301,11 +308,19 @@ public class IcdGenerator {
             structuresList.put(struct, new StructureInfo(struct.getName(), cat, msgRateText, minSim, maxSim,
                elementCount, sum, sendingNode, msgNumber, subMsgNumber, taskFileType, desc));
 
-            writer.writeCell(catEnum.getId() + " " + catEnum.getName());
             CellData name = new CellData(struct.getSoleAttributeValue(CoreAttributeTypes.Name), sheetName,
                Strings.EMPTY_STRING, Strings.EMPTY_STRING);
-            writer.writeCell(name);
 
+            totalMinSim += stringToInt(minSim);
+            totalMaxSim += stringToInt(maxSim);
+            totalNumAttrs += elementCount;
+            totalMinBps += stringToInt(minBps);
+            totalMaxBps += stringToInt(maxBps);
+            maxAttrs = Math.max(maxAttrs, elementCount);
+            totalStructs++;
+
+            writer.writeCell(catEnum.getId() + " " + catEnum.getName());
+            writer.writeCell(name);
             writer.writeCell(msgRateText);
             writer.writeCell(minSim);
             writer.writeCell(maxSim);
@@ -320,29 +335,61 @@ public class IcdGenerator {
             writer.writeCell(desc);
             writer.endRow();
          }
-
       }
+
+      writer.endRow(); // Empty row between structures and summary
+
+      Object[] totalsHeaders = {" ", " ", " ", "Sim Min", "Sim Max", "# of Attributes", " ", "Min", "Max"};
+      writer.writeHeaderRow(totalsHeaders);
+
+      writer.setCellStyle(STYLE.BOLD, 2);
+      writer.setCellStyle(STYLE.BOLD, 6);
+      writer.writeEmptyCell();
+      writer.writeEmptyCell();
+      writer.writeCell("Totals:");
+      writer.writeCell(totalMinSim);
+      writer.writeCell(totalMaxSim);
+      writer.writeCell(totalNumAttrs);
+      writer.writeCell("B/s:");
+      writer.writeCell(totalMinBps);
+      writer.writeCell(totalMaxBps);
+      writer.endRow();
+
+      writer.setCellStyle(STYLE.BOLD, 3);
+      writer.setCellStyle(STYLE.BOLD, 6);
+      writer.writeEmptyCell();
+      writer.writeEmptyCell();
+      writer.writeEmptyCell();
+      writer.writeCell("Max # Attributes:");
+      writer.writeCell(maxAttrs);
+      writer.writeEmptyCell();
+      writer.writeCell("MB/s:");
+      writer.writeCell(totalMinBps / 1048576.0);
+      writer.writeCell(totalMaxBps / 1048576.0);
+      writer.endRow();
+
+      writer.setCellStyle(STYLE.BOLD, 3);
+      writer.setCellStyle(STYLE.BOLD, 6);
+      writer.writeEmptyCell();
+      writer.writeEmptyCell();
+      writer.writeEmptyCell();
+      writer.writeCell("Unique Structures:");
+      writer.writeCell(totalStructs);
+      writer.writeEmptyCell();
+      writer.writeCell("Mb/s:");
+      writer.writeCell(totalMinBps * 8.0 / 1048576.0);
+      writer.writeCell(totalMaxBps * 8.0 / 1048576.0);
+      writer.endRow();
 
       writer.endSheet();
    }
 
-   private void printFirstRowInOther(ExcelXmlWriter writer, String fullSheetName, String abbrevSheetName, String update) throws IOException {
-      List<String> headingsList = new ArrayList<String>();
-
-      headingsList.add("Sheet Type");
-      headingsList.add("Full Sheet Name");
-      headingsList.add("Abbrev. Sheet Name");
-      headingsList.add("Most Recent Update");
-      Object[] headings = headingsList.toArray();
-      writer.writeHeaderRow(headings);
-      writer.writeCell("Functional");
-      writer.writeCell(fullSheetName);
-      writer.writeCell(abbrevSheetName);
-      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd");
-      LocalDate localDate = LocalDate.now();
-      writer.writeCell(dtf.format(localDate));
-      writer.endRow();
-
+   private int stringToInt(String str) {
+      try {
+         return Integer.parseInt(str);
+      } catch (NumberFormatException ex) {
+         return 0;
+      }
    }
 
    private void printFirstRowInStructureSheet(ExcelXmlWriter writer, ArtifactReadable structure, SortedMap<String, String> structureLinks) throws IOException {
