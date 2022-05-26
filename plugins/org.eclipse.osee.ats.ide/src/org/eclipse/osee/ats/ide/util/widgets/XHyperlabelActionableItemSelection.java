@@ -135,4 +135,12 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
       return status;
    }
 
+   public Collection<IAtsActionableItem> getAis() {
+      return ais;
+   }
+
+   public void setAis(Collection<IAtsActionableItem> ais) {
+      this.ais = ais;
+   }
+
 }

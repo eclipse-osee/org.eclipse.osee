@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.ide.actions.wizard.NewActionPage1;
+import org.eclipse.osee.ats.ide.actions.wizard.NewActionUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -86,7 +86,7 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
 
    private void createAisSelection(Composite parent) {
       Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =
-         NewActionPage1.createActionableItemTreeViewer(parent, null);
+         NewActionUtil.createActionableItemTreeViewer(parent, null);
       treeViewer = results.getFirst();
       treeViewer.setEnabledChecker(this);
 

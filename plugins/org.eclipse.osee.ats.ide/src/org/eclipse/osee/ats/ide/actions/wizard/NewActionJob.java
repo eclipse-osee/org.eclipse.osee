@@ -47,12 +47,11 @@ public class NewActionJob extends Job {
    private final Date needByDate;
    private final boolean validationRequired;
    private final Set<IAtsActionableItem> actionableItems;
-   private final NewActionWizard wizard;
    private final Collection<INewActionListener> newActionListeners;
    private boolean openOnComplete = true;
    private ActionResult result;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, NewActionWizard wizard, Collection<INewActionListener> newActionListeners) {
+   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, Collection<INewActionListener> newActionListeners) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;
@@ -61,7 +60,6 @@ public class NewActionJob extends Job {
       this.needByDate = needByDate;
       this.validationRequired = validationRequired;
       this.actionableItems = actionableItems;
-      this.wizard = wizard;
       this.newActionListeners = newActionListeners;
    }
 
@@ -75,15 +73,11 @@ public class NewActionJob extends Job {
             title += " " + AtsApiService.get().getRandomNum();
          }
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create New Action");
-         result = AtsApiService.get().getActionService().createAction(
-            AtsApiService.get().getUserService().getCurrentUser(), title, desc, changeType, priority,
-            validationRequired, needByDate, actionableItems, new Date(),
-            AtsApiService.get().getUserService().getCurrentUser(),
-            newActionListeners == null ? Collections.emptyList() : newActionListeners, changes);
-
-         if (wizard != null) {
-            wizard.notifyAtsWizardItemExtensions(result, changes);
-         }
+         result =
+            AtsApiService.get().getActionService().createAction(AtsApiService.get().getUserService().getCurrentUser(),
+               title, desc, changeType, priority, validationRequired, needByDate, actionableItems, new Date(),
+               AtsApiService.get().getUserService().getCurrentUser(),
+               newActionListeners == null ? Collections.emptyList() : newActionListeners, changes);
 
          if (monitor != null) {
             monitor.subTask("Persisting");

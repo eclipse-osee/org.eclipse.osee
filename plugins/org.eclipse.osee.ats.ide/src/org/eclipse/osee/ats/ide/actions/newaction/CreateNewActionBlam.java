@@ -81,7 +81,7 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class CreateNewActionBlam extends AbstractBlam implements INewActionListener {
-   private static final String BLAM_DESCRIPTION = "Select options to create new ATS Action";
+   protected static final String BLAM_DESCRIPTION = "Select options to create new ATS Action";
    protected static final String TITLE = "Title";
    protected static final String PROGRAM = "Program";
    protected final static String DESCRIPTION = "Description";
@@ -103,9 +103,14 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    private IManagedForm form;
    private Section section;
    private Composite comp;
+   private XWidgetPage widgetPage;
 
    public CreateNewActionBlam() {
-      super("Create New Action", BLAM_DESCRIPTION, null);
+      this("Create New Action", BLAM_DESCRIPTION);
+   }
+
+   public CreateNewActionBlam(String name, String desc) {
+      super(name, desc, null);
       this.atsApi = AtsApiService.get();
    }
 
@@ -170,6 +175,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       for (IAtsWizardItem wizardItem : handledExtensionItems) {
          wizardItem.wizardCompleted(actionResult, changes);
       }
+
       changes.execute();
       if (actionResult.getResults().isErrors()) {
          log(actionResult.getResults().toString());
@@ -189,6 +195,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       wb.andXText(TITLE).andRequired().endWidget();
       wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
+      addWidgetsAfterDescription(wb);
       wb.andXHyperLinkEnumAttr(AtsAttributeTypes.ChangeType).andComposite(
          getChangeTypeRowColumns()).andRequired().endWidget();
       wb.andXHyperLinkEnumAttr(getPriorityAttr()).andRequired().endWidget();
@@ -197,14 +204,19 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       return wb.getItems();
    }
 
+   protected void addWidgetsAfterDescription(XWidgetBuilder wb) {
+      // for extensibility
+   }
+
    /**
     * Create widgets for specific teams
     */
    @Override
-   public void createWidgets(Composite comp, IManagedForm form, Section section) {
+   public void createWidgets(Composite comp, IManagedForm form, Section section, XWidgetPage widgetPage) {
       this.comp = comp;
       this.form = form;
       this.section = section;
+      this.widgetPage = widgetPage;
       teamComp = new Composite(comp, SWT.NONE);
       teamComp.setLayout(new GridLayout(1, false));
       teamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -213,7 +225,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    private void updateTeamComposites() {
       try {
          teamComp.dispose();
-         createWidgets(comp, form, section);
+         createWidgets(comp, form, section, widgetPage);
          handledExtensionItems.clear();
 
          getWizardXWidgetExtensions();

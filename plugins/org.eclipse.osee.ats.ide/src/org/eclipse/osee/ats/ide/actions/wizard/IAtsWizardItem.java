@@ -50,7 +50,7 @@ public interface IAtsWizardItem {
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     * created
     */
-   default Result isActionValidToCreate(Collection<IAtsActionableItem> aias, NewActionWizard wizard) {
+   default Result isActionValidToCreate(Collection<IAtsActionableItem> aias) {
       return Result.TrueResult;
    }
 
@@ -68,7 +68,7 @@ public interface IAtsWizardItem {
     *
     * @return true if widget data entered is valid
     */
-   default Result isWizardXWidgetsComplete(NewActionWizard wizard) {
+   default Result isWizardXWidgetsComplete() {
       return Result.TrueResult;
    }
 
@@ -84,13 +84,6 @@ public interface IAtsWizardItem {
     */
    public default void getWizardXWidgetExtensions(Collection<IAtsActionableItem> selectedIAtsActionableItems, Composite comp) {
       // do nothing
-   }
-
-   /**
-    * @return Overriden NewActionPage2 if needed
-    */
-   default NewActionPage2 getNewActionPage2(NewActionWizard newActionWizard) {
-      return null;
    }
 
 }

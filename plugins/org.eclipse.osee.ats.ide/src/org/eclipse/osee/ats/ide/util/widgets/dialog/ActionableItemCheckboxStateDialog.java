@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.actions.wizard.NewActionPage1;
+import org.eclipse.osee.ats.ide.actions.wizard.NewActionUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
@@ -63,7 +63,7 @@ public class ActionableItemCheckboxStateDialog extends EntryDialog implements Is
 
    private void createAisSelection(Composite parent) {
       Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> results =
-         NewActionPage1.createActionableItemTreeViewer(parent, null);
+         NewActionUtil.createActionableItemTreeViewer(parent, null);
       treeViewer = results.getFirst();
       treeViewer.setEnabledChecker(this);
 

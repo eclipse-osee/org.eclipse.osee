@@ -112,8 +112,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String title = getName() + " - Destination Client Test";
       resultData.log("Running " + title);
       NewActionJob job = null;
-      job = new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false, getActionableItems(), null,
-         null);
+      job = new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false, getActionableItems(), null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();

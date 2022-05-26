@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -285,7 +286,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    /**
     * Provided for BLAMs to add widgets after the defined widgets are drawn
     */
-   public void createWidgets(Composite parent, IManagedForm iManagedForm, Section section) {
+   public void createWidgets(Composite parent, IManagedForm iManagedForm, Section section, XWidgetPage widgetPage) {
       // do nothing
    }
 
@@ -296,6 +297,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public boolean isApplicable() {
       return true;
+   }
+
+   public void inputSectionCreated(XWidgetPage widgetPage) {
+      // do nothing
    }
 
 }
