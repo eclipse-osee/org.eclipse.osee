@@ -19,6 +19,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.IcdEndpoint;
+import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -32,18 +33,20 @@ public class IcdEndpointImpl implements IcdEndpoint {
    private final BranchId branch;
    private final ArtifactId viewId;
    private final OrcsApi orcsApi;
+   private final MimApi mimApi;
    private final ArtifactId connectionId;
 
-   public IcdEndpointImpl(BranchId branch, ArtifactId viewId, ArtifactId connectionId, OrcsApi orcsApi) {
+   public IcdEndpointImpl(BranchId branch, ArtifactId viewId, ArtifactId connectionId, MimApi mimApi) {
       this.branch = branch;
       this.viewId = viewId;
-      this.orcsApi = orcsApi;
+      this.mimApi = mimApi;
       this.connectionId = connectionId;
+      this.orcsApi = mimApi.getOrcsApi();
    }
 
    @Override
    public Response getIcd() {
-      StreamingOutput streamingOutput = new IcdStreamingOutput(orcsApi, branch, viewId, connectionId);
+      StreamingOutput streamingOutput = new IcdStreamingOutput(mimApi, branch, viewId, connectionId);
       String connectionName =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).andId(connectionId).asArtifact().getName();
       ResponseBuilder builder = Response.ok(streamingOutput);

@@ -60,17 +60,6 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    }
 
    @Override
-   public InterfaceConnection getRelatedFromMessageId(BranchId branch, ArtifactId messageId) {
-      try {
-         return this.getAccessor().getByRelationWithoutId(branch, CoreRelationTypes.InterfaceConnectionContent_Message,
-            messageId, InterfaceConnection.class);
-      } catch (Exception ex) {
-         System.out.println(ex);
-      }
-      return InterfaceConnection.SENTINEL;
-   }
-
-   @Override
    public InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message) {
       return message.getArtifactReadable().getRelated(
          CoreRelationTypes.InterfaceConnectionContent_Connection).getList().stream().filter(

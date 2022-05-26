@@ -26,7 +26,5 @@ public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<Interface
 
    InterfaceConnection get(BranchId branch, ArtifactId connectionId);
 
-   InterfaceConnection getRelatedFromMessageId(BranchId branch, ArtifactId messageId);
-
    InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message);
 }

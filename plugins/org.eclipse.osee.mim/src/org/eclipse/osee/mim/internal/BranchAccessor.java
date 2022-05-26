@@ -177,13 +177,13 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_XML)
    public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("id") ArtifactId connectionId) {
 
-      return new IcdEndpointImpl(branch, viewId, connectionId, mimApi.getOrcsApi());
+      return new IcdEndpointImpl(branch, viewId, connectionId, mimApi);
    }
 
    @Path("{branch}/icd/{id}")
    @Produces(MediaType.APPLICATION_XML)
    public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("id") ArtifactId connectionId) {
 
-      return new IcdEndpointImpl(branch, ArtifactId.SENTINEL, connectionId, mimApi.getOrcsApi());
+      return new IcdEndpointImpl(branch, ArtifactId.SENTINEL, connectionId, mimApi);
    }
 }

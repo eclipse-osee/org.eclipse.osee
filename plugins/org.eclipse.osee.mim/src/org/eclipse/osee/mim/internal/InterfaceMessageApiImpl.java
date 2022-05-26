@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
-import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -37,12 +36,10 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private ArtifactAccessor<InterfaceMessageToken> accessor;
-   private final InterfaceSubMessageApi submessageApi;
    private final InterfaceNodeViewApi nodeApi;
    private final List<RelationTypeSide> relations;
 
-   InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceSubMessageApi submessageApi) {
-      this.submessageApi = submessageApi;
+   InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi) {
       this.nodeApi = nodeApi;
       this.setAccessor(new InterfaceMessageAccessor(orcsApi));
       this.relations = createRelationTypeSideList();
@@ -102,8 +99,11 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
             this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
                connectionId, this.getFollowRelationDetails(), InterfaceMessageToken.class).stream().map(
                   m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
-         messages.stream().forEach(
-            m -> ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m)));
+         messages.stream().forEach(m -> {
+            if (m.getInterfaceMessageType().equals("Operational")) {
+               ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m));
+            }
+         });
          return messages;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
@@ -163,7 +163,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       return InterfaceMessageToken.SENTINEL;
    }
 
-   private InterfaceSubMessageToken getMessageHeader(InterfaceMessageToken message) {
+   @Override
+   public InterfaceSubMessageToken getMessageHeader(InterfaceMessageToken message) {
       String name = message.getInitiatingNode().getName() + " M" + message.getInterfaceMessageNumber() + " Header";
       InterfaceSubMessageToken messageHeader =
          new InterfaceSubMessageToken(0L, name, "", "0", message.getApplicability());

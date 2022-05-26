@@ -18,7 +18,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -32,6 +34,15 @@ import org.eclipse.osee.framework.jdk.core.util.CellData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter.STYLE;
+import org.eclipse.osee.mim.InterfaceMessageApi;
+import org.eclipse.osee.mim.InterfaceStructureApi;
+import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceNode;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.InterfaceStructureToken;
+import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -42,6 +53,8 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 public class IcdGenerator {
 
    private final OrcsApi orcsApi;
+   private final InterfaceMessageApi interfaceMessageApi;
+   private final InterfaceStructureApi interfaceStructureApi;
 
    private class StructureInfo {
       final String name;
@@ -56,7 +69,8 @@ public class IcdGenerator {
       final String subMsgNum;
       final String taskfile;
       final String description;
-      public StructureInfo(String name, String cat, String msgRateText, String minSim, String maxSim, int elementCount, Integer sum, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc) {
+      final List<ArtifactReadable> elements;
+      public StructureInfo(String name, String cat, String msgRateText, String minSim, String maxSim, int elementCount, Integer sum, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, List<ArtifactReadable> elements) {
          this.name = name;
          this.category = cat;
          this.rate = msgRateText;
@@ -69,16 +83,29 @@ public class IcdGenerator {
          this.subMsgNum = subMsgNumber;
          this.taskfile = taskfile;
          this.description = desc;
+         this.elements = elements;
       }
 
    }
-   private final HashMap<ArtifactId, StructureInfo> structuresList;
-   public IcdGenerator(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+
+   private final Map<ArtifactId, StructureInfo> structuresList;
+   private final Map<String, StructureInfo> headersList;
+   private final Map<ArtifactId, InterfaceSubMessageToken> messageHeaders;
+   private final Map<String, InterfaceStructureToken> messageHeaderStructures;
+
+   public IcdGenerator(MimApi mimApi) {
+      this.orcsApi = mimApi.getOrcsApi();
       this.structuresList = new HashMap<>();
+      this.headersList = new HashMap<>();
+      this.messageHeaders = new HashMap<>();
+      this.messageHeaderStructures = new HashMap<>();
+
+      this.interfaceMessageApi = mimApi.getInterfaceMessageApi();
+      this.interfaceStructureApi = mimApi.getInterfaceStructureApi();
    }
 
    public void runOperation(OrcsApi providedOrcs, Writer providedWriter, BranchId branch, ArtifactId view, ArtifactId connectionId) throws IOException {
+
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
             connectionId).follow(CoreRelationTypes.InterfaceConnectionContent_Message).follow(
@@ -96,41 +123,72 @@ public class IcdGenerator {
 
       List<ArtifactReadable> messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionContent_Message).getList();
       List<ArtifactReadable> subMessages = new ArrayList<>();
-      List<ArtifactReadable> structures = new ArrayList<>();
+      List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
+      List<InterfaceStructureToken> structures = new ArrayList<>();
       SortedMap<String, String> structureLinks = new TreeMap<String, String>();
       for (ArtifactReadable message : messages) {
-         subMessages.addAll(
-            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList());
+         ArtifactReadable sendingNode =
+            (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
+                  primaryNode.getIdString())) ? primaryNode : secondaryNode;
+         InterfaceMessageToken msg = new InterfaceMessageToken(message);
+         msg.setInitiatingNode(new InterfaceNode(sendingNode));
+         List<ArtifactReadable> messageSubMessages =
+            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
+         List<InterfaceSubMessageToken> smsgTokens =
+            messageSubMessages.stream().map(art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
+         if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "error").equals("Operational")) {
+            InterfaceSubMessageToken header = interfaceMessageApi.getMessageHeader(msg);
+            messageHeaders.put(ArtifactId.valueOf(message.getId()), header);
+            smsgTokens.add(0, header);
 
+            InterfaceStructureToken headerStruct =
+               interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId()));
+            messageHeaderStructures.put(header.getName(), headerStruct);
+         }
+         subMessages.addAll(messageSubMessages);
+         subMessagesWithHeaders.addAll(smsgTokens);
+         for (InterfaceSubMessageToken smsg : smsgTokens) {
+            List<InterfaceStructureToken> structs = new LinkedList<>();
+            if (smsg.getId() == 0) {
+               structs.add(0,
+                  interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId())));
+            } else {
+               structs.addAll(smsg.getArtifactReadable().getRelated(
+                  CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
+                     art -> new InterfaceStructureToken(art)).collect(Collectors.toList()));
+            }
+            structures.addAll(structs);
+         }
       }
-      for (ArtifactReadable subMessage : subMessages) {
-         structures.addAll(subMessage.getRelated(CoreRelationTypes.InterfaceSubMessageContent_Structure).getList());
-      }
+
       int worksheetIndex = 0;
-      for (ArtifactReadable structure : structures) {
+      for (InterfaceStructureToken structure : structures) {
          worksheetIndex++;
          String sheetName = structure.getName().replace("Command Taskfile", "CT").replace("Status Taskfile", "ST");
          if (sheetName.length() > 30) {
             sheetName = sheetName.substring(0, 25) + "_" + Integer.toString(worksheetIndex);
          }
-         String abbrevName = structure.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, "null");
-         if (!abbrevName.equals("null")) {
-            sheetName = abbrevName;
+         if (structure.getArtifactReadable() != null) {
+            String abbrevName =
+               structure.getArtifactReadable().getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, "null");
+            if (!abbrevName.equals("null")) {
+               sheetName = abbrevName;
+            }
          }
          structureLinks.put(structure.getName(), sheetName);
       }
       ExcelXmlWriter writer = new ExcelXmlWriter(providedWriter);
 
-      createMessageSubMessageSummary(writer, branch, view, conn, primaryNode, secondaryNode, messages, subMessages);
-      createStructureNamesSheet(writer, branch, structureLinks);
-      createMessageDetailSheet(writer, branch, view, primaryNode, secondaryNode, messages, subMessages, structures,
-         structureLinks);
-      createSubMessageSheets(writer, branch, view, primaryNode, secondaryNode, messages, subMessages, structures,
-         structureLinks);
+      createMessageSubMessageSummary(writer, branch, conn, primaryNode, secondaryNode, messages, subMessages);
+      createStructureNamesSheet(writer, structureLinks);
+      createMessageDetailSheet(writer, branch, view, primaryNode, secondaryNode, messages, structureLinks);
+      createSubMessageSheets(writer, branch, view, subMessagesWithHeaders, structures, structureLinks);
+
       writer.endWorkbook();
    }
 
-   private void createStructureNamesSheet(ExcelXmlWriter writer, BranchId branch, SortedMap<String, String> structures) throws IOException {
+   private void createStructureNamesSheet(ExcelXmlWriter writer, SortedMap<String, String> structures) throws IOException {
 
       List<String> headingsList = new ArrayList<String>();
       headingsList.add("Structure Name");
@@ -183,7 +241,7 @@ public class IcdGenerator {
       writer.endSheet();
    }
 
-   private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages, List<ArtifactReadable> structures, SortedMap<String, String> structureLinks) throws IOException {
+   private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, SortedMap<String, String> structureLinks) throws IOException {
       int totalMinSim = 0;
       int totalMaxSim = 0;
       int totalNumAttrs = 0;
@@ -211,129 +269,143 @@ public class IcdGenerator {
       Object[] headings = headingsList.toArray();
       writer.startSheet("Structure Summary", columnCount);
       writer.writeHeaderRow(headings);
-      for (ArtifactReadable artifact : subMessages) {
-         final ArtifactReadable subMessage = artifact;
-         for (ArtifactReadable struct : structures.stream().filter(
-            a -> a.areRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessage)).collect(
-               Collectors.toList())) {
-            String sheetName = structureLinks.get(struct.getName());
+      for (ArtifactReadable message : messages) {
+         ArtifactReadable sendingNode =
+            (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
+                  primaryNode.getIdString())) ? primaryNode : secondaryNode;
+         String msgNumber = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber, "0");
 
-            List<ArtifactReadable> elements = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
-               CoreRelationTypes.InterfaceStructureContent_Structure, struct).follow(
-                  CoreRelationTypes.InterfaceElementPlatformType_PlatformType).asArtifacts();
-            Integer sum = 0;
-            int elementCount = 0;
-
-            for (ArtifactReadable element : elements) {
-               ArtifactReadable platformType =
-                  element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
-                     ArtifactReadable.SENTINEL);
-
-               if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
-                  int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
-                  int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
-                  int arraySize = endIndex - startIndex + 1;
-                  sum = sum + (((Integer.parseInt(platformType.getSoleAttributeAsString(
-                     CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) * arraySize)) / 8);
-                  elementCount = elementCount + arraySize;
-               } else {
-                  elementCount++;
-                  sum = sum + (Integer.parseInt(
-                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8);
-
-               }
+         String msgRateText;
+         int msgRate = -1;
+         String msgPeriodicity =
+            message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePeriodicity, "Aperiodic");
+         if (msgPeriodicity.equals("Periodic")) {
+            msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
+            try {
+               msgRate = Integer.parseInt(msgRateText);
+            } catch (NumberFormatException nfe) {
+               //do nothing
             }
+         } else {
+            msgRateText = msgPeriodicity;
+         }
+         if (message.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfaceMessageRate)) {
+            msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
+            try {
+               msgRate = Integer.parseInt(msgRateText);
+            } catch (NumberFormatException nfe) {
+               //do nothing
+            }
+            if (msgPeriodicity.equals("Aperiodic")) {
+               msgRateText = msgRateText + "-A";
+            }
+         }
 
-            ArtifactReadable message = messages.stream().filter(
-               a -> a.areRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
-                  subMessage)).findAny().orElse(ArtifactReadable.SENTINEL);
-            String sendingNode =
-               (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
-                  ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
-                     primaryNode.getIdString())) ? primaryNode.getName() : secondaryNode.getName();
-            ;
-            String msgNumber = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber, "0");
-            String minSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMinSimultaneity, "n/a");
-            String maxSim = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMaxSimultaneity, "n/a");
-            String msgRateText;
-            int msgRate = -1;
-            String msgPeriodicity =
-               message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePeriodicity, "Aperiodic");
-            if (msgPeriodicity.equals("Periodic")) {
-               msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
-               try {
-                  msgRate = Integer.parseInt(msgRateText);
-               } catch (NumberFormatException nfe) {
-                  //do nothing
-               }
+         List<InterfaceSubMessageToken> subMessages =
+            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().map(
+               art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
+         if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "Error").equals("Operational")) {
+            subMessages.add(0, messageHeaders.get(ArtifactId.valueOf(message.getId())));
+         }
+
+         for (InterfaceSubMessageToken subMessage : subMessages) {
+
+            List<InterfaceStructureToken> structures = new LinkedList<>();
+            if (subMessage.getId() == 0) {
+               structures.add(messageHeaderStructures.get(subMessage.getName()));
             } else {
-               msgRateText = msgPeriodicity;
-            }
-            if (message.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfaceMessageRate)) {
-               msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
-               try {
-                  msgRate = Integer.parseInt(msgRateText);
-               } catch (NumberFormatException nfe) {
-                  //do nothing
-               }
-               if (msgPeriodicity.equals("Aperiodic")) {
-                  msgRateText = msgRateText + "-A";
-               }
+               structures.addAll(subMessage.getArtifactReadable().getRelated(
+                  CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
+                     art -> new InterfaceStructureToken(art)).collect(Collectors.toList()));
             }
 
-            String minBps = "Classified";
-            String maxBps = "Classified";
-            if (msgRate > 0) {
-               try {
-                  minBps = Integer.toString(Integer.parseInt(minSim) * sum * msgRate);
-               } catch (NumberFormatException nfe) {
-                  minBps = "Classified";
+            for (InterfaceStructureToken struct : structures) {
+               String sheetName = structureLinks.get(struct.getName());
+
+               List<InterfaceStructureElementToken> elements;
+               List<ArtifactReadable> elementArts = new LinkedList<>();
+               if (struct.getId() == 0) {
+                  elements = struct.getElements();
+               } else {
+                  elementArts = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+                     CoreRelationTypes.InterfaceStructureContent_Structure, struct.getArtifactReadable()).follow(
+                        CoreRelationTypes.InterfaceElementPlatformType_PlatformType).follow(
+                           CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).follow(
+                              CoreRelationTypes.InterfaceEnumeration_EnumerationState).asArtifacts();
+                  elements = elementArts.stream().map(art -> new InterfaceStructureElementToken(art)).collect(
+                     Collectors.toList());
+
                }
-               try {
-                  maxBps = Integer.toString(Integer.parseInt(maxSim) * sum * msgRate);
-               } catch (NumberFormatException nfe) {
-                  maxBps = "Classified";
+
+               Integer sum = 0;
+               int elementCount = 0;
+
+               for (InterfaceStructureElementToken element : elements) {
+                  elementCount = struct.isAutogenerated() ? elementCount + 1 : elementCount + element.getArrayLength();
+                  sum = sum + (int) element.getElementSizeInBytes();
                }
+
+               String minSim = struct.getInterfaceMinSimultaneity();
+               String maxSim = struct.getInterfaceMaxSimultaneity();
+
+               String minBps = "Classified";
+               String maxBps = "Classified";
+               if (msgRate > 0) {
+                  try {
+                     minBps = Integer.toString(Integer.parseInt(minSim) * sum * msgRate);
+                  } catch (NumberFormatException nfe) {
+                     minBps = "Classified";
+                  }
+                  try {
+                     maxBps = Integer.toString(Integer.parseInt(maxSim) * sum * msgRate);
+                  } catch (NumberFormatException nfe) {
+                     maxBps = "Classified";
+                  }
+               }
+               String cat = struct.getInterfaceStructureCategory();
+               InterfaceStructureCategoryEnum catEnum =
+                  CoreAttributeTypes.InterfaceStructureCategory.getEnumValues().stream().filter(
+                     e -> cat.equals(e.getName())).findAny().orElse(null);
+
+               String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
+               String taskFileType = struct.getInterfaceTaskFileType() + "";
+               String desc = struct.getDescription();
+
+               StructureInfo structureInfo = new StructureInfo(struct.getName(), cat, msgRateText, minSim, maxSim,
+                  elementCount, sum, sendingNode.getName(), msgNumber, subMsgNumber, taskFileType, desc, elementArts);
+               if (struct.getId() == 0) {
+                  headersList.put(struct.getName(), structureInfo);
+               } else {
+                  structuresList.put(ArtifactId.valueOf(struct.getId()), structureInfo);
+               }
+
+               CellData name = new CellData(struct.getName(), sheetName, Strings.EMPTY_STRING, Strings.EMPTY_STRING);
+
+               totalMinSim += stringToInt(minSim);
+               totalMaxSim += stringToInt(maxSim);
+               totalNumAttrs += elementCount;
+               totalMinBps += stringToInt(minBps);
+               totalMaxBps += stringToInt(maxBps);
+               maxAttrs = Math.max(maxAttrs, elementCount);
+               totalStructs++;
+
+               writer.writeCell(catEnum.getId() + " " + catEnum.getName());
+               writer.writeCell(name);
+               writer.writeCell(msgRateText);
+               writer.writeCell(minSim);
+               writer.writeCell(maxSim);
+               writer.writeCell(elementCount);
+               writer.writeCell(sum);
+               writer.writeCell(minBps);
+               writer.writeCell(maxBps);
+               writer.writeCell(sendingNode);
+               writer.writeCell(msgNumber);
+               writer.writeCell(subMsgNumber);
+               writer.writeCell(taskFileType);
+               writer.writeCell(desc);
+               writer.endRow();
             }
-            String cat = struct.getSoleAttributeValue(CoreAttributeTypes.InterfaceStructureCategory).toString();
-            InterfaceStructureCategoryEnum catEnum =
-               CoreAttributeTypes.InterfaceStructureCategory.getEnumValues().stream().filter(
-                  e -> cat.equals(e.getName())).findAny().orElse(null);
-
-            String subMsgNumber =
-               artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber, "n/a");
-            String taskFileType = struct.getSoleAttributeAsString(CoreAttributeTypes.InterfaceTaskFileType, "n/a");
-            String desc = struct.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
-
-            structuresList.put(struct, new StructureInfo(struct.getName(), cat, msgRateText, minSim, maxSim,
-               elementCount, sum, sendingNode, msgNumber, subMsgNumber, taskFileType, desc));
-
-            CellData name = new CellData(struct.getSoleAttributeValue(CoreAttributeTypes.Name), sheetName,
-               Strings.EMPTY_STRING, Strings.EMPTY_STRING);
-
-            totalMinSim += stringToInt(minSim);
-            totalMaxSim += stringToInt(maxSim);
-            totalNumAttrs += elementCount;
-            totalMinBps += stringToInt(minBps);
-            totalMaxBps += stringToInt(maxBps);
-            maxAttrs = Math.max(maxAttrs, elementCount);
-            totalStructs++;
-
-            writer.writeCell(catEnum.getId() + " " + catEnum.getName());
-            writer.writeCell(name);
-            writer.writeCell(msgRateText);
-            writer.writeCell(minSim);
-            writer.writeCell(maxSim);
-            writer.writeCell(elementCount);
-            writer.writeCell(sum);
-            writer.writeCell(minBps);
-            writer.writeCell(maxBps);
-            writer.writeCell(sendingNode);
-            writer.writeCell(msgNumber);
-            writer.writeCell(subMsgNumber);
-            writer.writeCell(taskFileType);
-            writer.writeCell(desc);
-            writer.endRow();
          }
       }
 
@@ -392,7 +464,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printFirstRowInStructureSheet(ExcelXmlWriter writer, ArtifactReadable structure, SortedMap<String, String> structureLinks) throws IOException {
+   private void printFirstRowInStructureSheet(ExcelXmlWriter writer, InterfaceStructureToken structure, SortedMap<String, String> structureLinks, StructureInfo info) throws IOException {
       List<String> headingsList = new ArrayList<String>();
 
       headingsList.add("Sheet Type");
@@ -412,12 +484,14 @@ public class IcdGenerator {
       headingsList.add("Description");
       Object[] headings = headingsList.toArray();
       writer.writeHeaderRow(headings);
-      StructureInfo info = structuresList.get(structure);
       writer.writeCell("Functional");
       writer.writeCell(info.name);
-      writer.writeCell(structure.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, ""));
-      writer.writeCell(orcsApi.getQueryFactory().transactionQuery().andTxId(
-         structure.getTransaction()).getResults().getAtMostOneOrDefault(TransactionReadable.SENTINEL).getDate());
+      writer.writeCell(structure.getId() == 0 ? info.name : structure.getArtifactReadable().getSoleAttributeAsString(
+         CoreAttributeTypes.GeneralStringData, ""));
+      writer.writeCell(
+         structure.getId() == 0 ? Strings.EMPTY_STRING : orcsApi.getQueryFactory().transactionQuery().andTxId(
+            structure.getArtifactReadable().getTransaction()).getResults().getAtMostOneOrDefault(
+               TransactionReadable.SENTINEL).getDate());
       writer.writeCell(info.category);
       writer.writeCell(info.rate);
       writer.writeCell(info.minSim);
@@ -432,7 +506,7 @@ public class IcdGenerator {
       writer.endRow();
    }
 
-   private void createSubMessageSheets(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages, List<ArtifactReadable> structures, SortedMap<String, String> structureLinks) throws IOException {
+   private void createSubMessageSheets(ExcelXmlWriter writer, BranchId branch, ArtifactId view, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<String, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 15;
       headingsList.add("Begin Word");
@@ -449,48 +523,95 @@ public class IcdGenerator {
       headingsList.add("Enumerated Literals");
       headingsList.add("Notes");
       Object[] headings = headingsList.toArray();
-      for (ArtifactReadable artifact : subMessages) {
-         final ArtifactReadable subMessage = artifact;
-         for (ArtifactReadable struct : structures.stream().filter(
-            a -> a.areRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessage)).collect(
-               Collectors.toList())) {
+      for (InterfaceSubMessageToken subMessage : subMessages) {
+
+         List<InterfaceStructureToken> structs = new LinkedList<>();
+         if (subMessage.getId() == 0) {
+            structs.add(messageHeaderStructures.get(subMessage.getName()));
+         } else {
+            structs.addAll(
+               structures.stream().filter(a -> a.getArtifactReadable() != null && a.getArtifactReadable().areRelated(
+                  CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessage.getArtifactReadable())).collect(
+                     Collectors.toList()));
+         }
+         for (InterfaceStructureToken struct : structs) {
 
             int byteLocation = 0;
             writer.startSheet(structureLinks.get(struct.getName()), columnCount);
 
+            StructureInfo info = struct.getId() == 0 ? headersList.get(struct.getName()) : structuresList.get(
+               ArtifactId.valueOf(struct.getId()));
+
             //print structure row info
-            printFirstRowInStructureSheet(writer, struct, structureLinks);
+            printFirstRowInStructureSheet(writer, struct, structureLinks, info);
             writer.writeEmptyCell();
             writer.endRow();
 
             writer.writeHeaderRow(headings);
 
-            for (ArtifactReadable element : orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
-               CoreRelationTypes.InterfaceStructureContent_Structure, struct).follow(
-                  CoreRelationTypes.InterfaceElementPlatformType_PlatformType).follow(
-                     CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).follow(
-                        CoreRelationTypes.InterfaceEnumeration_EnumerationState).asArtifacts()) {
-
-               ArtifactReadable platformType =
-                  element.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
-                     ArtifactReadable.SENTINEL);
-
-               Integer byteSize = Integer.valueOf(
-                  platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
-               printDataElementRow(writer, branch, view, element, byteLocation, byteSize, platformType);
-               if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
-                  int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
-                  int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
-
-                  byteSize = byteSize * (endIndex - startIndex + 1);
+            if (struct.getId() == 0) {
+               for (InterfaceStructureElementToken element : struct.getElements()) {
+                  PlatformTypeToken platformType = element.getPlatformType();
+                  Integer byteSize = (int) element.getElementSizeInBytes();
+                  printHeaderStructureRow(writer, branch, view, element, byteLocation, byteSize, platformType);
+                  byteLocation = byteLocation + byteSize;
                }
-               byteLocation = byteLocation + byteSize;
+            } else {
+               for (ArtifactReadable element : info.elements) {
+                  ArtifactReadable platformType = element.getRelated(
+                     CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
+                        ArtifactReadable.SENTINEL);
+
+                  Integer byteSize = Integer.valueOf(
+                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
+                  printDataElementRow(writer, branch, view, element, byteLocation, byteSize, platformType);
+                  if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
+                     int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
+                     int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
+
+                     byteSize = byteSize * (endIndex - startIndex + 1);
+                  }
+                  byteLocation = byteLocation + byteSize;
+               }
             }
+
             writer.endSheet();
-
          }
-
       }
+   }
+
+   private void printHeaderStructureRow(ExcelXmlWriter writer, BranchId branch, ArtifactId view, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) throws IOException {
+      Integer beginWord = Math.floorDiv(byteLocation, 4);
+      Integer beginByte = Math.floorMod(byteLocation, 4);
+      Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
+      Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
+      String elementName = element.getName();
+      String dataType = element.getLogicalType();
+      dataType = dataType.replace("unsigned long", "uLong").replace("unsigned short", "uShort").replace("short",
+         "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
+      String units =
+         (platformType == null || platformType.getInterfacePlatformTypeUnits() == Strings.EMPTY_STRING) ? "n/a" : platformType.getInterfacePlatformTypeUnits();
+      String validRange =
+         (platformType == null || platformType.getInterfacePlatformTypeValidRangeDescription() == Strings.EMPTY_STRING) ? "n/a" : platformType.getInterfacePlatformTypeValidRangeDescription();
+
+      String alterable = element.getInterfaceElementAlterable() ? "Yes" : "No";
+      String description = element.getDescription() == Strings.EMPTY_STRING ? "n/a" : element.getDescription();
+      String notes = element.getNotes();
+
+      writer.writeCell(beginWord);
+      writer.writeCell(beginByte);
+      writer.writeCell(byteSize);
+      writer.writeCell(endWord);
+      writer.writeCell(endByte);
+      writer.writeCell(dataType);
+      writer.writeCell(elementName);
+      writer.writeCell(units);
+      writer.writeCell(validRange);
+      writer.writeCell(alterable);
+      writer.writeCell(description);
+      writer.writeCell("n/a");
+      writer.writeCell(notes);
+      writer.endRow();
    }
 
    private void printDataElementRow(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
@@ -530,10 +651,11 @@ public class IcdGenerator {
 
       if (platformType.getExistingRelationTypes().contains(CoreRelationTypes.InterfacePlatformTypeEnumeration)) {
          enumLiterals = "";
-         ArtifactReadable enumDef = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
-            CoreRelationTypes.InterfacePlatformTypeEnumeration_Element, platformType).asArtifactOrSentinel();
-         for (ArtifactReadable enumState : orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
-            CoreRelationTypes.InterfaceEnumeration_EnumerationSet, enumDef).asArtifacts()) {
+         ArtifactReadable enumDef = platformType.getRelated(
+            CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
+         for (ArtifactReadable enumState : enumDef.getRelated(
+            CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "; ";
          }
@@ -590,7 +712,7 @@ public class IcdGenerator {
 
    }
 
-   private void createMessageSubMessageSummary(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) throws IOException {
+   private void createMessageSubMessageSummary(ExcelXmlWriter writer, BranchId branch, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) throws IOException {
       int columnCount = 10;
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
@@ -718,12 +840,12 @@ public class IcdGenerator {
                secondarySubMessage = ArtifactReadable.SENTINEL;
             }
             if (primarySubMessage.isValid()) {
-               writer.writeCell(new CellData("Submessage " + Integer.toString(j) + ":", Strings.EMPTY_STRING,
+               writer.writeCell(new CellData("Submessage " + Integer.toString(j + 1) + ":", Strings.EMPTY_STRING,
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING), 3);
                writer.writeCell(primarySubMessage.getName());
             }
             if (secondarySubMessage.isValid()) {
-               writer.writeCell(new CellData("Submessage " + Integer.toString(j) + ":", Strings.EMPTY_STRING,
+               writer.writeCell(new CellData("Submessage " + Integer.toString(j + 1) + ":", Strings.EMPTY_STRING,
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING), 8);
                writer.writeCell(secondarySubMessage.getName());
             }
