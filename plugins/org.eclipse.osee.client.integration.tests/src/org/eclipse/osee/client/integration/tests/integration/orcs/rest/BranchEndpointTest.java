@@ -17,6 +17,7 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.ws.rs.client.Entity;
@@ -573,7 +574,7 @@ public class BranchEndpointTest {
       branchEndpoint.setBranchName(testBranchIdOne, "testBranchIdOne");
 
       // check to see if the original committed branch shows up as a branch with a modified artifact  - should be no
-      List<BranchId> branches =
+      Collection<BranchId> branches =
          branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
       Assert.assertTrue(branches.isEmpty());
 
@@ -587,7 +588,7 @@ public class BranchEndpointTest {
       // since testBranchIdtwo has deleted the artifact, we expect to see it as a branch with a modified artifact
       Assert.assertFalse(branches.isEmpty());
 
-      List<BranchId> branchesModded =
+      Collection<BranchId> branchesModded =
          branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.create(newArtifact));
       // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
       Assert.assertTrue(branchesModded.isEmpty());

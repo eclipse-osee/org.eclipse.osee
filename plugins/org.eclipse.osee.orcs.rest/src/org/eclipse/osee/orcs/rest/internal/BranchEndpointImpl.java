@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -797,9 +798,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public List<BranchId> getOtherBranchesWithModifiedArtifacts(BranchId branchId, ArtifactId artifactId) {
+   public Collection<BranchId> getOtherBranchesWithModifiedArtifacts(BranchId branchId, ArtifactId artifactId) {
 
-      List<BranchId> setOfBranchIds = new ArrayList<>();
+      Set<BranchId> setOfBranchIds = new HashSet<>();
 
       orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), OTHER_EDIT_SQL,
          artifactId, branchId, BranchType.WORKING, BranchState.MODIFIED);
