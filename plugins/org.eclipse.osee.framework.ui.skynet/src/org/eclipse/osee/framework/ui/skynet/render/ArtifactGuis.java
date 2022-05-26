@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -145,7 +144,7 @@ public final class ArtifactGuis {
          org.eclipse.osee.framework.core.client.OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint branchEndpoint = client.getBranchEndpoint();
 
-         List<BranchId> branchesMods = branchEndpoint.getOtherBranchesWithModifiedArtifacts(branch, artifact);
+         Collection<BranchId> branchesMods = branchEndpoint.getOtherBranchesWithModifiedArtifacts(branch, artifact);
 
          StringBuilder branches = new StringBuilder();
          branches.append("\n\t");

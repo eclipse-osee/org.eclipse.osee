@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -253,7 +254,7 @@ public interface BranchEndpoint {
    @Path("{branchId}/other-mods/{art-id}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   List<BranchId> getOtherBranchesWithModifiedArtifacts(@PathParam("branchId") BranchId branchId, @PathParam("art-id") ArtifactId artifactId);
+   Collection<BranchId> getOtherBranchesWithModifiedArtifacts(@PathParam("branchId") BranchId branchId, @PathParam("art-id") ArtifactId artifactId);
 
    /**
     * Undo the latest commit on a branch by purging the latest transaction.
