@@ -90,6 +90,7 @@ public class BlamInputSection extends BaseBlamSection {
 
       section.layout(true);
       form.getForm().getBody().layout(true);
+      abstractBlam.inputSectionCreated(widgetPage);
    }
 
    private void createWidgets(Composite parent) {
@@ -98,7 +99,7 @@ public class BlamInputSection extends BaseBlamSection {
          DefaultXWidgetOptionResolver optionResolver = new DefaultXWidgetOptionResolver();
          widgetPage = new XWidgetPage(layoutDatas, optionResolver, getAbstractBlam());
          widgetPage.createBody(getManagedForm(), parent, null, null, true);
-         abstractBlam.createWidgets(parent, getManagedForm(), getSection());
+         abstractBlam.createWidgets(parent, getManagedForm(), getSection(), widgetPage);
          XWidgetUtility.setLabelFontsBold(widgetPage.getDynamicXWidgetLayout().getXWidgets());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

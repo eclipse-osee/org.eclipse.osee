@@ -22,7 +22,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
    ActionableItemListDialogTest.class,
-   NewActionWizardTest.class,
    AICheckedTreeDialogTest.class,
    ActionActionableItemListDialogTest.class,
    ActionableItemTreeWithChildrenDialogTest.class,
