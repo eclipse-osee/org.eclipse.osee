@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
@@ -30,14 +29,11 @@ import org.eclipse.osee.ats.ide.config.AtsConfigOperation.Display;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.progress.UIJob;
@@ -51,12 +47,13 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
 
    @Override
    public void addPages() {
+      page1 = new AtsConfigWizardPage1();
       addPage(page1);
    }
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      page1 = new AtsConfigWizardPage1();
+      // do nothing
    }
 
    @Override
@@ -69,7 +66,7 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
 
          AtsConfigOperation.Display display = new OpenAtsConfigEditors();
          AtsConfigOperation operation = new AtsConfigOperation(workDefName, teamDefName, versionNames, aias);
-         Operations.executeAsJob(operation, true);
+         Operations.executeWork(operation);
 
          display.openAtsConfigurationEditors(operation.getTeamDefinition(), operation.getActionableItems(),
             operation.getWorkDefinition());
@@ -94,9 +91,6 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
                      AtsEditors.openATSAction(AtsApiService.get().getQueryService().getArtifact(aia),
                         AtsOpenOption.OpenAll);
                   }
-                  RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsApiService.get().getAtsBranch()),
-                     PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

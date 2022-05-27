@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.ide.config.version.GenerateVersionReportItem;
 import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
+import org.eclipse.osee.ats.ide.config.wizard.CreateAtsConfiguration;
 import org.eclipse.osee.ats.ide.ev.OpenWorkPackageByIdAction;
 import org.eclipse.osee.ats.ide.ev.WorkPackageConfigReport;
 import org.eclipse.osee.ats.ide.ev.WorkPackageQBDReport;
@@ -375,6 +376,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
          items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, MID_TOP, OSEE_ADMIN));
 
+         items.add(new CreateAtsConfiguration());
          items.add(new XNavigateItemBlam(new ConvertWorkflowStatesBlam(), TOP_ADMIN));
          items.add(new DisplayCurrentOseeEventListeners());
          items.add(new XNavigateItemBlam(new CreateAtsBaselineBranchBlam(), TOP_ADMIN));
