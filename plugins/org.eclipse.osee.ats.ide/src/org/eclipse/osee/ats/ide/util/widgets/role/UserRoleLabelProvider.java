@@ -92,8 +92,14 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          }
          return xViewer.getXUserRoleViewer().getReviewArt().getDefectManager().getNumMajor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
+         if (role.isDuplicateUser()) {
+            return DUPLICATE_USER;
+         }
          return xViewer.getXUserRoleViewer().getReviewArt().getDefectManager().getNumMinor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
+         if (role.isDuplicateUser()) {
+            return DUPLICATE_USER;
+         }
          return xViewer.getXUserRoleViewer().getReviewArt().getDefectManager().getNumIssues(user) + "";
       }
       return "unhandled column";
