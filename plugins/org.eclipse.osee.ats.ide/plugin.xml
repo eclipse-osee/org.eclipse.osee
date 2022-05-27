@@ -45,31 +45,6 @@
                name="ATS Work Definition Viewer">
          </editor>
    </extension>
-      <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="org.eclipse.osee.category"
-            name="OSEE">
-      </category>
-      <wizard
-            canFinishEarly="false"
-            category="org.eclipse.osee.category"
-            class="org.eclipse.osee.ats.ide.actions.wizard.NewActionWizard"
-            hasPages="true"
-            icon="OSEE-INF/images/action.gif"
-            id="org.eclipse.osee.ats.ide.NewAction.wizard"
-            name="Action">
-      </wizard>
-      <wizard
-            canFinishEarly="false"
-            category="org.eclipse.osee.category"
-            class="org.eclipse.osee.ats.ide.config.wizard.AtsConfigWizard"
-            hasPages="true"
-            icon="OSEE-INF/images/workflow.gif"
-            id="org.eclipse.osee.ats.ide.config.wizard.AtsConfigWizard"
-            name="ATS Configuration">
-      </wizard>
-   </extension>
 <extension point="org.eclipse.ui.perspectives">
    <perspective
          name="OSEE"
@@ -388,16 +363,6 @@
             class="org.eclipse.osee.ats.ide.world.WorldEditorInputFactory"
             id="org.eclipse.osee.ats.ide.WorldEditorInputFactory">
       </factory>
-   </extension>
-   
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
-            class="org.eclipse.osee.ats.ide.config.AtsConfigPreferencePage"
-            id="atsConfigPreferencePage"
-            name="ATS">
-      </page>
    </extension>
    <extension
          id="AtsArtifactEditorProvider"
