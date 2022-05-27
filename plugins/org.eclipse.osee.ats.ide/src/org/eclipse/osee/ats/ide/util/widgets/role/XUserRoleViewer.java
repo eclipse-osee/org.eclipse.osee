@@ -378,7 +378,8 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
             handledUserIds.add(role.getUserId());
          }
       }
-      return roleMgr.getUserRoles();
+      List<UserRole> roles = roleMgr.getUserRoles();
+      return roles;
    }
 
    @Override
