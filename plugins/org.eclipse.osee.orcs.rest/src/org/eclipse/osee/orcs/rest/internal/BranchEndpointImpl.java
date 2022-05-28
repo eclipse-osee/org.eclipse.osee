@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -248,6 +249,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       return branchOps.deleteBranchCategory(branch, category);
    }
 
@@ -340,6 +342,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public XResultData createBranchValidation(NewBranch data) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       CreateBranchData branchData = new CreateBranchData();
       createBranchData(branchData, data);
       return branchOps.createBranchValidation(branchData);
@@ -444,6 +447,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response unarchiveBranch(BranchId branchId) {
+
       Branch branch = getBranchById(branchId);
 
       boolean modified = false;
@@ -508,6 +512,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response setBranchType(BranchId branchId, BranchType newType) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getBranchType(), newType)) {
@@ -590,6 +595,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response purgeBranch(BranchId branchId, boolean recurse) {
+      orcsApi.userService().requireRole(CoreUserGroups.AccountAdmin);
       boolean modified = false;
       Branch branch = getBranchById(branchId);
       if (branch != null) {
@@ -610,11 +616,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response unCommitBranch(BranchId branch, BranchId destinationBranch) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
    @Override
    public Response unassociateBranch(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (branch.getAssociatedArtifact().isValid()) {
@@ -633,6 +641,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response purgeTxs(BranchId branch, String txIds) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
       boolean modified = false;
       List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
       if (!txsToDelete.isEmpty()) {
@@ -818,11 +828,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public boolean undoLatest(BranchId branch) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       return undo(newTxQuery().andIsHead(branch).getResultsAsIds().getOneOrDefault(TransactionId.SENTINEL));
    }
 
    @Override
    public boolean undo(BranchId branch, TransactionId transaction) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       return undo(transaction);
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -85,12 +86,14 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public Response purgeTxs(String txIds) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       return asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
 
    }
 
    @Override
    public Response purgeUnusedBackingDataAndTransactions() {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions();
       return Response.ok().build();
 

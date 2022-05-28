@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.util.io.CharSequenceStreamingOutput;
 import org.eclipse.osee.framework.jdk.core.util.io.InputStreamStreamingOutput;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -54,7 +55,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
 
    @Override
    public Response getSynchronizationArtifact(BranchId branchId, ArtifactId artifactId, String artifactType) {
-
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       try {
          RootList rootList = RootList.create(this.orcsApi, artifactType, branchId, artifactId);
          return this.processRootList(rootList);
@@ -72,6 +73,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
    public Response getSynchronizationArtifact(String roots, String artifactType) {
 
       try {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
          RootList rootList = RootList.create(this.orcsApi, artifactType, roots);
          return this.processRootList(rootList);
       } catch (Exception e) {

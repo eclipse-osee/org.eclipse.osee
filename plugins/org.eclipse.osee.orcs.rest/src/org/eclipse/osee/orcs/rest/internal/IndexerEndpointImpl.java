@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -90,6 +91,7 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
 
    @Override
    public Response deleteIndexQueueItem(int queryId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       Callable<Integer> op = getIndexer().deleteIndexByQueryId(queryId);
       Integer result = executeCallable(op);
       boolean modified = result > 0;
