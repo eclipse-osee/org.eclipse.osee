@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -187,6 +188,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData removeApplicabilityFromView(ArtifactId viewId, String applicability) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       XResultData results = isAccess();
       if (results.isErrors()) {
          return results;
@@ -244,6 +246,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData deleteFeature(ArtifactId feature) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
@@ -271,6 +275,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData deleteView(@PathParam("id") String id) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
@@ -318,6 +324,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData relateCfgGroupToView(String groupId, String viewId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
