@@ -13,15 +13,21 @@
 <div class="nested-add-buttons-container">
     <ng-container *ngFor="let element of nestedLevel;let i=index;">
         <div [@slidingAddButton]="{value:(isOpen|async)===true?'visible':'hidden',params:{hiddenYTranslation:(2161)+'px',visibleYTranslation:(((((nestedLevel.length-i)*(25)))*-1))-25+'px',time:'225',delay:'25'}}" (click)="nestedClick.emit(element)" (mouseleave)="removeHover(element)" class="nested-add-button-container">
-            <button [@addHoverButton]="{value:hoveredElements.includes(element.id)?'closed':'open',params:{time:'225',delay:'25'}}" class="mat-elevation-z9 elevation-999" mat-raised-button (mouseenter)="hoveredElements.push(element.id)" class="nested-expanded-add-button">{{nestedLevelPrefix}}{{element.name}} <mat-icon>{{nestedIcon}}</mat-icon></button>
-            <button [@addHoverButton]="{value:!hoveredElements.includes(element.id)?'closed':'open',params:{time:'225',delay:'25'}}" mat-mini-fab color="primary" class="mat-elevation-z9 elevation-999" (mouseenter)="hoveredElements.push(element.id)" class="nested-add-icon-button"><mat-icon>{{nestedIcon}}</mat-icon></button>
+            <div class="flex-container">
+                <button [@addHoverButton]="{value:hoveredElements.includes(element.id)?'closed':'open',params:{time:'225',delay:'25'}}" class="mat-elevation-z9 elevation-999" mat-raised-button (mouseenter)="hoveredElements.push(element.id)" class="nested-expanded-add-button">{{nestedLevelPrefix}}{{element.name}} <mat-icon>{{nestedIcon}}</mat-icon></button>
+                <button [@addHoverButton]="{value:!hoveredElements.includes(element.id)?'closed':'open',params:{time:'225',delay:'25'}}" mat-mini-fab color="primary" class="mat-elevation-z9 elevation-999" (mouseenter)="hoveredElements.push(element.id)" class="nested-add-icon-button"><mat-icon>{{nestedIcon}}</mat-icon></button>
+            </div>
         </div>
     </ng-container>
     <div *ngIf="!firstOptionDisabled" [@slidingAddButton]="{value:(isOpen|async)===true?'visible':'hidden',params:{hiddenYTranslation:(2161)+'px',visibleYTranslation:-25+'px',time:'225',delay:'25'}}" (mouseleave)="removeHover(defaultValue)" class="base-add-button-container" (click)="normalClick.emit(baseLevel)">
-        <button [@addHoverButton]="{value:hoveredElements.includes(defaultValue.id)?'closed':'open',params:{time:'225',delay:'25'}}" class="mat-elevation-z9 elevation-999" mat-raised-button (mouseenter)="hoveredElements.push(defaultValue.id)">{{baseLevel}}<mat-icon>{{baseIcon}}</mat-icon></button>
-        <button [@addHoverButton]="{value:!hoveredElements.includes(defaultValue.id)?'closed':'open',params:{time:'225',delay:'25'}}" mat-mini-fab color="primary" class="mat-elevation-z9 elevation-999" (mouseenter)="hoveredElements.push(defaultValue.id)"><mat-icon>{{baseIcon}}</mat-icon></button>
+        <div class="flex-container">
+            <button [@addHoverButton]="{value:hoveredElements.includes(defaultValue.id)?'closed':'open',params:{time:'225',delay:'25'}}" class="mat-elevation-z9 elevation-999" mat-raised-button (mouseenter)="hoveredElements.push(defaultValue.id)">{{baseLevel}}<mat-icon>{{baseIcon}}</mat-icon></button>
+            <button [@addHoverButton]="{value:!hoveredElements.includes(defaultValue.id)?'closed':'open',params:{time:'225',delay:'25'}}" mat-mini-fab color="primary" class="mat-elevation-z9 elevation-999" (mouseenter)="hoveredElements.push(defaultValue.id)"><mat-icon>{{baseIcon}}</mat-icon></button>
+        </div>
     </div>
 </div>
-<button mat-fab color="primary" class="mat-elevation-z9" (click)="mainClick()" id="addButton" class="add-button-base">
-    <mat-icon [@addButton]="{value:(isOpen|async)===true?'open':'closed',params:{time:'225',delay:'25'}}">add</mat-icon>
-</button>
+<div class="flex-container">
+    <button mat-fab color="primary" class="mat-elevation-z9" (click)="mainClick()" id="addButton" class="add-button-base">
+        <mat-icon [@addButton]="{value:(isOpen|async)===true?'open':'closed',params:{time:'225',delay:'25'}}">add</mat-icon>
+    </button>
+</div>
