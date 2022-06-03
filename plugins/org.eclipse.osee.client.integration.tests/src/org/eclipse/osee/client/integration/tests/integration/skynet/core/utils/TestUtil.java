@@ -27,12 +27,15 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -40,8 +43,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.junit.Assert;
 
@@ -177,6 +183,32 @@ public final class TestUtil {
    }
 
    /**
+    * Creates a new working branch in the database.
+    *
+    * @param branchEndpoint REST API end point for branches.
+    * @param branchName The name to assign to the new branch.
+    * @param creationComment The creation comment for the new branch.
+    * @return The newly created {@link Branch}.
+    */
+
+   public static Branch createTestBranch(BranchEndpoint branchEndpoint, String branchName, String creationComment) {
+      var newBranch = new NewBranch();
+      newBranch.setAssociatedArtifact(ArtifactId.SENTINEL);
+      newBranch.setBranchName(branchName);
+      newBranch.setBranchType(BranchType.WORKING);
+      newBranch.setCreationComment(creationComment);
+      newBranch.setMergeAddressingQueryId(0L);
+      newBranch.setMergeDestinationBranchId(null);
+      newBranch.setParentBranchId(CoreBranches.SYSTEM_ROOT);
+      newBranch.setSourceTransactionId(TransactionManager.getHeadTransaction(CoreBranches.SYSTEM_ROOT));
+      newBranch.setTxCopyBranchType(false);
+
+      var newBranchId = branchEndpoint.createBranch(newBranch);
+
+      return branchEndpoint.getBranchById(newBranchId);
+   }
+
+   /**
     * Gets the attributes of the specified type from the artifact.
     *
     * @param artifact the artifact to get attribute from.
@@ -190,6 +222,20 @@ public final class TestUtil {
       var attributes = (List<Attribute<?>>) (Object) artifact.getAttributes(attributeTypeGeneric);
 
       return (attributes.size() >= 1) ? Optional.of(attributes) : Optional.empty();
+   }
+
+   /**
+    * Gets a {@link Branch} by name.
+    *
+    * @param branchEndpoint REST API end point for branches.
+    * @param branchName the name of the branch to get.
+    * @return If found, an {@link Optional} containing the loaded {@link Branch}; otherwise, an empty {@link Optional}.
+    */
+
+   public static Optional<Branch> getBranchByName(BranchEndpoint branchEndpoint, String branchName) {
+
+      return branchEndpoint.getBranches("", "", "", false, false, branchName, "", null, null, null).stream().filter(
+         branch -> branch.getName().equals(branchName)).findFirst();
    }
 
    /**
