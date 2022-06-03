@@ -28,7 +28,12 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
 
    @Override
    public void writeCommonTableExpression(AbstractSqlWriter writer) {
-      cteAlias = writer.startRecursiveCommonTableExpression("recurse", "(id,top_rel_type, top_rel_order, child_level)");
+      if (criteria.getType().isNewRelationTable()) {
+         cteAlias =
+            writer.startRecursiveCommonTableExpression("recurse", "(id,top_rel_type, top_rel_order, child_level)");
+      } else {
+         cteAlias = writer.startRecursiveCommonTableExpression("recurse", "(id,child_level)");
+      }
       if (criteria.getType().isNewRelationTable()) {
          writer.write(
             "SELECT b_art_id,rel_type top_rel_type,rel_order top_rel_order, 1 FROM osee_relation rel, osee_txs txs WHERE ");

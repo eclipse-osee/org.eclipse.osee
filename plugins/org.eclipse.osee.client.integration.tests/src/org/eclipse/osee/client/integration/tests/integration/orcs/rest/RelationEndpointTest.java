@@ -98,7 +98,29 @@ public class RelationEndpointTest {
    @Test
    public void testGetArtifactsByRelationType() {
       ArtifactToken parentArtifact = DefaultHierarchyRoot;
-      List<ArtifactToken> arts = relationEndpoint.getRelatedHierarchy(parentArtifact);
+      List<ArtifactToken> arts = relationEndpoint.getRelatedHierarchy(parentArtifact, ArtifactId.SENTINEL);
       Assert.assertFalse(arts.isEmpty());
+   }
+
+   @Test
+   public void testGetRelatedRecursive() {
+      ArtifactToken parentArtifact = DefaultHierarchyRoot;
+
+      ArtifactToken top = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementA");
+
+      ArtifactToken middle = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementB");
+
+      ArtifactToken bottom = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementC");
+
+      // Act
+      relationEndpoint.createRelationByType(top, middle, CoreRelationTypes.RequirementTrace);
+      relationEndpoint.createRelationByType(middle, bottom, CoreRelationTypes.RequirementTrace);
+      List<ArtifactToken> arts =
+         relationEndpoint.getRelatedRecursive(top, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL);
+      Assert.assertTrue(arts.contains(middle));
+      Assert.assertTrue(arts.contains(bottom));
    }
 }

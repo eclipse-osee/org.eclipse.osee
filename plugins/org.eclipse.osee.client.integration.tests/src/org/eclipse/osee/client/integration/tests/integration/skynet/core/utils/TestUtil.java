@@ -203,7 +203,7 @@ public final class TestUtil {
     */
 
    public static Optional<ArtifactToken> getChildArtifactTokenByName(RelationEndpoint relationEndpoint, ArtifactId parentArtifactId, String childName) {
-      return relationEndpoint.getRelatedHierarchy(parentArtifactId).stream().filter(
+      return relationEndpoint.getRelatedHierarchy(parentArtifactId, ArtifactId.SENTINEL).stream().filter(
          artifact -> artifact.getName().equals(childName)).findFirst();
    }
 
