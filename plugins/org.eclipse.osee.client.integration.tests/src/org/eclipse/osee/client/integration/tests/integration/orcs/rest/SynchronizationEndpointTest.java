@@ -23,11 +23,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -39,32 +37,25 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.client.demo.DemoChoice;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DoubleHashMap;
 import org.eclipse.osee.framework.jdk.core.util.DoubleMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumFunctionMap;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -72,12 +63,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
-import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
-import org.eclipse.osee.orcs.rest.model.NewBranch;
-import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 import org.eclipse.rmf.reqif10.AccessControlledElement;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
@@ -297,7 +283,7 @@ public class SynchronizationEndpointTest {
     * test artifact is setup and used for testing.
     */
 
-   private static class ArtifactInfoRecord {
+   private static class ArtifactInfoRecord implements BuilderRecord {
 
       /**
        * A map of {@link Function} methods to get expected descriptions based upon the {@link IdentifiableType}.
@@ -343,25 +329,6 @@ public class SynchronizationEndpointTest {
                Map.entry( IdentifiableType.DATATYPE_DEFINITION,  ArtifactInfoRecord::getDatatypeDefinitionLongName )
             );
       //@formatter:on
-
-      /**
-       * The test {@link Artifact} loaded from the database.
-       */
-
-      private Artifact artifact;
-
-      /**
-       * The {@link ArtifactToken} ({@link ArtifactId}) of the test artifact.
-       */
-
-      private ArtifactToken artifactToken;
-
-      /**
-       * The test {@link Attribute} loaded from the database. Multi-value enumerations return an {@link Attribute} for
-       * each value of the enumeration that is "selected". Regular attributes will only have one element on the list.
-       */
-
-      private List<Attribute<?>> attributeList;
 
       /**
        * The expected subclass of the ReqIf {@link AttributeDefinition} object.
@@ -583,34 +550,8 @@ public class SynchronizationEndpointTest {
 
          this.attributeSetter = Objects.requireNonNull(attributeSetter);
          this.backToOseeTypeFunction = Objects.requireNonNull(backToOseeTypeFunction);
-
-         this.artifactToken = null;
-         this.artifact = null;
-         this.attributeList = null;
       }
       //@formatter:on
-
-      /**
-       * Gets the test artifact.
-       *
-       * @return the test artifact.
-       */
-
-      Artifact getArtifact() {
-         assert Objects.nonNull(this.artifact);
-         return this.artifact;
-      }
-
-      /**
-       * Gets the identifier for the test artifact.
-       *
-       * @return the test artifact identifier.
-       */
-
-      ArtifactToken getArtifactToken() {
-         assert Objects.nonNull(this.artifactToken);
-         return this.artifactToken;
-      }
 
       /**
        * Gets the expected subclass of the ReqIF {@link AttributeDefinition} object.
@@ -629,7 +570,7 @@ public class SynchronizationEndpointTest {
        * @return the expected description.
        */
 
-      String getAttributeDefinitionDescription() {
+      public String getAttributeDefinitionDescription() {
          return this.attributeDefinitionDescription;
       }
 
@@ -640,7 +581,7 @@ public class SynchronizationEndpointTest {
        * @return the expected identifier prefix.
        */
 
-      String getAttributeDefinitionIdentifierPrefix() {
+      public String getAttributeDefinitionIdentifierPrefix() {
          return this.attributeDefinitionIdentifierPrefix;
       }
 
@@ -651,7 +592,7 @@ public class SynchronizationEndpointTest {
        * @return the expected long name.
        */
 
-      String getAttributeDefinitionLongName() {
+      public String getAttributeDefinitionLongName() {
          return this.attributeDefinitionLongName;
       }
 
@@ -672,7 +613,7 @@ public class SynchronizationEndpointTest {
        * @return the expected description.
        */
 
-      String getDatatypeDefinitionDescription() {
+      public String getDatatypeDefinitionDescription() {
          return this.datatypeDefinitionDescription;
       }
 
@@ -683,7 +624,7 @@ public class SynchronizationEndpointTest {
        * @return the expected identifier prefix.
        */
 
-      String getDatatypeDefinitionIdentifierPrefix() {
+      public String getDatatypeDefinitionIdentifierPrefix() {
          return this.datatypeDefinitionIdentifierPrefix;
       }
 
@@ -694,7 +635,7 @@ public class SynchronizationEndpointTest {
        * @return the expected long name.
        */
 
-      String getDatatypeDefinitionLongName() {
+      public String getDatatypeDefinitionLongName() {
          return this.datatypeDefinitionLongName;
       }
 
@@ -738,51 +679,9 @@ public class SynchronizationEndpointTest {
        * @return the assigned unique {@link Integer} identifier.
        */
 
-      Integer getIdentifier() {
+      @Override
+      public Integer getIdentifier() {
          return this.identifier;
-      }
-
-      /**
-       * Gets or creates the test attribute for the test artifact. The test artifact must be obtained before calling
-       * this method.
-       */
-
-      void getOrCreateAttribute() {
-
-         assert Objects.isNull(this.attributeList);
-
-         this.attributeList =
-            TestUtil.getOrCreateAttributes(this.artifact, this.testAttributeType, this.testAttributeValues.size());
-      }
-
-      /**
-       * Gets or creates the artifact identifier for the test artifact.
-       *
-       * @param relationEndpoint The REST API end point for obtaining related artifacts.
-       * @param artifactEndpoint The REST API end point for creating artifacts.
-       * @param parentBranchId The identifier of the branch to get or create the test artifact on.
-       * @param hierarchicalParentArtifactIdMap A map of the {@link ArtifactToken} (identifiers) of the hierarchical
-       * parent artifacts by {@link ArtifactInfoRecord} identifiers. The {@link ArtifactToken} for the obtained or
-       * created artifact will be added to the map with the identifier of this {@link ArtifactInfoRecord} as the key.
-       */
-
-      void getOrCreateArtifactToken(RelationEndpoint relationEndpoint, ArtifactEndpoint artifactEndpoint, BranchId parentBranchId, Map<Integer, ArtifactId> hierarchicalParentArtifactIdMap) {
-         assert Objects.isNull(this.artifactToken);
-
-         //@formatter:off
-         this.artifactToken =
-            TestUtil.getOrCreateChildArtifactTokenByName
-               (
-                  relationEndpoint,
-                  artifactEndpoint,
-                  parentBranchId,
-                  hierarchicalParentArtifactIdMap.get( this.hierarchicalParentIdentifier ),
-                  this.typeToken,
-                  this.name
-               );
-         //@formatter:on
-
-         hierarchicalParentArtifactIdMap.put(this.identifier, artifactToken);
       }
 
       /**
@@ -802,7 +701,7 @@ public class SynchronizationEndpointTest {
        * @return the expected description.
        */
 
-      String getSpecTypeDescription() {
+      public String getSpecTypeDescription() {
          return this.specTypeDescription;
       }
 
@@ -813,7 +712,7 @@ public class SynchronizationEndpointTest {
        * @return the expected identifier prefix.
        */
 
-      String getSpecTypeIdentifierPrefix() {
+      public String getSpecTypeIdentifierPrefix() {
          return this.specTypeIdentifierPrefix;
       }
 
@@ -824,7 +723,7 @@ public class SynchronizationEndpointTest {
        * @return the expected long name.
        */
 
-      String getSpecTypeLongName() {
+      public String getSpecTypeLongName() {
          return this.specTypeLongName;
       }
 
@@ -836,43 +735,6 @@ public class SynchronizationEndpointTest {
 
       boolean hasDefaultValue() {
          return Objects.nonNull(this.testAttributeDefaultValue);
-      }
-
-      /**
-       * Save the artifact back to the database if it has been modified.
-       */
-
-      void persistIfDirty() {
-         if (this.artifact.isDirty()) {
-            this.artifact.persist("Three Blind Mice");
-         }
-      }
-
-      /**
-       * If the test artifact's attributes do not have the expected values, set the test attribute values.
-       */
-
-      void setAttributeValues() {
-
-         if (SynchronizationEndpointTest.setValues) {
-            TestUtil.setAttributeValues(this.artifact, this.testAttributeType,
-               new LinkedList<Object>(this.testAttributeValues), this.attributeSetter);
-
-            this.attributeList = TestUtil.getAttributes(this.artifact, this.testAttributeType).orElseThrow();
-         }
-      }
-
-      /**
-       * Saves the test artifact that was retrieved from the database.
-       *
-       * @param artifact the {@link Artifact} read from the database.
-       * @return this {@link ArtifactInfoRecord}.
-       */
-
-      ArtifactInfoRecord setArtifact(Artifact artifact) {
-         assert Objects.isNull(this.artifact);
-         this.artifact = Objects.requireNonNull(artifact);
-         return this;
       }
 
       /**
@@ -972,6 +834,36 @@ public class SynchronizationEndpointTest {
       private void assertExpectedValue(Object reqifValue, Boolean checkDefaultValue) {
          Assert.assertTrue("ReqIfValue is not expected: " + reqifValue.toString(),
             this.verifyExpectedValue(reqifValue, checkDefaultValue));
+      }
+
+      @Override
+      public ArtifactTypeToken getArtifactTypeToken() {
+         return this.typeToken;
+      }
+
+      @Override
+      public BiConsumer<Attribute<?>, Object> getAttributeSetter() {
+         return this.attributeSetter;
+      }
+
+      @Override
+      public Integer getHierarchicalParentIdentifier() {
+         return this.hierarchicalParentIdentifier;
+      }
+
+      @Override
+      public String getName() {
+         return this.name;
+      }
+
+      @Override
+      public AttributeTypeGeneric<?> getTestAttributeType() {
+         return this.testAttributeType;
+      }
+
+      @Override
+      public List<Object> getTestAttributeValues() {
+         return this.testAttributeValues;
       }
 
    } /* End of ArtifactInfoRecord */
@@ -1567,29 +1459,10 @@ public class SynchronizationEndpointTest {
    private static String testBranchName = "ReqIF Test Branch";
 
    /**
-    * Creates a new branch in the database.
-    *
-    * @param branchEndpoint REST API end point for branches.
-    * @param branchName The name to assign to the new branch.
-    * @return The newly created {@link Branch}.
+    * Creation comment used for the OSEE test branch
     */
 
-   private static Branch createTestBranch(BranchEndpoint branchEndpoint, String branchName) {
-      var newBranch = new NewBranch();
-      newBranch.setAssociatedArtifact(ArtifactId.SENTINEL);
-      newBranch.setBranchName(branchName);
-      newBranch.setBranchType(BranchType.WORKING);
-      newBranch.setCreationComment("For ReqIF Synchronization Artifact Testing");
-      newBranch.setMergeAddressingQueryId(0L);
-      newBranch.setMergeDestinationBranchId(null);
-      newBranch.setParentBranchId(CoreBranches.SYSTEM_ROOT);
-      newBranch.setSourceTransactionId(TransactionManager.getHeadTransaction(CoreBranches.SYSTEM_ROOT));
-      newBranch.setTxCopyBranchType(false);
-
-      var newBranchId = branchEndpoint.createBranch(newBranch);
-
-      return branchEndpoint.getBranchById(newBranchId);
-   }
+   private static String testBranchCreationComment = "Branch for ReqIF Synchronizaion Artifact Testing";
 
    /**
     * {@link AttributeValue} subclasses all define a <code>getDefinition</code> method to obtain a reference to the
@@ -1645,26 +1518,6 @@ public class SynchronizationEndpointTest {
 
    private static AttributeTypeGeneric<?> getAttributeType(String name) {
       return ServiceUtil.getTokenService().getAttributeType(name);
-   }
-
-   /**
-    * Gets a {@link Branch} by name.
-    *
-    * @param branchEndpoint REST API end point for branches.
-    * @param branchName the name of the branch to get.
-    * @return If found, an {@link Optional} containing the loaded {@link Branch}; otherwise, an empty {@link Optional}.
-    */
-
-   private static Optional<Branch> getBranchByName(BranchEndpoint branchEndpoint, String branchName) {
-      //@formatter:off
-      return
-         branchEndpoint
-            .getBranches("", "", "", false, false, SynchronizationEndpointTest.testBranchName, "", null, null, null)
-            .stream()
-            .filter( branch -> branch.getName().equals( branchName ) )
-            .findFirst()
-            ;
-      //@formatter:on
    }
 
    /**
@@ -2381,9 +2234,26 @@ public class SynchronizationEndpointTest {
       artifactInfoRecord.verifyDatatypeDefinition(reqifDatatypeDefinition);
    }
 
+   @SuppressWarnings("unchecked")
    @BeforeClass
    public static void testSetup() {
       //@formatter:off
+
+      var testDocumentBuilder = new TestDocumentBuilder( SynchronizationEndpointTest.setValues );
+
+      testDocumentBuilder.buildDocument
+                             (
+                                (List<BuilderRecord>) (Object) SynchronizationEndpointTest.artifactInfoRecords,
+                                SynchronizationEndpointTest.testBranchName,
+                                SynchronizationEndpointTest.testBranchCreationComment
+                             );
+
+      /*
+       * Save identifiers of test document root
+       */
+
+      SynchronizationEndpointTest.rootBranchId = testDocumentBuilder.getRootBranchId();
+      SynchronizationEndpointTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
 
       /*
        * Get OSEE Client
@@ -2399,86 +2269,8 @@ public class SynchronizationEndpointTest {
 
       Assert.assertNotNull( SynchronizationEndpointTest.synchronizationEndpoint );
 
-      /*
-       * Get Branch end point for test data setup
-       */
 
-      var branchEndpoint = oseeClient.getBranchEndpoint();
 
-      /*
-       * Get or Create ReqIF test branch
-       */
-
-      var testBranch = SynchronizationEndpointTest.getBranchByName( branchEndpoint, SynchronizationEndpointTest.testBranchName )
-                          .orElseGet( () -> SynchronizationEndpointTest.createTestBranch( branchEndpoint, SynchronizationEndpointTest.testBranchName ) );
-
-      var testBranchId = BranchId.valueOf( testBranch.getId() );
-
-      /*
-       * Get ArtifactEndpoint and RelationEndpoint for the branch
-       */
-
-      var artifactEndpoint = oseeClient.getArtifactEndpoint( testBranchId );
-
-      Assert.assertNotNull( artifactEndpoint );
-
-      var relationEndpoint = oseeClient.getRelationEndpoint( testBranchId );
-
-      Assert.assertNotNull( relationEndpoint );
-
-      /*
-       * Get Branch Root
-       */
-
-      var rootArtifactToken = CoreArtifactTokens.DefaultHierarchyRoot;
-
-      /*
-       * Load Artifacts
-       */
-
-      /*
-       * Map of ArtifactToken objects by ArtifactInfoRecord identifiers. The branch default hierarchical root is saved
-       * with the key of 0. This map is used to lookup the hierarchical parent ArtifactToken objects.
-       */
-
-      var hierarchicalParentArtifactIdMap = new HashMap<Integer, ArtifactId>();
-
-      hierarchicalParentArtifactIdMap.put( 0, rootArtifactToken );
-
-      /*
-       * Map of ArtifactInfoRecord objects by ArtifactIds. This map is used to associate the loaded Artifact objects
-       * back to the ArtifactInfoRecord objects.
-       */
-
-      var artifactInfoRecordByArtifactIdMap = new HashMap<ArtifactId, ArtifactInfoRecord>();
-
-      /*
-       * Load the artifacts and set the test attribute values
-       */
-
-      ArtifactLoader.loadArtifacts
-         (
-           SynchronizationEndpointTest.artifactInfoRecords.stream()
-              .peek( artifactInfoRecord -> artifactInfoRecord.getOrCreateArtifactToken( relationEndpoint, artifactEndpoint, testBranchId, hierarchicalParentArtifactIdMap ) )
-              .peek( artifactInfoRecord -> artifactInfoRecordByArtifactIdMap.put( artifactInfoRecord.getArtifactToken(), artifactInfoRecord ) )
-              .map( ArtifactInfoRecord::getArtifactToken )
-              .collect( Collectors.toList() ),
-           testBranchId,
-           LoadLevel.ALL,
-           LoadType.RELOAD_CACHE,
-           DeletionFlag.EXCLUDE_DELETED
-         ).stream()
-             .map( ( artifact ) -> artifactInfoRecordByArtifactIdMap.get( ArtifactId.valueOf( artifact.getId() ) ).setArtifact( artifact ) )
-             .peek( ArtifactInfoRecord::getOrCreateAttribute )
-             .peek( ArtifactInfoRecord::setAttributeValues )
-             .forEach( ArtifactInfoRecord::persistIfDirty );
-
-      /*
-       * Save identifiers of test document root
-       */
-
-      SynchronizationEndpointTest.rootBranchId = testBranchId;
-      SynchronizationEndpointTest.rootArtifactId = ArtifactId.valueOf( SynchronizationEndpointTest.artifactInfoRecords.get( 0 ).getArtifact().getId() );
 
       /*
        * Create tracking maps
