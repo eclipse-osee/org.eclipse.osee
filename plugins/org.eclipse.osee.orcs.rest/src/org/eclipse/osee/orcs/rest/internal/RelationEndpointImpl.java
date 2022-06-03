@@ -51,13 +51,19 @@ public class RelationEndpointImpl implements RelationEndpoint {
    }
 
    @Override
-   public List<ArtifactToken> getRelatedHierarchy(ArtifactId artifact) {
-      List<ArtifactToken> ids = getRelated(artifact, CoreRelationTypes.DefaultHierarchical, RelationSide.SIDE_A);
+   public List<ArtifactToken> getRelatedHierarchy(ArtifactId artifact, ArtifactId view) {
+      List<ArtifactToken> ids = getRelated(artifact, CoreRelationTypes.DefaultHierarchical, RelationSide.SIDE_A, view);
       return ids;
    }
 
-   private List<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeToken relationType, RelationSide side) {
+   private List<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeToken relationType, RelationSide side, ArtifactId view) {
       RelationTypeSide rts = new RelationTypeSide(relationType, side);
-      return orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(rts, artifact).asArtifactTokens();
+      return orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(rts, artifact).asArtifactTokens();
+   }
+
+   @Override
+   public List<ArtifactToken> getRelatedRecursive(ArtifactId artifact, RelationTypeToken relationType, ArtifactId view) {
+      RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B);
+      return orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(sideB, artifact).asArtifactTokens();
    }
 }
