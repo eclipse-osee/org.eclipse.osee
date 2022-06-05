@@ -157,4 +157,6 @@ public interface IAtsWorkItemService {
 
    boolean isOnHold(IAtsWorkItem workItem);
 
+   String getCopyActionDetails(IAtsWorkItem workItem);
+
 }

@@ -18,7 +18,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -30,12 +29,12 @@ import org.eclipse.swt.dnd.Transfer;
 public class CopyActionDetailsAction extends Action {
 
    private final IAtsWorkItem workItem;
-private AtsApi atsApi;
+   private final AtsApi atsApi;
 
    public CopyActionDetailsAction(IAtsWorkItem workItem, AtsApi atsApi) {
       super();
       this.workItem = workItem;
-		this.atsApi = atsApi;
+      this.atsApi = atsApi;
       setText("Copy " + workItem.getArtifactTypeName() + " details to clipboard");
       setToolTipText(getText());
    }
@@ -43,7 +42,7 @@ private AtsApi atsApi;
    private void performCopy() {
       Clipboard clipboard = new Clipboard(null);
       try {
-         String detailsStr = new CopyActionDetails(workItem, atsApi).getDetailsString();
+         String detailsStr = atsApi.getWorkItemService().getCopyActionDetails(workItem);
          clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
       } finally {
          clipboard.dispose();

@@ -63,4 +63,8 @@ public interface IAtsWorkItemHook {
       return rd;
    }
 
+   default public String getCopyActionDetails(IAtsWorkItem workItem) {
+      return "";
+   }
+
 }
