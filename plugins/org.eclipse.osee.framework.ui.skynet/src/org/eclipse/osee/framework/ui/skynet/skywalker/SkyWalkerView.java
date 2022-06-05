@@ -132,9 +132,10 @@ public class SkyWalkerView extends GenericViewPart {
                viewer.setLayoutAlgorithm(options.getLayout(), true);
             } else if (modList.contains(ModType.Show_Attribute)) {
                try {
-                  // exploring another artifact and then the original forces a redraw of all the
-                  // objects
-                  // which is necessary for a node size change
+                  /**
+                   * exploring another artifact and then the original forces a redraw of all the objects which is
+                   * necessary for a node size change
+                   */
                   Artifact art = (Artifact) viewer.getInput();
                   explore(UserManager.getUser(SystemUser.UnAssigned));
                   if (art != null) {
@@ -192,6 +193,12 @@ public class SkyWalkerView extends GenericViewPart {
       Action action = new Action() {
          @Override
          public void run() {
+            Artifact art = (Artifact) viewer.getInput();
+            if (art == null) {
+               AWorkbench.popup(
+                  "Nothing loaded; To Begin: Select Artifact in another View > Right-Click > Open With > Sky Walker");
+               return;
+            }
             ArtifactDoubleClick.openArtifact(viewer.getSelection());
          }
       };
