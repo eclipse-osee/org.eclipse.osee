@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -43,7 +44,13 @@ public class CopyActionDetails {
    public String getDetailsString() {
       String detailsStr = "";
       try {
-         if (workItem.getParentTeamWorkflow() != null) {
+         for (IAtsWorkItemHook workItemHook : atsApi.getWorkItemService().getWorkItemHooks()) {
+            detailsStr = workItemHook.getCopyActionDetails(workItem);
+            if (Strings.isValid(detailsStr)) {
+               break;
+            }
+         }
+         if (Strings.isInValid(detailsStr) && workItem.getParentTeamWorkflow() != null) {
             IAtsTeamDefinition teamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
             String formatStr = getFormatStr(teamDef);
             if (Strings.isValid(formatStr)) {
@@ -65,7 +72,7 @@ public class CopyActionDetails {
                detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(workItem));
             }
          }
-         if (!Strings.isValid(detailsStr)) {
+         if (Strings.isInValid(detailsStr)) {
             detailsStr =
                "\"" + workItem.getArtifactTypeName() + "\" - " + workItem.getAtsId() + " - \"" + workItem.getName() + "\"";
          }

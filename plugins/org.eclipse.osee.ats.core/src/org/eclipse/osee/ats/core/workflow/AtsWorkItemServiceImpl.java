@@ -70,6 +70,7 @@ import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -625,5 +626,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public boolean isOnHold(IAtsWorkItem workItem) {
       return Strings.isValid(atsApi.getAttributeResolver().getSoleAttributeValue(workItem.getStoreObject(),
          AtsAttributeTypes.HoldReason, ""));
+   }
+
+   @Override
+   public String getCopyActionDetails(IAtsWorkItem workItem) {
+      CopyActionDetails cad = new CopyActionDetails(workItem, atsApi);
+      return cad.getDetailsString();
    }
 }
