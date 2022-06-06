@@ -33,31 +33,38 @@
     </mat-step>
     <mat-step label="Define element" #step2>
         <mat-dialog-content>
-            <div class="flex column">
+            <div style="visibility:visible">
                 <mat-form-field>
                     <mat-label>Name</mat-label>
                     <input matInput [(ngModel)]="data.element.name" required data-cy="field-name">
                 </mat-form-field>
+                <br>
                 <mat-form-field>
                     <mat-label>Description</mat-label>
                     <textarea cdkTextareaAutosize matInput [(ngModel)]="data.element.description" required data-cy="field-description"></textarea>
                 </mat-form-field>
+                <br>
                 <mat-form-field>
                     <mat-label>Notes</mat-label>
                     <input matInput [(ngModel)]="data.element.notes" data-cy="field-notes">
                 </mat-form-field>
+                <br>
                 <mat-form-field>
                     <mat-label>Start Index</mat-label>
                     <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexStart" required data-cy="field-index-start">
                 </mat-form-field>
+                <br>
                 <mat-form-field>
                     <mat-label>End Index</mat-label>
                     <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexEnd" required data-cy="field-index-end">
                 </mat-form-field>
+                <br>
                 <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before' data-cy="field-alterable">
                     Alterable
                 </mat-slide-toggle>
+                <br>
                 <mat-label>{{platformTypeState|async}}</mat-label>
+                <br>
                 <div class="flex row align-center">
                     <mat-label>Find existing element information to create your element or create new type information.</mat-label>
                     <button mat-icon-button (click)="openPlatformTypeDialog()"><mat-icon color="success">add</mat-icon></button>
@@ -66,16 +73,19 @@
                     </ng-container>
                 </div>
             </div>
+            <br>
             <ng-container *ngIf="availableTypes|async">
                 <!--Container just to keep available types *alive* while typeDialogOpen is closed-->
             </ng-container>
             <ng-container *ngIf="searchOpen">
                 <mat-divider></mat-divider>
                 <app-platform-type-query [platformTypes]="(types|async)||[]" (query)="receiveQuery($event)"></app-platform-type-query>
+                <br>
             </ng-container>
             <ng-container *ngIf="typeDialogOpen">
                 <mat-divider></mat-divider>
                 <app-new-type-dialog (dialogClosed)="receivePlatformTypeData($event)" [preFillData]="(availableTypes|async)||[]"></app-new-type-dialog>
+                <br>
             </ng-container>
         </mat-dialog-content>
         <mat-dialog-actions align="end">

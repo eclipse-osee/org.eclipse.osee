@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { combineLatest, from, iif, Observable, of, OperatorFunction } from 'rxjs';
-import { delay, distinctUntilChanged, filter, first, map, mergeMap, reduce, share, shareReplay, skipUntil, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, distinctUntilChanged, distinct, filter, first, map, mergeMap, reduce, share, shareReplay, skipUntil, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifier.service';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -91,6 +91,7 @@ export class StructureTableComponent implements OnInit {
     switchMap(([allHeaders, response]) => of(response.columnPreferences).pipe(
       mergeMap((r) => from(r).pipe(
         filter((column) => allHeaders.includes(column.name as (keyof element)) && column.enabled),
+        distinct(r=>r.name),
         map((header) => header.name as (keyof element)),
         reduce((acc, curr) => [...acc, curr], [] as (keyof element)[])
       ))
@@ -112,7 +113,8 @@ export class StructureTableComponent implements OnInit {
   currentStructureHeaders = combineLatest([this.headerService.AllStructureHeaders,this.preferences]).pipe(
     switchMap(([structureHeaders,response]) => of(response.columnPreferences).pipe(
       mergeMap((r) => from(r).pipe(
-        filter((column) => structureHeaders.includes(column.name as Extract<keyof structure,string>) && column.enabled),
+        filter((column) => structureHeaders.includes(column.name as Extract<keyof structure, string>) && column.enabled),
+        distinct(r=>r.name),
         map((header) => header.name as (Extract<keyof structure,string>)),
         reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof structure,string>)[])
       ))
@@ -130,7 +132,7 @@ export class StructureTableComponent implements OnInit {
     ),
     switchMap((finalHeaders) => of<(keyof structure & string)[]>([' ', ...finalHeaders])),
     share(),
-    shareReplay(1)
+    shareReplay(1),
   )
   _connectionsRoute = this.structureService.connectionsRoute;
   _messageData = this.currentStructureHeaders.pipe(

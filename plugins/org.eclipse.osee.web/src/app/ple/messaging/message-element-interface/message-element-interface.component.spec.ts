@@ -75,11 +75,7 @@ describe('MessageElementInterfaceComponent', () => {
       providers: [
         {
           provide: Router, useValue: {
-            navigate: () => { }, url: '', events: of<NavigationEnd>({
-              id: 1,
-              url: '',
-              urlAfterRedirects:''
-        }) } },
+            navigate: () => { }, url: '', events: of<NavigationEnd>(new NavigationEnd(1,'','')) } },
         { provide: EditAuthService,useValue:editAuthServiceMock },
         {
           provide: ActivatedRoute,

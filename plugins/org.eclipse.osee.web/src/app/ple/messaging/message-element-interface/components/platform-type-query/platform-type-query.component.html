@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <mat-label>Query for Platform Type:</mat-label>
-<div class="flex column">
+<div>
     <div class="flex row">
         <ng-container>
             <mat-form-field class="width-100">
@@ -27,7 +27,7 @@
     <div *ngIf="logicalType==='enumeration'">
         <mat-form-field class="width-100">
             <mat-label>Name</mat-label>
-            <mat-select [(ngModel)]="name" class="name-select" data-cy="field-name">
+            <mat-select [(ngModel)]="name" class="name-select" data-cy="field-name" style="visibility:visible">
                 <mat-option *ngFor="let enum of enumerations" [value]="enum" [attr.data-cy]="'option-'+enum">
                     <mat-label>{{enum}}</mat-label>
                 </mat-option>
@@ -39,7 +39,7 @@
     <div class="flex row">
         <mat-form-field>
             <mat-label>Logical Type</mat-label>
-            <mat-select [(ngModel)]="logicalType" class="logical-type-select" data-cy="field-logical-type">
+            <mat-select [(ngModel)]="logicalType" class="logical-type-select" data-cy="field-logical-type" style="visibility:visible">
                 <mat-option *ngFor="let lt of logicalTypes" [value]="lt" [attr.data-cy]="'option-'+lt">
                     <mat-label>{{lt}}</mat-label>
                 </mat-option>
@@ -47,7 +47,7 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Units</mat-label>
-            <mat-select [(ngModel)]="unit" class="unit-select" data-cy="field-units">
+            <mat-select [(ngModel)]="unit" class="unit-select" data-cy="field-units" style="visibility:visible">
                 <mat-option *ngFor="let unit of units|async" [value]="unit" [attr.data-cy]="'option-'+unit">
                     <mat-label>{{unit}}</mat-label>
                 </mat-option>
@@ -58,7 +58,7 @@
     <div class="flex row">
         <mat-form-field>
             <mat-label>Minimum Value</mat-label>
-            <mat-select [(ngModel)]="minimumValue" class="min-val-select" data-cy="field-min-val">
+            <mat-select [(ngModel)]="minimumValue" class="min-val-select" data-cy="field-min-val" style="visibility:visible">
                 <mat-option *ngFor="let minVal of minValues" [value]="minVal" [attr.data-cy]="'option-'+minVal">
                     <mat-label>{{minVal}}</mat-label>
                 </mat-option>
@@ -66,7 +66,7 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Maximum Value</mat-label>
-            <mat-select [(ngModel)]="maximumValue" class="max-val-select" data-cy="field-max-val">
+            <mat-select [(ngModel)]="maximumValue" class="max-val-select" data-cy="field-max-val" style="visibility:visible">
                 <mat-option *ngFor="let maxVal of maxValues" [value]="maxVal" [attr.data-cy]="'option-'+maxVal">
                     <mat-label>{{maxVal}}</mat-label>
                 </mat-option>
@@ -77,7 +77,7 @@
     <div class="flex row">
         <mat-form-field>
             <mat-label>Default Value</mat-label>
-            <mat-select [(ngModel)]="defaultVal" class="default-val-select" data-cy="field-default-val">
+            <mat-select [(ngModel)]="defaultVal" class="default-val-select" data-cy="field-default-val" style="visibility:visible">
                 <mat-option *ngFor="let defaultValue of defaultValues" [value]="defaultValue" [attr.data-cy]="'option-'+defaultValue">
                     <mat-label>{{defaultValue}}</mat-label>
                 </mat-option>
@@ -85,7 +85,7 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Msb Value</mat-label>
-            <mat-select [(ngModel)]="msbValue" class="msb-val-select" data-cy="field-msb-val">
+            <mat-select [(ngModel)]="msbValue" class="msb-val-select" data-cy="field-msb-val" style="visibility:visible">
                 <mat-option *ngFor="let msbVal of msbValues" [value]="msbVal" [attr.data-cy]="'option-'+msbVal">
                     <mat-label>{{msbVal}}</mat-label>
                 </mat-option>
