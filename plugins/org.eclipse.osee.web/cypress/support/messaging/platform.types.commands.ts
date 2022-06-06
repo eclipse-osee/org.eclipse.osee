@@ -26,7 +26,6 @@ Cypress.Commands.add('createNewPlatformType', (type: string) => {
     .get('[data-cy="logical-type-selector"]')
     .click()
     .get(`[data-cy="logical-type-${type}"]`)
-    .get(`[data-cy="logical-type-${type}"]`)
     .click()
     .get('[data-cy="stepper-next-1"]')
     .click()
@@ -38,19 +37,19 @@ Cypress.Commands.add('createNewPlatformType', (type: string) => {
         if (el.required && el.editable && el.name !== 'Name') {
           cy.get(`[data-cy="field-${el.attributeType}"]`)
             .focus()
-            .type(el.defaultValue !== '' ? el.defaultValue : '0');
+            .type(el.defaultValue !== '' ? el.defaultValue : '0',{force:true});
         }
         if (el.name === 'Name') {
           cy.get(`[data-cy="field-${el.attributeType}"]`)
             .focus()
-            .type(el.defaultValue !== '' ? type + ' ' + el.defaultValue : '0');
+            .type(el.defaultValue !== '' ? type + ' ' + el.defaultValue : '0',{force:true});
         }
         if (el.name === 'Units') {
           cy.get(`[data-cy="field-${el.attributeType}"]`, {
             timeout: 10000,
           })
             .focus()
-            .click()
+            .click({force:true})
             .get('mat-option')
             .first()
             .click();
@@ -58,7 +57,7 @@ Cypress.Commands.add('createNewPlatformType', (type: string) => {
       });
     })
     .get('[data-cy="stepper-next-2"]')
-    .click()
+    .click({force:true})
     .get('[data-cy=close-new-platform-menu]')
     .click()
     .wait('@txs')

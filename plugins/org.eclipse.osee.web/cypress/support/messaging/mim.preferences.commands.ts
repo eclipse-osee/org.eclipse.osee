@@ -25,7 +25,9 @@ Cypress.Commands.add('closeMIMUserDialog', () => {
   cy.intercept('/mim/user/*').as('user');
   return cy
     .get('[data-cy="submit-btn"]')
-    .click({force:true})
+    .click({ force: true })
+    .get('app-column-preferences-dialog')
+    .should('not.exist')
     .wait('@txs')
     .wait('@user')
     .get('mat-progress-bar')
@@ -63,8 +65,6 @@ Cypress.Commands.add('setUserMIMEditPreference', (preference: boolean) => {
   if (preference) {
     return cy
       .openMIMUserDialog()
-      .get('mat-progress-bar', { timeout: 10000 })
-      .should('not.exist')
       .get('input[type="checkbox"]')
       .check({ force: true })
       .closeMIMUserDialog()
@@ -72,8 +72,6 @@ Cypress.Commands.add('setUserMIMEditPreference', (preference: boolean) => {
   } else {
     return cy
       .openMIMUserDialog()
-      .get('mat-progress-bar', { timeout: 10000 })
-      .should('not.exist')
       .get('input[type="checkbox"]')
       .uncheck({ force: true })
       .closeMIMUserDialog()

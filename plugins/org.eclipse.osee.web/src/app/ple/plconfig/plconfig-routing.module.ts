@@ -31,12 +31,15 @@ const routes: Routes = [
     children: [
       {
         path: ':branchType',
+        component: PlconfigComponent,
         children: [
           {
             path: ':branchId',
+            component: PlconfigComponent,
             children: [
               {
                 path: 'diff',
+                component: PlconfigComponent,
                 resolve: { diff: DiffReportResolver }
               }
             ]

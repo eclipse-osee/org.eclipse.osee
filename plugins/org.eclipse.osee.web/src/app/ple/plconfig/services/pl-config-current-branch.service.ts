@@ -786,16 +786,16 @@ export class PlConfigCurrentBranchService {
                   let view =feature?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges
                   if (view!==undefined && view.changes === undefined) {
                     if (feature?.multiValued && feature.changes!==undefined) {
-                      (applic.features.find((feature)=>feature.name===name)?.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value,previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
+                      (applic.features.find((feature)=>feature.name===name)!.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value,previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
                     } else if(view!==undefined) {
-                      (applic.features.find((feature)=>feature.name===name)?.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:value,previousValue:'',transactionToken:change.currentVersion.transactionToken}}
+                      (applic.features.find((feature)=>feature.name===name)!.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:value,previousValue:'',transactionToken:change.currentVersion.transactionToken}}
                     }
                   } else {
                     if (feature.multiValued &&view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = view.value;
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value,'').replace(/,\s*$/, "")
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = view.value;
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value,'').replace(/,\s*$/, "")
                     } else if(view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = value;  
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = value;  
                     }
                   }
                 }
@@ -805,16 +805,16 @@ export class PlConfigCurrentBranchService {
                   let view =feature?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges
                   if (view!==undefined && view.changes === undefined) {
                     if (feature?.multiValued &&view.changes!==undefined) {
-                      (applic.features.find((feature)=>feature.name===name)?.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value,previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
+                      (applic.features.find((feature)=>feature.name===name)!.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value,previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
                     } else if(view!==undefined) {
-                      (applic.features.find((feature)=>feature.name===name)?.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:value,previousValue:'',transactionToken:change.currentVersion.transactionToken}}
+                      (applic.features.find((feature)=>feature.name===name)!.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:value,previousValue:'',transactionToken:change.currentVersion.transactionToken}}
                     }
                   } else {
                     if (feature.multiValued &&view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = view.value;
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value,'').replace(/,\s*$/, "")
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = view.value;
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value,'').replace(/,\s*$/, "")
                     } else if(view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = value;  
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.currentValue = value;  
                     }
                   }
                 }
@@ -827,21 +827,21 @@ export class PlConfigCurrentBranchService {
                   let view = feature?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges;
                   if (view !==undefined && view.changes === undefined) {
                     if (view.id) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes = { value: { currentValue: '', previousValue: view.value.replace(value, '').replace(/,\s*$/, ""), transactionToken: change.currentVersion.transactionToken } };
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes = { value: { currentValue: '', previousValue: view.value.replace(value, '').replace(/,\s*$/, ""), transactionToken: change.currentVersion.transactionToken } };
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
                     } else if(view!==undefined) {
-                      (applic.features.find((feature)=>feature.name===name)?.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value.replace(value,'').replace(/,\s*$/, ""),previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
+                      (applic.features.find((feature)=>feature.name===name)!.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value.replace(value,'').replace(/,\s*$/, ""),previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
                     }
                   } else {
                     if (feature.multiValued &&view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value, '').replace(/,\s*$/, "");
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value, '').replace(/,\s*$/, "");
                       if (view.id) {
-                        (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
+                        (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
                       }
                     } else if(view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = value;
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = value;
                       if (view.id) {
-                        (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = value;
+                        (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = value;
                       }
                     }
                   }
@@ -852,21 +852,21 @@ export class PlConfigCurrentBranchService {
                   let view = feature?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges;
                   if (view!==undefined && view.changes === undefined) {
                     if (view.id) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes = { value: { currentValue: '', previousValue: view.value.replace(value, '').replace(/,\s*$/, ""), transactionToken: change.currentVersion.transactionToken } };
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes = { value: { currentValue: '', previousValue: view.value.replace(value, '').replace(/,\s*$/, ""), transactionToken: change.currentVersion.transactionToken } };
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
                     } else {
-                      (applic.features.find((feature)=>feature.name===name)?.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value.replace(value,'').replace(/,\s*$/, ""),previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
+                      (applic.features.find((feature)=>feature.name===name)!.configurations.find((view)=>view.name===viewToChange.name) as ExtendedNameValuePairWithChanges).changes={value:{currentValue:view.value.replace(value,'').replace(/,\s*$/, ""),previousValue:view.value.replace(value,'').replace(/,\s*$/, ""),transactionToken:change.currentVersion.transactionToken}}
                     }
                   } else {
                     if (feature.multiValued &&view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value, '').replace(/,\s*$/, "");
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = (view.changes.value.previousValue as string).replace(value, '').replace(/,\s*$/, "");
                       if (view.id) {
-                        (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
+                        (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = view.value.replace(value, '').replace(/,\s*$/, "");
                       }
                     } else if(view!==undefined && view.changes!==undefined) {
-                      (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = value;
+                      (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).changes.value.previousValue = value;
                       if (view.id) {
-                        (applic.features.find((feature) => feature.name === name)?.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = value;
+                        (applic.features.find((feature) => feature.name === name)!.configurations.find((view) => view.name === viewToChange.name) as ExtendedNameValuePairWithChanges).value = value;
                       }
                     }
                   }

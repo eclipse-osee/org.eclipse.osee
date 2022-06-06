@@ -72,7 +72,7 @@ describe('EditElementFieldComponent', () => {
       loader = TestbedHarnessEnvironment.loader(fixture);
     })
 
-    it('should update the applicability', fakeAsync(async() => {
+    it('should update the applicability', async() => {
       let spy = spyOn(component, 'updateImmediately').and.callThrough();
       let select = await loader.getHarness(MatSelectHarness);
       await select.open();
@@ -83,8 +83,7 @@ describe('EditElementFieldComponent', () => {
       } else {
         expect(spy).not.toHaveBeenCalled()
       }
-
-    }))
+    })
 
     it('should update value', fakeAsync(() => {
       let spy = spyOn(component, 'updateElement').and.callThrough();

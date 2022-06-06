@@ -27,34 +27,32 @@ Cypress.Commands.add(
     cy.intercept(
       '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
     ).as('structures');
-    return cy
-      .get(`[data-cy="create-new-btn"]`)
-      .click()
-      .get(`[data-cy="field-name"]`)
-      .focus()
-      .type(name, { force: true })
-      .get(`[data-cy="field-description"]`)
-      .focus()
-      .type(description, { force: true })
-      .get(`[data-cy="field-notes"]`)
-      .focus()
-      .type(notes, { force: true })
-      .get(`[data-cy="field-index-start"]`)
-      .focus()
-      .type(startIndex, { force: true })
-      .get(`[data-cy="field-index-end"]`)
-      .focus()
-      .type(endIndex, { force: true })
-      .get(`[data-cy="search-type-menu"]`)
-      .click()
+    cy.intercept('/mim/branch/*/types').as('types');
+    cy.get(`[data-cy="create-new-btn"]`).click();
+    cy.get(`[data-cy="field-name"]`).as('name');
+    cy.get(`[data-cy="field-description"]`).as('description');
+    cy.get(`[data-cy="field-notes"]`).as('notes');
+    cy.get(`[data-cy="field-index-start"]`).as('start');
+    cy.get(`[data-cy="field-index-end"]`).as('end');
+    name.split('').forEach((character) => {
+      cy.get('@name').focus().type(character);
+    });
+    cy.get('@name').focus().should('have.value', name);
+    cy.get(`@description`).focus().type(description).should('have.value', description);
+    cy.get(`@notes`).focus().type(notes).should('have.value', notes);
+    cy.get(`@start`).focus().type(startIndex);
+    cy.get(`@end`).focus().type(endIndex);
+    cy.get(`[data-cy="search-type-menu"]`)
+      .click({ force: true })
       .get(`[data-cy="field-logical-type"]`)
       .click()
       .get(`[data-cy="option-${type}"]`)
       .click()
       .get(`[data-cy="query-button"]`)
-      .click()
+      .click({ force: true })
       .get(`[data-cy="stepper-next"]`)
-      .click()
+      .click({ force: true });
+    return cy
       .get(`[data-cy="submit-btn"]`)
       .click()
       .wait('@txs')
@@ -64,7 +62,9 @@ Cypress.Commands.add(
   }
 );
 Cypress.Commands.add('elementRightClick', (name: string) => {
-  cy.get(`[data-cy="element-table-row-${name}"] > .cdk-column-description`).as('row');
+  cy.get(`[data-cy="element-table-row-${name}"] > .cdk-column-description`).as(
+    'row'
+  );
   cy.get('@row').should('have.length.at.least', 1);
   return cy.get('@row').should('not.be.hidden').rightclick();
 });
@@ -219,5 +219,7 @@ Cypress.Commands.add('deleteElement', (associatedElement: string) => {
     .should('not.exist');
 });
 Cypress.Commands.add('validateElementHeaderExists', (header: string) => {
-  cy.get(`[data-cy=element-table-header-${header}]`).scrollIntoView().should('exist');
-})
+  cy.get(`[data-cy=element-table-header-${header}]`)
+    .scrollIntoView()
+    .should('exist');
+});
