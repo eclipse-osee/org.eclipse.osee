@@ -14,6 +14,7 @@
 package org.eclipse.osee.mim;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeGeneric;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -22,6 +23,8 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public interface MimApi {
    OrcsApi getOrcsApi();
+
+   AtsApi getAtsApi();
 
    InterfaceMessageApi getInterfaceMessageApi();
 
