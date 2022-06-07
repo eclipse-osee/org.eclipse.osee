@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
@@ -52,6 +53,8 @@ public class MimApiImpl implements MimApi {
 
    private OrcsApi orcsApi;
 
+   private AtsApi atsApi;
+
    private InterfaceMessageApi interfaceMessageApi;
 
    private InterfaceSubMessageApi interfaceSubMessageApi;
@@ -76,6 +79,10 @@ public class MimApiImpl implements MimApi {
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+   }
+
+   public void bindAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    public void start() {
@@ -137,6 +144,11 @@ public class MimApiImpl implements MimApi {
    @Override
    public OrcsApi getOrcsApi() {
       return this.orcsApi;
+   }
+
+   @Override
+   public AtsApi getAtsApi() {
+      return this.atsApi;
    }
 
    @Override

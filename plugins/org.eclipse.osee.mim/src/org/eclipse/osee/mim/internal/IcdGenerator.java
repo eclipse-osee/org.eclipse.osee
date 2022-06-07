@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -53,40 +56,9 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 public class IcdGenerator {
 
    private final OrcsApi orcsApi;
+   private final AtsApi atsApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final InterfaceStructureApi interfaceStructureApi;
-
-   private class StructureInfo {
-      final String name;
-      final String category;
-      final String rate;
-      final String minSim;
-      final String maxSim;
-      final String numAttributes;
-      final String sizeInBytes;
-      final String initiator;
-      final String msgNum;
-      final String subMsgNum;
-      final String taskfile;
-      final String description;
-      final List<ArtifactReadable> elements;
-      public StructureInfo(String name, String cat, String msgRateText, String minSim, String maxSim, int elementCount, Integer sum, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, List<ArtifactReadable> elements) {
-         this.name = name;
-         this.category = cat;
-         this.rate = msgRateText;
-         this.minSim = minSim;
-         this.maxSim = maxSim;
-         this.numAttributes = Integer.toString(elementCount);
-         this.sizeInBytes = Integer.toString(sum);
-         this.initiator = sendingNode;
-         this.msgNum = msgNumber;
-         this.subMsgNum = subMsgNumber;
-         this.taskfile = taskfile;
-         this.description = desc;
-         this.elements = elements;
-      }
-
-   }
 
    private final Map<ArtifactId, StructureInfo> structuresList;
    private final Map<String, StructureInfo> headersList;
@@ -95,6 +67,7 @@ public class IcdGenerator {
 
    public IcdGenerator(MimApi mimApi) {
       this.orcsApi = mimApi.getOrcsApi();
+      this.atsApi = mimApi.getAtsApi();
       this.structuresList = new HashMap<>();
       this.headersList = new HashMap<>();
       this.messageHeaders = new HashMap<>();
@@ -104,7 +77,7 @@ public class IcdGenerator {
       this.interfaceStructureApi = mimApi.getInterfaceStructureApi();
    }
 
-   public void runOperation(OrcsApi providedOrcs, Writer providedWriter, BranchId branch, ArtifactId view, ArtifactId connectionId) throws IOException {
+   public void runOperation(Writer providedWriter, BranchId branch, ArtifactId view, ArtifactId connectionId) throws IOException {
 
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
@@ -180,12 +153,43 @@ public class IcdGenerator {
       }
       ExcelXmlWriter writer = new ExcelXmlWriter(providedWriter);
 
-      createMessageSubMessageSummary(writer, branch, conn, primaryNode, secondaryNode, messages, subMessages);
+      createChangeSummary(writer, branch);
+      createMessageSubMessageSummary(writer, conn, primaryNode, secondaryNode, messages, subMessages);
       createStructureNamesSheet(writer, structureLinks);
       createMessageDetailSheet(writer, branch, view, primaryNode, secondaryNode, messages, structureLinks);
-      createSubMessageSheets(writer, branch, view, subMessagesWithHeaders, structures, structureLinks);
+      createSubMessageSheets(writer, view, subMessagesWithHeaders, structures, structureLinks);
 
       writer.endWorkbook();
+   }
+
+   private void createChangeSummary(ExcelXmlWriter writer, BranchId branch) throws IOException {
+      SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+      List<String> headingsList = new ArrayList<String>();
+      int columnCount = 3;
+      headingsList.add("Team Workflow");
+      headingsList.add("Date");
+      headingsList.add("Change Description");
+      Object[] headings = headingsList.toArray();
+      writer.startSheet("Change Summary", columnCount);
+      writer.writeHeaderRow(headings);
+
+      orcsApi.getQueryFactory().transactionQuery().andBranch(branch).getResults().getList().stream().forEach(tx -> {
+         if (tx.getCommitArt().getId() != -1) {
+            IAtsWorkItem change = atsApi.getQueryService().getWorkItem(tx.getCommitArt().getIdString());
+            if (change != null && change.getId() != -1) {
+               try {
+                  writer.writeCell(change.getAtsId());
+                  writer.writeCell(format.format(tx.getDate()));
+                  writer.writeCell(change.getName());
+                  writer.endRow();
+               } catch (IOException ex) {
+                  //
+               }
+            }
+         }
+      });
+
+      writer.endSheet();
    }
 
    private void createStructureNamesSheet(ExcelXmlWriter writer, SortedMap<String, String> structures) throws IOException {
@@ -209,9 +213,9 @@ public class IcdGenerator {
       while (iterator.hasNext()) {
          String sName = iterator.next();
          String sLink = structures.get(sName);
-         if (count < firstCol) {
+         if (count <= firstCol) {
             col1.put(sName, sLink);
-         } else if (count < secCol) {
+         } else if (count <= secCol) {
             col2.put(sName, sLink);
          } else {
             col3.put(sName, sLink);
@@ -506,7 +510,7 @@ public class IcdGenerator {
       writer.endRow();
    }
 
-   private void createSubMessageSheets(ExcelXmlWriter writer, BranchId branch, ArtifactId view, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<String, String> structureLinks) throws IOException {
+   private void createSubMessageSheets(ExcelXmlWriter writer, ArtifactId view, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<String, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 15;
       headingsList.add("Begin Word");
@@ -553,7 +557,7 @@ public class IcdGenerator {
                for (InterfaceStructureElementToken element : struct.getElements()) {
                   PlatformTypeToken platformType = element.getPlatformType();
                   Integer byteSize = (int) element.getElementSizeInBytes();
-                  printHeaderStructureRow(writer, branch, view, element, byteLocation, byteSize, platformType);
+                  printHeaderStructureRow(writer, view, element, byteLocation, byteSize, platformType);
                   byteLocation = byteLocation + byteSize;
                }
             } else {
@@ -564,7 +568,7 @@ public class IcdGenerator {
 
                   Integer byteSize = Integer.valueOf(
                      platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
-                  printDataElementRow(writer, branch, view, element, byteLocation, byteSize, platformType);
+                  printDataElementRow(writer, view, element, byteLocation, byteSize, platformType);
                   if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
                      int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
                      int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
@@ -580,7 +584,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printHeaderStructureRow(ExcelXmlWriter writer, BranchId branch, ArtifactId view, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) throws IOException {
+   private void printHeaderStructureRow(ExcelXmlWriter writer, ArtifactId view, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) throws IOException {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -614,7 +618,7 @@ public class IcdGenerator {
       writer.endRow();
    }
 
-   private void printDataElementRow(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
+   private void printDataElementRow(ExcelXmlWriter writer, ArtifactId view, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -712,7 +716,7 @@ public class IcdGenerator {
 
    }
 
-   private void createMessageSubMessageSummary(ExcelXmlWriter writer, BranchId branch, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) throws IOException {
+   private void createMessageSubMessageSummary(ExcelXmlWriter writer, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) throws IOException {
       int columnCount = 10;
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
@@ -853,5 +857,37 @@ public class IcdGenerator {
          }
       }
       writer.endSheet();
+   }
+
+   private class StructureInfo {
+      final String name;
+      final String category;
+      final String rate;
+      final String minSim;
+      final String maxSim;
+      final String numAttributes;
+      final String sizeInBytes;
+      final String initiator;
+      final String msgNum;
+      final String subMsgNum;
+      final String taskfile;
+      final String description;
+      final List<ArtifactReadable> elements;
+      public StructureInfo(String name, String cat, String msgRateText, String minSim, String maxSim, int elementCount, Integer sum, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, List<ArtifactReadable> elements) {
+         this.name = name;
+         this.category = cat;
+         this.rate = msgRateText;
+         this.minSim = minSim;
+         this.maxSim = maxSim;
+         this.numAttributes = Integer.toString(elementCount);
+         this.sizeInBytes = Integer.toString(sum);
+         this.initiator = sendingNode;
+         this.msgNum = msgNumber;
+         this.subMsgNum = subMsgNumber;
+         this.taskfile = taskfile;
+         this.description = desc;
+         this.elements = elements;
+      }
+
    }
 }

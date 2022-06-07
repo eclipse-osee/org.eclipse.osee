@@ -21,13 +21,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.mim.MimApi;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Audrey E. Denk
  */
 public final class IcdStreamingOutput implements StreamingOutput {
-   private final OrcsApi orcsApi;
    private final MimApi mimApi;
    private final BranchId branch;
    private final ArtifactId viewId;
@@ -38,7 +36,6 @@ public final class IcdStreamingOutput implements StreamingOutput {
       this.viewId = viewId;
       this.connectionId = connectionId;
       this.mimApi = mimApi;
-      this.orcsApi = mimApi.getOrcsApi();
    }
 
    @Override
@@ -46,7 +43,7 @@ public final class IcdStreamingOutput implements StreamingOutput {
       try {
          Writer writer = new OutputStreamWriter(output);
          IcdGenerator generator = new IcdGenerator(mimApi);
-         generator.runOperation(orcsApi, writer, branch, viewId, connectionId);
+         generator.runOperation(writer, branch, viewId, connectionId);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }

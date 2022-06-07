@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -102,9 +103,15 @@ public class PlatformTypeToken extends PLGenericDBObject {
       this.setinterfacePlatformTypeBitSize(bitSize);
       this.setInterfacePlatformTypeMinval(minVal);
       this.setInterfacePlatformTypeMaxval(maxVal);
-      this.setInterfacePlatformTypeValidRangeDescription(
-         !minVal.equals("") && !maxVal.equals("") ? minVal + "-" + maxVal : "Calculated");
       this.setInterfacePlatformTypeUnits(units);
+
+      if (minVal == Strings.EMPTY_STRING || maxVal == Strings.EMPTY_STRING) {
+         this.setInterfacePlatformTypeValidRangeDescription("Calculated");
+      } else if (minVal == maxVal) {
+         this.setInterfacePlatformTypeValidRangeDescription(minVal);
+      } else {
+         this.setInterfacePlatformTypeValidRangeDescription(minVal + "-" + maxVal);
+      }
    }
 
    public PlatformTypeToken() {
