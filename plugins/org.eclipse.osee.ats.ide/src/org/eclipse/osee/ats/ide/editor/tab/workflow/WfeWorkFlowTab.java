@@ -417,6 +417,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       return null;
    }
 
+   @Override
    public void refresh() {
       if (editor != null && Widgets.isAccessible(headerComp)) {
          Displays.ensureInDisplayThread(new Runnable() {

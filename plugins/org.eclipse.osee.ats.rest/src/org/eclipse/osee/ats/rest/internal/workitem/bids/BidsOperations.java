@@ -105,6 +105,15 @@ public class BidsOperations {
                   IAtsTeamWorkflow newTeamWf =
                      atsApi.getActionService().createTeamWorkflow(teamWf.getParentAction(), teamDef, Arrays.asList(ai),
                         null, changes, createdDate, currentUser, null, CreateTeamOption.Duplicate_If_Exists);
+                  ArtifactToken tarVer = jTeamWf.getTargetVersion();
+                  if (tarVer.isValid()) {
+                     IAtsVersion version = atsApi.getVersionService().getVersionById(tarVer);
+                     atsApi.getVersionService().setTargetedVersion(newTeamWf, version, changes);
+                  }
+                  String pts = jTeamWf.getPriority();
+                  if (Strings.isValid(pts)) {
+                     changes.setSoleAttributeValue(newTeamWf, AtsAttributeTypes.Priority, pts);
+                  }
                   populateJaxTeamWf(jTeamWf, newTeamWf);
                   changes.relate(bidArt, AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf, newTeamWf);
                }

@@ -140,6 +140,7 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
       }
    }
 
+   @Override
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;

@@ -66,7 +66,7 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
       );
    }
 
-   //should be Overriden in sub-classes
+   // For override in sub-classes
    public LayoutItem[] getLayout() {
       return null;
    }
