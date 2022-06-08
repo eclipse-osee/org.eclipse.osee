@@ -67,4 +67,7 @@ public interface IAtsWorkItemHook {
       return "";
    }
 
+   default public boolean createSiblingWorkflowEnabled(IAtsWorkItem workItem) {
+      return true;
+   }
 }
