@@ -22,6 +22,8 @@ public class JaxTeamWorkflow extends JaxAtsWorkItem {
 
    ArtifactToken newAi = ArtifactToken.SENTINEL;
    ArtifactToken team = ArtifactToken.SENTINEL;
+   ArtifactToken targetVersion = ArtifactToken.SENTINEL;
+   String priority = "";
 
    public JaxTeamWorkflow() {
    }
@@ -44,6 +46,22 @@ public class JaxTeamWorkflow extends JaxAtsWorkItem {
 
    public void setTeam(ArtifactToken team) {
       this.team = team;
+   }
+
+   public ArtifactToken getTargetVersion() {
+      return targetVersion;
+   }
+
+   public void setTargetVersion(ArtifactToken targetVersion) {
+      this.targetVersion = targetVersion;
+   }
+
+   public String getPriority() {
+      return priority;
+   }
+
+   public void setPriority(String priority) {
+      this.priority = priority;
    }
 
 }

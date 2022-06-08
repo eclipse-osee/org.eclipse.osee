@@ -24,10 +24,12 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
@@ -115,10 +117,16 @@ public class CreateSiblingAction extends Action {
                bid.setState(selBid.getState());
                bids.addBuildImpactData(bid);
 
-               JaxTeamWorkflow teamWf = new JaxTeamWorkflow();
-               teamWf.setName(teamWf.getTitle());
-               teamWf.setNewAi(ai.getArtifactToken());
-               bid.addTeamWorkflow(teamWf);
+               JaxTeamWorkflow jTeamWf = new JaxTeamWorkflow();
+               jTeamWf.setName(jTeamWf.getTitle());
+               jTeamWf.setNewAi(ai.getArtifactToken());
+               IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
+               if (version != null) {
+                  jTeamWf.setTargetVersion(version.getArtifactToken());
+               }
+               jTeamWf.setPriority(
+                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
+               bid.addTeamWorkflow(jTeamWf);
             }
             bids = atsApi.getServerEndpoints().getActionEndpoint().updateBids(teamWf.getAtsId(), bids);
             if (bids.getResults().isErrors()) {
