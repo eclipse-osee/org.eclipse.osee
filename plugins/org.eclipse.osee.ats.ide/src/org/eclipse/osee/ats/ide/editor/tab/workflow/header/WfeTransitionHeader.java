@@ -148,19 +148,28 @@ public class WfeTransitionHeader extends Composite {
       transitionAssigneesLabel.setToolTipText("Select to change assignee(s) upon transition to next state.");
 
       if (workItem.isTeamWorkflow()) {
-         createSiblingLink = editor.getToolkit().createHyperlink(this, "Create Sibling Workflow(s)", SWT.NONE);
-         createSiblingLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         createSiblingLink.setToolTipText("Create new Team Workflows off same Action");
-         createSiblingLink.addHyperlinkListener(new HyperlinkAdapter() {
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  XSiblingActionBar.openCreateSiblingWorkflowBlam((IAtsTeamWorkflow) workItem);
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
+         boolean createSiblingWorkflowEnabled = true;
+         for (IAtsWorkItemHook hook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+            if (!hook.createSiblingWorkflowEnabled(workItem)) {
+               createSiblingWorkflowEnabled = false;
+               break;
             }
-         });
+         }
+         if (createSiblingWorkflowEnabled) {
+            createSiblingLink = editor.getToolkit().createHyperlink(this, "Create Sibling Workflow(s)", SWT.NONE);
+            createSiblingLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            createSiblingLink.setToolTipText("Create new Team Workflows off same Action");
+            createSiblingLink.addHyperlinkListener(new HyperlinkAdapter() {
+               @Override
+               public void linkActivated(HyperlinkEvent e) {
+                  try {
+                     XSiblingActionBar.openCreateSiblingWorkflowBlam((IAtsTeamWorkflow) workItem);
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
+               }
+            });
+         }
       }
    }
 
