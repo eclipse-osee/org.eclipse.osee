@@ -17,8 +17,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -26,14 +29,17 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.junit.Assert;
@@ -45,6 +51,141 @@ import org.junit.Assert;
  */
 
 public class TestDocumentBuilder {
+
+   /**
+    * Class to verify or create a relationships between artifacts.
+    */
+
+   private class RelationshipSourceTargetTypeRecord {
+
+      /**
+       * Saves the source {@link Artifact} for the relationship.
+       */
+
+      private final Artifact sourceArtifact;
+
+      /**
+       * Saves the target {@link Artifact} for the relationship.
+       */
+
+      private final Artifact targetArtifact;
+
+      /**
+       * Saves the {@link RelationTypeToken} for the relationship type.
+       */
+
+      private final RelationTypeToken relationTypeToken;
+
+      /**
+       * Creates a new {@link RelationshipSourceTargetTypeRecord}.
+       *
+       * @param sourceArtifact the source {@link Artifact}.
+       * @param targetArtifact the target {@link Artifact}.
+       * @param relationTypeToken the {@link RelationTypeToken} for the relationship type.
+       */
+
+      RelationshipSourceTargetTypeRecord(Artifact sourceArtifact, Artifact targetArtifact, RelationTypeToken relationTypeToken) {
+         this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
+         this.targetArtifact = Objects.requireNonNull(targetArtifact);
+         this.relationTypeToken = Objects.requireNonNull(relationTypeToken);
+      }
+
+      /**
+       * Verifies a relationship of the correct type exists between the source and target artifacts.
+       *
+       * @return <code>true</code>, when the represented relationship is present between the artifacts; otherwise,
+       * <code>false</code>.
+       */
+
+      boolean isNotRelated() {
+         return !RelationManager.getRelatedArtifacts(this.sourceArtifact, this.relationTypeToken,
+            RelationSide.SIDE_A).contains(this.targetArtifact);
+      }
+
+      /**
+       * Creates the represented relationship between the source and target artifacts.
+       *
+       * @param relationEndpoint the ORCS REST API end point for managing relationships.
+       * @return the server HTTP {@link Response}.
+       */
+
+      Response create(RelationEndpoint relationEndpoint) {
+         return relationEndpoint.createRelationByType(this.targetArtifact, this.sourceArtifact, this.relationTypeToken);
+      }
+   }
+
+   /**
+    * Internal implementation of the {@link BuidlerRelationshipRecord} interface that wraps an unknown implementation of
+    * the {@link BuilderRelationshipRecord} interface with some additional members used in the test document building
+    * process.
+    */
+
+   private class BuilderRelationshipRecordWrapper implements BuilderRelationshipRecord {
+
+      /**
+       * Saves the {@link Artifact} that will be used as the source of the relationship.
+       */
+
+      private final Artifact sourceArtifact;
+
+      /**
+       * The wrapped {@link BuilderRelationshipRecord}.
+       */
+
+      private final BuilderRelationshipRecord builderRelationshipRecord;
+
+      /**
+       * Wraps a {@link BuilderRelationshipRecord} with the relationship source {@link Artifact} for the test document
+       * building process.
+       *
+       * @param sourceArtifact the relationship source {@link Artifact}.
+       * @param builderRelationshipRecord {@link BuilderRelationshipRecord} to be wrapped.
+       */
+
+      BuilderRelationshipRecordWrapper(Artifact sourceArtifact, BuilderRelationshipRecord builderRelationshipRecord) {
+         this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
+         this.builderRelationshipRecord = Objects.requireNonNull(builderRelationshipRecord);
+      }
+
+      /**
+       * Builds a {@link Stream} of {@link RelationshipSourceTargetTypeRecord}s. The source artifact is from the
+       * constructor. The relationship type is from the wrapped {@link BuilderRelationshipRecord}. The target artifact
+       * is found from a map in the containing {@link TestDocumentBuilder} class using the {@link BuilderRecord}
+       * identifier for the relationship target.
+       *
+       * @return a {@link Stream} of {@link RelationshipSourceTargetTypeRecord}s for
+       */
+
+      Stream<RelationshipSourceTargetTypeRecord> stream() {
+         return this.getTargetBuilderRecords().stream().map(
+            TestDocumentBuilder.this.builderRecordWrapperByIdMap::get).map(BuilderRecordWrapper::getArtifact).map(
+               (targetArtifact) -> new RelationshipSourceTargetTypeRecord(this.sourceArtifact, targetArtifact,
+                  this.getRelationTypeToken()));
+      }
+
+      /*
+       * BuilderRelationshipRecord Methods
+       */
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public RelationTypeToken getRelationTypeToken() {
+         return this.builderRelationshipRecord.getRelationTypeToken();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public List<Integer> getTargetBuilderRecords() {
+         return this.builderRelationshipRecord.getTargetBuilderRecords();
+      }
+
+   }
 
    /**
     * Internal implementation of the {@link BuidlerRecord} interface that wraps an unknown implementation of the
@@ -187,6 +328,18 @@ public class TestDocumentBuilder {
          this.attributeList = attributeList;
       }
 
+      /**
+       * Get a {@link Stream} of the relationships for test artifact.
+       *
+       * @return a {@link Stream} of {@link BuilderRelationshipRecords} for the test artifact.
+       */
+
+      Stream<BuilderRelationshipRecordWrapper> streamBuilderRelationshipRecordWrappers() {
+         return this.getBuilderRelationshipRecords().stream().map(
+            (builderRelationshipRecord) -> new BuilderRelationshipRecordWrapper(this.getArtifact(),
+               builderRelationshipRecord));
+      }
+
       /*
        * BuilderRecord methods
        */
@@ -207,6 +360,15 @@ public class TestDocumentBuilder {
       @Override
       public BiConsumer<Attribute<?>, Object> getAttributeSetter() {
          return this.builderRecord.getAttributeSetter();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public List<BuilderRelationshipRecord> getBuilderRelationshipRecords() {
+         return this.builderRecord.getBuilderRelationshipRecords();
       }
 
       /**
@@ -279,6 +441,12 @@ public class TestDocumentBuilder {
     */
 
    private final boolean setValues;
+
+   /**
+    * Map used to get relationship target {@link Artifact}s using the {@link BuilderRecord} identifier.
+    */
+
+   private Map<Integer, BuilderRecordWrapper> builderRecordWrapperByIdMap;
 
    /**
     * Creates a new {@link TestDocumentBuilder}.
@@ -435,6 +603,14 @@ public class TestDocumentBuilder {
 
 
       var builderRecordWrappers = builderRecords.stream().map( BuilderRecordWrapper::new ).collect( Collectors.toList() );
+      this.builderRecordWrapperByIdMap = builderRecordWrappers.stream().collect
+                                            (
+                                               Collectors.toMap
+                                                  (
+                                                     ( builderRecordWrapper ) -> builderRecordWrapper.getIdentifier(),
+                                                     ( builderRecordWrapper ) -> builderRecordWrapper
+                                                  )
+                                            );
 
       /*
        * Get OSEE Client
@@ -540,6 +716,21 @@ public class TestDocumentBuilder {
       this.rootArtifactId = ArtifactId.valueOf( builderRecordWrappers.get( 0 ).getArtifact().getId() );
       this.built = true;
 
+      /*
+       * Once all test artifacts are known to exist, verify and/or create the relationships
+       */
+
+      var relationshipsCreated =
+         builderRecordWrappers.stream()
+            .filter( BuilderRecord::hasBuilderRelationshipRecords )
+            .flatMap( BuilderRecordWrapper::streamBuilderRelationshipRecordWrappers )
+            .flatMap( BuilderRelationshipRecordWrapper::stream )
+            .filter( RelationshipSourceTargetTypeRecord::isNotRelated )
+            .map( ( relationshipSourceTargetTypeRecord ) -> relationshipSourceTargetTypeRecord.create(relationEndpoint) )
+            .allMatch( ( response ) -> response.getStatus() == 200 )
+            ;
+
+      Assert.assertTrue( "Failed to create relationships", relationshipsCreated );
       //@formatter:on
    }
 

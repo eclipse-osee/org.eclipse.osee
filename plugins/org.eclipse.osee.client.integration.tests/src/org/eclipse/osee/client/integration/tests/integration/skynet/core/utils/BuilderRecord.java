@@ -14,6 +14,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
@@ -67,6 +68,14 @@ public interface BuilderRecord {
    String getName();
 
    /**
+    * Get a list of the relationships for test artifact.
+    *
+    * @return a {@link List} of {@link BuilderRelationshipRecords} for the test artifact.
+    */
+
+   List<BuilderRelationshipRecord> getBuilderRelationshipRecords();
+
+   /**
     * Gets the test attribute's definition.
     *
     * @return the {@link AttributeTypeGeneric} that defines the test attribute.
@@ -80,6 +89,18 @@ public interface BuilderRecord {
     */
 
    List<Object> getTestAttributeValues();
+
+   /**
+    * Predicate to determine if the {@link BuilderRecord} contains any {@link BuilderRelationshipRecord}s.
+    *
+    * @return <code>true</code>, when the {@link BuilderRecord} contains {@link BuilderRelationshipRecords}; otherwise,
+    * <code>false</code>.
+    */
+
+   default boolean hasBuilderRelationshipRecords() {
+      var builderRelationshipRecords = this.getBuilderRelationshipRecords();
+      return Objects.nonNull(builderRelationshipRecords) ? builderRelationshipRecords.size() > 0 : false;
+   }
 
 }
 
