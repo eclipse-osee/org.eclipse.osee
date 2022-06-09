@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.navigate;
+package org.eclipse.osee.ats.ide.search.navigate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
@@ -83,6 +84,8 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
          if (topNavigateItem.getChildren() != null) {
             topNavigateItem.getChildren().clear();
          }
+         topNavigateItem.addChild(new ImportSavedSearchNavigateItem());
+
          Set<Long> ids = new HashSet<Long>();
          for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
             for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.AttributeValuesSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
@@ -91,6 +92,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private WorkPackageSearchWidget workPackage;
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
+   private AttributeValuesSearchWidget attrValues;
 
    public WorldEditorParameterSearchItem(String name, AtsImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -267,6 +269,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getVersion().setup(widget);
       } else if (widget.getLabel().equals(ReviewTypeSearchWidget.REVIEW_TYPE)) {
          getReviewType().setup(widget);
+      } else if (widget.getLabel().equals(AttributeValuesSearchWidget.ATTR_VALUE)) {
+         getAttrValues().setup(widget);
       }
    }
 
@@ -325,7 +329,12 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    public String getBeginComposite(int beginComposite) {
-      return beginComposite > 0 ? String.format(" beginComposite=\"%d\" ", beginComposite) : "";
+      if (beginComposite > 0) {
+         return String.format(" beginComposite=\"%d\" ", beginComposite);
+      } else if (beginComposite < 0) {
+         return String.format(" endComposite=\"true\" ");
+      }
+      return "";
    }
 
    public Map<String, XWidget> getxWidgets() {
@@ -433,6 +442,13 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          reviewType = new ReviewTypeSearchWidget(this);
       }
       return reviewType;
+   }
+
+   public AttributeValuesSearchWidget getAttrValues() {
+      if (attrValues == null) {
+         attrValues = new AttributeValuesSearchWidget(this);
+      }
+      return attrValues;
    }
 
    @Override

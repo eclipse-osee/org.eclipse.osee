@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -126,6 +127,8 @@ public class WorldXWidgetActionPage extends FormPage {
    private final String WORKFLOWS = "Re-display as WorkFlows";
    private final String TASKS = "Re-display as Tasks";
    private final String REVIEWS = "Re-display as Reviews";
+   private Composite paramComp;
+   private Composite rightParamComp;
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
       super(worldEditor, ID, worldEditor.isTaskEditor() ? "Tasks" : "Actions");
@@ -143,7 +146,8 @@ public class WorldXWidgetActionPage extends FormPage {
 
    public String getXWidgetsXml() {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
-         return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getParameterXWidgetXml();
+         String xml = ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getParameterXWidgetXml();
+         return xml;
       }
       return null;
    }
@@ -169,8 +173,10 @@ public class WorldXWidgetActionPage extends FormPage {
       xWidgetXml = getXWidgetsXml();
       try {
          if (Strings.isValid(xWidgetXml)) {
-            managedForm.addPart(new SectionPart(createParametersSection(managedForm, body)));
+            Section createParametersSection = createParametersSection(managedForm, body);
+            managedForm.addPart(new SectionPart(createParametersSection));
          }
+
          managedForm.addPart(new SectionPart(createResultsSection(body)));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -215,21 +221,21 @@ public class WorldXWidgetActionPage extends FormPage {
       parametersContainer = toolkit.createClientContainer(parameterSection, 1);
       parameterSection.setExpanded(true);
 
-      Composite mainComp = toolkit.createComposite(parametersContainer, SWT.NONE);
-      mainComp.setLayout(ALayout.getZeroMarginLayout(3, false));
-      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      paramComp = toolkit.createComposite(parametersContainer, SWT.NONE);
+      paramComp.setLayout(ALayout.getZeroMarginLayout(3, false));
+      paramComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      createButtonCompositeOnLeft(mainComp);
-      createSearchParametersOnRight(managedForm, mainComp);
-      createParametersSectionCompleted(managedForm, mainComp);
+      createButtonCompositeOnLeft(paramComp);
+      createSearchParametersOnRight(managedForm, paramComp);
+      createParametersSectionCompleted(managedForm, paramComp);
 
       return parameterSection;
    }
 
    public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp) {
-      Composite paramComp = new Composite(mainComp, SWT.NONE);
-      paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      paramComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      rightParamComp = new Composite(mainComp, SWT.NONE);
+      rightParamComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      rightParamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       List<XWidgetRendererItem> layoutDatas = null;
       dynamicXWidgetLayout = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
@@ -237,9 +243,14 @@ public class WorldXWidgetActionPage extends FormPage {
          layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, xWidgetXml);
          if (layoutDatas != null && !layoutDatas.isEmpty()) {
             dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
-            dynamicXWidgetLayout.createBody(managedForm, paramComp, null, null, true);
+            dynamicXWidgetLayout.createBody(managedForm, rightParamComp, null, null, true);
             parametersContainer.layout();
             parametersContainer.getParent().layout();
+            for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+               if (widget instanceof WorldEditorWidget) {
+                  ((WorldEditorWidget) widget).setEditor(worldEditor);
+               }
+            }
          }
          parameterSection.setExpanded(true);
       } catch (Exception ex) {

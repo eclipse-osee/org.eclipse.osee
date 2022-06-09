@@ -65,6 +65,7 @@ import org.eclipse.osee.ats.ide.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.ide.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowAdvSearchItem;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.ide.search.navigate.SavedActionSearchNavigateItem;
 import org.eclipse.osee.ats.ide.search.quick.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.util.CleanupOseeSystemAssignedWorkflows;

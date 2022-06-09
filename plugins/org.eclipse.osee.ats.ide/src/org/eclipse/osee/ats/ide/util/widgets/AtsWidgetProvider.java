@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.ide.editor.tab.bit.XHyperlinkOpenBitTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XRequestedHoursApprovalWidget;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.search.widget.XDynamicAttrValuesWidget;
 import org.eclipse.osee.ats.ide.util.XVersionList;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.ide.util.widgets.defect.XDefectViewer;
@@ -131,6 +132,7 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
       register(XVersionList.class);
       register(XRequestedHoursApprovalWidget.class);
       register(XHyperlinkWorkDefDam.class);
+      register(XDynamicAttrValuesWidget.class);
    }
 
    @Override

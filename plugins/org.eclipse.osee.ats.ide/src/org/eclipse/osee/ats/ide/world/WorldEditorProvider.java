@@ -152,6 +152,13 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             if (artifacts.isEmpty()) {
                monitor.done();
                worldEditor.setTableTitle("No Results Found - " + selectedName, true);
+               Displays.ensureInDisplayThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     worldEditor.getWorldComposite().getWorldXViewer().setLoading(false);
+                  }
+               });
                return Status.OK_STATUS;
             }
 
