@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2018 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,22 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
+package org.eclipse.osee.client.integration.tests.integration.synchronization.rest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author Donald G. Dunne
+ * Test suite for the {@link org.eclipse.osee.synchronization.rest} OSGI bundle.
+ *
+ * @author Loren K. Ashley
  */
+
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   ApplicabilityEndpointTest.class,
-   ApplicabilityUiEndpointTest.class,
-   ArtifactEndpointTest.class,
-   BranchEndpointTest.class,
-   TransactionEndpointTest.class,
-   RelationEndpointTest.class})
-public class OrcsRestTestSuite {
+@Suite.SuiteClasses({SynchronizationEndpointTest.class, ReqifRelationships.class})
+
+public class SynchronizationTestSuite {
    // Test Suite
 }
+
+/* EOF */

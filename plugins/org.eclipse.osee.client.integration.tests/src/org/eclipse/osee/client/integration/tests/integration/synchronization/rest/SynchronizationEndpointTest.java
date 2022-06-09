@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.client.integration.tests.integration.orcs.rest;
+package org.eclipse.osee.client.integration.tests.integration.synchronization.rest;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -38,6 +38,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRelationshipRecord;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
@@ -844,6 +845,11 @@ public class SynchronizationEndpointTest {
       @Override
       public BiConsumer<Attribute<?>, Object> getAttributeSetter() {
          return this.attributeSetter;
+      }
+
+      @Override
+      public List<BuilderRelationshipRecord> getBuilderRelationshipRecords() {
+         return null;
       }
 
       @Override

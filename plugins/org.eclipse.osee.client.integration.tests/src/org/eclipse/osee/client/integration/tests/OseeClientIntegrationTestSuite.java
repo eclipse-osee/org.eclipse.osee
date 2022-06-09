@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2012 Boeing
+ * Copyright (c) 2012 Boeing, 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *     Boeing - add SynchronizationTestSuite
  **********************************************************************/
 
 package org.eclipse.osee.client.integration.tests;
@@ -19,6 +20,7 @@ import org.eclipse.osee.client.integration.tests.integration.define.XDefineInteg
 import org.eclipse.osee.client.integration.tests.integration.endpoint.EndpointIntegrationTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.orcs.rest.OrcsRestTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.XSkynetCoreIntegrationTestSuite;
+import org.eclipse.osee.client.integration.tests.integration.synchronization.rest.SynchronizationTestSuite;
 import org.eclipse.osee.client.integration.tests.integration.ui.skynet.XUiSkynetCoreIntegrationTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -26,6 +28,7 @@ import org.junit.runners.Suite;
 
 /**
  * @author Roberto E. Escobar
+ * @author Loren K. Ashley
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -35,7 +38,8 @@ import org.junit.runners.Suite;
    XSkynetCoreIntegrationTestSuite.class,
    XUiSkynetCoreIntegrationTestSuite.class,
    LongRunningTestSuite.class,
-   DirtyArtifactCacheTest.class})
+   DirtyArtifactCacheTest.class,
+   SynchronizationTestSuite.class})
 public class OseeClientIntegrationTestSuite {
    // Test Suite
 
