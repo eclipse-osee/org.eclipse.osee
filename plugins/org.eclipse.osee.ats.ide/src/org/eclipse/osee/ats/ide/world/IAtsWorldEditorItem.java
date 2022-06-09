@@ -71,7 +71,9 @@ public interface IAtsWorldEditorItem {
       return null;
    }
 
-   public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems();
+   default public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems() {
+      return Collections.emptyList();
+   }
 
    default public Collection<IUserGroupArtifactToken> getUserGroups() {
       return Collections.singleton(CoreUserGroups.Everyone);
