@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -26,7 +27,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * Creates a hyperlink label that when enabled, shows as blue and changes cursor when hover over and when disabled,
  * shows in black with no cursor change. To add listener, use: link.addListener(SWT.MouseUp, new Listener() { public
  * void handleEvent(org.eclipse.swt.widgets.Event event) { System.out.println("Link Selected"); } });
- * 
+ *
  * @author Donald G. Dunne
  */
 
@@ -120,6 +121,14 @@ public class HyperLinkLabel {
 
    public void addListener(int mouseup, Listener listener) {
       label.addListener(mouseup, listener);
+   }
+
+   public void setBackground(Color background) {
+      label.setBackground(background);
+   }
+
+   public Label getLabel() {
+      return label;
    }
 
 }

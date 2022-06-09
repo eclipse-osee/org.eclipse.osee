@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -138,6 +139,13 @@ public class AtsSearchDataSearch {
       }
       if (data.getWorkPackageId() > 0L) {
          query.andWorkPackage(data.getWorkPackageId());
+      }
+      for (AttributeValue attrVal : data.getAttrValues().getAttributes()) {
+         if (attrVal.isNotExists()) {
+            query.andNotExists(attrVal.getAttrType());
+         } else if (!attrVal.getValues().isEmpty()) {
+            query.andAttr(attrVal.getAttrType(), attrVal.getValues());
+         }
       }
       if (criteriaProvider != null) {
          criteriaProvider.andCriteria(query);

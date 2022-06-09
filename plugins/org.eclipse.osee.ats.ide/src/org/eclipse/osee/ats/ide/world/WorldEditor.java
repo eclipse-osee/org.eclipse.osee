@@ -236,8 +236,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       }
       for (Artifact artifact : getLoadedArtifacts()) {
          IAtsWorkItem workItem = (IAtsWorkItem) artifact;
-         if (artifact instanceof IAtsWorkItem && AtsApiService.get().getVersionService().hasTargetedVersion(
-            workItem)) {
+         if (artifact instanceof IAtsWorkItem && AtsApiService.get().getVersionService().hasTargetedVersion(workItem)) {
             return AtsApiService.get().getVersionService().getTargetedVersion(workItem);
          }
       }
@@ -304,6 +303,10 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          }
       });
       return item;
+   }
+
+   public void reflowParameterSection() {
+      worldXWidgetActionPage.getManagedForm().reflow(true);
    }
 
 }

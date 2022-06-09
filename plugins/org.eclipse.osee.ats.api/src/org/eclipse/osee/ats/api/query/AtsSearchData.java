@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.util.AttributeValues;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -55,6 +56,7 @@ public class AtsSearchData {
    private ReviewFormalType reviewType;
    private ReleasedOption releasedOption;
    private CustomizeData customizeData;
+   private AttributeValues attrValues;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -63,6 +65,7 @@ public class AtsSearchData {
       teamDefIds = new LinkedList<>();
       aiIds = new LinkedList<>();
       id = Lib.generateId();
+      attrValues = new AttributeValues();
    }
 
    public AtsSearchData(String searchName) {
@@ -93,6 +96,7 @@ public class AtsSearchData {
       item.setWorkPackageId(getWorkPackageId());
       item.setColorTeam(getColorTeam());
       item.setReviewType(getReviewType());
+      item.setAttrValues(getAttrValues());
       return item;
    }
 
@@ -261,6 +265,14 @@ public class AtsSearchData {
 
    public void setCustomizeData(CustomizeData customizeData) {
       this.customizeData = customizeData;
+   }
+
+   public AttributeValues getAttrValues() {
+      return attrValues;
+   }
+
+   public void setAttrValues(AttributeValues attrValues) {
+      this.attrValues = attrValues;
    }
 
 }

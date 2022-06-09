@@ -36,15 +36,17 @@ public class AbstractSearchWidget<WidgetType extends XWidget, ObjectType extends
    }
 
    public void addWidget(int beginComposite) {
-      searchItem.addWidgetXml(
-         String.format("<XWidget xwidgetType=\"%s()\" displayName=\"%s\" horizontalLabel=\"true\" %s />", widgetName,
-            name, searchItem.getBeginComposite(beginComposite)));
+      String comboParams = (this instanceof AbstractXComboViewerSearchWidget<?>) ? "()" : "";
+      String xml = String.format("<XWidget xwidgetType=\"%s%s\" displayName=\"%s\" horizontalLabel=\"true\" %s />",
+         widgetName, comboParams, name, searchItem.getBeginComposite(beginComposite));
+      searchItem.addWidgetXml(xml);
    }
 
    public void addWidgetEndComposite() {
-      searchItem.addWidgetXml(String.format(
+      String xml = String.format(
          "<XWidget xwidgetType=\"%s()\" displayName=\"%s\" horizontalLabel=\"true\" endComposite=\"true\" />",
-         widgetName, name));
+         widgetName, name);
+      searchItem.addWidgetXml(xml);
    }
 
    @SuppressWarnings("unchecked")

@@ -100,7 +100,7 @@ public abstract class WorldSearchItem {
       return atsImage == null ? null : ImageManager.getImage(atsImage);
    }
 
-   public AtsImage getatsImage() {
+   public AtsImage getAtsImage() {
       return atsImage;
    }
 

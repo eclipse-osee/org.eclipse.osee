@@ -35,6 +35,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    private final boolean persist;
    private final Collection<? extends Artifact> artifacts;
    private final NumberFormat format;
+   private String initialValue = "";
 
    public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format) {
       this.attributeType = attributeType;
@@ -55,7 +56,14 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
       setInitialText(artifacts, entryDialog, format, attributeType);
       entryDialog.setNumberFormat(format);
+      if (Strings.isValid(initialValue)) {
+         entryDialog.setEntry(initialValue);
+      }
       return entryDialog.open() == Window.OK;
+   }
+
+   public String getEntry() {
+      return entryDialog.getEntry();
    }
 
    @Override
@@ -115,5 +123,13 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       } else {
          return format.format(src);
       }
+   }
+
+   public String getInitialValue() {
+      return initialValue;
+   }
+
+   public void setInitialValue(String initialValue) {
+      this.initialValue = initialValue;
    }
 }

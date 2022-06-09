@@ -32,9 +32,7 @@ public class AttributeTypeToXWidgetName {
       if (attributeType.isEnumerated()) {
          AttributeTypeEnum<T> enumeratedType =
             (AttributeTypeEnum<T>) ServiceUtil.getOrcsTokenService().getAttributeType(attributeType.getId());
-
          artType = ServiceUtil.getOrcsTokenService().getArtifactType(artType.getId());
-
          if (maxOccurrence == 1) {
             xWidgetName = "XComboDam(" + Collections.toString(",", artType.getValidEnumValues(enumeratedType)) + ")";
          } else {

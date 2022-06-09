@@ -93,18 +93,19 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (isAdvanced()) {
          getAi().addWidget(3);
       }
-      getTeamDef().addWidget(2);
+      getTeamDef().addWidget(0);
       getVersion().addWidget(6);
       getStateType().addWidget();
-      getStateName().addWidget();
-      getUser().addWidget(6);
-      getUserType().addWidget();
+      getStateName().addWidget(-1);
+      getUser().addWidget(4);
+      getUserType().addWidget(-1);
       if (showWorkPackageWidgets()) {
          getProgram().addWidget(8);
          getInsertion().addWidget();
          getInsertionActivity().addWidget();
          getWorkPackage().addWidget();
       }
+      getAttrValues().addWidget();
    }
 
    @Override
@@ -172,6 +173,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (getReviewType() != null) {
          data.setReviewType(getReviewType().getType());
       }
+      data.setAttrValues(getAttrValues().get());
       return data;
    }
 
@@ -200,6 +202,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
             getWorkPackage().set(data);
          }
          getReviewType().set(data);
+         getAttrValues().set(data);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -271,6 +274,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       toolBarManager.insertBefore(WorldXWidgetActionPage.MENU_GROUP_PRE, new LoadSearchAction(this));
       toolBarManager.insertBefore(WorldXWidgetActionPage.MENU_GROUP_PRE, new DeleteSearchAction(this));
       toolBarManager.insertBefore(WorldXWidgetActionPage.MENU_GROUP_PRE, new ClearSearchAction(this));
+      toolBarManager.insertBefore(WorldXWidgetActionPage.MENU_GROUP_PRE, new Separator());
+      toolBarManager.insertBefore(WorldXWidgetActionPage.MENU_GROUP_PRE, new ShowSearchItemAction(this));
       toolBarManager.insertBefore(WorldXWidgetActionPage.MENU_GROUP_PRE, new Separator());
    }
 
