@@ -487,18 +487,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          RelationTypeSide rts = new RelationTypeSide(relType, RelationSide.SIDE_B);
          ArtifactReadable artifactA = orcsApi.getQueryFactory().fromBranch(getBranch()).andId(artA).asArtifact();
          List<ArtifactId> related = artifactA.getRelatedIds(rts);
-         ArtifactId beforeArtifact = related.get(related.indexOf(afterArtifactId) + 1);
-         afterIndex = orcsApi.getJdbcService().getClient().fetch(0,
-            "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
-            getBranch(), artA, relType.getId(), afterArtifact);
-         beforeIndex = orcsApi.getJdbcService().getClient().fetch(0,
-            "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
-            getBranch(), artA, relType.getId(), beforeArtifact);
-         if (afterIndex == null) {
-            afterIndex = 0;
-         }
-         if (beforeIndex == null) {
-            beforeIndex = 0;
+         if (related.indexOf(afterArtifactId) + 1 > related.size() - 1) {
+            insertType = "end";
+         } else {
+            ArtifactId beforeArtifact = related.get(related.indexOf(afterArtifactId) + 1);
+            Integer selectAfterIndex = orcsApi.getJdbcService().getClient().fetch(0,
+               "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
+               getBranch(), artA, relType.getId(), afterArtifact);
+            Integer selectBeforeIndex = orcsApi.getJdbcService().getClient().fetch(0,
+               "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
+               getBranch(), artA, relType.getId(), beforeArtifact);
+            afterIndex = selectAfterIndex != null ? selectAfterIndex : 0;
+            beforeIndex = selectBeforeIndex != null ? selectBeforeIndex : 0;
          }
       }
       relate(relType, artA, artB, relatedArtifact, insertType, afterIndex, beforeIndex);
@@ -517,8 +517,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             maxOrder = txData.getNewRelations().get(relType, artA).getMaxOrder();
          } else {
             String minMaxString = orcsApi.getJdbcService().getClient().fetch("0,0",
-               "SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ?",
-               getBranch(), artA, relType.getId());
+               "SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ?",
+               artA, relType.getId());
             if (minMaxString != null && minMaxString.length() > 3) {
                minOrder = Integer.parseInt(minMaxString.substring(0, minMaxString.indexOf(",") - 1));
                maxOrder = Integer.parseInt(minMaxString.substring(minMaxString.indexOf(",") + 1));

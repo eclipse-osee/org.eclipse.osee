@@ -173,7 +173,11 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    private RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
-      data.setLocalId(id);
+      if (relationType.isNewRelationTable()) {
+         data.setLocalId(version.getGammaId());
+      } else {
+         data.setLocalId(id);
+      }
       data.setType(relationType);
       data.setBaseType(baseRelationType);
       data.setModType(modType);
