@@ -106,6 +106,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
@@ -283,6 +284,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @DELETE
    @Path("programbacklogitem/{programBacklogItemId}")
    public RestResult deleteProgramBacklogItem(@PathParam("programBacklogItemId") long programBacklogItemId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       return deleteProgramItem(programBacklogItemId, AtsArtifactTypes.AgileProgramBacklogItem.getName());
    }
 
@@ -316,6 +318,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @DELETE
    @Path("programfeature/{programFeatureId}")
    public RestResult deleteProgramFeature(@PathParam("programFeatureId") long programFeatureId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       return deleteProgramItem(programFeatureId, AtsArtifactTypes.AgileProgramFeature.getName());
    }
 
@@ -603,6 +606,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public Response deleteFeatureGroup(long teamId, long featureId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       atsApi.getAgileService().deleteAgileFeatureGroup(featureId);
       return Response.ok().build();
    }

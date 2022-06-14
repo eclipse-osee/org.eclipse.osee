@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.ProgramOperations;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -251,6 +252,7 @@ public class ProgramResource extends AbstractConfigResource {
    @DELETE
    @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
    public Response deleteInsertionActivity(@PathParam("iaId") ArtifactId iaId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       getProgramOperations().deleteInsertionActivity(iaId);
       return Response.ok().build();
    }
