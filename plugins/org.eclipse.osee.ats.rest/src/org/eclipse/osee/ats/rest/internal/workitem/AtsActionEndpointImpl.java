@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -36,6 +38,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
@@ -86,6 +89,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -858,6 +862,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
+	  orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.deleteBids(bids);
    }
