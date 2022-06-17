@@ -15,7 +15,7 @@ package org.eclipse.osee.synchronization.rest.forest.morphology;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
@@ -73,7 +73,7 @@ public class AbstractMapGrove implements Grove {
     * @throws NullPointerException when the parameter <code>identifierType</code> is <code>null</code>.
     */
 
-   public AbstractMapGrove(IdentifierType identifierType, boolean groveThingProvidesNativeKeys, Function<Object, Boolean>[] primaryKeyValidators, Function<Object, Boolean>[] nativeKeyValidators) {
+   public AbstractMapGrove(IdentifierType identifierType, boolean groveThingProvidesNativeKeys, Predicate<Object>[] primaryKeyValidators, Predicate<Object>[] nativeKeyValidators) {
 
       //@formatter:off
       this.identifierType = identifierType;
@@ -142,7 +142,7 @@ public class AbstractMapGrove implements Grove {
     * @return a {@link Store} implementation for the grove's primary store.
     */
 
-   private Store createNativeStorage(Function<Object, Boolean>[] keyValidators) {
+   private Store createNativeStorage(Predicate<Object>[] keyValidators) {
 
       var keyCount = Objects.nonNull(keyValidators) ? keyValidators.length : 0;
 
@@ -164,7 +164,7 @@ public class AbstractMapGrove implements Grove {
     */
 
    @SuppressWarnings("null")
-   private Store createPrimaryStorage(StoreType storeType, Function<Object, Boolean>[] keyValidators) {
+   private Store createPrimaryStorage(StoreType storeType, Predicate<Object>[] keyValidators) {
       //@formatter:off
       var keyCount = Objects.nonNull(keyValidators) ? keyValidators.length : 0;
 

@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.synchronization.util;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * This class contains various static methods for validating arrays.
@@ -29,6 +29,48 @@ public class ParameterArray {
     */
 
    private ParameterArray() {
+   }
+
+   /**
+    * Validates the array according to the following rules:
+    * <ul>
+    * <li>a <code>null</code> array is OK,</li>
+    * <li>an empty array is OK,</li>
+    * <li>each element is non-null, and</li>
+    * <li>each element with a corresponding validator passes validation.</li>
+    * </ul>
+    *
+    * @param objects the array to validate.
+    * @param elementValidator an array of predicates used to validate the array elements.
+    * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
+    */
+
+   public static boolean validateElements(Object[] objects, Predicate<Object>[] elementValidators) {
+
+      /*
+       * A null or empty array is OK
+       */
+
+      if (Objects.isNull(objects) || (objects.length == 0)) {
+         return true;
+      }
+
+      /*
+       * Validate members
+       */
+
+      for (int i = 0; (i < objects.length) && (i < elementValidators.length); i++) {
+
+         if (!elementValidators[i].test(objects[i])) {
+            return false;
+         }
+      }
+
+      /*
+       * Array is OK, all elements have been tested or we ran out of validators
+       */
+
+      return true;
    }
 
    /**
@@ -132,7 +174,7 @@ public class ParameterArray {
     * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
     */
 
-   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize, Function<Object, Boolean> elementValidator) {
+   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize, Predicate<Object> elementValidator) {
 
       /*
        * Assert check limits are sane
@@ -159,7 +201,7 @@ public class ParameterArray {
 
       for (int i = 0; i < objects.length; i++) {
 
-         if (!elementValidator.apply(objects[i])) {
+         if (!elementValidator.test(objects[i])) {
             return false;
          }
       }
@@ -187,7 +229,7 @@ public class ParameterArray {
     * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
     */
 
-   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize, Function<Object, Boolean>[] elementValidators) {
+   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize, Predicate<Object>[] elementValidators) {
 
       /*
        * Assert check limits are sane
@@ -218,7 +260,7 @@ public class ParameterArray {
 
       for (int i = 0; i < objects.length; i++) {
 
-         if (!elementValidators[i].apply(objects[i])) {
+         if (!elementValidators[i].test(objects[i])) {
             return false;
          }
       }
@@ -244,6 +286,54 @@ public class ParameterArray {
    /**
     * Validates the array according to the following rules:
     * <ul>
+    * <li>when the minimum size is greater than zero, the array cannot be <code>null</code> or empty, and</li>
+    * <li>the array length is within the inclusive bounds.</li>
+    * </ul>
+    *
+    * @param objects the array to validate.
+    * @param minSize the minimum number of array elements allowed.
+    * @param maxSize the maximum number of array elements allowed.
+    * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
+    */
+
+   public static boolean validateSize(Object[] objects, int minSize, int maxSize) {
+
+      /*
+       * Assert check limits are sane
+       */
+
+      //@formatter:off
+      assert
+            (minSize >= 0)
+         && (maxSize >= minSize);
+      //@formatter:on
+
+      /*
+       * When minSize is zero, a null or empty array is OK
+       */
+
+      if ((minSize == 0) && (Objects.isNull(objects) || (objects.length == 0))) {
+         return true;
+      }
+
+      /*
+       * When minSize is non-zero, validate array is non-null and within size limits
+       */
+
+      if (Objects.isNull(objects) || (objects.length < minSize) || (objects.length > maxSize)) {
+         return false;
+      }
+
+      /*
+       * Array is OK
+       */
+
+      return true;
+   }
+
+   /**
+    * Validates the array according to the following rules:
+    * <ul>
     * <li>when the minimum size is greater than zero, the array cannot be <code>null</code> or empty,</li>
     * <li>the array length is within the inclusive bounds,</li>
     * <li>each element is non-null, and</li>
@@ -257,7 +347,7 @@ public class ParameterArray {
     * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
     */
 
-   public static boolean validateSizeAndElements(Object[] objects, int minSize, int maxSize, Function<Object, Boolean>[] elementValidator) {
+   public static boolean validateSizeAndElements(Object[] objects, int minSize, int maxSize, Predicate<Object>[] elementValidator) {
 
       /*
        * Assert check limits are sane
@@ -296,7 +386,7 @@ public class ParameterArray {
 
       for (int i = 0; i < objects.length; i++) {
 
-         if (!elementValidator[i].apply(objects[i])) {
+         if (!elementValidator[i].test(objects[i])) {
             return false;
          }
       }

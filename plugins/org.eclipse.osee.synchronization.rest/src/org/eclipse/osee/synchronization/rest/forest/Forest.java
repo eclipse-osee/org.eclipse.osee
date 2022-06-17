@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
@@ -33,7 +34,6 @@ import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataTypeKey;
 import org.eclipse.osee.synchronization.rest.forest.denizens.NativeHeader;
 import org.eclipse.osee.synchronization.rest.forest.morphology.AbstractGroveThing;
 import org.eclipse.osee.synchronization.rest.forest.morphology.AbstractMapGrove;
-import org.eclipse.osee.synchronization.util.ParameterArray;
 
 /**
  * Class encapsulates the data structures for the Synchronization Artifact Document Object Model. There is a
@@ -519,11 +519,11 @@ public class Forest {
          //@formatter:on
       }
 
-      Function<Object, Boolean>[] getPrimaryKeyValidators() {
+      Predicate<Object>[] getPrimaryKeyValidators() {
          //@formatter:off
 
          @SuppressWarnings("unchecked")
-         Function<Object,Boolean>[] primaryKeyValidators = new Function[this.primaryRank];
+         Predicate<Object>[] primaryKeyValidators = new Predicate[this.primaryRank];
 
          for (int i = 0; i < this.primaryRank; i++)
          {
@@ -533,13 +533,13 @@ public class Forest {
             if (identifierTypesForRank.length == 1)
             {
 
-               primaryKeyValidators[i] = new Function<Object, Boolean>()
+               primaryKeyValidators[i] = new Predicate<Object>()
                {
 
                   IdentifierType identifierType = identifierTypesForRank[0];
 
                   @Override
-                  public Boolean apply(Object key)
+                  public boolean test(Object key)
                   {
                      return
                         Objects.nonNull( key )
@@ -551,13 +551,13 @@ public class Forest {
             }
             else
             {
-               primaryKeyValidators[i] = new Function<Object, Boolean>()
+               primaryKeyValidators[i] = new Predicate<Object>()
                {
 
                   IdentifierType[] identifierTypes = identifierTypesForRank;
 
                   @Override
-                  public Boolean apply(Object key)
+                  public boolean test(Object key)
                   {
                      if( Objects.isNull(key) || !(key instanceof Identifier) )
                      {
@@ -632,25 +632,25 @@ public class Forest {
          //@formatter:on
       }
 
-      Function<Object, Boolean>[] getNativeKeyValidators() {
+      Predicate<Object>[] getNativeKeyValidators() {
          //@formatter:off
          if (Objects.isNull( this.validNativeKeyTypes )) {
             return null;
          }
 
          @SuppressWarnings("unchecked")
-         Function<Object, Boolean>[] nativeKeyValidators = new Function[ this.nativeRank ];
+         Predicate<Object>[] nativeKeyValidators = new Predicate[ this.nativeRank ];
 
          for (int i = 0; i < this.nativeRank; i++)
          {
             var keyClassForRank = this.validNativeKeyTypes[i];
 
-            nativeKeyValidators[i] = new Function<Object, Boolean>()
+            nativeKeyValidators[i] = new Predicate<Object>()
             {
                Class<?> keyClass = keyClassForRank;
 
                @Override
-               public Boolean apply(Object key) {
+               public boolean test(Object key) {
 
                   //@formatter:off
                      return

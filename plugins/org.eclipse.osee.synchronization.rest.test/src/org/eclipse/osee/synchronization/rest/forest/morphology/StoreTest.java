@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.osee.framework.jdk.core.util.DoubleMap;
@@ -261,8 +261,8 @@ public class StoreTest {
 
    //@formatter:off
    @SuppressWarnings({"unchecked"})
-   private static Function<Object,Boolean>[] keyValidators1 =
-      new Function[]
+   private static Predicate<Object>[] keyValidators1 =
+      new Predicate[]
       {
         StoreTest::stringKeyValidator
       };
@@ -270,8 +270,8 @@ public class StoreTest {
 
    //@formatter:off
    @SuppressWarnings({"unchecked"})
-   private static Function<Object,Boolean>[] keyValidators2 =
-      new Function[]
+   private static Predicate<Object>[] keyValidators2 =
+      new Predicate[]
       {
         StoreTest::stringKeyValidator,
         StoreTest::stringKeyValidator
@@ -280,8 +280,8 @@ public class StoreTest {
 
    //@formatter:off
    @SuppressWarnings({"unchecked"})
-   private static Function<Object,Boolean>[] keyValidators3 =
-      new Function[]
+   private static Predicate<Object>[] keyValidators3 =
+      new Predicate[]
       {
         StoreTest::stringKeyValidator,
         StoreTest::stringKeyValidator,
