@@ -21,14 +21,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierType.Identifier;
 import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.osee.synchronization.util.HierarchyTree;
 import org.eclipse.osee.synchronization.util.IndentedString;
-import org.eclipse.osee.synchronization.util.ParameterArray;
 
 /**
  * Provides a rank 3 {@link Store} implementation for primary stores only using a {@link Map} of {@link HierarchyTree}s.
@@ -64,10 +65,10 @@ class StoreRank3 implements Store {
    protected final Map<Identifier, HierarchyTree<Identifier, GroveThing>> hierarchyTrees;
 
    /**
-    * Saves the {@link Function} used to validate the primary map key when assertions are enabled.
+    * Saves the {@link Predicate}s used to validate the primary map keys when assertions are enabled.
     */
 
-   private final Function<Object, Boolean>[] keyValidators;
+   private final Predicate<Object>[] keyValidators;
 
    /**
     * A set of the {@link Identifier}s for each {@link GroveThing} added to the {@link Store}. This set is used to
@@ -89,17 +90,17 @@ class StoreRank3 implements Store {
     *
     * @param storeType specifies if the store uses primary or native keys. Only primary stores keys are supported by
     * this implementation.
-    * @param primaryKeyValidator the {@link Function} used to validate the primary map key when assertions are enabled.
-    * @param secondaryKeyValidator the {@link Function} used to validate the secondary map key when assertions are
+    * @param primaryKeyValidator the {@link Predicate} used to validate the primary map key when assertions are enabled.
+    * @param secondaryKeyValidator the {@link Predicate} used to validate the secondary map key when assertions are
     * enabled.
-    * @param tertiaryKeyValidator the {@link Function} used to validate the tertiary map key when assertions are
+    * @param tertiaryKeyValidator the {@link Predicate} used to validate the tertiary map key when assertions are
     * enabled.
     */
 
    @SuppressWarnings("unchecked")
-   public StoreRank3(StoreType storeType, Function<Object, Boolean> primaryKeyValidator, Function<Object, Boolean> secondaryKeyValidator, Function<Object, Boolean> tertiaryKeyValidator) {
+   public StoreRank3(StoreType storeType, Predicate<Object> primaryKeyValidator, Predicate<Object> secondaryKeyValidator, Predicate<Object> tertiaryKeyValidator) {
       this.storeType = storeType;
-      this.keyValidators = new Function[] {
+      this.keyValidators = new Predicate[] {
          Objects.requireNonNull(primaryKeyValidator),
          Objects.requireNonNull(secondaryKeyValidator),
          Objects.requireNonNull(tertiaryKeyValidator)};

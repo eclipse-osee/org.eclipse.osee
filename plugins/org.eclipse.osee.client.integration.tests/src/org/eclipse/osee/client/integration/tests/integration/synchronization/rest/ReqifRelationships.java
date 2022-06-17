@@ -16,9 +16,12 @@ package org.eclipse.osee.client.integration.tests.integration.synchronization.re
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRelationshipRecord;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestDocumentBuilder;
+import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
@@ -27,11 +30,19 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
+import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.rmf.reqif10.SpecObject;
+import org.eclipse.rmf.reqif10.SpecRelation;
+import org.eclipse.rmf.reqif10.SpecType;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * ReqIF relationship tests for the Synchronization REST API End point defined in the package
@@ -41,6 +52,22 @@ import org.junit.Test;
  */
 
 public class ReqifRelationships {
+
+   /**
+    * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
+    * The default (normal for testing) value is <code>true</code>.
+    */
+
+   private static boolean setValues = true;
+
+   /**
+    * Testing rule used to prevent modification of a production database. This is a {@link ClassRule} which will prevent
+    * the <code>BeforeClass</code> method from running on a production database. A {@link TestRule} is not applied to
+    * <code>BeforeClass</code> class methods and will therefore not provide any protection.
+    */
+
+   @ClassRule
+   public static NotProductionDataStoreRule rule = new NotProductionDataStoreRule();
 
    /**
     * Class used to define relationships between test artifacts.
@@ -274,13 +301,6 @@ public class ReqifRelationships {
    }
 
    /**
-    * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
-    * The default (normal for testing) value is <code>true</code>.
-    */
-
-   private static boolean setValues = true;
-
-   /**
     * Saves the {@link ArtifactId} of the root artifact of the test document.
     */
 
@@ -426,32 +446,133 @@ public class ReqifRelationships {
          );
    //@formatter:on
 
+   /**
+    * Map of ReqIF Spec Objects from the test document keyed by their identifiers. This map does not include the ReqIF
+    * Specifications.
+    */
+
+   private static RankMap<SpecObject> reqifSpecObjectByIdentifierMap;
+
+   /**
+    * Map of ReqIF Spec Objects from the test document keyed by their long names. This map does not include the ReqIF
+    * Specifications.
+    */
+
+   private static RankMap<SpecObject> reqifSpecObjectByLongNameMap;
+
+   /**
+    * Map of ReqIF Spec Relations from the test document keyed by their type, source, and target identifiers.
+    */
+
+   private static RankMap<SpecRelation> reqifSpecRelationByTypeSourceTargetIdentifierMap;
+
+   /**
+    * Map of ReqIF Spec Relation Types from the test document keyed by their long names.
+    */
+
+   private static RankMap<SpecType> reqifSpecRelationTypesByLongNameMap;
+
+   /**
+    * Map of ReqIF Spec Relation Types from the test document keyed by their identifiers.
+    */
+
+   private static RankMap<SpecType> reqifSpecRelationTypesByIdentifierMap;
+
    @SuppressWarnings("unchecked")
    @BeforeClass
    public static void testSetup() {
-      //@formatter:off
-
-      var testDocumentBuilder = new TestDocumentBuilder( ReqifRelationships.setValues );
-
-      testDocumentBuilder.buildDocument
-                             (
-                                (List<BuilderRecord>) (Object) ReqifRelationships.artifactInfoRecords,
-                                ReqifRelationships.testBranchName,
-                                ReqifRelationships.testBranchCreationComment
-                             );
 
       /*
-       * Save identifiers of test document root
+       * Create tracking maps
        */
 
-      ReqifRelationships.rootBranchId = testDocumentBuilder.getRootBranchId();
-      ReqifRelationships.rootArtifactId = testDocumentBuilder.getRootArtifactId();
+      ReqifRelationships.reqifSpecObjectByIdentifierMap =
+         new RankHashMap<>("reqifSpecObjectByIdentifierMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
+
+      ReqifRelationships.reqifSpecObjectByLongNameMap =
+         new RankHashMap<>("reqifSpecObjectByLongNameMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
+
+      ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap = new RankHashMap<>(
+         "reqifSpecRelationBySourceTargetTypeIdentifierMap", 3, 256, 0.75f, KeyPredicates.keysAreStringsRank3);
+
+      ReqifRelationships.reqifSpecRelationTypesByIdentifierMap =
+         new RankHashMap<>("reqifSpecRelationTypeByIdentifierMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
+
+      ReqifRelationships.reqifSpecRelationTypesByLongNameMap =
+         new RankHashMap<>("reqifSpecRelationTypeByLongNameMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
+
+      /*
+       * Build test document
+       */
+
+      var testDocumentBuilder = new TestDocumentBuilder(ReqifRelationships.setValues);
+
+      testDocumentBuilder.buildDocument((List<BuilderRecord>) (Object) ReqifRelationships.artifactInfoRecords,
+         ReqifRelationships.testBranchName, ReqifRelationships.testBranchCreationComment);
+
+      /*
+       * Get services
+       */
+
+      var oseeClient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
+
+      var synchronizationEndpoint = oseeClient.getSynchronizationEndpoint();
+
+      /*
+       * Get and parse the Synchronization Artifact
+       */
+
+      var synchronizationArtifactParser = new SynchronizationArtifactParser(synchronizationEndpoint);
+
+      synchronizationArtifactParser.parseTestDocument(testDocumentBuilder.getRootBranchId(),
+         testDocumentBuilder.getRootArtifactId(), "reqif");
+
+      /*
+       * Index the members of the ReqIF by identifier and long name
+       */
+
+      synchronizationArtifactParser.parseSpecObjects(ReqifRelationships.reqifSpecObjectByIdentifierMap,
+         ReqifRelationships.reqifSpecObjectByLongNameMap);
+
+      synchronizationArtifactParser.parseSpecRelationTypes(ReqifRelationships.reqifSpecRelationTypesByIdentifierMap,
+         ReqifRelationships.reqifSpecRelationTypesByLongNameMap);
+
+      synchronizationArtifactParser.parseSpecRelations(
+         ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap);
+
    }
 
    @Test
-   public void testTrue() {
+   public void testRequirementTraceCA2BA() {
 
-      Assert.assertTrue( true );
+      var reqifSpecTypeOptional = ReqifRelationships.reqifSpecRelationTypesByLongNameMap.get("Requirement Trace");
+
+      Assert.assertTrue(reqifSpecTypeOptional.isPresent());
+
+      var reqifSourceSpecObjectOptional = ReqifRelationships.reqifSpecObjectByLongNameMap.get("Requirement C-A");
+
+      Assert.assertTrue(reqifSourceSpecObjectOptional.isPresent());
+
+      var reqifTargetSpecObjectOptional = ReqifRelationships.reqifSpecObjectByLongNameMap.get("Requirement B-A");
+
+      Assert.assertTrue(reqifTargetSpecObjectOptional.isPresent());
+
+      var reqifSpecTypeIdentifier = reqifSpecTypeOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifSpecTypeIdentifier);
+
+      var reqifSourceSpecObjectIdentifier = reqifSourceSpecObjectOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifSourceSpecObjectIdentifier);
+
+      var reqifTargetSpecObjectIdentifier = reqifTargetSpecObjectOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifTargetSpecObjectIdentifier);
+
+      var reqifSpecRelationOptional = ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap.get(
+         reqifSpecTypeIdentifier, reqifSourceSpecObjectIdentifier, reqifTargetSpecObjectIdentifier);
+
+      Assert.assertTrue(reqifSpecRelationOptional.isPresent());
    }
 
 }

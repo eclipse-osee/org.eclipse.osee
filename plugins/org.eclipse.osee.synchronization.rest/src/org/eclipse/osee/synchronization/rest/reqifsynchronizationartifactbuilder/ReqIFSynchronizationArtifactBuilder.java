@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.jdk.core.util.EnumBiConsumerMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumConsumerMap;
+import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
 import org.eclipse.osee.synchronization.rest.IdentifierType;
 import org.eclipse.osee.synchronization.rest.IdentifierTypeGroup;
 import org.eclipse.osee.synchronization.rest.IsSynchronizationArtifactBuilder;
@@ -38,7 +39,6 @@ import org.eclipse.osee.synchronization.rest.forest.Grove;
 import org.eclipse.osee.synchronization.rest.forest.GroveThing;
 import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataType;
 import org.eclipse.osee.synchronization.rest.forest.denizens.NativeDataTypeKey;
-import org.eclipse.osee.synchronization.util.ParameterArray;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeDefinitionBoolean;
 import org.eclipse.rmf.reqif10.AttributeDefinitionDate;
@@ -72,6 +72,7 @@ import org.eclipse.rmf.reqif10.SpecHierarchy;
 import org.eclipse.rmf.reqif10.SpecObject;
 import org.eclipse.rmf.reqif10.SpecObjectType;
 import org.eclipse.rmf.reqif10.SpecRelation;
+import org.eclipse.rmf.reqif10.SpecRelationType;
 import org.eclipse.rmf.reqif10.SpecType;
 import org.eclipse.rmf.reqif10.Specification;
 import org.eclipse.rmf.reqif10.SpecificationType;
@@ -370,6 +371,11 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       specRelationGrove.stream().forEach((specRelationGroveThing) -> {
          //@formatter:off
          var reqifSpecRelation         = (SpecRelation) specRelationGroveThing.getForeignThing();
+
+         var commonObjectType          = specRelationGroveThing.getLinkScalar(IdentifierType.SPEC_RELATION_TYPE).get();
+         var reqifSpecRelationType     = (SpecRelationType) commonObjectType.getForeignThing();
+
+         reqifSpecRelation.setType( reqifSpecRelationType );
 
          var sideASpecObjectGroveThing = specRelationGroveThing.getLinkVectorElement(IdentifierTypeGroup.RELATABLE_OBJECT, 0).get();
          var sideBSpecObjectGroveThing = specRelationGroveThing.getLinkVectorElement(IdentifierTypeGroup.RELATABLE_OBJECT, 1).get();

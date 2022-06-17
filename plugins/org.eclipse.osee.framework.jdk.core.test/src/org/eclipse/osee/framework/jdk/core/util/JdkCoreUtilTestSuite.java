@@ -40,7 +40,8 @@ import org.junit.runners.Suite;
    StringsTest.class,
    UrlQueryTest.class,
    EnumFunctionalInterafaceMapsTest.class,
-   DoubleMapTest.class})
+   DoubleMapTest.class,
+   RankMapTest.class})
 public class JdkCoreUtilTestSuite {
    // Test Suite
 }
