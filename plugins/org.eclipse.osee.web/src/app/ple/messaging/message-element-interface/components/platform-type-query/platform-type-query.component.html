@@ -16,7 +16,7 @@
         <ng-container>
             <mat-form-field class="width-100">
                 <mat-label>Byte Size</mat-label><!--TODO: Replace this with an api function later to handle bit/byte depending on preference-->
-                <input type="number" matInput [(ngModel)]="bitSize" data-cy="field-byte-size">
+                <input type="number" matInput [(ngModel)]="bitSize" [min]="minBitSize" [max]="maxBitSize" data-cy="field-byte-size">
                 <span matSuffix>
                     <mat-slider matSuffix [min]="minBitSize" [value]="bitSize" (input)="bitSize=$event.value?$event.value:0" [max]="maxBitSize" [step]="bitSizeSliderStepSize" thumbLabel="true" [displayWith]="bitSizeDisplay" color="primary"></mat-slider>
                     <button mat-icon-button (click)="queryTypes()" class="query-button" data-cy="query-button"><mat-icon>search</mat-icon></button>
@@ -24,16 +24,26 @@
             </mat-form-field>
         </ng-container>
     </div>
-    <div *ngIf="logicalType==='enumeration'">
+    <div>
         <mat-form-field class="width-100">
             <mat-label>Name</mat-label>
-            <mat-select [(ngModel)]="name" class="name-select" data-cy="field-name" style="visibility:visible">
-                <mat-option *ngFor="let enum of enumerations" [value]="enum" [attr.data-cy]="'option-'+enum">
-                    <mat-label>{{enum}}</mat-label>
+            <input matInput [(ngModel)]="name" [matAutocomplete]="nameAuto">
+            <mat-autocomplete autoActiveFirstOption class="name-select" data-cy="field-name" #nameAuto="matAutocomplete">
+                <mat-option *ngFor="let type of types" [value]="type" [attr.data-cy]="'option-'+type">
+                    <mat-label>{{type}}</mat-label>
                 </mat-option>
-            </mat-select>
+            </mat-autocomplete>
         </mat-form-field>
         <br>
+        <mat-form-field class="width-100">
+            <mat-label>Description</mat-label>
+            <textarea cdkTextareaAutosize matInput [(ngModel)]="description" [matAutocomplete]="descriptionAuto"></textarea>
+            <mat-autocomplete autoActiveFirstOption class="description-select" data-cy="field-description" #descriptionAuto="matAutocomplete">
+                <mat-option *ngFor="let _description of descriptions" [value]="_description" [attr.data-cy]="'option-'+_description">
+                    <mat-label>{{_description}}</mat-label>
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
     </div>
     <br>
     <div class="flex row">

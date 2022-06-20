@@ -47,6 +47,8 @@ import { EnumsService } from '../../../shared/services/http/enums.service';
 import { MimPreferencesService } from '../../../shared/services/http/mim-preferences.service';
 import { TypesService } from '../../../shared/services/http/types.service';
 import { PlatformTypeQueryMock } from '../../mocks/components/PlatformTypeQuery.mock';
+import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
+import { CurrentStructureService } from '../../services/current-structure.service';
 import { AddElementDialog } from '../../types/AddElementDialog';
 
 import { AddElementDialogComponent } from './add-element-dialog.component';
@@ -107,7 +109,8 @@ describe('AddElementDialogComponent', () => {
         { provide: TypesService, useValue: typesServiceMock },
         { provide: EnumsService, useValue: enumsServiceMock },
         { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock}]
+        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
+        { provide: CurrentStructureService,useValue:CurrentStateServiceMock }]
     })
     .compileComponents();
   });

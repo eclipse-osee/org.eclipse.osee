@@ -25,7 +25,7 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <ng-container *ngFor="let path of name.paths">
-            <a mat-button [routerLink]="((basePath|async)||'')+path.path+'/'">
+            <a mat-button [routerLink]="((basePath|async)||'')+path.path+'/.'">
                 {{path.name}}
             </a>
         </ng-container>

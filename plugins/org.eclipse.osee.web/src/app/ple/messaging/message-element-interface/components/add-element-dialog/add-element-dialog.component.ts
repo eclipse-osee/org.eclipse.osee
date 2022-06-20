@@ -48,8 +48,6 @@ export class AddElementDialogComponent implements OnInit {
       map((result) => {
         if (result.length === 1) {
           this.data.type=result[0]
-        } else if (!this.typeDialogOpen) {
-          this.openPlatformTypeDialog();
         }
         return result;
       }),
@@ -69,7 +67,10 @@ export class AddElementDialogComponent implements OnInit {
   constructor (public dialog: MatDialog, private structures: CurrentStructureService, public dialogRef: MatDialogRef<AddElementDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddElementDialog, private typeDialogService: TypesUIService, private _ui: UiService) { 
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.query.next(new PlatformTypeQuery());
+    this.queryMode.next(true);
+  }
 
   createNew() {
     this.data.element.id = '-1';
@@ -87,9 +88,19 @@ export class AddElementDialogComponent implements OnInit {
   }
   openPlatformTypeDialog() {
     this.typeDialogOpen = !this.typeDialogOpen;
+    if (this.typeDialogOpen) {
+      this.searchOpen = false;
+    }
+  }
+  resetDialog() {
+    this.searchOpen = false;
+    this.typeDialogOpen = false;
   }
   openSearch() {
     this.searchOpen = !this.searchOpen;
+    if (this.searchOpen) {
+      this.typeDialogOpen = false;
+    }
   }
   receivePlatformTypeData(value: newPlatformTypeDialogReturnData) {
     this.typeDialogOpen = !this.typeDialogOpen;
