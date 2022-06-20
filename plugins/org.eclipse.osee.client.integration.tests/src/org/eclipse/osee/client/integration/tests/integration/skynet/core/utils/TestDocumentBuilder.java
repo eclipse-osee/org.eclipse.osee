@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -732,6 +733,30 @@ public class TestDocumentBuilder {
 
       Assert.assertTrue( "Failed to create relationships", relationshipsCreated );
       //@formatter:on
+   }
+
+   /**
+    * Gets the OSEE Artifact Identifier for the artifact associated with the specified builder record identifier.
+    *
+    * @param builderRecordId identifier of the builder record to look up.
+    * @return the identifier for the OSEE Artifact associated with the specified builder record.
+    */
+
+   public Optional<Long> getArtifactIdByBuilderRecordId(Integer builderRecordId) {
+
+      var builderRecordWrapper = this.builderRecordWrapperByIdMap.get(builderRecordId);
+
+      if (Objects.isNull(builderRecordWrapper)) {
+         return Optional.empty();
+      }
+
+      var artifact = builderRecordWrapper.getArtifact();
+
+      if (Objects.isNull(artifact)) {
+         return Optional.empty();
+      }
+
+      return Optional.of(artifact.getId());
    }
 
    /**

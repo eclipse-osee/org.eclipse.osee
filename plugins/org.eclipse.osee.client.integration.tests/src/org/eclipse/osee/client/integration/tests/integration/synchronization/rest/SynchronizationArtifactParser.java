@@ -14,8 +14,10 @@
 package org.eclipse.osee.client.integration.tests.integration.synchronization.rest;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import javax.ws.rs.core.Response;
 import org.eclipse.emf.common.util.EList;
@@ -24,7 +26,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.util.DoubleMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
@@ -34,6 +35,8 @@ import org.eclipse.rmf.reqif10.DatatypeDefinitionEnumeration;
 import org.eclipse.rmf.reqif10.EnumValue;
 import org.eclipse.rmf.reqif10.Identifiable;
 import org.eclipse.rmf.reqif10.ReqIF;
+import org.eclipse.rmf.reqif10.ReqIFContent;
+import org.eclipse.rmf.reqif10.SpecElementWithAttributes;
 import org.eclipse.rmf.reqif10.SpecObject;
 import org.eclipse.rmf.reqif10.SpecRelation;
 import org.eclipse.rmf.reqif10.SpecRelationType;
@@ -71,6 +74,33 @@ class SynchronizationArtifactParser {
       this.synchronizationEndpoint = Objects.requireNonNull(synchronizationEndpoint);
 
       this.reqifTestDocument = null;
+   }
+
+   /**
+    * Reflective method to extract a {@link String} value from an {@link EObject} by specifying a method name of the
+    * {@link EObject} instance. The named method may belong to the {@link EObject} class, any of its super classes, or
+    * any of the derived classes implementing the {@link EObject} instance.
+    *
+    * @param eObject the ReqIF Attribute Value to obtain an identifier or long name for.
+    * @param secondaryFunctionName use "getIdentifier" to obtain the identifier and "getLongName" to get the long name.
+    * @return the identifier or long name to be used for the Attribute Value.
+    * @throws AssertionError when any of the reflective methods fail.
+    */
+
+   private static String extractStringValueFromEObject(EObject eObject, String extractionMethodName) {
+      try {
+         var eObjectClass = eObject.getClass();
+
+         var extractionMethod = eObjectClass.getMethod(extractionMethodName);
+
+         var value = (String) extractionMethod.invoke(eObject);
+
+         return value;
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
+         //Should never get here.
+         return null;
+      }
    }
 
    /**
@@ -149,138 +179,108 @@ class SynchronizationArtifactParser {
    }
 
    /**
-    * For each provided secondary {@link Identifiable}:
+    * For each provided primary {@link Identifiable}
     * <ul>
-    * <li>extracts an identifier,</li>
-    * <li>extracts a long name,</li>
-    * <li>adds the secondary {@link Identifiable} to the maps using the primary and secondary identifiers or long names
-    * as keys.</li>
+    * <li>extracts a primary key,</li>
+    * <li>extracts a list of secondary {@link Identifiable} objects,</li>
+    * <li>extracts a secondary key from each secondary {@link Identifiable}, and</li>
+    * <li>saves the secondary identifiable into a map using the primary and secondary keys.</li>
     * </ul>
-    *
-    * @param primaryIdentifier the identifier to use as the primary map key for the <code>byIdentifierMap</code>. This
-    * parameter may be <code>null</code>. When <code>null</code> the <code>byIdentifierMap</code> will not be populated.
-    * @param primaryLongName the long name to use as the primary map key for the <code>byLongNameMap</code>. This
-    * parameter may be <code>null</code>. When <code>null</code> the <code>byLongNameMap</code> will not be populated.
-    * @param reqifSecondaryEObjects the list of secondary {@link Identifiable} objects that were extracted from the
-    * primary {@link Identifiable}.
-    * @param secondaryIdentifierFunction a {@link Function} used to extract the identifier from the secondary
-    * {@link Identifiable}.
-    * @param secondaryLongNameFunction a {@link Function } used to extract the long name from the secondary
-    * {@link Identifiable}.
-    * @param byIdentifierMap the map to store values by identifier.
-    * @param byLongNameMap the map to store values by long name.
-    * @throws AssertionError when:
-    * <ul>
-    * <li>an identifier is needed and not extracted from the secondary {@link Identifiable},</li>
-    * <li>a long name is needed and not extracted from the secondary {@link Identifiable},
-    * <li>
-    * <li>an entry for the secondary {@link Identifiable} already exists in a map being populated.</li>
-    * </ul>
-    */
-
-   @SuppressWarnings("unchecked")
-   private static void mapSecondaryEObjects(String primaryIdentifier, String primaryLongName, EList<? extends EObject> reqifSecondaryEObjects, Function<EObject, String> secondaryIdentifierFunction, Function<EObject, String> secondaryLongNameFunction, RankMap<? extends EObject> byIdentifierMap, RankMap<? extends EObject> byLongNameMap) {
-
-      for (var reqifSecondaryEObject : reqifSecondaryEObjects) {
-
-         if (Objects.nonNull(primaryIdentifier)) {
-            var secondaryIdentifier = secondaryIdentifierFunction.apply(reqifSecondaryEObject);
-
-            Assert.assertNotNull(secondaryIdentifier);
-
-            var priorValueOptional = ((RankMap<EObject>) byIdentifierMap).associate(reqifSecondaryEObject,
-               primaryIdentifier, secondaryIdentifier);
-
-            Assert.assertTrue(priorValueOptional.isEmpty());
-         }
-
-         if (Objects.nonNull(primaryLongName)) {
-            var secondaryLongName = secondaryLongNameFunction.apply(reqifSecondaryEObject);
-
-            Assert.assertNotNull(secondaryLongName);
-
-            var priorValueOptional =
-               ((RankMap<EObject>) byLongNameMap).associate(reqifSecondaryEObject, primaryLongName, secondaryLongName);
-
-            Assert.assertTrue(priorValueOptional.isEmpty());
-         }
-      }
-   }
-
-   /**
-    * For each provided primary {@link Identifiable}:
-    * <ul>
-    * <li>extracts an identifier,</li>
-    * <li>extracts a long name,</li>
-    * <li>extracts a list of secondary {@link Identifiable} objects.</li>
-    * </ul>
-    * The secondary {@link Identifiable} objects are then added to the maps using the identifier and long name keys from
-    * the associated primary {@link Identifiable} object.
     *
     * @param reqifPrimaryIdentifiables list of ReqIF {@link Identifiable} objects to be stored into the maps.
-    * @param secondaryIdentifiablesFunction a {@link Function} used to extract the secondary {@link Identifiable} from
+    * @param primaryKeyExtractionFunction a {@link Function} used to extract the primary key from the primary
+    * {@link Identifiable}.
+    * @param secondaryIdentifiablersFunction a {@link Function} used to extract the secondary {@link Identifiable} from
     * the primary {@link Identifiable}.
-    * @param secondaryIdentifierFunction a {@link Function} used to extract the identifier from the secondary
+    * @param secondaryKeyExtractionFunction a {@link Function} used to extract the secondary key from the secondary
     * {@link Identifiable}.
-    * @param secondaryLongNameFunction a {@link Function} used to extract the long name from the secondary
-    * {@link Identifiable}.
-    * @param byIdentifierMap the map to store values by identifier.
-    * @param byLongNameMap the map to store values by long name.
-    * @throws AssertionError when
-    * <ul>
-    * <li>an identifier cannot be extracted from a primary {@link Identifiable}, or</li>
-    * <li>an long name cannot be extracted from a primary {@link Identifiable}.</li>
-    * </ul>
+    * @param map the secondary {@link Identifiable} objects are stored into this map with the primary and secondary
+    * keys.
     */
 
-   private static void mapSecondaryEObjects(EList<? extends Identifiable> reqifPrimaryIdentifiables, Function<Identifiable, EList<? extends EObject>> secondaryIdentifiablesFunction, Function<EObject, String> secondaryIdentifierFunction, Function<EObject, String> secondaryLongNameFunction, RankMap<? extends EObject> byIdentifierMap, RankMap<? extends EObject> byLongNameMap) {
-
-      for (var reqifPrimaryIdentifiable : reqifPrimaryIdentifiables) {
-
-         var primaryIdentifier = reqifPrimaryIdentifiable.getIdentifier();
-
-         Assert.assertNotNull(primaryIdentifier);
-
-         var primaryLongName = reqifPrimaryIdentifiable.getLongName();
-
-         Assert.assertNotNull(primaryLongName);
-
-         var reqifSecondaryIdentifiables = secondaryIdentifiablesFunction.apply(reqifPrimaryIdentifiable);
-
-         SynchronizationArtifactParser.mapSecondaryEObjects(primaryIdentifier, primaryLongName,
-            reqifSecondaryIdentifiables, secondaryIdentifierFunction, secondaryLongNameFunction, byIdentifierMap,
-            byLongNameMap);
-      }
+   //@formatter:off
+   private static void
+      mapSecondaryEObjects
+         (
+            EList<? extends Identifiable>                    reqifPrimaryIdentifiables,
+            Function<Identifiable, String>                   primaryKeyExtractionFunction,
+            Function<Identifiable, EList<? extends EObject>> secondaryIdentifiablesFunction,
+            Function<EObject, String>                        secondaryKeyExtractionFunction,
+            RankMap<EObject>                                 map
+         )
+   {
+      reqifPrimaryIdentifiables
+         .forEach
+            (
+              ( reqifPrimaryIdentifiable ) ->
+                 secondaryIdentifiablesFunction.apply( reqifPrimaryIdentifiable ).stream()
+                    .map
+                       (
+                         ( reqifSecondaryIdentifiable ) ->
+                            map.associate
+                               (
+                                 reqifSecondaryIdentifiable,
+                                 primaryKeyExtractionFunction.apply( reqifPrimaryIdentifiable ),
+                                 secondaryKeyExtractionFunction.apply( reqifSecondaryIdentifiable )
+                               )
+                       )
+                    .map( Optional::isEmpty )
+                    .forEach ( Assert::assertTrue )
+            );
    }
+   //@formatter:on
 
    /**
-    * Parses ReqIF AttributeDefinitions from the test document into {@link DoubleMap} keyed with the Specification Type
-    * or Spec Object Type identifier or long name; and then keyed by the Attribute Definitions's identifier or long
-    * name;
+    * Parses ReqIF AttributeDefinitions from the test document into a rank 2 {@link RankMap} keyed with the
+    * Specification Type or Spec Object Type identifier or long name; and then keyed by the Attribute Definitions's
+    * identifier or long name.
     *
-    * @param byIdentifierMap the map to store values by identifier.
-    * @param byLongNameMap the map to store values by long name.
-    * @throws AssertionError when
-    * <ul>
-    * <li>the test document core content is missing,</li>
-    * <li>the test document spec types are missing.</li>
-    * </ul>
+    * @param reqifSpecElementWithAttributesExtractors an array of {@link Function}s used to extract lists of
+    * {@link SpecElementWithAttributes} from the Core Content of the Test Document to parse the Attribute Values from.
+    * @param primaryKeyExtractionFunction a {@link Function} that is used to extract the primary map key from the
+    * {@link SpecElementWithAttributes} (Specification, Spec Object, or Spec Relation) that contains the Attribute
+    * Value.
+    * @param secondaryKeyExtractionMethodName the name of a method belonging to the {@link AttributeDefinition} subclass
+    * referenced by the Attribute Value that returns a {@link String}. This method is used to obtain the secondary map
+    * key.
+    * @param map a rank 2 {@link RankMap} to store the {@link AttributeValue} objects in.
     */
 
-   void parseAttributeDefinitions(RankMap<AttributeDefinition> byIdentifierMap, RankMap<AttributeDefinition> byLongNameMap) {
-
+   //@formatter:off
+   @SuppressWarnings("unchecked")
+   void
+      parseAttributeDefinitions
+      (
+         Function<ReqIFContent,EList<? extends Identifiable>>[] reqifSpecElementWithAttributesExtractors,
+         Function<Identifiable, String>                         primaryKeyExtractionFunction,
+         String                                                 secondaryKeyExtractionMethodName,
+         RankMap<AttributeDefinition>                           map
+      )
+   {
       var reqifCoreContent = this.reqifTestDocument.getCoreContent();
 
-      Assert.assertNotNull(reqifCoreContent);
+      Assert.assertNotNull(
+         "SynchronizationArtifactParser::parseAttributeDefinitions, Error ReqIF document has not yet been parsed.",
+         reqifCoreContent);
 
-      var reqifSpecTypes = reqifCoreContent.getSpecTypes();
-
-      Assert.assertNotNull(reqifSpecTypes);
-
-      SynchronizationArtifactParser.mapSecondaryEObjects(reqifSpecTypes,
-         (specType) -> ((SpecType) specType).getSpecAttributes(), (eObject) -> ((Identifiable) eObject).getIdentifier(),
-         (eObject) -> ((Identifiable) eObject).getLongName(), byIdentifierMap, byLongNameMap);
+      Arrays.stream( reqifSpecElementWithAttributesExtractors )
+      .map( ( extractor ) -> extractor.apply( reqifCoreContent ) )
+      .peek( Assert::assertNotNull )
+      .forEach
+         (
+            ( elist ) ->
+               SynchronizationArtifactParser.mapSecondaryEObjects
+                  (
+                     elist,
+                     primaryKeyExtractionFunction,
+                     (specType) -> ((SpecType) specType).getSpecAttributes(),
+                     ( eObject ) -> SynchronizationArtifactParser.extractStringValueFromEObject(eObject, secondaryKeyExtractionMethodName ),
+                     (RankMap<EObject>) (Object) map
+                  )
+         )
+      ;
    }
+   //@formatter:on
 
    /**
     * ReqIF Attribute Value objects don't have an identifier or long name. The Attribute Value objects reference an
@@ -296,53 +296,64 @@ class SynchronizationArtifactParser {
     * @throws AssertionError when any of the reflective methods fail.
     */
 
-   private static String parseAttributeValueIdentifiers(EObject eObject, String secondaryFunctionName) {
-      try {
-         var attributeDefinition = SynchronizationArtifactParser.getAttributeDefinitionFromEObject(eObject);
+   private static String parseAttributeValueKey(EObject eObject, String secondaryFunctionName) {
 
-         var attributeDefinitionClass = attributeDefinition.getClass();
+      var attributeDefinition = SynchronizationArtifactParser.getAttributeDefinitionFromEObject(eObject);
 
-         var getIdentifierMethod = attributeDefinitionClass.getMethod(secondaryFunctionName);
-
-         var value = (String) getIdentifierMethod.invoke(attributeDefinition);
-
-         return value;
-      } catch (Exception e) {
-         Assert.assertTrue(e.getMessage(), false);
-         //Should never get here.
-         return null;
-      }
+      return SynchronizationArtifactParser.extractStringValueFromEObject(attributeDefinition, secondaryFunctionName);
    }
 
    /**
-    * Parses ReqIF AttributeValues from the test document into {@link DoubleMap} keyed with the Spec Object identifier
-    * or long name; and then keyed by the Attribute Value's Attribute Definition reference identifier or long name;
+    * Parses ReqIF AttributeValues from the test document into a rank 2 {@link RankMap}.
     *
-    * @param byIdentifierMap the map to store values by identifier.
-    * @param byLongNameMap the map to store values by long name.
-    * @throws AssertionError when
-    * <ul>
-    * <li>the test document core content is missing,</li>
-    * <li>the test document spec objects are missing.</li>
-    * </ul>
+    * @param reqifSpecElementWithAttributesExtractors an array of {@link Function}s used to extract lists of
+    * {@link SpecElementWithAttributes} from the Core Content of the Test Document to parse the Attribute Values from.
+    * @param primaryKeyExtractionFunction a {@link Function} that is used to extract the primary map key from the
+    * {@link SpecElementWithAttributes} (Specification, Spec Object, or Spec Relation) that contains the Attribute
+    * Value.
+    * @param secondaryKeyExtractionMethodName the name of a method belonging to the {@link AttributeDefinition} subclass
+    * referenced by the Attribute Value that returns a {@link String}. This method is used to obtain the secondary map
+    * key.
+    * @param map a rank 2 {@link RankMap} to store the {@link AttributeValue} in.
     */
 
-   void parseAttributeValues(RankMap<AttributeValue> byIdentifierMap, RankMap<AttributeValue> byLongNameMap) {
-
+   //@formatter:off
+   @SuppressWarnings("unchecked")
+   void
+      parseAttributeValues
+         (
+            Function<ReqIFContent,EList<? extends Identifiable>>[] reqifSpecElementWithAttributesExtractors,
+            Function<Identifiable, String>                         primaryKeyExtractionFunction,
+            String                                                 secondaryKeyExtractionMethodName,
+            RankMap<AttributeValue>                                map
+         )
+   {
       var reqifCoreContent = this.reqifTestDocument.getCoreContent();
 
-      Assert.assertNotNull(reqifCoreContent);
+      Assert.assertNotNull
+         (
+            "SynchronizationArtifactParser::parseAttributeValues, Error ReqIF document has not yet been parsed.",
+            reqifCoreContent
+         );
 
-      var reqifSpecObjects = reqifCoreContent.getSpecObjects();
-
-      Assert.assertNotNull(reqifSpecObjects);
-
-      SynchronizationArtifactParser.mapSecondaryEObjects(reqifSpecObjects,
-         (specObject) -> ((SpecObject) specObject).getValues(),
-         (eObject) -> SynchronizationArtifactParser.parseAttributeValueIdentifiers(eObject, "getIdentifier"),
-         (eObject) -> SynchronizationArtifactParser.parseAttributeValueIdentifiers(eObject, "getLongName"),
-         byIdentifierMap, byLongNameMap);
+      Arrays.stream( reqifSpecElementWithAttributesExtractors )
+         .map( ( extractor ) -> extractor.apply( reqifCoreContent ) )
+         .peek( Assert::assertNotNull )
+         .forEach
+            (
+               ( elist ) ->
+                  SynchronizationArtifactParser.mapSecondaryEObjects
+                     (
+                        elist,
+                        primaryKeyExtractionFunction,
+                        ( specElementWithAttributes ) -> ((SpecElementWithAttributes) specElementWithAttributes).getValues(),
+                        ( eObject ) -> SynchronizationArtifactParser.parseAttributeValueKey(eObject, secondaryKeyExtractionMethodName ),
+                        (RankMap<EObject>) (Object) map
+                     )
+            )
+         ;
    }
+   //@formatter:on
 
    /**
     * Parses the ReqIF Data Type Definitions from the test document into maps by identifier and by long names.

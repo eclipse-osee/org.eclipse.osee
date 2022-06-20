@@ -59,16 +59,24 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    ArtifactId artifactId;
 
    /**
+    * Saves the name for the Specter Spec Object.
+    */
+
+   String name;
+
+   /**
     * Creates a new {@link ArtifactReadalbe} implementation for Specter Spec Objects with the specified attribute
     * values.
     *
     * @param artifactTypeToken the {@link ArtifactTypeToken} defining the attributes for the artifact.
     * @param id The identifier of the OSEE Artifact represented by the Specter Spec Object.
+    * @param name The name for the Specter Spec Object.
     */
 
-   public SpecterSpecObjectArtifactReadable(ArtifactTypeToken artifactTypeToken, Long id) {
+   public SpecterSpecObjectArtifactReadable(ArtifactTypeToken artifactTypeToken, Long id, String name) {
       this.artifactTypeToken = Objects.requireNonNull(artifactTypeToken);
       this.artifactId = ArtifactId.valueOf(Objects.requireNonNull(id));
+      this.name = Objects.requireNonNull(name);
    }
 
    /**
@@ -375,6 +383,15 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    @Override
    public ModificationType getModificationType() {
       throw new UnsupportedOperationException();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getName() {
+      return this.name;
    }
 
    /**

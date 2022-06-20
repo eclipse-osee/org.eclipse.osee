@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -477,17 +478,19 @@ public class SynchronizationArtifact implements ToMessage {
     * defining the attributes for Specter Spec Objects. If a new Specter Spec Object or Spec Object Type is created they
     * are added to their respective groves.
     *
-    * @param nativeKey the {@link ArtifactReadable} identifier to obtain or create a Specter Spec Object for.
+    * @param specterId the {@link ArtifactReadable} identifier to obtain or create a Specter Spec Object for.
+    * @param specterNameSupplier a {@link Supplier} used to create a name for the Specter Spec Object. The supplier is
+    * only used when a new Specter Spec Object is created.
     * @return the obtained or created Specter Spec Object {@link GroveThing}.
     */
 
-   private GroveThing getOrCreateSpecterSpecObjectGroveThing(Object nativeKey) {
+   private GroveThing getOrCreateSpecterSpecObjectGroveThing(Long specterId, Supplier<String> specterNameSupplier) {
 
       var orcsTokenService = this.orcsApi.tokenService();
 
       //@formatter:off
       return
-         this.getForest().getGrove( IdentifierType.SPECTER_SPEC_OBJECT ).getByNativeKeys( nativeKey )
+         this.getForest().getGrove( IdentifierType.SPECTER_SPEC_OBJECT ).getByNativeKeys( specterId )
             .orElseGet
                (
                   () ->
@@ -499,7 +502,8 @@ public class SynchronizationArtifact implements ToMessage {
                            new SpecterSpecObjectArtifactReadable
                            (
                              ArtifactTypeTokens.createSpecterSpecObjectArtifactTypeToken( orcsTokenService ),
-                             (Long) nativeKey
+                             specterId,
+                             specterNameSupplier.get()
                            )
                         );
 
@@ -554,13 +558,40 @@ public class SynchronizationArtifact implements ToMessage {
                   {
                      if( commonObject.isType( IdentifierType.SPECIFICATION ) )
                      {
-                        return this.getOrCreateSpecterSpecObjectGroveThing( ((Id) commonObject.getNativeThing()).getId() );
+                        var specterId = ((NamedId) commonObject.getNativeThing()).getId();
+
+                        Supplier<String> specterNameSupplier = () -> new StringBuilder( 512 )
+                                                                            .append( "Specter Spec Object For Specification: " )
+                                                                            .append( ((NamedId) commonObject.getNativeThing()).getName() )
+                                                                            .toString();
+                        return
+                           this.getOrCreateSpecterSpecObjectGroveThing
+                              (
+                                 specterId,
+                                 specterNameSupplier
+                              );
                      }
 
                      return commonObject;
                   }
                 )
-            .orElseGet( () -> this.getOrCreateSpecterSpecObjectGroveThing( nativeKey ) );
+            .orElseGet
+               (
+                  () ->
+                  {
+                     var specterId = (Long) nativeKey;
+
+                     Supplier<String> specterNameSupplier = () -> ((Long) nativeKey).toString();
+
+                     return
+                        this.getOrCreateSpecterSpecObjectGroveThing
+                           (
+                              specterId,
+                              specterNameSupplier
+                           );
+                  }
+               );
+
       //@formatter:on
    }
 

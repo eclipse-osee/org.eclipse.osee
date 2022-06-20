@@ -81,6 +81,7 @@ import org.eclipse.rmf.reqif10.DatatypeDefinitionString;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionXHTML;
 import org.eclipse.rmf.reqif10.EnumValue;
 import org.eclipse.rmf.reqif10.Identifiable;
+import org.eclipse.rmf.reqif10.ReqIFContent;
 import org.eclipse.rmf.reqif10.SpecElementWithAttributes;
 import org.eclipse.rmf.reqif10.SpecObject;
 import org.eclipse.rmf.reqif10.SpecType;
@@ -1265,9 +1266,16 @@ public class SynchronizationEndpointTest {
    private static RankMap<AttributeDefinition> reqifAttributeDefinitionByLongNamesMap;
 
    /**
-    * ReqIF Attribute Values are specific to ReqIF Specification and Spec Objects. This is a map of the ReqIF Attribute
-    * Values in the test document keyed by the ReqIF Specification or ReqIF Spec Object identifier and then by the ReqIF
-    * Attribute Value's Attribute Definition reference Identifier.
+    * This is a map of the ReqIF Attribute Values in the test document. ReqIF Attribute Values are specific to a ReqIF
+    * Specification, Spec Object, or Spec Relation.
+    * <dl>
+    * <dt>Rank:</dt>
+    * <dd>2</dd>
+    * <dt>Primary Key:</dt>
+    * <dd>Identifier of the containing ReqIF Specification,Spec Object, or Spec Relation</dd>
+    * <dt>Secondary Key:</dt>
+    * <dd>ReqIF Attribute Value's Attribute Definition reference Identifier</dt>
+    * </dl>
     */
 
    private static RankMap<AttributeValue> reqifAttributeValueByIdentifiersMap;
@@ -1784,17 +1792,19 @@ public class SynchronizationEndpointTest {
        * Create tracking maps
        */
 
-      SynchronizationEndpointTest.reqifAttributeDefinitionByIdentifiersMap = new RankHashMap<>( "reqifAttributeDefinitionByIdentifiersMap",2, 256, 0.75f, KeyPredicates.keysAreStringsRank2);
-      SynchronizationEndpointTest.reqifAttributeDefinitionByLongNamesMap = new RankHashMap<>( "reqifAttributeDefinitionByLongNamesMap",2, 256, 0.75f, KeyPredicates.keysAreStringsRank2);
-      SynchronizationEndpointTest.reqifAttributeValueByIdentifiersMap = new RankHashMap<>("reqifAttributeValueByIdentifiersMap",2, 256, 0.75f, KeyPredicates.keysAreStringsRank2);
-      SynchronizationEndpointTest.reqifAttributeValueByLongNamesMap = new RankHashMap<>("reqifAttributeValueByLongNamesMap",2, 256, 0.75f, KeyPredicates.keysAreStringsRank2);
-      SynchronizationEndpointTest.reqifDatatypeDefinitionByIdentifierMap = new RankHashMap<>("reqifDatatypeDefinitionByIdentifierMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-      SynchronizationEndpointTest.reqifDatatypeDefinitionByLongNameMap = new RankHashMap<>("reqifDatatypeDefinitionByIdentifierMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-      SynchronizationEndpointTest.reqifEnumValueLongNameByIdentifierMap = new RankHashMap<>("reqifEnumValueLongNameByIdentifierMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-      SynchronizationEndpointTest.reqifSpecObjectByIdentifierMap = new RankHashMap<>("reqifSpecObjectByIdentifierMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-      SynchronizationEndpointTest.reqifSpecObjectByLongNameMap = new RankHashMap<>("reqifSpecObjectByLongNameMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-      SynchronizationEndpointTest.reqifSpecTypeByIdentifierMap = new RankHashMap<>("reqifSpecTypeByIdentifierMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-      SynchronizationEndpointTest.reqifSpecTypeByLongNameMap = new RankHashMap<>("reqifSpecTypeByLongNameMap",1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
+      //@formatter:off
+      SynchronizationEndpointTest.reqifAttributeDefinitionByIdentifiersMap = new RankHashMap<>( "reqifAttributeDefinitionByIdentifiersMap", 2, 256, 0.75f, KeyPredicates.keysAreStringsRank2 );
+      SynchronizationEndpointTest.reqifAttributeDefinitionByLongNamesMap   = new RankHashMap<>( "reqifAttributeDefinitionByLongNamesMap",   2, 256, 0.75f, KeyPredicates.keysAreStringsRank2 );
+      SynchronizationEndpointTest.reqifAttributeValueByIdentifiersMap      = new RankHashMap<>( "reqifAttributeValueByIdentifiersMap",      2, 256, 0.75f, KeyPredicates.keysAreStringsRank2 );
+      SynchronizationEndpointTest.reqifAttributeValueByLongNamesMap        = new RankHashMap<>( "reqifAttributeValueByLongNamesMap",        2, 256, 0.75f, KeyPredicates.keysAreStringsRank2 );
+      SynchronizationEndpointTest.reqifDatatypeDefinitionByIdentifierMap   = new RankHashMap<>( "reqifDatatypeDefinitionByIdentifierMap",   1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      SynchronizationEndpointTest.reqifDatatypeDefinitionByLongNameMap     = new RankHashMap<>( "reqifDatatypeDefinitionByIdentifierMap",   1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      SynchronizationEndpointTest.reqifEnumValueLongNameByIdentifierMap    = new RankHashMap<>( "reqifEnumValueLongNameByIdentifierMap",    1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      SynchronizationEndpointTest.reqifSpecObjectByIdentifierMap           = new RankHashMap<>( "reqifSpecObjectByIdentifierMap",           1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      SynchronizationEndpointTest.reqifSpecObjectByLongNameMap             = new RankHashMap<>( "reqifSpecObjectByLongNameMap",             1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      SynchronizationEndpointTest.reqifSpecTypeByIdentifierMap             = new RankHashMap<>( "reqifSpecTypeByIdentifierMap",             1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      SynchronizationEndpointTest.reqifSpecTypeByLongNameMap               = new RankHashMap<>( "reqifSpecTypeByLongNameMap",               1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      //@formatter:off
 
       /*
        * Get and save the ReqIF test document from the server
@@ -1824,9 +1834,25 @@ public class SynchronizationEndpointTest {
 
       synchronizationArtifactParser.parseAttributeDefinitions
          (
-            SynchronizationEndpointTest.reqifAttributeDefinitionByIdentifiersMap,
-            SynchronizationEndpointTest.reqifAttributeDefinitionByLongNamesMap
+            new Function[]
+               {
+                  ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecTypes()
+               },
+            Identifiable::getIdentifier,
+            "getIdentifier",
+            SynchronizationEndpointTest.reqifAttributeDefinitionByIdentifiersMap
          );
+
+      synchronizationArtifactParser.parseAttributeDefinitions
+      (
+         new Function[]
+            {
+               ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecTypes()
+            },
+         Identifiable::getLongName,
+         "getLongName",
+         SynchronizationEndpointTest.reqifAttributeDefinitionByLongNamesMap
+      );
 
       synchronizationArtifactParser.parseSpecObjects
          (
@@ -1836,7 +1862,25 @@ public class SynchronizationEndpointTest {
 
       synchronizationArtifactParser.parseAttributeValues
          (
-            SynchronizationEndpointTest.reqifAttributeValueByIdentifiersMap,
+            new Function[]
+               {
+                  ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecObjects(),
+                  ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecifications()
+               },
+            Identifiable::getIdentifier,
+            "getIdentifier",
+            SynchronizationEndpointTest.reqifAttributeValueByIdentifiersMap
+         );
+
+      synchronizationArtifactParser.parseAttributeValues
+         (
+            new Function[]
+               {
+                  ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecObjects(),
+                  ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecifications()
+               },
+            Identifiable::getLongName,
+            "getLongName",
             SynchronizationEndpointTest.reqifAttributeValueByLongNamesMap
          );
 

@@ -16,6 +16,7 @@ package org.eclipse.osee.client.integration.tests.integration.synchronization.re
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.BuilderRelationshipRecord;
@@ -35,6 +36,12 @@ import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.rmf.reqif10.AttributeDefinition;
+import org.eclipse.rmf.reqif10.AttributeValue;
+import org.eclipse.rmf.reqif10.AttributeValueEnumeration;
+import org.eclipse.rmf.reqif10.AttributeValueString;
+import org.eclipse.rmf.reqif10.Identifiable;
+import org.eclipse.rmf.reqif10.ReqIFContent;
 import org.eclipse.rmf.reqif10.SpecObject;
 import org.eclipse.rmf.reqif10.SpecRelation;
 import org.eclipse.rmf.reqif10.SpecType;
@@ -301,6 +308,39 @@ public class ReqifRelationships {
    }
 
    /**
+    * Record for the identifier and type identifier of a ReqIF Spec Relation.
+    */
+
+   private static class RequirementTraceVerificationRecord {
+
+      /**
+       * ReqIF identifier of a ReqIF Spec Relation.
+       */
+
+      String reqifSpecRelationIdentifier;
+
+      /**
+       * ReqIF identifier of the ReqIF Spec Relation Type associated with the ReqIF Spec Relation.
+       */
+
+      String reqifSpecRelationTypeIdentifier;
+
+      /**
+       * Creates a new {@link RequirementTraceVerificationRecord}.
+       *
+       * @param reqifSpecRelationIdentifier ReqIF identifier of a ReqIF Spec Relation.
+       * @param reqifSpecRelationTypeIdentifier ReqIF identifier of the ReqIF Spec Relation Type associated with the
+       * ReqIF Spec Relation.
+       */
+
+      public RequirementTraceVerificationRecord(String reqifSpecRelationIdentifier, String reqifSpecRelationTypeIdentifier) {
+         this.reqifSpecRelationIdentifier = reqifSpecRelationIdentifier;
+         this.reqifSpecRelationTypeIdentifier = reqifSpecRelationTypeIdentifier;
+      }
+
+   }
+
+   /**
     * Saves the {@link ArtifactId} of the root artifact of the test document.
     */
 
@@ -408,6 +448,11 @@ public class ReqifRelationships {
                                   (
                                     CoreRelationTypes.RequirementTrace,                                 /* Relationship Type                      RelationTypeToken                       */
                                     List.of( 3 )                                                        /* Targets                                (List<Integer>)                         */
+                                  ),
+                                  new ArtifactRelationshipInfoRecord
+                                  (
+                                    CoreRelationTypes.RequirementTrace,                                 /* Relationship Type                      RelationTypeToken                       */
+                                    List.of( 10 )                                                       /* Targets                                (List<Integer>)                         */
                                   )
                          )
                    ),
@@ -441,10 +486,75 @@ public class ReqifRelationships {
                                List.of( 5 )                                                             /* Targets                                (List<Integer>)                         */
                             )
                          )
-                   )
+                   ),
 
+            new ArtifactInfoRecord
+                   (
+                      8,                                                                                /* Identifier                             (Integer)                               */
+                      0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                      "ReqIF Relationship Test Document 2",                                             /* Artifact Name                          (String)                                */
+                      CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                      List.of( "ReqIF Relationship Test Document 2" ),                                  /* Test Attribute Values                  (List<Object>)                          */
+                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                   ),
+
+            new ArtifactInfoRecord
+                   (
+                      9,                                                                                /* Identifier                             (Integer)                               */
+                      8,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                      "Test Document 2 Requirements A Folder",                                          /* Artifact Name                          (String)                                */
+                      CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                      List.of( "Requirements A Folder" ),                                               /* Test Attribute Values                  (List<Object>)                          */
+                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                   ),
+
+            new ArtifactInfoRecord
+                   (
+                      10,                                                                                /* Identifier                             (Integer)                               */
+                      9,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                      "Test Document 2 Requirement A-A",                                                /* Artifact Name                          (String)                                */
+                      CoreArtifactTypes.SoftwareRequirementPlainText,                                   /* Artifact Type                          (ArtifactTypeToken)                     */
+                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                      List.of( "This is Requirement A-A for Test Document 2" ),                         /* Test Attribute Values                  (List<Object>)                          */
+                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                         (
+                            new ArtifactRelationshipInfoRecord
+                            (
+                               CoreRelationTypes.RequirementTrace,                                      /* Relationship Type                      RelationTypeToken                       */
+                               List.of( 3 )                                                             /* Targets                                (List<Integer>)                         */
+                            )
+                         )
+                   )
          );
    //@formatter:on
+
+   /**
+    * ReqIF Attribute Definitions are specific to ReqIF Specification Types and Spec Object Types. This is a map of the
+    * ReqIF Attribute Definitions in the test document keyed by the ReqIF Specification Type or ReqIF Spec Object Type
+    * identifier and then by the ReqIF Attribute Definition identifier.
+    */
+
+   private static RankMap<AttributeDefinition> reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap;
+
+   /**
+    * This is a map of the ReqIF Attribute Values in the test document. ReqIF Attribute Values are specific to a ReqIF
+    * Specification, Spec Object, or Spec Relation.
+    * <dl>
+    * <dt>Rank:</dt>
+    * <dd>2</dd>
+    * <dt>Primary Key:</dt>
+    * <dd>Identifier of the containing ReqIF Specification,Spec Object, or Spec Relation</dd>
+    * <dt>Secondary Key:</dt>
+    * <dd>ReqIF Attribute Value's Attribute Definition reference Identifier</dt>
+    * </dl>
+    */
+
+   private static RankMap<AttributeValue> reqifAttributeValueByIdentifiersMap;
 
    /**
     * Map of ReqIF Spec Objects from the test document keyed by their identifiers. This map does not include the ReqIF
@@ -478,6 +588,128 @@ public class ReqifRelationships {
 
    private static RankMap<SpecType> reqifSpecRelationTypesByIdentifierMap;
 
+   /**
+    * Saves the {@link TestDocumentBuilder} for later lookup of OSEE Artifacts by the builder record identifier.
+    */
+
+   private static TestDocumentBuilder testDocumentBuilder;
+
+   /**
+    * Verifies a ReqIF Spec Relation exists for the specified ReqIF Spec Relation Type, ReqIF Source Spec Object, and
+    * ReqIF Target Spec Object.
+    *
+    * @param reqifSpecRelationTypeLongName the long name for the ReqIF Spec Relation Type of the desired ReqIF Spec
+    * Relation.
+    * @param sourceSpecObjectLongName the long name of the ReqIF Spec Object that is the source of the relationship.
+    * @param targetSpecObjectLongName the long name of the ReqIF Spec Object that is the target of the relationship.
+    * @return a {@link RequirementTraceVerificationRecord} with the Req IF Spec Relation identifier and the ReqIF Spec
+    * Relation Type identifier of the relationship's type.
+    * @throws AssertionError when the specified ReqIF Spec Relation is not found.
+    */
+
+   private static RequirementTraceVerificationRecord verifyRequirementTrace(String reqifSpecRelationTypeLongName, String sourceSpecObjectLongName, String targetSpecObjectLongName) {
+
+      var reqifSpecRelationTypeOptional =
+         ReqifRelationships.reqifSpecRelationTypesByLongNameMap.get(reqifSpecRelationTypeLongName);
+
+      Assert.assertTrue(reqifSpecRelationTypeOptional.isPresent());
+
+      var reqifSourceSpecObjectOptional = ReqifRelationships.reqifSpecObjectByLongNameMap.get(sourceSpecObjectLongName);
+
+      Assert.assertTrue(reqifSourceSpecObjectOptional.isPresent());
+
+      var reqifTargetSpecObjectOptional = ReqifRelationships.reqifSpecObjectByLongNameMap.get(targetSpecObjectLongName);
+
+      Assert.assertTrue(reqifTargetSpecObjectOptional.isPresent());
+
+      var reqifSpecRelationTypeIdentifier = reqifSpecRelationTypeOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifSpecRelationTypeIdentifier);
+
+      var reqifSourceSpecObjectIdentifier = reqifSourceSpecObjectOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifSourceSpecObjectIdentifier);
+
+      var reqifTargetSpecObjectIdentifier = reqifTargetSpecObjectOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifTargetSpecObjectIdentifier);
+
+      var reqifSpecRelationOptional = ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap.get(
+         reqifSpecRelationTypeIdentifier, reqifSourceSpecObjectIdentifier, reqifTargetSpecObjectIdentifier);
+
+      Assert.assertTrue(reqifSpecRelationOptional.isPresent());
+
+      var reqifSpecRelationIdentifier = reqifSpecRelationOptional.get().getIdentifier();
+
+      Assert.assertNotNull(reqifSpecRelationIdentifier);
+
+      return new RequirementTraceVerificationRecord(reqifSpecRelationIdentifier, reqifSpecRelationTypeIdentifier);
+   }
+
+   /**
+    * Verifies the value of a ReqIF Spec Relation enumerated attribute.
+    *
+    * @param requirementTraceVerificationRecord the identifiers of the ReqIF Spec Relation and the ReqIF Spec Relation
+    * Type of the ReqIf Spec Relation.
+    * @param reqifAttributeDefinitionLongName the long name of the ReqIF attribute to test.
+    * @param expectedValue the expected value of the ReqIF attribute.
+    * @throws AssertionError when the ReqIF Spec Relation string attribute does not contain the expected value.
+    */
+
+   private static void verifyRequirementTraceAttributeValueEnumeration(RequirementTraceVerificationRecord requirementTraceVerificationRecord, String reqifAttributeDefinitionLongName, String expectedValue) {
+
+      var reqifRelationTypeMultiplicityAttributeDefinitionOptional =
+         ReqifRelationships.reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap.get(
+            requirementTraceVerificationRecord.reqifSpecRelationTypeIdentifier, reqifAttributeDefinitionLongName);
+
+      Assert.assertTrue(reqifRelationTypeMultiplicityAttributeDefinitionOptional.isPresent());
+
+      var reqifRelationTypeMultiplicityAttributeDefinitionIdentifier =
+         reqifRelationTypeMultiplicityAttributeDefinitionOptional.get().getIdentifier();
+
+      var reqifRelationTypeMultiplicityAttributeValueOptional =
+         ReqifRelationships.reqifAttributeValueByIdentifiersMap.get(
+            requirementTraceVerificationRecord.reqifSpecRelationIdentifier,
+            reqifRelationTypeMultiplicityAttributeDefinitionIdentifier);
+
+      Assert.assertTrue(reqifRelationTypeMultiplicityAttributeValueOptional.isPresent());
+
+      var reqifRelationTypeMultiplicityAttributeValueList =
+         ((AttributeValueEnumeration) reqifRelationTypeMultiplicityAttributeValueOptional.get()).getValues();
+
+      Assert.assertEquals(1, reqifRelationTypeMultiplicityAttributeValueList.size());
+
+      Assert.assertEquals(expectedValue, reqifRelationTypeMultiplicityAttributeValueList.get(0).getLongName());
+   }
+
+   /**
+    * Verifies the value of a ReqIF Spec Relation string attribute.
+    *
+    * @param requirementTraceVerificationRecord the identifiers of the ReqIF Spec Relation and the ReqIF Spec Relation
+    * Type of the ReqIf Spec Relation.
+    * @param reqifAttributeDefinitionLongName the long name of the ReqIF attribute to test.
+    * @param expectedValue the expected value of the ReqIF attribute.
+    * @throws AssertionError when the ReqIF Spec Relation string attribute does not contain the expected value.
+    */
+
+   private static void verifyRequirementTraceAttributeValueString(RequirementTraceVerificationRecord requirementTraceVerificationRecord, String reqifAttributeDefinitionLongName, String expectedValue) {
+
+      var reqifSideAAttributeDefinitionOptional =
+         ReqifRelationships.reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap.get(
+            requirementTraceVerificationRecord.reqifSpecRelationTypeIdentifier, reqifAttributeDefinitionLongName);
+
+      Assert.assertTrue(reqifSideAAttributeDefinitionOptional.isPresent());
+
+      var reqifSideAAttributeDefinitionIdentifier = reqifSideAAttributeDefinitionOptional.get().getIdentifier();
+
+      var reqifSideAAttributeValueOptional = ReqifRelationships.reqifAttributeValueByIdentifiersMap.get(
+         requirementTraceVerificationRecord.reqifSpecRelationIdentifier, reqifSideAAttributeDefinitionIdentifier);
+
+      Assert.assertTrue(reqifSideAAttributeValueOptional.isPresent());
+
+      Assert.assertEquals(expectedValue, ((AttributeValueString) reqifSideAAttributeValueOptional.get()).getTheValue());
+   }
+
    @SuppressWarnings("unchecked")
    @BeforeClass
    public static void testSetup() {
@@ -486,29 +718,25 @@ public class ReqifRelationships {
        * Create tracking maps
        */
 
-      ReqifRelationships.reqifSpecObjectByIdentifierMap =
-         new RankHashMap<>("reqifSpecObjectByIdentifierMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-
-      ReqifRelationships.reqifSpecObjectByLongNameMap =
-         new RankHashMap<>("reqifSpecObjectByLongNameMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-
-      ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap = new RankHashMap<>(
-         "reqifSpecRelationBySourceTargetTypeIdentifierMap", 3, 256, 0.75f, KeyPredicates.keysAreStringsRank3);
-
-      ReqifRelationships.reqifSpecRelationTypesByIdentifierMap =
-         new RankHashMap<>("reqifSpecRelationTypeByIdentifierMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
-
-      ReqifRelationships.reqifSpecRelationTypesByLongNameMap =
-         new RankHashMap<>("reqifSpecRelationTypeByLongNameMap", 1, 256, 0.75f, KeyPredicates.keysAreStringsRank1);
+      //@formatter:off
+      ReqifRelationships.reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap = new RankHashMap<>( "reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap", 2, 256, 0.75f, KeyPredicates.keysAreStringsRank2 );
+      ReqifRelationships.reqifAttributeValueByIdentifiersMap                                           = new RankHashMap<>( "reqifAttributeValueByIdentifiersMap",                                           2, 256, 0.75f, KeyPredicates.keysAreStringsRank2 );
+      ReqifRelationships.reqifSpecObjectByIdentifierMap                                                = new RankHashMap<>( "reqifSpecObjectByIdentifierMap",                                                1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      ReqifRelationships.reqifSpecObjectByLongNameMap                                                  = new RankHashMap<>( "reqifSpecObjectByLongNameMap",                                                  1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap                              = new RankHashMap<>( "reqifSpecRelationBySourceTargetTypeIdentifierMap",                              3, 256, 0.75f, KeyPredicates.keysAreStringsRank3 );
+      ReqifRelationships.reqifSpecRelationTypesByIdentifierMap                                         = new RankHashMap<>( "reqifSpecRelationTypeByIdentifierMap",                                          1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      ReqifRelationships.reqifSpecRelationTypesByLongNameMap                                           = new RankHashMap<>( "reqifSpecRelationTypeByLongNameMap",                                            1, 256, 0.75f, KeyPredicates.keysAreStringsRank1 );
+      //@formatter:on
 
       /*
        * Build test document
        */
 
-      var testDocumentBuilder = new TestDocumentBuilder(ReqifRelationships.setValues);
+      ReqifRelationships.testDocumentBuilder = new TestDocumentBuilder(ReqifRelationships.setValues);
 
-      testDocumentBuilder.buildDocument((List<BuilderRecord>) (Object) ReqifRelationships.artifactInfoRecords,
-         ReqifRelationships.testBranchName, ReqifRelationships.testBranchCreationComment);
+      ReqifRelationships.testDocumentBuilder.buildDocument(
+         (List<BuilderRecord>) (Object) ReqifRelationships.artifactInfoRecords, ReqifRelationships.testBranchName,
+         ReqifRelationships.testBranchCreationComment);
 
       /*
        * Get services
@@ -524,55 +752,124 @@ public class ReqifRelationships {
 
       var synchronizationArtifactParser = new SynchronizationArtifactParser(synchronizationEndpoint);
 
-      synchronizationArtifactParser.parseTestDocument(testDocumentBuilder.getRootBranchId(),
-         testDocumentBuilder.getRootArtifactId(), "reqif");
+      synchronizationArtifactParser.parseTestDocument(ReqifRelationships.testDocumentBuilder.getRootBranchId(),
+         ReqifRelationships.testDocumentBuilder.getRootArtifactId(), "reqif");
 
       /*
        * Index the members of the ReqIF by identifier and long name
        */
 
-      synchronizationArtifactParser.parseSpecObjects(ReqifRelationships.reqifSpecObjectByIdentifierMap,
-         ReqifRelationships.reqifSpecObjectByLongNameMap);
+      //@formatter:off
+      synchronizationArtifactParser.parseSpecObjects
+         (
+            ReqifRelationships.reqifSpecObjectByIdentifierMap,
+            ReqifRelationships.reqifSpecObjectByLongNameMap
+         );
 
-      synchronizationArtifactParser.parseSpecRelationTypes(ReqifRelationships.reqifSpecRelationTypesByIdentifierMap,
-         ReqifRelationships.reqifSpecRelationTypesByLongNameMap);
+      synchronizationArtifactParser.parseSpecRelationTypes
+         (
+            ReqifRelationships.reqifSpecRelationTypesByIdentifierMap,
+            ReqifRelationships.reqifSpecRelationTypesByLongNameMap
+         );
 
-      synchronizationArtifactParser.parseSpecRelations(
-         ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap);
+      synchronizationArtifactParser.parseSpecRelations
+         (
+            ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap
+         );
 
+      synchronizationArtifactParser.parseAttributeValues
+         (
+            new Function[]
+            {
+               (reqifCoreContent) -> ((ReqIFContent) reqifCoreContent).getSpecRelations()
+            },
+            Identifiable::getIdentifier,
+            "getIdentifier",
+            ReqifRelationships.reqifAttributeValueByIdentifiersMap
+         );
+
+      synchronizationArtifactParser.parseAttributeDefinitions
+         (
+            new Function[]
+            {
+               ( reqifCoreContent ) -> ((ReqIFContent) reqifCoreContent).getSpecTypes()
+            },
+            Identifiable::getIdentifier,
+            "getLongName",
+            ReqifRelationships.reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap
+         );
+
+      //@formatter:on
    }
 
    @Test
    public void testRequirementTraceCA2BA() {
 
-      var reqifSpecTypeOptional = ReqifRelationships.reqifSpecRelationTypesByLongNameMap.get("Requirement Trace");
+      var requirementTraceVerificationRecord =
+         ReqifRelationships.verifyRequirementTrace("Requirement Trace", "Requirement C-A", "Requirement B-A");
 
-      Assert.assertTrue(reqifSpecTypeOptional.isPresent());
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side A",
+         "higher-level requirement");
 
-      var reqifSourceSpecObjectOptional = ReqifRelationships.reqifSpecObjectByLongNameMap.get("Requirement C-A");
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side B",
+         "lower-level requirement");
 
-      Assert.assertTrue(reqifSourceSpecObjectOptional.isPresent());
+      ReqifRelationships.verifyRequirementTraceAttributeValueEnumeration(requirementTraceVerificationRecord,
+         "RelationTypeMultiplicity", "MANY_TO_MANY");
+   }
 
-      var reqifTargetSpecObjectOptional = ReqifRelationships.reqifSpecObjectByLongNameMap.get("Requirement B-A");
+   @Test
+   public void testRequirementTraceBA2AA() {
 
-      Assert.assertTrue(reqifTargetSpecObjectOptional.isPresent());
+      var requirementTraceVerificationRecord =
+         ReqifRelationships.verifyRequirementTrace("Requirement Trace", "Requirement B-A", "Requirement A-A");
 
-      var reqifSpecTypeIdentifier = reqifSpecTypeOptional.get().getIdentifier();
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side A",
+         "higher-level requirement");
 
-      Assert.assertNotNull(reqifSpecTypeIdentifier);
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side B",
+         "lower-level requirement");
 
-      var reqifSourceSpecObjectIdentifier = reqifSourceSpecObjectOptional.get().getIdentifier();
+      ReqifRelationships.verifyRequirementTraceAttributeValueEnumeration(requirementTraceVerificationRecord,
+         "RelationTypeMultiplicity", "MANY_TO_MANY");
+   }
 
-      Assert.assertNotNull(reqifSourceSpecObjectIdentifier);
+   @Test
+   public void testRequirementTraceTD2AA2AA() {
 
-      var reqifTargetSpecObjectIdentifier = reqifTargetSpecObjectOptional.get().getIdentifier();
+      var testDocument2RequirementAASpecterName =
+         ReqifRelationships.testDocumentBuilder.getArtifactIdByBuilderRecordId(10).orElseThrow().toString();
 
-      Assert.assertNotNull(reqifTargetSpecObjectIdentifier);
+      var requirementTraceVerificationRecord = ReqifRelationships.verifyRequirementTrace("Requirement Trace",
+         testDocument2RequirementAASpecterName, "Requirement A-A");
 
-      var reqifSpecRelationOptional = ReqifRelationships.reqifSpecRelationByTypeSourceTargetIdentifierMap.get(
-         reqifSpecTypeIdentifier, reqifSourceSpecObjectIdentifier, reqifTargetSpecObjectIdentifier);
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side A",
+         "higher-level requirement");
 
-      Assert.assertTrue(reqifSpecRelationOptional.isPresent());
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side B",
+         "lower-level requirement");
+
+      ReqifRelationships.verifyRequirementTraceAttributeValueEnumeration(requirementTraceVerificationRecord,
+         "RelationTypeMultiplicity", "MANY_TO_MANY");
+   }
+
+   @Test
+   public void testRequirementTraceBA2TD2AA() {
+
+      var testDocument2RequirementAASpecterName =
+         ReqifRelationships.testDocumentBuilder.getArtifactIdByBuilderRecordId(10).orElseThrow().toString();
+
+      var requirementTraceVerificationRecord = ReqifRelationships.verifyRequirementTrace("Requirement Trace",
+         "Requirement B-A", testDocument2RequirementAASpecterName);
+
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side A",
+         "higher-level requirement");
+
+      ReqifRelationships.verifyRequirementTraceAttributeValueString(requirementTraceVerificationRecord, "Side B",
+         "lower-level requirement");
+
+      ReqifRelationships.verifyRequirementTraceAttributeValueEnumeration(requirementTraceVerificationRecord,
+         "RelationTypeMultiplicity", "MANY_TO_MANY");
    }
 
 }
