@@ -43,6 +43,7 @@ import { MimPreferencesService } from '../../../shared/services/http/mim-prefere
 import { TypesService } from '../../../shared/services/http/types.service';
 
 import { PlatformTypeQueryComponent } from './platform-type-query.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 describe('PlatformTypeQueryComponent', () => {
   let component: PlatformTypeQueryComponent;
@@ -51,7 +52,7 @@ describe('PlatformTypeQueryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatSelectModule,MatFormFieldModule,FormsModule,MatDividerModule,MatButtonModule,MatIconModule,MatSliderModule,MatDividerModule,MatInputModule,NoopAnimationsModule],
+      imports:[MatSelectModule,MatFormFieldModule,FormsModule,MatDividerModule,MatButtonModule,MatIconModule,MatSliderModule,MatDividerModule,MatInputModule,MatAutocompleteModule,NoopAnimationsModule],
       declarations: [PlatformTypeQueryComponent],
       providers: [
         { provide: TransactionBuilderService, useValue: transactionBuilderMock },
@@ -95,8 +96,8 @@ describe('PlatformTypeQueryComponent', () => {
     await testSelect('unit', "Feet^2", 3);
     await testSelect('logical-type', "boolean", 0);
     await testSelect('min-val', "4", 2,"=");
-    await testSelect('max-val', "8", 2,"=");
-    await testSelect('msb-val', "6", 2, "=");
+    await testSelect('max-val', "8", 1,"=");
+    await testSelect('msb-val', "6", 1, "=");
     await testSelect('default-val', "false", 1, "=");
     const input = await loader.getHarness(MatInputHarness);
     await input.setValue('8');

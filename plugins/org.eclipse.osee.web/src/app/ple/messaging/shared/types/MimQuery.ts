@@ -76,6 +76,12 @@ export class andNameQuery extends andQuery{
         super(ATTRIBUTETYPEID.NAME, value);
     }
 }
+
+export class andDescriptionQuery extends andQuery{
+    constructor (value: string) {
+        super(ATTRIBUTETYPEID.DESCRIPTION, value);
+    }
+}
 export class MimQuery<T =unknown> implements _mimQuery<T>{
     constructor (type: ARTIFACTTYPEID, related?: {
         relation: RelationTypeId,
