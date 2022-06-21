@@ -14,7 +14,6 @@
 package org.eclipse.osee.jdbc;
 
 import java.sql.JDBCType;
-
 import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 
 /**

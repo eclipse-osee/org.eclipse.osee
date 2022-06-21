@@ -195,7 +195,7 @@ public class PercentCompleteTotalUtil {
                }
             }
             if (items > 0) {
-               Double rollPercent = new Double(percent) / items;
+               Double rollPercent = Double.valueOf(percent) / items;
                percent = rollPercent.intValue();
             }
          }

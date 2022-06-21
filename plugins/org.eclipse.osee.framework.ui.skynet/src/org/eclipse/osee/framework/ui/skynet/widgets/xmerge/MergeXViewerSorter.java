@@ -47,7 +47,7 @@ public class MergeXViewerSorter extends XViewerSorter {
          if (o1 instanceof Conflict && o2 instanceof Conflict) {
             if (sortXCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
                int compareInt =
-                  new Integer(ConflictState.getValue(value1)).compareTo(new Integer(ConflictState.getValue(value2)));
+                  Integer.valueOf(ConflictState.getValue(value1)).compareTo(Integer.valueOf(ConflictState.getValue(value2)));
                return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
             }
          }

@@ -207,7 +207,7 @@ public class ArtifactOperations {
          String[] values = paragraph.split("\\.");
          for (int index = 0; index < values.length; index++) {
             try {
-               paragraphs.add(new Integer(values[index]));
+               paragraphs.add(Integer.valueOf(values[index]));
             } catch (Exception ex) {
                // Do nothing;
             }

@@ -133,7 +133,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       new ArtifactDecorator(Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
    public ArtifactSearchPage() {
-      setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
+      setElementLimit(Integer.valueOf(DEFAULT_ELEMENT_LIMIT));
    }
 
    @Override
@@ -255,7 +255,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
             elementLimit = value.intValue();
          }
       }
-      setElementLimit(new Integer(elementLimit));
+      setElementLimit(Integer.valueOf(elementLimit));
    }
 
    @Override

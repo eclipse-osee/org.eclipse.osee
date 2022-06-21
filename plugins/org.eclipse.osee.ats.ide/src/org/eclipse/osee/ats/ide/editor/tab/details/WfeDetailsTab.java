@@ -78,6 +78,7 @@ public class WfeDetailsTab extends WfeAbstractTab {
       }
    }
 
+   @Override
    public void refresh() {
       refreshBrowser(browser, editor, getManagedForm());
    }

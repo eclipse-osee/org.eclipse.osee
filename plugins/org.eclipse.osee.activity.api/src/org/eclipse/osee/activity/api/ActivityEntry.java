@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.activity.api;
 
-import java.sql.Timestamp;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.sql.Timestamp;
 
 /**
  * @author Ryan D. Brooks

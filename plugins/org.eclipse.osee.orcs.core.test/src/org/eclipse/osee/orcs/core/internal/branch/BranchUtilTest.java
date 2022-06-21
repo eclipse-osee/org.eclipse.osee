@@ -54,6 +54,7 @@ public class BranchUtilTest {
          return parent;
       }
 
+      @Override
       public void setParentBranch(BranchId parent) {
          this.parent = parent;
       }

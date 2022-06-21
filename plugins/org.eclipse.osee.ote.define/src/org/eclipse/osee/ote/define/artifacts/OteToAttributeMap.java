@@ -106,12 +106,12 @@ public class OteToAttributeMap {
          if (Strings.isValid(value) != true) {
             value = "0";
          }
-         toReturn = new Integer(value);
+         toReturn = Integer.valueOf(value);
       } else if (isBoolean(attributeType) != false) {
          if (Strings.isValid(value) != true) {
             value = "false";
          }
-         toReturn = new Boolean(value);
+         toReturn = Boolean.valueOf(value);
       } else {
          toReturn = value;
       }

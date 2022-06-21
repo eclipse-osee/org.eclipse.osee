@@ -127,6 +127,7 @@ public class WfeRelationsTab extends WfeAbstractTab implements IRefreshActionHan
       refresh();
    }
 
+   @Override
    public void refresh() {
       if (Widgets.isAccessible(relationComposite)) {
          relationComposite.refresh();

@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.orcs.rest.model.search.artifact;
 
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;

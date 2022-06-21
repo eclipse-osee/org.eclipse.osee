@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 import org.eclipse.rmf.reqif10.xhtml.XhtmlDivType;
 import org.eclipse.rmf.reqif10.xhtml.XhtmlFactory;

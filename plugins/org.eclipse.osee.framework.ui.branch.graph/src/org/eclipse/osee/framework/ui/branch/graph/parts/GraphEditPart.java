@@ -135,7 +135,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          public int compare(BranchModel o1, BranchModel o2) {
             int level1 = o1.getDepth();
             int level2 = o2.getDepth();
-            int result = new Integer(level1).compareTo(new Integer(level2));
+            int result = Integer.valueOf(level1).compareTo(Integer.valueOf(level2));
             //            if (result == 0) {
             //               BranchModel parent1 = o1.getParentBranch();
             //               BranchModel parent2 = o2.getParentBranch();

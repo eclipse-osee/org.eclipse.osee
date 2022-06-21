@@ -115,13 +115,13 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
          try {
             for (Object obj : attributeHolder) {
                if (obj instanceof Artifact) {
-                  ((Artifact) obj).setSoleAttributeValue(attributeType, new Boolean(value));
+                  ((Artifact) obj).setSoleAttributeValue(attributeType, Boolean.valueOf(value));
                   if (persist) {
                      ((Artifact) obj).persist(getClass().getSimpleName());
                   }
                }
                if (obj instanceof AttributeConflict) {
-                  if (!((AttributeConflict) obj).setAttributeValue(new Boolean(value))) {
+                  if (!((AttributeConflict) obj).setAttributeValue(Boolean.valueOf(value))) {
                      AWorkbench.popup("Attention", MergeUtility.COMMITED_PROMPT);
                   }
                }

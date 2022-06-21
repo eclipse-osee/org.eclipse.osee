@@ -79,6 +79,7 @@ public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHa
       refresh();
    }
 
+   @Override
    public void refresh() {
       if (xViewer != null) {
          xViewer.loadTable(artifact);

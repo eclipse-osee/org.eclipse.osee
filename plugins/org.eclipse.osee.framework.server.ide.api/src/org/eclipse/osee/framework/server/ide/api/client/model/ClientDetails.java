@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.server.ide.api.client.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 
 /**

@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.disposition.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Angel Avila

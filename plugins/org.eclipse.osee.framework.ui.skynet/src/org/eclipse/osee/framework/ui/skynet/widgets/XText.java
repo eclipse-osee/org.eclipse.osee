@@ -381,7 +381,7 @@ public class XText extends XWidget {
 
    public boolean isInteger() {
       try {
-         new Integer(text);
+         Integer.parseInt(text);
       } catch (NumberFormatException e) {
          return false;
       }
@@ -390,7 +390,7 @@ public class XText extends XWidget {
 
    public boolean isLong() {
       try {
-         new Long(text);
+         Long.parseLong(text);
       } catch (NumberFormatException e) {
          return false;
       }
@@ -409,7 +409,7 @@ public class XText extends XWidget {
    public int getInteger() {
       Integer num;
       try {
-         num = new Integer(text);
+         num = Integer.valueOf(text);
       } catch (NumberFormatException e) {
          return 0;
       }
@@ -461,7 +461,7 @@ public class XText extends XWidget {
    public int getInt() {
       Integer percent;
       try {
-         percent = new Integer(text);
+         percent = Integer.valueOf(text);
       } catch (NumberFormatException e) {
          percent = 0;
       }

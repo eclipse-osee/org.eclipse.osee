@@ -97,7 +97,7 @@ public class AXml {
          xmlStr);
       while (m.find()) {
          for (String str : m.group(1).split(separator)) {
-            results.add(new Integer(xmlToText(str)));
+            results.add(Integer.valueOf(xmlToText(str)));
          }
       }
       return results;
@@ -120,7 +120,7 @@ public class AXml {
       String tags[] = getTagDataArray(xmlStr, xmlRoot);
       if (tags.length > 0) {
          String intStr = tags[0];
-         return new Integer(intStr).intValue();
+         return Integer.valueOf(intStr).intValue();
       }
       return 0;
    }
@@ -138,7 +138,7 @@ public class AXml {
       String tags[] = getTagDataArray(xmlStr, xmlRoot);
       if (tags.length > 0) {
          String intStr = tags[0];
-         return new Integer(intStr);
+         return Integer.valueOf(intStr);
       }
       return null;
    }

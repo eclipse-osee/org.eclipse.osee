@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.jaxrs;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 import java.util.TreeSet;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Roberto E. Escobar

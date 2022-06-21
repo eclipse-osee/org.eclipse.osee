@@ -78,6 +78,7 @@ public class User extends Artifact implements UserToken {
       setSoleAttributeValue(CoreAttributeTypes.Email, email);
    }
 
+   @Override
    public String getPhone() {
       return getSoleAttributeValue(CoreAttributeTypes.Phone, "");
    }

@@ -111,7 +111,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
          for (IAtsVersion version : selectedVersions) {
             newSprint.setName(useVersionTitle ? version.getName() : newTitle);
             newSprint.setTeamId(teamId);
-            Response response = ageilEp.createSprint(new Long(teamId), newSprint);
+            Response response = ageilEp.createSprint(Long.valueOf(teamId), newSprint);
             JaxAgileSprint jaxSprint = null;
             if (response != null) {
                jaxSprint = response.readEntity(JaxAgileSprint.class);

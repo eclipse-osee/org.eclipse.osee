@@ -206,9 +206,9 @@ public class SearchCellEditor extends CellEditor {
    @Override
    protected Object doGetValue() {
       if (searchControl.getFirstIndex() == -1) {
-         return new Integer(selection);
+         return Integer.valueOf(selection);
       } else {
-         return new Integer(selection + searchControl.getFirstIndex());
+         return Integer.valueOf(selection + searchControl.getFirstIndex());
       }
    }
 

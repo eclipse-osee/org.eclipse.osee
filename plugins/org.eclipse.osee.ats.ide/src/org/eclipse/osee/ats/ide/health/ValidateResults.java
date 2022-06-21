@@ -37,7 +37,7 @@ public class ValidateResults {
 
    public void logTestTimeSpent(Date date, String testName) {
       Date now = new Date();
-      int spent = new Long(now.getTime() - date.getTime()).intValue();
+      int spent = Long.valueOf(now.getTime() - date.getTime()).intValue();
       testNameToTimeSpentMap.put(testName, spent);
    }
 

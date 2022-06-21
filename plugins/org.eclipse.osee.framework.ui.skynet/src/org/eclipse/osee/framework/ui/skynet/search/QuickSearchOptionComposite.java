@@ -312,7 +312,7 @@ public class QuickSearchOptionComposite extends Composite {
       Map<SearchOption, Boolean> options = new HashMap<>();
 
       for (SearchOption option : SearchOption.values()) {
-         options.put(option, new Boolean(memento.getString(OPTIONS_KEY_ID + option.name())));
+         options.put(option, Boolean.valueOf(memento.getString(OPTIONS_KEY_ID + option.name())));
 
          if (option.isConfigurable()) {
             String configuration = memento.getString(OPTION_CONFIGS_KEY_ID + option.name());

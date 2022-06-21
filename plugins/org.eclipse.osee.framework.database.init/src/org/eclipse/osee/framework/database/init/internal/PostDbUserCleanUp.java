@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;

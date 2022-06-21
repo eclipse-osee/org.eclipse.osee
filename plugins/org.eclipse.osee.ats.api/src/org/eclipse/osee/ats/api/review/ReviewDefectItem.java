@@ -180,7 +180,7 @@ public class ReviewDefectItem {
       this.disposition = Disposition.valueOf(AXml.getTagData(xml, "disposition"));
       this.injectionActivity = InjectionActivity.valueOf(AXml.getTagData(xml, "injectionActivity"));
       Date date = new Date();
-      date.setTime(new Long(AXml.getTagData(xml, "date")));
+      date.setTime(Long.valueOf(AXml.getTagData(xml, "date")));
       this.date = date;
       this.userId = AXml.getTagData(xml, "user");
       this.description = AXml.getTagData(xml, "description");

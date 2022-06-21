@@ -68,7 +68,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
          if (m.find()) {
             state.setName(m.group(1));
             if (!m.group(3).equals("")) {
-               state.setHoursSpent(new Float(m.group(3)).doubleValue());
+               state.setHoursSpent(Float.valueOf(m.group(3)).doubleValue());
             }
             if (!m.group(4).equals("")) {
                state.setPercentComplete(Integer.valueOf(m.group(4)).intValue());

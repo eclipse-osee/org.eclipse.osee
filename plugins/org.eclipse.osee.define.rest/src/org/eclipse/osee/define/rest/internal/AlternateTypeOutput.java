@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.define.rest.internal;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author David W. Miller

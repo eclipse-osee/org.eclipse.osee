@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.imageDetection;
 
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import jakarta.xml.bind.DatatypeConverter;
 
 /**
  * @author Jeff C. Phillips

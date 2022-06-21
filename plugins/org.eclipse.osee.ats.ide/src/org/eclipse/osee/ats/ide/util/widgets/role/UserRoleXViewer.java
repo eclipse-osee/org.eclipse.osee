@@ -172,7 +172,7 @@ public class UserRoleXViewer extends XViewer {
    private boolean setHoursSpent(Collection<UserRole> userRoles, String hours) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         userRole.setHoursSpent(hours.equals("") ? 0 : new Double(hours).doubleValue());
+         userRole.setHoursSpent(hours.equals("") ? 0 : Double.valueOf(hours).doubleValue());
          if (!modified) {
             modified = true;
          }

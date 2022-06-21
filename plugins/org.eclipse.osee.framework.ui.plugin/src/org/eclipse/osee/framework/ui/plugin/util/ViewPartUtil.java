@@ -42,8 +42,8 @@ public class ViewPartUtil {
        * multiple Views of the same type running concurrently. Since the secondary ID must be unique, we need to find an
        * ID that isn't being used currently. Also, its nice to display this to the user so they can keep the views
        * straight. So, we've opted to simply use an integer number for this purpose. Therefore, to startup another
-       * instnace of this view, we want to find a number which isn't currently being used, and use that. The lower
-       * numbers are preferable from a useability standpoint, and we'll start counting at 1. If a view is closed, we
+       * instance of this view, we want to find a number which isn't currently being used, and use that. The lower
+       * numbers are preferable from a usability standpoint, and we'll start counting at 1. If a view is closed, we
        * should first re-use its number before going on to higher numbers. For example, if views with secondary IDs 1,
        * and 3 are currently running, the next instance of the view should be 2.
        */
@@ -54,7 +54,7 @@ public class ViewPartUtil {
       for (IViewReference viewRef : viewRefs) {
          if (viewRef.getId().equals(viewID)) {
             try {
-               set.add(new Integer(viewRef.getSecondaryId()));
+               set.add(Integer.valueOf(viewRef.getSecondaryId()));
             } catch (NumberFormatException ex) {
                ex.printStackTrace();
             }

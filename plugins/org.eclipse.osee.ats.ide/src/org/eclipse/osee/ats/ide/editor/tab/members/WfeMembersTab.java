@@ -373,6 +373,7 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       }
    }
 
+   @Override
    public void refresh() {
       Displays.ensureInDisplayThread(new Runnable() {
 

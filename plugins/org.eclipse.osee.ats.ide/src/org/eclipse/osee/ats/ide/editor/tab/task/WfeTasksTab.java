@@ -366,6 +366,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       }
    }
 
+   @Override
    public void refresh() {
       Thread reload = new Thread("Reload Tasks") {
 

@@ -47,7 +47,7 @@ public class PolicyTableCellModifier implements ICellModifier {
    @Override
    public Object getValue(Object element, String property) {
       if (property.equals(PolicyTableColumns.delete.toString())) {
-         return new Boolean(false);
+         return Boolean.valueOf(false);
       } else if (property.equals(PolicyTableColumns.artifact.toString()) || property.equals(
          PolicyTableColumns.totalAccess.toString()) || property.equals(PolicyTableColumns.branchAccess.toString())) {
          return ((AccessControlData) element).getPermission().ordinal();

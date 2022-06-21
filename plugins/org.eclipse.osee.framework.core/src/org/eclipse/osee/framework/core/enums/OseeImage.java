@@ -20,7 +20,7 @@ public abstract class OseeImage extends OseeEnum {
    private static final Long ENUM_ID = 3241857093L;
 
    public OseeImage(String filename) {
-      super(ENUM_ID, ENUM_ID + new Long(filename.hashCode()), filename);
+      super(ENUM_ID, ENUM_ID + Long.valueOf(filename.hashCode()), filename);
    }
 
    @Override

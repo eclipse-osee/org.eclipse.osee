@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.disposition.model;
 
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**

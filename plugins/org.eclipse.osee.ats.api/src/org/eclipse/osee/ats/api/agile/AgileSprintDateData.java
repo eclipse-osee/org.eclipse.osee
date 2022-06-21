@@ -21,13 +21,13 @@ import java.util.Date;
 public class AgileSprintDateData {
 
    private Date date;
-   private Double completedPoints = new Double(0);
-   private Double completedPlannedPoints = new Double(0);
-   private Double completedUnPlannedPoints = new Double(0);
-   private Double inCompletedUnPlannedPoints = new Double(0);
-   private Double goalPoints = new Double(0);
+   private Double completedPoints = Double.valueOf(0);
+   private Double completedPlannedPoints = Double.valueOf(0);
+   private Double completedUnPlannedPoints = Double.valueOf(0);
+   private Double inCompletedUnPlannedPoints = Double.valueOf(0);
+   private Double goalPoints = Double.valueOf(0);
    // Planned points plus current walkup
-   private Double totalRealizedPoints = new Double(0);
+   private Double totalRealizedPoints = Double.valueOf(0);
 
    public Date getDate() {
       return date;
@@ -43,7 +43,7 @@ public class AgileSprintDateData {
 
    public void setCompletedPoints(Double completedPoints) {
       if (completedPoints == null) {
-         this.completedPoints = new Double(0);
+         this.completedPoints = Double.valueOf(0);
       } else {
          this.completedPoints = completedPoints;
       }
@@ -55,7 +55,7 @@ public class AgileSprintDateData {
 
    public void setCompletedPlannedPoints(Double completedPlannedPoints) {
       if (completedPlannedPoints == null) {
-         this.completedPlannedPoints = new Double(0);
+         this.completedPlannedPoints = Double.valueOf(0);
       } else {
          this.completedPlannedPoints = completedPlannedPoints;
       }
@@ -67,7 +67,7 @@ public class AgileSprintDateData {
 
    public void setCompletedUnPlannedPoints(Double completedUnPlannedPoints) {
       if (completedUnPlannedPoints == null) {
-         this.completedUnPlannedPoints = new Double(0);
+         this.completedUnPlannedPoints = Double.valueOf(0);
       } else {
          this.completedUnPlannedPoints = completedUnPlannedPoints;
       }
@@ -79,7 +79,7 @@ public class AgileSprintDateData {
 
    public void setGoalPoints(Double goalPoints) {
       if (goalPoints == null) {
-         this.goalPoints = new Double(0);
+         this.goalPoints = Double.valueOf(0);
       } else {
          this.goalPoints = goalPoints;
       }

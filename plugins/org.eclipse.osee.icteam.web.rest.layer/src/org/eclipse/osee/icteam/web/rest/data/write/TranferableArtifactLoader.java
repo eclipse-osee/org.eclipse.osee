@@ -110,15 +110,13 @@ public class TranferableArtifactLoader {
       Collection<RelationTypeToken> existingRelationTypes = readable.getExistingRelationTypes();
       try {
          for (RelationTypeToken iRelationType : existingRelationTypes) {
-            RelationTypeSide createRelationTypeSide =
-               RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_B);
+            RelationTypeSide createRelationTypeSide = RelationTypeSide.create((iRelationType), RelationSide.SIDE_B);
             ResultSet<ArtifactReadable> relatedArtifacts = readable.getRelated(createRelationTypeSide);
             if (relatedArtifacts.size() > 0) {
                fillRelations(relatedArtifacts, createRelationTypeSide, iRelationType, ar);
             }
 
-            RelationTypeSide createRelationTypeSide1 =
-               RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_A);
+            RelationTypeSide createRelationTypeSide1 = RelationTypeSide.create((iRelationType), RelationSide.SIDE_A);
             ResultSet<ArtifactReadable> relatedArtifacts1 = readable.getRelated(createRelationTypeSide1);
             if (relatedArtifacts1.size() > 0) {
                fillRelations(relatedArtifacts1, createRelationTypeSide1, iRelationType, ar);
@@ -166,16 +164,14 @@ public class TranferableArtifactLoader {
       try {
          for (RelationTypeToken iRelationType : existingRelationTypes) {
 
-            if (!((RelationTypeToken) iRelationType).getName().equals("ProjectToTeamWorkFlow")) {
-               RelationTypeSide createRelationTypeSide =
-                  RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_B);
+            if (!iRelationType.getName().equals("ProjectToTeamWorkFlow")) {
+               RelationTypeSide createRelationTypeSide = RelationTypeSide.create((iRelationType), RelationSide.SIDE_B);
                ResultSet<ArtifactReadable> relatedArtifacts = readable.getRelated(createRelationTypeSide);
                if (relatedArtifacts.size() > 0) {
                   fillRelations(relatedArtifacts, createRelationTypeSide, iRelationType, ar);
                }
 
-               RelationTypeSide createRelationTypeSide1 =
-                  RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_A);
+               RelationTypeSide createRelationTypeSide1 = RelationTypeSide.create((iRelationType), RelationSide.SIDE_A);
                ResultSet<ArtifactReadable> relatedArtifacts1 = readable.getRelated(createRelationTypeSide1);
                if (relatedArtifacts1.size() > 0) {
                   fillRelations(relatedArtifacts1, createRelationTypeSide1, iRelationType, ar);
@@ -217,8 +213,7 @@ public class TranferableArtifactLoader {
             list1.add(art);
          }
       }
-      ar.putRelations(
-         ((RelationTypeToken) relationType).getName() + CommonConstants.RELATION_MAP_KEY_SEPARATOR + side.getSide().name(),
+      ar.putRelations(relationType.getName() + CommonConstants.RELATION_MAP_KEY_SEPARATOR + side.getSide().name(),
          list1);
    }
 
@@ -255,15 +250,13 @@ public class TranferableArtifactLoader {
       Collection<RelationTypeToken> existingRelationTypes = readable.getExistingRelationTypes();
       try {
          for (RelationTypeToken iRelationType : existingRelationTypes) {
-            RelationTypeSide createRelationTypeSide =
-               RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_B);
+            RelationTypeSide createRelationTypeSide = RelationTypeSide.create((iRelationType), RelationSide.SIDE_B);
             ResultSet<ArtifactReadable> relatedArtifacts = readable.getRelated(createRelationTypeSide);
             if (relatedArtifacts.size() > 0) {
                fillRelationsdup(relatedArtifacts, createRelationTypeSide, iRelationType, transArtifact);
             }
 
-            RelationTypeSide createRelationTypeSide1 =
-               RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_A);
+            RelationTypeSide createRelationTypeSide1 = RelationTypeSide.create((iRelationType), RelationSide.SIDE_A);
             ResultSet<ArtifactReadable> relatedArtifacts1 = readable.getRelated(createRelationTypeSide1);
             if (relatedArtifacts1.size() > 0) {
                fillRelationsdup(relatedArtifacts1, createRelationTypeSide1, iRelationType, transArtifact);
@@ -297,8 +290,7 @@ public class TranferableArtifactLoader {
          list1.add(art);
       }
       transArtifact.putRelations(
-         ((RelationTypeToken) iRelationType).getName() + CommonConstants.RELATION_MAP_KEY_SEPARATOR + side.getSide().name(),
-         list1);
+         iRelationType.getName() + CommonConstants.RELATION_MAP_KEY_SEPARATOR + side.getSide().name(), list1);
    }
 
    /**
@@ -458,7 +450,7 @@ public class TranferableArtifactLoader {
 
    /**
     * This method copy the basic task info to TransferableArtifact
-    * 
+    *
     * @param readable ArtifactReadable Object holding the values
     * @param transArt is the ITransferableArtifact object in which the values will be set.
     * @throws OseeCoreException

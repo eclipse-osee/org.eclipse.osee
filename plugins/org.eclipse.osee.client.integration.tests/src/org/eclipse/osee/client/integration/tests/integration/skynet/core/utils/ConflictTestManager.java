@@ -617,13 +617,13 @@ public class ConflictTestManager {
          if (value.equals("")) {
             return Integer.valueOf(0);
          }
-         return new Integer(value);
+         return Integer.valueOf(value);
       }
       if (clas.equals(LongAttribute.class)) {
          if (value.equals("")) {
             return Long.valueOf(0);
          }
-         return new Long(value);
+         return Long.valueOf(value);
       }
       if (clas.equals(DateAttribute.class)) {
          if (value.equals("")) {
@@ -633,9 +633,9 @@ public class ConflictTestManager {
       }
       if (clas.equals(FloatingPointAttribute.class)) {
          if (value.equals("")) {
-            return new Double(0);
+            return Double.valueOf(0);
          }
-         return new Double(value);
+         return Double.valueOf(value);
       }
       return value;
    }

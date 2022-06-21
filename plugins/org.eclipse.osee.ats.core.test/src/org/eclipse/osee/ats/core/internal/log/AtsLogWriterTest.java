@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AtsLogWriter}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsLogWriterTest {
@@ -88,7 +88,7 @@ public class AtsLogWriterTest {
 
    public Date getTestDate2011() {
       Calendar cal = Calendar.getInstance();
-      Date date = new Date(new Long("1164960000000").longValue());
+      Date date = new Date(Long.valueOf("1164960000000").longValue());
       cal.setTime(date);
       return date;
    }

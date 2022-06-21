@@ -63,7 +63,7 @@ public class RelationTableCellModifier implements ICellModifier {
 
       switch (columnIndex) {
          case RelationTableViewer.ADD_NUM:
-            result = new Boolean(model.isAdd());
+            result = Boolean.valueOf(model.isAdd());
             break;
          case RelationTableViewer.ARTIFACT_NAME_NUM:
             result = new String(model.getName());

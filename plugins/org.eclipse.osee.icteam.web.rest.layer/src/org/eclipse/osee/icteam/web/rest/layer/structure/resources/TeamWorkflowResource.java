@@ -406,9 +406,6 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                      }
                   }
 
-                  if (Long.parseLong(AtsAttributeTypes.Rank.getIdString()) == Long.parseLong(split[0])) {
-                  }
-
                   if (split[0].equalsIgnoreCase("1152921504606847192")) {
                      if (string.contains("Completed")) {
                         if (!(teamwfartifact.getAttributes(
