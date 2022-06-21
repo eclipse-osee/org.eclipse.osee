@@ -152,6 +152,7 @@ public class WfeDefectsTab extends WfeAbstractTab implements DefectRefreshListen
       });
    }
 
+   @Override
    public void refresh() {
       if (xViewer != null) {
          xViewer.loadTable(this);

@@ -79,7 +79,7 @@ public class SourceCounter {
          for (Entry<String, MutableInteger> entry : authorToFileCount.getCounts()) {
             System.out.println(String.format("Author [%s]", entry.getKey()));
             int count = entry.getValue().getValue();
-            double percent = new Double(count).doubleValue() / new Double(sourceFileCounter).doubleValue();
+            double percent = Double.valueOf(count).doubleValue() / Double.valueOf(sourceFileCounter).doubleValue();
             names.add(entry.getKey() + ", " + entry.getValue() + ", " + doubleToI18nString(percent, false) + "\n");
          }
          Collections.sort(names);
@@ -93,7 +93,7 @@ public class SourceCounter {
          names.clear();
          for (Entry<String, MutableInteger> entry : authorToSlocCount.getCounts()) {
             int count = entry.getValue().getValue();
-            double percent = new Double(count).doubleValue() / new Double(slocCounter).doubleValue();
+            double percent = Double.valueOf(count).doubleValue() / Double.valueOf(slocCounter).doubleValue();
             names.add(entry.getKey() + ", " + count + ", " + doubleToI18nString(percent, false) + "\n");
          }
          Collections.sort(names);
@@ -107,7 +107,7 @@ public class SourceCounter {
          for (Entry<String, MutableInteger> entry : productToSlocCount.getCounts()) {
             String featureName = entry.getKey();
             int count = entry.getValue().getValue();
-            double percent = new Double(count).doubleValue() / new Double(slocCounter).doubleValue();
+            double percent = Double.valueOf(count).doubleValue() / Double.valueOf(slocCounter).doubleValue();
             names.add(featureName + ", " + count + ", " + doubleToI18nString(percent, false) + "\n");
          }
          Collections.sort(names);

@@ -27,10 +27,12 @@ import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.Transfera
 
 public class InterfaceAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {
 
+   @Override
    public JsonElement serialize(T object, Type interfaceType, JsonSerializationContext context) {
       return context.serialize(object);
    }
 
+   @Override
    public T deserialize(JsonElement elem, Type interfaceType, JsonDeserializationContext context) throws JsonParseException {
       return context.deserialize(elem, TransferableArtifact.class);
    }

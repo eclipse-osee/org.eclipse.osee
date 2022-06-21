@@ -145,7 +145,7 @@ public class OseeOAuthContextProvider implements ContextProvider<OseeOAuthContex
    }
 
    private static OseePermission newPermission(OAuthPermission permission) {
-      Long id = new Long(permission.hashCode());
+      Long id = Long.valueOf(permission.hashCode());
       return new OseePermissionImpl(id, permission);
    }
 

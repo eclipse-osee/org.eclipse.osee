@@ -138,7 +138,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
          }
          return returnObj;
       }
-      return clazz.newInstance();
+      return clazz.getDeclaredConstructor().newInstance();
    }
 
    @Override
@@ -179,7 +179,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
          }
          return returnObj;
       }
-      return clazz.newInstance();
+      return clazz.getDeclaredConstructor().newInstance();
    }
 
    @Override
@@ -243,7 +243,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
          }
          return returnObj;
       }
-      return clazz.newInstance();
+      return clazz.getDeclaredConstructor().newInstance();
    }
 
    @Override

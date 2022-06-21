@@ -118,9 +118,8 @@ public class LdapUtil {
 
       catch (NamingException e) {
          OseeLog.logf(Activator.class, Level.INFO, e.getMessage(), (Object) null);
-      } finally {
-
       }
+
       return userList;
    }
 

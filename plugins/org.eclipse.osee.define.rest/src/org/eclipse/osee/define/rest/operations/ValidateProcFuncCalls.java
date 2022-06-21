@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -288,8 +287,7 @@ public class ValidateProcFuncCalls {
       BranchId branch = BranchId.valueOf(8203443705848388493L);
       TransactionBuilder tx = null;
       if (!reportOnly) {
-         tx = orcsApi.getTransactionFactory().createTransaction(branch,
-            "Fix UI names in SoftReq word content.");
+         tx = orcsApi.getTransactionFactory().createTransaction(branch, "Fix UI names in SoftReq word content.");
       }
       String wasPath = "C:/UserData/SrsConversion/was/";
       String isPath = "C:/UserData/SrsConversion/is/";

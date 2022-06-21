@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.model.search.artifact;
 
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 

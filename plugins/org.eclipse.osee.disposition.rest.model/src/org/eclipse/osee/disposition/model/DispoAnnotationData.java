@@ -14,9 +14,9 @@
 package org.eclipse.osee.disposition.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**

@@ -126,7 +126,7 @@ public class OptionsTest {
 
       assertNull(options.getObject(TEST_KEY));
 
-      Long object = new Long(12312L);
+      Long object = Long.valueOf(12312L);
       options.put(TEST_KEY, object);
 
       assertEquals(object, options.getObject(TEST_KEY));

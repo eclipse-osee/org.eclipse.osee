@@ -84,13 +84,13 @@ public final class NormalizeHtml {
 
    private static TreeMap<Integer, String> initializeFontMap() {
       TreeMap<Integer, String> map = new TreeMap<>();
-      map.put(new Integer(8), "xx-small;");
-      map.put(new Integer(11), "small;");
-      map.put(new Integer(13), "medium;");
-      map.put(new Integer(16), "large;");
-      map.put(new Integer(20), "x-large;");
-      map.put(new Integer(28), "xx-large;");
-      map.put(new Integer(Integer.MAX_VALUE), "300%;");
+      map.put(Integer.valueOf(8), "xx-small;");
+      map.put(Integer.valueOf(11), "small;");
+      map.put(Integer.valueOf(13), "medium;");
+      map.put(Integer.valueOf(16), "large;");
+      map.put(Integer.valueOf(20), "x-large;");
+      map.put(Integer.valueOf(28), "xx-large;");
+      map.put(Integer.valueOf(Integer.MAX_VALUE), "300%;");
       return map;
    }
 

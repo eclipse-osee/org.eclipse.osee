@@ -110,7 +110,7 @@ public class UpdateBookmarkIds {
                Node amlIdNode = node.getAttributes().getNamedItem(WORD_AML_ID_ATTRIBUTE);
                if (amlIdNode != null) {
                   String amlIdStr = amlIdNode.getNodeValue();
-                  Integer oldAmlId = new Integer(amlIdStr);
+                  Integer oldAmlId = Integer.valueOf(amlIdStr);
                   Integer newAmlId = oldToNewAmlIds.get(oldAmlId);
                   if (newAmlId == null) {
                      newAmlId = incrementBookmarkId();

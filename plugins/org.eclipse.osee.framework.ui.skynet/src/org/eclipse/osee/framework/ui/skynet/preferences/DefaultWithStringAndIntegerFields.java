@@ -159,7 +159,7 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
       boolean toReturn = false;
       if (Strings.isValid(textField)) {
          try {
-            new Integer(integerField);
+            Integer.valueOf(integerField);
             toReturn = true;
          } catch (NumberFormatException ex) {
             // do nothing

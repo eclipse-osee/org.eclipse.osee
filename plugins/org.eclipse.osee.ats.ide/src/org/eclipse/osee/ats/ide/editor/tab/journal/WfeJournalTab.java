@@ -176,6 +176,7 @@ public class WfeJournalTab extends WfeAbstractTab {
       browser.setLayoutData(gd2);
    }
 
+   @Override
    public void refresh() {
       if (Widgets.isAccessible(journalComp)) {
          IAtsWorkItem workItem = editor.getWorkItem();

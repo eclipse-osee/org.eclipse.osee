@@ -48,7 +48,7 @@ public class ProcessesTest {
       Thread.sleep(500);
       process.destroy();
       Assert.assertEquals(argument, stringWriter.toString());
-      Assert.assertEquals(new Long(argument.length()), outFuture.get());
+      Assert.assertEquals(Long.valueOf(argument.length()), outFuture.get());
    }
 
    @Test

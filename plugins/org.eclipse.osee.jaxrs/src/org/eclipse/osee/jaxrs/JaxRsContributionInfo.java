@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.jaxrs;
 
-import java.util.Set;
-import java.util.TreeSet;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Roberto E. Escobar

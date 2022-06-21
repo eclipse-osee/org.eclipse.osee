@@ -243,9 +243,9 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          row[4] = subsystem;
          Integer counter = summarySubsystemCounter.get(subsystem);
          if (counter == null) {
-            counter = new Integer(1);
+            counter = Integer.valueOf(1);
          } else {
-            counter = new Integer(counter.intValue() + 1);
+            counter = Integer.valueOf(counter.intValue() + 1);
          }
          summarySubsystemCounter.put(subsystem, counter);
          ResultSet<ArtifactReadable> subSystemRequirements =
@@ -302,9 +302,9 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
             if (foundTrace) {
                counter = summaryTraceCounter.get(subsystem);
                if (counter == null) {
-                  counter = new Integer(1);
+                  counter = Integer.valueOf(1);
                } else {
-                  counter = new Integer(counter.intValue() + 1);
+                  counter = Integer.valueOf(counter.intValue() + 1);
                }
                summaryTraceCounter.put(subsystem, counter);
             }

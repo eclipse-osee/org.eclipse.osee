@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.account.rest.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Roberto E. Escobar

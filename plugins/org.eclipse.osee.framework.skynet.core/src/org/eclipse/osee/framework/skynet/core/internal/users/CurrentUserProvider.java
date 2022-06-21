@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.access.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.client.AccessTopicEvent;

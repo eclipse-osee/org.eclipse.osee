@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.ui.plugin.views.property;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 
 public class BooleanPropertyDescriptor extends ComboBoxPropertyDescriptor {
-   public static final Integer falseInteger = new Integer(0);
-   public static final Integer trueInteger = new Integer(1);
+   public static final Integer falseInteger = Integer.valueOf(0);
+   public static final Integer trueInteger = Integer.valueOf(1);
    public static final String[] booleanValues = new String[] {"false", "true"};
 
    public BooleanPropertyDescriptor(PropertyId propertyId) {

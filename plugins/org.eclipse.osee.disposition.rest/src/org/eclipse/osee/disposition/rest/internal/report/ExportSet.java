@@ -515,7 +515,7 @@ public class ExportSet {
       if (total == 0 || complete == 0) {
          return getPercentString(0, complete, total, showZero);
       }
-      Double percent = new Double(complete);
+      Double percent = Double.valueOf(complete);
       percent = percent / total;
       percent = percent * 100;
       return getPercentString(percent, complete, total, showZero);

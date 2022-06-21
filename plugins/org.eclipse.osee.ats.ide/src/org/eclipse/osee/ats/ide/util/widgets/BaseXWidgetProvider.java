@@ -38,7 +38,7 @@ public class BaseXWidgetProvider implements IXWidgetProvider {
       Class<XWidget> clazz = (Class<XWidget>) nameToClass.get(widgetName);
       if (clazz != null) {
          try {
-            XWidget widget = clazz.newInstance();
+            XWidget widget = clazz.getDeclaredConstructor().newInstance();
             if (Strings.isValid(rItem.getToolTip())) {
                widget.setToolTip(rItem.getToolTip());
             }

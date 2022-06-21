@@ -172,13 +172,13 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    private long translateLongId(String id, long originalValue) {
-      Long original = new Long(originalValue);
+      Long original = Long.valueOf(originalValue);
       Long newValue = (Long) getTranslator().translate(id, original);
       return newValue.intValue();
    }
 
    private int translateIntId(String id, int originalValue) {
-      Long original = new Long(originalValue);
+      Long original = Long.valueOf(originalValue);
       Long newValue = (Long) getTranslator().translate(id, original);
       return newValue.intValue();
    }
@@ -209,8 +209,9 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    @Override
    public void clearDataTable() {
-      getDatabaseService().runPreparedUpdate(getConnection(), String.format("DELETE FROM %s where NOT branch_type = ?",
-         getMetaData().getTableName()), BranchType.SYSTEM_ROOT);
+      getDatabaseService().runPreparedUpdate(getConnection(),
+         String.format("DELETE FROM %s where NOT branch_type = ?", getMetaData().getTableName()),
+         BranchType.SYSTEM_ROOT);
    }
 
    public void setConnection(JdbcConnection connection) {

@@ -14,7 +14,6 @@
 package org.eclipse.osee.mim.types;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Audrey E Denk

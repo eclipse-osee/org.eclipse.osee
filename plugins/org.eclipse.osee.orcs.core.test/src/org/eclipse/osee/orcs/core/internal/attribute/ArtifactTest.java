@@ -328,7 +328,7 @@ public class ArtifactTest {
 
    @Test
    public void testGetSoleAttributeAsString() {
-      when(notDeleted.getValue()).thenReturn(new Integer(5));
+      when(notDeleted.getValue()).thenReturn(Integer.valueOf(5));
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       String attribute = artifact.getSoleAttributeAsString(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals("5", attribute);

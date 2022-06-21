@@ -97,7 +97,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Double(setting).doubleValue();
+      return Double.valueOf(setting).doubleValue();
    }
 
    @Override
@@ -107,7 +107,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Float(setting).floatValue();
+      return Float.valueOf(setting).floatValue();
    }
 
    @Override
@@ -117,7 +117,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Integer(setting).intValue();
+      return Integer.valueOf(setting).intValue();
    }
 
    @Override
@@ -127,7 +127,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Long(setting).longValue();
+      return Long.valueOf(setting).longValue();
    }
 
    @Override

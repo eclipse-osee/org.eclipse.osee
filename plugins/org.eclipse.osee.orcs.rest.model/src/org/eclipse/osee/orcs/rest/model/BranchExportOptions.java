@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Collections;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**

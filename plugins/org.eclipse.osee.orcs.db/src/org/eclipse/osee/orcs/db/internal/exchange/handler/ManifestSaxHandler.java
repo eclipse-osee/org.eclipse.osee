@@ -60,7 +60,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    @Override
    protected void processData(Map<String, String> fieldMap) {
       String fileName = fieldMap.get(ExportImportXml.ID);
-      Integer priority = new Integer(fieldMap.get(ExportImportXml.PRIORITY));
+      Integer priority = Integer.valueOf(fieldMap.get(ExportImportXml.PRIORITY));
       String source = fieldMap.get(ExportImportXml.SOURCE);
 
       if (Strings.isValid(fileName) && Strings.isValid(source)) {

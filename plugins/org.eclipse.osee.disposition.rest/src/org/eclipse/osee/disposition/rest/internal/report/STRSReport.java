@@ -156,10 +156,10 @@ public class STRSReport {
          }
       }
 
-      toReturn.put("CODE", new Integer(codeCount));
-      toReturn.put("SCRIPT", new Integer(scriptCount));
-      toReturn.put("REQ", new Integer(reqCount));
-      toReturn.put("OTHER", new Integer(other));
+      toReturn.put("CODE", Integer.valueOf(codeCount));
+      toReturn.put("SCRIPT", Integer.valueOf(scriptCount));
+      toReturn.put("REQ", Integer.valueOf(reqCount));
+      toReturn.put("OTHER", Integer.valueOf(other));
 
       return toReturn;
    }

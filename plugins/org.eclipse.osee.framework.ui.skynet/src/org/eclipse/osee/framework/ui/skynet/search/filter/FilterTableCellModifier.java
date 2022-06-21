@@ -50,7 +50,7 @@ public class FilterTableCellModifier implements ICellModifier {
 
       switch (columnIndex) {
          case FilterTableViewer.DELETE_NUM:
-            return new Boolean(false);
+            return Boolean.valueOf(false);
       }
       return "";
    }

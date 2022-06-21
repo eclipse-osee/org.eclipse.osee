@@ -353,7 +353,7 @@ public class ExcelAtsTaskArtifactExtractor {
          double hours = 0;
          if (Strings.isValid(str)) {
             try {
-               hours = new Double(str);
+               hours = Double.valueOf(str);
             } catch (Exception ex) {
                rd.errorf("Invalid Estimated Hours \"%s\" for row %d\n", str, rowNum);
             }
@@ -366,7 +366,7 @@ public class ExcelAtsTaskArtifactExtractor {
          double hours = 0;
          if (Strings.isValid(str)) {
             try {
-               hours = new Double(str);
+               hours = Double.valueOf(str);
             } catch (Exception ex) {
                rd.errorf("Invalid Hours Spent \"%s\" for row %d\n", str, rowNum);
             }
@@ -379,7 +379,7 @@ public class ExcelAtsTaskArtifactExtractor {
          Double percent = 0.0;
          if (Strings.isValid(str)) {
             try {
-               percent = new Double(str);
+               percent = Double.valueOf(str);
                if (percent < 1) {
                   percent = percent * 100;
                }

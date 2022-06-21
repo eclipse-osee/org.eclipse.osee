@@ -37,8 +37,8 @@ public class HandleImport {
 
          @Override
          public int compare(ImportHandler o1, ImportHandler o2) {
-            Integer left = new Integer(o1.getRank());
-            Integer right = new Integer(o2.getRank());
+            Integer left = Integer.valueOf(o1.getRank());
+            Integer right = Integer.valueOf(o2.getRank());
             return left.compareTo(right);
          }
 

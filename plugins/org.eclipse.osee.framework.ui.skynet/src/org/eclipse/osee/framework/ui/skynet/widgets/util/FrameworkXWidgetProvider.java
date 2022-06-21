@@ -240,7 +240,7 @@ public final class FrameworkXWidgetProvider {
       Class<XWidget> clazz = (Class<XWidget>) getNameToClass().get(xWidgetName);
       if (clazz != null) {
          try {
-            return clazz.newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
          } catch (Exception ex) {
             OseeLog.log(FrameworkXWidgetProvider.class, Level.SEVERE, ex.toString(), ex);
          }

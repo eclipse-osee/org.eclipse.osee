@@ -70,7 +70,7 @@ public class VariantData implements IVariantData {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Double(setting).doubleValue();
+      return Double.valueOf(setting).doubleValue();
    }
 
    @Override
@@ -80,7 +80,7 @@ public class VariantData implements IVariantData {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Float(setting).floatValue();
+      return Float.valueOf(setting).floatValue();
    }
 
    @Override
@@ -90,7 +90,7 @@ public class VariantData implements IVariantData {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Integer(setting).intValue();
+      return Integer.valueOf(setting).intValue();
    }
 
    @Override
@@ -99,7 +99,7 @@ public class VariantData implements IVariantData {
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
-      return new Long(setting).longValue();
+      return Long.valueOf(setting).longValue();
    }
 
    @Override
@@ -108,7 +108,7 @@ public class VariantData implements IVariantData {
       if (setting == null) {
          throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE, key));
       }
-      return new Date(new Long(setting).longValue());
+      return new Date(Long.valueOf(setting).longValue());
    }
 
    @Override

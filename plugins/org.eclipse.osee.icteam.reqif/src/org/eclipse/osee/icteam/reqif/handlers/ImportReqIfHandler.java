@@ -14,13 +14,13 @@ package org.eclipse.osee.icteam.reqif.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.icteam.reqif.dialogs.ImportReqIfDialog;
 import org.eclipse.osee.icteam.reqif.export.ReqIfLoad;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Handler to handle the Import of ReqIf Specifications

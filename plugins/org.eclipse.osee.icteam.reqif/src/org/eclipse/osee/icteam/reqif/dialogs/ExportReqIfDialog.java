@@ -13,7 +13,6 @@
 package org.eclipse.osee.icteam.reqif.dialogs;
 
 import java.io.File;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;

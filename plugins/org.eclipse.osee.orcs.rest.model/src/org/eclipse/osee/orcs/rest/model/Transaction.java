@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
-import java.util.Date;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;

@@ -38,8 +38,8 @@ public class WidgetStatusTest {
 
    @Test
    public void testOrdinals() {
-      Assert.assertEquals(new Long(0), WidgetStatus.None.getId());
-      Assert.assertEquals(new Long(1), WidgetStatus.Success.getId());
+      Assert.assertEquals(Long.valueOf(0), WidgetStatus.None.getId());
+      Assert.assertEquals(Long.valueOf(1), WidgetStatus.Success.getId());
    }
 
 }

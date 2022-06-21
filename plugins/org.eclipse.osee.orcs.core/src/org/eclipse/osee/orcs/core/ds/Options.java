@@ -68,7 +68,7 @@ public class Options implements Cloneable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Double(setting).doubleValue();
+      return Double.valueOf(setting).doubleValue();
    }
 
    public float getFloat(String key) throws NumberFormatException {
@@ -77,7 +77,7 @@ public class Options implements Cloneable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Float(setting).floatValue();
+      return Float.valueOf(setting).floatValue();
    }
 
    public int getInt(String key) throws NumberFormatException {
@@ -86,7 +86,7 @@ public class Options implements Cloneable {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
-      return new Integer(setting).intValue();
+      return Integer.valueOf(setting).intValue();
    }
 
    public long getLong(String key) throws NumberFormatException {
@@ -94,7 +94,7 @@ public class Options implements Cloneable {
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
-      return new Long(setting).longValue();
+      return Long.valueOf(setting).longValue();
    }
 
    public Date getDate(String key) throws IllegalArgumentException {
@@ -102,7 +102,7 @@ public class Options implements Cloneable {
       if (setting == null) {
          throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE, key));
       }
-      return new Date(new Long(setting).longValue());
+      return new Date(Long.valueOf(setting).longValue());
    }
 
    public Date getDateOrNull(String key) throws IllegalArgumentException {

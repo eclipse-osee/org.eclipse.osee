@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.imageDetection;
 
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -21,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import jakarta.xml.bind.DatatypeConverter;
 import javax.xml.xpath.XPath;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;

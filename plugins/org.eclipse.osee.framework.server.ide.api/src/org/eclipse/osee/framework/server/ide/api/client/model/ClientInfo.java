@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.framework.server.ide.api.client.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**

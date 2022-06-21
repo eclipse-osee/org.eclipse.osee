@@ -579,7 +579,7 @@ public class ExcelAtsActionArtifactExtractor {
                   aData.desc = cols[i] == null ? "" : cols[i];
                } else if (header.equalsIgnoreCase(Columns.EstimatedHours.name())) {
                   if (Strings.isValid(cols[i])) {
-                     aData.estimatedHours = new Double(cols[i]);
+                     aData.estimatedHours = Double.valueOf(cols[i]);
                   }
                } else if (header.equalsIgnoreCase(Columns.ActionableItems.name())) {
                   processActionableItems(cols, aData, i);

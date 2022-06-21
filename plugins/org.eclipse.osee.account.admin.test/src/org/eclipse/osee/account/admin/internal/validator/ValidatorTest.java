@@ -31,13 +31,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.InOrder;
 import org.mockito.Matchers;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 
 /**
  * Test Case for {@link Validator}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ValidatorTest {

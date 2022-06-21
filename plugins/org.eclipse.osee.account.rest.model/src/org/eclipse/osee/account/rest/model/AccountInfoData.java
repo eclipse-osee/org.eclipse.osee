@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.account.rest.model;
 
-import java.util.Set;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Set;
 
 /**
  * @author Roberto E. Escobar

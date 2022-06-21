@@ -37,7 +37,7 @@ public class ArtifactSearchEngine {
       try {
          monitor.beginTask("", amountOfWork); //$NON-NLS-1$
          if (amountOfWork > 0) {
-            Integer[] args = new Integer[] {new Integer(1), new Integer(amountOfWork)};
+            Integer[] args = new Integer[] {Integer.valueOf(1), Integer.valueOf(amountOfWork)};
             monitor.setTaskName(MessageFormat.format("Scanning:", (Object[]) args));
          }
          collector.aboutToStart();

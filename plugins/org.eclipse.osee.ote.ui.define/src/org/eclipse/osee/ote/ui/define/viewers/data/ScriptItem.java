@@ -138,7 +138,7 @@ public class ScriptItem extends DataItem implements IXViewerItem {
       for (byte aByte : (scriptUrl + revision).getBytes()) {
          value += aByte;
       }
-      return new Integer(value);
+      return Integer.valueOf(value);
    }
 
    public static void setFullDescriptionModeEnabled(boolean isEnabled) {

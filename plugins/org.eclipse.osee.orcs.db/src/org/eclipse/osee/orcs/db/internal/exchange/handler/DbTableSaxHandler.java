@@ -105,7 +105,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
          if (!branchesToImport.isEmpty()) {
             String branchUuidString = fieldMap.get(ExportImportXml.PART_OF_BRANCH);
             if (Strings.isValid(branchUuidString)) {
-               if (!branchesToImport.contains(new Integer(branchUuidString))) {
+               if (!branchesToImport.contains(Integer.valueOf(branchUuidString))) {
                   process = false;
                }
             }
