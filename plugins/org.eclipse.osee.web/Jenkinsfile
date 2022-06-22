@@ -1,0 +1,41 @@
+pipeline {
+  agent {
+    kubernetes {
+      label 'my-agent-pod'
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: node
+    image: timbru31/node-chrome:14-alpine
+    command:
+    - cat
+    tty: true
+    volumeMounts: 
+    - mountPath: "/home/jenkins"
+      name: "jenkins-home"
+      readOnly: false
+  volumes:
+  - name: "jenkins-home"
+"""
+    }
+  }
+  stages {
+      
+    
+  
+    stage('Run node') {
+          
+      steps {
+          
+        container('node') {
+            
+          sh 'node -v'
+          
+        }
+       
+      }
+    }
+  }
+}
