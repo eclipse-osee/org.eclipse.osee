@@ -6,12 +6,12 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
-  containers:
-  - name: node
-    image: timbru31/node-chrome:14-alpine
-    command:
-    - cat
-    tty: true
+ containers:
+ - name: node
+   image: timbru31/node-chrome:14-alpine
+   command:
+   - cat
+   tty: true
 """
     }
   }
@@ -19,35 +19,36 @@ spec:
     skipDefaultCheckout true
   }
   stages {
-      
+
  stage('Checkout git'){
    steps {
-   	checkout([$class: 'GitSCM',
-        branches: [[name: '*/dev']],
-        extensions: [[$class: 'CloneOption', timeout: 120]],
-        gitTool: 'Default', 
-        userRemoteConfigs: [[url: 'https://git.eclipse.org/r/osee/org.eclipse.osee.git']]
-    ]) 
-   
-   
-   }
- 	
- 
- }   
-  
-    stage('Run node') {
- 
+        checkout([$class:'GitSCM',
+        branches:[[name: '*/dev']],
+        extensions:[[$class: 'CloneOption', timeout: 120]],
+        gitTool:'Default',
+        userRemoteConfigs:[[url: 'https://git.eclipse.org/r/osee/org.eclipse.osee.git']]
+        ])
 
- 
+
+   }
+
+
+ }
+
+    stage('Run node') {
+
+
+
       steps {
-          
+
         container('node') {
-            
+
           sh 'node -v'
-          
+
         }
-       
+
       }
     }
   }
 }
+
