@@ -12,12 +12,6 @@ spec:
     command:
     - cat
     tty: true
-    volumeMounts: 
-    - mountPath: "/home/jenkins"
-      name: "jenkins-home"
-      readOnly: false
-  volumes:
-  - name: "jenkins-home"
 """
     }
   }
