@@ -20,10 +20,25 @@ spec:
   }
   stages {
       
-    
+ stage('Checkout git'){
+   steps {
+   	checkout([$class: 'GitSCM',
+        branches: [[name: '*/dev']],
+        extensions: [[$class: 'CloneOption', timeout: 120]],
+        gitTool: 'Default', 
+        userRemoteConfigs: [[url: 'https://git.eclipse.org/r/osee/org.eclipse.osee.git']]
+    ]) 
+   
+   
+   }
+ 	
+ 
+ }   
   
     stage('Run node') {
-          
+ 
+
+ 
       steps {
           
         container('node') {
