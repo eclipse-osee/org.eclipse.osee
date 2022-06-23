@@ -15,6 +15,9 @@ spec:
 """
     }
   }
+  options {
+    skipDefaultCheckout true
+  }
   stages {
       
     
