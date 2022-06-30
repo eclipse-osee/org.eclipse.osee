@@ -578,6 +578,11 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder followAll() {
+      return follow(RelationTypeSide.SENTINEL, ArtifactTypeToken.SENTINEL, true);
+   }
+
+   @Override
    public List<RelationTypeSide> getRelationTypesForLevel(int level) {
       int depth = getDepth();
       if (level > depth) {
@@ -608,7 +613,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, boolean terminalFollow) {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
-      followQueryData.addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow));
+      followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow));
       return followQueryData;
    }
 

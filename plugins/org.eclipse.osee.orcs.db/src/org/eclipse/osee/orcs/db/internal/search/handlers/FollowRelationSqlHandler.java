@@ -79,11 +79,15 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       }
 
       writer.writeEqualsAnd(sourceArtTable, sourceArtColumn, relAlias, fromArtField);
-      if (criteria.getType().isNewRelationTable()) {
-         writer.writeEqualsParameterAnd(relAlias, "rel_type", typeSide.getRelationType());
-      } else {
-         writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", typeSide.getRelationType());
+
+      if (typeSide.getRelationType().isValid()) {
+         if (criteria.getType().isNewRelationTable()) {
+            writer.writeEqualsParameterAnd(relAlias, "rel_type", typeSide.getRelationType());
+         } else {
+            writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", typeSide.getRelationType());
+         }
       }
+
       writer.writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writer.writeTxBranchFilter(relTxsAlias, includeDeletedRelations);
       if (criteria.isTerminalFollow()) {
