@@ -283,6 +283,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder follow(RelationTypeSide relationTypeSide);
 
+   QueryBuilder followAll();
+
    /**
     * @param relationTypeSide side of of the relation following to (not starting from)
     * @param artifacType of the artifacts following to
@@ -301,5 +303,4 @@ public interface QueryBuilder extends Query {
    List<RelationTypeSide> getRelationTypesForLevel(int level);
 
    ArtifactReadable asArtifactOrSentinel();
-
 }
