@@ -17,40 +17,11 @@ import { MimSingleDiffComponent } from '../diff-views/mim-single-diff/mim-single
 import { PlconfigComponent } from './plconfig.component';
 
 const routes: Routes = [
-  // {
-  //   path: ':branchType/:branchId',
-  //   component:PlconfigComponent,
-  // },
-  // {
-  //   path: ':branchType',
-  //   component:PlconfigComponent,
-  // },
-  {
-    path: '',
-    component: PlconfigComponent,
-    children: [
-      {
-        path: ':branchType',
-        component: PlconfigComponent,
-        children: [
-          {
-            path: ':branchId',
-            component: PlconfigComponent,
-            children: [
-              {
-                path: 'diff',
-                component: PlconfigComponent,
-                resolve: { diff: DiffReportResolver }
-              }
-            ]
-          },
-        ]
-      }
-    ]
-  },
-  {
-    path: '', component: MimSingleDiffComponent, outlet:'rightSideNav'
-  }
+  { path: '', component: PlconfigComponent },
+  { path: ':branchType', component: PlconfigComponent },
+  { path: ':branchType/:branchId', component: PlconfigComponent },
+  { path:':branchType/:branchId/diff', component: PlconfigComponent, resolve: { diff: DiffReportResolver } },
+  { path: '', component: MimSingleDiffComponent, outlet:'rightSideNav' }
 ];
 
 @NgModule({
