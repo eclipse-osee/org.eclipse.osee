@@ -49,6 +49,10 @@ public class CloneWorkflowAction extends Action {
 
    @Override
    public void run() {
+      if (teamWf.isCompletedOrCancelled()) {
+         AWorkbench.popup("Unable to Clone a Completed or Cancelled workflow");
+         return;
+      }
       if (teamWf.isChangeRequest()) {
          AWorkbench.popup("Unable to Clone a Change Request");
          return;
