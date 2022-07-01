@@ -11,28 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { UiService } from '../../../../../ple-services/ui/ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BranchIdService {
-  private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  constructor () { }
+  constructor (private uiService: UiService) { }
   
   get BranchId() {
-    return this._branchId;
+    return this.uiService.id;
   }
 
   set id(value: string) {
-    if (value != '0'&& value !='-1'&& Number(value)>0 && !isNaN(Number(value))) {
-      this._branchId.next(value); 
-    } else {
-      throw new Error('Id is not a valid value. Invalid Value:'+value+' Valid values: ID>0');
-    }
+    this.uiService.idValue = value;
   }
 
   get id() {
-    return this._branchId.getValue();
+    return this.BranchId.getValue();
   }
 }

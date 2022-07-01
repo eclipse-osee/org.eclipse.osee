@@ -21,10 +21,10 @@
             </th>
             <td mat-cell *matCellDef="let element; let i = dataIndex" [ngClass]="i%2===0? 'message-table-row-even':'message-table-row-odd'">
                 <ng-container *ngIf="header === 'notes' || header === 'description'; else noShrink">
-                    {{((getHumanReadable(element[header])|async)||'') | displayTruncatedStringWithFieldOverflow:15}}
+                    {{element[header] | displayTruncatedStringWithFieldOverflow:15}}
                 </ng-container>
                 <ng-template #noShrink>
-                    {{getHumanReadable(element[header])|async}}
+                    {{element[header]}}
                 </ng-template>
             </td>
         </ng-container>

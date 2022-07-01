@@ -16,6 +16,8 @@ import { TypeElementSearchComponent } from './type-element-search.component';
 
 const routes: Routes = [
   { path: '', component: TypeElementSearchComponent },
+  { path: ':branchType', component: TypeElementSearchComponent },
+  { path:':branchType/:branchId', component: TypeElementSearchComponent }
 ];
 
 @NgModule({

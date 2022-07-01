@@ -29,7 +29,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 public interface InterfaceElementSearchEndpoint {
 
    @GET()
-   @Path("filter")
+   @Path("{a:filter|types/filter}")
    @Produces(MediaType.APPLICATION_JSON)
    /**
     * Same as /types/ GET() returns a *blank* filtered request
@@ -69,4 +69,9 @@ public interface InterfaceElementSearchEndpoint {
    @Path("{id}/find")
    @Produces(MediaType.APPLICATION_JSON)
    ElementPosition findElement(@PathParam("id") ArtifactId elementId);
+
+   @GET()
+   @Path("types/filter/{filter}")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<InterfaceStructureElementToken> getElementsByType(@PathParam("filter") String filter);
 }

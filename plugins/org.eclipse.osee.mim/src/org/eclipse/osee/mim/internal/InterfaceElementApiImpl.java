@@ -87,7 +87,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    public List<InterfaceStructureElementToken> getAll(BranchId branch) {
       try {
          List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch,
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch, this.getFollowRelationDetails(),
                InterfaceStructureElementToken.class);
          elements = this.parseElements(branch, elements);
          return elements;
@@ -260,6 +260,15 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          System.out.println(ex);
          return new LinkedList<InterfaceStructureElementToken>();
       }
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getElementsByTypeFilter(BranchId branch, String filter) {
+      return this.platformApi.getFilteredWithElementRelations(branch, filter).stream().map(
+         type -> type.getArtifactReadable().getRelatedList(
+            CoreRelationTypes.InterfaceElementPlatformType_Element).stream().map(
+               element -> new InterfaceStructureElementToken(element)).collect(Collectors.toList())).collect(
+                  Collectors.toList()).stream().flatMap(List::stream).distinct().collect(Collectors.toList());
    }
 
    @Override

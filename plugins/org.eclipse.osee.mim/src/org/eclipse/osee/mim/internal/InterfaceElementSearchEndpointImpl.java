@@ -64,4 +64,9 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
       return new ElementPosition();
    }
 
+   @Override
+   public Collection<InterfaceStructureElementToken> getElementsByType(String filter) {
+      return this.elementApi.getElementsByTypeFilter(branch, filter);
+   }
+
 }

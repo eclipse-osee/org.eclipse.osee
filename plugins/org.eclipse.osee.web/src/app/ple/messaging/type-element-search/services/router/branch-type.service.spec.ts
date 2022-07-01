@@ -31,7 +31,7 @@ describe('BranchTypeService', () => {
     describe('Branch Type', () => {
       describe('Valid States', () => {
         it('should set type to baseline', () => {
-          service.type='product line'
+          service.type='baseline'
           expect(service.type).toEqual('baseline')
         });
       
@@ -39,11 +39,6 @@ describe('BranchTypeService', () => {
           service.type='working'
           expect(service.type).toEqual('working')
         });    
-      })
-      describe('Invalid States', () => {
-        it('should throw an error when an invalid value is passed', () => {
-          expect(() => { service.type = 'asdf' as branchType }).toThrow(new Error('Type is not a valid value. Invalid Value:' + 'asdf' + ' Valid values: product line,working'));
-        });  
       })
     })
   })
