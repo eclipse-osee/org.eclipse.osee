@@ -16,12 +16,12 @@ import { PleComponent } from './ple.component';
 
 const routes: Routes = [
   {
-    path: 'plconfig',
-    loadChildren: () => import('./plconfig/plconfig.module').then(m => m.PlconfigModule),
-  },
-  {
     path: '',
     component: PleComponent,
+  },
+  {
+    path: 'plconfig',
+    loadChildren: () => import('./plconfig/plconfig.module').then(m => m.PlconfigModule),
   },
   { path: 'messaging', loadChildren: () => import('./messaging/messaging.module').then(m => m.MessagingModule) },
 ];

@@ -16,7 +16,7 @@
             <ng-container *ngIf="(branchId|async) as _id">
                 <ng-container>
                     <div>
-                        <button mat-raised-button style="float:right" [routerLink]="_diff==='true'?[{outlets:{primary:_type+'/'+_id+'/'+'diff', 'rightSideNav':null}}]:[{outlets:{primary:_type+'/'+_id, 'rightSideNav':null}}]"><mat-icon *ngIf="_diff==='false'">visibility_off</mat-icon><mat-icon *ngIf="_diff==='true'">change_history</mat-icon><span>{{_diff==='true'?'Show Deltas':'Hide Deltas'}}</span></button>
+                        <button mat-raised-button style="float:right" [routerLink]="_diff==='true'?[{outlets:{primary:'diff', rightSideNav:null}}]:'../'"><mat-icon *ngIf="_diff==='false'">visibility_off</mat-icon><mat-icon *ngIf="_diff==='true'">change_history</mat-icon><span>{{_diff==='true'?'Show Deltas':'Hide Deltas'}}</span></button>
                     </div>
                 </ng-container>
             </ng-container>

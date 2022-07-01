@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, iif, Observable, of, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
+import { concatMap, filter, map, switchMap, takeUntil, tap, reduce } from 'rxjs/operators';
 import { PlConfigUIStateService } from './services/pl-config-uistate.service';
 
 @Component({
@@ -46,7 +46,7 @@ export class PlconfigComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    of(this.route).pipe(
+    combineLatest([this.route.paramMap, of(this.route).pipe(
       switchMap(route => {
         while (route.firstChild) {
           route = route.firstChild;
@@ -54,25 +54,26 @@ export class PlconfigComponent implements OnInit,OnDestroy {
         return of(route);
       }),
       filter((activatedRoute) => activatedRoute.outlet === 'primary'),
-      switchMap((route) => combineLatest([route.paramMap, route.data]).pipe(
-        map(([paramMap, data]) => {
-          this.uiStateService.viewBranchTypeString = paramMap.get('branchType') || '';
-          this.uiStateService.branchIdNum = paramMap.get('branchId') || '';
+      switchMap((route)=>route.data)
+    )]).pipe(
+      tap(([paramMap,data]) => {
+        this.uiStateService.viewBranchTypeString = paramMap.get('branchType') || '';
+        this.uiStateService.branchIdNum = paramMap.get('branchId') || '';
+      }),
+      switchMap(([paramMap,data])=>iif(() => data.diff !== undefined, of(data).pipe(
+        map(data => {
+          this.uiStateService.difference = data.diff;
+          this.uiStateService.updateReqConfig = true;
+          return data.diff;
+        })
+      ), of(data).pipe(
+        map(data => {
+          this.uiStateService.diffMode = false;
+          this.uiStateService.difference = [];
+          this.uiStateService.updateReqConfig = true;
           return data;
-        }),
-        switchMap((data) => iif(() => data.diff !== undefined, of(data).pipe(
-          map(data => {
-            this.uiStateService.difference = data.diff;
-            return data.diff;
-          })
-        ), of(data).pipe(
-          map(data => {
-            this.uiStateService.diffMode = false;
-            this.uiStateService.difference = [];
-            return data;
-          })
-        )))
-      )),
+        })
+      ))),
       takeUntil(this._done)
     ).subscribe();
   }

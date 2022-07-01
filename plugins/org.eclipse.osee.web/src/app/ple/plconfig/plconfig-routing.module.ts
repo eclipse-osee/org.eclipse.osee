@@ -19,8 +19,21 @@ import { PlconfigComponent } from './plconfig.component';
 const routes: Routes = [
   { path: '', component: PlconfigComponent },
   { path: ':branchType', component: PlconfigComponent },
-  { path: ':branchType/:branchId', component: PlconfigComponent },
-  { path:':branchType/:branchId/diff', component: PlconfigComponent, resolve: { diff: DiffReportResolver } },
+  {
+    path: ':branchType/:branchId',
+    children: [
+      {
+        path: '',
+        component: PlconfigComponent
+      },
+    
+      {
+        path: 'diff',
+        component: PlconfigComponent,
+        resolve: { diff: DiffReportResolver }
+    }
+  ]
+  },
   { path: '', component: MimSingleDiffComponent, outlet:'rightSideNav' }
 ];
 
