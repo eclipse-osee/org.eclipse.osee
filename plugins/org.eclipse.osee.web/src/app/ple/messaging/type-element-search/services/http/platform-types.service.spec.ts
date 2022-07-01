@@ -38,8 +38,8 @@ describe('PlatformTypesService', () => {
 
   it('should query for platform types', () => {
     let testData: PlatformType[] = [];
-    service.getFilteredTypes('filter', '8').subscribe();
-    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + '8' + "/types/filter/" + 'filter');
+    service.getFilteredElements('filter', '8').subscribe();
+    const req = httpTestingController.expectOne(apiURL + "/mim/branch/" + 8 + "/elements/types/filter/" + 'filter');
     expect(req.request.method).toEqual('GET');
     req.flush(testData);
     httpTestingController.verify();

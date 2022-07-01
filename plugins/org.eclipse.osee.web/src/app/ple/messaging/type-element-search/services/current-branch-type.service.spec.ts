@@ -43,7 +43,7 @@ describe('CurrentBranchTypeService', () => {
 
   it('should call get branches with type baseline', () => {
     service.branches.subscribe();
-    typeService.type = 'product line';
+    typeService.type = 'baseline';
     expect(branchSpy.getBranches).toHaveBeenCalledWith('baseline');
   });
 

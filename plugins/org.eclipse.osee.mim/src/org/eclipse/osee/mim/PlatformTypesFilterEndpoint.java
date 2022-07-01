@@ -31,7 +31,7 @@ public interface PlatformTypesFilterEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    /**
     * Same as /types/ GET() returns a *blank* filtered request
-    * 
+    *
     * @return list of platform Types
     */
    Collection<PlatformTypeToken> getPlatformTypes();

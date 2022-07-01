@@ -19,8 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
@@ -35,9 +37,11 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    private ArtifactAccessor<PlatformTypeToken> accessor;
+   private final List<AttributeTypeId> attributes;
 
    InterfacePlatformTypeApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new PlatformTypeAccessor(orcsApi));
+      this.attributes = this.createAttributeList();
    }
 
    @Override
@@ -112,6 +116,56 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
          CoreRelationTypes.InterfacePlatformTypeEnumeration_Element).stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new PlatformTypeToken(a)).collect(
                Collectors.toList());
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, PlatformTypeToken.class);
+      } catch (Exception ex) {
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
+            PlatformTypeToken.class);
+      } catch (Exception ex) {
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch) {
+      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter) {
+      return this.getFilteredWithRelations(branch, filter,
+         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
+   }
+
+   private List<AttributeTypeId> createAttributeList() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceLogicalType);
+      attributes.add(CoreAttributeTypes.InterfacePlatformType2sComplement);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeAnalogAccuracy);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitSize);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitsResolution);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeCompRate);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeDefaultValue);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeMaxval);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeMinval);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeMsbValue);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeUnits);
+      attributes.add(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription);
+      return attributes;
    }
 
 }

@@ -36,6 +36,8 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 
+   List<InterfaceStructureElementToken> getElementsByTypeFilter(BranchId branch, String filter);
+
    InterfaceStructureElementToken get(BranchId branch, ArtifactId elementId);
 
    InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId);

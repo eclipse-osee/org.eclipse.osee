@@ -26,7 +26,7 @@ export class TypeElementSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      map((params: Params) => { if (Number(params['branchId']) > 0) { this.routerState.id = params['branchId'] }; if (params['branchType'] === 'product line' || params['branchType'] === 'working') { this.routerState.type = params['branchType'] }})
+      map((params: Params) => { if (Number(params['branchId']) > 0) { this.routerState.id = params['branchId'] }; if (params['branchType'] === 'baseline' || params['branchType'] === 'working') { this.routerState.type = params['branchType'] }})
     ).subscribe();
   }
 

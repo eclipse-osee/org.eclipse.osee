@@ -19,8 +19,6 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { BranchTypeSelectorComponent } from './components/branch-type-selector/branch-type-selector.component';
-import { BranchSelectorComponent } from './components/branch-selector/branch-selector.component';
 import { ElementTableComponent } from './components/element-table/element-table.component';
 import { ElementTableSearchComponent } from './components/element-table-search/element-table-search.component';
 import { MatInputModule } from '@angular/material/input';
@@ -28,10 +26,13 @@ import { MatTableModule } from '@angular/material/table';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
+import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
+import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
+import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 
 
 @NgModule({
-  declarations: [TypeElementSearchComponent, BranchTypeSelectorComponent, BranchSelectorComponent, ElementTableComponent, ElementTableSearchComponent],
+  declarations: [TypeElementSearchComponent, ElementTableComponent, ElementTableSearchComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -43,6 +44,9 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
     SharedMessagingModule,
     OseeStringUtilsPipesModule,
     OseeStringUtilsDirectivesModule,
+    BranchPickerModule,
+    ActionStateButtonModule,
+    BranchUndoButtonModule,
     TypeElementSearchRoutingModule
   ]
 })

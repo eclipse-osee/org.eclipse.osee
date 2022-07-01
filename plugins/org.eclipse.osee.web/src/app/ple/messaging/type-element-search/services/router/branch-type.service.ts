@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { UiService } from '../../../../../ple-services/ui/ui.service';
 import {branchType} from '../../types/BranchTypes'
 
 
@@ -20,24 +21,17 @@ import {branchType} from '../../types/BranchTypes'
 })
 export class BranchTypeService {
   private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  constructor () { }
+  constructor (private uiService: UiService) { }
   
   get BranchType() {
-    return this._branchType
+    return this.uiService.type;
   }
 
   set type(value: branchType) {
-    if (value === 'working') {
-      this._branchType.next(value); 
-    } else if (value === 'product line') {
-      this._branchType.next('baseline')
-    }
-    else {
-      throw new Error('Type is not a valid value. Invalid Value:'+value+' Valid values: product line,working');
-    }
+    this.uiService.typeValue = value;
   }
 
   get type() {
-    return this._branchType.getValue() as branchType;
+    return this.BranchType.getValue() as branchType;
   }
 }

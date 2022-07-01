@@ -30,7 +30,7 @@ export class ElementTableSearchComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    this.searchService.search=(event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.searchService.search=(event.target as HTMLInputElement).value;
   }
 
 }

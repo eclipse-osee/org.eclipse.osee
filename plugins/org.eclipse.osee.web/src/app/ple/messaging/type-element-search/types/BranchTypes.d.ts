@@ -10,4 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export type branchType='product line'|'working'
+export type branchType='baseline'|'working'
