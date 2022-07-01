@@ -56,7 +56,7 @@ public class WfeStateCreatedOrigHeader extends Composite {
       }
 
       originatorHeader = new WfeOriginatorHeader(this, SWT.NONE, workItem, editor);
-
+      originatorHeader.setBackground(parent.getParent().getParent().getBackground());
       refresh();
    }
 

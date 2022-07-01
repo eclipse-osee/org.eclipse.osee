@@ -53,7 +53,6 @@ public class WfeOriginatorHeader extends Composite {
       this.editor = editor;
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(3, false));
-      editor.getToolkit().adapt(this);
 
       try {
          origLink = editor.getToolkit().createHyperlink(this, ORIGINATOR, SWT.NONE);
