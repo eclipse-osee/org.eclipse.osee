@@ -40,6 +40,12 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class WfeEstimatedHoursHeader extends Composite {
 
    private final static String LABEL = "Estimated Hours:";
+   private final String LABEL_TOOL_TIP =
+      "[Workflow Estimate] | [Calculation: Sum estimated hours for workflow and all tasks and reviews]";
+
+   private final String LINK_TOOL_TIP =
+      "Select to set estimated number of hours to complete workflow and concomitant tasks/review.";
+
    Label valueLabel;
    private final IAtsWorkItem workItem;
 
@@ -48,11 +54,11 @@ public class WfeEstimatedHoursHeader extends Composite {
       this.workItem = workItem;
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       setLayout(ALayout.getZeroMarginLayout(2, false));
-      editor.getToolkit().adapt(this);
 
       try {
          if (!workItem.isCancelled() && !workItem.isCompleted()) {
             Hyperlink link = editor.getToolkit().createHyperlink(this, LABEL, SWT.NONE);
+            link.setToolTipText(LINK_TOOL_TIP);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -83,7 +89,7 @@ public class WfeEstimatedHoursHeader extends Composite {
          }
 
          valueLabel = editor.getToolkit().createLabel(this, "0.0");
-         valueLabel.setToolTipText(getToolTip());
+         valueLabel.setToolTipText(LABEL_TOOL_TIP);
          valueLabel.setLayoutData(new GridData());
          refresh();
       } catch (OseeCoreException ex) {
@@ -116,9 +122,4 @@ public class WfeEstimatedHoursHeader extends Composite {
       valueLabel.setText(getEstHoursStr());
       valueLabel.getParent().getParent().layout();
    }
-
-   private String getToolTip() {
-      return "[Workflow Estimate] | [Calculation: Sum estimated hours for workflow and all tasks and reviews]";
-   }
-
 }

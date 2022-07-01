@@ -62,8 +62,10 @@ public class WfeMetricsHeader extends Composite {
                "Calculation: Sum of percent for all states (including all tasks and reviews) / # statusable states (if configured)");
          } else {
             totalPercentHeader = new WfePercentCompleteHeader(this, 2, workItem, editor);
+            totalPercentHeader.setBackground(parent.getParent().getParent().getBackground());
          }
          estimatedHoursHeader = new WfeEstimatedHoursHeader(this, 2, workItem, editor);
+         estimatedHoursHeader.setBackground(parent.getParent().getParent().getBackground());
          hoursSpentLabel = FormsUtil.createLabelValue(toolkit, this, "Total Hours Spent: ", "",
             "Calculation: Sum of all hours spent for all tasks, reviews and in each state");
          remainHoursLabel = FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",

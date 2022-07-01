@@ -42,6 +42,11 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class WfePercentCompleteHeader extends Composite {
 
    private final static String PERCENT_COMPLETE = "Percent Complete:";
+   private final String LABEL_TOOL_TIP =
+      "[Workflow Percent] | [Calculation: Sum of percent for workflow, reviews and tasks / # workflows, reviews and tasks]";
+
+   private final String LINK_TOOL_TIP = "Select to set percent of workflow complete.";
+
    Label valueLabel;
    private final IAtsWorkItem workItem;
 
@@ -50,11 +55,11 @@ public class WfePercentCompleteHeader extends Composite {
       this.workItem = workItem;
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       setLayout(ALayout.getZeroMarginLayout(2, false));
-      editor.getToolkit().adapt(this);
 
       try {
          if (!workItem.isCancelled() && !workItem.isCompleted()) {
             Hyperlink link = editor.getToolkit().createHyperlink(this, PERCENT_COMPLETE, SWT.NONE);
+            link.setToolTipText(LINK_TOOL_TIP);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -98,7 +103,7 @@ public class WfePercentCompleteHeader extends Composite {
          }
 
          valueLabel = editor.getToolkit().createLabel(this, "0");
-         valueLabel.setToolTipText(getToolTip());
+         valueLabel.setToolTipText(LABEL_TOOL_TIP);
          valueLabel.setLayoutData(new GridData());
          refresh();
       } catch (OseeCoreException ex) {
@@ -124,10 +129,6 @@ public class WfePercentCompleteHeader extends Composite {
       valueLabel.setText(getPercentCompleteStr());
       valueLabel.getParent().layout(true);
       valueLabel.getParent().getParent().layout(true);
-   }
-
-   private String getToolTip() {
-      return " [Workflow Percent] | [Calculation: Sum of percent for workflow, reviews and tasks / # workflows, reviews and tasks] ";
    }
 
 }
