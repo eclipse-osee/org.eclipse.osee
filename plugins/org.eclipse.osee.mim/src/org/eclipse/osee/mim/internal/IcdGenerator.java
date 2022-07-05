@@ -403,7 +403,7 @@ public class IcdGenerator {
                writer.writeCell(sum);
                writer.writeCell(minBps);
                writer.writeCell(maxBps);
-               writer.writeCell(sendingNode);
+               writer.writeCell(sendingNode.getName());
                writer.writeCell(msgNumber);
                writer.writeCell(subMsgNumber);
                writer.writeCell(taskFileType);
