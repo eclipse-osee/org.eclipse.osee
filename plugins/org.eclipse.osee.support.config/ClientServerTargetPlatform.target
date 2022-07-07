@@ -9,6 +9,8 @@
 <plugin id="ch.qos.logback.core"/>
 <plugin id="ch.qos.logback.slf4j"/>
 <plugin id="com.ctc.wstx"/>
+<plugin id="org.apache.commons.collections4"/>
+<plugin id="org.apache.commons.math3"/>
 <plugin id="com.ctc.wstx.source"/>
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 <plugin id="com.fasterxml.jackson.core.jackson-core"/>
