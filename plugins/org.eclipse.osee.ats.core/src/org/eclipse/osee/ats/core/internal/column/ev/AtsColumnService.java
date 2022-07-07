@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
+import org.eclipse.osee.ats.core.column.FeatureImpactReferenceColumn;
 import org.eclipse.osee.ats.core.column.FoundInVersionColumn;
 import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
@@ -119,6 +120,12 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.CrashOrBlankDisplayColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.CrashOrBlankDisplayColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.ProposedResolutionColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ProposedResolutionColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.ImpactToMissionOrCrewColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ImpactToMissionOrCrewColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.WorkaroundColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.WorkaroundColumn, atsApi);
          }
 
          /**
@@ -202,6 +209,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new ParentTitleColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.IncorporatedInColumn.getId())) {
             column = new IncorporatedInColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.FeatureImpactReferenceColumn.getId())) {
+            column = new FeatureImpactReferenceColumn(atsApi);
          }
       }
       // Add columns provided through OSGI services
