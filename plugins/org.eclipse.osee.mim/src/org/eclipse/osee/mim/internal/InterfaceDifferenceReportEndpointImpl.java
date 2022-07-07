@@ -12,9 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportEndpoint;
+import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
@@ -33,6 +36,11 @@ public class InterfaceDifferenceReportEndpointImpl implements InterfaceDifferenc
    @Override
    public MimDifferenceReport getDifferenceReport(BranchId branch2) {
       return interfaceDifferenceReportApi.getDifferenceReport(branch, branch2);
+   }
+
+   @Override
+   public Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch2) {
+      return interfaceDifferenceReportApi.getDifferences(branch, branch2);
    }
 
 }

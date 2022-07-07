@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
@@ -43,9 +44,11 @@ import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Ryan T. Baldwin
@@ -403,6 +406,68 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             enumList.add(artId);
          }
       }
+   }
+
+   @Override
+   public Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch, BranchId compareBranch) {
+      Map<ArtifactId, List<ChangeItem>> changeItems = new HashMap<>();
+      Map<ArtifactId, MimDifferenceItem> diffs = new HashMap<>();
+      List<ChangeItem> changes;
+
+      if (branch.equals(compareBranch)) {
+         List<TransactionReadable> txs =
+            orcsApi.getQueryFactory().transactionQuery().andBranch(branch).getResults().getList();
+         TransactionToken currentTx = txs.get(txs.size() - 1);
+         TransactionToken compareToTx = txs.get(txs.size() - 2);
+         changes = orcsApi.getTransactionFactory().compareTxs(compareToTx, currentTx);
+      } else {
+         TransactionToken currentTx =
+            orcsApi.getQueryFactory().transactionQuery().andIsHead(branch).getResults().getExactlyOne();
+         TransactionToken compareTx =
+            orcsApi.getQueryFactory().transactionQuery().andIsHead(compareBranch).getResults().getExactlyOne();
+         changes = orcsApi.getBranchOps().compareBranch(currentTx, compareTx); // This will get the diffs but currently will not give correct was/is values.
+      }
+
+      for (ChangeItem change : changes) {
+         if (change.getArtId().isValid()) {
+            List<ChangeItem> artChanges = changeItems.getOrDefault(change.getArtId(), new LinkedList<>());
+            artChanges.add(change);
+            changeItems.put(change.getArtId(), artChanges);
+         }
+      }
+
+      for (ArtifactId id : changeItems.keySet()) {
+         List<ChangeItem> artChanges = changeItems.get(id);
+         MimDifferenceItem item = new MimDifferenceItem(id);
+         boolean added = true;
+         boolean deleted = false;
+         for (ChangeItem change : artChanges) {
+            if (!(change.getNetChange().getModType().equals(
+               ModificationType.NEW) || change.getNetChange().getModType().equals(ModificationType.INTRODUCED))) {
+               added = false;
+            }
+            if (change.getChangeType().equals(ChangeType.Attribute)) {
+               String oldValue = change.getBaselineVersion().getValue();
+               String newValue = change.getCurrentVersion().getValue();
+               item.addAttributeChange(change.getItemTypeId().getId(), oldValue, newValue);
+            } else if (change.getChangeType().equals(
+               ChangeType.Artifact) && change.getCurrentVersion().getModType().equals(ModificationType.DELETED)) {
+               deleted = true;
+            } else if (change.getChangeType().equals(ChangeType.Relation)) {
+               boolean relationAdded = change.getCurrentVersion().getModType().equals(
+                  ModificationType.NEW) || change.getCurrentVersion().getModType().equals(ModificationType.INTRODUCED);
+               item.addRelationChange(change.getItemTypeId().getId(), change.getArtIdB(), relationAdded);
+            }
+         }
+         if (item.getDiffs().isEmpty()) {
+            added = false;
+         }
+         item.setAdded(added);
+         item.setDeleted(deleted);
+         diffs.put(id, item);
+      }
+
+      return diffs;
    }
 
 }
