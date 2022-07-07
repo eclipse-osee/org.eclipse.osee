@@ -68,6 +68,7 @@ public class AtsColumnTokens {
    public static AtsValColumn CompletedCancelledDateColumn = new AtsValColumn("ats.column.cmpCnclDate", "Completed or Cancelled Date", 80, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "Date action to completed or cancelled");
    public static AtsValColumn CompletedDateColumn = new AtsValColumn("ats.column.completedDate", "Completed Date", 80, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, null);
    public static AtsValColumn CreatedDateColumn = new AtsValColumn("ats.column.createdDate", "Created Date", 80, ColumnType.Date, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Date this workflow was created.");
+   public static AtsValColumn FeatureImpactReferenceColumn = new AtsValColumn("ats.column.featureImpactReference", "Feature Impacted", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsValColumn FoundInVersionColumn = new AtsValColumn("ats.column.foundInVersion", "Found In Version", 40, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.Yes, "Release version in which software issue occured.");
    public static AtsValColumn IdColumn = new AtsValColumn("framework.id", "Id", 30, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
    public static AtsValColumn ImplementersColumn = new AtsValColumn("ats.column.implementer", "Implementer(s)", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
@@ -112,6 +113,8 @@ public class AtsColumnTokens {
    public static AtsAttrValCol GitChangeId = new AtsAttrValCol(CoreAttributeTypes.GitChangeId, "ats.column.git.change.id", CoreAttributeTypes.GitChangeId.getUnqualifiedName(), 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsAttrValCol RevisitDate = new AtsAttrValCol(AtsAttributeTypes.RevisitDate, "ats.column.revisit.date", AtsAttributeTypes.RevisitDate.getUnqualifiedName(), 75, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static AtsAttrValCol NonFunctionalProblem = new AtsAttrValCol(AtsAttributeTypes.NonFunctionalProblem, "ats.column.non.functional.problem", AtsAttributeTypes.NonFunctionalProblem.getUnqualifiedName(), 55, ColumnType.Boolean, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
-
+   public static AtsAttrValCol ProposedResolutionColumn = new AtsAttrValCol(AtsAttributeTypes.ProposedResolution, "ats.column.proposedResolution", "Proposed Resolution", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol ImpactToMissionOrCrewColumn = new AtsAttrValCol(AtsAttributeTypes.ImpactToMissionOrCrew, "ats.column.impactToMissionOrCrew", "Impact to Mission or Crew", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
+   public static AtsAttrValCol WorkaroundColumn = new AtsAttrValCol(AtsAttributeTypes.Workaround, "ats.column.workaround", "Workaround", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    // @formatter:on
 }

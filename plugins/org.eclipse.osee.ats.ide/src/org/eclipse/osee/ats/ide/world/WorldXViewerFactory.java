@@ -100,6 +100,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getAttributeConfigColumn(AtsColumnTokens.RevisitDate),
          getAttributeConfigColumn(AtsColumnTokens.NonFunctionalProblem),
          getAttributeConfigColumn(AtsColumnTokens.QuantityUnderReviewColumn),
+         getAttributeConfigColumn(AtsColumnTokens.ProposedResolutionColumn),
+         getAttributeConfigColumn(AtsColumnTokens.ImpactToMissionOrCrewColumn),
+         getAttributeConfigColumn(AtsColumnTokens.WorkaroundColumn),
 
          /**
           * These are computed columns where data is in multiple places and must be retrieved/loaded to be displayed
@@ -108,6 +111,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getColumnServiceColumn(AtsColumnTokens.InsertionColumn),
          getColumnServiceColumn(AtsColumnTokens.InsertionActivityColumn),
          getColumnServiceColumn(AtsColumnTokens.ParentTitleColumn),
+         getColumnServiceColumn(AtsColumnTokens.FeatureImpactReferenceColumn),
 
          /**
           * This is the legacy way of providing columns. DO NOT USE THIS METHOD. These should eventually be converted to
