@@ -37,11 +37,31 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
  */
 public final class ExcelXmlWriter extends AbstractSheetWriter {
    public static enum STYLE {
-      BOLD,
-      ITALICS,
-      ERROR,
-      CENTERED,
-      WRAPPED
+      NONE(""),
+      BOLD("OseeBoldStyle"),
+      BOLD_GOOD_BG("OseeBoldGoodBackground"),
+      BOLD_NEUTRAL_BG("OseeBoldNeutralBackground"),
+      CENTERED("OseeCentered"),
+      DATE("OseeDate"),
+      DATE_GOOD_BG("OseeDateGoodBackground"),
+      DATE_NEUTRAL_BG("OseeDateNeutralBackground"),
+      ERROR("OseeErrorStyle"),
+      GOOD_BG("OseeGoodBackground"),
+      HYPERLINK_GOOD_BG("OseeHyperlinkGoodBackground"),
+      HYPERLINK_NEUTRAL_BG("OseeHyperlinkNeutralBackground"),
+      ITALICS("OseeItalicStyle"),
+      NEUTRAL_BG("OseeNeutralBackground"),
+      WRAPPED("OseeWraped");
+
+      private String text;
+
+      STYLE(String text) {
+         this.text = text;
+      }
+
+      public String getText() {
+         return text;
+      }
    };
 
    public static final String WrappedStyle = "OseeWraped";
@@ -72,12 +92,20 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          " <Protection/>\n" + //
          "</Style>\n" + //
          "<Style ss:ID=\"OseeDate\"><NumberFormat ss:Format=\"Short Date\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeDateGoodBackground\"><NumberFormat ss:Format=\"Short Date\"/><Interior ss:Color=\"#C6EFCE\" ss:Pattern=\"Solid\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeDateNeutralBackground\"><NumberFormat ss:Format=\"Short Date\"/><Interior ss:Color=\"#FFEB9C\" ss:Pattern=\"Solid\"/></Style>\n" + //
          "<Style ss:ID=\"OseeBoldStyle\"><Font x:Family=\"Swiss\" ss:Bold=\"1\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeBoldGoodBackground\"><Font x:Family=\"Swiss\" ss:Bold=\"1\"/><Interior ss:Color=\"#C6EFCE\" ss:Pattern=\"Solid\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeBoldNeutralBackground\"><Font x:Family=\"Swiss\" ss:Bold=\"1\"/><Interior ss:Color=\"#FFEB9C\" ss:Pattern=\"Solid\"/></Style>\n" + //
          "<Style ss:ID=\"OseeItalicStyle\"><Font x:Family=\"Swiss\" ss:Italic=\"1\"/></Style>\n" + //
          "<Style ss:ID=\"OseeErrorStyle\"><Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/></Style>\n" + //
          "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n" + //
          "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>\n" + //
-         "<Style ss:ID=\"OseeHyperlink\" ss:Name=\"Hyperlink\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/></Style>";
+         "<Style ss:ID=\"OseeGoodBackground\"><Interior ss:Color=\"#C6EFCE\" ss:Pattern=\"Solid\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeNeutralBackground\"><Interior ss:Color=\"#FFEB9C\" ss:Pattern=\"Solid\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeHyperlink\" ss:Name=\"Hyperlink\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeHyperlinkGoodBackground\" ss:Name=\"HyperlinkGoodBg\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/><Interior ss:Color=\"#C6EFCE\" ss:Pattern=\"Solid\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeHyperlinkNeutralBackground\" ss:Name=\"HyperlinkNeutralBg\"><Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Color=\"#0563C1\" ss:Underline=\"Single\"/><Interior ss:Color=\"#FFEB9C\" ss:Pattern=\"Solid\"/></Style>";
 
    private final BufferedWriter out;
    private boolean inSheet;
@@ -286,17 +314,21 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
             sb.append("</Data>");
          } else if (cellData instanceof CellData) {
             if (!((CellData) cellData).getHyperlink().isEmpty()) {
-               sb.append(
-                  " ss:StyleID=\"OseeHyperlink\" ss:HRef=\"#'" + ((CellData) cellData).getHyperlink() + "'!A1\"");
+               if (!((CellData) cellData).getStyle().isEmpty()) {
+                  sb.append(
+                     " ss:StyleID=\"" + ((CellData) cellData).getStyle() + "\" ss:HRef=\"#'" + ((CellData) cellData).getHyperlink() + "'!A1\"");
+               } else {
+                  sb.append(
+                     " ss:StyleID=\"OseeHyperlink\" ss:HRef=\"#'" + ((CellData) cellData).getHyperlink() + "'!A1\"");
+               }
+            } else if (!((CellData) cellData).getStyle().isEmpty()) {
+               sb.append(" ss:StyleID=\"" + ((CellData) cellData).getStyle() + "\"");
             }
             if (!((CellData) cellData).getMergeAcross().isEmpty()) {
                sb.append(" ss:MergeAcross=\"" + ((CellData) cellData).getMergeAcross() + "\"");
             }
             if (!((CellData) cellData).getMergeDown().isEmpty()) {
                sb.append(" ss:MergeDown=\"" + ((CellData) cellData).getMergeDown() + "\"");
-            }
-            if (!((CellData) cellData).getStyle().isEmpty()) {
-               sb.append(" ss:StyleID=\"" + ((CellData) cellData).getStyle() + "\"");
             }
             writeString(((CellData) cellData).getText(), cellIndex, sb);
          } else {
@@ -351,22 +383,8 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
     */
    public void setCellStyle(ExcelXmlWriter.STYLE style, int cellIndex) {
       applyStyle = true;
-      switch (style) {
-         case BOLD:
-            mStyleMap.put(cellIndex, "OseeBoldStyle");
-            break;
-         case ITALICS:
-            mStyleMap.put(cellIndex, "OseeItalicStyle");
-            break;
-         case ERROR:
-            mStyleMap.put(cellIndex, "OseeErrorStyle");
-            break;
-         case CENTERED:
-            mStyleMap.put(cellIndex, "OseeCentered");
-            break;
-         case WRAPPED:
-            mStyleMap.put(cellIndex, WrappedStyle);
-            break;
+      if (style != STYLE.NONE) {
+         mStyleMap.put(cellIndex, style.getText());
       }
    }
 

@@ -10,21 +10,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim;
+package org.eclipse.osee.mim.types;
 
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.mim.types.MimDifferenceItem;
-import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
  * @author Ryan T. Baldwin
  */
-public interface InterfaceDifferenceReportApi {
+public class MimRelationChange {
+   private final ArtifactId artId;
+   private final Long relationId;
+   private final boolean added;
 
-   Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch1, BranchId branch2);
+   public MimRelationChange(ArtifactId artId, Long relationId, boolean added) {
+      this.artId = artId;
+      this.relationId = relationId;
+      this.added = added;
+   }
 
-   MimDifferenceReport getDifferenceReport(BranchId branch, BranchId compareBranch);
+   public ArtifactId getArtId() {
+      return artId;
+   }
 
+   public Long getRelationid() {
+      return relationId;
+   }
+
+   public boolean isAdded() {
+      return added;
+   }
 }

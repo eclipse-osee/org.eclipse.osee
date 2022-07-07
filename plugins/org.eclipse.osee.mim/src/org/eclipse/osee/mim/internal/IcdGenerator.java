@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.CellData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter.STYLE;
+import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
@@ -46,6 +47,7 @@ import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -59,11 +61,13 @@ public class IcdGenerator {
    private final AtsApi atsApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final InterfaceStructureApi interfaceStructureApi;
+   private final InterfaceDifferenceReportApi interfaceDifferenceReportApi;
 
    private final Map<ArtifactId, StructureInfo> structuresList;
    private final Map<String, StructureInfo> headersList;
    private final Map<ArtifactId, InterfaceSubMessageToken> messageHeaders;
    private final Map<String, InterfaceStructureToken> messageHeaderStructures;
+   private Map<ArtifactId, MimDifferenceItem> diffs;
 
    public IcdGenerator(MimApi mimApi) {
       this.orcsApi = mimApi.getOrcsApi();
@@ -72,9 +76,11 @@ public class IcdGenerator {
       this.headersList = new HashMap<>();
       this.messageHeaders = new HashMap<>();
       this.messageHeaderStructures = new HashMap<>();
+      this.diffs = new HashMap<>();
 
       this.interfaceMessageApi = mimApi.getInterfaceMessageApi();
       this.interfaceStructureApi = mimApi.getInterfaceStructureApi();
+      this.interfaceDifferenceReportApi = mimApi.getInterfaceDifferenceReportApi();
    }
 
    public void runOperation(Writer providedWriter, BranchId branch, ArtifactId view, ArtifactId connectionId) throws IOException {
@@ -98,7 +104,7 @@ public class IcdGenerator {
       List<ArtifactReadable> subMessages = new ArrayList<>();
       List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
       List<InterfaceStructureToken> structures = new ArrayList<>();
-      SortedMap<String, String> structureLinks = new TreeMap<String, String>();
+      SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
       for (ArtifactReadable message : messages) {
          ArtifactReadable sendingNode =
             (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
@@ -149,130 +155,28 @@ public class IcdGenerator {
                sheetName = abbrevName;
             }
          }
-         structureLinks.put(structure.getName(), sheetName);
+         structureLinks.put(structure, sheetName);
       }
+
+      BranchId parentBranch =
+         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
+      diffs = interfaceDifferenceReportApi.getDifferences(branch, parentBranch);
+
       ExcelXmlWriter writer = new ExcelXmlWriter(providedWriter);
 
+      createStructureInfo(branch, view, primaryNode, secondaryNode, messages, structureLinks);
+
+      // Write sheets
       createChangeSummary(writer, branch);
       createMessageSubMessageSummary(writer, conn, primaryNode, secondaryNode, messages, subMessages);
       createStructureNamesSheet(writer, structureLinks);
-      createMessageDetailSheet(writer, branch, view, primaryNode, secondaryNode, messages, structureLinks);
-      createSubMessageSheets(writer, view, subMessagesWithHeaders, structures, structureLinks);
+      createStructureSummarySheet(writer, branch, view, primaryNode, secondaryNode, messages, structureLinks);
+      createStructureSheets(writer, view, subMessagesWithHeaders, structures, structureLinks);
 
       writer.endWorkbook();
    }
 
-   private void createChangeSummary(ExcelXmlWriter writer, BranchId branch) throws IOException {
-      SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-      List<String> headingsList = new ArrayList<String>();
-      int columnCount = 3;
-      headingsList.add("Team Workflow");
-      headingsList.add("Date");
-      headingsList.add("Change Description");
-      Object[] headings = headingsList.toArray();
-      writer.startSheet("Change Summary", columnCount);
-      writer.writeHeaderRow(headings);
-
-      orcsApi.getQueryFactory().transactionQuery().andBranch(branch).getResults().getList().stream().forEach(tx -> {
-         if (tx.getCommitArt().getId() != -1) {
-            IAtsWorkItem change = atsApi.getQueryService().getWorkItem(tx.getCommitArt().getIdString());
-            if (change != null && change.getId() != -1) {
-               try {
-                  writer.writeCell(change.getAtsId());
-                  writer.writeCell(format.format(tx.getDate()));
-                  writer.writeCell(change.getName());
-                  writer.endRow();
-               } catch (IOException ex) {
-                  //
-               }
-            }
-         }
-      });
-
-      writer.endSheet();
-   }
-
-   private void createStructureNamesSheet(ExcelXmlWriter writer, SortedMap<String, String> structures) throws IOException {
-
-      List<String> headingsList = new ArrayList<String>();
-      headingsList.add("Structure Name");
-      headingsList.add("Structure Name");
-      headingsList.add("Structure Name");
-      Object[] headings = headingsList.toArray();
-      int columnCount = 3;
-      writer.startSheet("Structures Names", columnCount);
-      writer.writeHeaderRow(headings);
-      Iterator<String> iterator = structures.keySet().iterator();
-      int size = structures.size();
-      int firstCol = Math.floorDiv(size, 3);
-      int secCol = firstCol * 2;
-      int count = 0;
-      SortedMap<String, String> col1 = new TreeMap<String, String>();
-      SortedMap<String, String> col2 = new TreeMap<String, String>();
-      SortedMap<String, String> col3 = new TreeMap<String, String>();
-      while (iterator.hasNext()) {
-         String sName = iterator.next();
-         String sLink = structures.get(sName);
-         if (count <= firstCol) {
-            col1.put(sName, sLink);
-         } else if (count <= secCol) {
-            col2.put(sName, sLink);
-         } else {
-            col3.put(sName, sLink);
-         }
-         count++;
-      }
-      Iterator<String> col1Iterator = col1.keySet().iterator();
-      Iterator<String> col2Iterator = col2.keySet().iterator();
-      Iterator<String> col3Iterator = col3.keySet().iterator();
-      while (col1Iterator.hasNext()) {
-         CellData name = new CellData();
-         name.setText(col1Iterator.next());
-         name.setHyperlink(col1.get(name.getText()));
-         writer.writeCell(name);
-         if (col2Iterator.hasNext()) {
-            name.setText(col2Iterator.next());
-            name.setHyperlink(col2.get(name.getText()));
-            writer.writeCell(name);
-         }
-         if (col3Iterator.hasNext()) {
-            name.setText(col3Iterator.next());
-            name.setHyperlink(col3.get(name.getText()));
-            writer.writeCell(name);
-         }
-         writer.endRow();
-      }
-      writer.endSheet();
-   }
-
-   private void createMessageDetailSheet(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, SortedMap<String, String> structureLinks) throws IOException {
-      int totalMinSim = 0;
-      int totalMaxSim = 0;
-      int totalNumAttrs = 0;
-      int totalMinBps = 0;
-      int totalMaxBps = 0;
-      int maxAttrs = 0;
-      int totalStructs = 0;
-
-      List<String> headingsList = new ArrayList<String>();
-      int columnCount = 14;
-      headingsList.add("Category");
-      headingsList.add("SubMessage Name");
-      headingsList.add("Tx Rate");
-      headingsList.add("Sim Min");
-      headingsList.add("Sim Max");
-      headingsList.add("# of Attributes");
-      headingsList.add("Size in Bytes");
-      headingsList.add("BPS Min");
-      headingsList.add("BPS Max");
-      headingsList.add("Initiator");
-      headingsList.add("Msg #");
-      headingsList.add("SubMsg #");
-      headingsList.add("Taskfile Type");
-      headingsList.add("Description");
-      Object[] headings = headingsList.toArray();
-      writer.startSheet("Structure Summary", columnCount);
-      writer.writeHeaderRow(headings);
+   private void createStructureInfo(BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, Map<InterfaceStructureToken, String> structureLinks) {
       for (ArtifactReadable message : messages) {
          ArtifactReadable sendingNode =
             (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
@@ -325,8 +229,6 @@ public class IcdGenerator {
             }
 
             for (InterfaceStructureToken struct : structures) {
-               String sheetName = structureLinks.get(struct.getName());
-
                List<InterfaceStructureElementToken> elements;
                List<ArtifactReadable> elementArts = new LinkedList<>();
                if (struct.getId() == 0) {
@@ -342,12 +244,32 @@ public class IcdGenerator {
 
                }
 
-               Integer sum = 0;
+               MimDifferenceItem msgDiffItem = diffs.get(ArtifactId.valueOf(message.getId()));
+               MimDifferenceItem diffItem = diffs.get(ArtifactId.valueOf(struct.getId()));
+               Integer sizeInBytes = 0;
                int elementCount = 0;
+               boolean structureSizeChanged = false;
+               boolean structureChanged = false;
+               int byteChangeIndex = elements.size(); // Used to track which element first changes the structure size in order to display diff coloring for every element after.
 
-               for (InterfaceStructureElementToken element : elements) {
+               for (int i = 0; i < elements.size(); i++) {
+                  InterfaceStructureElementToken element = elements.get(i);
                   elementCount = struct.isAutogenerated() ? elementCount + 1 : elementCount + element.getArrayLength();
-                  sum = sum + (int) element.getElementSizeInBytes();
+                  sizeInBytes = sizeInBytes + (int) element.getElementSizeInBytes();
+
+                  MimDifferenceItem elementDiffItem = diffs.get(ArtifactId.valueOf(element.getId()));
+                  MimDifferenceItem pTypeDiffItem = diffs.get(ArtifactId.valueOf(element.getPlatformTypeId()));
+                  structureSizeChanged =
+                     structureSizeChanged || (pTypeDiffItem != null && pTypeDiffItem.getDiffs().containsKey(
+                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || !elementDiffItem.getRelationChanges().isEmpty()));
+                  boolean elementAdded = diffItem != null && diffItem.getRelationChanges().containsKey(
+                     ArtifactId.valueOf(element.getId())) && diffItem.getRelationChanges().get(
+                        ArtifactId.valueOf(element.getId())).isAdded();
+                  if (structureSizeChanged || elementAdded) {
+                     byteChangeIndex = Math.min(i, byteChangeIndex);
+                  }
+
+                  structureChanged = structureChanged || elementDiffItem != null || pTypeDiffItem != null;
                }
 
                String minSim = struct.getInterfaceMinSimultaneity();
@@ -357,12 +279,12 @@ public class IcdGenerator {
                String maxBps = "Classified";
                if (msgRate > 0) {
                   try {
-                     minBps = Integer.toString(Integer.parseInt(minSim) * sum * msgRate);
+                     minBps = Integer.toString(Integer.parseInt(minSim) * sizeInBytes * msgRate);
                   } catch (NumberFormatException nfe) {
                      minBps = "Classified";
                   }
                   try {
-                     maxBps = Integer.toString(Integer.parseInt(maxSim) * sum * msgRate);
+                     maxBps = Integer.toString(Integer.parseInt(maxSim) * sizeInBytes * msgRate);
                   } catch (NumberFormatException nfe) {
                      maxBps = "Classified";
                   }
@@ -375,39 +297,216 @@ public class IcdGenerator {
                String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
                String taskFileType = struct.getInterfaceTaskFileType() + "";
                String desc = struct.getDescription();
+               String categoryFull = catEnum.getId() + " " + catEnum.getName();
 
-               StructureInfo structureInfo = new StructureInfo(struct.getName(), cat, msgRateText, minSim, maxSim,
-                  elementCount, sum, sendingNode.getName(), msgNumber, subMsgNumber, taskFileType, desc, elementArts);
+               boolean txRateChanged = msgDiffItem != null && msgDiffItem.getDiffs().containsKey(
+                  CoreAttributeTypes.InterfaceMessageRate.getId());
+               boolean msgNumChanged = msgDiffItem != null && msgDiffItem.getDiffs().containsKey(
+                  CoreAttributeTypes.InterfaceMessageNumber.getId());
+               boolean numElementsChanged = diffItem != null && !diffItem.getRelationChanges().isEmpty();
+               boolean sizeInBytesChanged = numElementsChanged || structureSizeChanged;
+               structureChanged = structureChanged || diffItem != null || txRateChanged || msgNumChanged;
+
+               StructureInfo structureInfo = new StructureInfo(struct.getName(), cat, categoryFull, msgRateText, minSim,
+                  maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber,
+                  taskFileType, desc, message, subMessage.getArtifactReadable(), elementArts, structureChanged,
+                  txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
                if (struct.getId() == 0) {
                   headersList.put(struct.getName(), structureInfo);
                } else {
                   structuresList.put(ArtifactId.valueOf(struct.getId()), structureInfo);
                }
+            }
+         }
+      }
+   }
 
-               CellData name = new CellData(struct.getName(), sheetName, Strings.EMPTY_STRING, Strings.EMPTY_STRING);
+   private void createChangeSummary(ExcelXmlWriter writer, BranchId branch) throws IOException {
+      SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+      List<String> headingsList = new ArrayList<String>();
+      int columnCount = 3;
+      headingsList.add("Team Workflow");
+      headingsList.add("Date");
+      headingsList.add("Change Description");
+      Object[] headings = headingsList.toArray();
+      writer.startSheet("Change Summary", columnCount);
+      writer.writeHeaderRow(headings);
 
-               totalMinSim += stringToInt(minSim);
-               totalMaxSim += stringToInt(maxSim);
-               totalNumAttrs += elementCount;
-               totalMinBps += stringToInt(minBps);
-               totalMaxBps += stringToInt(maxBps);
-               maxAttrs = Math.max(maxAttrs, elementCount);
+      orcsApi.getQueryFactory().transactionQuery().andBranch(branch).getResults().getList().stream().forEach(tx -> {
+         if (tx.getCommitArt().getId() != -1) {
+            IAtsWorkItem change = atsApi.getQueryService().getWorkItem(tx.getCommitArt().getIdString());
+            if (change != null && change.getId() != -1) {
+               try {
+                  writer.writeCell(change.getAtsId());
+                  writer.writeCell(format.format(tx.getDate()));
+                  writer.writeCell(change.getName());
+                  writer.endRow();
+               } catch (IOException ex) {
+                  //
+               }
+            }
+         }
+      });
+
+      writer.endSheet();
+   }
+
+   private void createStructureNamesSheet(ExcelXmlWriter writer, SortedMap<InterfaceStructureToken, String> structures) throws IOException {
+
+      List<String> headingsList = new ArrayList<String>();
+      headingsList.add("Structure Name");
+      headingsList.add("Structure Name");
+      headingsList.add("Structure Name");
+      Object[] headings = headingsList.toArray();
+      int columnCount = 3;
+      writer.startSheet("Structures Names", columnCount);
+      writer.writeHeaderRow(headings);
+      Iterator<InterfaceStructureToken> iterator = structures.keySet().iterator();
+      int size = structures.size();
+      int firstCol = Math.floorDiv(size, 3);
+      int secCol = firstCol * 2;
+      int count = 0;
+      SortedMap<InterfaceStructureToken, String> col1 = new TreeMap<InterfaceStructureToken, String>();
+      SortedMap<InterfaceStructureToken, String> col2 = new TreeMap<InterfaceStructureToken, String>();
+      SortedMap<InterfaceStructureToken, String> col3 = new TreeMap<InterfaceStructureToken, String>();
+      while (iterator.hasNext()) {
+         InterfaceStructureToken structure = iterator.next();
+         String sLink = structures.get(structure);
+         if (count <= firstCol) {
+            col1.put(structure, sLink);
+         } else if (count <= secCol) {
+            col2.put(structure, sLink);
+         } else {
+            col3.put(structure, sLink);
+         }
+         count++;
+      }
+      Iterator<InterfaceStructureToken> col1Iterator = col1.keySet().iterator();
+      Iterator<InterfaceStructureToken> col2Iterator = col2.keySet().iterator();
+      Iterator<InterfaceStructureToken> col3Iterator = col3.keySet().iterator();
+      while (col1Iterator.hasNext()) {
+         InterfaceStructureToken structure = col1Iterator.next();
+         CellData name = new CellData();
+         name.setText(structure.getName());
+         name.setHyperlink(col1.get(structure));
+         writeCell(writer, name, getStructureNameStyle(structure), 0);
+         if (col2Iterator.hasNext()) {
+            structure = col2Iterator.next();
+            name = new CellData();
+            name.setText(structure.getName());
+            name.setHyperlink(col2.get(structure));
+            writeCell(writer, name, getStructureNameStyle(structure), 1);
+         }
+         if (col3Iterator.hasNext()) {
+            structure = col3Iterator.next();
+            name = new CellData();
+            name.setText(structure.getName());
+            name.setHyperlink(col3.get(structure));
+            writeCell(writer, name, getStructureNameStyle(structure), 2);
+         }
+         writer.endRow();
+      }
+      writer.endSheet();
+   }
+
+   private STYLE getStructureNameStyle(InterfaceStructureToken struct) {
+      StructureInfo info = getStructureInfo(struct);
+      MimDifferenceItem diffItem = diffs.get(ArtifactId.valueOf(struct.getId()));
+      if (diffItem != null && diffItem.isAdded()) {
+         return STYLE.HYPERLINK_GOOD_BG;
+      } else if (info.structureChanged) {
+         return STYLE.HYPERLINK_NEUTRAL_BG;
+      } else {
+         return STYLE.NONE;
+      }
+   }
+
+   private void createStructureSummarySheet(ExcelXmlWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, SortedMap<InterfaceStructureToken, String> structureLinks) throws IOException {
+      int totalMinSim = 0;
+      int totalMaxSim = 0;
+      int totalNumAttrs = 0;
+      int totalMinBps = 0;
+      int totalMaxBps = 0;
+      int maxAttrs = 0;
+      int totalStructs = 0;
+
+      List<String> headingsList = new ArrayList<String>();
+      int columnCount = 14;
+      headingsList.add("Category");
+      headingsList.add("SubMessage Name");
+      headingsList.add("Tx Rate");
+      headingsList.add("Sim Min");
+      headingsList.add("Sim Max");
+      headingsList.add("# of Attributes");
+      headingsList.add("Size in Bytes");
+      headingsList.add("BPS Min");
+      headingsList.add("BPS Max");
+      headingsList.add("Initiator");
+      headingsList.add("Msg #");
+      headingsList.add("SubMsg #");
+      headingsList.add("Taskfile Type");
+      headingsList.add("Description");
+      Object[] headings = headingsList.toArray();
+      writer.startSheet("Structure Summary", columnCount);
+      writer.writeHeaderRow(headings);
+      for (ArtifactReadable message : messages) {
+         List<InterfaceSubMessageToken> subMessages =
+            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().map(
+               art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
+         if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "Error").equals("Operational")) {
+            subMessages.add(0, messageHeaders.get(ArtifactId.valueOf(message.getId())));
+         }
+
+         for (InterfaceSubMessageToken subMessage : subMessages) {
+
+            List<InterfaceStructureToken> structures = new LinkedList<>();
+            if (subMessage.getId() == 0) {
+               structures.add(messageHeaderStructures.get(subMessage.getName()));
+            } else {
+               structures.addAll(subMessage.getArtifactReadable().getRelated(
+                  CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
+                     art -> new InterfaceStructureToken(art)).collect(Collectors.toList()));
+            }
+
+            for (InterfaceStructureToken struct : structures) {
+               String sheetName = structureLinks.get(struct);
+               StructureInfo structureInfo = getStructureInfo(struct);
+
+               totalMinSim += stringToInt(structureInfo.minSim);
+               totalMaxSim += stringToInt(structureInfo.maxSim);
+               totalNumAttrs += structureInfo.numAttributes;
+               totalMinBps += stringToInt(structureInfo.minBps);
+               totalMaxBps += stringToInt(structureInfo.maxBps);
+               maxAttrs = Math.max(maxAttrs, structureInfo.numAttributes);
                totalStructs++;
 
-               writer.writeCell(catEnum.getId() + " " + catEnum.getName());
-               writer.writeCell(name);
-               writer.writeCell(msgRateText);
-               writer.writeCell(minSim);
-               writer.writeCell(maxSim);
-               writer.writeCell(elementCount);
-               writer.writeCell(sum);
-               writer.writeCell(minBps);
-               writer.writeCell(maxBps);
-               writer.writeCell(sendingNode.getName());
-               writer.writeCell(msgNumber);
-               writer.writeCell(subMsgNumber);
-               writer.writeCell(taskFileType);
-               writer.writeCell(desc);
+               ArtifactReadable structReadable = struct.getArtifactReadable();
+               writeCell(writer, structureInfo.categoryFull, structReadable, 0,
+                  CoreAttributeTypes.InterfaceStructureCategory.getId());
+               writeCell(writer, new CellData(struct.getName(), sheetName, Strings.EMPTY_STRING, Strings.EMPTY_STRING),
+                  structReadable, 1, CoreAttributeTypes.Name.getId());
+               writeCell(writer, structureInfo.txRate, struct.getArtifactReadable(), message, 2,
+                  CoreAttributeTypes.InterfaceMessageRate.getId());
+               writeCell(writer, structureInfo.minSim, structReadable, 3,
+                  CoreAttributeTypes.InterfaceMinSimultaneity.getId());
+               writeCell(writer, structureInfo.maxSim, structReadable, 4,
+                  CoreAttributeTypes.InterfaceMaxSimultaneity.getId());
+               writeCell(writer, structureInfo.numAttributes,
+                  getStyle(struct.getArtifactReadable(), structureInfo.numElementsChanged), 5);
+               writeCell(writer, structureInfo.sizeInBytes,
+                  getStyle(struct.getArtifactReadable(), structureInfo.structureSizeChanged), 6);
+               writeCell(writer, structureInfo.minBps, getStyle(struct.getArtifactReadable(),
+                  structureInfo.txRateChanged || structureInfo.structureSizeChanged), 7);
+               writeCell(writer, structureInfo.maxBps, getStyle(struct.getArtifactReadable(),
+                  structureInfo.txRateChanged || structureInfo.structureSizeChanged), 8);
+               writeCell(writer, structureInfo.initiator, getStyle(struct.getArtifactReadable(), false), 9);
+               writeCell(writer, structureInfo.msgNum, struct.getArtifactReadable(), message, 10,
+                  CoreAttributeTypes.InterfaceMessageNumber.getId());
+               writeCell(writer, structureInfo.subMsgNum, subMessage.getArtifactReadable(), 11,
+                  CoreAttributeTypes.InterfaceSubMessageNumber.getId());
+               writeCell(writer, structureInfo.taskfile, structReadable, 12,
+                  CoreAttributeTypes.InterfaceTaskFileType.getId());
+               writeCell(writer, structureInfo.description, structReadable, 13, CoreAttributeTypes.Description.getId());
                writer.endRow();
             }
          }
@@ -460,6 +559,20 @@ public class IcdGenerator {
       writer.endSheet();
    }
 
+   private StructureInfo getStructureInfo(InterfaceStructureToken struct) {
+      return struct.getId() == 0 ? headersList.get(struct.getName()) : structuresList.get(
+         ArtifactId.valueOf(struct.getId()));
+   }
+
+   private STYLE getStyle(ArtifactReadable artifact, boolean changed) {
+      MimDifferenceItem diffItem = artifact == null ? null : diffs.get(ArtifactId.valueOf(artifact.getId()));
+      STYLE style = STYLE.NONE;
+      if (diffItem != null) {
+         style = diffItem.isAdded() ? STYLE.GOOD_BG : changed ? STYLE.NEUTRAL_BG : STYLE.NONE;
+      }
+      return style;
+   }
+
    private int stringToInt(String str) {
       try {
          return Integer.parseInt(str);
@@ -468,7 +581,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printFirstRowInStructureSheet(ExcelXmlWriter writer, InterfaceStructureToken structure, SortedMap<String, String> structureLinks, StructureInfo info) throws IOException {
+   private void printFirstRowInStructureSheet(ExcelXmlWriter writer, InterfaceStructureToken structure, StructureInfo info) throws IOException {
       List<String> headingsList = new ArrayList<String>();
 
       headingsList.add("Sheet Type");
@@ -488,29 +601,36 @@ public class IcdGenerator {
       headingsList.add("Description");
       Object[] headings = headingsList.toArray();
       writer.writeHeaderRow(headings);
-      writer.writeCell("Functional");
-      writer.writeCell(info.name);
-      writer.writeCell(structure.getId() == 0 ? info.name : structure.getArtifactReadable().getSoleAttributeAsString(
-         CoreAttributeTypes.GeneralStringData, ""));
+      writeCell(writer, "Functional", getStyle(structure.getArtifactReadable(), false), 0);
+      writeCell(writer, info.name, structure.getArtifactReadable(), 1, CoreAttributeTypes.Name.getId());
+      writeCell(writer, structure.getId() == 0 ? info.name : structure.getArtifactReadable().getSoleAttributeAsString(
+         CoreAttributeTypes.GeneralStringData, ""), getStyle(structure.getArtifactReadable(), false), 2);
+      // There are special cases in the XML writer for dates and adding additional styles causes the workbook to not load correctly.
       writer.writeCell(
          structure.getId() == 0 ? Strings.EMPTY_STRING : orcsApi.getQueryFactory().transactionQuery().andTxId(
             structure.getArtifactReadable().getTransaction()).getResults().getAtMostOneOrDefault(
                TransactionReadable.SENTINEL).getDate());
-      writer.writeCell(info.category);
-      writer.writeCell(info.rate);
-      writer.writeCell(info.minSim);
-      writer.writeCell(info.maxSim);
-      writer.writeCell(info.numAttributes);
-      writer.writeCell(info.sizeInBytes);
-      writer.writeCell(info.initiator);
-      writer.writeCell(info.msgNum);
-      writer.writeCell(info.subMsgNum);
-      writer.writeCell(info.taskfile);
-      writer.writeCell(info.description);
+      writeCell(writer, info.category, structure.getArtifactReadable(), 4,
+         CoreAttributeTypes.InterfaceStructureCategory.getId());
+      writeCell(writer, info.txRate, structure.getArtifactReadable(), info.message, 5,
+         CoreAttributeTypes.InterfaceMessageRate.getId());
+      writeCell(writer, info.minSim, structure.getArtifactReadable(), 6,
+         CoreAttributeTypes.InterfaceMinSimultaneity.getId());
+      writeCell(writer, info.maxSim, structure.getArtifactReadable(), 7,
+         CoreAttributeTypes.InterfaceMaxSimultaneity.getId());
+      writeCell(writer, info.numAttributes, getStyle(structure.getArtifactReadable(), info.numElementsChanged), 8);
+      writeCell(writer, info.sizeInBytes, getStyle(structure.getArtifactReadable(), info.structureSizeChanged), 9);
+      writeCell(writer, info.initiator, getStyle(structure.getArtifactReadable(), false), 10);
+      writeCell(writer, info.msgNum, structure.getArtifactReadable(), info.message, 11,
+         CoreAttributeTypes.InterfaceMessageNumber.getId());
+      writeCell(writer, info.subMsgNum, info.submessage, 12, CoreAttributeTypes.InterfaceSubMessageNumber.getId());
+      writeCell(writer, info.taskfile, structure.getArtifactReadable(), 13,
+         CoreAttributeTypes.InterfaceTaskFileType.getId());
+      writeCell(writer, info.description, structure.getArtifactReadable(), 14, CoreAttributeTypes.Description.getId());
       writer.endRow();
    }
 
-   private void createSubMessageSheets(ExcelXmlWriter writer, ArtifactId view, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<String, String> structureLinks) throws IOException {
+   private void createStructureSheets(ExcelXmlWriter writer, ArtifactId view, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<InterfaceStructureToken, String> structureLinks) throws IOException {
       List<String> headingsList = new ArrayList<String>();
       int columnCount = 15;
       headingsList.add("Begin Word");
@@ -541,13 +661,13 @@ public class IcdGenerator {
          for (InterfaceStructureToken struct : structs) {
 
             int byteLocation = 0;
-            writer.startSheet(structureLinks.get(struct.getName()), columnCount);
+            writer.startSheet(structureLinks.get(struct), columnCount);
 
             StructureInfo info = struct.getId() == 0 ? headersList.get(struct.getName()) : structuresList.get(
                ArtifactId.valueOf(struct.getId()));
 
             //print structure row info
-            printFirstRowInStructureSheet(writer, struct, structureLinks, info);
+            printFirstRowInStructureSheet(writer, struct, info);
             writer.writeEmptyCell();
             writer.endRow();
 
@@ -561,14 +681,16 @@ public class IcdGenerator {
                   byteLocation = byteLocation + byteSize;
                }
             } else {
-               for (ArtifactReadable element : info.elements) {
+               for (int i = 0; i < info.elements.size(); i++) {
+                  ArtifactReadable element = info.elements.get(i);
                   ArtifactReadable platformType = element.getRelated(
                      CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
                         ArtifactReadable.SENTINEL);
 
                   Integer byteSize = Integer.valueOf(
                      platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
-                  printDataElementRow(writer, view, element, byteLocation, byteSize, platformType);
+                  printDataElementRow(writer, view, struct.getArtifactReadable(), element, byteLocation, byteSize,
+                     platformType, i >= info.byteChangeIndex);
                   if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
                      int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
                      int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
@@ -618,13 +740,13 @@ public class IcdGenerator {
       writer.endRow();
    }
 
-   private void printDataElementRow(ExcelXmlWriter writer, ArtifactId view, ArtifactReadable artifact, Integer byteLocation, Integer byteSize, ArtifactReadable platformType) throws IOException {
+   private void printDataElementRow(ExcelXmlWriter writer, ArtifactId view, ArtifactReadable structure, ArtifactReadable element, Integer byteLocation, Integer byteSize, ArtifactReadable platformType, boolean bytesChanged) throws IOException {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
-      String enumLiterals = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, "");
-      String elementName = artifact.getSoleAttributeValue(CoreAttributeTypes.Name);
+      String enumLiterals = element.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, "");
+      String elementName = element.getSoleAttributeValue(CoreAttributeTypes.Name);
       String dataType = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfaceLogicalType, "n/a");
       dataType = dataType.replace("unsigned long", "uLong").replace("unsigned short", "uShort").replace("short",
          "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
@@ -643,25 +765,28 @@ public class IcdGenerator {
                CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, " ");
          }
       }
-      String alterable = artifact.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementAlterable, "No");
+      String alterable = element.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementAlterable, "No");
 
       if (alterable.equalsIgnoreCase("true")) {
          alterable = "Yes";
       } else {
          alterable = "No";
       }
-      String description = artifact.getSoleAttributeAsString(CoreAttributeTypes.Description, "n/a");
-      String notes = artifact.getSoleAttributeAsString(CoreAttributeTypes.Notes, " ");
+      String description = element.getSoleAttributeAsString(CoreAttributeTypes.Description, "n/a");
+      String notes = element.getSoleAttributeAsString(CoreAttributeTypes.Notes, " ");
+      boolean enumChanged = false;
 
       if (platformType.getExistingRelationTypes().contains(CoreRelationTypes.InterfacePlatformTypeEnumeration)) {
          enumLiterals = "";
          ArtifactReadable enumDef = platformType.getRelated(
             CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
+         enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumDef.getId()));
          for (ArtifactReadable enumState : enumDef.getRelated(
             CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "; ";
+            enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumState.getId()));
          }
       } else {
          enumLiterals = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, " ");
@@ -670,50 +795,119 @@ public class IcdGenerator {
          }
       }
 
-      if (artifact.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
-         int startIndex = artifact.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
-         int endIndex = artifact.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
+      MimDifferenceItem structDiff = diffs.get(ArtifactId.valueOf(structure.getId()));
+      MimDifferenceItem elementDiff = diffs.get(ArtifactId.valueOf(element.getId()));
+      boolean elementAdded = structDiff != null && structDiff.getRelationChanges().containsKey(ArtifactId.valueOf(
+         element.getId())) && structDiff.getRelationChanges().get(ArtifactId.valueOf(element.getId())).isAdded();
+      boolean platformTypeChanged = elementDiff != null && !elementDiff.getRelationChanges().isEmpty();
+      STYLE pTypeStyle = elementAdded || getStyle(element, false).equals(
+         STYLE.GOOD_BG) ? STYLE.GOOD_BG : platformTypeChanged ? STYLE.NEUTRAL_BG : STYLE.NONE;
+
+      STYLE enumStyle = elementAdded || getStyle(element, false).equals(
+         STYLE.GOOD_BG) ? STYLE.GOOD_BG : enumChanged || platformTypeChanged ? STYLE.NEUTRAL_BG : STYLE.NONE;
+
+      STYLE byteStyle = elementAdded || getStyle(element, false).equals(
+         STYLE.GOOD_BG) ? STYLE.GOOD_BG : bytesChanged ? STYLE.NEUTRAL_BG : STYLE.NONE;
+
+      STYLE elementStyle = elementAdded ? STYLE.GOOD_BG : STYLE.NONE;
+
+      if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
+         int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
+         int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
          for (int i = startIndex; i < endIndex + 1; i++) {
-            //
-            writer.writeCell(beginWord);
-            writer.writeCell(beginByte);
-            writer.writeCell(byteSize);
-            writer.writeCell(endWord);
-            writer.writeCell(endByte);
-            writer.writeCell(dataType);
-            writer.writeCell(elementName + " " + Integer.toString(i));
-            writer.writeCell(units);
-            writer.writeCell(validRange);
-            writer.writeCell(alterable);
-            writer.writeCell(description);
-            writer.writeCell(enumLiterals);
-            writer.writeCell(notes);
+            writeCell(writer, beginWord, byteStyle, 0);
+            writeCell(writer, beginByte, byteStyle, 1);
+            writeCell(writer, byteSize, byteStyle, 2);
+            writeCell(writer, endWord, byteStyle, 3);
+            writeCell(writer, endByte, byteStyle, 4);
+            writeCell(writer, dataType, pTypeStyle, 5);
+            writeCell(writer, elementName + " " + Integer.toString(i), element, 6, CoreAttributeTypes.Name.getId(),
+               elementStyle);
+            writeCell(writer, units, pTypeStyle, 7);
+            writeCell(writer, validRange, pTypeStyle, 8);
+            writeCell(writer, alterable, element, 9, CoreAttributeTypes.InterfaceElementAlterable.getId(),
+               elementStyle);
+            writeCell(writer, description, element, 10, CoreAttributeTypes.Description.getId(), elementStyle);
+            writeCell(writer, enumLiterals, enumStyle, 11);
+            writeCell(writer, notes, element, 12, CoreAttributeTypes.Notes.getId(), elementStyle);
+            writer.endRow();
+
             byteLocation = byteLocation + byteSize;
             beginWord = Math.floorDiv(byteLocation, 4);
             beginByte = Math.floorMod(byteLocation, 4);
             endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
             endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
-            writer.endRow();
          }
 
       } else {
-         writer.writeCell(beginWord);
-         writer.writeCell(beginByte);
-         writer.writeCell(byteSize);
-         writer.writeCell(endWord);
-         writer.writeCell(endByte);
-         writer.writeCell(dataType);
-         writer.writeCell(elementName);
-         writer.writeCell(units);
-         writer.writeCell(validRange);
-         writer.writeCell(alterable);
-         writer.writeCell(description);
-         writer.writeCell(enumLiterals);
-         writer.writeCell(notes);
+         writeCell(writer, beginWord, byteStyle, 0);
+         writeCell(writer, beginByte, byteStyle, 1);
+         writeCell(writer, byteSize, byteStyle, 2);
+         writeCell(writer, endWord, byteStyle, 3);
+         writeCell(writer, endByte, byteStyle, 4);
+         writeCell(writer, dataType, pTypeStyle, 5);
+         writeCell(writer, elementName, element, 6, CoreAttributeTypes.Name.getId(), elementStyle);
+         writeCell(writer, units, pTypeStyle, 7);
+         writeCell(writer, validRange, pTypeStyle, 8);
+         writeCell(writer, alterable, element, 9, CoreAttributeTypes.InterfaceElementAlterable.getId(), elementStyle);
+         writeCell(writer, description, element, 10, CoreAttributeTypes.Description.getId(), elementStyle);
+         writeCell(writer, enumLiterals, enumStyle, 11);
+         writeCell(writer, notes, element, 12, CoreAttributeTypes.Notes.getId(), elementStyle);
          writer.endRow();
-
       }
 
+   }
+
+   private void writeCell(ExcelXmlWriter writer, Object data, ArtifactReadable artifact, int cellIndex, Long attrId) throws IOException {
+      writeCell(writer, data, artifact, artifact, cellIndex, attrId, STYLE.NONE);
+   }
+
+   private void writeCell(ExcelXmlWriter writer, Object data, ArtifactReadable artifact, int cellIndex, Long attrId, STYLE forceStyle) throws IOException {
+      writeCell(writer, data, artifact, artifact, cellIndex, attrId, forceStyle);
+   }
+
+   private void writeCell(ExcelXmlWriter writer, Object data, ArtifactReadable rowArtifact, ArtifactReadable cellArtifact, int cellIndex, Long attrId) throws IOException {
+      writeCell(writer, data, rowArtifact, cellArtifact, cellIndex, attrId, STYLE.NONE);
+   }
+
+   private void writeCell(ExcelXmlWriter writer, Object data, ArtifactReadable rowArtifact, ArtifactReadable cellArtifact, int cellIndex, Long attrId, STYLE forceStyle) throws IOException {
+      MimDifferenceItem rowDiffItem = rowArtifact == null ? null : diffs.get(ArtifactId.valueOf(rowArtifact.getId()));
+      MimDifferenceItem cellDiffItem =
+         cellArtifact == null ? null : diffs.get(ArtifactId.valueOf(cellArtifact.getId()));
+      MimDifferenceItem diffItem = rowDiffItem != null && rowDiffItem.isAdded() ? rowDiffItem : cellDiffItem;
+      if (!forceStyle.equals(STYLE.NONE)) {
+         if (data instanceof CellData) {
+            ((CellData) data).setStyle(forceStyle.getText());
+         } else {
+            writer.setCellStyle(forceStyle, cellIndex);
+         }
+      } else if (diffItem != null) {
+         STYLE style = diffItem.isAdded() ? STYLE.GOOD_BG : diffItem.getDiffs().keySet().contains(
+            attrId) ? STYLE.NEUTRAL_BG : STYLE.NONE;
+         if (data instanceof CellData && !style.equals(STYLE.NONE)) {
+            // If there should be a background color on the cell, determine the correct style to use
+            if (!((CellData) data).getHyperlink().isEmpty()) {
+               style = style == STYLE.GOOD_BG ? STYLE.HYPERLINK_GOOD_BG : STYLE.HYPERLINK_NEUTRAL_BG;
+            } else if (((CellData) data).getStyle() == STYLE.BOLD.getText()) {
+               style = style == STYLE.GOOD_BG ? STYLE.BOLD_GOOD_BG : STYLE.BOLD_NEUTRAL_BG;
+            }
+            ((CellData) data).setStyle(style.getText());
+         } else {
+            writer.setCellStyle(style, cellIndex);
+         }
+      }
+      writer.writeCell(data);
+   }
+
+   private void writeCell(ExcelXmlWriter writer, Object data, STYLE style, int cellIndex) throws IOException {
+      if (!style.equals(STYLE.NONE)) {
+         if (data instanceof CellData) {
+            ((CellData) data).setStyle(style.getText());
+         } else {
+            writer.setCellStyle(style, cellIndex);
+         }
+      }
+      writer.writeCell(data);
    }
 
    private void createMessageSubMessageSummary(ExcelXmlWriter writer, ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) throws IOException {
@@ -730,24 +924,24 @@ public class IcdGenerator {
             ArtifactReadable.SENTINEL))).collect(Collectors.toList());
       writer.startSheet("Message and SubMessage Summary", columnCount);
       writer.writeCell(new CellData(primaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4",
-         Strings.EMPTY_STRING, "OseeBoldStyle"));
+         Strings.EMPTY_STRING, STYLE.BOLD.getText()));
       writer.writeCell(new CellData(secondaryNode.getName() + " Initiated Message", Strings.EMPTY_STRING, "4",
-         Strings.EMPTY_STRING, "OseeBoldStyle"));
+         Strings.EMPTY_STRING, STYLE.BOLD.getText()));
       writer.endRow();
       writer.writeCell(
-         new CellData("No.", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+         new CellData("No.", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, STYLE.BOLD.getText()));
       writer.writeCell(
-         new CellData("Rate", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
+         new CellData("Rate", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, STYLE.BOLD.getText()));
+      writer.writeCell(new CellData("Read/Write", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING,
+         STYLE.BOLD.getText()));
+      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING, STYLE.BOLD.getText()));
       writer.writeCell(
-         new CellData("Read/Write", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
-      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING, "OseeBoldStyle"));
+         new CellData("No.", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, STYLE.BOLD.getText()));
       writer.writeCell(
-         new CellData("No.", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
-      writer.writeCell(
-         new CellData("Rate", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
-      writer.writeCell(
-         new CellData("Read/Write", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, "OseeBoldStyle"));
-      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING, "OseeBoldStyle"));
+         new CellData("Rate", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, STYLE.BOLD.getText()));
+      writer.writeCell(new CellData("Read/Write", Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING,
+         STYLE.BOLD.getText()));
+      writer.writeCell(new CellData("Content", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING, STYLE.BOLD.getText()));
       writer.endRow();
       int lastMessageNumber = 0;
       if (primaryList.size() > secondaryList.size()) {
@@ -781,17 +975,21 @@ public class IcdGenerator {
          int subMessagesCount = Math.max(primarySubMessages.size(), secondarySubMessages.size());
          String mergeDown = Integer.toString(subMessagesCount + 1);
          if (primaryMessage.isValid()) {
-            writer.writeCell(
+            writeCell(writer,
                new CellData(primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber),
-                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(new CellData(
-               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
-               Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(
+                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown),
+               primaryMessage, 0, CoreAttributeTypes.InterfaceMessageNumber.getId());
+            writeCell(writer,
+               new CellData(
+                  primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
+                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown),
+               primaryMessage, 1, CoreAttributeTypes.InterfaceMessageRate.getId());
+            writeCell(writer,
                new CellData(primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess),
-                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(new CellData(primaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING,
-               "OseeBoldStyle"));
+                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown),
+               primaryMessage, 2, CoreAttributeTypes.InterfaceMessageWriteAccess.getId());
+            writeCell(writer, new CellData(primaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING,
+               STYLE.BOLD.getText()), primaryMessage, 3, CoreAttributeTypes.Name.getId());
          } else {
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
@@ -799,17 +997,21 @@ public class IcdGenerator {
             writer.writeCell(new CellData("", Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING));
          }
          if (secondaryMessage.isValid()) {
-            writer.writeCell(
+            writeCell(writer,
                new CellData(secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber),
-                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(new CellData(
-               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
-               Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(
+                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown),
+               secondaryMessage, 4, CoreAttributeTypes.InterfaceMessageNumber.getId());
+            writeCell(writer,
+               new CellData(
+                  secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
+                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown),
+               secondaryMessage, 5, CoreAttributeTypes.InterfaceMessageRate.getId());
+            writeCell(writer,
                new CellData(secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess),
-                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
-            writer.writeCell(new CellData(secondaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING,
-               "OseeBoldStyle"));
+                  Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown),
+               secondaryMessage, 6, CoreAttributeTypes.InterfaceMessageWriteAccess.getId());
+            writeCell(writer, new CellData(secondaryMessage.getName(), Strings.EMPTY_STRING, "1", Strings.EMPTY_STRING,
+               STYLE.BOLD.getText()), secondaryMessage, 7, CoreAttributeTypes.Name.getId());
          } else {
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
             writer.writeCell(new CellData(Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING, mergeDown));
@@ -846,12 +1048,13 @@ public class IcdGenerator {
             if (primarySubMessage.isValid()) {
                writer.writeCell(new CellData("Submessage " + Integer.toString(j + 1) + ":", Strings.EMPTY_STRING,
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING), 3);
-               writer.writeCell(primarySubMessage.getName());
+               writeCell(writer, primarySubMessage.getName(), primarySubMessage, 4, CoreAttributeTypes.Name.getId());
             }
             if (secondarySubMessage.isValid()) {
                writer.writeCell(new CellData("Submessage " + Integer.toString(j + 1) + ":", Strings.EMPTY_STRING,
                   Strings.EMPTY_STRING, Strings.EMPTY_STRING), 8);
-               writer.writeCell(secondarySubMessage.getName());
+               writeCell(writer, secondarySubMessage.getName(), secondarySubMessage, 9,
+                  CoreAttributeTypes.Name.getId());
             }
             writer.endRow();
          }
@@ -862,31 +1065,51 @@ public class IcdGenerator {
    private class StructureInfo {
       final String name;
       final String category;
-      final String rate;
+      final String categoryFull;
+      final String txRate;
       final String minSim;
       final String maxSim;
-      final String numAttributes;
-      final String sizeInBytes;
+      final String minBps;
+      final String maxBps;
+      final Integer numAttributes;
+      final Integer sizeInBytes;
       final String initiator;
       final String msgNum;
       final String subMsgNum;
       final String taskfile;
       final String description;
+      final ArtifactReadable message;
+      final ArtifactReadable submessage;
       final List<ArtifactReadable> elements;
-      public StructureInfo(String name, String cat, String msgRateText, String minSim, String maxSim, int elementCount, Integer sum, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, List<ArtifactReadable> elements) {
+      final boolean structureChanged;
+      final boolean txRateChanged;
+      final boolean numElementsChanged;
+      final boolean structureSizeChanged;
+      final int byteChangeIndex;
+      public StructureInfo(String name, String cat, String catFull, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<ArtifactReadable> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
          this.name = name;
          this.category = cat;
-         this.rate = msgRateText;
+         this.categoryFull = catFull;
+         this.txRate = msgRateText;
          this.minSim = minSim;
          this.maxSim = maxSim;
-         this.numAttributes = Integer.toString(elementCount);
-         this.sizeInBytes = Integer.toString(sum);
+         this.minBps = minBps;
+         this.maxBps = maxBps;
+         this.numAttributes = elementCount;
+         this.sizeInBytes = sizeInBytes;
          this.initiator = sendingNode;
          this.msgNum = msgNumber;
          this.subMsgNum = subMsgNumber;
          this.taskfile = taskfile;
          this.description = desc;
+         this.message = message;
+         this.submessage = submessage;
          this.elements = elements;
+         this.structureChanged = structureChanged;
+         this.txRateChanged = txRateChanged;
+         this.numElementsChanged = numElementsChanged;
+         this.structureSizeChanged = structureSizeChanged;
+         this.byteChangeIndex = byteChangeIndex;
       }
 
    }

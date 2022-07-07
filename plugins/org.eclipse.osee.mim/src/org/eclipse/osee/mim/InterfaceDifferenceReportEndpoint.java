@@ -12,12 +12,15 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
@@ -35,5 +38,10 @@ public interface InterfaceDifferenceReportEndpoint {
     * @return all differences between branches
     */
    MimDifferenceReport getDifferenceReport(@PathParam("branchId") BranchId branch2);
+
+   @GET()
+   @Path("{branchId}/diff")
+   @Produces(MediaType.APPLICATION_JSON)
+   Map<ArtifactId, MimDifferenceItem> getDifferences(@PathParam("branchId") BranchId branch2);
 
 }
