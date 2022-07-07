@@ -124,6 +124,7 @@
 <plugin id="org.apache.lucene.core" version="8.4.1.v20200122-1459"/>
 <plugin id="org.apache.oro"/>
 <plugin id="org.apache.oro.source"/>
+<plugin id="org.apache.poi"/>
 <plugin id="org.apache.sshd.osgi"/>
 <plugin id="org.apache.sshd.sftp"/>
 <plugin id="org.apache.ws.commons.util"/>
