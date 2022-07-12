@@ -306,9 +306,11 @@ public class ExcelAtsTaskArtifactExtractor {
 
       private void processDescription(String[] row, JaxAtsTask jTask, int i) {
          String str = row[i];
-         if (Strings.isValid(str)) {
-            jTask.addAttribute(AtsAttributeTypes.Description, str);
+         if (Strings.isInValid(str)) {
+            rd.errorf("Description column can not be blank for row %s\n", rowNum);
+            return;
          }
+         jTask.addAttribute(AtsAttributeTypes.Description, str);
       }
 
       private void processResolution(String[] row, JaxAtsTask jTask, int i) {
@@ -391,6 +393,10 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       private void processAssignees(String[] row, JaxAtsTask jTask, int i) {
+         if (row[i] == null) {
+            rd.errorf("Assignee column can not be blank for row %s\n", rowNum);
+            return;
+         }
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");
