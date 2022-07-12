@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -57,9 +56,4 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals("1", object);
    }
 
-   @Test
-   public void testEnumeration() throws Exception {
-      Object object = getFirstAndCount("ats/attr/" + AtsAttributeTypes.ChangeType.getIdString(), 4);
-      Assert.assertEquals(ChangeType.Improvement.name(), object);
-   }
 }

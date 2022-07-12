@@ -182,8 +182,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       //now check selected version
       if (newVersion != null && newVersion.isLocked()) {
          String error = "Version \"" + getCommitFullDisplayName(newVersion) + "\" is locked or already released.";
-         if (AtsApiService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
-            Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
+         if (AtsApiService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(),
+            "Change Version", error + "\n\nOverride?")) {
             return null;
          } else if (!AtsApiService.get().getUserService().isAtsAdmin()) {
             AWorkbench.popup("ERROR", error);
@@ -200,8 +200,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       if (Strings.isValid(fullName)) {
          strs.add(fullName);
       }
-      String description = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(version,
-         AtsAttributeTypes.Description, "");
+      String description =
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.Description, "");
       if (Strings.isValid(description)) {
          strs.add(description);
       }
@@ -251,10 +251,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
                AtsApiService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                AtsApiService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist goals via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist goals via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }

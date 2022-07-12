@@ -228,7 +228,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ApproveRequestedHoursDate)
       .zeroOrOne(BaselineBranchId)
       .zeroOrOne(BranchMetrics)
-      .zeroOrOne(ChangeType, ChangeType.Improvement)
+      .zeroOrOne(ChangeType)
       .any(CommitOverride)
       .zeroOrOne(Condition)
       .zeroOrOne(CrashOrBlankDisplay)
@@ -273,7 +273,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(BurnDownData));
 
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
-      .zeroOrOne(ChangeType, ChangeType.Improvement)
+      .zeroOrOne(ChangeType)
       .zeroOrOne(NeedBy)
       .zeroOrOne(Priority, Priority.Priority5));
 

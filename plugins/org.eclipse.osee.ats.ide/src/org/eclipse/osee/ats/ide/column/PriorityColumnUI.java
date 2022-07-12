@@ -53,7 +53,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
       if (instance == null) {
          for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
             if (provider.useFactory()) {
-               instance = new PriorityColumnUI(provider.getPrioirtyColumnToken(), provider.getPrioirtyAttrType());
+               instance = new PriorityColumnUI(provider.getPriorityColumnToken(), provider.getPriorityAttrType());
                return instance;
             }
          }
@@ -79,7 +79,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, AttributeTypeToken attrTypeToken, boolean persist) {
+   public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, AttributeTypeToken attrTypeToken) {
 
       try {
          for (TeamWorkFlowArtifact team : teams) {
@@ -90,7 +90,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return false;
             }
          }
-         PromptChangeUtil.promptChangeAttribute(teams, attrTypeToken, persist);
+         PromptChangeUtil.promptChangeAttribute(teams, attrTypeToken, true);
          return true;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
@@ -127,13 +127,10 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return false;
             }
 
-            boolean modified =
-               promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), this.attrToken, isPersistViewer());
+            boolean modified = promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), this.attrToken);
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist priority via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist priority via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }
@@ -160,7 +157,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
          AWorkbench.popup("Must select Team Workflow(s)");
          return;
       }
-      promptChangePriority(awas, this.attrToken, true);
+      promptChangePriority(awas, this.attrToken);
       return;
    }
 

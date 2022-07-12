@@ -13,7 +13,11 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintBurndownButton;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintBurnupButton;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintDataTableButton;
@@ -25,6 +29,7 @@ import org.eclipse.osee.ats.ide.column.OperationalImpactXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.bit.XHyperlinkOpenBitTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XRequestedHoursApprovalWidget;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.XVersionList;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.ide.util.widgets.defect.XDefectViewer;
@@ -37,6 +42,7 @@ import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapeDemoWfXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstSiblingWorldDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
@@ -135,7 +141,23 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
       } else if (widgetName.equals(XCreateChangeReportTasksXButton.WIDGET_ID)) {
          AtsTaskDefToken atsTaskDefToken = (AtsTaskDefToken) rItem.getParameters().get(AtsTaskDefToken.ID);
          return new XCreateChangeReportTasksXButton(name, atsTaskDefToken);
+      } else if (widgetName.equals(XHyperlinkChangeTypeSelection.WIDGET_ID) || widgetName.equals(
+         XHyperlinkChangeTypeSelectionDam.WIDGET_ID)) {
+         String changeTypesStr = (String) rItem.getParameters().get(ChangeTypes.CHANGE_TYPE_PARAM_KEY);
+         List<ChangeTypes> types = new ArrayList<>();
+         if (Strings.isValid(changeTypesStr)) {
+            for (String cTypeStr : changeTypesStr.split(";")) {
+               ChangeTypes cType = ChangeTypeColumn.getChangeType(cTypeStr, AtsApiService.get());
+               types.add(cType);
+            }
+         }
+         if (widgetName.equals(XHyperlinkChangeTypeSelectionDam.WIDGET_ID)) {
+            return new XHyperlinkChangeTypeSelectionDam(name, types.toArray(new ChangeTypes[types.size()]));
+         } else if (widgetName.equals(XHyperlinkChangeTypeSelection.WIDGET_ID)) {
+            return new XHyperlinkChangeTypeSelection(name, types.toArray(new ChangeTypes[types.size()]));
+         }
       }
       return toReturn;
    }
+
 }

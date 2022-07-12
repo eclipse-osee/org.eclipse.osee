@@ -99,12 +99,10 @@ public abstract class BaseGoalsColumn extends BackgroundLoadingPreComputedColumn
             if (!useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                return false;
             }
-            boolean modified = promptChangeGoals(Arrays.asList(useArt), isPersistViewer());
+            boolean modified = promptChangeGoals(Arrays.asList(useArt));
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist goals via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist goals via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }
@@ -116,7 +114,7 @@ public abstract class BaseGoalsColumn extends BackgroundLoadingPreComputedColumn
       return false;
    }
 
-   public boolean promptChangeGoals(final Collection<? extends Artifact> awas, boolean persist) {
+   public boolean promptChangeGoals(final Collection<? extends Artifact> awas) {
       Set<Artifact> selected = new HashSet<>();
       for (Artifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
@@ -154,7 +152,7 @@ public abstract class BaseGoalsColumn extends BackgroundLoadingPreComputedColumn
                }
             }
          }
-         promptChangeGoals(awas, true);
+         promptChangeGoals(awas);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,7 +36,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
@@ -49,7 +46,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -524,7 +521,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          IAtsVersion version =
             atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
          ActionResult actionResult = atsApi.getActionService().createAction(asUser, newActionData.getTitle(),
-            newActionData.getDescription(), ChangeType.Improvement, newActionData.getPriority(), false, null, ais,
+            newActionData.getDescription(), ChangeTypes.Improvement, newActionData.getPriority(), false, null, ais,
             new Date(), atsApi.getUserService().getCurrentUser(), null, changes);
 
          IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
@@ -674,9 +671,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
 
-      ChangeType changeType = null;
+      ChangeTypes changeType = null;
       try {
-         changeType = ChangeType.valueOf(changeTypeStr);
+         changeType = ChangeTypes.valueOf(changeTypeStr);
+         if (changeType == ChangeTypes.None) {
+            return RestUtil.returnBadRequest(String.format("changeType [%s] is not valid", changeTypeStr));
+         }
       } catch (Exception ex) {
          return RestUtil.returnBadRequest(String.format("changeType [%s] is not valid", changeTypeStr));
       }
@@ -862,7 +862,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
-	  orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.deleteBids(bids);
    }

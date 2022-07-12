@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
  */
 public interface IAtsActionService {
 
-   ActionResult createAction(AtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes);
+   ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes);
 
    IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption);
 
@@ -63,6 +63,6 @@ public interface IAtsActionService {
     * This will only create the action artifact and not the workflows. It should only be used during cloning and not by
     * normal action/workflow creation.
     */
-   IAtsAction createAction(String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes);
+   IAtsAction createAction(String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes);
 
 }

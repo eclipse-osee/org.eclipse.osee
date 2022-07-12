@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -195,7 +195,7 @@ public class AtsDeleteManagerTest {
       Date createdDate = new Date();
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       ActionResult result = AtsApiService.get().getActionService().createAction(null, testName.name(), "Description",
-         ChangeType.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
+         ChangeTypes.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
 
       IAtsTeamWorkflow teamWf = null;
       for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(result)) {

@@ -96,12 +96,10 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
-            boolean modified = promptChangeOriginator(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
+            boolean modified = promptChangeOriginator(Arrays.asList((TeamWorkFlowArtifact) useArt));
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist goals via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist goals via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }
@@ -113,11 +111,11 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       return false;
    }
 
-   public static boolean promptChangeOriginator(IAtsWorkItem workItem, boolean persist) {
-      return promptChangeOriginator(Arrays.asList(workItem), persist);
+   public static boolean promptChangeOriginator(IAtsWorkItem workItem) {
+      return promptChangeOriginator(Arrays.asList(workItem));
    }
 
-   public static boolean promptChangeOriginator(final Collection<IAtsWorkItem> workItems, boolean persist) {
+   public static boolean promptChangeOriginator(final Collection<IAtsWorkItem> workItems) {
       UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = dialog.open();
       if (result == 0) {
@@ -128,9 +126,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             addOriginatorNotification(workItem, changes);
             changes.add(workItem);
          }
-         if (persist) {
-            changes.execute();
-         }
+         changes.execute();
          return true;
       }
       return false;
@@ -197,7 +193,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
                }
             }
          }
-         promptChangeOriginator(awas, true);
+         promptChangeOriginator(awas);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

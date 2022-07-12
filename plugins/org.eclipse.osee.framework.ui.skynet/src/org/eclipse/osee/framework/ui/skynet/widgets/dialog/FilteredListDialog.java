@@ -48,7 +48,7 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
    @SuppressWarnings("unchecked")
    public T getSelected() {
       Object[] elements = getResult();
-      if (elements.length > 0) {
+      if (elements != null && elements.length > 0) {
          return (T) elements[0];
       }
       return null;

@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -224,7 +224,7 @@ public class ExcelAtsActionArtifactExtractor {
          for (ActionData aData : actionDatas) {
             ActionResult actionResult = actionNameToAction.get(aData.title);
             if (actionResult == null) {
-               ChangeType changeType = getChangeType(aData);
+               ChangeTypes changeType = getChangeType(aData);
                String priorityStr = getPriority(aData);
                ActionResult aResult = AtsApiService.get().getActionService().createAction(null, aData.title, aData.desc,
                   changeType, priorityStr, false, null,
@@ -285,16 +285,16 @@ public class ExcelAtsActionArtifactExtractor {
       return priorityStr;
    }
 
-   private ChangeType getChangeType(ActionData aData) {
-      ChangeType changeType = ChangeType.None;
+   private ChangeTypes getChangeType(ActionData aData) {
+      ChangeTypes changeType = ChangeTypes.None;
       if (Strings.isValid(aData.changeType)) {
-         changeType = ChangeType.getChangeType(aData.changeType);
+         changeType = ChangeTypes.getChangeType(aData.changeType);
       }
       return changeType;
    }
 
    private void processTeamWorkflow(IAtsChangeSet changes, ActionData aData, IAtsTeamWorkflow teamWf) {
-      ChangeType changeType = getChangeType(aData);
+      ChangeTypes changeType = getChangeType(aData);
       String priorityStr = getPriority(aData);
 
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description, aData.desc);

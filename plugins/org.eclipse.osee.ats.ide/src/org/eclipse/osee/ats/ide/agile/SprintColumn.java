@@ -107,13 +107,11 @@ public class SprintColumn extends BackgroundLoadingPreComputedColumn implements 
                return false;
             }
 
-            boolean modified = promptChangeSprint(useArt, isPersistViewer());
+            boolean modified = promptChangeSprint(useArt);
 
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist sprints via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist sprints via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }
@@ -125,11 +123,11 @@ public class SprintColumn extends BackgroundLoadingPreComputedColumn implements 
       return false;
    }
 
-   public static boolean promptChangeSprint(Artifact awa, boolean persist) {
-      return promptChangeSprint(Arrays.asList(awa), persist);
+   public static boolean promptChangeSprint(Artifact awa) {
+      return promptChangeSprint(Arrays.asList(awa));
    }
 
-   public static boolean promptChangeSprint(final Collection<? extends Artifact> awas, boolean persist) {
+   public static boolean promptChangeSprint(final Collection<? extends Artifact> awas) {
       // verify that all awas belong to the same backlog
       SprintItems items = new SprintItems(awas);
 
@@ -232,7 +230,7 @@ public class SprintColumn extends BackgroundLoadingPreComputedColumn implements 
                }
             }
          }
-         promptChangeSprint(awas, true);
+         promptChangeSprint(awas);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

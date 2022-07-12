@@ -11,11 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.workflow;
+package org.eclipse.osee.ats.ide.workflow.chgtype;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -25,12 +26,12 @@ public class ChangeTypeLabelProvider implements ILabelProvider {
 
    @Override
    public Image getImage(Object arg0) {
-      return ChangeTypeToSwtImage.getImage((ChangeType) arg0);
+      return ChangeTypeColumnUI.getImage((ChangeTypes) arg0);
    }
 
    @Override
    public String getText(Object arg0) {
-      return ((ChangeType) arg0).name();
+      return ((ChangeTypes) arg0).name();
    }
 
    @Override

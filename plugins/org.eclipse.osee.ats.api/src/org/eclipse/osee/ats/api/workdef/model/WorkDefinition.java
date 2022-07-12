@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -44,6 +45,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
    private XResultData results = new XResultData();
    private final List<WorkDefOption> options = new ArrayList<>();
+   private final List<ChangeTypes> changeTypes = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -184,4 +186,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       getCreateTasksDefs().add(createTasksDefBldr.getCreateTasksDef());
    }
 
+   public List<ChangeTypes> getChangeTypes() {
+      return changeTypes;
+   }
 }

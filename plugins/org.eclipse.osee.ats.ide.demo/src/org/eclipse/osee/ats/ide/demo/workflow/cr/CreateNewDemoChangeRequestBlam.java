@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
@@ -56,6 +57,14 @@ public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
    @Override
    public Collection<XNavItemCat> getCategories() {
       return Arrays.asList(XNavItemCat.TOP_NEW);
+   }
+
+   @Override
+   public void handlePopulateWithDebugInfo() {
+      super.handlePopulateWithDebugInfo();
+      if (changeTypeWidget != null) {
+         changeTypeWidget.setSelected(ChangeTypes.Problem.name());
+      }
    }
 
 }

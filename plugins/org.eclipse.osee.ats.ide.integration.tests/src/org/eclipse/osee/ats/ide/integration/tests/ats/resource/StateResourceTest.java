@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -79,7 +79,7 @@ public class StateResourceTest extends AbstractRestTest {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(StateResourceTest.class.getName());
       ActionResult result = AtsApiService.get().getActionService().createAction(null, StateResourceTest.class.getName(),
-         "description", ChangeType.Improvement, "1", false, null,
+         "description", ChangeTypes.Improvement, "1", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),
          new Date(), AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), null, changes);

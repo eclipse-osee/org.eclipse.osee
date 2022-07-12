@@ -76,14 +76,6 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       }
    }
 
-   protected boolean isPersistViewer() {
-      return isPersistViewer((XViewer) getXViewer());
-   }
-
-   protected boolean isPersistViewer(XViewer xViewer) {
-      return AtsAttributeColumnUtility.isPersistViewer(xViewer);
-   }
-
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
       return null;
    }

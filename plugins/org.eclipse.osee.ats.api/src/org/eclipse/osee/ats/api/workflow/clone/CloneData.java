@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.workflow.clone;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -29,7 +29,7 @@ public class CloneData {
    boolean createNewAction = true;
    AtsUser originator;
    Collection<AtsUser> assignees = new HashSet<>();
-   String changeType = ChangeType.Improvement.name();
+   String changeType = ChangeTypes.Improvement.name();
    String priority = "";
    String points = "";
    IAtsVersion targetedVersion;

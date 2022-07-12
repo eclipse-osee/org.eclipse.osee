@@ -21,11 +21,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.config.version.VersionMetrics;
 import org.eclipse.osee.ats.ide.config.version.VersionTeamMetrics;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -154,8 +154,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
                String priorityStr = team.getSoleAttributeValue(AtsAttributeTypes.Priority, "");
-               if (!team.isCancelled() && ChangeTypeUtil.getChangeType(team,
-                  AtsApiService.get()) == ChangeType.Problem && (priorityStr.equals("1") || priorityStr.equals("2"))) {
+               if (!team.isCancelled() && ChangeTypeColumn.getChangeType(team,
+                  AtsApiService.get()) == ChangeTypes.Problem && (priorityStr.equals("1") || priorityStr.equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }
             }
@@ -163,7 +163,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          Integer numNonSupportReleased = null;
          if (thisReleaseEndDate != null) {
             numNonSupportReleased = 0;
-            for (TeamWorkFlowArtifact team : verMet.getTeamWorkFlows(ChangeType.Problem, ChangeType.Improvement)) {
+            for (TeamWorkFlowArtifact team : verMet.getTeamWorkFlows(ChangeTypes.Problem, ChangeTypes.Improvement)) {
                if (!team.isCancelled()) {
                   numNonSupportReleased++;
                }

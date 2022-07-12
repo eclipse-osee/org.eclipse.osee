@@ -24,7 +24,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -112,7 +112,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String title = getName() + " - Destination Client Test";
       resultData.log("Running " + title);
       NewActionJob job = null;
-      job = new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false, getActionableItems(), null);
+      job =
+         new NewActionJob("tt", "description", ChangeTypes.Improvement, "1", null, false, getActionableItems(), null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -210,7 +211,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.deleteAttributes(teamWf, AtsAttributeTypes.ValidationRequired);
       changes.deleteAttributes(teamWf, AtsAttributeTypes.Resolution);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 4");
-      ChangeTypeUtil.setChangeType(teamWf, ChangeType.Support, changes);
+      ChangeTypeColumn.setChangeType(teamWf, ChangeTypes.Support, changes);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Priority, "3");
       AtsApiService.get().getVersionService().setTargetedVersion(teamWf, getSawBld3(), changes);
       changes.execute();
@@ -236,7 +237,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and persist
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 2");
-      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
+      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ChangeTypes.Problem.name());
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Priority, "2");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
       AtsApiService.get().getVersionService().setTargetedVersion(teamWf, getSawBld1(), changes);
@@ -267,7 +268,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       testEquals("Description", "description",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamWf, AtsApiService.get()));
+      testEquals("Change Type", ChangeTypes.Improvement, ChangeTypeColumn.getChangeType(teamWf, AtsApiService.get()));
       testEquals("Priority", "1",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
    }
@@ -284,7 +285,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       testEquals("Description", "description 4",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamWf, AtsApiService.get()));
+      testEquals("Change Type", ChangeTypes.Support, ChangeTypeColumn.getChangeType(teamWf, AtsApiService.get()));
       testEquals("Priority", "3",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
       testEquals("Validation Required", false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf,

@@ -18,7 +18,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokens;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -94,7 +94,7 @@ public class OpenAgileTasksAction extends Action {
             AtsApiService.get().getAgileService().getAgileFeatureGroupStr(workItem));
 
          card =
-            card.replaceFirst("PUT_CHANGE_TYPE_HERE", ChangeTypeUtil.getChangeTypeStr(workItem, AtsApiService.get()));
+            card.replaceFirst("PUT_CHANGE_TYPE_HERE", ChangeTypeColumn.getChangeTypeStr(workItem, AtsApiService.get()));
          card = card.replaceFirst("PUT_PRIORITY_HERE",
             AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.PriorityColumn, workItem));
 

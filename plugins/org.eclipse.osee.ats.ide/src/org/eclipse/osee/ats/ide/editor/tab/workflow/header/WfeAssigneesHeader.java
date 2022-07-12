@@ -76,7 +76,7 @@ public class WfeAssigneesHeader extends Composite {
                      AWorkbench.popup("ERROR", "You must be assigned to modify assignees.\nContact current Assignee.");
                      return;
                   }
-                  if (AssigneeColumnUI.promptChangeAssignees(workItem, false)) {
+                  if (AssigneeColumnUI.promptChangeAssignees(workItem)) {
                      editor.doSave(null);
                   }
                } catch (Exception ex) {

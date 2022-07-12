@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -89,7 +89,7 @@ public class CreateTasksDefinitionTransitionToTest {
 
       ActionResult actionResult =
          AtsApiService.get().getActionService().createAction(null, title, "Problem with the Diagram View",
-            ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
+            ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       teamWf = actionResult.getFirstTeam();
       boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
       Assert.assertTrue(isSwDesign);

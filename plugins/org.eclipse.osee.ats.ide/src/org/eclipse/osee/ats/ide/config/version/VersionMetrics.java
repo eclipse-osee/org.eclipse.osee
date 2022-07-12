@@ -20,10 +20,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -51,11 +51,11 @@ public class VersionMetrics {
          sb.append("Workflows: ");
          sb.append(AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(verArt).size());
          sb.append(" Problem: ");
-         sb.append(getTeamWorkFlows(ChangeType.Problem).size());
+         sb.append(getTeamWorkFlows(ChangeTypes.Problem).size());
          sb.append(" Improve: ");
-         sb.append(getTeamWorkFlows(ChangeType.Improvement).size());
+         sb.append(getTeamWorkFlows(ChangeTypes.Improvement).size());
          sb.append(" Support: ");
-         sb.append(getTeamWorkFlows(ChangeType.Support).size());
+         sb.append(getTeamWorkFlows(ChangeTypes.Support).size());
          sb.append(" Release Date: ");
          sb.append(AtsApiService.get().getVersionService().getReleaseDate(verArt));
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
@@ -98,12 +98,12 @@ public class VersionMetrics {
       return relDate;
    }
 
-   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) {
-      List<ChangeType> changeTypes = Arrays.asList(changeType);
+   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeTypes... changeType) {
+      List<ChangeTypes> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<>();
       for (IAtsTeamWorkflow team : AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) team.getStoreObject();
-         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt, AtsApiService.get()))) {
+         if (changeTypes.contains(ChangeTypeColumn.getChangeType(teamArt, AtsApiService.get()))) {
             teams.add(teamArt);
          }
       }

@@ -41,7 +41,7 @@ public class EditAssigneeAction extends AbstractAtsAction {
    public void runWithException() {
       Collection<AbstractWorkflowArtifact> smaArts =
          Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedWorkflowArtifacts());
-      if (AssigneeColumnUI.promptChangeAssignees(smaArts, true)) {
+      if (AssigneeColumnUI.promptChangeAssignees(smaArts)) {
          if (xViewer != null) {
             xViewer.update(selectedAtsArtifacts.getSelectedWorkflowArtifacts().toArray(), null);
          }

@@ -22,7 +22,7 @@ import java.util.HashSet;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -64,7 +64,7 @@ public class DemoTeamWorkflowTest {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create SAW Test Action title: " + title);
 
       ActionResult result =
-         AtsApiService.get().getActionService().createAction(null, title, title, ChangeType.Improvement, "1", false,
+         AtsApiService.get().getActionService().createAction(null, title, title, ChangeTypes.Improvement, "1", false,
             null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 

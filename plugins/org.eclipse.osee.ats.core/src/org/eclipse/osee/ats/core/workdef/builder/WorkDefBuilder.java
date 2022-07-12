@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -225,6 +226,13 @@ public class WorkDefBuilder {
 
    public WorkDefBuilder andArtType(ArtifactTypeToken artType) {
       workDef.setArtType(artType);
+      return this;
+   }
+
+   public WorkDefBuilder andChangeTypes(ChangeTypes... changeTypes) {
+      for (ChangeTypes type : changeTypes) {
+         workDef.getChangeTypes().add(type);
+      }
       return this;
    }
 }

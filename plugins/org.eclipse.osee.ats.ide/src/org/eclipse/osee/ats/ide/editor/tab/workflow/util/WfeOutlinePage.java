@@ -25,8 +25,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -142,57 +142,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
    }
 
-   private class InternalLabelProvider extends LabelProvider {
-
-      @Override
-      public String getText(Object element) {
-         if (element instanceof WorkflowEditor) {
-            return ((WorkflowEditor) element).getTitle();
-         } else if (element instanceof WorkDefinitionViewer) {
-            return ((WorkDefinitionViewer) element).getName();
-         }
-         return String.valueOf(element);
-      }
-
-      @Override
-      public Image getImage(Object element) {
-         if (element instanceof WorkDefinitionViewer) {
-            return ImageManager.getImage(AtsImage.WORKFLOW);
-         } else if (element instanceof WorkflowEditor) {
-            return ((WorkflowEditor) element).getTitleImage();
-         } else if (element instanceof AbstractWorkflowArtifact) {
-            return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
-         } else if (element instanceof IAtsStateDefinition) {
-            return ImageManager.getImage(AtsImage.STATE_DEFINITION);
-         } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
-            return ImageManager.getImage(AtsImage.STATE_ITEM);
-         } else if (element instanceof WorkDefinition) {
-            return ImageManager.getImage(AtsImage.WORKFLOW);
-         } else if (element instanceof WidgetDefinition) {
-            return ImageManager.getImage(FrameworkImage.GEAR);
-         } else if (element instanceof CompositeLayoutItem || element instanceof WrappedLayout) {
-            return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);
-         } else if (element instanceof String || element instanceof WidgetOption || element instanceof WrappedPercentWeight) {
-            return ImageManager.getImage(AtsImage.RIGHT_ARROW_SM);
-         } else if (element instanceof WrappedStates || element instanceof WrappedTransitions) {
-            return ImageManager.getImage(AtsImage.TRANSITION);
-         } else if (element instanceof WrappedRules || element instanceof RuleAndLocation) {
-            return ImageManager.getImage(FrameworkImage.RULE);
-         } else if (element instanceof User) {
-            return ImageManager.getImage(FrameworkImage.USER);
-         } else if (element instanceof WrappedPeerReviews || element instanceof IAtsPeerReviewDefinition) {
-            return ImageManager.getImage(AtsImage.PEER_REVIEW);
-         } else if (element instanceof WrappedDecisionReviews || element instanceof IAtsDecisionReviewDefinition) {
-            return ImageManager.getImage(AtsImage.DECISION_REVIEW);
-         } else if (element instanceof IAtsDecisionReviewOption) {
-            return ImageManager.getImage(FrameworkImage.QUESTION);
-         } else if (element instanceof HeaderDefinition) {
-            return ImageManager.getImage(AtsImage.WORKFLOW_DEFINITION);
-         }
-         return null;
-      }
-   }
-
    private class InternalContentProvider implements ITreeContentProvider {
 
       @Override
@@ -209,12 +158,14 @@ public class WfeOutlinePage extends ContentOutlinePage {
       public Object[] getChildren(Object element) {
          List<Object> items = new ArrayList<>();
          if (element instanceof WorkDefinitionViewer) {
-            add(items, ((WorkDefinitionViewer) element).getWorkDef());
+            items.add(((WorkDefinitionViewer) element).getWorkDef());
+         } else if (element instanceof WrappedChangeTypes) {
+            items.addAll(((WrappedChangeTypes) element).getTypes());
          } else if (element instanceof WorkflowEditor) {
-            add(items, ((WorkflowEditor) element).getWorkItem());
+            items.add(((WorkflowEditor) element).getWorkItem());
             items.add(new WrappedStateItems(AtsApiService.get().getWorkItemService().getWorkItemHooks()));
          } else if (element instanceof AbstractWorkflowArtifact) {
-            add(items, ((AbstractWorkflowArtifact) element).getWorkDefinition());
+            items.add(((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
             items.addAll(((WrappedLayout) element).getStateItems());
          } else if (element instanceof WrappedPercentWeight) {
@@ -258,12 +209,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
          return items.toArray(new Object[items.size()]);
       }
 
-      private void add(Collection<Object> items, Object toAdd) {
-         if (toAdd != null) {
-            items.add(toAdd);
-         }
-      }
-
       @Override
       public Object getParent(Object element) {
          if (element instanceof AbstractWorkflowArtifact) {
@@ -274,6 +219,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ((IAtsStateDefinition) element).getWorkDefinition();
          } else if (element instanceof HeaderDefinition) {
             return ((HeaderDefinition) element).getWorkDefinition();
+         } else if (element instanceof WrappedChangeTypes) {
+            return workflowEditor.getWorkItem().getWorkDefinition();
          } else if (element instanceof String) {
             return workflowEditor != null ? workflowEditor : workDefViewer;
          }
@@ -312,6 +259,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             return false;
+         } else if (element instanceof WrappedChangeTypes) {
+            return !((WrappedChangeTypes) element).getTypes().isEmpty();
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
          } else if (element instanceof WrappedDecisionReviews) {
@@ -379,7 +328,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
          for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
-               add(items, AtsApiService.get().getUserService().getUserByUserId(userId));
+               items.add(AtsApiService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -401,7 +350,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             "Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
-               add(items, AtsApiService.get().getUserService().getUserByUserId(userId));
+               items.add(AtsApiService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -447,6 +396,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWorkDefinition(WorkDefinition workDef, List<Object> items) {
+         items.add(new WrappedChangeTypes(workDef));
          try {
             items.add(workDef.getHeaderDef());
          } catch (OseeStateException ex) {
@@ -464,8 +414,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
             try {
-               AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
-               add(items, user);
+               items.add(AtsApiService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -473,8 +422,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
          for (String userName : revOpt.getUserNames()) {
             try {
-               AtsUser user = AtsApiService.get().getUserService().getUserByName(userName);
-               add(items, user);
+               items.add(AtsApiService.get().getUserService().getUserByName(userName));
             } catch (OseeCoreException ex) {
                items.add(
                   String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));
@@ -542,7 +490,28 @@ public class WfeOutlinePage extends ContentOutlinePage {
       public String toString() {
          return String.format("%s [%s]", rule, location);
       }
+   }
 
+   private class WrappedChangeTypes {
+      private final String name = "Change Types";
+      private final WorkDefinition workDef;
+
+      public WrappedChangeTypes(WorkDefinition workDef) {
+         this.workDef = workDef;
+      }
+
+      @Override
+      public String toString() {
+         if (workDef.getChangeTypes() != null) {
+            return name + (workDef.getChangeTypes().isEmpty() ? " (Empty)" : "");
+         } else {
+            return name;
+         }
+      }
+
+      public Collection<ChangeTypes> getTypes() {
+         return workDef.getChangeTypes();
+      }
    }
 
    private class WrappedStates {
@@ -566,8 +535,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
       public Collection<IAtsStateDefinition> getStates() {
          return states;
       }
-
    }
+
    private class WrappedPercentWeight {
 
       private final WorkDefinition workDef;
@@ -595,6 +564,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
    }
+
    private class WrappedDecisionReviews {
       private final Collection<IAtsDecisionReviewDefinition> decReviews;
 
@@ -612,6 +582,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
    }
+
    private class WrappedStateItems {
       private final Collection<IAtsWorkItemHook> workflowHooks;
 
@@ -629,6 +600,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
    }
+
    private class WrappedPeerReviews {
       private final Collection<IAtsPeerReviewDefinition> decReviews;
 
@@ -693,6 +665,68 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    public void setWorkDefViewer(WorkDefinitionViewer workDefViewer) {
       this.workDefViewer = workDefViewer;
+   }
+
+   private class InternalLabelProvider extends LabelProvider {
+
+      @Override
+      public String getText(Object element) {
+         if (element instanceof WorkflowEditor) {
+            return ((WorkflowEditor) element).getTitle();
+         } else if (element instanceof WorkDefinitionViewer) {
+            return ((WorkDefinitionViewer) element).getName();
+         } else if (element instanceof ChangeTypes) {
+            ChangeTypes changeTypes = (ChangeTypes) element;
+            String desc = changeTypes.getDescription();
+            if (Strings.isValid(desc)) {
+               return String.format("%s - %s", changeTypes.name(), desc);
+            }
+            return changeTypes.name();
+         }
+         return String.valueOf(element);
+      }
+
+      @Override
+      public Image getImage(Object element) {
+         if (element instanceof WorkDefinitionViewer) {
+            return ImageManager.getImage(AtsImage.WORKFLOW);
+         } else if (element instanceof WorkflowEditor) {
+            return ((WorkflowEditor) element).getTitleImage();
+         } else if (element instanceof AbstractWorkflowArtifact) {
+            return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
+         } else if (element instanceof IAtsStateDefinition) {
+            return ImageManager.getImage(AtsImage.STATE_DEFINITION);
+         } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
+            return ImageManager.getImage(AtsImage.STATE_ITEM);
+         } else if (element instanceof WorkDefinition) {
+            return ImageManager.getImage(AtsImage.WORKFLOW);
+         } else if (element instanceof WidgetDefinition) {
+            return ImageManager.getImage(FrameworkImage.GEAR);
+         } else if (element instanceof CompositeLayoutItem || element instanceof WrappedLayout) {
+            return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);
+         } else if (element instanceof String || element instanceof WidgetOption || element instanceof WrappedPercentWeight) {
+            return ImageManager.getImage(AtsImage.RIGHT_ARROW_SM);
+         } else if (element instanceof WrappedStates || element instanceof WrappedTransitions) {
+            return ImageManager.getImage(AtsImage.TRANSITION);
+         } else if (element instanceof WrappedRules || element instanceof RuleAndLocation) {
+            return ImageManager.getImage(FrameworkImage.RULE);
+         } else if (element instanceof User) {
+            return ImageManager.getImage(FrameworkImage.USER);
+         } else if (element instanceof WrappedPeerReviews || element instanceof IAtsPeerReviewDefinition) {
+            return ImageManager.getImage(AtsImage.PEER_REVIEW);
+         } else if (element instanceof WrappedDecisionReviews || element instanceof IAtsDecisionReviewDefinition) {
+            return ImageManager.getImage(AtsImage.DECISION_REVIEW);
+         } else if (element instanceof IAtsDecisionReviewOption) {
+            return ImageManager.getImage(FrameworkImage.QUESTION);
+         } else if (element instanceof HeaderDefinition) {
+            return ImageManager.getImage(AtsImage.WORKFLOW_DEFINITION);
+         } else if (element instanceof WrappedChangeTypes) {
+            return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
+         } else if (element instanceof ChangeTypes) {
+            return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
+         }
+         return null;
+      }
    }
 
 }

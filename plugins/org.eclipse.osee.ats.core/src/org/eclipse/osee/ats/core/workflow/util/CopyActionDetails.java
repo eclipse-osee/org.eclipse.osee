@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -86,7 +87,7 @@ public class CopyActionDetails {
       String result = "";
       if (workItem instanceof IAtsTeamWorkflow) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-         result = ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
+         result = ChangeTypeColumn.getChangeTypeStr(workItem, atsApi);
          if (teamWf.getTeamDefinition().hasTag(USE_DEVELOPER_CHANGE_TYPES)) {
             if (result.equals("Improvement")) {
                result = "feature";

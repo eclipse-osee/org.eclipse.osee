@@ -74,7 +74,7 @@ public class WfeOriginatorHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  OriginatorColumn.promptChangeOriginator(workItem, true);
+                  OriginatorColumn.promptChangeOriginator(workItem);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
