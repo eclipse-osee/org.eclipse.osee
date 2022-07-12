@@ -267,7 +267,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
 
       IAtsChangeSet changes = atsApi.createChangeSet(getName());
       actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priority, false, needBy, Collections.singleton(programAi), new Date(),
+         cType, priority, false, needBy, getNewActionAis(programAi), new Date(),
          atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
       changes.execute();
       if (actionResult.getResults().isErrors()) {
@@ -276,6 +276,10 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       }
       IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
       WorkflowEditor.edit(teamWf);
+   }
+
+   protected Collection<IAtsActionableItem> getNewActionAis(IAtsActionableItem programAi) {
+      return Collections.singleton(programAi);
    }
 
    @Override
