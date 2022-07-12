@@ -101,7 +101,7 @@ public final class ChangeItemUtil {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Relation);
 
-      item.setItemId(RelationId.SENTINEL);
+      item.setItemId(currentSourceGammaId);
       item.setItemTypeId(relTypeId);
       item.setSynthetic(false);
 

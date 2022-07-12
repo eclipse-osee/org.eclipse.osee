@@ -387,7 +387,7 @@ public class LoadDeltasBetweenBranches {
                "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
                "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 7 as table_type from osee_join_export_import idj, " + //
                "osee_relation item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
                "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 4 as table_type from osee_join_export_import idj, " + //

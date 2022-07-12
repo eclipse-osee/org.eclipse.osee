@@ -507,7 +507,13 @@ public class RelationManagerImpl implements RelationManager {
       if (sourceAdjacencies != null) {
          for (Relation sourceRel : sourceAdjacencies.getAll()) {
             if (validRelationTypes.contains(sourceRel.getRelationType())) {
-               Relation destinationRel = findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData());
+               Relation destinationRel;
+               if (sourceRel.getRelationType().isNewRelationTable()) {
+                  destinationRel = findRelationByRelTypeArtABOrder(destinationAdjacencies, sourceRel.getRelationType(),
+                     sourceRel.getArtifactIdA(), sourceRel.getArtifactIdB(), sourceRel.getRelOrder());
+               } else {
+                  destinationRel = findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData());
+               }
                Relation introduceRelation = relationFactory.introduce(branch, sourceRel.getOrcsData());
                if (destinationRel != null) {
                   destinationRel.setOrcsData(introduceRelation.getOrcsData());
@@ -528,6 +534,16 @@ public class RelationManagerImpl implements RelationManager {
       ResultSet<Relation> result = getRelation(aNode, type, bNode, EXCLUDE_DELETED);
       Relation relation = result.getExactlyOne();
       relation.setApplicabilityId(applicId);
+   }
+
+   private Relation findRelationByRelTypeArtABOrder(RelationNodeAdjacencies adjacencies, RelationTypeToken type, ArtifactId artA, ArtifactId artB, int relOrder) {
+      for (Relation rel : adjacencies.getAll()) {
+         if (type.getIdString().equals(rel.getRelationType().getIdString()) && artA.equals(
+            rel.getArtifactIdA()) && artB.equals(rel.getArtifactIdB()) && relOrder == rel.getRelOrder()) {
+            return rel;
+         }
+      }
+      return null;
    }
 
    private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, RelationData id) {
