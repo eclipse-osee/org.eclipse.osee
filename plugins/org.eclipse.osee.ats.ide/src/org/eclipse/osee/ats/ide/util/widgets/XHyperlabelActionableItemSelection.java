@@ -63,7 +63,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
 
    @Override
    public String getCurrentValue() {
-      return Collections.toString(",", selectedAis);
+      return Collections.toString(", ", selectedAis);
    }
 
    public void setSelectedAIs(Collection<IAtsActionableItem> selectedAIs) {
