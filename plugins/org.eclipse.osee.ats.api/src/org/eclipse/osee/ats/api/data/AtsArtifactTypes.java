@@ -296,6 +296,7 @@ public interface AtsArtifactTypes {
    // Reviews
    ArtifactTypeToken AbstractReview = ats.add(ats.artifactType(64L, "ats.Review", true, AbstractWorkflowArtifact)
       .any(ActionableItemReference)
+      .zeroOrOne(NeedBy)
       .zeroOrOne(RelatedToState)
       .zeroOrOne(ReviewBlocks, ReviewBlocks.None));
 
