@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -348,7 +348,7 @@ public class AtsTestUtil {
       teamDef.getVersions().add(verArt4.getId());
 
       ActionResult result = AtsApiService.get().getActionService().createAction(null, getTitle("Team WF", postFixName),
-         "description", ChangeType.Improvement, "1", false, null, Arrays.asList(testAi), new Date(),
+         "description", ChangeTypes.Improvement, "1", false, null, Arrays.asList(testAi), new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null, changes);
 
       actionArt = (IAtsAction) result.getAction().getStoreObject();
@@ -658,7 +658,7 @@ public class AtsTestUtil {
       if (teamArt2 == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          ActionResult result = AtsApiService.get().getActionService().createAction(null,
-            getTitle("Team WF2", postFixName), "description", ChangeType.Improvement, "1", false, null,
+            getTitle("Team WF2", postFixName), "description", ChangeTypes.Improvement, "1", false, null,
             Arrays.asList(testAi2), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt2 = (IAtsAction) result.getAction().getStoreObject();
          teamArt2 = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
@@ -677,7 +677,7 @@ public class AtsTestUtil {
       if (teamArt3 == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          ActionResult result = AtsApiService.get().getActionService().createAction(null,
-            getTitle("Team WF3", postFixName), "description", ChangeType.Improvement, "1", false, null,
+            getTitle("Team WF3", postFixName), "description", ChangeTypes.Improvement, "1", false, null,
             Arrays.asList(testAi3), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt3 = (IAtsAction) result.getAction().getStoreObject();
          teamArt3 = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
@@ -696,7 +696,7 @@ public class AtsTestUtil {
       if (teamArt4 == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          ActionResult result = AtsApiService.get().getActionService().createAction(null,
-            getTitle("Team WF4", postFixName), "description", ChangeType.Improvement, "1", false, null,
+            getTitle("Team WF4", postFixName), "description", ChangeTypes.Improvement, "1", false, null,
             Arrays.asList(testAi4), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt4 = (IAtsAction) result.getAction().getStoreObject();
          teamArt4 = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();

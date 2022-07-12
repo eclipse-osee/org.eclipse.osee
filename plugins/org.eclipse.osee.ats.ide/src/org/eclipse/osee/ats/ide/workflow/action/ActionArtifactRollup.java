@@ -17,11 +17,11 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -55,23 +55,23 @@ public class ActionArtifactRollup {
    }
 
    public static void resetChangeTypeOffChildren(IAtsAction action, AtsApi atsApi) {
-      ChangeType changeType = null;
+      ChangeTypes changeType = null;
       Collection<IAtsTeamWorkflow> teamWfs = atsApi.getWorkItemService().getTeams(action);
       if (teamWfs.size() == 1) {
-         changeType = ChangeTypeUtil.getChangeType(teamWfs.iterator().next(), atsApi);
+         changeType = ChangeTypeColumn.getChangeType(teamWfs.iterator().next(), atsApi);
       } else {
          for (IAtsTeamWorkflow team : teamWfs) {
             if (!team.isCancelled()) {
                if (changeType == null) {
-                  changeType = ChangeTypeUtil.getChangeType(team, atsApi);
-               } else if (changeType != ChangeTypeUtil.getChangeType(team, atsApi)) {
+                  changeType = ChangeTypeColumn.getChangeType(team, atsApi);
+               } else if (changeType != ChangeTypeColumn.getChangeType(team, atsApi)) {
                   return;
                }
             }
          }
       }
-      if (changeType != null && ChangeTypeUtil.getChangeType(action, atsApi) != changeType) {
-         if (changeType == ChangeType.None) {
+      if (changeType != null && ChangeTypeColumn.getChangeType(action, atsApi) != changeType) {
+         if (changeType == ChangeTypes.None) {
             ((Artifact) action.getStoreObject()).deleteAttributes(AtsAttributeTypes.ChangeType);
          } else {
             ((Artifact) action.getStoreObject()).setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
@@ -137,7 +137,7 @@ public class ActionArtifactRollup {
       if (priorityAttrType == null) {
          for (IAtsDatabaseTypeProvider provider : atsApi.getDatabaseTypeProviders()) {
             if (provider.useFactory()) {
-               priorityAttrType = provider.getPrioirtyAttrType();
+               priorityAttrType = provider.getPriorityAttrType();
                return priorityAttrType;
             }
          }

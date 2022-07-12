@@ -93,10 +93,10 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             return false;
          }
 
-         modified = promptChangeAssignees(Arrays.asList(workItem), isPersistViewer());
+         modified = promptChangeAssignees(Arrays.asList(workItem));
          xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
 
-         if (modified && isPersistViewer(xViewer)) {
+         if (modified) {
             AtsApiService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", workItem);
          }
          if (modified) {
@@ -111,11 +111,11 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       return false;
    }
 
-   public static boolean promptChangeAssignees(IAtsWorkItem workItem, boolean persist) {
-      return promptChangeAssignees(Arrays.asList(workItem), persist);
+   public static boolean promptChangeAssignees(IAtsWorkItem workItem) {
+      return promptChangeAssignees(Arrays.asList(workItem));
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends IAtsWorkItem> workItems, boolean persist) {
+   public static boolean promptChangeAssignees(final Collection<? extends IAtsWorkItem> workItems) {
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.isCompleted()) {
             AWorkbench.popup("ERROR",
@@ -157,9 +157,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       for (IAtsWorkItem workItem : workItems) {
          workItem.getStateMgr().setAssignees(selected);
       }
-      if (persist) {
-         AtsApiService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", workItems);
-      }
+      AtsApiService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", workItems);
       return true;
    }
 
@@ -181,7 +179,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             AWorkbench.popup("Invalid selection for setting assignees.");
             return;
          }
-         promptChangeAssignees(teamWfs, true);
+         promptChangeAssignees(teamWfs);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

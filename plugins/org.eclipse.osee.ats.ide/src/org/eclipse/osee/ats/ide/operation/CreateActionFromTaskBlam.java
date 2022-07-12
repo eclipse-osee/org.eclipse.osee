@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -85,7 +85,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Must select a Change Type");
                   return;
                }
-               ChangeType changeType = ChangeType.valueOf(changeTypeStr);
+               ChangeTypes changeType = ChangeTypes.valueOf(changeTypeStr);
                String priority = variableMap.getString(PRIORITY);
                if (priority == null || priority.equals("--select--")) {
                   AWorkbench.popup("ERROR", "Must select a Priority");
@@ -123,7 +123,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       });
    }
 
-   private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeType changeType, String priority, IProgressMonitor monitor) {
+   private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeTypes changeType, String priority, IProgressMonitor monitor) {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
@@ -175,7 +175,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
          //
          "<XWidget displayName=\"" + CHANGE_TYPE + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-            AtsAttributeTypes.ChangeType.getEnumStrValues()) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
+            ChangeTypes.getDefaultValuesStrs()) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
          //
          "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
             AtsAttributeTypes.Priority.getEnumStrValues()) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +

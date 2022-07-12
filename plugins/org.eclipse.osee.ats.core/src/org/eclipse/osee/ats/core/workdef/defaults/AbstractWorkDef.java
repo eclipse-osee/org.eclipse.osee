@@ -19,6 +19,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.model.ChangeTypeWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
@@ -43,26 +45,27 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
    public void addCompositeHeader(WorkDefBuilder workDefBld) {
       if (workDefToken.equals(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request)) {
          workDefBld.andHeader() //
-            .andLayout(getHeaderComposite()) //
+            .andLayout(getChangeTypeComposite()) //
             .isShowWorkPackageHeader(false) //
             .isShowMetricsHeader(false); //
       } else {
          workDefBld.andHeader() //
-            .andLayout(getHeaderComposite()) //
+            .andLayout(getChangeTypeComposite()) //
             .isShowWorkPackageHeader(false) //
             .isShowMetricsHeader(false); //
       }
    }
 
-   public CompositeLayoutItem getHeaderComposite() {
-      return new CompositeLayoutItem(8, //
-         new WidgetDefinition(AtsAttributeTypes.ChangeType, "XHyperlinkLabelValueSelectionDam", REQUIRED_FOR_TRANSITION,
-            AUTO_SAVE), //
+   public CompositeLayoutItem getChangeTypeComposite() {
+      return new CompositeLayoutItem(11, //
+         new ChangeTypeWidgetDefinition(true).andRequired(), //
          new WidgetDefinition("   ", "XLabel"), //
          new WidgetDefinition(AtsAttributeTypes.Priority, "XHyperlinkLabelValueSelectionDam", REQUIRED_FOR_TRANSITION,
             AUTO_SAVE), //
          new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(AtsAttributeTypes.Points, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE) //
+         new WidgetDefinition(AtsAttributeTypes.Points, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
+         new WidgetDefinition("   ", "XLabel"), //
+         new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.END_COMPOSITE) //
       );
    }
 

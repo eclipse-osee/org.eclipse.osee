@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType;
@@ -80,7 +79,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Category1 = ats.createString(1152921504606847212L, "ats.Category 1", MediaType.TEXT_PLAIN, "Open field for user to be able to enter text to use for categorizing/sorting.");
    AttributeTypeString Category2 = ats.createString(1152921504606847217L, "ats.Category 2", MediaType.TEXT_PLAIN, Category1.getDescription());
    AttributeTypeString Category3 = ats.createString(1152921504606847218L, "ats.Category 3", MediaType.TEXT_PLAIN, Category1.getDescription());
-   ChangeTypeAttributeType ChangeType = ats.createEnum(new ChangeTypeAttributeType());
+   AttributeTypeString ChangeType = ats.createString(1152921504606847180L, "ats.Change Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean ClosureActive = ats.createBoolean(1152921875139002555L, "ats.Closure Active", MediaType.TEXT_PLAIN, "Closure Active status of Program");
    ClosureStateAttributeType ClosureState = ats.createEnum(new ClosureStateAttributeType());
    AttributeTypeString CognosUniqueId = ats.createString(72063457009467630L, "ats.Cognos Unique Id", MediaType.TEXT_PLAIN, "");

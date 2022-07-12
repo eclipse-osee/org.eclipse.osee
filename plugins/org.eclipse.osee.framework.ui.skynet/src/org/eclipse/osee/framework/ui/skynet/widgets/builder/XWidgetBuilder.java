@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.builder;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -292,6 +293,24 @@ public class XWidgetBuilder {
       newXWidget();
       currItem.setXWidgetName("XHyperlinkLabelValueStringSel");
       currItem.setName(name);
+      return this;
+   }
+
+   public XWidgetBuilder andChangeType(List<ChangeTypes> changeTypes) {
+      newXWidget();
+      currItem.setName("Change Type");
+      currItem.setXWidgetName("XHyperlinkChangeTypeSelection");
+      String string = Collections.toString(";", changeTypes);
+      currItem.addParameter("ChangeType", string);
+      return this;
+   }
+
+   public XWidgetBuilder andChangeType() {
+      newXWidget();
+      currItem.setName("Change Type");
+      currItem.setXWidgetName("XHyperlinkChangeTypeSelection");
+      String string = Collections.toString(";", ChangeTypes.DEFAULT_CHANGE_TYPES);
+      currItem.addParameter("ChangeType", string);
       return this;
    }
 

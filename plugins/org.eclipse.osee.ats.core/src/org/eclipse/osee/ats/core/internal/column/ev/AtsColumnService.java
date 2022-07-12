@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.column.CancelledByColumn;
 import org.eclipse.osee.ats.core.column.CancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CancelledReasonColumn;
 import org.eclipse.osee.ats.core.column.CancelledReasonDetailsColumn;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.column.CompletedByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
@@ -110,8 +111,6 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.LegacyPcrIdColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.QuantityUnderReviewColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.QuantityUnderReviewColumn, atsApi);
-         } else if (id.equals(AtsColumnTokens.ChangeTypeColumn.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ChangeTypeColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.NotesColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.NotesColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.PercentCompleteWorkflowColumn.getId())) {
@@ -173,6 +172,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new CancelReasonColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.CancelledReasonDetails.getId())) {
             column = new CancelledReasonDetailsColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.ChangeTypeColumn.getId())) {
+            column = new ChangeTypeColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.CompletedByColumn.getId())) {
             column = new CompletedByColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.CompletedCancelledByColumn.getId())) {

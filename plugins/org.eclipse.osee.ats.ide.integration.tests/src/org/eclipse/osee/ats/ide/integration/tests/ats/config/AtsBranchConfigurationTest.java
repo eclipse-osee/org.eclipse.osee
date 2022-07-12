@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -163,7 +163,7 @@ public class AtsBranchConfigurationTest {
       assertFalse(selectedActionableItems.isEmpty());
 
       ActionResult result = AtsApiService.get().getActionService().createAction(null,
-         BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeType.Problem, "1", false, null,
+         BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeTypes.Problem, "1", false, null,
          selectedActionableItems, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
       AtsApiService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
@@ -271,7 +271,7 @@ public class AtsBranchConfigurationTest {
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       changes.clear();
       ActionResult result = AtsApiService.get().getActionService().createAction(null, actionTitle, "description",
-         ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
+         ChangeTypes.Problem, "1", false, null, selectedActionableItems, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 

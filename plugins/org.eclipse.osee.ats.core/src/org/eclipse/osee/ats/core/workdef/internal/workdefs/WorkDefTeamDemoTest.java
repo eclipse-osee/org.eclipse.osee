@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -42,17 +41,10 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.isShowStateMetrics(true);
-
       bld.andHeader() //
-         .isShowMetricsHeader() //
-         .andLayout( //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
-            ) //
-         );
+         .andLayout(getChangeTypeComposite()) //
+         .isShowWorkPackageHeader(true) //
+         .isShowMetricsHeader(true); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
@@ -61,11 +53,6 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
-            ), //
             new WidgetDefinition("Related Tasks", AtsRelationTypes.TeamWfToTask_Task, "XListRelationWidget", NO_SELECT), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"));
@@ -78,16 +65,11 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
-            ), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-         
+
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //

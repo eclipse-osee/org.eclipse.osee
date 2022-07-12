@@ -70,6 +70,8 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
       this.editor = editor;
       this.workItem = editor.getWorkItem();
       this.atsApi = AtsApiService.get();
+
+      parent.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
    }
 
    public void create() {

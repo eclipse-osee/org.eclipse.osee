@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
@@ -38,7 +38,7 @@ public class Pdd82CreateCantLoadDiagramTreeAction implements IPopulateDemoDataba
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
       AtsApiService.get().getActionService().createAction(null,
-         DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "Problem with the Diagram Tree", ChangeType.Problem,
+         DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "Problem with the Diagram Tree", ChangeTypes.Problem,
          "3", false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
          Arrays.asList(new ArtifactTokenActionListener()), changes);
 

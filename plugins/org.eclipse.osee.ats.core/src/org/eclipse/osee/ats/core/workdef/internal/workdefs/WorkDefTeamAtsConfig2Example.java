@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -40,6 +39,11 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      bld.andHeader() //
+         .andLayout(getChangeTypeComposite()) //
+         .isShowWorkPackageHeader(true) //
+         .isShowMetricsHeader(false); //
+
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
@@ -47,11 +51,6 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam") //
-            ), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(2, "Implement", StateType.Working) //

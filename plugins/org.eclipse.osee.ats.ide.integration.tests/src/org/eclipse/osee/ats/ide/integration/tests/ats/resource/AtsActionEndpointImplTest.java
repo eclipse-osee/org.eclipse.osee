@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -593,7 +593,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Date createDate = new Date();
       data.setCreatedDateLong(String.valueOf(createDate.getTime()));
       data.setCreatedByUserId(DemoUsers.Alex_Kay.getUserId());
-      data.setChangeType(ChangeType.Improvement);
+      data.setChangeType(ChangeTypes.Improvement);
       data.setDescription("desc");
       Date needBy = new Date();
       data.setNeedByDateLong(String.valueOf(needBy.getTime()));
@@ -614,7 +614,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals(DemoUsers.Alex_Kay, teamWf.getCreatedBy().getStoreObject());
       Assert.assertEquals(DemoUsers.Joe_Smith,
          AtsApiService.get().getQueryServiceIde().getArtifact(teamWf).getLastModifiedBy());
-      Assert.assertEquals(ChangeType.Improvement.name(),
+      Assert.assertEquals(ChangeTypes.Improvement.name(),
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
       Assert.assertEquals("3",
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));

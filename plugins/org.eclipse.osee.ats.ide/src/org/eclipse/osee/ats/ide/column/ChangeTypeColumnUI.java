@@ -19,27 +19,31 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
+import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeDialog;
-import org.eclipse.osee.ats.ide.workflow.ChangeTypeToSwtImage;
+import org.eclipse.osee.ats.ide.workflow.chgtype.ChangeTypeDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -47,7 +51,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
+public class ChangeTypeColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static ChangeTypeColumnUI instance = new ChangeTypeColumnUI();
 
@@ -70,20 +74,20 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
+   public static boolean promptChangeType(final Collection<IAtsTeamWorkflow> teamWfs) {
 
       try {
-         for (TeamWorkFlowArtifact team : teams) {
+         for (IAtsTeamWorkflow teamWf : teamWfs) {
             if (AtsApiService.get().getVersionService().isReleased(
-               team) || AtsApiService.get().getVersionService().isVersionLocked(team)) {
+               teamWf) || AtsApiService.get().getVersionService().isVersionLocked(teamWf)) {
                AWorkbench.popup("ERROR",
-                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+                  "Team Workflow\n \"" + teamWf.getName() + "\"\n version is locked or already released.");
                return false;
             }
          }
-         final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
-         if (teams.size() == 1) {
-            ChangeType changeType = ChangeTypeUtil.getChangeType(teams.iterator().next(), AtsApiService.get());
+         final ChangeTypeDialog dialog = new ChangeTypeDialog(teamWfs, null);
+         if (teamWfs.size() == 1) {
+            ChangeTypes changeType = ChangeTypeColumn.getChangeType(teamWfs.iterator().next(), AtsApiService.get());
             if (changeType != null) {
                dialog.setSelected(changeType);
             }
@@ -92,23 +96,15 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
 
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Type");
 
-            ChangeType newChangeType = dialog.getSelection();
-            for (TeamWorkFlowArtifact team : teams) {
-               ChangeType currChangeType = ChangeTypeUtil.getChangeType(team, AtsApiService.get());
-               if (currChangeType != newChangeType) {
-                  ChangeTypeUtil.setChangeType(team, newChangeType, changes);
-                  if (persist) {
-                     team.save(changes);
-                  }
-               }
+            ChangeTypes newChangeType = dialog.getSelected();
+            for (IAtsTeamWorkflow team : teamWfs) {
+               ChangeTypeColumn.setChangeType(team, newChangeType, changes);
             }
-            if (persist) {
-               changes.execute();
-            }
+            changes.executeIfNeeded();
          }
          return true;
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't change Change Type", ex);
          return false;
       }
    }
@@ -119,7 +115,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             // Only prompt change for sole attribute types
-            if (useArt.getArtifactType().getMax(getAttributeType()) != 1) {
+            if (useArt.getArtifactType().getMax(AtsAttributeTypes.ChangeType) != 1) {
                return false;
             }
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
@@ -133,12 +129,10 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
             if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
-            boolean modified = promptChangeType(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
+            boolean modified = promptChangeType(Arrays.asList((TeamWorkFlowArtifact) useArt));
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist change type via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist change type via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }
@@ -155,11 +149,11 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
       try {
          if (element instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) element;
-            Artifact useArt = getParentTeamWorkflowOrArtifact(workItem);
+            IAtsTeamWorkflow useArt = workItem.getParentTeamWorkflow();
             if (useArt != null) {
-               ChangeType changeType = ChangeTypeUtil.getChangeType(workItem, AtsApiService.get());
+               ChangeTypes changeType = ChangeTypeColumn.getChangeType(workItem, AtsApiService.get());
                if (changeType != null) {
-                  return ChangeTypeToSwtImage.getImage(changeType);
+                  return getImage(changeType);
                }
             }
          }
@@ -171,17 +165,30 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<TeamWorkFlowArtifact> awas = new HashSet<>();
+      Set<IAtsTeamWorkflow> awas = new HashSet<>();
       for (TreeItem item : treeItems) {
          if (item.getData() instanceof Artifact) {
             Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               awas.add((TeamWorkFlowArtifact) art);
+               awas.add((IAtsTeamWorkflow) art);
             }
          }
       }
-      promptChangeType(awas, true);
+      promptChangeType(awas);
       ((XViewer) getXViewer()).update(awas.toArray(), null);
+   }
+
+   public static Image getImage(ChangeTypes type) {
+      if (type == ChangeTypes.Problem || type == ChangeTypes.Fix) {
+         return ImageManager.getImage(FrameworkImage.PROBLEM);
+      } else if (type == ChangeTypes.Improvement || type == ChangeTypes.InitialDev) {
+         return ImageManager.getImage(FrameworkImage.GREEN_PLUS);
+      } else if (type == ChangeTypes.Support) {
+         return ImageManager.getImage(FrameworkImage.SUPPORT);
+      } else if (type == ChangeTypes.Refinement) {
+         return ImageManager.getImage(FrameworkImage.REFINEMENT);
+      }
+      return null;
    }
 
 }

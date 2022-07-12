@@ -22,7 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -46,10 +47,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
@@ -81,8 +80,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    protected static final String NEED_BY = AtsAttributeTypes.NeedBy.getUnqualifiedName();
    protected XText titleWidget;
    protected XText descWidget;
-   protected XHyperlinkWfdForEnum changeWidgetEnum;
-   protected XHyperlinkWfdForEnumAttr changeWidgetEnumAttr;
+   protected XHyperlinkChangeTypeSelection changeTypeWidget;
    protected XHyperlinkWfdForEnumAttr priorityWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
@@ -108,7 +106,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
 
       // 6 columns
-      wb.andXHyperLinkEnumAttr(AtsAttributeTypes.ChangeType).andComposite(6).andRequired().endWidget();
+      wb.andChangeType().andComposite(6).andRequired().endWidget();
       wb.andXHyperLinkEnumAttr(getPriorityAttrType()).andRequired().endWidget();
       wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endComposite().endWidget();
 
@@ -126,11 +124,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       } else if (xWidget.getLabel().equals(DESCRIPTION)) {
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
-         if (xWidget instanceof XHyperlinkWfdForEnumAttr) {
-            changeWidgetEnumAttr = (XHyperlinkWfdForEnumAttr) xWidget;
-         } else if (xWidget instanceof XHyperlinkWfdForEnum) {
-            changeWidgetEnum = (XHyperlinkWfdForEnum) xWidget;
-         }
+         changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
       } else if (xWidget.getLabel().equals(PRIORITY)) {
          priorityWidget = (XHyperlinkWfdForEnumAttr) xWidget;
       } else if (xWidget.getLabel().equals(NEED_BY)) {
@@ -173,11 +167,8 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       try {
          titleWidget.set(Strings.isValid(overrideTitle) ? overrideTitle : getDebugTitle());
          descWidget.set(DEBUG_DESCRIPTION);
-         if (changeWidgetEnum != null) {
-            changeWidgetEnum.setSelected(ChangeType.Problem.name());
-         }
-         if (changeWidgetEnumAttr != null) {
-            changeWidgetEnumAttr.setSelected(ChangeType.Problem.name());
+         if (changeTypeWidget != null) {
+            changeTypeWidget.setSelected(ChangeTypes.Fix.name());
          }
          if (priorityWidget != null) {
             priorityWidget.setSelected("3");
@@ -203,31 +194,26 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       if (Strings.isInValid(title)) {
          results.error("Enter Title");
       }
+
       IAtsActionableItem programAi = (IAtsActionableItem) variableMap.getValue(PROGRAM);
       if (programAi == null || programAi.isInvalid()) {
          results.error("Select Program");
       }
+
       String desc = variableMap.getString(DESCRIPTION);
       if (Strings.isInValid(desc)) {
          results.error("Enter Description");
       }
-      String changeType = variableMap.getString(CHANGE_TYPE);
-      ChangeType cType = null;
-      if (changeWidgetEnum != null || changeWidgetEnumAttr != null) {
-         if (Strings.isInValid(changeType) || XArtifactTypeComboViewer.SELECT_STR.equals(changeType)) {
-            if (changeWidgetEnum != null && changeWidgetEnum.isRequiredEntry()) {
+
+      ChangeTypes cType = (ChangeTypes) variableMap.getValue(CHANGE_TYPE);
+      if (changeTypeWidget != null) {
+         if (cType == null || cType == ChangeTypes.None) {
+            if (changeTypeWidget != null && changeTypeWidget.isRequiredEntry()) {
                results.error("Select Change type");
-            } else if (changeWidgetEnumAttr != null && changeWidgetEnumAttr.isRequiredEntry()) {
-               results.error("Select Change type");
-            }
-         } else {
-            try {
-               cType = (ChangeType.valueOf(changeType));
-            } catch (Exception ex) {
-               results.error("Invalid Change Type");
             }
          }
       }
+
       String priority = "";
       if (priorityWidget != null) {
          priority = variableMap.getString(PRIORITY);

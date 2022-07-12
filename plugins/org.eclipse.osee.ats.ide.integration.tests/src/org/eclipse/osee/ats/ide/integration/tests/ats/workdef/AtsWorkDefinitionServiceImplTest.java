@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -59,7 +59,7 @@ public class AtsWorkDefinitionServiceImplTest {
       aias.add(
          AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_SW_Design_AI));
       ActionResult actionArt = AtsApiService.get().getActionService().createAction(null,
-         getClass().getSimpleName() + " relatedPeerTest", "description", ChangeType.Improvement, "3", false, null, aias,
+         getClass().getSimpleName() + " relatedPeerTest", "description", ChangeTypes.Improvement, "3", false, null, aias,
          new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       IAtsTeamWorkflow teamWf = actionArt.getFirstTeam();
 

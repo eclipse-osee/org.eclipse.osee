@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.column.DeadlineColumn;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -98,7 +98,7 @@ public class WfePrint extends Action {
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ",
-            ChangeTypeUtil.getChangeTypeStr(sma, AtsApiService.get())),
+            ChangeTypeColumn.getChangeTypeStr(sma, AtsApiService.get())),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ",
             sma.getSoleAttributeValue(AtsAttributeTypes.Priority, "")),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));

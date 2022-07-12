@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -63,7 +63,7 @@ public class Pdd52CreateWorkingWithDiagramTreeActions implements IPopulateDemoDa
          currentVersion = version;
          ArtifactToken teamWfArtToken = getVersionToWorkflowToken().get(version);
          ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
-            teamWfArtToken.getName(), "Problem with the Diagram Tree", ChangeType.Problem, "3", false, null, aias,
+            teamWfArtToken.getName(), "Problem with the Diagram Tree", ChangeTypes.Problem, "3", false, null, aias,
             createdDate, AtsApiService.get().getUserService().getCurrentUser(),
             Arrays.asList(new ArtifactTokenActionListener()), changes);
 

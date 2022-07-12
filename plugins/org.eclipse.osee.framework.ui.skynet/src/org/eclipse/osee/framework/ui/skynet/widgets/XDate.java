@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget.CalendarListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -98,12 +99,12 @@ public class XDate extends XWidget {
          composite = new Composite(parent, SWT.NONE);
          GridLayout layout = ALayout.getZeroMarginLayout(1, false);
          composite.setLayout(layout);
-         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+         composite.setLayoutData(new GridData());
       } else {
          composite = new Composite(parent, SWT.NONE);
          GridLayout layout = ALayout.getZeroMarginLayout(horizontalSpan, false);
          composite.setLayout(layout);
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         GridData gd = new GridData();
          gd.horizontalSpan = horizontalSpan;
          composite.setLayoutData(gd);
       }
@@ -117,6 +118,7 @@ public class XDate extends XWidget {
       }
       dateCombo = new CalendarWidget(composite, style);
       dateCombo.setEnabled(isEditable());
+      dateCombo.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
       GridData gd = new GridData();
       gd.widthHint = 100;
       if (date != null) {

@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -41,19 +40,17 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      bld.andHeader() //
+         .andLayout(getChangeTypeComposite()) //
+         .isShowWorkPackageHeader(true) //
+         .isShowMetricsHeader(false); //
+
       bld.andState(1, "Endorse", StateType.Working) //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
-            ), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam", HORIZONTAL_LABEL));
 
       bld.andState(2, "Analyze", StateType.Working).isStartState() //
@@ -64,13 +61,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
-            new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
-                  REQUIRED_FOR_TRANSITION), //
-               new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", HORIZONTAL_LABEL) //
-            ), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", REQUIRED_FOR_TRANSITION));
 
       bld.andState(3, "Authorize", StateType.Working) //

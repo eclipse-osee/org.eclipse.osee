@@ -20,14 +20,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -36,8 +39,10 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -53,6 +58,8 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
@@ -69,12 +76,12 @@ import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -467,7 +474,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public String getChangeTypeStr(IAtsWorkItem workItem) {
-      return ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
+      return ChangeTypeColumn.getChangeTypeStr(workItem, atsApi);
    }
 
    @Override
@@ -632,5 +639,73 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public String getCopyActionDetails(IAtsWorkItem workItem) {
       CopyActionDetails cad = new CopyActionDetails(workItem, atsApi);
       return cad.getDetailsString();
+   }
+
+   @Override
+   public List<ChangeTypes> getChangeTypeOptions(IAtsObject atsObject) {
+
+      WorkDefinition workDef = null;
+
+      if (atsObject instanceof IAtsActionableItem) {
+         IAtsActionableItem ai = (IAtsActionableItem) atsObject;
+         IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
+         ArtifactId workDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
+            AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+         if (workDefId.isValid()) {
+            workDef = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
+         }
+      } else if (atsObject instanceof IAtsTeamDefinition) {
+         IAtsTeamDefinition teamDef = (IAtsTeamDefinition) atsObject;
+         ArtifactId workDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
+            AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+         if (workDefId.isValid()) {
+            workDef = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
+         }
+      } else if (atsObject instanceof IAtsTeamWorkflow) {
+         workDef = ((IAtsTeamWorkflow) atsObject).getWorkDefinition();
+      }
+
+      List<ChangeTypes> changeTypes = null;
+      if (workDef != null) {
+         List<ChangeTypes> cTypes = workDef.getChangeTypes();
+         if (!cTypes.isEmpty()) {
+            changeTypes = cTypes;
+         }
+      }
+
+      if (changeTypes == null) {
+         for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
+            if (provider.useFactory()) {
+               if (provider.getChangeTypeValues() != null) {
+                  changeTypes = provider.getChangeTypeValues();
+                  break;
+               }
+            }
+         }
+      }
+
+      if (changeTypes == null) {
+         changeTypes = ChangeTypes.DEFAULT_CHANGE_TYPES;
+      }
+
+      return changeTypes;
+   }
+
+   @Override
+   public Pair<Boolean, Collection<ChangeTypes>> hasSameChangeTypes(Collection<IAtsTeamWorkflow> teamWfs) {
+      boolean sameChangeTypes = true;
+      Collection<ChangeTypes> changeTypes = null;
+      for (IAtsTeamWorkflow teamWf : teamWfs) {
+         Collection<ChangeTypes> cTypes = getChangeTypeOptions(teamWf);
+         if (changeTypes == null) {
+            changeTypes = cTypes;
+         } else {
+            if (!Collections.isEqual(changeTypes, cTypes)) {
+               sameChangeTypes = false;
+               break;
+            }
+         }
+      }
+      return new Pair<Boolean, Collection<ChangeTypes>>(sameChangeTypes, changeTypes);
    }
 }

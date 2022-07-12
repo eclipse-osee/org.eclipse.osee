@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -64,7 +64,7 @@ public class FrameworkAccessTestUtil {
          String priority = "2";
 
          ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
-            DemoArtifactToken.SAW_Access_Control_Req_TeamWf.getName(), "see title", ChangeType.Problem, priority, false,
+            DemoArtifactToken.SAW_Access_Control_Req_TeamWf.getName(), "see title", ChangeTypes.Problem, priority, false,
             null, aias, createdDate, createdBy, Arrays.asList(new ArtifactTokenActionListener()), changes);
 
          changes.execute();

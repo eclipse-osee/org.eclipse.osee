@@ -47,7 +47,7 @@ public class XAssigneesListWorkItemWidget extends AbstractXAssigneesListWidget i
    @Override
    public void handleModifySelection() {
       try {
-         AssigneeColumnUI.promptChangeAssignees(awa, true);
+         AssigneeColumnUI.promptChangeAssignees(awa);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

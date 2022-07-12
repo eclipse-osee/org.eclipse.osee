@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
@@ -29,7 +29,7 @@ public class NewActionData {
    String asUserId;
    String title;
    String description;
-   ChangeType changeType;
+   ChangeTypes changeType;
    String priority;
    boolean validationRequired;
    Collection<String> aiIds;
@@ -53,7 +53,7 @@ public class NewActionData {
       // jax-rs
    }
 
-   public NewActionData(String asUserUserId, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<String> aiIds, Date createdDate, String createdByUserId) {
+   public NewActionData(String asUserUserId, String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, Collection<String> aiIds, Date createdDate, String createdByUserId) {
       this.title = title;
       this.description = desc;
       this.changeType = changeType;
@@ -82,11 +82,11 @@ public class NewActionData {
       this.description = description;
    }
 
-   public ChangeType getChangeType() {
+   public ChangeTypes getChangeType() {
       return changeType;
    }
 
-   public void setChangeType(ChangeType changeType) {
+   public void setChangeType(ChangeTypes changeType) {
       this.changeType = changeType;
    }
 

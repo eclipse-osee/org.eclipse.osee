@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.workflow.cr.CreateNewDemoChangeRequestBlam;
@@ -59,7 +59,7 @@ public class CreateNewDemoChangeRequestBlamTest {
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
       Assert.assertEquals("CR1001", teamWf.getAtsId());
       Assert.assertEquals(TITLE, teamWf.getName());
-      Assert.assertEquals(ChangeType.Problem.name(),
+      Assert.assertEquals(ChangeTypes.Problem.name(),
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
       Assert.assertEquals("3",
          atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));

@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class NewActionJob extends Job {
    private String title;
    private final String desc;
-   private final ChangeType changeType;
+   private final ChangeTypes changeType;
    private final String priority;
    private final Date needByDate;
    private final boolean validationRequired;
@@ -51,7 +51,7 @@ public class NewActionJob extends Job {
    private boolean openOnComplete = true;
    private ActionResult result;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, Collection<INewActionListener> newActionListeners) {
+   public NewActionJob(String title, String desc, ChangeTypes changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, Collection<INewActionListener> newActionListeners) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;

@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -69,7 +69,7 @@ public class DemoTestUtil {
     */
    public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) {
       ActionResult result = AtsApiService.get().getActionService().createAction(null, title, "Description",
-         ChangeType.Improvement, "2", false, null,
+         ChangeTypes.Improvement, "2", false, null,
          AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),
          new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);

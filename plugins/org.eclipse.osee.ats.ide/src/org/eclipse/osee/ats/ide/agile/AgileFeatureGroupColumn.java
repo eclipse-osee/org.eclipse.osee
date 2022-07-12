@@ -24,10 +24,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
@@ -128,8 +126,7 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingPreComputedColumn 
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
             boolean modified = promptChangeFeatureGroup(Arrays.asList(awa));
-            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
+            if (modified) {
                awa.persist("persist goals via alt-left-click");
             }
          }

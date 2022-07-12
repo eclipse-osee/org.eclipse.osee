@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -41,7 +41,7 @@ public class Pdd86CreateProblemWithTheUserWindowAction implements IPopulateDemoD
 
       ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "Problem with the user window",
-         ChangeType.Problem, "4", false, null, aias, new Date(),
+         ChangeTypes.Problem, "4", false, null, aias, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
          changes);
 

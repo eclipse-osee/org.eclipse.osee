@@ -150,10 +150,8 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
             boolean modified = promptChangeRelatedToState(taskArt);
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               taskArt.persist("persist related-to-state via alt-left-click");
-            }
             if (modified) {
+               taskArt.persist("persist related-to-state via alt-left-click");
                xViewer.update(taskArt, null);
                return true;
             }

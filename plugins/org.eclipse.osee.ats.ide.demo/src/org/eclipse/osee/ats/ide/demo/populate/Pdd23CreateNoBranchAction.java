@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -54,7 +54,7 @@ public class Pdd23CreateNoBranchAction implements IPopulateDemoDatabase {
       String priority = "3";
 
       ActionResult actionResult = AtsApiService.get().getActionService().createAction(null, title,
-         "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         "Problem with the Diagram View", ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 

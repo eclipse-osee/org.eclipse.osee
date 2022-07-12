@@ -90,12 +90,10 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
             if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
-            boolean modified = promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
+            boolean modified = promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt));
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
-            if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist groups via alt-left-click");
-            }
             if (modified) {
+               useArt.persist("persist groups via alt-left-click");
                xViewer.update(useArt, null);
                return true;
             }
@@ -107,7 +105,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       return false;
    }
 
-   public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
+   public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> awas) {
       Set<Artifact> selected = new HashSet<>();
       for (AbstractWorkflowArtifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Group));
@@ -164,7 +162,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
                }
             }
          }
-         promptChangeGroups(awas, true);
+         promptChangeGroups(awas);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

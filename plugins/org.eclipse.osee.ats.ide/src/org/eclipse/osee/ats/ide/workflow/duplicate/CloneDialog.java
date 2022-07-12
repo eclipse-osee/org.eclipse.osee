@@ -107,7 +107,8 @@ public class CloneDialog extends XWidgetsDialog {
    }
 
    private String getChangeTypeOptions() {
-      return Collections.toString(",", AtsAttributeTypes.ChangeType.getEnumStrValues());
+      String cTypeStr = Collections.toString(",", atsApi.getWorkItemService().getChangeTypeOptions(teamWf));
+      return cTypeStr;
    }
 
    @Override

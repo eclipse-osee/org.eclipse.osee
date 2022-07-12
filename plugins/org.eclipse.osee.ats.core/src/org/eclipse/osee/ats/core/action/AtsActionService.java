@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -311,7 +311,7 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public ActionResult createAction(AtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
+   public ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
       ActionResult result = null;
       try {
          Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
@@ -365,7 +365,7 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public IAtsAction createAction(String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
+   public IAtsAction createAction(String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
       ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
@@ -632,7 +632,7 @@ public class AtsActionService implements IAtsActionService {
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
-      ChangeType changeType = ChangeType.valueOf(
+      ChangeTypes changeType = ChangeTypes.valueOf(
          atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "None"));
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), changeType,
@@ -645,7 +645,7 @@ public class AtsActionService implements IAtsActionService {
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
-   public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
+   public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeTypes changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);

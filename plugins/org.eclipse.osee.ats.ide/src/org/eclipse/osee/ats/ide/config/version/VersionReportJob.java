@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -121,8 +121,8 @@ public class VersionReportJob extends Job {
       int x = 1;
       for (IAtsVersion verArt : AtsApiService.get().getVersionService().getVersions(teamDef)) {
          if (monitor != null) {
-            String str = "Processing version " + x++ + "/" + AtsApiService.get().getVersionService().getVersions(
-               teamDef).size();
+            String str =
+               "Processing version " + x++ + "/" + AtsApiService.get().getVersionService().getVersions(teamDef).size();
             monitor.subTask(str);
          }
          if (verArt.isReleased() || verArt.isNextVersion()) {
@@ -146,8 +146,7 @@ public class VersionReportJob extends Job {
          released =
             " - " + "Released: " + getDateString(AtsApiService.get().getVersionService().getReleaseDate(verArt));
       }
-      if (verArt.isNextVersion() && AtsApiService.get().getVersionService().getEstimatedReleaseDate(
-         verArt) != null) {
+      if (verArt.isNextVersion() && AtsApiService.get().getVersionService().getEstimatedReleaseDate(verArt) != null) {
          released = " - " + "Next Release - Estimated Release Date: " + getDateString(
             AtsApiService.get().getVersionService().getEstimatedReleaseDate(verArt));
       }
@@ -174,7 +173,7 @@ public class VersionReportJob extends Job {
                   "Action",
                   teamWf.getTeamName(),
                   teamWf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""),
-                  ChangeTypeUtil.getChangeTypeStr(teamWf, AtsApiService.get()),
+                  ChangeTypeColumn.getChangeTypeStr(teamWf, AtsApiService.get()),
                   teamWf.getName(),
                   teamWf.getAtsId()}, null, x % 2 == 0 ? null : "#cccccc"));
 

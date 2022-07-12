@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
@@ -76,7 +76,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Action using all AIs");
       ActionResult action = AtsApiService.get().getActionService().createAction(null, "Big Action Test - Delete Me",
-         "Description", ChangeType.Improvement, "1", false, null, aias, new Date(),
+         "Description", ChangeTypes.Improvement, "1", false, null, aias, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
       return action;
