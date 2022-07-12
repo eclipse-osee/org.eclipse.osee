@@ -174,7 +174,14 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    private RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
       if (relationType.isNewRelationTable()) {
-         data.setLocalId(version.getGammaId());
+         if (version.getGammaId().isValid()) {
+            data.setLocalId(version.getGammaId()); //use this when creating many new relations to the same artA
+                                                   //currently relations are stored using a hash with the local id as a key so it needs to be
+                                                   //something unique and valid if gamma_id isn't valid use the id which is unique but in
+                                                   //case won't be stored in db, just used in the creation of the hash to ensure uniqueness
+         } else {
+            data.setLocalId(id);
+         }
       } else {
          data.setLocalId(id);
       }
