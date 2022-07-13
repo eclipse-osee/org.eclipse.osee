@@ -16,6 +16,7 @@ package org.eclipse.osee.define.ide.traceability.report;
 import java.util.List;
 import org.eclipse.osee.define.ide.traceability.ArtifactOperations;
 import org.eclipse.osee.define.ide.traceability.RequirementTraceabilityData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -25,9 +26,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class StpCsciToTestTable implements ISimpleTable {
 
    private final RequirementTraceabilityData source;
+   private final boolean onePerRow;
 
-   public StpCsciToTestTable(RequirementTraceabilityData source) {
+   public StpCsciToTestTable(RequirementTraceabilityData source, boolean onePerRow) {
       this.source = source;
+      this.onePerRow = onePerRow;
    }
 
    @Override
@@ -125,7 +128,14 @@ public class StpCsciToTestTable implements ISimpleTable {
       String paragraphNumber = operator.getParagraphNumber();
       String qualMethod = operator.getQualificationMethod();
       String qualFacility = operator.getQualificationFacility();
-      String partition = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", operator.getPartitions());
-      sheetWriter.writeRow(paragraphNumber, paragraphTitle, partition, qualMethod, qualFacility);
+
+      if (onePerRow) {
+         for (String singlePartition : operator.getPartitions()) {
+            sheetWriter.writeRow(paragraphNumber, paragraphTitle, singlePartition, qualMethod, qualFacility);
+         }
+      } else {
+         String partition = Collections.toString(",\n", operator.getPartitions());
+         sheetWriter.writeRow(paragraphNumber, paragraphTitle, partition, qualMethod, qualFacility);
+      }
    }
 }

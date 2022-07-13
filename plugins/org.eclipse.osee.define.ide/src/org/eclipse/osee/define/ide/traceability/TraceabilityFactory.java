@@ -30,6 +30,7 @@ public class TraceabilityFactory {
    public enum TraceabilityStyle {
       STP_Test_to_CSCI,
       STP_CSCI_to_Test,
+      STP_CSCI_to_Test_One_Per_Row,
       STD_Test_to_CSCI,
       STD_CSCI_to_Test,
       STD_Test_to_CSCI_One_Per_Row,
@@ -54,7 +55,10 @@ public class TraceabilityFactory {
             simpleTable = new StpTestToCsciTable(sourceData);
             break;
          case STP_CSCI_to_Test:
-            simpleTable = new StpCsciToTestTable(sourceData);
+            simpleTable = new StpCsciToTestTable(sourceData, false);
+            break;
+         case STP_CSCI_to_Test_One_Per_Row:
+            simpleTable = new StpCsciToTestTable(sourceData, true);
             break;
          case STD_Test_to_CSCI:
             simpleTable = new StdTestToCsciTable(sourceData, false);
