@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2004, 2007, 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -41,8 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastMo
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
-
-//import org.eclipse.osee.ats.ide.column.ActivityIdColumn;
 
 /**
  * @author Donald G. Dunne
@@ -97,9 +95,13 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getAttributeConfigColumn(AtsColumnTokens.CrashOrBlankDisplayColumn),
          getAttributeConfigColumn(AtsColumnTokens.ExternalReferenceColumn),
          getAttributeConfigColumn(AtsColumnTokens.GitChangeId),
-         getAttributeConfigColumn(AtsColumnTokens.RevisitDate),
+         getAttributeConfigColumn(AtsColumnTokens.RevisitDateColumn),
          getAttributeConfigColumn(AtsColumnTokens.NonFunctionalProblem),
          getAttributeConfigColumn(AtsColumnTokens.QuantityUnderReviewColumn),
+         getAttributeConfigColumn(AtsColumnTokens.HowToReproduceProblemColumn),
+         getAttributeConfigColumn(AtsColumnTokens.ProblemFirstObservedColumn),
+         getAttributeConfigColumn(AtsColumnTokens.RiskAnalysisColumn),
+         getAttributeConfigColumn(AtsColumnTokens.RootCauseColumn),
          getAttributeConfigColumn(AtsColumnTokens.ProposedResolutionColumn),
          getAttributeConfigColumn(AtsColumnTokens.ImpactToMissionOrCrewColumn),
          getAttributeConfigColumn(AtsColumnTokens.WorkaroundColumn),
