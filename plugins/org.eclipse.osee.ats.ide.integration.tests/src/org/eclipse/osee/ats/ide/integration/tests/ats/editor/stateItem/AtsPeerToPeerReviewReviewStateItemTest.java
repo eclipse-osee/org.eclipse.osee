@@ -100,7 +100,8 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       AtsPeerToPeerReviewReviewWorkItemHook stateItem = new AtsPeerToPeerReviewReviewWorkItemHook();
       changes.reset("test transition");
       stateItem.transitioned(peerRevArt, fromState, toState,
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), changes);
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
+         AtsApiService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       // Joe and Alex should have been added to assignees

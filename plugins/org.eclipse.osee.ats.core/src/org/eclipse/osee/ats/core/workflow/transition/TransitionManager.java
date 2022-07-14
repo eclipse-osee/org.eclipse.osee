@@ -262,7 +262,8 @@ public class TransitionManager implements IExecuteListener {
       // Check extension points for valid transition
       for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
          try {
-            listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef));
+            listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
+               helper.getTransitionUser());
             if (results.isCancelled() || !results.isEmpty()) {
                continue;
             }
@@ -278,8 +279,8 @@ public class TransitionManager implements IExecuteListener {
       if (results.isEmpty()) {
          for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
             try {
-               listener.transitioning(results, workItem, fromStateDef, toStateDef,
-                  getToAssignees(workItem, toStateDef));
+               listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
+                  AtsApiService.get().getUserService().getCurrentUser());
                if (results.isCancelled() || !results.isEmpty()) {
                   continue;
                }
@@ -356,11 +357,13 @@ public class TransitionManager implements IExecuteListener {
 
                   // Notify extension points of transition
                   for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
-                     listener.transitioned(workItem, fromState, toState, updatedAssigees, changes);
+                     listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getTransitionUser(),
+                        changes);
                   }
                   // Notify any state transition listeners
                   for (IAtsTransitionHook listener : toState.getTransitionListeners()) {
-                     listener.transitioned(workItem, fromState, toState, updatedAssigees, changes);
+                     listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getTransitionUser(),
+                        changes);
                   }
                   if (toState.getStateType().isCompletedOrCancelledState()) {
                      workItemService.clearImplementersCache(workItem);
@@ -661,7 +664,8 @@ public class TransitionManager implements IExecuteListener {
    public void changesStored(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
       for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
-         listener.transitionPersisted(helper.getWorkItems(), workItemFromStateMap, helper.getToStateName());
+         listener.transitionPersisted(helper.getWorkItems(), workItemFromStateMap, helper.getToStateName(),
+            helper.getTransitionUser());
       }
    }
 

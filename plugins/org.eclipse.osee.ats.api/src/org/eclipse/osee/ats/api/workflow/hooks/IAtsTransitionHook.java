@@ -22,6 +22,9 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 
 /**
+ * Provides hooks for interacting with ATS state transitions.  NOTE: HOOKS MUST BE IMPLEMENTED in ats.core OR ats.rest since 
+ * transitions are on the server.
+ *
  * @author Donald G. Dunne
  */
 public interface IAtsTransitionHook {
@@ -31,21 +34,21 @@ public interface IAtsTransitionHook {
    /**
     * Allows subclass to add changes to transition before commit.
     */
-   default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
+   default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       // Provided for subclass implementation
    }
 
    /**
     * Allows subclass to do operation after transition and persist.
     */
-   default public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName) {
+   default public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName, AtsUser asUser) {
       // Provided for subclass implementation
    }
 
    /**
     * Log errors in results if transition should fail
     */
-   default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
+   default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
       // Provided for subclass implementation
    }
 

@@ -40,11 +40,10 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       if (!workItem.isTeamWorkflow()) {
          return;
       }
-      AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
       Thread thread = new Thread("Create/Update Tasks") {
          @Override
          public void run() {

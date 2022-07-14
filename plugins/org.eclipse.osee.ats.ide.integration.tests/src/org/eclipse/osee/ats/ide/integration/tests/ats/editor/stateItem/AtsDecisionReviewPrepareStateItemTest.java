@@ -54,7 +54,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       AtsDecisionReviewPrepareWorkItemHook stateItem = new AtsDecisionReviewPrepareWorkItemHook();
       TransitionResults results = new TransitionResults();
       stateItem.transitioning(results, decRevArt, fromState, toState,
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()));
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
+         AtsApiService.get().getUserService().getCurrentUser());
 
       // verify no errors
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -64,7 +65,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist(getClass().getSimpleName());
       stateItem.transitioning(results, decRevArt, fromState, toState,
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()));
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
+         AtsApiService.get().getUserService().getCurrentUser());
       Assert.assertTrue(results.contains("Invalid Decision Option"));
 
    }

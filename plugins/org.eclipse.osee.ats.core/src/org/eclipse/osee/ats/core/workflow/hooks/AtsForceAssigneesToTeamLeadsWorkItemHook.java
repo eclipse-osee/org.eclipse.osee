@@ -41,12 +41,12 @@ public class AtsForceAssigneesToTeamLeadsWorkItemHook implements IAtsTransitionH
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       if (workItem instanceof IAtsTeamWorkflow && isForceAssigneesToTeamLeads(
          AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
          Collection<AtsUser> teamLeads =
             AtsApiService.get().getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition());
-         ;
+
          if (!teamLeads.isEmpty()) {
             workItem.getStateMgr().setAssignees(teamLeads);
             changes.add(workItem);
