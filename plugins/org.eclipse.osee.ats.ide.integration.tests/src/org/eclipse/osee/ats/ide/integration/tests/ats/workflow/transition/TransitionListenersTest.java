@@ -65,7 +65,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener1 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             results.addResult(new TransitionResult(reason1));
          }
 
@@ -78,7 +78,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener2 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             results.addResult(workItem, new TransitionResult(reason2));
          }
 
@@ -91,7 +91,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener3 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             // do nothing
          }
 
@@ -104,7 +104,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener4 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             throw new OseeCoreException(exceptionStr);
          }
 
