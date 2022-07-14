@@ -120,6 +120,18 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.CrashOrBlankDisplayColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.CrashOrBlankDisplayColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.ExternalReferenceColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ExternalReferenceColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.HowToReproduceProblemColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.HowToReproduceProblemColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.ProblemFirstObservedColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ProblemFirstObservedColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.RiskAnalysisColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.RiskAnalysisColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.RevisitDateColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.RevisitDateColumn, atsApi);
+         } else if (id.equals(AtsColumnTokens.RootCauseColumn.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.RootCauseColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.ProposedResolutionColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.ProposedResolutionColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.ImpactToMissionOrCrewColumn.getId())) {
