@@ -33,7 +33,7 @@ public class XCancellationReasonTextWidget extends XText implements ArtifactWidg
    private AbstractWorkflowArtifact awa;
 
    public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
-      super("Cancallation Reason");
+      super("Cancellation Reason");
       setArtifact(sma);
    }
 
@@ -43,7 +43,7 @@ public class XCancellationReasonTextWidget extends XText implements ArtifactWidg
          return Result.FalseResult;
       }
       if (!getText().equals(awa.getCancelledReason())) {
-         return new Result(true, "Cancallation Reason dirty");
+         return new Result(true, "Cancellation Reason dirty");
       }
       return Result.FalseResult;
    }
