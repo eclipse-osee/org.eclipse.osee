@@ -131,6 +131,8 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
       } finally {
          if (writer != null) {
             writer.flush();
+
+            writer.close();
          }
       }
    }

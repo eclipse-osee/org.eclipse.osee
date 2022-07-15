@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.links;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -110,8 +111,8 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
          protected IStatus run(IProgressMonitor monitor) {
             try {
                final Path dir = new File(System.getProperty("user.home")).toPath();
-               try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
-
+               try (final FileSystem file = FileSystems.getDefault()) {
+                  final WatchService watcher = file.newWatchService();
                   WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
                   for (;;) {
 
@@ -139,6 +140,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
                         break;
                      }
                   }
+                  watcher.close();
                   return Status.OK_STATUS;
                }
             } catch (IOException ex) {

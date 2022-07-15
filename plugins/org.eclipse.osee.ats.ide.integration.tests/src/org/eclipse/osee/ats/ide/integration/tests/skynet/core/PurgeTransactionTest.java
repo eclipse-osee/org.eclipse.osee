@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Map;
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
@@ -59,7 +60,8 @@ public class PurgeTransactionTest {
    @Before
    @After
    public void cleanup() {
-      txEndpoint.purgeUnusedBackingDataAndTransactions();
+      Response res = txEndpoint.purgeUnusedBackingDataAndTransactions();
+      res.close();
    }
 
    @Test

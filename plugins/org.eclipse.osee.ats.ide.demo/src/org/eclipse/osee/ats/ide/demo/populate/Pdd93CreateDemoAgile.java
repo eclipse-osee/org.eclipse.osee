@@ -471,7 +471,8 @@ public class Pdd93CreateDemoAgile {
          SprintItemData data = getSprintData(datas, x++, jaxWorkItem);
          String featureGroupName = data.getFeature();
          if (Strings.isValid(featureGroupName)) {
-            agileEp.addFeatureGroup(jaxWorkItem.getId(), featureGroupName);
+            Response res = agileEp.addFeatureGroup(jaxWorkItem.getId(), featureGroupName);
+            res.close();
          }
          String unPlannedStr = data.getUnPlanned();
          boolean unPlanned = false;
@@ -480,10 +481,13 @@ public class Pdd93CreateDemoAgile {
                unPlanned = true;
             }
          }
-         agileEp.setUnPlanned(jaxWorkItem.getId(), unPlanned);
-         String points = data.getPoints();
-         if (Strings.isValid(points)) {
-            agileEp.setPoints(jaxWorkItem.getId(), points);
+
+         try (Response res2 = agileEp.setUnPlanned(jaxWorkItem.getId(), unPlanned)) {
+            String points = data.getPoints();
+            if (Strings.isValid(points)) {
+               Response res3 = agileEp.setPoints(jaxWorkItem.getId(), points);
+               res3.close();
+            }
          }
       }
    }

@@ -95,16 +95,13 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
 
    @Override
    public void writeTo(Collection<IAtsConfigObject> programs, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-      JsonGenerator writer = null;
-      try {
-         writer = jsonFactory.createGenerator(entityStream);
+      try (JsonGenerator writer = jsonFactory.createGenerator(entityStream)) {
          writer.writeStartArray();
          for (IAtsConfigObject program : programs) {
             ConfigJsonWriter.addProgramObject(atsApiServer, orcsApi, program, annotations, writer,
                matches(IdentityView.class, annotations));
          }
          writer.writeEndArray();
-      } finally {
          if (writer != null) {
             writer.flush();
          }

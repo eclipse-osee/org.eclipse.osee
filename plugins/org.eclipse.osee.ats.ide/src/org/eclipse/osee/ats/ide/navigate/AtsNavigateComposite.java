@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import javax.ws.rs.core.Response;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.activity.api.ActivityLog;
@@ -80,7 +81,8 @@ public class AtsNavigateComposite extends XNavigateComposite {
       }
       try {
          if (activityId != null) {
-            activityEp.updateEntry(activityId.getId(), ActivityLog.COMPLETE_STATUS);
+            Response res = activityEp.updateEntry(activityId.getId(), ActivityLog.COMPLETE_STATUS);
+            res.close();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Eror updating activity log entry", ex);

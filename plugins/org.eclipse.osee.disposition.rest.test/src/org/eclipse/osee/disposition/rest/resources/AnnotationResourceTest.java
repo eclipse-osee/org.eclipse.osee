@@ -131,14 +131,16 @@ public class AnnotationResourceTest {
          false)).thenReturn(true);
       when(dispositionApi.getDispoItemById(branch, "itemId")).thenReturn(dispoItem);
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_Complete);
-      Response response = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name");
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      try (Response response = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name")) {
+         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      }
 
       when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), newAnnotation, "name",
          false)).thenReturn(false);
-      response = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name");
-      assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
-      response.close();
+      try (Response response2 = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name")) {
+         assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response2.getStatus());
+      }
    }
 
    @Test
@@ -156,8 +158,9 @@ public class AnnotationResourceTest {
       when(
          dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), "name", false)).thenReturn(
             false);
-      response = resource.deleteDispoAnnotation(annotationToEdit.getGuid(), "name");
-      assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+      Response response2 = resource.deleteDispoAnnotation(annotationToEdit.getGuid(), "name");
+      assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response2.getStatus());
       response.close();
+      response2.close();
    }
 }

@@ -1,15 +1,15 @@
 /*********************************************************************
- * Copyright (c) 2018 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- **********************************************************************/
+* Copyright (c) 2018 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+**********************************************************************/
 
 package org.eclipse.osee.disposition.rest.resources;
 
@@ -90,23 +90,29 @@ public class ContinuousIntegrationResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    public Response createDispoAnnotation(CiItemData data, @QueryParam("userName") String userName) {
-      Response response = Response.status(Response.Status.OK).build();
-      if (data != null) {
-         BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
-         String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
-         if (Strings.isInValid(itemId)) {
-            dispoApi.createDispoItem(branch, data, userName);
-            itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+      try (Response response = Response.status(Response.Status.OK).build();) {
+
+         if (data != null) {
+            BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
+            String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+            if (Strings.isInValid(itemId)) {
+               dispoApi.createDispoItem(branch, data, userName);
+               itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+            }
+            if (Strings.isValid(itemId)) {
+               updateDiscrepencies(data, branch, itemId, userName);
+               dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
+               try (Response res2 = createAndUpdateAnnotation(data, userName, response, branch, itemId);) {
+                  return res2;
+               }
+            }
+         } else {
+            try (Response res3 = Response.status(Response.Status.BAD_REQUEST).build();) {
+               return res3;
+            }
          }
-         if (Strings.isValid(itemId)) {
-            updateDiscrepencies(data, branch, itemId, userName);
-            dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
-            response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
-         }
-      } else {
-         response = Response.status(Response.Status.BAD_REQUEST).build();
+         return response;
       }
-      return response;
    }
 
    private void updateDiscrepencies(CiItemData data, BranchId branch, String itemId, String userName) {

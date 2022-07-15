@@ -105,10 +105,12 @@ public class PurgeTransactionOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       TransactionEndpoint txEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
-      Response result = txEndpoint.purgeTxs(deleteTxs);
 
-      if (Status.OK.getStatusCode() == result.getStatus()) {
-         OseeEventManager.kickTransactionEvent(this, transEventAndIds.getFirst());
+      try (Response result = txEndpoint.purgeTxs(deleteTxs)) {
+
+         if (Status.OK.getStatusCode() == result.getStatus()) {
+            OseeEventManager.kickTransactionEvent(this, transEventAndIds.getFirst());
+         }
       }
    }
 }

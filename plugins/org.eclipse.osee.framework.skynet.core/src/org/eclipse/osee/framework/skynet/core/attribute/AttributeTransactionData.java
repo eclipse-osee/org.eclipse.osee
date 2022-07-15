@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -81,7 +82,9 @@ public class AttributeTransactionData extends BaseTransactionData {
          try {
             OseeClient client = ServiceUtil.getOseeClient();
             ResourcesEndpoint endpoint = client.getResourcesEndpoint();
-            endpoint.deleteResource(asPath(daoToSql.getUri()));
+
+            Response res = endpoint.deleteResource(asPath(daoToSql.getUri()));
+            res.close();
          } catch (Exception ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
