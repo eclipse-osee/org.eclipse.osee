@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -53,9 +54,10 @@ public class DeleteBranchOperation extends AbstractOperation {
          BranchManager.setState(branch, BranchState.DELETED);
          OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch));
 
-         proxy.logBranchActivity(
+         Response res = proxy.logBranchActivity(
             String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s ",
                branch.getId(), originalState, BranchState.DELETED));
+         res.close();
       } catch (Exception ex) {
          try {
             BranchManager.setState(branch, originalState);

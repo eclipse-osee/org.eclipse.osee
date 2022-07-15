@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import java.util.List;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -64,7 +65,8 @@ public class RelationEndpointTest {
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementB");
 
       // Act
-      relationEndpoint.createRelationByType(sideA, sideB, CoreRelationTypes.RequirementTrace);
+      Response res = relationEndpoint.createRelationByType(sideA, sideB, CoreRelationTypes.RequirementTrace);
+      res.close();
 
       // Check if relation was created
       List<ArtifactId> artIdsSideA =
@@ -115,8 +117,11 @@ public class RelationEndpointTest {
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementC");
 
       // Act
-      relationEndpoint.createRelationByType(top, middle, CoreRelationTypes.RequirementTrace);
-      relationEndpoint.createRelationByType(middle, bottom, CoreRelationTypes.RequirementTrace);
+      Response res = relationEndpoint.createRelationByType(top, middle, CoreRelationTypes.RequirementTrace);
+      res.close();
+
+      Response res2 = relationEndpoint.createRelationByType(middle, bottom, CoreRelationTypes.RequirementTrace);
+      res2.close();
       List<ArtifactToken> arts =
          relationEndpoint.getRelatedRecursive(top, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL);
       Assert.assertTrue(arts.contains(middle));

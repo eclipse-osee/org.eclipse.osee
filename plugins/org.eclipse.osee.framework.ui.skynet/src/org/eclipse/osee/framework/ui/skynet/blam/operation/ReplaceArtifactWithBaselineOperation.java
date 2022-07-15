@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Collection;
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -64,9 +65,10 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                   ArtifactQuery.getHistoricalArtifactOrNull(artifact, txRecord, DeletionFlag.INCLUDE_DELETED);
                if (sourceArtifact != null) {
                   UserId userId = UserManager.getUser();
-                  TransactionEndpoint.replaceWithBaselineTxVersion(userId, branch, txRecord, sourceArtifact,
-                     ReplaceArtifactWithBaselineOperation.class.getSimpleName());
-                  monitor.done();
+                  try (Response res = TransactionEndpoint.replaceWithBaselineTxVersion(userId, branch, txRecord,
+                     sourceArtifact, ReplaceArtifactWithBaselineOperation.class.getSimpleName())) {
+                     monitor.done();
+                  }
                } else {
                   artifact.deleteAndPersist(getClass().getSimpleName());
                }

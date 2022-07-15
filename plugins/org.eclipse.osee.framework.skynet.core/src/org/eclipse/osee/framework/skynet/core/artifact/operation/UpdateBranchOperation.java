@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -102,9 +103,11 @@ public class UpdateBranchOperation extends AbstractOperation {
             BranchManager.setState(originalBranch, originalState);
          }
          monitor.worked(calculateWork(0.20));
-         branchEp.logBranchActivity(
+
+         Response res = branchEp.logBranchActivity(
             String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s fromBranch: %s",
                originalBranch.getIdString(), originalBranch.getName(), fromBranch));
+         res.close();
       }
    }
 

@@ -54,13 +54,14 @@ public class DispoProgramResourceTest {
       }
       when(dispoApi.getDispoPrograms()).thenReturn(Collections.singletonList(SYSTEM_ROOT));
 
-      Response oneSetResponse = resource.getAllPrograms();
-      ObjectMapper OM = new ObjectMapper();
-      String entityString = (String) oneSetResponse.getEntity();
-      String noBrackets = entityString.substring(1, entityString.length() - 1);
-      JsonNode programFromEntity = OM.readTree(noBrackets);
+      try (Response oneSetResponse = resource.getAllPrograms()) {
+         ObjectMapper OM = new ObjectMapper();
+         String entityString = (String) oneSetResponse.getEntity();
+         String noBrackets = entityString.substring(1, entityString.length() - 1);
+         JsonNode programFromEntity = OM.readTree(noBrackets);
 
-      assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals(SYSTEM_ROOT.getIdString(), programFromEntity.get("value").asText());
+         assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
+         assertEquals(SYSTEM_ROOT.getIdString(), programFromEntity.get("value").asText());
+      }
    }
 }

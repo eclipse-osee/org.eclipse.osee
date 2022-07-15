@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import com.google.common.collect.Lists;
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -41,6 +42,7 @@ public class AttributeTaggingOperation extends AbstractOperation {
       IndexResources data = new IndexResources();
       data.setWaitForIndexerToComplete(true);
       data.setGammaIds(Lists.newArrayList(gammaIds));
-      endpoint.indexResources(data);
+      Response res = endpoint.indexResources(data);
+      res.close();
    }
 }

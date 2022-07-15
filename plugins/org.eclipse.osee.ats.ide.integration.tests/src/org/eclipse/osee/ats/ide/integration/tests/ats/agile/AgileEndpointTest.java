@@ -55,7 +55,8 @@ public class AgileEndpointTest {
    public void cleanup() {
       Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(teamId);
       if (agileTeam != null) {
-         agile.deleteTeam(teamId);
+         Response res = agile.deleteTeam(teamId);
+         res.close();
       }
    }
 
@@ -78,7 +79,8 @@ public class AgileEndpointTest {
       team.setDescription("description");
       team.setActive(false);
       team.setName("New Name");
-      agile.updateTeam(team);
+      Response res = agile.updateTeam(team);
+      res.close();
       JaxAgileTeam updatedTeam = agile.getTeam(teamId);
       Assert.assertNotNull(updatedTeam);
       Assert.assertEquals("New Name", updatedTeam.getName());
@@ -86,7 +88,8 @@ public class AgileEndpointTest {
       Assert.assertEquals(false, updatedTeam.isActive());
 
       // Test Delete
-      agile.deleteTeam(teamId);
+      Response res2 = agile.deleteTeam(teamId);
+      res2.close();
       Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(teamId));
    }
 
@@ -121,9 +124,10 @@ public class AgileEndpointTest {
       Assert.assertEquals(id.longValue(), sprint.getId().longValue());
 
       // Test Delete
-      agile.deleteSprint(teamId, sprint.getId());
-      sprints = agile.getSprints(teamId);
-      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(sprint.getId()));
+      try (Response response3 = agile.deleteSprint(teamId, sprint.getId())) {
+         sprints = agile.getSprints(teamId);
+         Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(sprint.getId()));
+      }
    }
 
    @Test
@@ -151,10 +155,11 @@ public class AgileEndpointTest {
       Assert.assertEquals(id.longValue(), newGroup.getId().longValue());
 
       // Test Delete
-      agile.deleteFeatureGroup(teamId, newGroup.getId());
-      groups = agile.getFeatureGroups(teamId);
-      Assert.assertTrue(groups.isEmpty());
-      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(newGroup.getId()));
+      try (Response response3 = agile.deleteFeatureGroup(teamId, newGroup.getId())) {
+         groups = agile.getFeatureGroups(teamId);
+         Assert.assertTrue(groups.isEmpty());
+         Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(newGroup.getId()));
+      }
    }
 
    @Test

@@ -439,13 +439,17 @@ public class BranchEndpointTest {
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getName().equals("TestBranch"));
-         branchEndpoint.setBranchName(testBranch, "TestBranchNameChanged");
-         Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getName().equals("TestBranchNameChanged"));
-         // put db back to original state by purging the branch
-         branchEndpoint.purgeBranch(testBranch, false);
+
+         Response res1 = branchEndpoint.setBranchName(testBranch, "TestBranchNameChanged");
+         res1.close();
+
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         res2.close();
+
       } else {
          Assert.fail("Test Branch not created");
       }
+
    }
 
    @Test
@@ -454,10 +458,15 @@ public class BranchEndpointTest {
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchState().equals(BranchState.CREATED));
-         branchEndpoint.setBranchState(testBranch, BranchState.MODIFIED);
+
+         Response res1 = branchEndpoint.setBranchState(testBranch, BranchState.MODIFIED);
+         res1.close();
+
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchState().equals(BranchState.MODIFIED));
+
          // put db back to original state by purging the branch
-         branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         res2.close();
       } else {
          Assert.fail("Test Branch not created");
       }
@@ -469,10 +478,12 @@ public class BranchEndpointTest {
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchType().equals(BranchType.WORKING));
-         branchEndpoint.setBranchType(testBranch, BranchType.BASELINE);
+         Response res1 = branchEndpoint.setBranchType(testBranch, BranchType.BASELINE);
+         res1.close();
+
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchType().equals(BranchType.BASELINE));
-         // put db back to original state by purging the branch
-         branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         res2.close();
       } else {
          Assert.fail("Test Branch not created");
       }
@@ -486,10 +497,13 @@ public class BranchEndpointTest {
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().notEqual(testArtifact));
-         branchEndpoint.associateBranchToArtifact(testBranch, testArtifact);
+         Response res = branchEndpoint.associateBranchToArtifact(testBranch, testArtifact);
+         res.close();
+
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().equals(testArtifact));
          // put db back to original state by purging the branch
-         branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         res2.close();
          testArtifact.delete();
       } else {
          Assert.fail("Test Branch not created");
@@ -503,7 +517,9 @@ public class BranchEndpointTest {
       XResultData xResult = branchEndpoint.createBranchValidation(testDataInitialization(CoreBranches.SYSTEM_ROOT));
 
       Assert.assertFalse(xResult.isErrors());
-      branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+
    }
 
    @Test
@@ -566,10 +582,11 @@ public class BranchEndpointTest {
       options.setCommitter(UserManager.getUser());
 
       //Check Modified State
-      branchEndpoint.setBranchName(setUpBranchId, "setUpBranch");
-      BranchState setUpBranchStateBefore = BranchManager.getState(setUpBranchId);
-      if (!setUpBranchStateBefore.isModified()) {
-         throw new OseeCoreException("unmodified branch");
+      try (Response res1 = branchEndpoint.setBranchName(setUpBranchId, "setUpBranch")) {
+         BranchState setUpBranchStateBefore = BranchManager.getState(setUpBranchId);
+         if (!setUpBranchStateBefore.isModified()) {
+            throw new OseeCoreException("unmodified branch");
+         }
       }
 
       //Commit branch
@@ -580,31 +597,38 @@ public class BranchEndpointTest {
 
       BranchId testBranchIdOne = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(testBranchIdOne);
-      branchEndpoint.setBranchName(testBranchIdOne, "testBranchIdOne");
 
-      // check to see if the original committed branch shows up as a branch with a modified artifact  - should be no
-      Collection<BranchId> branches =
-         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
-      Assert.assertTrue(branches.isEmpty());
+      try (Response res2 = branchEndpoint.setBranchName(testBranchIdOne, "testBranchIdOne")) {
 
-      // modify the artifact on the current branch, then check to see if another branch shows up as a branch with a modified artifact
-      BranchId testBranchIdTwo = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
-      workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(testBranchIdTwo);
-      branchEndpoint.setBranchName(testBranchIdTwo, "testBranchIdTwo");
-      workingBranchArtifactEndpoint.deleteArtifact(testBranchIdTwo, newArtifact);
+         // check to see if the original committed branch shows up as a branch with a modified artifact  - should be no
+         Collection<BranchId> branches =
+            branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
+         Assert.assertTrue(branches.isEmpty());
 
-      branches = branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
-      // since testBranchIdtwo has deleted the artifact, we expect to see it as a branch with a modified artifact
-      Assert.assertFalse(branches.isEmpty());
+         // modify the artifact on the current branch, then check to see if another branch shows up as a branch with a modified artifact
+         BranchId testBranchIdTwo = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+         workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(testBranchIdTwo);
 
-      Collection<BranchId> branchesModded =
-         branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.create(newArtifact));
-      // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
-      Assert.assertTrue(branchesModded.isEmpty());
+         try (Response res3 = branchEndpoint.setBranchName(testBranchIdTwo, "testBranchIdTwo")) {
+            workingBranchArtifactEndpoint.deleteArtifact(testBranchIdTwo, newArtifact);
 
-      branchEndpoint.purgeBranch(setUpBranchId, false);
-      branchEndpoint.purgeBranch(testBranchIdOne, false);
-      branchEndpoint.purgeBranch(testBranchIdTwo, false);
+            branches =
+               branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdOne, ArtifactId.create(newArtifact));
+            // since testBranchIdtwo has deleted the artifact, we expect to see it as a branch with a modified artifact
+            Assert.assertFalse(branches.isEmpty());
+         }
+
+         Collection<BranchId> branchesModded =
+            branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.create(newArtifact));
+         // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
+         Assert.assertTrue(branchesModded.isEmpty());
+
+         branchEndpoint.purgeBranch(setUpBranchId, false);
+         branchEndpoint.purgeBranch(testBranchIdOne, false);
+         branchEndpoint.purgeBranch(testBranchIdTwo, false);
+
+      }
+
    }
 
    @Test

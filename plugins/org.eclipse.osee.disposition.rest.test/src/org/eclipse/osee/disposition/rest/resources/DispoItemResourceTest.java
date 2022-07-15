@@ -102,15 +102,16 @@ public class DispoItemResourceTest {
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
       when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "", false)).thenReturn(true);
-      Response response = resource.putDispoItem(id1.getGuid(), newItem, "", false);
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      try (Response response = resource.putDispoItem(id1.getGuid(), newItem, "", false)) {
+         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      }
 
       when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "", false)).thenReturn(false);
-      response = resource.putDispoItem(id1.getGuid(), newItem, "", false);
-      String returnedMessage = (String) response.getEntity();
-      assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
-      assertEquals(DispoMessages.Item_NotFound, returnedMessage);
-      response.close();
+      try (Response response2 = resource.putDispoItem(id1.getGuid(), newItem, "", false)) {
+         String returnedMessage = (String) response2.getEntity();
+         assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response2.getStatus());
+         assertEquals(DispoMessages.Item_NotFound, returnedMessage);
+      }
    }
 
    @Test
@@ -118,14 +119,16 @@ public class DispoItemResourceTest {
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
       when(dispositionApi.deleteDispoItem(branch, id1.getGuid(), "")).thenReturn(true);
-      Response response = resource.deleteDispoItem(id1.getGuid(), "");
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      try (Response response = resource.deleteDispoItem(id1.getGuid(), "")) {
+         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      }
 
       when(dispositionApi.deleteDispoItem(branch, id1.getGuid(), "")).thenReturn(false);
-      response = resource.deleteDispoItem(id1.getGuid(), "");
-      String returnedMessage = (String) response.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-      assertEquals(DispoMessages.Item_NotFound, returnedMessage);
-      response.close();
+
+      try (Response response2 = resource.deleteDispoItem(id1.getGuid(), "")) {
+         String returnedMessage = (String) response2.getEntity();
+         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response2.getStatus());
+         assertEquals(DispoMessages.Item_NotFound, returnedMessage);
+      }
    }
 }

@@ -277,6 +277,7 @@ public class LDAPConnector {
                env.put(Context.PROVIDER_URL, ldapURL);
                ctxInstance = new InitialLdapContext(env, null);
             }
+            statement.close();
          } catch (NamingException e) {
             OseeLog.logf(Activator.class, Level.SEVERE, "Failed to establish LDAP connection", (Object) null);
          } catch (OseeDataStoreException e) {

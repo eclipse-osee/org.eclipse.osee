@@ -142,7 +142,9 @@ public class LdapAuthenticationManagerTest {
       verify(connection).findAccount(filterCaptor.capture(), eq(USERNAME));
       verify(connection).authenticate(USERNAME, PASSWORD);
       verify(account).getDistinguishedName();
-      verify(client).getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD);
+      try (LdapConnection LConn2 = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
+         verify(LConn2);
+      }
       verify(connection).close();
 
       LdapFilter filter = filterCaptor.getValue();
@@ -185,7 +187,10 @@ public class LdapAuthenticationManagerTest {
       verify(connection).findAccount(filterCaptor.capture(), eq(USERNAME));
       verify(connection).authenticate(USERNAME, PASSWORD);
       verify(account).getDistinguishedName();
-      verify(client).getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD);
+
+      try (LdapConnection LConn2 = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
+         verify(LConn2);
+      }
       verify(connection).close();
 
       LdapFilter filter = filterCaptor.getValue();
@@ -227,7 +232,9 @@ public class LdapAuthenticationManagerTest {
 
       AuthenticatedUser actual = manager.authenticate(request);
 
-      verify(client).getConnection(LdapAuthenticationType.SIMPLE, USERNAME, PASSWORD);
+      try (LdapConnection LConn2 = client.getConnection(LdapAuthenticationType.SIMPLE, USERNAME, PASSWORD)) {
+         verify(LConn2);
+      }
       verify(connection).findAccount(filterCaptor.capture(), eq(USERNAME));
       verify(connection, times(0)).authenticate(USERNAME, PASSWORD);
       verify(account, times(0)).getDistinguishedName();
@@ -262,7 +269,10 @@ public class LdapAuthenticationManagerTest {
       manager.configure(config);
 
       when(account.getDistinguishedName()).thenReturn(LOWER_CASED_USERNAME);
-      when(client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)).thenReturn(connection);
+
+      try (LdapConnection LConn = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
+         when(LConn).thenReturn(connection);
+      }
       when(connection.findAccount(any(LdapFilter.class), eq(LOWER_CASED_USERNAME))).thenReturn(account);
       when(connection.authenticate(LOWER_CASED_USERNAME, PASSWORD)).thenReturn(true);
       when(account.getDisplayName()).thenReturn(DISPLAY_NAME);
