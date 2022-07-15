@@ -26,6 +26,7 @@ import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
@@ -53,7 +54,6 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
-import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 
 /**
  * @author John Misinco
@@ -231,7 +231,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    @Override
    public SynchronizationEndpoint getSynchronizationEndpoint() {
-      return jaxRsApi().newProxy("synchronization", SynchronizationEndpoint.class);
+      return jaxRsApi().newProxy("define", SynchronizationEndpoint.class);
    }
 
    @Override

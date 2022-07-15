@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelat
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -713,6 +715,20 @@ public class ReqifRelationships {
    @SuppressWarnings("unchecked")
    @BeforeClass
    public static void testSetup() {
+
+      /*
+       * When the test suit is run directly it will be in Database Initialization mode.
+       */
+
+      if (OseeProperties.isInDbInit()) {
+         /*
+          * Get out of database initialization mode and re-authenticate as the test user
+          */
+
+         OseeProperties.setInDbInit(false);
+         ClientSessionManager.releaseSession();
+         ClientSessionManager.getSession();
+      }
 
       /*
        * Create tracking maps
