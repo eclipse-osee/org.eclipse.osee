@@ -6,10 +6,14 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.define.api.importing,
- org.eclipse.osee.define.api
-Import-Package: javax.ws.rs,
+Export-Package: org.eclipse.osee.define.api,
+ org.eclipse.define.api.importing,
+ org.eclipse.osee.define.api.synchronization
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ javax.ws.rs,
  javax.ws.rs.core,
+ org.apache.cxf.jaxrs.ext.multipart,
  org.eclipse.jdt.annotation,
  org.eclipse.jgit.diff,
  org.eclipse.osee.activity.api,

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- *****************************************************************
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ ******************************************************************* -->
+ 
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+   activate  = "start" >
+
+   <implementation 
+      class = "org.eclipse.osee.define.rest.synchronization.ServiceStart" />
+   
+   <service>
+      <provide
+         interface = "org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint"/>
+   </service>
+   
+   <reference 
+   	bind        = "setOrcsApi"
+      cardinality = "1..1"
+      interface   = "org.eclipse.osee.orcs.OrcsApi"
+      name        = "OrcsApi"
+      policy      = "static"/>
+
+   <reference 
+      bind        = "setLogger" 
+      cardinality = "1..1" 
+      interface   = "org.eclipse.osee.logger.Log" 
+      name        = "Log" 
+      policy      = "static"/>
+    
+ </scr:component>

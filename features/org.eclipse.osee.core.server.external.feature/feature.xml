@@ -1292,20 +1292,6 @@
          unpack="false"/>          
 
    <plugin
-         id="org.eclipse.osee.synchronization.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.synchronization.rest"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.xerces"
          download-size="0"
          install-size="0"

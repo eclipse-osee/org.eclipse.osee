@@ -13,6 +13,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.define.api,
+ org.eclipse.osee.define.api.synchronization,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.access,
  org.eclipse.osee.framework.core.data,
@@ -37,5 +38,4 @@ Import-Package: com.fasterxml.jackson.core,
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: javax.ws.rs,
- org.eclipse.osee.synchronization.api
+Require-Bundle: javax.ws.rs

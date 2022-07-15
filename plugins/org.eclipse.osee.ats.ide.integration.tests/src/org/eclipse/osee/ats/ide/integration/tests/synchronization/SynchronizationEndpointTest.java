@@ -29,7 +29,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.ws.rs.core.Response;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -39,6 +38,8 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocument
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
+import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -49,8 +50,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EnumFunctionMap;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -61,7 +62,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 import org.eclipse.rmf.reqif10.AccessControlledElement;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeDefinitionBoolean;
@@ -1352,6 +1352,12 @@ public class SynchronizationEndpointTest {
    private static SynchronizationEndpoint synchronizationEndpoint;
 
    /**
+    * Saves a reference to the {@link SynchronizationArtifactParser} used to make test calls to the API.
+    */
+
+   private static SynchronizationArtifactParser synchronizationArtifactParser;
+
+   /**
     * Name used for the OSEE branch holding the test document.
     */
 
@@ -1755,6 +1761,21 @@ public class SynchronizationEndpointTest {
    public static void testSetup() {
       //@formatter:off
 
+      /*
+       * When the test suit is run directly it will be in Database Initialization mode.
+       */
+
+      if( OseeProperties.isInDbInit() )
+      {
+         /*
+          * Get out of database initialization mode and re-authenticate as the test user
+          */
+
+         OseeProperties.setInDbInit( false );
+         ClientSessionManager.releaseSession();
+         ClientSessionManager.getSession();
+      }
+
       var testDocumentBuilder = new TestDocumentBuilder( SynchronizationEndpointTest.setValues );
 
       testDocumentBuilder.buildDocument
@@ -1785,8 +1806,7 @@ public class SynchronizationEndpointTest {
 
       Assert.assertNotNull( SynchronizationEndpointTest.synchronizationEndpoint );
 
-
-
+      SynchronizationEndpointTest.synchronizationArtifactParser = new SynchronizationArtifactParser( SynchronizationEndpointTest.synchronizationEndpoint );
 
       /*
        * Create tracking maps
@@ -1889,211 +1909,55 @@ public class SynchronizationEndpointTest {
 
    @Test
    public void testGetByBranchIdArtifactIdOk() {
-      BranchId branchId = DemoBranches.SAW_PL_Working_Branch;
-      ArtifactId artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
-      String synchronizationArtifactType = "reqif";
 
-      Response response = SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(branchId,
-         artifactId, synchronizationArtifactType);
+      var branchId = DemoBranches.SAW_PL_Working_Branch;
+      var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
+      var synchronizationArtifactType = "reqif";
 
-      Assert.assertNotNull(response);
+      var reqIf = SynchronizationEndpointTest.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
+         synchronizationArtifactType);
 
-      int statusCode = response.getStatus();
-
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), statusCode);
+      Assert.assertNotNull(reqIf);
    }
 
    @Test
    public void testGetByBranchIdArtifactIdKoBadArtifactType() {
-      BranchId branchId = DemoBranches.SAW_PL_Working_Branch;
-      ArtifactId artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
-      String synchronizationArtifactType = "ZooCreatures";
-      boolean exceptionCought = false;
+
+      var branchId = DemoBranches.SAW_PL_Working_Branch;
+      var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
+      var synchronizationArtifactType = "ZooCreatures";
+      var exceptionCought = false;
 
       try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(branchId, artifactId,
+         var reqIf = SynchronizationEndpointTest.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
             synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
+      } catch (Exception exception) {
          exceptionCought = true;
 
-         String message = exception.getMessage();
+         var message = exception.getMessage();
 
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("Request for a Synchronization Artifact with an unknown artifact type."));
+         Assert.assertTrue("Message 1 not found.", message.contains("HTTP Reason: Bad Request."));
+         Assert.assertTrue("Message 2 not found.",
+            message.contains("Request for a Synchronization Artifact with an unknown artifact type."));
       }
 
-      Assert.assertTrue(exceptionCought);
+      Assert.assertTrue("Exception not cought.", exceptionCought);
    }
 
    @Test
    public void testGetByRootsOk() {
-      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
-      String artifactId = CoreArtifactTokens.DefaultHierarchyRoot.getIdString();
-      String roots = branchId + ":" + artifactId;
-      String synchronizationArtifactType = "reqif";
 
-      Response response = SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-         synchronizationArtifactType);
-
-      Assert.assertNotNull(response);
-
-      int statusCode = response.getStatus();
-
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), statusCode);
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsNonDigitFirstBranch() {
-      String roots = "10a:1,2,3;11:4,5,6";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
+      var branchId = DemoBranches.SAW_PL_Working_Branch;
+      var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
+      var synchronizationArtifactType = "reqif";
 
       try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
+         var reqIF = SynchronizationEndpointTest.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
             synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
+         Assert.assertNotNull(reqIF);
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
       }
-
-      Assert.assertTrue(exceptionCought);
-
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsNonDigitSecondBranch() {
-      String roots = "10:1,2,3;11z:4,5,6";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
-
-      try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-            synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
-      }
-
-      Assert.assertTrue(exceptionCought);
-
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsNonDigitFirstArtifact() {
-      String roots = "10:1a,2,3;11:4,5,6";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
-
-      try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-            synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
-      }
-
-      Assert.assertTrue(exceptionCought);
-
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsNonDigitLastArtifact() {
-      String roots = "10:1,2,3;11:4,5,6a";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
-
-      try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-            synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
-      }
-
-      Assert.assertTrue(exceptionCought);
-
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsBranchDelimiterOutOfPlace() {
-      String roots = "10:1:2,3;11:4,5,6";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
-
-      try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-            synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
-      }
-
-      Assert.assertTrue(exceptionCought);
-
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsArtifactDelimiterOutOfPlace() {
-      String roots = "10:1,2,3;11,4,5,6";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
-
-      try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-            synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
-      }
-
-      Assert.assertTrue(exceptionCought);
-
-   }
-
-   @Test
-   public void testGetByRootsKoBadRootsSpecificationDelimiterOutOfPlace() {
-      String roots = "10:1,2,3;11;4,5,6";
-      String synchronizationArtifactType = "ReqIF";
-      boolean exceptionCought = false;
-
-      try {
-         SynchronizationEndpointTest.synchronizationEndpoint.getSynchronizationArtifact(roots,
-            synchronizationArtifactType);
-      } catch (OseeCoreException exception) {
-         exceptionCought = true;
-
-         String message = exception.getMessage();
-
-         Assert.assertTrue(message.contains("HTTP Reason: Bad Request."));
-         Assert.assertTrue(message.contains("ERROR: \"roots\" parameter is invalid."));
-      }
-
-      Assert.assertTrue(exceptionCought);
-
    }
 
    /*

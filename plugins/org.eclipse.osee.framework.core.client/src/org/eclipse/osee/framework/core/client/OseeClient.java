@@ -20,6 +20,7 @@ import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -38,7 +39,6 @@ import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
-import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 
 /**
  * @author John Misinco

@@ -19,15 +19,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.ws.rs.core.Response;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.osee.define.api.synchronization.ExportRequest;
+import org.eclipse.osee.define.api.synchronization.Root;
+import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
-import org.eclipse.osee.synchronization.api.SynchronizationEndpoint;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeValue;
 import org.eclipse.rmf.reqif10.DatatypeDefinition;
@@ -58,11 +61,17 @@ class SynchronizationArtifactParser {
 
    ReqIF reqifTestDocument;
 
+   ResourceSet resourceSet;
+
+   Resource resource;
+
    /**
     * Saves a reference to the {@link SynchronizationEndpoint} used to make test call to the API.
     */
 
    SynchronizationEndpoint synchronizationEndpoint;
+
+   URI uri;
 
    /**
     * Creates a new Synchronization Artifact Parser for {@link ReqIF} documents.
@@ -74,6 +83,11 @@ class SynchronizationArtifactParser {
       this.synchronizationEndpoint = Objects.requireNonNull(synchronizationEndpoint);
 
       this.reqifTestDocument = null;
+      this.resourceSet = new ResourceSetImpl();
+      this.resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("reqif",
+         new ReqIF10ResourceFactoryImpl());
+      this.uri = URI.createFileURI("i.reqif");
+      this.resource = this.resourceSet.createResource(this.uri);
    }
 
    /**
@@ -522,43 +536,65 @@ class SynchronizationArtifactParser {
 
    ReqIF parseTestDocument(BranchId rootBranchId, ArtifactId rootArtifactId, String synchronizationArtifactType) {
 
-      Response response = this.synchronizationEndpoint.getSynchronizationArtifact(rootBranchId, rootArtifactId,
-         synchronizationArtifactType);
-
-      Assert.assertNotNull(response);
-
-      int statusCode = response.getStatus();
-
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), statusCode);
-
-      var reqIfInputStream = response.readEntity(InputStream.class);
-
-      var resourceSet = new ResourceSetImpl();
-
-      resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("reqif",
-         new ReqIF10ResourceFactoryImpl());
-
-      var uri = URI.createFileURI("i.reqif");
-
-      var resource = resourceSet.createResource(uri);
-
-      try {
-         resource.load(reqIfInputStream, null);
-      } catch (Exception e) {
-         throw new RuntimeException("Resource Load Failed", e);
+      if (this.resource.isLoaded()) {
+         this.resource.unload();
+         this.reqifTestDocument = null;
       }
 
-      var eObjectList = resource.getContents();
+      //@formatter:off
+      var exportRequest =
+         new ExportRequest
+                (
+                  synchronizationArtifactType,
+                  new Root[]
+                  {
+                     new Root( rootBranchId, rootArtifactId )
+                  }
+                );
+      //@formatter:on
 
-      Assert.assertNotNull(eObjectList);
+      try (var reqIfInputStream = this.synchronizationEndpoint.export(exportRequest)) {
 
-      var rootEObject = eObjectList.get(0);
+         try {
+            resource.load(reqIfInputStream, null);
+         } catch (Exception e) {
+            throw new RuntimeException("Resource Load Failed", e);
+         }
 
-      Assert.assertTrue(rootEObject instanceof ReqIF);
+         var eObjectList = resource.getContents();
 
-      this.reqifTestDocument = (ReqIF) rootEObject;
+         if (Objects.isNull(eObjectList)) {
+            throw new RuntimeException("EObjectList is null.");
+         }
 
-      return this.reqifTestDocument;
+         if (eObjectList.size() == 0) {
+            throw new RuntimeException("EObjectList is empty.");
+         }
+
+         var rootEObject = eObjectList.get(0);
+
+         if (Objects.isNull(rootEObject)) {
+            throw new RuntimeException("Root EObject is null.");
+         }
+
+         if (!(rootEObject instanceof ReqIF)) {
+            throw new RuntimeException("Root EObject is not an instance of ReqIF.");
+         }
+
+         this.reqifTestDocument = (ReqIF) rootEObject;
+
+         return this.reqifTestDocument;
+
+      } catch (Exception e) {
+
+         if (resource.isLoaded()) {
+            resource.unload();
+         }
+
+         this.reqifTestDocument = null;
+
+         throw new RuntimeException(e);
+      }
    }
 
 }
