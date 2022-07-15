@@ -28,11 +28,14 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public interface AtsHealthEndpointApi {
 
    @GET
+   @Path("check")
    @Produces(MediaType.TEXT_HTML)
    public String get();
 
    @GET
-   public boolean alive();
+   @Path("alive")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Boolean alive();
 
    @GET
    @Path("dupart/{id}/{newArtId}")

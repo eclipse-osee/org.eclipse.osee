@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.rest.internal.util.health;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +34,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestDuplicateAttributesWithPersist;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestTaskParent;
@@ -43,15 +44,16 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.util.OseeEmail;
-import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -80,24 +82,54 @@ public class AtsHealthCheckOperation {
          runIt(rd);
          String elapsedStr = time.end(Units.SEC);
          rd.log("\n\n" + elapsedStr);
-         emailResults(rd);
+         outputResults(rd);
       } catch (Exception ex) {
          rd.errorf("Exception running reports [%s]", Lib.exceptionToString(ex));
       }
       return rd;
    }
 
-   private void emailResults(XResultData rd) {
-      String dbName = "";
-      String configDbName = atsApi.getConfigValue("DatabaseName");
-      if (Strings.isValid(configDbName)) {
-         dbName = " " + configDbName;
+   private void outputResults(XResultData rd) {
+
+      // Disable emailing results until server email works again
+      //      String dbName = "";
+      //      String configDbName = atsApi.getConfigValue("DatabaseName");
+      //      if (Strings.isValid(configDbName)) {
+      //         dbName = " " + configDbName;
+      //      }
+      //      String replyEmail = atsApi.getConfigValue("NoReplyEmail");
+      //      OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(replyEmail), "donald.g.dunne@boeing.com",
+      //         "donald.g.dunne@boeing.com", dbName + " - ATS Health Check", html, BodyType.Html);
+
+      String serverData = System.getProperty("osee.application.server.data");
+      if (!Strings.isValid(serverData)) {
+         serverData = System.getProperty("user.home");
+      }
+      String outputDirName = serverData + File.separator + "atsHealth";
+      File outDir = new File(outputDirName);
+      outDir.mkdir();
+
+      if (OseeProperties.isInTest() & rd.toString().contains("Error: ")) {
+         throw new OseeStateException("Error in ATS Health Check: " + rd.toString());
+      } else {
+         String html = AHTML.simplePage(rd.toString().replaceAll("\n", "</br>"));
+
+         String outputFileName = outputDirName + //
+            File.separator + Lib.getDateTimeString() + ".html";
+         File outFile = new File(outputFileName);
+         try {
+            Lib.writeStringToFile(html, outFile);
+         } catch (Exception ex) {
+            String exStr = AHTML.simplePage(Lib.exceptionToString(ex));
+            try {
+               Lib.writeStringToFile(exStr, outFile);
+            } catch (IOException ex1) {
+               System.err.println(Lib.exceptionToString(ex1));
+            }
+         }
       }
 
-      OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList("noop@osee.com"), "donald.g.dunne@boeing.com",
-         "donald.g.dunne@boeing.com", dbName + " - ATS Health Check",
-         AHTML.simplePage(rd.toString().replaceAll("\n", "</br>")), BodyType.Html);
-      emailMessage.send();
+      //      emailMessage.send();
    }
 
    public void runIt(XResultData rd) {
@@ -395,7 +427,12 @@ public class AtsHealthCheckOperation {
                atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1");
             BranchId branch = BranchId.valueOf(branchId);
             if (branch.isValid()) {
-               BranchToken branch2 = atsApi.getBranchService().getBranch(branch);
+               BranchToken branch2 = null;
+               try {
+                  branch2 = atsApi.getBranchService().getBranch(branch);
+               } catch (ItemDoesNotExist ex) {
+                  // do nothing
+               }
                if (branch2 == null) {
                   results.log("TestTeamDefinitions",
                      String.format("Invalid Branch %s for Team Def %s", branch.getId(), verArt.toStringWithId()));

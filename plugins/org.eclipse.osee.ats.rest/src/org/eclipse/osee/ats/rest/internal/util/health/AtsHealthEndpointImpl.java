@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.util.health;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.rest.internal.util.health.operations.HealthOperations;
@@ -43,7 +41,6 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
     * @return html representation of ATS Health Checks
     */
    @Override
-   @Produces(MediaType.TEXT_HTML)
    public String get() {
       Thread.currentThread().setName("ATS Health Check Operation");
       AtsHealthCheckOperation validate = new AtsHealthCheckOperation(atsApi, jdbcService);
@@ -52,7 +49,7 @@ public final class AtsHealthEndpointImpl implements AtsHealthEndpointApi {
    }
 
    @Override
-   public boolean alive() {
+   public Boolean alive() {
       return true;
    }
 
