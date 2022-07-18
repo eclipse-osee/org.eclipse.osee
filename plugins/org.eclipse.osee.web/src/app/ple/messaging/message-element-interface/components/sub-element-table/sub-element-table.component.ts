@@ -216,16 +216,15 @@ export class SubElementTableComponent implements OnInit, OnChanges {
   }
   openEnumDialog(id: string) {
     this.dialog.open(EditEnumSetDialogComponent, {
-      data: of<enumsetDialogData>(
+      data:
         {
           id: id,
           isOnEditablePage: this.editMode
         }
-      )
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
       take(1),
-      switchMap(({enumerations,...changes})=>this.enumSetService.changeEnumSet(changes,enumerations))
+      switchMap(({enumerations,...changes})=>iif(()=>this.editMode,this.enumSetService.changeEnumSet(changes,enumerations),of()))
     ).subscribe();
   }
 

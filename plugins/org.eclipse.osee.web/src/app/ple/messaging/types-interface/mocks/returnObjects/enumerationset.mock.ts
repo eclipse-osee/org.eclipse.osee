@@ -19,7 +19,10 @@ export const enumerationSetMock: enumerationSet[] = [
         applicability: {
             id: '1',
             name:'Base'
-        }
+        },
+        enumerations: [
+            {id:'1',name:'a',ordinal:0,applicability:{id:'1',name:'Base'}}
+        ]
     },
     {
         name: 'enumset',

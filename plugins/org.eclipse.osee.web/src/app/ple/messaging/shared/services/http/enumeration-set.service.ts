@@ -39,6 +39,10 @@ export class EnumerationSetService {
     return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.ENUM, relations, transaction, branchId, "Create Enum"));
   }
 
+  changeEnum(branchId: string, type: enumeration | Partial<enumeration>, transaction?: transaction) {
+    return of<transaction>(this.builder.modifyArtifact(type, transaction, branchId, "Change enum attributes"));
+  }
+
   createEnumSetToPlatformTypeRelation(sideA?: string) {
     return of<relation>({ typeName: "Interface Platform Type Enumeration Set", sideA: sideA });
   }

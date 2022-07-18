@@ -45,7 +45,7 @@ describe('EnumerationUIService', () => {
       const expectedFilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)';
       uiService.idValue = '10';
-      scheduler.expectObservable(service.changeEnumSet({ name: '', applicability: { id: '1', name: 'Base' }, description: '' })).toBe(expectedMarble, expectedFilterValues);
+      scheduler.expectObservable(service.changeEnumSet({ name: '', applicability: { id: '1', name: 'Base' }, description: '' },[])).toBe(expectedMarble, expectedFilterValues);
     })
   })
 });

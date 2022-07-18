@@ -13,11 +13,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { from } from 'rxjs';
-import { map, reduce, switchMap, tap } from 'rxjs/operators';
+import { map, reduce, switchMap } from 'rxjs/operators';
 import { editPlatformTypeDialogData } from '../../../types/editPlatformTypeDialogData';
 import { logicalType } from '../../../types/logicaltype';
 import { EnumsService } from '../../../services/http/enums.service';
 import { TypesService } from '../../../services/http/types.service';
+import { enumerationSet } from '../../../types/enum';
+import { enumeratedPlatformType } from '../../../types/enumeratedPlatformType';
+import { editPlatformTypeDialogDataMode } from '../../../types/EditPlatformTypeDialogDataMode.enum';
 
 @Component({
   selector: 'app-edit-type-dialog',
@@ -34,6 +37,11 @@ export class EditTypeDialogComponent implements OnInit {
     reduce((acc, curr) => [...acc, curr], [] as logicalType[]),
   );
   units = this.enumService.units;
+  enumSet:enumerationSet={
+    name: '',
+    applicability: {id:'1',name:'Base'},
+    description: ''
+  }
   constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData, private typesService: TypesService, private enumService: EnumsService) {
     this.platform_type = this.data.type.name;
    }
@@ -78,4 +86,30 @@ export class EditTypeDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  compareLogicalTypes(o1: string, o2: string) {
+    let val1 = o1.replace("nsigned ", "");
+    if (val1 !== o1) {
+      val1 = val1.charAt(0) + val1.charAt(1).toUpperCase() + val1.slice(2);
+    }
+    let val2 = o2.replace("nsigned ", "");
+    if (val2 !== o2) {
+      val2 = val2.charAt(0) + val2.charAt(1).toUpperCase() + val2.slice(2);
+    }
+    return val1 === val2;
+  }
+  enumUpdate(value: enumerationSet | undefined) {
+    if (value) {
+      this.enumSet = value; 
+    }
+  }
+  get returnValue(): { mode: editPlatformTypeDialogDataMode, type: enumeratedPlatformType } {
+    return {
+      mode:this.data.mode,
+      type:{
+        ...this.data.type,
+        interfaceLogicalType:'enumeration',
+        enumerationSet:this.enumSet
+      }
+    }
+  }
 }

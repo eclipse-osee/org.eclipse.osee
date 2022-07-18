@@ -61,7 +61,7 @@
                 <mat-icon color="success">add</mat-icon>
                 Create New Type From Base
             </button>
-            <button mat-stroked-button *ngIf="typeData.interfaceLogicalType==='enumeration'" (click)="openEnumDialog(false)"><mat-icon color="accent">toc</mat-icon>View Related Enumeration Set Attributes</button>
+            <button mat-stroked-button *ngIf="typeData.interfaceLogicalType==='enumeration'" (click)="openEnumDialog(true)"><mat-icon color="accent">toc</mat-icon>View Related Enumeration Set Attributes</button>
         </div>
     </ng-container>
     <ng-template #no_edit>

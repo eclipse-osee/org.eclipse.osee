@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { from, iif, of } from 'rxjs';
-import { share, switchMap, shareReplay, take, mergeMap, tap } from 'rxjs/operators';
+import { share, switchMap, shareReplay, take, mergeMap, tap, concatMap, reduce } from 'rxjs/operators';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { relation, transaction } from 'src/app/transactions/transaction';
 import { enumeration, enumerationSet, enumSet } from '../../types/enum';
@@ -55,21 +55,58 @@ export class EnumerationUIService {
       switchMap((branchId)=>this.enumSetService.getEnumSet(branchId,platformTypeId))
     )
   }
-  changeEnumSet(changes:enumerationSet,enumerations?:enumeration[]) {
+  changeEnumSet(changes: enumerationSet, enumerations?: enumeration[]) {
     return this.ui.id.pipe(
       take(1),
-      switchMap((branchId) => this.enumSetService.changeEnumSet(branchId, changes).pipe(
-        switchMap((transaction) => iif(() => enumerations !== undefined && enumerations?.length > 0, of(enumerations as enumeration[]).pipe(
-          mergeMap(enumerations => from(enumerations).pipe(
-            mergeMap((currentEnum) => this.enumSetService.createEnumToEnumSetRelation(changes.id).pipe(
-              switchMap((currentEnumRelation)=>this.enumSetService.createEnum(branchId,currentEnum,[currentEnumRelation],transaction))
-            ))
-          ))
-        ),
-          of(transaction)
-        )),
-        switchMap((transactionFinal) => this.enumSetService.performMutation(transactionFinal))
-      ))
+      switchMap(branchId => this.enumSetService.changeEnumSet(branchId, changes).pipe(
+        switchMap(transactionStart => iif(() => enumerations !== undefined && enumerations?.length > 0,
+          of(enumerations as enumeration[]).pipe(
+            concatMap(enumerationsArray => from(enumerationsArray).pipe(
+              switchMap(enumeration => this.createOrChangeEnum(branchId,changes?.id||'',enumeration))
+            )),
+            take((enumerations as enumeration[]).length),
+            reduce((acc, curr) => [...acc, curr], [transactionStart] as transaction[]),
+            switchMap(transactions=>this._mergeTransactions([...transactions])),
+         ),
+        of(transactionStart)
+        ))
+      )),
+      switchMap(transaction=>this.enumSetService.performMutation(transaction))
     )
+  }
+
+  private createOrChangeEnum(branchId:string,enumSetId:string,value: enumeration) {
+    return iif(() => "id" in value && value.id !== '',
+    this.enumSetService.changeEnum(branchId,value),
+      this.enumSetService.createEnumToEnumSetRelation(enumSetId).pipe(
+        switchMap(relation=>this.enumSetService.createEnum(branchId,value,[relation]))
+      )
+    )
+  }
+  private _mergeTransactions(transactions: transaction[]) {
+    let currentTransaction:transaction = {
+      branch: '',
+      txComment: '',
+      createArtifacts: [],
+      modifyArtifacts: []
+    };
+    if (transactions?.[0]) {
+      currentTransaction = {
+        branch: transactions[0].branch,
+        txComment: transactions[0].branch,
+        createArtifacts: transactions[0].createArtifacts||[],
+        modifyArtifacts: transactions[0].modifyArtifacts||[],
+        deleteArtifacts: transactions[0].deleteArtifacts||[],
+        deleteRelations: transactions[0].deleteRelations||[]
+      }
+      transactions.shift();
+    }
+    transactions.forEach((transaction) => {
+      currentTransaction.createArtifacts?.push(...transaction?.createArtifacts || []);
+      currentTransaction.modifyArtifacts?.push(...transaction?.modifyArtifacts || []);
+      currentTransaction.deleteArtifacts?.push(...transaction?.deleteArtifacts || []);
+      currentTransaction.deleteRelations?.push(...transaction?.deleteRelations || []);
+    })
+    return of<transaction>(currentTransaction);
   }
 }

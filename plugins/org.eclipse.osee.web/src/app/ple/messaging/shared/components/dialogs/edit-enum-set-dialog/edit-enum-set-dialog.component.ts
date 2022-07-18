@@ -12,15 +12,12 @@
  **********************************************************************/
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { map, scan, switchMap, tap } from 'rxjs/operators';
-import { applic } from '../../../../../../types/applicability/applic';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { enumerationSet, enumeration } from '../../../types/enum';
 import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
-import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';
 import { PreferencesUIService } from '../../../services/ui/preferences-ui.service';
 import { enumsetDialogData } from '../../../types/EnumSetDialogData';
-import { TypesUIService } from '../../../services/ui/types-ui.service';
 
 @Component({
   selector: 'app-edit-enum-set-dialog',
@@ -28,61 +25,41 @@ import { TypesUIService } from '../../../services/ui/types-ui.service';
   styleUrls: ['./edit-enum-set-dialog.component.sass']
 })
 export class EditEnumSetDialogComponent implements OnInit {
+  enumObs: Observable<enumerationSet> =this.enumSetService.getEnumSet(this.data.id);
+  private _enumUpdate: Subject<enumerationSet> = new Subject();
 
-  applic = this.applicabilityService.applic;
-  private _addEnum = new BehaviorSubject<enumeration | undefined>(undefined);
-  private _addEnums = this._addEnum.pipe(
-    scan((acc,curr)=>[...acc,curr],[] as (enumeration|undefined)[])
-  )
-  enumObs = combineLatest([this.data, this._addEnums]).pipe(
-    switchMap(([{ id, isOnEditablePage }, AddEnums]) => this.enumSetService.getEnumSet(id).pipe(
-      switchMap((val) => of(val).pipe(
-        map((val) => {
-          const enums = AddEnums.filter((val) => val !== undefined) as enumeration[];
-          val.enumerations = [...(val?.enumerations ? val.enumerations : []), ...enums]
-          this.enumSet.enumerations = [...enums];
-          return val;
-        })
-      ))
-    )),
-    tap((enumSet) => {
-      this.enumSet.id = enumSet.id;
-    }),
-  )
-
-  isOnEditablePage = this.data.pipe(
-    map(({id,isOnEditablePage})=>isOnEditablePage)
-  )
-  enumSet: Partial<enumerationSet> = {
-  };
+  isOnEditablePage = this.data.isOnEditablePage;
   inEditMode = this.preferenceService.inEditMode;
-  _type = this.data.pipe(
-    switchMap(({ id, isOnEditablePage }) => this.typeService.getType(id)),
-  )
-  constructor (public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Observable<enumsetDialogData>, private enumSetService: EnumerationUIService, private applicabilityService: ApplicabilityListUIService, private preferenceService: PreferencesUIService, private typeService: TypesUIService) { }
+
+  changedEnum!: Observable<unknown>;
+  constructor (public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: enumsetDialogData, private enumSetService: EnumerationUIService, private preferenceService: PreferencesUIService) { }
 
   ngOnInit(): void {
+    this.changedEnum = combineLatest([this.enumObs, this._enumUpdate]).pipe(
+      switchMap(([previousEnum, currentEnum]) => of([previousEnum, currentEnum]).pipe(
+        map(([previousEnum, currentEnum]) => {
+          //find changes in currentEnum, remove existing contents of previousEnum
+          //this will end up being the old output
+  
+          return {
+            id: currentEnum.id,
+            name: currentEnum.name,
+            applicability: currentEnum.applicability,
+            applicabilityId:currentEnum.applicability.id,
+            description: currentEnum.description,
+            enumerations:currentEnum.enumerations
+          }
+        })
+      ))
+    )
   }
-
-  setName(value: string) {
-    this.enumSet.name = value;
-  }
-  setApplicability(value: applic) {
-    this.enumSet.applicability = value;
-  }
-
-  setDescription(value: string) {
-    this.enumSet.description = value;
-  }
-
-  compareApplics(o1:applic,o2:applic) {
-    return o1?.id === o2?.id && o1?.name === o2?.name;
-  }
-
   onNoClick(): void {
     this.dialogRef.close();
   }
-  addEnum(length: number) {
-    this._addEnum.next({name:'',ordinal:length,applicability:{id:'1',name:'Base'}})
+
+  enumUpdate(value: enumerationSet | undefined) {
+    if (value) {
+      this._enumUpdate.next(value);
+    }
   }
 }

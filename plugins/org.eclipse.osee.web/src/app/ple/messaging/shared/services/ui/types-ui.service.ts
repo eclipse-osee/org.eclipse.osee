@@ -11,12 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { iif, of, from } from 'rxjs';
-import { share, switchMap, repeatWhen, shareReplay, take, tap, mergeMap, reduce } from 'rxjs/operators';
+import { iif, of, from, combineLatest } from 'rxjs';
+import { share, switchMap, repeatWhen, shareReplay, take, tap, mergeMap, reduce, concatMap, map } from 'rxjs/operators';
 import { transaction } from 'src/app/transactions/transaction';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { applic } from '../../../../../types/applicability/applic';
-import { enumeration } from '../../types/enum';
+import { enumeration, enumerationSet } from '../../types/enum';
+import { enumeratedPlatformType } from '../../types/enumeratedPlatformType';
 import { PlatformType } from '../../types/platformType';
 import { TypesService } from '../http/types.service';
 import { EnumerationUIService } from './enumeration-ui.service';
@@ -139,15 +140,70 @@ export class TypesUIService {
     )
   }
 
-  copyType(body: PlatformType | Partial<PlatformType>) {
-    delete body.id;
-    return this._typesService.createPlatformType(this._ui.id.getValue(), body, []).pipe(
+  copyType<T extends PlatformType|Partial<PlatformType>>(body: T) {
+    this.removeId(body);
+    return iif(()=>body.interfaceLogicalType==='enumeration' && 'enumerationSet' in body ,this.copyEnumeratedType(body as enumeratedPlatformType),this._typesService.createPlatformType(this._ui.id.getValue(), body, []).pipe(
+        take(1),
+        switchMap((transaction) => this._typesService.performMutation(transaction).pipe(
+          tap(() => {
+            this._ui.updated = true;
+          })
+        ))
+    ))
+  }
+  copyEnumeratedType(body: enumeratedPlatformType) {
+    const { enumerationSet, ...type } = body;
+    return this._ui.id.pipe(
       take(1),
-      switchMap((transaction) => this._typesService.performMutation(transaction).pipe(
+      switchMap(branchId => this._enumSetService.createPlatformTypeToEnumSetRelation(body.enumerationSet.name).pipe(
+        take(1),
+        switchMap(relation => this._typesService.createPlatformType(branchId, type, [relation]).pipe(
+          take(1),
+          switchMap(platformTransaction => this.createEnumSet(enumerationSet).pipe(
+            switchMap(enumSetTransaction=>this.mergeEnumArray([platformTransaction,enumSetTransaction]))
+          ))
+        ))
+      )),
+      switchMap(transaction => this._typesService.performMutation(transaction).pipe(
         tap(() => {
           this._ui.updated = true;
         })
       ))
     )
+  }
+  createEnums(set: enumerationSet) {
+    return this._ui.id.pipe(
+      switchMap(id => of(set).pipe(
+        take(1),
+        concatMap(enumSet => from(enumSet.enumerations || []).pipe(
+          switchMap(enumeration => this.fixEnum(enumeration)),
+          switchMap(enumeration => this._enumSetService.createEnumToEnumSetRelation(set.name).pipe(
+            switchMap(relation=>this._enumSetService.createEnum(id,enumeration,[relation]))
+          )),
+        )),
+        reduce((acc, curr) => [...acc, curr], [] as transaction[]),
+        switchMap((enumTransactions) => this.mergeEnumArray(enumTransactions)),
+      ))
+    )
+  }
+
+  createEnumSet(set: enumerationSet) {
+    const { enumerations, ...body } = set;
+    return this._ui.id.pipe(
+      switchMap(id => this._enumSetService.createEnumSet(id, body, []).pipe(
+        switchMap(enumSetTransaction => this.createEnums(set).pipe(
+          switchMap(enumTransaction=>this.mergeEnumArray([enumSetTransaction,enumTransaction]))
+        ))
+      ))
+    )
+  }
+
+  /**
+   * recursively remove the id property from an object using JSON.parse(JSON.stringify())
+   * typically used before doing a creation rest call
+   * @param object 
+   */
+  private removeId(object: Object) {
+    JSON.parse(JSON.stringify(object,(k,v)=>(k === 'id')?undefined:v))
   }
 }
