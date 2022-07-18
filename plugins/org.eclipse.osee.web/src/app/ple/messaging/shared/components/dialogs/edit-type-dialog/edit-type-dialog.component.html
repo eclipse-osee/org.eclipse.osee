@@ -11,105 +11,236 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="!data.mode">
-    <h1 mat-dialog-title>Editing {{platform_type}}</h1>
+  <h1 mat-dialog-title>Editing {{ platform_type }}</h1>
 </ng-container>
 <ng-container *ngIf="data.mode">
-    <h1 mat-dialog-title>Creating New Type from {{platform_type}}</h1>
+  <h1 mat-dialog-title>Creating New Type from {{ platform_type }}</h1>
 </ng-container>
-<mat-dialog-content>
-    <div class="full-width">
+<mat-stepper #stepper>
+  <mat-step label="Platform Type">
+    <mat-dialog-content>
+      <div class="full-width">
         <mat-form-field>
-            <mat-label>Platform Type</mat-label>
-            <input matInput type="text" [(ngModel)]="data.type.name" #input required>
-            <mat-hint align="end">Name of Platform Type</mat-hint>
+          <mat-label>Platform Type</mat-label>
+          <input
+            matInput
+            type="text"
+            [(ngModel)]="data.type.name"
+            #input
+            required
+          />
+          <mat-hint align="end">Name of Platform Type</mat-hint>
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Logical Type</mat-label>
-            <mat-select [(ngModel)]="data.type.interfaceLogicalType" required>
-                <mat-option *ngFor="let logicaltype of (logicalTypes |async)" [value]="logicaltype.name" >
-                    {{logicaltype.name}}
-                </mat-option>
-            </mat-select>
-            <mat-hint align="end">Corresponding Logical (Primitive) Type</mat-hint>
+          <mat-label>Logical Type</mat-label>
+          <mat-select
+            [(ngModel)]="data.type.interfaceLogicalType"
+            required
+            [compareWith]="compareLogicalTypes"
+          >
+            <mat-option
+              *ngFor="let logicaltype of logicalTypes | async"
+              [value]="logicaltype.name"
+            >
+              {{ logicaltype.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint align="end"
+            >Corresponding Logical (Primitive) Type</mat-hint
+          >
         </mat-form-field>
-    </div>
-    <br>
-    <div class="full-width">
+      </div>
+      <br />
+      <div class="full-width">
         <mat-form-field>
-            <mat-label>Description</mat-label>
-            <textarea cdkTextareaAutosize matInput [(ngModel)]="data.type.description"></textarea>
-            <mat-hint>Description of Platform Type</mat-hint>
+          <mat-label>Description</mat-label>
+          <textarea
+            cdkTextareaAutosize
+            matInput
+            [(ngModel)]="data.type.description"
+          ></textarea>
+          <mat-hint>Description of Platform Type</mat-hint>
         </mat-form-field>
-    </div>
-    <br>
-    <div class="full-width">
+      </div>
+      <br />
+      <div class="full-width">
         <mat-form-field>
-            <mat-label>Minimum Value</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeMinval" #input required>
-            <mat-hint align="end">Minimum Value Platform Type can Achieve</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Maximum Value</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeMaxval" #input required>
-            <mat-hint align="end">Maximum Value Platform Type can Achieve</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Default Value</mat-label>
-            <input matInput type="text" [(ngModel)]="data.type.interfacePlatformTypeDefaultValue" #input required>
-            <mat-hint align="end">Default Value for Platform Type</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>MSB Value</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeMsbValue" [ngModel]="getMSBValue()" #input required>
-            <mat-hint align="end">Most Significant Byte</mat-hint>
-        </mat-form-field>
-    </div>
-    <br>
-    <div class="full-width">
-        <mat-form-field>
-            <mat-label>Byte Size</mat-label>
-            <input matInput type="number" [(ngModel)]="byte_size" #input required>
-            <mat-hint align="end">Size of Platform Type in Bytes</mat-hint>
+          <mat-label>Minimum Value</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeMinval"
+            #input
+            required
+          />
+          <mat-hint align="end"
+            >Minimum Value Platform Type can Achieve</mat-hint
+          >
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Bit Size</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeBitSize" #input required>
-            <mat-hint align="end">Size of Platform Type in Bits</mat-hint>
-        </mat-form-field>
-    </div>
-    <br>
-    <div class="full-width">
-        <mat-form-field>
-            <mat-label>Resolution</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeBitsResolution"  [ngModel]="getResolution()"#input required>
-            <mat-hint align="end">Bit Resolution of a Platform Type</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Comp Rate</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeCompRate" #input required>
-            <mat-hint align="end">Comp Rate of a Platform Type</mat-hint>
+          <mat-label>Maximum Value</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeMaxval"
+            #input
+            required
+          />
+          <mat-hint align="end"
+            >Maximum Value Platform Type can Achieve</mat-hint
+          >
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Analog Accuracy</mat-label>
-            <input matInput type="number" [(ngModel)]="data.type.interfacePlatformTypeAnalogAccuracy" #input required>
-            <mat-hint align="end">Analog Accuracy of a Platform Type</mat-hint>
+          <mat-label>Default Value</mat-label>
+          <input
+            matInput
+            type="text"
+            [(ngModel)]="data.type.interfacePlatformTypeDefaultValue"
+            #input
+            required
+          />
+          <mat-hint align="end">Default Value for Platform Type</mat-hint>
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Units</mat-label>
-            <mat-select [(ngModel)]="data.type.interfacePlatformTypeUnits" #input required>
-                <mat-option *ngFor="let unit of (units|async)" [value]="unit">
-                    {{unit}}
-                </mat-option>
-            </mat-select>
-            <mat-hint align="end">Select a Unit</mat-hint>
+          <mat-label>MSB Value</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeMsbValue"
+            [ngModel]="getMSBValue()"
+            #input
+            required
+          />
+          <mat-hint align="end">Most Significant Byte</mat-hint>
         </mat-form-field>
-    </div>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()">
-        Cancel
-    </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.type.name.length===0||data.type.interfaceLogicalType.length===0">
+      </div>
+      <br />
+      <div class="full-width">
+        <mat-form-field>
+          <mat-label>Byte Size</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="byte_size"
+            #input
+            required
+          />
+          <mat-hint align="end">Size of Platform Type in Bytes</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Bit Size</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeBitSize"
+            #input
+            required
+          />
+          <mat-hint align="end">Size of Platform Type in Bits</mat-hint>
+        </mat-form-field>
+      </div>
+      <br />
+      <div class="full-width">
+        <mat-form-field>
+          <mat-label>Resolution</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeBitsResolution"
+            [ngModel]="getResolution()"
+            #input
+            required
+          />
+          <mat-hint align="end">Bit Resolution of a Platform Type</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Comp Rate</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeCompRate"
+            #input
+            required
+          />
+          <mat-hint align="end">Comp Rate of a Platform Type</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Analog Accuracy</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.type.interfacePlatformTypeAnalogAccuracy"
+            #input
+            required
+          />
+          <mat-hint align="end">Analog Accuracy of a Platform Type</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Units</mat-label>
+          <mat-select
+            [(ngModel)]="data.type.interfacePlatformTypeUnits"
+            #input
+            required
+          >
+            <mat-option *ngFor="let unit of units | async" [value]="unit">
+              {{ unit }}
+            </mat-option>
+          </mat-select>
+          <mat-hint align="end">Select a Unit</mat-hint>
+        </mat-form-field>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onNoClick()">Cancel</button>
+      <ng-container *ngIf="data.type.interfaceLogicalType==='enumeration'">
+        <button
+        mat-raised-button
+        matStepperNext
+        color="primary"
+        [disabled]="
+          data.type.name.length === 0 ||
+          data.type.interfaceLogicalType.length === 0
+        "
+      >
+        Next
+      </button>
+      </ng-container>
+      <ng-container *ngIf="data.type.interfaceLogicalType!=='enumeration'">
+        <button
+        mat-raised-button
+        [mat-dialog-close]="data"
+        color="primary"
+        [disabled]="
+          data.type.name.length === 0 ||
+          data.type.interfaceLogicalType.length === 0
+        "
+      >
         Ok
-    </button>
-</mat-dialog-actions>
+      </button>
+      </ng-container>
+    </mat-dialog-actions>
+  </mat-step>
+  <ng-container *ngIf="data.type.interfaceLogicalType==='enumeration'">
+    <mat-step label="Enumeration Set">
+        <mat-dialog-content>
+            <osee-edit-enum-set-field [editable]="true" [platformType]="data.type" (enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+          <button mat-button (click)="onNoClick()">Cancel</button>
+          <ng-container *ngIf="data.type.interfaceLogicalType==='enumeration'">
+            <button
+            mat-raised-button
+            [mat-dialog-close]="returnValue"
+            color="primary"
+            [disabled]="
+              data.type.name.length === 0 ||
+              data.type.interfaceLogicalType.length === 0
+            "
+          >
+            Ok
+          </button>
+          </ng-container>
+        </mat-dialog-actions>
+    </mat-step>
+  </ng-container>
+</mat-stepper>

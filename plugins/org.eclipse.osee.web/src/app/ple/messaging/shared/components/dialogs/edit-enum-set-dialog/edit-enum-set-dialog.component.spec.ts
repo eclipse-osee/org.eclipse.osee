@@ -29,6 +29,7 @@ import { of } from 'rxjs';
 import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { applicabilityListServiceMock } from '../../../mocks/ApplicabilityListService.mock';
+import { EditEnumSetFieldMock } from '../../../mocks/EditEnumSetField.component.mock';
 import { enumerationSetServiceMock } from '../../../mocks/enumeration.set.service.mock';
 import { MimPreferencesServiceMock } from '../../../mocks/MimPreferencesService.mock';
 import { typesServiceMock } from '../../../mocks/types.service.mock';
@@ -37,6 +38,7 @@ import { EnumerationSetService } from '../../../services/http/enumeration-set.se
 import { MimPreferencesService } from '../../../services/http/mim-preferences.service';
 import { TypesService } from '../../../services/http/types.service';
 import { enumsetDialogData } from '../../../types/EnumSetDialogData';
+import { EditEnumSetFieldComponent } from '../../edit-enum-set-field/edit-enum-set-field.component';
 
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
 
@@ -47,7 +49,7 @@ describe('EditEnumSetDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditEnumSetDialogComponent],
+      declarations: [EditEnumSetDialogComponent, EditEnumSetFieldMock],
       imports: [MatDialogModule,MatIconModule,MatSelectModule,MatInputModule,MatFormFieldModule,FormsModule,MatTableModule,NoopAnimationsModule],
       providers: [{
         provide: MatDialogRef, useValue: {
@@ -75,16 +77,6 @@ describe('EditEnumSetDialogComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  /**
-   * @todo Tests for this dialog will be performed later, I believe there is a bug that got addressed in a later angular version that is preventing MatInputHarness.setValue() from triggering (change)
-   */
-  it('should select an applicability', async() => {
-    const select = await loader.getHarness(MatSelectHarness);
-    await select.open()
-    const option = await select.getOptions({ text: 'Second' });
-    await option?.[0].click();
-    expect(component.enumSet.applicability).toEqual({id:'2',name:'Second'})
-  })
 
   it('should close the dialog', async () => {
     const dialogRefClosure = spyOn(component.dialogRef, 'close').and.stub();
@@ -93,13 +85,4 @@ describe('EditEnumSetDialogComponent', () => {
     expect(dialogRefClosure).toHaveBeenCalled();
   })
 
-  it('should add an enum', async () => {
-    const spy = spyOn(component, 'addEnum').and.callThrough();
-    const table = await loader.getHarness(MatTableHarness);
-    expect(table).toBeDefined();
-    const button = await (await (await table.getFooterRows())[0].getCells({columnName:'applicability'}))[0].getHarness(MatButtonHarness);
-    expect(button).toBeDefined();
-    await button.click();
-    expect(spy).toHaveBeenCalled();
-  })
 });

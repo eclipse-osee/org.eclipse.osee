@@ -236,7 +236,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByFilter(branch, filter,
-               this.elementAttributeList, InterfaceStructureElementToken.class);
+               this.elementAttributeList, relations, InterfaceStructureElementToken.class);
          elements = this.parseElements(branch, elements);
          return elements;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

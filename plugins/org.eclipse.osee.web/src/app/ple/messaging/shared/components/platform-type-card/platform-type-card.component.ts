@@ -89,11 +89,11 @@ export class PlatformTypeCardComponent implements OnInit {
    */
   openEnumDialog(makeChanges:boolean) {
     this.dialog.open(EditEnumSetDialogComponent, {
-      data: of<enumsetDialogData>(
+      data:
         {
           id: this.typeData.id || '',
-          isOnEditablePage: true
-        })
+          isOnEditablePage: makeChanges
+        }
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
       take(1),
