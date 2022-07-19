@@ -188,6 +188,7 @@ public class ApplicabilityEndpointTest {
       String inputPath = OsgiUtil.getResourceAsUrl(ApplicabilityEndpointTest.class,
          "/support/BlockApplicabilityTest/InputFiles").getPath();
       String stagePath = OseeData.getPath().toString();
+      String stageDir = "";
 
       // First testing by commenting instead of removing all non-applicable code
       ArtifactId productA =
@@ -195,7 +196,7 @@ public class ApplicabilityEndpointTest {
       Map<Long, String> views = new HashMap<>();
       views.put(productA.getId(), "");
       BlockApplicabilityStageRequest blockApplicabilityData =
-         new BlockApplicabilityStageRequest(views, true, inputPath, stagePath);
+         new BlockApplicabilityStageRequest(views, true, inputPath, stagePath, stageDir);
       appl.applyBlockVisibility(blockApplicabilityData);
 
       // Traversing the Staging Folders checking to see if each creation was successful

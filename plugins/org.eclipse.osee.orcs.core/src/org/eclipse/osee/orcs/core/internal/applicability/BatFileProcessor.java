@@ -77,6 +77,7 @@ public class BatFileProcessor {
    }
 
    private CharBuffer applyApplicabilityContent(File inFile) throws IOException {
+      results.logf("BatFileProcessor::applyApplicabilityContent => Started for file %s\n", inFile.getPath());
       CharBuffer fileContent = Lib.fileToCharBuffer(inFile, charsetString);
       String toReturn = fileContent.toString();
       Matcher matcher = fileTypeApplicabilityData.getCommentedTagPattern().matcher(toReturn);
@@ -112,7 +113,9 @@ public class BatFileProcessor {
             matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfigGrp, applicabilityExpression);
          } else if (endFeature != null || endConfig != null || endConfigGrp != null) {
             if (applicBlocks.isEmpty()) {
-               results.warningf("An Applicability End tag was found before a beginning tag for %s\n", inFile.getPath());
+               results.warningf(
+                  "BatFileProcessor::applyApplicabilityContent => An Applicability End tag was found before a beginning tag for %s\n",
+                  inFile.getPath());
                tagProcessed = false;
                return fileContent;
             }
@@ -124,12 +127,15 @@ public class BatFileProcessor {
 
             tagProcessed = true;
          } else {
-            results.warningf("Did not find a start or end feature tag for %s but a similar tag was matched\n",
+            results.warningf(
+               "BatFileProcessor::applyApplicabilityContent => Did not find a start or end feature tag for %s but a similar tag was matched\n",
                inFile.getPath());
             tagProcessed = false;
             return fileContent;
          }
       }
+      results.logf("BatFileProcessor::applyApplicabilityContent => Completed for file %s and tagProcessed = %s\n",
+         inFile.getPath(), tagProcessed);
       return CharBuffer.wrap(toReturn.toCharArray());
    }
 

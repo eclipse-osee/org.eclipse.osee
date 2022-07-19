@@ -1545,8 +1545,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       results.setLogToSysErr(true);
       String sourcePath = data.getSourcePath();
       String stagePath = data.getStagePath();
+      String customStageDir = data.getCustomStageDir();
       if (sourcePath == null || stagePath == null) {
          results.error("Both a source path and stage path are required\n");
+         return results;
+      }
+
+      if (sourcePath.equalsIgnoreCase(stagePath)) {
+         results.error("Source path and stage path can't be same\n");
          return results;
       }
 
@@ -1559,12 +1565,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
 
-      stagePath = getFullStagePath(results, stagePath, ops.getOpsView().getName());
+      stagePath = getFullStagePath(results, stagePath, customStageDir, ops.getOpsView().getName());
       if (results.isErrors()) {
          return results;
       }
 
-      return ops.applyApplicabilityToFiles(results, commentNonApplicableBlocks, sourcePath, stagePath);
+      return ops.applyApplicabilityToFiles(results, commentNonApplicableBlocks, sourcePath, stagePath, customStageDir);
    }
 
    @Override
@@ -1574,6 +1580,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       String sourcePath = data.getSourcePath();
       String stagePath = data.getStagePath();
+      String stageDir = data.getCustomStageDir();
       List<String> files = data.getFiles();
 
       if (sourcePath == null || stagePath == null) {
@@ -1590,14 +1597,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
 
-      stagePath = getFullStagePath(results, stagePath, ops.getOpsView().getName());
+      stagePath = getFullStagePath(results, stagePath, stageDir, ops.getOpsView().getName());
       if (results.isErrors()) {
          return results;
       }
 
       ops.setUpBlockApplicability(commentNonApplicableBlocks);
 
-      return ops.refreshStagedFiles(results, sourcePath, stagePath, files);
+      return ops.refreshStagedFiles(results, sourcePath, stagePath, stageDir, files);
    }
 
    @Override
@@ -1611,6 +1618,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       String sourcePath = data.getSourcePath();
       String stagePath = data.getStagePath();
+      String stageDir = data.getCustomStageDir();
 
       if (sourcePath == null || stagePath == null) {
          results.error("Both a source path and stage path are required");
@@ -1627,7 +1635,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             return results;
          }
 
-         String fullStagePath = getFullStagePath(results, stagePath, ops.getOpsView().getName());
+         String fullStagePath = getFullStagePath(results, stagePath, stageDir, ops.getOpsView().getName());
          if (results.isErrors()) {
             return results;
          }
@@ -1705,12 +1713,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return ops;
    }
 
-   private String getFullStagePath(XResultData results, String stagePath, String viewName) {
-      File stageDir = new File(stagePath, "Staging");
+   private String getFullStagePath(XResultData results, String stagePath, String customStage, String viewName) {
+
+      File stageDir = null;
+      if (customStage == null || customStage.equals("")) {
+         stageDir = new File(stagePath, "Staging");
+      } else {
+         stageDir = new File(stagePath, customStage);
+      }
+
       if (!stageDir.exists() && !stageDir.mkdir()) {
          results.errorf("Could not create stage directory %s\n", stageDir.toString());
          return "";
       }
+
       File stageViewDir = new File(stageDir.getPath(), viewName.replaceAll(" ", "_"));
       if (!stageViewDir.exists() && !stageViewDir.mkdir()) {
          results.errorf("Could not create stage directory %s\n", stageViewDir.toString());

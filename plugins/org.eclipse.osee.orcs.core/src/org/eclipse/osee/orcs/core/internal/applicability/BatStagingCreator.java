@@ -78,6 +78,7 @@ public class BatStagingCreator {
     * @return File - The staged file, or null if the file was not included
     */
    public File processDirectory(XResultData results, File inFile, File stageFileParent, Set<String> filesToExclude) {
+      results.logf("BatStagingCreator::processDirectory => Started file: %s\n", inFile.getPath());
       if (results.isErrors()) {
          return null;
       }
@@ -173,6 +174,8 @@ public class BatStagingCreator {
                   boolean isNew = isStageFileNew(stageFile, outFile);
                   if (isNew) {
                      if (!tagProcessed) {
+                        results.logf("BatStagingCreator::processDirectory: Creating link => %s with file %s\n",
+                           stageFile.toPath(), inFile.toPath());
                         Files.createLink(stageFile.toPath(), inFile.toPath());
                      } else {
                         stageFile.delete();
@@ -188,7 +191,8 @@ public class BatStagingCreator {
                      outFile.delete();
                   }
                } catch (Exception ex) {
-                  results.warningf("Exception %s with file %s\n", ex.toString(), inFile.getPath());
+                  results.warningf("BatStagingCreator::processDirectory: Exception %s with file %s\n", ex.toString(),
+                     inFile.getPath());
                }
             }
             return stageFile;
@@ -298,24 +302,24 @@ public class BatStagingCreator {
 
       return filesToExclude;
    }
-   
+
    /**
     * This method checks if the file is excluded, first checking to see if there are any direct matches and then
     * checking if there are any matches where the .applicabilityFile input included a wildcard.
     */
    private boolean isExcluded(String inFileName, Set<String> excludedFiles) {
-	  if (excludedFiles.contains(inFileName)) {
+      if (excludedFiles.contains(inFileName)) {
          return true;
-	  } else {
-	     Iterator<String> excludedIterator = excludedFiles.iterator();
-	     while(excludedIterator.hasNext()) {
-	        String excludedName = excludedIterator.next();
-	        if (excludedName.contains("*")) {
-	           excludedName = excludedName.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-	           Pattern excludePattern = Pattern.compile("^(" + excludedName + ")$");
-	           if (excludePattern.matcher(inFileName).matches()) {
-	              return true;
-	           }
+      } else {
+         Iterator<String> excludedIterator = excludedFiles.iterator();
+         while (excludedIterator.hasNext()) {
+            String excludedName = excludedIterator.next();
+            if (excludedName.contains("*")) {
+               excludedName = excludedName.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+               Pattern excludePattern = Pattern.compile("^(" + excludedName + ")$");
+               if (excludePattern.matcher(inFileName).matches()) {
+                  return true;
+               }
             }
          }
       }

@@ -153,9 +153,12 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public XResultData applyApplicabilityToFiles(XResultData results, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
+   public XResultData applyApplicabilityToFiles(XResultData results, boolean commentNonApplicableBlocks, String sourcePath, String stagePath, String customStageDir) {
       HashSet<String> excludedFiles = new HashSet<>();
       excludedFiles.add("Staging");
+      if (customStageDir != null && !customStageDir.equals("")) {
+         excludedFiles.add(customStageDir);
+      }
 
       setUpBlockApplicability(commentNonApplicableBlocks);
       File sourceFile = new File(sourcePath);
@@ -174,7 +177,7 @@ public class BlockApplicabilityOps {
       return results;
    }
 
-   public XResultData refreshStagedFiles(XResultData results, String sourcePath, String stagePath, List<String> files) {
+   public XResultData refreshStagedFiles(XResultData results, String sourcePath, String stagePath, String customStageDir, List<String> files) {
       File sourceDir = new File(sourcePath);
       File stageDir = new File(stagePath, sourceDir.getName());
 
@@ -203,7 +206,12 @@ public class BlockApplicabilityOps {
             stageFile = stageFile.getParentFile();
          }
 
-         excludedFiles = fileApplicabilityCache.getOrDefault(stageFile.getPath(), Sets.newHashSet("Staging"));
+         if (customStageDir != null && !customStageDir.equals("")) {
+            excludedFiles =
+               fileApplicabilityCache.getOrDefault(stageFile.getPath(), Sets.newHashSet("Staging", customStageDir));
+         } else {
+            excludedFiles = fileApplicabilityCache.getOrDefault(stageFile.getPath(), Sets.newHashSet("Staging"));
+         }
 
          batCreator.processDirectory(results, sourceFile, stageFile, excludedFiles);
       }

@@ -58,12 +58,14 @@ public class StagedFileWatcher {
 
       try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
          Path dir = Paths.get(directory);
+         String customStage = data.getCustomStageDir();
 
          Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                String fileName = dir.getFileName().toString();
-               if (!fileName.equals("Staging") && !(fileName.startsWith(".") && dir.toFile().isDirectory())) {
+               if ((!fileName.equals("Staging") || !fileName.equals(customStage)) && !(fileName.startsWith(
+                  ".") && dir.toFile().isDirectory())) {
                   WatchKey key = dir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE,
                      StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
                   keyMap.put(key, dir);
@@ -90,7 +92,7 @@ public class StagedFileWatcher {
                String stagePath = entry.getValue().getFirst();
                BlockApplicabilityOps ops = entry.getValue().getSecond();
                results.logf("File Watcher has started processing files for %s\n", entry.getKey().getName());
-               ops.refreshStagedFiles(results, directory, stagePath, files);
+               ops.refreshStagedFiles(results, directory, stagePath, customStage, files);
                if (results.isErrors()) {
                   results.warningf("See above for errors while refreshing %s\n", entry.getKey().getName());
                }

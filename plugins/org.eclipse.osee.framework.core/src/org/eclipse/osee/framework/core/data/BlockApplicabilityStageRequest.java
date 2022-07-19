@@ -24,17 +24,19 @@ public class BlockApplicabilityStageRequest {
    private boolean commentNonApplicableBlocks;
    private String sourcePath;
    private String stagePath;
+   private String customStageDir;
    private List<String> files;
 
    public BlockApplicabilityStageRequest() {
       // for jax-rs
    }
 
-   public BlockApplicabilityStageRequest(Map<Long, String> views, boolean commentNonApplicableBlocks, String sourcePath, String stagePath) {
+   public BlockApplicabilityStageRequest(Map<Long, String> views, boolean commentNonApplicableBlocks, String sourcePath, String stagePath, String stageDir) {
       this.views = views;
       this.commentNonApplicableBlocks = commentNonApplicableBlocks;
       this.sourcePath = sourcePath;
       this.stagePath = stagePath;
+      this.customStageDir = stageDir;
    }
 
    public Map<Long, String> getViews() {
@@ -67,6 +69,14 @@ public class BlockApplicabilityStageRequest {
 
    public void setStagePath(String stagePath) {
       this.stagePath = stagePath;
+   }
+
+   public String getCustomStageDir() {
+      return customStageDir;
+   }
+
+   public void setCustomStageDir(String stageDir) {
+      this.customStageDir = stageDir;
    }
 
    public List<String> getFiles() {
