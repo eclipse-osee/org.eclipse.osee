@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public class RelationColumn extends AbstractServicesColumn {
 
    private final RelationTypeSide relationTypeSide;
-   private AtsApi atsApi;
 
    public RelationColumn(RelationTypeSide relationTypeSide, AtsApi atsApi) {
       super(atsApi);
