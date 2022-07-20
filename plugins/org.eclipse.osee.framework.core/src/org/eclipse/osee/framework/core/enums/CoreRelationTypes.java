@@ -150,11 +150,11 @@ public interface CoreRelationTypes {
    RelationTypeSide InterfaceStructureContent_Structure = RelationTypeSide.create(InterfaceStructureContent, SIDE_A);
    RelationTypeSide InterfaceStructureContent_DataElement = RelationTypeSide.create(InterfaceStructureContent, SIDE_B);
 
-   RelationTypeToken InterfaceElementPlatformType = osee.addNewRelationType(3899709087455064781L, "Interface Element Platform Type", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceDataElement, "Interface Data Element", InterfacePlatformType, "Interface Platform Type");
+   RelationTypeToken InterfaceElementPlatformType = osee.addNewRelationType(3899709087455064781L, "Interface Element Platform Type", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceDataElement, "Interface Data Element", InterfacePlatformType, "Interface Platform Type");
    RelationTypeSide InterfaceElementPlatformType_Element = RelationTypeSide.create(InterfaceElementPlatformType, SIDE_A);
    RelationTypeSide InterfaceElementPlatformType_PlatformType = RelationTypeSide.create(InterfaceElementPlatformType, SIDE_B);
 
-   RelationTypeToken InterfacePlatformTypeEnumeration = osee.addNewRelationType(2455059983007225794L, "Interface Platform Type Enumeration Set", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfacePlatformType, "Interface Platform Type", InterfaceEnumSet, "Interface Enumeration Set");
+   RelationTypeToken InterfacePlatformTypeEnumeration = osee.addNewRelationType(2455059983007225794L, "Interface Platform Type Enumeration Set", MANY_TO_ONE, RelationSorter.USER_DEFINED, InterfacePlatformType, "Interface Platform Type", InterfaceEnumSet, "Interface Enumeration Set");
    RelationTypeSide InterfacePlatformTypeEnumeration_Element = RelationTypeSide.create(InterfacePlatformTypeEnumeration, SIDE_A);
    RelationTypeSide InterfacePlatformTypeEnumeration_EnumerationSet = RelationTypeSide.create(InterfacePlatformTypeEnumeration, SIDE_B);
 
