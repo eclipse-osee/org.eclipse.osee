@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2020 Boeing
+ * Copyright (c) 2020, 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -53,7 +53,6 @@ import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
 import org.eclipse.osee.define.api.OseeHierarchyComparator;
 import org.eclipse.osee.define.api.OseeLinkBuilder;
-import org.eclipse.osee.define.api.PublishingArtifactError;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
@@ -138,7 +137,7 @@ public class MSWordTemplatePublisher {
    protected HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
 
    //Error Variables
-   protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
+   protected final PublishingErrorLog publishingErrorLog = new PublishingErrorLog();
    protected Set<String> bookmarkedIds = new HashSet<>();
    protected HashMap<String, ArtifactReadable> hyperlinkedIds = new HashMap<>();
 
@@ -149,6 +148,7 @@ public class MSWordTemplatePublisher {
    protected final ActivityLog activityLog;
    protected final OrcsTokenService tokenService;
    protected final OseeHierarchyComparator hierarchyComparator;
+   protected final PublishingUtils publishingUtils;
 
    public MSWordTemplatePublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
       this.publishingOptions = publishingOptions;
@@ -158,7 +158,8 @@ public class MSWordTemplatePublisher {
       this.logger = atsApi.getLogger();
       this.activityLog = orcsApi.getActivityLog();
       this.tokenService = orcsApi.tokenService();
-      this.hierarchyComparator = new OseeHierarchyComparator(activityLog);
+      this.hierarchyComparator = new OseeHierarchyComparator(this.activityLog);
+      this.publishingUtils = new PublishingUtils(this.orcsApi);
    }
 
    /**
@@ -193,7 +194,8 @@ public class MSWordTemplatePublisher {
       while (matcher.find()) {
          lastEndIndex = handleStartOfTemplate(wordMl, templateContent, matcher);
          processContent(artifacts, wordMl);
-         addErrorLogToWordMl(wordMl);
+         addLinkNotInPublishErrors(wordMl);
+         this.publishingErrorLog.publishErrorLog(wordMl);
       }
 
       handleEndOfTemplate(wordMl, templateContent, lastEndIndex);
@@ -230,16 +232,14 @@ public class MSWordTemplatePublisher {
             try {
                children = artifact.getChildren();
             } catch (OseeCoreException ex) {
-               errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(),
-                  artifact.getArtifactType(),
-                  "There is an error when finding children for this artifact. Possible Cause: Empty Relation Order Attribute"));
+               this.publishingErrorLog.error(artifact,
+                  "There is an error when finding children for this artifact. Possible Cause: Empty Relation Order Attribute");
             }
             for (ArtifactReadable childArtifact : children) {
                if (childArtifact != null) {
                   processArtifact(childArtifact, wordMl);
                } else {
-                  errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(),
-                     artifact.getArtifactType(), "Artifact has an empty child relation"));
+                  this.publishingErrorLog.error(artifact, "Artifact has an empty child relation");
                }
             }
          }
@@ -581,7 +581,7 @@ public class MSWordTemplatePublisher {
       for (Map.Entry<ArtifactReadable, String> entry : hierarchyComparator.errors.entrySet()) {
          ArtifactReadable art = entry.getKey();
          String description = entry.getValue();
-         errorLog.add(new PublishingArtifactError(art.getId(), art.getName(), art.getArtifactType(), description));
+         this.publishingErrorLog.error(art, description);
       }
    }
 
@@ -591,7 +591,7 @@ public class MSWordTemplatePublisher {
       } catch (Exception ex) {
          String errorMessage = String.format("There was an error when sorting the list on %s by alphabetical order",
             attributeToken.getName());
-         errorLog.add(new PublishingArtifactError(-1L, "N/A", ArtifactTypeToken.SENTINEL, errorMessage));
+         this.publishingErrorLog.error(errorMessage);
       }
    }
 
@@ -687,8 +687,8 @@ public class MSWordTemplatePublisher {
          if (validWordTemplateContent) {
             return true;
          } else {
-            errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
-               "Only artifacts of type Word Template Content are supported in this case"));
+            this.publishingErrorLog.error(artifact,
+               "Only artifacts of type Word Template Content are supported in this case");
             return false;
          }
       }
@@ -956,8 +956,7 @@ public class MSWordTemplatePublisher {
          WordTemplateContentRendererHandler rendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
          content = rendererHandler.renderWordML(wtcData);
       } catch (Exception ex) {
-         errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
-            ex.toString()));
+         this.publishingErrorLog.error(artifact, ex.toString());
       }
 
       if (content != null) {
@@ -1004,22 +1003,6 @@ public class MSWordTemplatePublisher {
    }
 
    //--- Error Handling Methods ---//
-   /**
-    * Once all of the content has been processed, any errors that have been logged are now appended to the wordml in
-    * their own end section.
-    */
-   protected void addErrorLogToWordMl(WordMLWriter wordMl) {
-      addLinkNotInPublishErrors(wordMl);
-
-      if (!errorLog.isEmpty()) {
-         wordMl.startErrorLog();
-         for (PublishingArtifactError error : errorLog) {
-            wordMl.addErrorRow(error.getArtId().toString(), error.getArtName(), error.getArtType().getName(),
-               error.getErrorDescription());
-         }
-         wordMl.endErrorLog();
-      }
-   }
 
    /**
     * While processing the Word Template Content of an artifact, this method is used for keeping track of OSEE links
@@ -1037,8 +1020,7 @@ public class MSWordTemplatePublisher {
       if (!unknownIds.isEmpty()) {
          String description = String.format(
             "Artifact contains the following unknown GUIDs: %s (Delete or fix OSEE Link from Artifact)", unknownIds);
-         errorLog.add(
-            new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(), description));
+         this.publishingErrorLog.error(artifact, description);
       }
 
       while (match.find()) {
@@ -1076,8 +1058,7 @@ public class MSWordTemplatePublisher {
                      "Artifact contains the following unknown GUID: %s (Delete or fix OSEE Link from Artifact)",
                      idString);
                }
-               errorLog.add(new PublishingArtifactError(artWithLink.getId(), artWithLink.getName(),
-                  artWithLink.getArtifactType(), description));
+               this.publishingErrorLog.error(artWithLink, description);
             }
          }
       }
