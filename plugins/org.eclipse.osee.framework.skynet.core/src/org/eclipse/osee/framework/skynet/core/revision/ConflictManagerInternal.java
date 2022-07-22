@@ -23,19 +23,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.Multiplicity;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,9 +67,10 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class ConflictManagerInternal {
 
    private static final String MULTIPLICITY_DETECTION =
-      "SELECT%s dest.art_id, dest.attr_id as dest_attr_id, src.attr_id as src_attr_id " + //
-         "FROM osee_txs txs_src, osee_attribute src, osee_join_id jid, osee_attribute dest, osee_txs txs_dest " + //
+      "SELECT%s art.art_id, art.art_type_id, dest.attr_id as dest_attr_id, src.attr_id as src_attr_id, src.attr_type_id src_attr_type_id " + //
+         "FROM osee_txs txs_src, osee_attribute src, osee_join_id jid, osee_attribute dest, osee_txs txs_dest, osee_txs art_tx, osee_artifact art " + //
          "WHERE txs_src.branch_id = ? AND txs_src.tx_current = 1 AND txs_src.transaction_id > ? AND txs_src.gamma_id = src.gamma_id AND src.attr_type_id = jid.id AND jid.query_id = ? " + //
+         "AND src.art_id = art.art_id and art_tx.branch_id = txs_src.branch_id and art_tx.gamma_id = art.gamma_id and art_tx.tx_current = 1" + //
          "AND src.art_id = dest.art_id AND src.attr_type_id = dest.attr_type_id AND dest.attr_id <> src.attr_id AND dest.gamma_id = txs_dest.gamma_id AND txs_dest.branch_id = ? AND txs_dest.tx_current = 1";
 
    private static final String CONFLICT_CLEANUP =
@@ -196,15 +201,22 @@ public class ConflictManagerInternal {
    private static void loadMultiplicityConflicts(Collection<AttributeTypeToken> types, BranchId source, BranchId dest, List<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       List<Object[]> batchParams = new LinkedList<>();
+      OrcsTokenService tokenService = OsgiUtil.getService(ConflictManagerInternal.class, OrcsTokenService.class);
       try (IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery()) {
          joinQuery.addAndStore(types);
 
          Consumer<JdbcStatement> consumer = stmt -> {
             ArtifactId artId = ArtifactId.valueOf(stmt.getLong("art_id"));
+            Long artTypeId = stmt.getLong("art_type_id");
             Long sAttrId = stmt.getLong("src_attr_id");
+            Long sAttrTypeId = stmt.getLong("src_attr_type_id");
             Long dAttrId = stmt.getLong("dest_attr_id");
-            artIdSet.add(artId);
-            batchParams.add(new Object[] {dAttrId, sAttrId, artId});
+            ArtifactTypeToken artifactType = tokenService.getArtifactType(artTypeId);
+            Multiplicity multiplicity = artifactType.getMultiplicity(tokenService.getAttributeType(sAttrTypeId));
+            if (multiplicity.equals(Multiplicity.ZERO_OR_ONE) || multiplicity.equals(Multiplicity.EXACTLY_ONE)) {
+               artIdSet.add(artId);
+               batchParams.add(new Object[] {dAttrId, sAttrId, artId});
+            }
          };
          String sql = jdbcClient.injectOrderedHint(MULTIPLICITY_DETECTION);
          jdbcClient.runQuery(consumer, sql, source, BranchManager.getBaseTransaction(source), joinQuery.getQueryId(),
