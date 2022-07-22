@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.CharBuffer;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityT
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Applies product line engineering block applicability to file of the configured file extensions. Formerly modeled
@@ -60,7 +62,7 @@ public class BatFileProcessor {
       }
    }
 
-   public boolean processFile(File inFile, File outFile) throws IOException {
+   public boolean processFile(File inFile, File outFile) throws Exception {
       if (inFile.exists()) {
          CharBuffer fileContent = applyApplicabilityContent(inFile);
          if (tagProcessed) {
@@ -76,7 +78,7 @@ public class BatFileProcessor {
       return tagProcessed;
    }
 
-   private CharBuffer applyApplicabilityContent(File inFile) throws IOException {
+   private CharBuffer applyApplicabilityContent(File inFile) throws Exception {
       results.logf("BatFileProcessor::applyApplicabilityContent => Started for file %s\n", inFile.getPath());
       CharBuffer fileContent = Lib.fileToCharBuffer(inFile, charsetString);
       String toReturn = fileContent.toString();
@@ -113,9 +115,9 @@ public class BatFileProcessor {
             matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfigGrp, applicabilityExpression);
          } else if (endFeature != null || endConfig != null || endConfigGrp != null) {
             if (applicBlocks.isEmpty()) {
-               results.warningf(
-                  "BatFileProcessor::applyApplicabilityContent => An Applicability End tag was found before a beginning tag for %s\n",
-                  inFile.getPath());
+               OseeLog.log(getClass(), Level.INFO,
+                  "BatFileProcessor::applyApplicabilityContent => An Applicability End tag was found before a beginning tag for: " + inFile.getPath());
+               results.warningf("An Applicability End tag was found before a beginning tag for %s\n", inFile.getPath());
                tagProcessed = false;
                return fileContent;
             }
@@ -127,12 +129,16 @@ public class BatFileProcessor {
 
             tagProcessed = true;
          } else {
-            results.warningf(
-               "BatFileProcessor::applyApplicabilityContent => Did not find a start or end feature tag for %s but a similar tag was matched\n",
+            OseeLog.log(getClass(), Level.INFO,
+               "BatFileProcessor::applyApplicabilityContent => Did not find a start or end feature tag for: " + inFile.getPath());
+            results.warningf("Did not find a start or end feature tag for %s but a similar tag was matched\n",
                inFile.getPath());
             tagProcessed = false;
             return fileContent;
          }
+      }
+      if (!applicBlocks.isEmpty()) {
+         throw new TagNotPlacedCorrectlyException("Tag was not placed correctly in file: " + inFile.getPath());
       }
       results.logf("BatFileProcessor::applyApplicabilityContent => Completed for file %s and tagProcessed = %s\n",
          inFile.getPath(), tagProcessed);

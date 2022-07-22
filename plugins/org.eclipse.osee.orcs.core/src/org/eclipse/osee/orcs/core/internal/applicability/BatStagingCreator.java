@@ -30,10 +30,12 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.FileTypeApplicabilityData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Applies product line engineering block applicability to file of the configured file extensions. Formerly modeled
@@ -78,7 +80,7 @@ public class BatStagingCreator {
     * @return File - The staged file, or null if the file was not included
     */
    public File processDirectory(XResultData results, File inFile, File stageFileParent, Set<String> filesToExclude) {
-      results.logf("BatStagingCreator::processDirectory => Started file: %s\n", inFile.getPath());
+      OseeLog.log(getClass(), Level.INFO, "BatStagingCreator::processDirectory => Started file: " + inFile.getPath());
       if (results.isErrors()) {
          return null;
       }
@@ -162,8 +164,21 @@ public class BatStagingCreator {
                      try {
                         tagProcessed = new BatFileProcessor(orcsApplicability, fileTypeApplicabilityData, false,
                            commentNonApplicableBlocks).processFile(inFile, outFile);
+                     } catch (TagNotPlacedCorrectlyException ex) {
+                        OseeLog.log(getClass(), Level.INFO,
+                           "BatStagingCreator::processDirectory => TagNotPlacedCorrectlyException thrown in file: " + inFile.getPath());
+                        OseeLog.log(getClass(), Level.INFO,
+                           "BatStagingCreator::processDirectory => TagNotPlacedCorrectlyException details: " + ex.toString());
+                        results.warning(
+                           "Tag was not placed correctly in file: " + inFile.getPath() + ". This file will not be processed.");
+                        return stageFile;
                      } catch (Exception ex) {
-                        results.warningf("Exception %s with file %s\n", ex.toString(), inFile.getPath());
+                        OseeLog.log(getClass(), Level.INFO,
+                           "BatStagingCreator::processDirectory => Exception thrown in file: " + inFile.getPath());
+                        OseeLog.log(getClass(), Level.INFO,
+                           "BatStagingCreator::processDirectory => Exception details: " + ex.toString());
+                        results.error(ex.toString());
+                        return stageFile;
                      }
                   }
 
@@ -174,8 +189,8 @@ public class BatStagingCreator {
                   boolean isNew = isStageFileNew(stageFile, outFile);
                   if (isNew) {
                      if (!tagProcessed) {
-                        results.logf("BatStagingCreator::processDirectory: Creating link => %s with file %s\n",
-                           stageFile.toPath(), inFile.toPath());
+                        OseeLog.log(getClass(), Level.INFO,
+                           "BatStagingCreator::processDirectory: Creating link " + stageFile.toPath() + " with " + inFile.toPath());
                         Files.createLink(stageFile.toPath(), inFile.toPath());
                      } else {
                         stageFile.delete();
@@ -191,8 +206,11 @@ public class BatStagingCreator {
                      outFile.delete();
                   }
                } catch (Exception ex) {
-                  results.warningf("BatStagingCreator::processDirectory: Exception %s with file %s\n", ex.toString(),
-                     inFile.getPath());
+                  OseeLog.log(getClass(), Level.INFO,
+                     "BatStagingCreator::processDirectory: Exception in " + inFile.getPath());
+                  OseeLog.log(getClass(), Level.INFO,
+                     "BatStagingCreator::processDirectory: Exception details" + ex.toString());
+                  results.warningf("Exception %s in file %s\n", ex.toString(), inFile.getPath());
                }
             }
             return stageFile;
