@@ -30,6 +30,8 @@ public class FileExtensionAttributeType extends AttributeTypeEnum<FileExtensionE
    public final FileExtensionEnum Zip = new FileExtensionEnum(1, "zip");
    public final FileExtensionEnum Csv = new FileExtensionEnum(2, "csv");
    public final FileExtensionEnum Json = new FileExtensionEnum(3, "json");
+   public final FileExtensionEnum xls = new FileExtensionEnum(4, "xls");
+   public final FileExtensionEnum xlsx = new FileExtensionEnum(5, "xlsx");
 
    public FileExtensionAttributeType(NamespaceToken namespace, int enumCount) {
       super(3731534343896308858L, namespace, "File Extension", MediaType.TEXT_PLAIN, "",
@@ -37,7 +39,7 @@ public class FileExtensionAttributeType extends AttributeTypeEnum<FileExtensionE
    }
 
    public FileExtensionAttributeType() {
-      this(NamespaceToken.OSEE, 4);
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class FileExtensionEnum extends EnumToken {

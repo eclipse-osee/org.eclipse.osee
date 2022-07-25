@@ -50,7 +50,7 @@ public class IcdEndpointImpl implements IcdEndpoint {
       String connectionName =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).andId(connectionId).asArtifact().getName();
       ResponseBuilder builder = Response.ok(streamingOutput);
-      builder.header("Content-Disposition", "attachment; filename=" + "InterfaceWorkbook_" + connectionName + ".xml");
+      builder.header("Content-Disposition", "attachment; filename=" + "InterfaceWorkbook_" + connectionName + ".xls");
       return builder.build();
    }
 

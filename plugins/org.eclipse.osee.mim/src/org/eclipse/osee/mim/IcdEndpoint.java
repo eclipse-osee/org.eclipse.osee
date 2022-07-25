@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 public interface IcdEndpoint {
 
    @GET()
-   @Produces(MediaType.APPLICATION_XML)
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
    Response getIcd();
 
 }
