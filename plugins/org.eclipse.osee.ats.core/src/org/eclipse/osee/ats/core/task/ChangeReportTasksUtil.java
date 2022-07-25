@@ -97,7 +97,7 @@ public class ChangeReportTasksUtil {
       }
 
       // Find static task def matches
-      List<IAtsTask> tasksFound = new LinkedList<IAtsTask>();
+      List<IAtsTask> staticTasksFound = new LinkedList<IAtsTask>();
       for (IAtsTask task : tasks) {
          boolean found = false;
          for (StaticTaskDefinition taskDef : crtd.getSetDef().getStaticTaskDefs()) {
@@ -108,7 +108,7 @@ public class ChangeReportTasksUtil {
                      taskMatch.setType(ChangeReportTaskMatchType.Match);
                      taskMatch.setTaskWf(task);
                      taskMatch.setTaskTok(task.getArtifactToken());
-                     tasksFound.add(task);
+                     staticTasksFound.add(task);
                      found = true;
                      break;
                   }
@@ -119,9 +119,29 @@ public class ChangeReportTasksUtil {
             }
          }
       }
-
       // Remove static matched tasks so we don't set them as non-matched
-      tasks.removeAll(tasksFound);
+      tasks.removeAll(staticTasksFound);
+
+      // Find additional task matches
+      List<IAtsTask> additionalTasksFound = new LinkedList<IAtsTask>();
+      for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+         if (taskMatch.getMatchType().equals(ChangeReportTaskMatchType.AdditionalTskCompAsNeeded)) {
+            for (IAtsTask task : tasks) {
+               if (task.getName().equals(taskMatch.getTaskName())) {
+                  if (taskMatch.getTaskName().equals(task.getName())) {
+                     taskMatch.setTaskName(task.getName());
+                     taskMatch.setType(ChangeReportTaskMatchType.Match);
+                     taskMatch.setTaskWf(task);
+                     taskMatch.setTaskTok(task.getArtifactToken());
+                     additionalTasksFound.add(task);
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      // Remove additional matched tasks so we don't set them as non-matched
+      tasks.removeAll(additionalTasksFound);
 
       // Find artifact referenced matches
       for (IAtsTask task : tasks) {

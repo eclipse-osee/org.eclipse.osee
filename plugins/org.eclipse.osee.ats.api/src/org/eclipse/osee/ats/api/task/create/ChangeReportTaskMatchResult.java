@@ -31,8 +31,10 @@ public class ChangeReportTaskMatchResult extends OseeEnum {
       new ChangeReportTaskMatchResult("Create New Chg Rpt Task [%s]\n");
    public static final ChangeReportTaskMatchResult CreateNewStaticTask =
       new ChangeReportTaskMatchResult("Create New Static Task [%s]\n");
+   public static final ChangeReportTaskMatchResult CreateNewAdditionalTask =
+      new ChangeReportTaskMatchResult("Create New Aditional Task [%s]\n");
    public static final ChangeReportTaskMatchResult NoMatchArtTaskCanBeDeleted =
-      new ChangeReportTaskMatchResult("No Matching Artifact for Task %s; De-referenced task can be deleted.\n");
+      new ChangeReportTaskMatchResult("No Matching Artifact for Task %s; De-referenced task can be deleted\n");
    public static final ChangeReportTaskMatchResult UnhandledMatchType =
       new ChangeReportTaskMatchResult("Unhandled Match Type [%s]\n");
 
