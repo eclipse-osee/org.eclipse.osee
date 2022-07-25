@@ -23,6 +23,7 @@ public enum ChangeReportTaskMatchType {
    //
    ChgRptTskCompAsNeeded("Change Report task computed as needed. - Awaiting determination if task exists or Create Task"),
    StaticTskCompAsNeeded("Statically defined task from StaticTaskDefinition computed as needed. - Awaiting determination if task exists or Create Task"),
+   AdditionalTskCompAsNeeded("Additional task computed as needed.  eg: Change to related data from another tool.  Does NOT relate to change report entry or artifact. - Awaiting determination if task exists or Create Task"),
    //
    TaskRefAttrMissing("Task Referenced Attr was not found. - Delete Task."),
    TaskRefAttrButNoRefChgArt("Task Referenced Attr found but no matching changed art. - Delete Task");

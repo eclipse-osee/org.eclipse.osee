@@ -313,6 +313,15 @@ public class CreateChangeReportTasksOperation {
                   }
                }
 
+               // Create if no task was found
+               else if (matchType == ChangeReportTaskMatchType.AdditionalTskCompAsNeeded) {
+                  crtd.getResults().success(ChangeReportTaskMatchResult.CreateNewAdditionalTask.getName(),
+                     taskMatch.getTaskName());
+                  addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
+                  addModTaskNames.add(taskMatch.getTaskName());
+                  taskMatch.setMatchResult(ChangeReportTaskMatchResult.CreateNewAdditionalTask);
+               }
+
                // Mark as de-referenced if no reference or referenced artifact not there anymore
                else if ((matchType == ChangeReportTaskMatchType.TaskRefAttrMissing) || (matchType == ChangeReportTaskMatchType.TaskRefAttrButNoRefChgArt)) {
                   if (!deletedTaskNames.contains(taskMatch.getTaskName())) {
@@ -531,6 +540,9 @@ public class CreateChangeReportTasksOperation {
          if (Strings.isValid(createTaskDef.getRelatedToState())) {
             task.setRelatedToState(createTaskDef.getRelatedToState());
          }
+      } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.AdditionalTskCompAsNeeded) {
+         task.setAssigneeAccountIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getArtifactId()));
+         task.setDescription("see title");
       } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
          if (taskMatch.isChgRptArtValid()) {
             task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactName, taskMatch.getChgRptArtName());
@@ -540,7 +552,7 @@ public class CreateChangeReportTasksOperation {
          }
          task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
       } else {
-         crtd.getResults().errorf("Un-handled MatchType [%s]", taskMatch.getMatchType().name());
+         crtd.getResults().errorf("Un-handled MatchType [%s]...Aborting\n", taskMatch.getMatchType().name());
          return;
       }
 

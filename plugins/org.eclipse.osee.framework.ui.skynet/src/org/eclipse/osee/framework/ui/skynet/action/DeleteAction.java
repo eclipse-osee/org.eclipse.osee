@@ -100,9 +100,14 @@ public class DeleteAction extends Action {
 
                monitor.beginTask("Delete artifact", artifactsToBeDeleted.size());
 
+               String artIdStr = artifactsToBeDeleted.size() + " Artifacts";
+               if (artifactsToBeDeleted.size() == 1) {
+                  artIdStr = artifactsToBeDeleted.iterator().next().toStringWithId();
+               }
+
                Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
-               SkynetTransaction transaction =
-                  TransactionManager.createTransaction(artifactsArray[0].getBranch(), "Delete Artifact Action");
+               SkynetTransaction transaction = TransactionManager.createTransaction(artifactsArray[0].getBranch(),
+                  String.format("Delete Artifact Action - %s", artIdStr));
                XResultData rd =
                   ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), artifactsArray);
                if (XResultDataUI.reportIfErrors(rd, getName())) {
