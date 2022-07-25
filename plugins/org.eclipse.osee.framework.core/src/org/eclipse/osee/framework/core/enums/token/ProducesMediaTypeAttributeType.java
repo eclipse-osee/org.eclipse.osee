@@ -29,6 +29,7 @@ public class ProducesMediaTypeAttributeType extends AttributeTypeEnum<ProducesMe
    public final ProducesMediaTypeEnum JSON = new ProducesMediaTypeEnum(0, "application/json");
    public final ProducesMediaTypeEnum XML = new ProducesMediaTypeEnum(1, "application/xml");
    public final ProducesMediaTypeEnum ZIP = new ProducesMediaTypeEnum(2, "application/zip");
+   public final ProducesMediaTypeEnum OCTET_STREAM = new ProducesMediaTypeEnum(3, "application/octet-stream");
 
    public ProducesMediaTypeAttributeType(NamespaceToken namespace, int enumCount) {
       super(2428747355642260466L, namespace, "Produces Media Type", MediaType.TEXT_PLAIN, "",
@@ -36,7 +37,7 @@ public class ProducesMediaTypeAttributeType extends AttributeTypeEnum<ProducesMe
    }
 
    public ProducesMediaTypeAttributeType() {
-      this(NamespaceToken.OSEE, 3);
+      this(NamespaceToken.OSEE, 4);
    }
 
    public class ProducesMediaTypeEnum extends EnumToken {

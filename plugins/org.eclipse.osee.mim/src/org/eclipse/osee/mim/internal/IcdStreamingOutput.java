@@ -14,8 +14,6 @@
 package org.eclipse.osee.mim.internal;
 
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -41,9 +39,8 @@ public final class IcdStreamingOutput implements StreamingOutput {
    @Override
    public void write(OutputStream output) {
       try {
-         Writer writer = new OutputStreamWriter(output);
          IcdGenerator generator = new IcdGenerator(mimApi);
-         generator.runOperation(writer, branch, viewId, connectionId);
+         generator.runOperation(output, branch, viewId, connectionId);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
