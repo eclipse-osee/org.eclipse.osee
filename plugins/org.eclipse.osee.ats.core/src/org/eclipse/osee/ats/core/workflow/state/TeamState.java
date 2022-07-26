@@ -28,6 +28,7 @@ public class TeamState extends StateTypeAdapter {
    public static TeamState Review = new TeamState("Review", StateType.Working);
    public static TeamState Completed = new TeamState("Completed", StateType.Completed);
    public static TeamState Cancelled = new TeamState("Cancelled", StateType.Cancelled);
+   public static TeamState Validate = new TeamState("Validate", StateType.Working);
 
    private TeamState(String pageName, StateType StateType) {
       super(TeamState.class, pageName, StateType);
