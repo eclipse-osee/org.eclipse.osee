@@ -68,8 +68,9 @@ public class CreateTasksWorkflow {
          program);
    }
 
-   public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, boolean createWorkflow, //
-      boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
+   public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, //
+      boolean createWorkflow, boolean reportOnly, XResultData resultData, IAtsChangeSet changes, //
+      Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
       CommitConfigItem commitConfigItem, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
       this.pcrNumber = pcrNumber;
       this.createTasksOptions = createTasksOptions;
