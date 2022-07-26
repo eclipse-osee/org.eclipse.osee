@@ -80,7 +80,7 @@ public class BranchLoadComposite extends Composite {
          }
       });
 
-      nameText = new XText("Srch String: ");
+      nameText = new XText("Search String");
       nameText.setToolTip("Search Branch names for String");
       nameText.createWidgets(this, 1);
       nameText.addXModifiedListener(new XModifiedListener() {
