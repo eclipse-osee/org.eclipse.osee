@@ -197,6 +197,10 @@ public class CreateChangeReportTasksOperation {
             crttwd.setWorkType(workType);
 
             IAtsVersion targetedVersion = atsApi.getVersionService().getTargetedVersion(chgRptTeamWf);
+            if (targetedVersion == null || targetedVersion.isInvalid()) {
+               rd.errorf("Targeted Version is invalid for Host Team Workflow %s\n", chgRptTeamWf.toStringWithAtsId());
+               return crtd;
+            }
             IAtsActionableItem ai = getToSiblingAi(setDef, program, rd, toSiblingTeamDef);
             if (ai == null || ai.isInvalid()) {
                rd.errorf("Actionable Item  %s is invalid for team %s or work type %s\n", toSiblingTeamDef.getAiId(),
@@ -250,6 +254,7 @@ public class CreateChangeReportTasksOperation {
             } else {
                rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
             }
+            atsApi.getVersionService().setTargetedVersion(destTeamWf, targetedVersion, changes);
             if (changes != null && atsApi.getRelationResolver().areNotRelated(chgRptTeamWf, AtsRelationTypes.Derive_To,
                destTeamWf)) {
                changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
