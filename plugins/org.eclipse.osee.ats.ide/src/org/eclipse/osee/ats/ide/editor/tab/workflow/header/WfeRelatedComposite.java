@@ -116,21 +116,21 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
          }
       }
       if (workItem.isTeamWorkflow()) {
-         siblingWidget = new XRelatedWidget("Siblings: ", this);
+         siblingWidget = new XRelatedWidget("Siblings", this);
          siblingWidget.setToolkit(editor.getToolkit());
          siblingWidget.setToolTip("Select to Open");
          siblingWidget.createWidgets(this, 2);
 
          addSpaceWidget();
 
-         tasksWidget = new XRelatedWidget("Tasks: ", this);
+         tasksWidget = new XRelatedWidget("Tasks", this);
          tasksWidget.setToolkit(editor.getToolkit());
          tasksWidget.setToolTip("Select to Open");
          tasksWidget.createWidgets(this, 2);
 
          addSpaceWidget();
 
-         reviewsWidget = new XRelatedWidget("Reviews: ", this);
+         reviewsWidget = new XRelatedWidget("Reviews", this);
          reviewsWidget.setToolkit(editor.getToolkit());
          reviewsWidget.setToolTip("Select to Open");
          reviewsWidget.createWidgets(this, 2);
@@ -139,7 +139,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
 
       }
 
-      supportingWidget = new XRelatedWidget("Supporting: ", this);
+      supportingWidget = new XRelatedWidget("Supporting", this);
       supportingWidget.setToolkit(editor.getToolkit());
       supportingWidget.setToolTip("Select to Open");
       supportingWidget.createWidgets(this, 2);
@@ -149,7 +149,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
       Collection<ArtifactToken> derivedFrom =
          atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Derive_From);
       if (!derivedFrom.isEmpty()) {
-         derivedFromWidget = new XRelatedWidget("Derived From: ", this);
+         derivedFromWidget = new XRelatedWidget("Derived From", this);
          derivedFromWidget.setToolkit(editor.getToolkit());
          derivedFromWidget.setToolTip("Select to Open");
          derivedFromWidget.createWidgets(this, 2);
@@ -159,7 +159,7 @@ public class WfeRelatedComposite extends Composite implements XModifiedListener 
 
       Collection<ArtifactToken> derived = atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Derive_To);
       if (!derived.isEmpty()) {
-         derivedToWidget = new XRelatedWidget("Derived: ", this);
+         derivedToWidget = new XRelatedWidget("Derived", this);
          derivedToWidget.setToolkit(editor.getToolkit());
          derivedToWidget.setToolTip("Select to Open");
          derivedToWidget.createWidgets(this, 2);
