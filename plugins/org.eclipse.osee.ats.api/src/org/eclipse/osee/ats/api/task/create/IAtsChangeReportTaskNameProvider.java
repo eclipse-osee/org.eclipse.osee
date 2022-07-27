@@ -72,6 +72,7 @@ public interface IAtsChangeReportTaskNameProvider {
          match.setTaskName(taskDef.getName());
          match.setCreateTaskDef(taskDef);
          match.setType(ChangeReportTaskMatchType.StaticTskCompAsNeeded);
+         match.setAutoTaskGenType(AutoTaskGenType.Static.name());
          crttwd.getTaskMatches().add(match);
       }
    }
@@ -117,6 +118,11 @@ public interface IAtsChangeReportTaskNameProvider {
             match.setChgRptArtDeleted(deleted);
             match.setTaskName(safeName);
             match.setType(ChangeReportTaskMatchType.ChgRptTskCompAsNeeded);
+            if (chgType.equals(TaskChangeType.Deleted.name())) {
+               match.setAutoTaskGenType(AutoTaskGenType.ChgRptDelete.name());
+            } else if (chgType.equals(TaskChangeType.AddMod.name())) {
+               match.setAutoTaskGenType(AutoTaskGenType.ChgRptAddMod.name());
+            }
             crttwd.getTaskMatches().add(match);
             return match;
          }

@@ -190,6 +190,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean TaskToChangedArtifactDeleted = ats.createBoolean(323852383249857L, "ats.Task To Changed Artifact Deleted", MediaType.TEXT_PLAIN, "Referenced artifact was deleted");
    AttributeTypeArtifactId TeamDefinitionReference = ats.createArtifactId(4730961339090285773L, "ats.Team Definition Reference", MediaType.TEXT_PLAIN, "Team Workflow to Team Definition");
    AttributeTypeBoolean TeamUsesVersions = ats.createBoolean(1152921504606847158L, "ats.Team Uses Versions", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString TaskAutoGenType = ats.createString(175464975663435993L, "ats.Task Auto Gen Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", MediaType.TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow");
    AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", MediaType.TEXT_PLAIN, "Enter clear and concise title that can be generally understood.");
    AttributeTypeString Title = CoreAttributeTypes.Name;

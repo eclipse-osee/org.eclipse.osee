@@ -286,6 +286,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TaskToChangedArtifactDeleted)
       .zeroOrOne(TaskAutoGen)
       .zeroOrOne(TaskAutoGenVersion)
+      .any(TaskAutoGenType)
       .zeroOrOne(WcafeImpact)
       .zeroOrOne(UsesResolutionOptions));
 

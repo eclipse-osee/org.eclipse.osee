@@ -51,11 +51,17 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this.artifactType = artifactType;
    }
 
+   /**
+    * 0..n values
+    */
    public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType, T defaultValue) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue));
       return this;
    }
 
+   /**
+    * 0..n values
+    */
    public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType) {
       return any(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
    }
@@ -87,6 +93,9 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return atLeastOne(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
    }
 
+   /**
+    * 0..n values
+    */
    public <T extends EnumToken> AttributeMultiplicity any(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue, enumeratedValues));
       return this;
@@ -136,6 +145,7 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return typeMetaData.getMultiplicity();
    }
 
+   @SuppressWarnings("unchecked")
    public <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType) {
       try {
          return (T) get(attributeType).getDefaultValue();
