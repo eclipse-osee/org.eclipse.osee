@@ -577,6 +577,9 @@ public class CreateChangeReportTasksOperation {
          crtd.getResults().errorf("No provider configured to set TaskAutoGenVersion, aborting...");
          return;
       }
+      if (Strings.isValid(taskMatch.getAutoTaskGenType())) {
+         task.addAttribute(AtsAttributeTypes.TaskAutoGenType, taskMatch.getAutoTaskGenType());
+      }
       task.addAttribute(AtsAttributeTypes.TaskAutoGenVersion, ver.getName());
       task.addAttribute(AtsAttributeTypes.TaskAutoGen, true);
 

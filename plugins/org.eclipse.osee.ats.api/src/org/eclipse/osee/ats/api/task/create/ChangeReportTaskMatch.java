@@ -34,6 +34,15 @@ public class ChangeReportTaskMatch {
    StaticTaskDefinition createTaskDef;
    ChangeReportTaskMatchType matchType;
    ChangeReportTaskMatchResult matchResult;
+   String autoTaskGenType;
+
+   public String getAutoTaskGenType() {
+      return autoTaskGenType;
+   }
+
+   public void setAutoTaskGenType(String autoTaskGenType) {
+      this.autoTaskGenType = autoTaskGenType;
+   }
 
    public ArtifactToken getChgRptArt() {
       return chgRptArt;
