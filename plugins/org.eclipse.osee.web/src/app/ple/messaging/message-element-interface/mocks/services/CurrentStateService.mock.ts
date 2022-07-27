@@ -71,6 +71,9 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     MessageId: new BehaviorSubject("10"),
     connectionId: new BehaviorSubject("10"),
     units: of(unitsMock),
+    getType(typeId: string) {
+      return of(platformTypesMock[0])  
+    },
     getStructureRepeating(structureId: string) {
         return of(structuresMock[0])
     },

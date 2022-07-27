@@ -461,19 +461,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
-         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByQuery(branch, query,
-            this.getFollowRelationDetails(), InterfaceStructureToken.class);
-         for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure);
-         }
-         return structureList;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceStructureToken>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -573,6 +561,28 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       });
 
       return messageHeader;
+   }
+
+   @Override
+   public Collection<InterfaceStructureToken> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByQuery(branch, query,
+            this.getFollowRelationDetails(), isExact, InterfaceStructureToken.class);
+         for (InterfaceStructureToken structure : structureList) {
+            structure = this.parseStructure(branch, structure);
+         }
+         return structureList;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceStructureToken>();
    }
 
 }

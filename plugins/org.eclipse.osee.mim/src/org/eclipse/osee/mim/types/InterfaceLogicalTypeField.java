@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -24,9 +25,15 @@ public class InterfaceLogicalTypeField {
    private boolean required;
    private boolean editable;
    private String defaultValue = Strings.EMPTY_STRING;
+   private AttributeTypeId attributeTypeId = AttributeTypeId.SENTINEL;
 
    public InterfaceLogicalTypeField() {
       //
+   }
+
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue, AttributeTypeId attributeType) {
+      this(name, type, required, editable, defaultValue);
+      this.setAttributeTypeId(attributeType);
    }
 
    public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue) {
@@ -35,6 +42,11 @@ public class InterfaceLogicalTypeField {
       this.setRequired(required);
       this.setEditable(editable);
       this.setDefaultValue(defaultValue);
+   }
+
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, AttributeTypeId attributeType) {
+      this(name, type, required, editable);
+      this.setAttributeTypeId(attributeType);
    }
 
    public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable) {
@@ -79,5 +91,19 @@ public class InterfaceLogicalTypeField {
 
    public void setEditable(boolean editable) {
       this.editable = editable;
+   }
+
+   /**
+    * @return the attributeTypeId
+    */
+   public AttributeTypeId getAttributeTypeId() {
+      return attributeTypeId;
+   }
+
+   /**
+    * @param attributeTypeId the attributeTypeId to set
+    */
+   public void setAttributeTypeId(AttributeTypeId attributeTypeId) {
+      this.attributeTypeId = attributeTypeId;
    }
 }

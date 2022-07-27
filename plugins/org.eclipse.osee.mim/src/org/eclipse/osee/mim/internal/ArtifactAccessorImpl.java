@@ -118,7 +118,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), clazz);
+      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), false, clazz);
    }
 
    @Override
@@ -270,12 +270,13 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       List<T> artifactList = new LinkedList<T>();
       /**
        * Perform a query using the: relation defined in query.getRelated()(if it exists) attribute type id list defined
        * in query.getQueries() value list defined in query.getQueries()
        */
+      QueryOption[] queryOptions = isExact ? QueryOption.EXACT_MATCH_OPTIONS : QueryOption.CONTAINS_MATCH_OPTIONS;
       QueryBuilder executeQuery =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
       if (!query.getRelated().equals(MimRelatedArtifact.SENTINEL)) {
@@ -283,8 +284,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
             RelationSide.fromString(query.getRelated().getSide())), query.getRelated().getRelatedId());
       }
       for (MimAttributeQueryElement q : query.getQueries()) {
-         executeQuery = executeQuery.and(q.getAttributeId(), q.getValue(), QueryOption.TOKEN_DELIMITER__ANY,
-            QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+         executeQuery = executeQuery.and(q.getAttributeId(), q.getValue(), queryOptions);
       }
       for (RelationTypeSide rel : followRelations) {
          executeQuery = executeQuery.follow(rel);
@@ -300,6 +300,11 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
          }
       }
       return artifactList;
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), isExact, clazz);
    }
 
 }

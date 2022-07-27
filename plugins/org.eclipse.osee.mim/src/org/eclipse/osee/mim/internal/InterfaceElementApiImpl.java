@@ -289,17 +289,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
    @Override
    public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByQuery(branch, query,
-               this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
-         elements = this.parseElements(branch, elements);
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceStructureElementToken>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -328,6 +318,26 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          CoreRelationTypes.InterfaceElementPlatformType_Element).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceStructureElementToken(a)).collect(
                Collectors.toList());
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByQuery(branch, query,
+               this.getFollowRelationDetails(), isExact, InterfaceStructureElementToken.class);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceStructureElementToken>();
    }
 
 }

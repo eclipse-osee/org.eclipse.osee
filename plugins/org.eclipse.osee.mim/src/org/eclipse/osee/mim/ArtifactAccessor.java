@@ -56,5 +56,7 @@ public interface ArtifactAccessor<T> {
 
    Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 }

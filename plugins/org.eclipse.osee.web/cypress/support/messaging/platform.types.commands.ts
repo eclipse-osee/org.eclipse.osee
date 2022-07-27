@@ -18,6 +18,7 @@ Cypress.Commands.add('createNewPlatformType', (type: string) => {
   cy.intercept('/mim/logicalType/*').as('typeInfo');
   cy.intercept('/ats/config/teamdef/*/leads').as('leads');
   cy.intercept('/ats/ple/action/*/approval').as('approval');
+  cy.intercept('/mim/branch/*/query/exact').as('exact')
   return cy
     .get('[data-cy="add-type-bottom-button"]')
     .click()
@@ -37,12 +38,12 @@ Cypress.Commands.add('createNewPlatformType', (type: string) => {
         if (el.required && el.editable && el.name !== 'Name') {
           cy.get(`[data-cy="field-${el.attributeType}"]`)
             .focus()
-            .type(el.defaultValue !== '' ? el.defaultValue : '0',{force:true});
+            .type(el.defaultValue !== '' ? el.defaultValue : '0',{force:true}).wait('@exact');
         }
         if (el.name === 'Name') {
           cy.get(`[data-cy="field-${el.attributeType}"]`)
             .focus()
-            .type(el.defaultValue !== '' ? type + ' ' + el.defaultValue : '0',{force:true});
+            .type(el.defaultValue !== '' ? type + ' ' + el.defaultValue : '0',{force:true}).wait('@exact');
         }
         if (el.name === 'Units') {
           cy.get(`[data-cy="field-${el.attributeType}"]`, {
@@ -52,7 +53,7 @@ Cypress.Commands.add('createNewPlatformType', (type: string) => {
             .click({force:true})
             .get('mat-option')
             .first()
-            .click();
+            .click().wait('@exact');
         }
       });
     })

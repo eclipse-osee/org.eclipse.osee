@@ -13,7 +13,7 @@
 import { logicalTypeFormDetail } from "../../../shared/types/logicaltype";
 
 export const logicalTypeFormDetailMock: logicalTypeFormDetail = {
-    fields: [{name:'InterfacePlatformTypeBitSize',attributeType:'InterfacePlatformTypeBitSize',editable:true,required:true,defaultValue:'8',value:'8'}],
+    fields: [{name:'InterfacePlatformTypeBitSize',attributeTypeId:'123',attributeType:'InterfacePlatformTypeBitSize',editable:true,required:true,defaultValue:'8',value:'8'}],
     id: "",
     name: "enumeration",
     idString: "",

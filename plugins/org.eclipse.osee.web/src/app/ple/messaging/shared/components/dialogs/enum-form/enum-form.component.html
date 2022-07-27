@@ -1,0 +1,85 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element; index as i">
+            <mat-form-field>
+                <mat-label>Enter a name</mat-label>
+                <input
+                    matInput
+                    [(ngModel)]="element.name"
+                    (ngModelChange)="update()"
+                />
+            </mat-form-field>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="ordinal">
+        <th mat-header-cell *matHeaderCellDef>Ordinal</th>
+        <td mat-cell *matCellDef="let element; index as i">
+            <mat-form-field>
+                <mat-label>Enter an ordinal</mat-label>
+                <input
+                    matInput
+                    [(ngModel)]="element.ordinal"
+                    (ngModelChange)="update()"
+                    type="number"
+                />
+            </mat-form-field>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="applicability">
+        <th mat-header-cell *matHeaderCellDef>Applicability</th>
+        <td mat-cell *matCellDef="let element; index as i">
+            <mat-form-field id="connection-applicability-selector">
+                <mat-label>Select an Applicability</mat-label>
+                <mat-select
+                    [(ngModel)]="element.applicability"
+                    [compareWith]="compareApplics"
+                    (ngModelChange)="update()"
+                    required
+                >
+                    <mat-option
+                        *ngFor="let applic of applics | async"
+                        [value]="applic"
+                    >
+                        {{ applic.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
+            <button
+                mat-button
+                (click)="addEnum()"
+                [disabled]="validateEnumLengthIsBelowMax()"
+            >
+                +
+            </button>
+        </td>
+    </ng-container>
+    <tr
+        mat-header-row
+        *matHeaderRowDef="['name', 'ordinal', 'applicability']"
+    ></tr>
+    <tr
+        mat-row
+        *matRowDef="let row; columns: ['name', 'ordinal', 'applicability']"
+    ></tr>
+    <tr
+        mat-footer-row
+        *matFooterRowDef="['name', 'ordinal', 'applicability']"
+    ></tr>
+</table>

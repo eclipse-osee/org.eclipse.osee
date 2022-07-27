@@ -50,13 +50,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
 
    @Override
    public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, InterfaceConnection.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceConnection>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -76,6 +70,22 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          //
       }
       return InterfaceConnection.SENTINEL;
+   }
+
+   @Override
+   public Collection<InterfaceConnection> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceConnection.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceConnection>();
    }
 
 }

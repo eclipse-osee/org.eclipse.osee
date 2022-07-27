@@ -22,6 +22,7 @@ export interface logicalTypeFormDetail extends logicalType {
 }
 interface logicalTypeFieldInfo {
     attributeType: string,
+    attributeTypeId:string,
     editable: boolean,
     name:string,
     required: boolean,

@@ -27,127 +27,40 @@
             <button mat-button matStepperNext [disabled]="type.length === 0" data-cy="stepper-next-1">Next</button>
         </mat-dialog-actions>
     </mat-step>
-    <mat-step label="Fill out type information" [completed]="isStep2Complete()">
+    <mat-step label="Fill out type information" [completed]="isStep2Complete|async">
         <mat-dialog-content>
-            <mat-label class="mat-headline">Set fields for new type based on logical type {{(formInfo |async)?.name | titlecase}}</mat-label>
-            <br>
-            <ng-container *ngFor="let form of (formInfo | async)?.fields; index as i">
-                <ng-container *ngIf="form.editable">
-                    <ng-container *ngIf="form.name==='Units'; else genericInput">
-                        <mat-form-field>
-                            <mat-label>{{form.name}}</mat-label>
-                            <mat-select [(ngModel)]="fields[i].value" #input [required]="form.required" [attr.data-cy]="'field-'+form.attributeType">
-                                <mat-option *ngFor="let unit of (units|async)" [value]="unit">
-                                    {{unit}}
-                                </mat-option>
-                                <ng-container *ngIf="form.defaultValue">
-                                    <mat-hint align="end">Default Value: {{form.defaultValue}}</mat-hint>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                    </ng-container>
-                    <ng-template #genericInput>
-                        <mat-form-field>
-                            <mat-label>{{form.name}}</mat-label>
-                            <input matInput type="text" [(ngModel)]="fields[i].value" #input [required]="form.required" [attr.data-cy]="'field-'+form.attributeType">
-                            <ng-container *ngIf="form.defaultValue">
-                                <mat-hint align="end">Default Value: {{form.defaultValue}}</mat-hint>
-                            </ng-container>
-                        </mat-form-field>
-                    </ng-template>
-                    <br>
-                </ng-container>
-                <ng-container *ngIf="!form.editable">
-                    {{setDefaultValue(form,i)}}
-                </ng-container>
+            <ng-container *ngIf="type!==''">
+                <osee-new-type-form [logicalType]="type" (attributesUnique)="attributesUnique($event)" (stepComplete)="step2Complete($event)" (attributes)="attributesUpdate($event)" (fields)="fieldsUpdate($event)"></osee-new-type-form>
             </ng-container>
-            <ng-container *ngIf="getTypeName()==='enumeration'">
-                <mat-form-field>
-                    <ng-container *ngIf="(createNewEnum|async)!==true; else createEnumName">
+            <ng-container *ngIf="typeName==='enumeration'">
+                <ng-container *ngIf="(createNewEnum|async)!==true">
+                    <mat-form-field>
                         <mat-label>Select an Enumeration Set</mat-label>
                         <mat-select [(ngModel)]="enumSet" [compareWith]="compareEnumSet">
                             <mat-option *ngFor="let enumset of (enumSets|async)" [value]="enumset">
                                 {{enumset.name}}
                             </mat-option>
                         </mat-select>
-                    </ng-container>
-                    <ng-template #createEnumName>
-                        <mat-label>Enter Enum Set Name</mat-label>
-                        <input matInput [(ngModel)]="enumSet.name">
-                    </ng-template>
-                    <button mat-icon-button matSuffix (click)="toggleEnumCreationState()"><mat-icon>{{(createNewEnum|async)!==true?'add':'remove'}}</mat-icon>
-                    </button>
-                </mat-form-field>
-                <div [@detailExpand]="(createNewEnum|async)===true && getTypeName()==='enumeration' ? 'expanded':'collapsed'">
+                        <button mat-icon-button matSuffix (click)="toggleEnumCreationState()"><mat-icon>{{(createNewEnum|async)!==true?'add':'remove'}}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </ng-container>
+                <div [@detailExpand]="(createNewEnum|async)===true && typeName==='enumeration' ? 'expanded':'collapsed'">
                     <ng-container *ngIf="(createNewEnum|async)===true">
-                        <br>
-                        <mat-form-field>
-                            <mat-label>Enter Enum Set Description</mat-label>
-                            <input matInput [(ngModel)]="enumSet.description">
-                        </mat-form-field>
-                        <br>
-                        <mat-form-field id='connection-applicability-selector'>
-                            <mat-label>Select an Applicability</mat-label>
-                            <mat-select [(ngModel)]="enumSet.applicability" [compareWith]="compareApplics" required>
-                                <mat-option *ngFor="let applic of (applics|async)" [value]="applic">
-                                    {{applic.name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <br>
-                        Enums:
-                        <table mat-table [dataSource]="dataSource">
-                            <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Name</th>
-                                <td mat-cell *matCellDef="let element">
-                                    <mat-form-field>
-                                        <mat-label>Enter a name</mat-label>
-                                        <input matInput [(ngModel)]="element.name">
-                                    </mat-form-field>
-                                </td>
-                                <td mat-footer-cell *matFooterCellDef></td>
-                            </ng-container>
-                            <ng-container matColumnDef="ordinal">
-                                <th mat-header-cell *matHeaderCellDef>Ordinal</th>
-                                <td mat-cell *matCellDef="let element">
-                                    <mat-form-field>
-                                        <mat-label>Enter an ordinal</mat-label>
-                                        <input matInput [(ngModel)]="element.ordinal" type="number">
-                                    </mat-form-field>
-                                </td>
-                                <td mat-footer-cell *matFooterCellDef></td>
-                            </ng-container>
-                            <ng-container matColumnDef="applicability">
-                                <th mat-header-cell *matHeaderCellDef>Applicability</th>
-                                <td mat-cell *matCellDef="let element">
-                                    <mat-form-field id='connection-applicability-selector'>
-                                        <mat-label>Select an Applicability</mat-label>
-                                        <mat-select [(ngModel)]="element.applicability" [compareWith]="compareApplics" required>
-                                            <mat-option *ngFor="let applic of (applics|async)" [value]="applic">
-                                                {{applic.name}}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </td>
-                                <td mat-footer-cell *matFooterCellDef>
-                                    <button mat-button (click)="addEnum()" [disabled]="validateEnumLengthIsBelowMax()">+</button>
-                                </td>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="['name','ordinal','applicability']"></tr>
-                            <tr mat-row *matRowDef="let row; columns: ['name','ordinal','applicability'];"></tr>
-                            <tr mat-footer-row *matFooterRowDef="['name','ordinal','applicability']"></tr>
-                        </table>
+                        <ng-container *ngIf="attributes|async as attrs; else NoBitSize">
+                            <osee-enum-set-form [bitSize]="attrs.get('Bit Size')||'0'" (enumSet)="updateEnumSet($event)" (unique)="enumSetUnique($event)" (close)="toggleEnumCreationState()"></osee-enum-set-form>
+                        </ng-container>
+                        <ng-template #NoBitSize>
+                            No Bit Size defined, please select a bit size above.
+                        </ng-template>
                     </ng-container>
                 </div>
             </ng-container>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button mat-button matStepperPrevious>Back</button>
-            <ng-container *ngIf="isStep2Complete()">
-                <button mat-raised-button matStepperNext [disabled]="!isStep2Complete()" [color]="isStep2Complete() ? 'primary': ''" data-cy="stepper-next-2">Next</button>
-            </ng-container>
-            <ng-container *ngIf="!isStep2Complete()">
-                <button mat-button matStepperNext [disabled]="!isStep2Complete()" [color]="isStep2Complete() ? 'primary': ''">Next</button>
+            <ng-container *ngIf="(isStep2Complete|async)">
+                <button mat-raised-button matStepperNext [disabled]="(isStep2Complete|async)===false || (isUnique|async)===false" [color]="(isStep2Complete|async)===true ? 'primary': ''" data-cy="stepper-next-2">Next</button>
             </ng-container>
         </mat-dialog-actions>
     </mat-step>
@@ -157,6 +70,12 @@
                 A new platform type of type {{(formInfo |async)?.name | titlecase}} will be created with the following properties:
             </p>
             <br>
+            <ng-container *ngIf="attributes|async as attrs">
+                <ng-container *ngFor="let attr of attrs |keyvalue">
+                    <mat-label class="mat-title"> {{attr.key}} : {{attr.value}}</mat-label>
+                    <br>
+                </ng-container>
+            </ng-container>
             <br>
             <ng-container *ngFor="let field of fields">
                 <ng-container *ngIf="field.value!==''">
