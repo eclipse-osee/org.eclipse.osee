@@ -135,6 +135,7 @@
 <plugin id="org.apache.xerces"/>
 <plugin id="org.apache.xml.resolver"/>
 <plugin id="org.apache.xml.serializer"/>
+<plugin id="org.apache.xmlbeans"/>
 <plugin id="org.apache.xmlgraphics"/>
 <plugin id="org.apache.xmlgraphics.source"/>
 <plugin id="org.codehaus.stax2"/>
