@@ -14,13 +14,14 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, from, iif, Observable, Subject, of, combineLatest, ReplaySubject } from 'rxjs';
 import {
   concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
   map,
+  reduce,
   share,
   switchMap,
   take,
@@ -35,6 +36,7 @@ import { ApplicabilityListUIService } from '../../../services/ui/applicability-l
 import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
 import { TypesService } from '../../../services/http/types.service';
 import { EnumsService } from '../../../services/http/enums.service';
+import { validateEnumLengthIsBelowMax } from '../../../functions/validateEnumLength';
 
 @Component({
   selector: 'app-new-type-dialog',
@@ -68,6 +70,7 @@ export class NewTypeDialogComponent implements OnInit {
     share()
   );
   formDetail!: logicalTypeFormDetail;
+  // should deprecate/remove this soon - LV
   private _fieldObs = this.formInfo.pipe(
     tap((c) => {
       this.fields = [];
@@ -91,7 +94,7 @@ export class NewTypeDialogComponent implements OnInit {
   createNewEnum = new BehaviorSubject<boolean>(false);
   dataSource = new MatTableDataSource<enumeration>();
   applics = this.applicabilityService.applic;
-  enumSets = this.enumSetService.enumSets;
+  _enumSets = this.enumSetService.enumSets;
   enumSet: enumerationSet = {
     name: '',
     description: '',
@@ -103,7 +106,8 @@ export class NewTypeDialogComponent implements OnInit {
   }
   units = this.constantEnumService.units;
   disableClose = false;
-  @Input() preFillData?:PlatformType[]
+  @Input() preFillData?: PlatformType[];
+  private _isStep2Complete = new Subject<boolean>();
   constructor(
     public dialogRef: MatDialogRef<NewTypeDialogComponent>,
     private typesService: TypesService,
@@ -119,6 +123,21 @@ export class NewTypeDialogComponent implements OnInit {
       this.disableClose=true;
     }
   }
+  private _attributesUnique = new ReplaySubject<string>();
+  private _enumsUnique = new BehaviorSubject<boolean>(false);
+  private _attributeList = new ReplaySubject<Map<string, string>>();
+  private _attributes = new BehaviorSubject(new Map<string, logicalTypefieldValue>());
+  
+  enumSets = combineLatest([this._attributeList, this._enumSets]).pipe(
+    switchMap(([attributes, enumSets]) => of({ bitSize:attributes.get('Bit Size') || '0', enumSets:enumSets }).pipe(
+      switchMap(({ bitSize, enumSets }) => of(enumSets).pipe(
+        concatMap(enumSets => from(enumSets).pipe(
+          filter(enumSet=>!validateEnumLengthIsBelowMax(enumSet.enumerations?.length||0,parseInt(bitSize)))
+        )),
+        reduce((acc,curr)=>[...acc,curr],[] as enumerationSet[])
+      ))
+    ))
+  )
 
   ngOnInit(): void {
     if (this.preFillData !== undefined && this.preFillData.length > 0) {
@@ -141,31 +160,11 @@ export class NewTypeDialogComponent implements OnInit {
    * Validates the second step of the form
    * @returns true if all required fields have a filled in value
    */
-  isStep2Complete() {
-    let result: boolean = true;
-    if (this.formDetail !== undefined) {
-      this.formDetail.fields.forEach((value, index) => {
-        if (value.required && this.fields[index].value.length === 0) {
-          if (value.editable) {
-            result = false;
-          }
-          if (!value.editable && this.fields[index].value !== value.defaultValue) {
-            result = false; 
-          }
-        }
-      })
-    }
-    return result;
-  }
-  setDefaultValue(form: logicalTypeFieldInfo, index: number) {
-    if (this.fields[index].name === form.attributeType) {
-      if (this.fields[index].value === null || this.fields[index].value === undefined || this.fields[index].value === "") {
-        this.fields[index].value = form.defaultValue;
-      }
-    }
+  get isStep2Complete() {
+    return this._isStep2Complete;
   }
 
-  getTypeName() {
+  get typeName() {
     return this._typeName;
   }
 
@@ -179,20 +178,6 @@ export class NewTypeDialogComponent implements OnInit {
   compareEnumSet(o1: enumerationSet, o2: enumerationSet) {
     return o1?.id === o2?.id && o1?.name === o2?.name;
   }
-  validateEnumLengthIsBelowMax() {
-    let bitSize = this.fields.filter((o) => o.name === 'InterfacePlatformTypeBitSize')[0]
-    if (this.dataSource.data.length >= 2 ** (parseInt(bitSize.value))) {
-      return true;
-    }
-    return false;
-  }
-  addEnum() {
-    let enumData = [
-      ...this.dataSource.data,
-      {name:'',ordinal:((this.dataSource.data[this.dataSource.data.length - 1]?.ordinal !==undefined ? (this.dataSource.data[this.dataSource.data.length - 1].ordinal) : -1)+1),applicability:{id:'1',name:'Base'}}
-    ]
-    this.dataSource.data=enumData;
-  }
 
   get ReturnData() {
     let enumdescription: string = " ";
@@ -204,16 +189,15 @@ export class NewTypeDialogComponent implements OnInit {
     })
     let returnValue:newPlatformTypeDialogReturnData = {
       fields: [
-        ...this.fields, 
+        ...this.fields,
+        ...this._attributes.getValue().values()
       ],
       createEnum: this.createNewEnum.getValue(),
       enumSetName: this.enumSet?.name || '',
       enumSetId:this.enumSet?.id||'-1',
       enumSetDescription: (this.enumSet?.description||'')+enumdescription,
       enumSetApplicability: this.enumSet?.applicability || { id: '1', name: "Base" },
-      enums: [
-        ...(this.dataSource.data!==[]? this.dataSource.data : this.enumSet?.enumerations||[]) 
-      ]
+      enums: this.enumSet?.enumerations||[]
     }
     return returnValue;
   }
@@ -222,5 +206,46 @@ export class NewTypeDialogComponent implements OnInit {
   }
   hideTypeDialog() {
     this.dialogClosed.emit(this.ReturnData);
+  }
+  attributesUnique(value: string) {
+    this._attributesUnique.next(value);
+  }
+
+  enumSetUnique(value: boolean) {
+    this._enumsUnique.next(value);
+  }
+
+  step2Complete(value: boolean) {
+    this._isStep2Complete.next(value);
+  }
+  get isUnique() {
+    return combineLatest([this.createNewEnum, this._attributesUnique, this._enumsUnique]).pipe(
+      switchMap(([newEnum, attributes, enums]) => iif(() => newEnum,
+        of([attributes, enums]).pipe(
+          switchMap(([attr, enums]) => iif(() => attr === '' && enums === true,
+            of(true),
+            of(false)
+          ))
+        ),
+        of(attributes).pipe(
+          switchMap(attr => iif(() => attr === '',
+            of(true),
+            of(false)
+          )),
+        )
+      ))
+    )
+  }
+  attributesUpdate(value: Map<string, string>) {
+    this._attributeList.next(value);
+  }
+  get attributes() {
+    return this._attributeList;
+  }
+  fieldsUpdate(value: Map<string, logicalTypefieldValue>) {
+    this._attributes.next(value);
+  }
+  updateEnumSet(value: enumerationSet) {
+    this.enumSet = value;
   }
 }

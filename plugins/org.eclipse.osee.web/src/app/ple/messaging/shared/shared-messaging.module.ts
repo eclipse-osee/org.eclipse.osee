@@ -33,9 +33,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MimHeaderComponent } from './components/mim-header/mim-header.component';
 import { RouterModule } from '@angular/router';
 import { EditEnumSetFieldComponent } from './components/edit-enum-set-field/edit-enum-set-field.component';
+import { NewTypeFormComponent } from './components/dialogs/new-type-form/new-type-form.component';
+import { NewAttributeFormFieldComponent } from './components/dialogs/new-attribute-form-field/new-attribute-form-field.component';
+import { EnumSetFormComponent } from './components/dialogs/enum-set-form/enum-set-form.component';
+import { EnumFormComponent } from './components/dialogs/enum-form/enum-form.component';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent],
+  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent],
   imports: [
     CommonModule,
     MatDialogModule,

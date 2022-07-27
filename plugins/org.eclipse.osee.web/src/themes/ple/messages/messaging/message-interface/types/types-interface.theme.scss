@@ -28,6 +28,9 @@
   .ple-messaging-type-grid-list{
     background-color:mat.get-color-from-palette($background, app-bar)
   }
+  .attribute-unique-error{
+    color: mat.get-color-from-palette($warn)
+  }
 }
 @mixin typography($config-or-theme){
     

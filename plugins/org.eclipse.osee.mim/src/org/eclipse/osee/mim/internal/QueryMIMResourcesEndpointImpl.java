@@ -87,4 +87,9 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
       }
    }
 
+   @Override
+   public Collection<? extends PLGenericDBObject> getExact(MimAttributeQuery query) {
+      return getApi(query.getType()).queryExact(branch, query);
+   }
+
 }

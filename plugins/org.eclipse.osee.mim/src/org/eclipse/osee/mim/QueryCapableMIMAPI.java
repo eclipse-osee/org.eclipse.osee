@@ -21,4 +21,8 @@ public interface QueryCapableMIMAPI<T extends PLGenericDBObject> {
 
    Collection<T> query(BranchId branch, MimAttributeQuery query);
 
+   Collection<T> queryExact(BranchId branch, MimAttributeQuery query);
+
+   Collection<T> query(BranchId branch, MimAttributeQuery query, boolean isExact);
+
 }

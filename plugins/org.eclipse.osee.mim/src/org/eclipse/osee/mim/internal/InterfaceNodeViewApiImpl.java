@@ -50,13 +50,7 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
 
    @Override
    public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, InterfaceNode.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         //
-      }
-      return new LinkedList<InterfaceNode>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -80,6 +74,22 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
          //
       }
       return InterfaceNode.SENTINEL;
+   }
+
+   @Override
+   public Collection<InterfaceNode> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceNode.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new LinkedList<InterfaceNode>();
    }
 
 }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.mim.types;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Audrey E Denk
@@ -24,20 +25,21 @@ public class InterfaceLogicalTypeLongLong extends InterfaceLogicalTypeGeneric {
    public InterfaceLogicalTypeLongLong() {
       super(10L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true,"Name"));
-      fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize",
-         true, true));
-      fields.add(new InterfaceLogicalTypeField("2s Complement",
-         "InterfacePlatformType2sComplement", true, false,"true"));
-      fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true, "Name", CoreAttributeTypes.Name));
+      fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize", true, true,
+         CoreAttributeTypes.InterfacePlatformTypeBitSize));
+      fields.add(new InterfaceLogicalTypeField("2s Complement", "InterfacePlatformType2sComplement", true, false,
+         "true", CoreAttributeTypes.InterfacePlatformType2sComplement));
       fields.add(
-         new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true));
-      fields.add(
-         new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true));
-      fields.add(
-         new InterfaceLogicalTypeField("Units", "InterfacePlatformTypeUnits", false, true));
-      fields.add(new InterfaceLogicalTypeField("Default Value",
-         "InterfacePlatformTypeDefaultValue", false, true));
+         new InterfaceLogicalTypeField("Description", "Description", false, true, CoreAttributeTypes.Description));
+      fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true,
+         CoreAttributeTypes.InterfacePlatformTypeMinval));
+      fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true,
+         CoreAttributeTypes.InterfacePlatformTypeMaxval));
+      fields.add(new InterfaceLogicalTypeField("Units", "InterfacePlatformTypeUnits", false, true,
+         CoreAttributeTypes.InterfacePlatformTypeUnits));
+      fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true,
+         CoreAttributeTypes.InterfacePlatformTypeDefaultValue));
       this.setFields(fields);
    }
 

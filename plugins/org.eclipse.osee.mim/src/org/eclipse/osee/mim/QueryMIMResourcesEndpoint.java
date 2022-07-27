@@ -28,4 +28,10 @@ public interface QueryMIMResourcesEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
    public Collection<? extends PLGenericDBObject> get(MimAttributeQuery query);
+
+   @POST()
+   @Path("exact")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Collection<? extends PLGenericDBObject> getExact(MimAttributeQuery query);
 }

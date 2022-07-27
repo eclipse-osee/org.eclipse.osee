@@ -49,13 +49,7 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
 
    @Override
    public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, InterfaceEnumeration.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceEnumeration>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -67,6 +61,22 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
          System.out.println(ex);
       }
       return InterfaceEnumeration.SENTINEL;
+   }
+
+   @Override
+   public Collection<InterfaceEnumeration> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceEnumeration.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceEnumeration>();
    }
 
 }

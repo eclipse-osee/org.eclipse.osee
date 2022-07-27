@@ -58,13 +58,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, PlatformTypeToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<PlatformTypeToken>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -166,6 +160,22 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeUnits);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription);
       return attributes;
+   }
+
+   @Override
+   public Collection<PlatformTypeToken> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, PlatformTypeToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<PlatformTypeToken>();
    }
 
 }

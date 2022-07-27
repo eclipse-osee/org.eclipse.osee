@@ -64,7 +64,7 @@ export class EnumerationUIService {
             concatMap(enumerationsArray => from(enumerationsArray).pipe(
               switchMap(enumeration => this.createOrChangeEnum(branchId,changes?.id||'',enumeration))
             )),
-            take((enumerations as enumeration[]).length),
+            take((enumerations as enumeration[])?.length||0),
             reduce((acc, curr) => [...acc, curr], [transactionStart] as transaction[]),
             switchMap(transactions=>this._mergeTransactions([...transactions])),
          ),

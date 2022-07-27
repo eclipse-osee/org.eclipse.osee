@@ -31,4 +31,14 @@ export class QueryService {
   query<T>(branchId: string, query: MimQuery<T>) {
     return this.http.post<Required<T>[]>(apiURL+"/mim/branch/"+branchId+"/query",query)
   }
+
+  /**
+   * Returns a typed query element
+   * @param branchId branch to get information from
+   * @param query Typed Query
+   * @returns query result typed as @type Observable<T>
+   */
+   queryExact<T>(branchId: string, query: MimQuery<T>) {
+    return this.http.post<Required<T>[]>(apiURL+"/mim/branch/"+branchId+"/query/exact",query)
+  }
 }

@@ -45,6 +45,8 @@ import { EnumsService } from '../../../services/http/enums.service';
 import { MimPreferencesService } from '../../../services/http/mim-preferences.service';
 import { TypesService } from '../../../services/http/types.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MockNewTypeForm } from '../new-type-form/new-type-form.component.mock';
+import { MockEnumSetFormUnique } from '../enum-set-form/enum-set-form.component.mock';
 
 describe('NewTypeDialogComponent', () => {
   let component: NewTypeDialogComponent;
@@ -54,7 +56,7 @@ describe('NewTypeDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports:[MatDialogModule, MatStepperModule,NoopAnimationsModule,MatSelectModule,FormsModule,MatFormFieldModule,MatInputModule,MatButtonModule,MatTableModule,MatIconModule],
-      declarations: [NewTypeDialogComponent],
+      declarations: [NewTypeDialogComponent, MockNewTypeForm,MockEnumSetFormUnique],
       providers: [{ provide: MatDialogRef, useValue: {} },
         { provide: TransactionBuilderService, useValue: transactionBuilderMock },
         { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
@@ -103,25 +105,15 @@ describe('NewTypeDialogComponent', () => {
     })
 
     it('should toggle enum mode', async () => {
+      const spy = spyOn(component, 'toggleEnumCreationState').and.callThrough();
       let button = await loader.getHarness(MatButtonHarness.with({ text: new RegExp('add') }))
       await button.click();
-      let table = await loader.getHarness(MatTableHarness);
-      expect(table).toBeDefined();
+      expect(spy).toHaveBeenCalled();
     })
     describe('enum editing', () => {
       beforeEach(async() => {
         let button = await loader.getHarness(MatButtonHarness.with({ text: new RegExp('add') }))
         await button.click();
-      })
-      it('should add an enum', async () => {
-        component.enumSet.enumerations = [];
-        let table = await loader.getHarness(MatTableHarness);
-        expect(table).toBeDefined();
-        let addButton = await (await (await (await table.getFooterRows())[0].getCells({ columnName: 'applicability' })))[0].getHarness(MatButtonHarness);
-        expect(await addButton.isDisabled()).toBe(false);
-        let spy = spyOn(component, 'addEnum').and.callThrough();
-        await addButton.click();
-        expect(spy).toHaveBeenCalled();
       })
     })
 

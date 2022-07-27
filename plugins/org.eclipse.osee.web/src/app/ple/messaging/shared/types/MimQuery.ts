@@ -13,6 +13,7 @@
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
+import { enumerationSet } from './enum';
 import { PlatformType } from './platformType';
 
 interface _mimQuery<T>{
@@ -106,5 +107,16 @@ export class PlatformTypeQuery extends MimQuery<PlatformType>{
     },
         queries?: _andQuery[]) {
         super(ARTIFACTTYPEID.PLATFORMTYPE,related,queries)
+        }
+}
+
+export class EnumerationSetQuery extends MimQuery<enumerationSet>{
+    constructor(related?: {
+        relation: RelationTypeId,
+        relatedId: string,
+        side: "SIDE_A" | "SIDE_B"
+    },
+        queries?: _andQuery[]) {
+        super(ARTIFACTTYPEID.ENUMSET,related,queries)
         }
 }

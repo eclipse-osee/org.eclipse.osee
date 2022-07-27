@@ -63,13 +63,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
 
    @Override
    public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, InterfaceSubMessageToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceSubMessageToken>();
+      return this.query(branch, query, false);
    }
 
    @Override
@@ -126,6 +120,22 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          System.out.println(ex);
       }
       return InterfaceSubMessageToken.SENTINEL;
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> queryExact(BranchId branch, MimAttributeQuery query) {
+      return this.query(branch, query, true);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
    }
 
 }
