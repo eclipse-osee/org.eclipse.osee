@@ -115,7 +115,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getColumnServiceColumn(AtsColumnTokens.ParentTitleColumn),
          getColumnServiceColumn(AtsColumnTokens.FeatureImpactReferenceColumn),
          getColumnServiceColumn(AtsColumnTokens.IncorporatedInColumn),
-
+         getColumnServiceColumn(AtsColumnTokens.TaskPointsColumn),
+         getColumnServiceColumn(AtsColumnTokens.TaskRiskFactorsColumn),
          /**
           * This is the legacy way of providing columns. DO NOT USE THIS METHOD. These should eventually be converted to
           * one of the above

@@ -54,7 +54,9 @@ import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.SprintOrderColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TargetedVersionColumn;
+import org.eclipse.osee.ats.core.column.TaskPointsColumn;
 import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
+import org.eclipse.osee.ats.core.column.TaskRiskFactorsColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
@@ -223,6 +225,10 @@ public class AtsColumnService implements IAtsColumnService {
             column = new IncorporatedInColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.FeatureImpactReferenceColumn.getId())) {
             column = new FeatureImpactReferenceColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.TaskPointsColumn.getId())) {
+            column = new TaskPointsColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.TaskRiskFactorsColumn.getId())) {
+            column = new TaskRiskFactorsColumn(atsApi);
          }
       }
       // Add columns provided through OSGI services
