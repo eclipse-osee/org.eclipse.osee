@@ -124,18 +124,17 @@ public class ChangeReportTasksUtil {
 
       // Find additional task matches
       List<IAtsTask> additionalTasksFound = new LinkedList<IAtsTask>();
-      for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+      Collection<ChangeReportTaskMatch> addlTaskMatches = crttwd.getTaskMatches();
+      for (ChangeReportTaskMatch taskMatch : addlTaskMatches) {
          if (taskMatch.getMatchType().equals(ChangeReportTaskMatchType.AdditionalTskCompAsNeeded)) {
             for (IAtsTask task : tasks) {
                if (task.getName().equals(taskMatch.getTaskName())) {
-                  if (taskMatch.getTaskName().equals(task.getName())) {
-                     taskMatch.setTaskName(task.getName());
-                     taskMatch.setType(ChangeReportTaskMatchType.Match);
-                     taskMatch.setTaskWf(task);
-                     taskMatch.setTaskTok(task.getArtifactToken());
-                     additionalTasksFound.add(task);
-                     break;
-                  }
+                  taskMatch.setTaskName(task.getName());
+                  taskMatch.setType(ChangeReportTaskMatchType.Match);
+                  taskMatch.setTaskWf(task);
+                  taskMatch.setTaskTok(task.getArtifactToken());
+                  additionalTasksFound.add(task);
+                  break;
                }
             }
          }
