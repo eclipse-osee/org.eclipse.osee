@@ -33,6 +33,7 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -401,6 +402,8 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new ViewTableReportAction(worldComposite.getXViewer()));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new ExpandAllAction(worldComposite.getXViewer()));
       toolBarMgr.add(new CollapseAllAction(worldComposite.getXViewer()));
