@@ -26,6 +26,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false)
       .any(Annotation)
       .zeroOrOne(ContentUrl)
+      .any(DataClassification)
+      .zeroOrOne(DataClassificationRationale)
       .zeroOrOne(Description)
       .exactlyOne(Name, "unnamed")
       .zeroOrOne(RelationOrder)
