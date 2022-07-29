@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.ide.world.action.ViewTableReportAction;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -538,6 +539,8 @@ public class WorldXWidgetActionPage extends FormPage {
          toolBarManager.add(new OpenNewAtsWorldEditorAction(worldComposite));
          toolBarManager.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       }
+      toolBarManager.add(new Separator());
+      toolBarManager.add(new ViewTableReportAction(worldComposite.getXViewer()));
       toolBarManager.add(new Separator());
       toolBarManager.add(new ExpandAllAction(worldComposite.getXViewer()));
       toolBarManager.add(new CollapseAllAction(worldComposite.getXViewer()));

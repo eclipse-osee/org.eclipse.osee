@@ -33,6 +33,7 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -397,6 +398,8 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       toolBarMgr.add(new DeleteTasksAction(this));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new ViewTableReportAction(taskComposite.getXViewer()));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsTaskEditorAction(taskComposite));
       toolBarMgr.add(new OpenNewAtsTaskEditorSelected(taskComposite));

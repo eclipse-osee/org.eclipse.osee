@@ -66,6 +66,7 @@ import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToMenu;
+import org.eclipse.osee.ats.ide.world.action.ViewTableReportAction;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -167,6 +168,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    DeleteTasksAction deleteTasksAction;
    AddTaskAction addTaskAction;
    private boolean showRemoveMenuItems = true;
+   private ViewTableReportAction htmlAction;
 
    public void createMenuActions() {
 
@@ -179,6 +181,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       editBlockedStatusAction = new EditBlockedStatusAction(this);
       editHoldStatusAction = new EditHoldStatusAction(this);
       addTaskAction = new AddTaskAction(this);
+      htmlAction = new ViewTableReportAction(this);
       IAtsTaskArtifactProvider taskProvider = new IAtsTaskArtifactProvider() {
 
          @Override
@@ -398,6 +401,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, htmlAction);
 
       if (showTaskMenu()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, addTaskAction);
