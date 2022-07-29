@@ -14,11 +14,13 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -65,12 +67,19 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          }
          joinQuery = writer.writeJoin(typeIds);
       }
+      List<QueryOption> asList = Arrays.asList(criteria.getOptions());
+      if ((asList.contains(QueryOption.CASE__MATCH) && asList.contains(
+         QueryOption.TOKEN_DELIMITER__EXACT) && asList.contains(
+            QueryOption.TOKEN_MATCH_ORDER__MATCH)) || criteria.getOptions().equals(QueryOption.EXACT_MATCH_OPTIONS)) {
+         attrAlias = writer.startCommonTableExpression("att");
+         writeAttrWithNoGamma(writer, joinQuery);
+      } else {
+         String gammaAlias = writer.startCommonTableExpression("gamma");
+         writeGammaWith(writer, joinQuery);
 
-      String gammaAlias = writer.startCommonTableExpression("gamma");
-      writeGammaWith(writer, joinQuery);
-
-      attrAlias = writer.startCommonTableExpression("att");
-      writeAttrWith(writer, joinQuery, gammaAlias);
+         attrAlias = writer.startCommonTableExpression("att");
+         writeAttrWith(writer, joinQuery, gammaAlias);
+      }
    }
 
    private void writeGammaWith(AbstractSqlWriter writer, AbstractJoinQuery joinQuery) {
@@ -149,6 +158,34 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       writer.write(" AND ");
       writer.writeEqualsAnd("att", "txs", "gamma_id");
       writer.writeTxBranchFilter("txs", true);
+   }
+
+   private void writeAttrWithNoGamma(AbstractSqlWriter writer, AbstractJoinQuery joinQuery) {
+      writer.write(" SELECT DISTINCT art_id FROM osee_attribute att, osee_txs txs ");
+
+      String jIdAlias = null;
+      if (joinQuery != null) {
+         jIdAlias = writer.writeTable(OseeDb.OSEE_JOIN_ID_TABLE);
+         writer.write(", ");
+      }
+
+      writer.write("\n WHERE \n");
+
+      if (!criteria.isIncludeAllTypes()) {
+
+         if (joinQuery == null) {
+            writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
+         } else {
+            writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
+            writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
+         }
+      }
+      writer.write(" AND ");
+      writer.writeEqualsAnd("att", "txs", "gamma_id");
+      writer.writeTxBranchFilter("txs", true);
+      if (criteria.getValues().size() == 1) {
+         writer.write(" and att.value = '" + criteria.getValues().iterator().next() + "' ");
+      }
    }
 
    @Override
