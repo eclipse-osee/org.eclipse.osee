@@ -11,15 +11,18 @@
  *     Boeing - initial API and implementation
  -->
 <div class="light-theme">
-    <mat-sidenav-container fullscreen>
+    <mat-sidenav-container fullscreen>             
         <mat-sidenav-content>
             <mat-toolbar>
-                <div style="display:flex; align-items:center;justify-content:space-between;width:100%">
+                <div class="top-toolbar">
+                    <!-- Top Level Nav - Button -->
+                    <button mat-icon-button (click)="topLevelNav.toggle(); toggleTopLevelNavIcon()"><mat-icon>{{topLevelNavIcon}}</mat-icon> </button> 
+                    
                     <img src="favicon.ico" width=48 height=47/>
                     <router-outlet name="title"></router-outlet>
                     <router-outlet name="navigationHeader"></router-outlet>
-                    <osee-display-user></osee-display-user>
                 </div>
+                <osee-display-user></osee-display-user>
             </mat-toolbar>
             <ng-container *ngIf="(isLoading|async)==='true'">
                 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -31,4 +34,10 @@
             <router-outlet name="rightSideNav"></router-outlet>
         </mat-sidenav>
     </mat-sidenav-container>
+    <!-- Top Level Nav - Left -->
+    <mat-sidenav position="start" mode="side" class="mat-elevation-z9" [fixedInViewport]=true [fixedTopGap]=64 [fixedBottomGap]=0 #topLevelNav>
+        <nav style="height: 100%; width: 400px; background-color: inherit; overflow-x: hidden;">
+            <router-outlet name="TopLevelNav"></router-outlet>
+        </nav>
+    </mat-sidenav>
 </div>

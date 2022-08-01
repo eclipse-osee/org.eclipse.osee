@@ -1,0 +1,35 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+-->
+<mat-toolbar>OSEE Navigator</mat-toolbar>
+
+<mat-nav-list>
+  <div *ngTemplateOutlet="recursiveMenu; context:{ $implicit: navElements }"></div>
+    <ng-template #recursiveMenu let-elements>
+      <div *ngFor="let element of elements">
+        <!-- If dropdown -->
+        <a mat-list-item *ngIf="element.isDropdown" (click)="element.isDropdownOpen = !element.isDropdownOpen" [ngClass]="{'highlight':element.isDropdownOpen, 'onpage':router.url.includes(element.routerLink)}">
+          {{element.label}}
+          <mat-icon *ngIf="!element.isDropdownOpen">chevron_right</mat-icon>
+          <mat-icon *ngIf="element.isDropdownOpen">expand_more</mat-icon>
+        </a>
+        <!-- If not a dropdown -->
+        <a mat-list-item *ngIf="!element.isDropdown" routerLink={{element.routerLink}} [ngClass]="{'onpage':router.url===element.routerLink}">
+          {{element.label}}
+        </a>
+        <!-- If the element has children and dropdown is open -->
+        <ul *ngIf="element.children && element.isDropdownOpen">
+          <ng-container *ngTemplateOutlet="recursiveMenu; context:{ $implicit: element.children }"></ng-container>
+        </ul>
+      </div>
+    </ng-template>
+</mat-nav-list>

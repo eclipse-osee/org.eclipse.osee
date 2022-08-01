@@ -25,7 +25,11 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo:'404',
-  }
+  },
+  { 
+    path: '', 
+    loadChildren: () => import('./navigation/navigation.module').then(m => m.NavigationModule) 
+  },
 ];
 
 @NgModule({

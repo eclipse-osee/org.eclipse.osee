@@ -30,6 +30,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../environments/environment';
 import { UserHeaderService } from './userdata/services/user-header.service';
+import { NavigationModule } from './navigation/navigation.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { UserHeaderService } from './userdata/services/user-header.service';
     MatMenuModule,
     MatIconModule,
     MatProgressBarModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NavigationModule
   ],
   providers: [httpInterceptorProviders,{ provide: UserHeaderService, useClass: environment.headerService }],
   bootstrap: [AppComponent]

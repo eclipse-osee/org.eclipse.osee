@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@forward 'messages/lib' as messages-*;
-@forward 'plconfig/lib' as plconfig-*;
-@forward 'navigation/lib' as top-level-navigation-*;
+// Sidenav header
+.mat-toolbar 
+  height: 3.25rem
+  font: inherit
+  font-size: 1.3rem
+  font-weight: bold
+  padding-top: 0.25rem
+
+// Sidenav elements
+.mat-nav-list
+  a
+    font-size: 1.1rem
+  a:hover
+    box-shadow: rgba(0, 0, 0, 0.35) 0rem 0.1rem 0.6rem 0rem
+  .highlight
+    box-shadow: rgba(0, 0, 0, 0.35) 0rem 0.1rem 0.6rem 0rem
+  ul  
+    margin-top: 0
