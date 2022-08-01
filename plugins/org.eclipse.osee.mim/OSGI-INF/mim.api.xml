@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="Message Interface Modeling API">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="Message Interface Modeling API" deactivate="stop">
    <implementation class="org.eclipse.osee.mim.internal.MimApiImpl"/>
    <service>
       <provide interface="org.eclipse.osee.mim.MimApi"/>
