@@ -22,8 +22,15 @@ import { SideNavService } from './shared-services/ui/side-nav.service';
 export class AppComponent {
   opened = this.sideNavService.opened;
   isLoading = this.loadingService.isLoading;
-  constructor (private sideNavService: SideNavService, private loadingService: HttpLoadingService) {
-    
+
+  // Top Level Navigation icon - change when opened/closed
+  topLevelNavIconOpen = false;
+  topLevelNavIcon = "menu";
+  toggleTopLevelNavIcon() {
+    this.topLevelNavIconOpen = !this.topLevelNavIconOpen;
+    this.topLevelNavIcon = this.topLevelNavIconOpen ? 'close' : 'menu';
   }
+
+  constructor (private sideNavService: SideNavService, private loadingService: HttpLoadingService) {}
   title = 'OSEE';
 }
