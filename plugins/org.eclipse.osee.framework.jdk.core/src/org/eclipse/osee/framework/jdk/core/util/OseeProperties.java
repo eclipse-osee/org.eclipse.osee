@@ -42,6 +42,7 @@ public class OseeProperties {
    public static final String OSEE_DB = "osee.db";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
    public static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
+   private static final String JWT_LOGIN_KEY = "jwt.login.key";
 
    protected OseeProperties() {
       // Utility Class
@@ -251,5 +252,12 @@ public class OseeProperties {
 
    public static String getOseeDbName() {
       return System.getProperty(OSEE_DB);
+   }
+
+   /**
+    * @return the jwtLoginKey
+    */
+   public static String getJwtLoginKey() {
+      return System.getProperty(JWT_LOGIN_KEY);
    }
 }

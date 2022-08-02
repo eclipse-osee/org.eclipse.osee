@@ -53,12 +53,19 @@ public class UserServiceImpl implements UserService {
    private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<UserId, UserToken> accountIdToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
+   private final String loginKey;
 
    private final QueryBuilder query;
 
    public UserServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
+      loginKey = OseeProperties.getJwtLoginKey();
+   }
+
+   @Override
+   public String getLoginKey() {
+      return this.loginKey;
    }
 
    @Override
