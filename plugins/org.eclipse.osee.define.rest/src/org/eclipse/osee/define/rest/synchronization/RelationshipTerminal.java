@@ -13,19 +13,25 @@
 
 package org.eclipse.osee.define.rest.synchronization;
 
-import java.util.Map;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
-
 /**
- * An empty interface used to union the {@link IdentifierType} and {@link IdentifierTypeGroup} enumerations for use as
- * {@link Map} keys.
+ * An enumeration to describe a relationship terminal as either the {@link #SOURCE} or {@link #TARGET}.
  *
  * @author Loren K. Ashley
  */
 
-public interface LinkType {
-   //Interface used to create a union
+public enum RelationshipTerminal {
+
+   /**
+    * Indicates the relationship terminal is the source of the relation.
+    */
+
+   SOURCE,
+
+   /**
+    * Indicates the relationship terminal is the target of the relation.
+    */
+
+   TARGET;
 }
 
 /* EOF */

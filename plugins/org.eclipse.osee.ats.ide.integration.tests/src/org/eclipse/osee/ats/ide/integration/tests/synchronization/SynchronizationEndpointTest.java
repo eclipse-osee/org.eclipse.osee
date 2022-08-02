@@ -1639,7 +1639,7 @@ public class SynchronizationEndpointTest {
       } catch (Exception exception) {
          exceptionCought = true;
          var message = exception.getMessage();
-         Assert.assertTrue("Message 1 not found.", message.contains("HTTP Reason: Bad Request."));
+         Assert.assertTrue("Message 1 not found.", message.contains("<---S-E-R-V-E-R---E-X-C-E-P-T-I-O-N--->"));
          Assert.assertTrue("Message 2 not found.",
             message.contains("Request for a Synchronization Artifact with an unknown artifact type."));
       }

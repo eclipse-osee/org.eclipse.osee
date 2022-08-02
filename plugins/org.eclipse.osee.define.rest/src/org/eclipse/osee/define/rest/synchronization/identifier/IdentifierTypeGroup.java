@@ -11,7 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest.synchronization;
+package org.eclipse.osee.define.rest.synchronization.identifier;
+
+import org.eclipse.osee.define.rest.synchronization.LinkType;
 
 /**
  * Synchronization Artifacts things are grouped into categories for things with a similar function and structure.

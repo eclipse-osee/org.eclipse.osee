@@ -17,18 +17,19 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
- * Implementation of the {@link EnumFunctionalInterfaceMap} interface for {@link Function} functional interfaces.
+ * Implementation of the {@link EnumFunctionalInterfaceMap} interface for {@link BiFunction} functional interfaces.
  *
  * @author Loren K. Ashley
  * @param <K> the enumeration type whose members may be used as keys in this map.
- * @param <T> the type of the parameter for the {@link Function} functional interface.
- * @param <R> the type of results supplied by the {@link Function} functional interface.
+ * @param <T> the type of the first parameter for the {@link BiFunction} functional interface.
+ * @param <U> the type of the second parameter for the {@link BiFunction} functional interface.
+ * @param <R> the type of results supplied by the {@link BiFunction} functional interface.
  */
 
-public class EnumFunctionMap<K extends Enum<K>, T, R> extends AbstractEnumFunctionalInterfaceMap<K, Function<T, R>> {
+public class EnumBiFunctionMap<K extends Enum<K>, T, U, R> extends AbstractEnumFunctionalInterfaceMap<K, BiFunction<T, U, R>> {
 
    /**
     * Creates an empty map with the specified key type.
@@ -36,37 +37,39 @@ public class EnumFunctionMap<K extends Enum<K>, T, R> extends AbstractEnumFuncti
     * @param enumerationKeyClass the class object of the key type for this map.
     */
 
-   public EnumFunctionMap(Class<K> enumerationKeyClass) {
+   public EnumBiFunctionMap(Class<K> enumerationKeyClass) {
       super(enumerationKeyClass);
    }
 
    /**
-    * Looks up and performs the {@link Function} associated with the provided key.
+    * Looks up and performs the {@link BiFunction} associated with the provided key.
     *
-    * @param key the key whose associated {@link Function} is to be performed.
-    * @param t the function argument
-    * @return the result provided by the {@link Function} functional interface implementation.
+    * @param key the key whose associated {@link BiFunction} is to be performed.
+    * @param t the first function argument
+    * @param u the second function argument
+    * @return the result provided by the {@link BiFunction} functional interface implementation.
     * @throws NullPointerException when the provided key is <code>null</code>.
     * @throws NoSuchElementException when there is no map association for the provided key.
     */
 
-   public R apply(K key, T t) {
-      var function = this.enumMap.get(Objects.requireNonNull(key));
-      if (function == null) {
+   public R apply(K key, T t, U u) {
+      var biFunction = this.enumMap.get(Objects.requireNonNull(key));
+      if (biFunction == null) {
          throw new NoSuchElementException();
       }
-      return function.apply(t);
+      return biFunction.apply(t, u);
    }
 
    /**
     * Creates an immutable {@link EnumFunctionMap} with the specified entries.
     *
     * @param <K> the enumeration type whose members may be used as keys in this map.
-    * @param <T> the type of the argument to the {@link Function} functional interface.
-    * @param <R> the type of the result from the {@link Function} functional interface.
+    * @param <T> the type of the first argument to the {@link BiFunction} functional interface.
+    * @param <U> the type of the second argument to the {@link BiFunction} functional interface.
+    * @param <R> the type of the result from the {@link BiFunction} functional interface.
     * @param enumerationKeyClass the {@link Class} of the enumeration whose members may be used as map keys.
     * @param entries the entries to be contained in the map.
-    * @return the created {@link EnumFunctionMap}.
+    * @return the created {@link EnumBiFunctionMap}.
     * @throws NullPointerException when:
     * <ul>
     * <li>the <code>entries</code> array reference is <code>null</code>, or</li>
@@ -78,11 +81,11 @@ public class EnumFunctionMap<K extends Enum<K>, T, R> extends AbstractEnumFuncti
 
    @SafeVarargs
    @SuppressWarnings({"unchecked", "varargs"})
-   public static <K extends Enum<K>, T, R> EnumFunctionMap<K, T, R> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, Function<T, R>>... entries) {
+   public static <K extends Enum<K>, T, U, R> EnumBiFunctionMap<K, T, U, R> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, BiFunction<T, U, R>>... entries) {
 
-      return (EnumFunctionMap<K, T, R>) new EnumFunctionMap<K, T, R>(enumerationKeyClass) {
+      return (EnumBiFunctionMap<K, T, U, R>) new EnumBiFunctionMap<K, T, U, R>(enumerationKeyClass) {
          @Override
-         public void put(K key, Function<T, R> function) {
+         public void put(K key, BiFunction<T, U, R> biFunction) {
             throw new UnsupportedOperationException();
          }
       }.ofEntriesLoader(entries);
