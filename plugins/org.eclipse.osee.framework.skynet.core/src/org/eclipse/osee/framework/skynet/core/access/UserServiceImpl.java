@@ -205,4 +205,12 @@ public class UserServiceImpl implements UserService {
       userGrps = null;
    }
 
+   /**
+    * not used in client since jwt is server side only currently.
+    */
+   @Override
+   public String getLoginKey() {
+      return "";
+   }
+
 }

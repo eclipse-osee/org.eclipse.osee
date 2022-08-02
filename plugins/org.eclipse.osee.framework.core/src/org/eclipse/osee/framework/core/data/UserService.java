@@ -25,6 +25,8 @@ public interface UserService {
 
    IUserGroup getUserGroup(IUserGroupArtifactToken userGroup);
 
+   String getLoginKey();
+
    /**
     * @return the user groups that the current user belongs to
     */
