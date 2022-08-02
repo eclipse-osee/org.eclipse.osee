@@ -17,6 +17,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.DoubleHashMap;

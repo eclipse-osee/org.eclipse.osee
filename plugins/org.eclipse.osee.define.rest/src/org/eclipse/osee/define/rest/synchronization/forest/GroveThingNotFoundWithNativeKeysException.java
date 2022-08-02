@@ -41,18 +41,7 @@ public class GroveThingNotFoundWithNativeKeysException extends RuntimeException 
     */
 
    public GroveThingNotFoundWithNativeKeysException(Grove grove, Object... nativeKeys) {
-      //@formatter:off
-      super
-         (
-            new StringBuilder( 1024 )
-                   .append( "\n" )
-                   .append( "GroveThing Not Found With Native Keys In Grove." ).append( "\n" )
-                   .append( "   Grove Type:  " ).append( Objects.nonNull( grove ) ? grove.getType() : "(null)" ).append( "\n" )
-                   .append( "   Native Keys: " ).append( Objects.nonNull( nativeKeys ) ? Arrays.stream( nativeKeys ).map( Object::toString ).collect( Collectors.joining( ", ", "[ ", " ]" ) ) : "(null)" ).append( "\n" )
-                   .toString()
-         );
-
-      //@formatter:on
+      super(GroveThingNotFoundWithNativeKeysException.buildMessage(grove, nativeKeys));
    }
 
    /**
@@ -69,6 +58,25 @@ public class GroveThingNotFoundWithNativeKeysException extends RuntimeException 
       this(grove, nativeKeys);
 
       this.initCause(cause);
+   }
+
+   /**
+    * Builds an error message {@link String} describing the exception.
+    *
+    * @param grove the {@link Grove} that was searched.
+    * @param nativeKeys the native key set used to look for an associated {@link GroveThing}.
+    */
+
+   public static String buildMessage(Grove grove, Object... nativeKeys) {
+      //@formatter:off
+      return
+         new StringBuilder( 1024 )
+         .append( "\n" )
+         .append( "GroveThing Not Found With Native Keys In Grove." ).append( "\n" )
+         .append( "   Grove Type:  " ).append( Objects.nonNull( grove ) ? grove.getType() : "(null)" ).append( "\n" )
+         .append( "   Native Keys: " ).append( Objects.nonNull( nativeKeys ) ? Arrays.stream( nativeKeys ).map( Object::toString ).collect( Collectors.joining( ", ", "[ ", " ]" ) ) : "(null)" ).append( "\n" )
+         .toString();
+      //@formatter:on
    }
 }
 

@@ -92,7 +92,7 @@ public class SynchronizationArtifactParseException extends RuntimeException {
    }
 
    /**
-    * Build an error message {@link String} describing the exception.
+    * Builds an error message {@link String} describing the exception.
     *
     * @param message a description of the parse error.
     * @return a {@link String} message describing the exception condition.
@@ -110,7 +110,7 @@ public class SynchronizationArtifactParseException extends RuntimeException {
    }
 
    /**
-    * Build an error message {@link String} describing the exception.
+    * Builds an error message {@link String} describing the exception.
     *
     * @param errors a {@link List} of {@link Diagnostic} errors describing the parse failure.
     * @param warnings a {@link List} of {@link Diagnostic} warnings describing the parse failure.
@@ -135,7 +135,7 @@ public class SynchronizationArtifactParseException extends RuntimeException {
    }
 
    /**
-    * Build an error message {@link String} describing the exception.
+    * Builds an error message {@link String} describing the exception.
     *
     * @param message a description of the parse error.
     * @param lineNumber the line position of the parse error.

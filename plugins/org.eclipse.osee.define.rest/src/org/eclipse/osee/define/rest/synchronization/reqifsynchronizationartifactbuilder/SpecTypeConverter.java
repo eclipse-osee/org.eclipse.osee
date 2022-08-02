@@ -15,10 +15,10 @@ package org.eclipse.osee.define.rest.synchronization.reqifsynchronizationartifac
 
 import java.util.Map;
 import java.util.Objects;
-import org.eclipse.osee.define.rest.synchronization.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.IdentifierTypeGroup;
 import org.eclipse.osee.define.rest.synchronization.UnexpectedGroveThingTypeException;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.EnumSupplierMap;
 import org.eclipse.rmf.reqif10.ReqIF10Factory;
