@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
@@ -113,9 +114,14 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          } else {
             IAtsBranchService branchService = AtsApiService.get().getBranchService();
             if (branchService.isWorkingBranchInWork(sourceTeamWf)) {
-               changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(sourceTeamWf);
+               changeData =
+                  AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(sourceTeamWf);
             } else {
                IAtsVersion taskTargetedVersion = AtsApiService.get().getVersionService().getTargetedVersion(task);
+               if (taskTargetedVersion == null) {
+                  AWorkbench.popup("Targeted Version not set; Aborting...");
+                  return;
+               }
                Collection<TransactionRecord> transactions =
                   Collections.castAll(branchService.getTransactionIds(sourceTeamWf, false));
                MutableInteger result = new MutableInteger(0);
