@@ -32,12 +32,50 @@ public class BadDocumentRootException extends RuntimeException {
    /**
     * Creates a new {@link RuntimeException} with a message describing the invalid {@link Root} objects.
     *
-    * @param message a description of the invalid document roots.
+    * @parameter direction the export or import direction of the Synchronization Artifact operation.
+    * @param validationMessage a description of the invalid document roots.
     */
 
-   public BadDocumentRootException(String message) {
-      super(message);
+   public BadDocumentRootException(Direction direction, String validationMessage) {
+      super(BadDocumentRootException.buildMessage(direction, validationMessage));
    }
+
+   /**
+    * Creates a new {@link RuntimeException} with a message describing the invalid {@link Root} objects.
+    *
+    * @parameter direction the export or import direction of the Synchronization Artifact operation.
+    * @param validationMessage a description of the invalid document roots.
+    * @param cause the {@link Throwable} which led to this exception being thrown. This parameter may be
+    * <code>null</code>.
+    */
+
+   public BadDocumentRootException(Direction direction, String validationMessage, Throwable cause) {
+      this(direction, validationMessage);
+
+      this.initCause(cause);
+   }
+
+   /**
+    * Builds an error message {@link String} describing the exception.
+    *
+    * @parameter direction the export or import direction of the Synchronization Artifact operation.
+    * @param validationMessage a description of the invalid document roots.
+    * @return {@link String} message describing the exception condition.
+    */
+
+   public static String buildMessage(Direction direction, String validationMessage) {
+      //@formatter:off
+      return
+         new StringBuilder( 1024 )
+                .append( "\n" )
+                .append( "One or more specified OSEE document roots was not found." ).append( "\n" )
+                .append( "   Direction:          " ).append( direction ).append( "\n" )
+                .append( "   Validation Message Follows: " ).append( "\n" )
+                .append( validationMessage ).append( "\n" )
+                .toString();
+      //@formatter:on
+   }
+
 }
 
 /* EOF */

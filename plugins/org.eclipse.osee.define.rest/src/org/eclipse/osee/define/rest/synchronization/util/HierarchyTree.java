@@ -107,7 +107,7 @@ public class HierarchyTree<K, V> {
    public V get(K key) {
       assert Objects.nonNull(key);
 
-      var hierarchyTreeNode = nodeMap.get(key);
+      var hierarchyTreeNode = this.nodeMap.get(key);
 
       if (hierarchyTreeNode == null) {
          return null;
@@ -119,7 +119,7 @@ public class HierarchyTree<K, V> {
    public Optional<V> get(K parentKey, K childKey) {
       assert Objects.nonNull(parentKey) && Objects.nonNull(childKey);
 
-      var child = nodeMap.get(childKey);
+      var child = this.nodeMap.get(childKey);
 
       //@formatter:off
       return
@@ -325,7 +325,7 @@ public class HierarchyTree<K, V> {
 
          @Override
          public long estimateSize() {
-            return size - index;
+            return this.size - this.index;
          }
 
          @Override
@@ -342,7 +342,7 @@ public class HierarchyTree<K, V> {
 
             action.accept(nextNode);
 
-            index++;
+            this.index++;
             HierarchyTree.this.currNode = nextNode;
 
             return true;
@@ -379,7 +379,7 @@ public class HierarchyTree<K, V> {
       {
          assert Objects.nonNull(parentKey);
 
-         var hierarchyTreeNode = nodeMap.get(parentKey);
+         var hierarchyTreeNode = this.nodeMap.get(parentKey);
 
          if (hierarchyTreeNode == null) {
             return Stream.empty();
@@ -391,13 +391,18 @@ public class HierarchyTree<K, V> {
    }
 
    /**
-    * Returns a unordered {@link Stream} of the keys of all nodes stored in the hierarchy tree.
+    * Returns an ordered {@link Stream} of the keys of all nodes stored in the hierarchy tree.
     *
-    * @return a unordered {@link Stream} of the keys in the hierarchy tree.
+    * @return an ordered {@link Stream} of the keys in the hierarchy tree.
     */
 
    public Stream<K> streamKeysDeep() {
-      return this.nodeMap.keySet().stream();
+
+      if (Objects.isNull(this.rootNode)) {
+         return Stream.empty();
+      }
+
+      return Stream.concat(Stream.of(this.rootNode.getKey()), this.streamKeysDeep(this.rootNode.getKey()));
    }
 
    /**
@@ -411,7 +416,7 @@ public class HierarchyTree<K, V> {
    public Stream<K> streamKeysDeep(K parentKey) {
       assert Objects.nonNull(parentKey);
 
-      var hierarchyTreeNode = nodeMap.get(parentKey);
+      var hierarchyTreeNode = this.nodeMap.get(parentKey);
 
       if (hierarchyTreeNode == null) {
          return Stream.empty();
@@ -432,7 +437,7 @@ public class HierarchyTree<K, V> {
    public Stream<K> streamKeysShallow(K parentKey) {
       assert Objects.nonNull(parentKey);
 
-      var hierarchyTreeNode = nodeMap.get(parentKey);
+      var hierarchyTreeNode = this.nodeMap.get(parentKey);
 
       if (hierarchyTreeNode == null) {
          return Stream.empty();

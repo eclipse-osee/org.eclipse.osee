@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.osee.define.api.synchronization.Root;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
@@ -36,40 +37,56 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class RootList implements Iterable<ArtifactReadable>, ToMessage {
 
    /**
-    * The type of synchronization artifact to be produced.
+    * Once the {@link #validate} method has been invoked and completed successfully, this member will contain a
+    * {@link List} of {@link ArtifactReadable} objects for each of the specified document roots.
     */
 
-   String synchronizationArtifactType;
+   private List<ArtifactReadable> artifactReadableRoots;
+
+   /**
+    * The export or import direction of the Synchronization Artifact operation.
+    */
+
+   private final Direction direction;
 
    /**
     * The handle to the ORCS OSEE API.
     */
 
-   OrcsApi orcsApi;
+   private final OrcsApi orcsApi;
+
+   /**
+    * The handle to the ORCS Token Service.
+    */
+
+   private final OrcsTokenService orcsTokenService;
 
    /**
     * A list of the artifact tree roots for artifacts to be included in the synchronization artifact.
     */
 
-   List<Root> rootsList;
+   private final List<Root> rootsList;
 
    /**
-    * Once the {@link #validate} method has been invoked and completed successfully, this member will contain a
-    * {@link List} of {@link ArtifactReadable} objects for each of the specified document roots.
+    * The synchronization artifact builder to use for the operation.
     */
 
-   List<ArtifactReadable> artifactReadableRoots;
+   private final SynchronizationArtifactBuilder synchronizationArtifactBuilder;
 
    /**
-    * Creates a new empty {@link RootsList}, sets the artifact type, and sets the {@link OrcsApi}.
+    * Creates a new empty {@link RootsList}, sets the {@link Direction}, {@link SynchronizationArtifactBuilder} and the
+    * {@link OrcsApi}.
     *
     * @param a handle to the ORCS OSEE API.
+    * @parameter direction the export or import direction of the Synchronization Artifact operation.
     * @param synchronizationArtifactType the type of synchronization artifact to be produced.
     */
 
-   private RootList(OrcsApi orcsApi, String synchronizationArtifactType) {
-      this.synchronizationArtifactType = synchronizationArtifactType;
+   private RootList(OrcsApi orcsApi, Direction direction, SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
       this.orcsApi = orcsApi;
+      this.orcsTokenService = orcsApi.tokenService();
+      this.direction = direction;
+      this.synchronizationArtifactBuilder = synchronizationArtifactBuilder;
       this.rootsList = new ArrayList<Root>();
       this.artifactReadableRoots = null;
    }
@@ -78,27 +95,27 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
     * Factory method to create an object implementing the {@link RootList} interface for a Synchronization Artifact.
     *
     * @param orcsApi a handle to the {@link OrcsApi} used to obtain the OSEE artifacts for the Synchronization Artifact.
+    * @parameter direction the export or import direction of the Synchronization Artifact operation.
     * @param synchronizationArtifactType a {@link String} identifier for the type of Synchronization Artifact to be
     * used.
     * @return an object implementing the {@link RootList} interface with the provided parameters encapsulated.
     * @throws NullPointerException when either of the parameters <code>orcsApi</code> or
-    * <code>synchronizationArtifactType</code> are <code>null</code>.
-    * @throws UnknownSynchronizationArtifactTypeException when the parameter <code>synchronizationArtifactType</code> is
-    * an empty string.
+    * <code>synchronizationArtifactBuilder</code> are <code>null</code>.
     */
 
-   public static RootList create(OrcsApi orcsApi, String synchronizationArtifactType) {
+   public static RootList create(OrcsApi orcsApi, Direction direction, SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
 
       Objects.requireNonNull(orcsApi, "RootList::create, parameter \"orcsApi\" is null.");
 
-      Objects.requireNonNull(synchronizationArtifactType,
-         "RootList::create, parameter \"synchronizationArtifact\" is null.");
+      Objects.requireNonNull(orcsApi.tokenService(),
+         "SynchronizationArtifact::create, Failed to initialize ORCS Token Service is null.");
 
-      if (synchronizationArtifactType.isEmpty()) {
-         throw new UnknownSynchronizationArtifactTypeException(synchronizationArtifactType);
-      }
+      Objects.requireNonNull(direction, "RootList::create, parameter \"direction\" is null.");
 
-      return new RootList(orcsApi, synchronizationArtifactType);
+      Objects.requireNonNull(synchronizationArtifactBuilder,
+         "RootList::create, parameter \"synchronizationArtifactBuilder\" is null.");
+
+      return new RootList(orcsApi, direction, synchronizationArtifactBuilder);
    }
 
    /**
@@ -119,7 +136,17 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
    }
 
    /**
-    * Get the {@link OrcsApi}.
+    * Gets the {@link Direction} of the Synchronization Artifact operation.
+    *
+    * @return the {@link Direction}.
+    */
+
+   public Direction getDirection() {
+      return this.direction;
+   }
+
+   /**
+    * Gets the {@link OrcsApi} handle.
     *
     * @return the {@link OrcsApi}.
     */
@@ -129,13 +156,22 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
    }
 
    /**
-    * Gets the type of synchronization artifact to be produced.
+    * Gets the {@link OrcsTokenService} handle.
     *
-    * @return the synchronization artifact type.
+    * @return the {@link OrcsTokenService}.
+    */
+   public OrcsTokenService getOrcsTokenService() {
+      return this.orcsTokenService;
+   }
+
+   /**
+    * Gets the type of synchronization artifact builder to be used for the operation.
+    *
+    * @return the synchronization artifact builder.
     */
 
-   public String getSynchronizationArtifactType() {
-      return this.synchronizationArtifactType;
+   public SynchronizationArtifactBuilder getSynchronizationArtifactBuilder() {
+      return this.synchronizationArtifactBuilder;
    }
 
    /**
@@ -234,19 +270,28 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
          throw new IllegalStateException("Attempt to validate a RootList that has already been validated.\n");
       }
 
-      var message = new StringBuilder(1024);
+      Objects.requireNonNull(this.orcsApi, "RootList::validate, member \"orcsApi\" is null.");
+
+      Objects.requireNonNull(this.orcsTokenService, "RootList::validate, member \"orcsTokenService\" is null.");
+
+      Objects.requireNonNull(this.direction, "RootList::validate, member \"direction\" is null.");
+
+      Objects.requireNonNull(this.synchronizationArtifactBuilder,
+         "RootList::validate, member \"synchronizationArtifactBuilder\" is null.");
+
+      var validationMessage = new StringBuilder(1024);
 
       //@formatter:off
       this.artifactReadableRoots =
          this.rootsList.stream()
-            .map( ( root ) -> this.validateRoot( root, message ) )
+            .map( ( root ) -> this.validateRoot( root, validationMessage ) )
             .filter( Objects::nonNull )
             .collect( Collectors.toList() );
       //@formatter:on
 
-      if (message.length() > 0) {
+      if (validationMessage.length() > 0) {
 
-         throw new BadDocumentRootException(message.toString());
+         throw new BadDocumentRootException(this.direction, validationMessage.toString());
       }
    }
 

@@ -21,11 +21,13 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.eclipse.osee.define.rest.synchronization.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
-import org.eclipse.osee.define.rest.synchronization.IdentifierTypeGroup;
+import org.eclipse.osee.define.rest.synchronization.Direction;
 import org.eclipse.osee.define.rest.synchronization.LinkType;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
+import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierFactory;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -120,7 +122,8 @@ public class StoreTest {
          this.nativeRank = nativeKeys.length;
          this.foreignThing = "Foreign Thing";
          this.nativeThing = "NativeThing";
-         this.identifier = IdentifierType.HEADER.createIdentifier();
+         this.identifier =
+            new IdentifierFactory(Direction.IMPORT.getIdentifierFactoryType()).createIdentifier(IdentifierType.HEADER);
          this.name = name;
       }
 
@@ -175,8 +178,9 @@ public class StoreTest {
       }
 
       @Override
-      public void setForeignThing(Object foreignThing) {
+      public GroveThing setForeignThing(Object foreignThing) {
          this.foreignThing = foreignThing;
+         return this;
       }
 
       @Override

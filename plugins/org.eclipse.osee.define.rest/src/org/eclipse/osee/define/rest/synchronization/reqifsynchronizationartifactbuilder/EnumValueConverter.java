@@ -15,9 +15,9 @@ package org.eclipse.osee.define.rest.synchronization.reqifsynchronizationartifac
 
 import java.math.BigInteger;
 import java.util.Objects;
-import org.eclipse.osee.define.rest.synchronization.IdentifierType;
 import org.eclipse.osee.define.rest.synchronization.UnexpectedGroveThingTypeException;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.rmf.reqif10.EmbeddedValue;
 import org.eclipse.rmf.reqif10.EnumValue;
