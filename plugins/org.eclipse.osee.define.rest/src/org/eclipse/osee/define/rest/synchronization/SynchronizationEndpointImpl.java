@@ -16,6 +16,8 @@ package org.eclipse.osee.define.rest.synchronization;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
@@ -29,6 +31,8 @@ import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * Implementation of the {@link SynchronizationEndpoint} interface contains the methods that are invoked when a REST API
@@ -52,6 +56,13 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
    private final OrcsApi orcsApi;
 
    /**
+    * A {@link Map} of the supported {@link SynchronizationArtifactBuilder} classes by their artifact type
+    * {@link String} identifiers.
+    */
+
+   private Map<String, Class<?>> synchronizationArtifactBuilderClassMap;
+
+   /**
     * Creates an object to process synchronization REST calls.
     *
     * @param orcsApi the {@link OrcsApi} handle.
@@ -59,6 +70,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
 
    private SynchronizationEndpointImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+      this.synchronizationArtifactBuilderClassMap = null;
    }
 
    /**
@@ -87,7 +99,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
     * @return the exception message with full stack trace.
     */
 
-   private String buildExceptionMessage(Throwable e) {
+   private static String buildExceptionMessage(Throwable e) {
       var stringWriter = new StringWriter();
       var printWriter = new PrintWriter(stringWriter);
       e.printStackTrace(printWriter);
@@ -111,7 +123,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
     * @return the exception message with full stack trace.
     */
 
-   private String buildBadInputMessage(String parameterName, Object badObject) {
+   private static String buildBadInputMessage(String parameterName, Object badObject) {
 
       var indent0 = IndentedString.indentString(0);
       var indent1 = IndentedString.indentString(1);
@@ -137,50 +149,124 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
       return message.toString();
    }
 
+   /*
+    * Find the available {@link SynchronizationArtifactBuilder} classes.
+    */
+
+   private void findSynchronizationArtifactBuilders() {
+
+      this.synchronizationArtifactBuilderClassMap = new HashMap<>();
+
+      var bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+      var bundle = bundleContext.getBundle();
+      var bundleSymbolicNamePath = bundle.getSymbolicName().replace('.', '/');
+      var bundleWiring = bundle.adapt(BundleWiring.class);
+      var classLoader = bundleWiring.getClassLoader();
+      var resources = bundleWiring.listResources(bundleSymbolicNamePath, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
+
+      resources.forEach(resource -> {
+         try {
+            var className = resource.substring(0, resource.indexOf('.')).replace('/', '.');
+            var theClass = classLoader.loadClass(className);
+            var isSynchronizationArtifactBuilder = theClass.getAnnotation(IsSynchronizationArtifactBuilder.class);
+            if (isSynchronizationArtifactBuilder != null) {
+               this.synchronizationArtifactBuilderClassMap.put(isSynchronizationArtifactBuilder.artifactType(),
+                  theClass);
+            }
+         } catch (Exception e) {
+            /*
+             * Eat exceptions, if the Synchronization Artifact Build implementations are not found, an
+             * UnknownSynchronizationArtifactTypeException will be thrown when trying export or import a Synchronization
+             * Artifact.
+             */
+         }
+      });
+   }
+
+   /**
+    * Gets the {@link SynchronizationArtifactBuilder} for the type of Synchronization Artifact to be built.
+    *
+    * @param artifactType the type of Synchronization Artifact to be built.
+    * @return the {@link SynchronizationArtifactBuilder} to build the Synchronization Artifact with.
+    * @throws UnknownSynchronizationArtifactTypeException when a {@link SynchronizationArtifactBuilder} could not be
+    * created for the artifact type.
+    */
+
+   public SynchronizationArtifactBuilder getSynchronizationArtifactBuilder(String artifactType) throws UnknownSynchronizationArtifactTypeException {
+
+      if (Objects.isNull(this.synchronizationArtifactBuilderClassMap)) {
+         this.findSynchronizationArtifactBuilders();
+      }
+
+      try {
+         //@formatter:off
+         return
+            (SynchronizationArtifactBuilder) this.synchronizationArtifactBuilderClassMap
+               .get( artifactType )
+               .getConstructor( (Class<?>[]) null )
+               .newInstance( (Object[]) null );
+         //@formatter:on
+      } catch (Exception e) {
+         throw new UnknownSynchronizationArtifactTypeException(artifactType, e);
+      }
+   }
+
    /**
     * {@inheritDoc}
     */
 
    @Override
-   public InputStream export(ExportRequest exportRequest) {
+   public InputStream exporter(ExportRequest exportRequest) {
 
       try {
-         orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+         this.orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       } catch (OseeAccessDeniedException e) {
-         throw new NotAuthorizedException(this.buildExceptionMessage(e),
+         throw new NotAuthorizedException(SynchronizationEndpointImpl.buildExceptionMessage(e),
             Response.status(Response.Status.UNAUTHORIZED).build());
       }
 
       if (Objects.isNull(exportRequest) || !exportRequest.isValid()) {
-         throw new BadRequestException(this.buildBadInputMessage("exportRequest", exportRequest),
+         throw new BadRequestException(SynchronizationEndpointImpl.buildBadInputMessage("exportRequest", exportRequest),
             Response.status(Response.Status.BAD_REQUEST).build());
       }
 
+      RootList rootList;
+
       try {
          var synchronizationArtifactType = exportRequest.getSynchronizationArtifactType();
-         var rootsArray = exportRequest.getRoots();
-         var rootList = RootList.create(this.orcsApi, synchronizationArtifactType);
 
+         var synchronizationArtifactBuilder = this.getSynchronizationArtifactBuilder(synchronizationArtifactType);
+
+         rootList = RootList.create(this.orcsApi, Direction.EXPORT, synchronizationArtifactBuilder);
+
+         var rootsArray = exportRequest.getRoots();
          for (var root : rootsArray) {
             rootList.add(root);
          }
 
          rootList.validate();
 
-         var synchronizationArtifact = SynchronizationArtifact.create(rootList);
+      } catch (BadDocumentRootException e) {
+         throw new BadRequestException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+            Response.status(Response.Status.BAD_REQUEST).build());
+      } catch (Exception e) {
+         throw new ServerErrorException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+            Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+      }
+
+      try (var synchronizationArtifact = SynchronizationArtifact.create(rootList)) {
+
          synchronizationArtifact.build();
-         var inputStream = synchronizationArtifact.serialize();
+         return synchronizationArtifact.serialize();
 
-         return inputStream;
+      } catch (UnknownSynchronizationArtifactTypeException e) {
 
-      } catch (UnknownSynchronizationArtifactTypeException | BadDocumentRootException e) {
-
-         throw new BadRequestException(this.buildExceptionMessage(e),
+         throw new BadRequestException(SynchronizationEndpointImpl.buildExceptionMessage(e),
             Response.status(Response.Status.BAD_REQUEST).build());
 
       } catch (Exception e) {
 
-         throw new ServerErrorException(this.buildExceptionMessage(e),
+         throw new ServerErrorException(SynchronizationEndpointImpl.buildExceptionMessage(e),
             Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
       }
    }
@@ -190,48 +276,84 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
     */
 
    @Override
-   public void importSynchronizationArtifact(ImportRequest importRequest, InputStream inputStream) {
+   public void importer(ImportRequest importRequest, InputStream inputStream) {
 
-      try (var reqIfInputStream = inputStream;) {
+      var complete = false;
+
+      try {
 
          try {
-            orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+            this.orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
          } catch (OseeAccessDeniedException e) {
-            throw new NotAuthorizedException(this.buildExceptionMessage(e),
+            throw new NotAuthorizedException(SynchronizationEndpointImpl.buildExceptionMessage(e),
                Response.status(Response.Status.UNAUTHORIZED).build());
          }
 
          if (Objects.isNull(importRequest) || !importRequest.isValid()) {
-            throw new BadRequestException(this.buildBadInputMessage("importRequest", importRequest),
+            throw new BadRequestException(
+               SynchronizationEndpointImpl.buildBadInputMessage("importRequest", importRequest),
                Response.status(Response.Status.BAD_REQUEST).build());
          }
 
          if (Objects.isNull(inputStream)) {
-            throw new BadRequestException(this.buildBadInputMessage("inputStream", inputStream),
+            throw new BadRequestException(SynchronizationEndpointImpl.buildBadInputMessage("inputStream", inputStream),
                Response.status(Response.Status.BAD_REQUEST).build());
          }
 
-         var synchronizationArtifactType = importRequest.getSynchronizationArtifactType();
-         var importMappingsArray = importRequest.getImportMappings();
-         var rootList = RootList.create(this.orcsApi, synchronizationArtifactType);
+         RootList rootList;
 
-         for (var importMapping : importMappingsArray) {
-            rootList.add(importMapping.getRoot());
+         try {
+            var synchronizationArtifactType = importRequest.getSynchronizationArtifactType();
+
+            var synchronizationArtifactBuilder = this.getSynchronizationArtifactBuilder(synchronizationArtifactType);
+
+            var importMappingsArray = importRequest.getImportMappings();
+            rootList = RootList.create(this.orcsApi, Direction.IMPORT, synchronizationArtifactBuilder);
+
+            for (var importMapping : importMappingsArray) {
+               rootList.add(importMapping.getRoot());
+            }
+
+            rootList.validate();
+
+         } catch (BadDocumentRootException e) {
+            throw new BadRequestException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+               Response.status(Response.Status.BAD_REQUEST).build());
+         } catch (Exception e) {
+            throw new ServerErrorException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+               Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
          }
 
-         var synchronizationArtifact = SynchronizationArtifact.create(rootList);
+         try (var synchronizationArtifact = SynchronizationArtifact.create(rootList)) {
 
-         synchronizationArtifact.deserialize(inputStream);
+            synchronizationArtifact.deserialize(inputStream);
+            synchronizationArtifact.buildForeign();
+         } catch (UnknownSynchronizationArtifactTypeException e) {
+            throw new BadRequestException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+               Response.status(Response.Status.BAD_REQUEST).build());
+         } catch (Exception e) {
+            throw new ServerErrorException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+               Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+         }
 
-      } catch (UnknownSynchronizationArtifactTypeException | BadDocumentRootException e) {
+         complete = true;
 
-         throw new BadRequestException(this.buildExceptionMessage(e),
-            Response.status(Response.Status.BAD_REQUEST).build());
+      } finally {
 
-      } catch (Exception e) {
-
-         throw new ServerErrorException(this.buildExceptionMessage(e),
-            Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+         if (Objects.nonNull(inputStream)) {
+            try {
+               inputStream.close();
+            } catch (Exception e) {
+               /*
+                * Eat the exception if the try block didn't complete so the primary exception is not masked by the close
+                * exception.
+                */
+               if (complete) {
+                  throw new ServerErrorException(SynchronizationEndpointImpl.buildExceptionMessage(e),
+                     Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+               }
+            }
+         }
       }
    }
 }

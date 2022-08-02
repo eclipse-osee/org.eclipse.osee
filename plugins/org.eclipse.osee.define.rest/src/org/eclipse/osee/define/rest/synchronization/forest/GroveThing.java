@@ -16,12 +16,12 @@ package org.eclipse.osee.define.rest.synchronization.forest;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.eclipse.osee.define.rest.synchronization.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.IdentifierTypeGroup;
 import org.eclipse.osee.define.rest.synchronization.LinkType;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationArtifactBuilder;
 import org.eclipse.osee.define.rest.synchronization.UnexpectedGroveThingTypeException;
-import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
+import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -213,6 +213,8 @@ public interface GroveThing extends ToMessage {
     * Saves a reference to a foreign hierarchy thing. Used for building the foreign DOM.
     *
     * @param foreignHierarchy the foreign hierarchy thing.
+    * @throws NullPointerException when the parameter <code>foreignHierarchy</code> is <code>null</code>.
+    * @throws IllegalStateException when an attempt is made to set the foreign hierarchy when it has already been set.
     */
 
    void setForeignHierarchy(Object foreignHierarchy);
@@ -222,9 +224,12 @@ public interface GroveThing extends ToMessage {
     * {@link SynchronizationArtifactBuilder} implementation.
     *
     * @param foreignThing the foreign thing to be saved in the container.
+    * @return the {@link GroveThing}.
+    * @throws NullPointerException when the parameter <code>foreignThing</code> is <code>null</code>.
+    * @throws IllegalStateException when an attempt is made to set the foreign thing when it has already been set.
     */
 
-   void setForeignThing(Object foreignThing);
+   GroveThing setForeignThing(Object foreignThing);
 
    /**
     * Creates a scalar link of the {@link LinkType} to the specified {@link GroveThing}.
