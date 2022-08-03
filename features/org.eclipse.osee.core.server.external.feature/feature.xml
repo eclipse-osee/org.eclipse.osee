@@ -37,6 +37,21 @@
          id="org.eclipse.jgit.ssh.apache"
          version="0.0.0"/>
 
+ <plugin
+         id="org.apache.commons.math3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+
+   <plugin
+         id="org.apache.commons.collections4"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.sphinx.emf.serialization"
          download-size="0"
