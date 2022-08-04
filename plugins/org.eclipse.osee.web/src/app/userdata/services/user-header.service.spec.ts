@@ -1,7 +1,5 @@
-import { UserHeaderProdService } from '../app/userdata/services/user-header-prod.service';
-
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,9 +10,19 @@ import { UserHeaderProdService } from '../app/userdata/services/user-header-prod
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export const environment = {
-  production: true,
-  headerService: UserHeaderProdService
-};
-export const apiURL = "";
-export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
+import { TestBed } from '@angular/core/testing';
+
+import { UserHeaderService } from './user-header.service';
+
+describe('UserHeaderService', () => {
+  let service: UserHeaderService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(UserHeaderService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

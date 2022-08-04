@@ -14,11 +14,16 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { UserHeaderProdService } from '../app/userdata/services/user-header-prod.service';
+
+
 export const environment = {
-  production: false
+  production: false,
+  headerService: UserHeaderProdService
 };
 export const apiURL = "http://localhost:4200"
 export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
+
 
 /*
  * For easier debugging in development mode, you can import the following file

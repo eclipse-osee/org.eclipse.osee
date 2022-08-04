@@ -16,8 +16,6 @@ import { debounceTime, distinctUntilChanged, filter, map, mergeMap, reduce, repe
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 import { TypesService } from '../../shared/services/http/types.service';
 import { PlatformType } from '../../shared/types/platformType'
-import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { transaction } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
