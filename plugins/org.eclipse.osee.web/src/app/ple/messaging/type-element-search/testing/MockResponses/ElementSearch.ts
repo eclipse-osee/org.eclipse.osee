@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { elementWithPathsAndButtons } from '../../../shared/types/element';
 import { element } from "../../types/element";
 
 export const elementSearch1: element[] = [
@@ -90,7 +91,7 @@ export const elementSearch2: element[] = [
     }
 ]
 
-export const elementSearch3: element[] = [
+export const elementSearch3: elementWithPathsAndButtons[] = [
     {
         id: '0',
         name: 'Title0',
@@ -98,7 +99,10 @@ export const elementSearch3: element[] = [
         notes: '',
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
-        interfaceElementIndexStart:0
+        interfaceElementIndexStart: 0,
+        paths: ['path 1'],
+        buttonNames: ['name 1'],
+        units:''
     },
     {
         id: '1',
@@ -107,7 +111,10 @@ export const elementSearch3: element[] = [
         notes: '',
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
-        interfaceElementIndexStart:0
+        interfaceElementIndexStart: 0,
+        paths: ['path 1','path2'],
+        buttonNames: ['name 1','name2'],
+        units:''
     },
     {
         id: '2',
@@ -116,7 +123,10 @@ export const elementSearch3: element[] = [
         notes: '',
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
-        interfaceElementIndexStart:0
+        interfaceElementIndexStart: 0,
+        paths: [],
+        buttonNames: [],
+        units:''
     },
     {
         id: '3',
@@ -125,6 +135,9 @@ export const elementSearch3: element[] = [
         notes: '',
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
-        interfaceElementIndexStart:0
+        interfaceElementIndexStart: 0,
+        paths: ['path 1'],
+        buttonNames: ['name 1'],
+        units:''
     }
 ]

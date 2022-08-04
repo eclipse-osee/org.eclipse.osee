@@ -29,6 +29,8 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
@@ -38,6 +40,8 @@ import { BranchUndoButtonModule } from '../../../shared-components/components/br
     FormsModule,
     MatFormFieldModule,
     MatRadioModule,
+    MatButtonModule,
+    MatMenuModule,
     MatInputModule,
     MatSelectModule,
     MatTableModule,

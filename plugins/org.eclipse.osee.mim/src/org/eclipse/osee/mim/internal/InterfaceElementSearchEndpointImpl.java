@@ -22,6 +22,7 @@ import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.types.ElementPosition;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 
 /**
  * @author Luciano T. Vaglienti
@@ -65,7 +66,12 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElementsByType(String filter) {
+   public Collection<InterfaceStructureElementTokenWithPath> getElementsByType() {
+      return this.elementApi.getElementsByType(branch);
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementTokenWithPath> getElementsByType(String filter) {
       return this.elementApi.getElementsByTypeFilter(branch, filter);
    }
 

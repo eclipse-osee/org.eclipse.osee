@@ -13,7 +13,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { map } from 'rxjs/operators';
+import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { HeaderService } from '../../../shared/services/ui/header.service';
+import { elementWithPathsAndButtons } from '../../../shared/types/element';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { element } from '../../types/element';
 
@@ -24,13 +26,16 @@ import { element } from '../../types/element';
 })
 export class ElementTableComponent implements OnInit {
   dataSource = new MatTableDataSource<element>();
-  headers:(keyof element)[] = [
+  headers:(Extract<keyof elementWithPathsAndButtons,string>)[] = [
     'name',
     'platformTypeName2',
+    'path',
     'interfaceElementAlterable',
     'description',
     'notes'];
-  constructor (private elementService: CurrentElementSearchService, private headerService: HeaderService) {
+  branchType = this.uiService.type;
+  branchId = this.uiService.id;
+  constructor (private elementService: CurrentElementSearchService, private headerService: HeaderService, private uiService: UiService) {
     this.elementService.elements.subscribe((val) => {
       this.dataSource.data = val;
     })

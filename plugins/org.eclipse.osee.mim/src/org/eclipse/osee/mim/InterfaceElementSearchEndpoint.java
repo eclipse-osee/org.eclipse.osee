@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.mim.types.ElementPosition;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 
 /**
  * @author Luciano T. Vaglienti
@@ -70,8 +71,13 @@ public interface InterfaceElementSearchEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    ElementPosition findElement(@PathParam("id") ArtifactId elementId);
 
+   @GET
+   @Path("types/filter/")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<InterfaceStructureElementTokenWithPath> getElementsByType();
+
    @GET()
    @Path("types/filter/{filter}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<InterfaceStructureElementToken> getElementsByType(@PathParam("filter") String filter);
+   Collection<InterfaceStructureElementTokenWithPath> getElementsByType(@PathParam("filter") String filter);
 }

@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -32,7 +33,7 @@ describe('ElementTableComponent', () => {
     serviceSpy = jasmine.createSpyObj('CurrentElementSearchService', {}, {elements:of(elementSearch3)})
     await TestBed.configureTestingModule({
       imports: [MatTableModule,SharedMessagingModule,OseeStringUtilsPipesModule,
-        OseeStringUtilsDirectivesModule, NoopAnimationsModule],
+        OseeStringUtilsDirectivesModule,MatMenuModule, NoopAnimationsModule],
       providers:[{provide:CurrentElementSearchService,useValue:serviceSpy}],
       declarations: [ ElementTableComponent, ElementTableSearchDummy ]
     })

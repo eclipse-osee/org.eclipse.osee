@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
@@ -36,7 +37,9 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 
-   List<InterfaceStructureElementToken> getElementsByTypeFilter(BranchId branch, String filter);
+   List<InterfaceStructureElementTokenWithPath> getElementsByType(BranchId branch);
+
+   List<InterfaceStructureElementTokenWithPath> getElementsByTypeFilter(BranchId branch, String filter);
 
    InterfaceStructureElementToken get(BranchId branch, ArtifactId elementId);
 
