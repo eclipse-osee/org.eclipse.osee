@@ -20,5 +20,5 @@ import { PlConfigSetLoadingIndicatorInterceptor } from './plconfig-set-loading-i
 export const httpInterceptorProviders = [
   { provide: HTTP_INTERCEPTORS, useClass: PlConfigSetLoadingIndicatorInterceptor, multi: true },
   { provide: HTTP_INTERCEPTORS, useClass: HttpTimeoutExtensionInterceptor, multi: true },
-  { provide: HTTP_INTERCEPTORS, useClass:OSEEAuthHeaderInterceptor,multi:true}
+  { provide: HTTP_INTERCEPTORS, useClass: OSEEAuthHeaderInterceptor, multi:true}
 ];

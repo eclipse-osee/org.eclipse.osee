@@ -28,6 +28,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { environment } from '../environments/environment';
+import { UserHeaderService } from './userdata/services/user-header.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressBarModule,
     BrowserAnimationsModule
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders,{ provide: UserHeaderService, useClass: environment.headerService }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
