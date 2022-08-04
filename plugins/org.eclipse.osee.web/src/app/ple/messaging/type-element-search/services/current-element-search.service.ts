@@ -24,7 +24,7 @@ export class CurrentElementSearchService {
 
   private _elements = combineLatest([this.idService.BranchId, this.searchService.searchTerm]).pipe(
     debounceTime(500),
-    filter(([id, searchTerm]) => id !== '' && !isNaN(Number(id)) && Number(id) > 0),
+    filter(([id, searchTerm]) => id !== '' && !isNaN(Number(id)) && Number(id) > 0 && searchTerm!==''),
     switchMap(([id,search])=>this.platformTypesService.getFilteredElements(search,id))
   )
   constructor (private idService: BranchIdService, private platformTypesService: PlatformTypesService, private searchService: SearchService) { }

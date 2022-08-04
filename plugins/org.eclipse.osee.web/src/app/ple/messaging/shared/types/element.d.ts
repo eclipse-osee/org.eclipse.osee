@@ -35,6 +35,10 @@ export interface element {
     logicalType?: string,
     applicability?:applic,
 }
+export interface elementWithPathsAndButtons extends element{
+    paths: string[],
+    buttonNames:string[]
+}
 
 export interface elementWithChanges extends element{
     added: boolean,

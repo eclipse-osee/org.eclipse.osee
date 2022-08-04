@@ -30,6 +30,7 @@ import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -263,11 +264,20 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getElementsByTypeFilter(BranchId branch, String filter) {
+   public List<InterfaceStructureElementTokenWithPath> getElementsByType(BranchId branch) {
+      return this.platformApi.getAllWithElementRelations(branch).stream().map(
+         type -> type.getArtifactReadable().getRelatedList(
+            CoreRelationTypes.InterfaceElementPlatformType_Element).stream().map(
+               element -> new InterfaceStructureElementTokenWithPath(element)).collect(Collectors.toList())).collect(
+                  Collectors.toList()).stream().flatMap(List::stream).distinct().collect(Collectors.toList());
+   }
+
+   @Override
+   public List<InterfaceStructureElementTokenWithPath> getElementsByTypeFilter(BranchId branch, String filter) {
       return this.platformApi.getFilteredWithElementRelations(branch, filter).stream().map(
          type -> type.getArtifactReadable().getRelatedList(
             CoreRelationTypes.InterfaceElementPlatformType_Element).stream().map(
-               element -> new InterfaceStructureElementToken(element)).collect(Collectors.toList())).collect(
+               element -> new InterfaceStructureElementTokenWithPath(element)).collect(Collectors.toList())).collect(
                   Collectors.toList()).stream().flatMap(List::stream).distinct().collect(Collectors.toList());
    }
 

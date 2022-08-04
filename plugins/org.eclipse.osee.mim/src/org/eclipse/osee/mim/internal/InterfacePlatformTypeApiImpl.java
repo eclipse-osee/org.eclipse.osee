@@ -133,13 +133,20 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch) {
-      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
+      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+         CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionContent_Connection));
    }
 
    @Override
    public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter) {
       return this.getFilteredWithRelations(branch, filter,
-         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
+         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+            CoreRelationTypes.InterfaceStructureContent_Structure,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionContent_Connection));
    }
 
    private List<AttributeTypeId> createAttributeList() {
