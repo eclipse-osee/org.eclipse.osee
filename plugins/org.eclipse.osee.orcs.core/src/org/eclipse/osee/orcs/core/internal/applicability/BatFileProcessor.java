@@ -133,7 +133,7 @@ public class BatFileProcessor {
          } else if (endFeature != null || endConfig != null || endConfigGrp != null) {
             checkForMismatchTags(inFile, endFeature, endConfig, endConfigGrp, featureElse, configureElse,
                configureGroupElse);
-            ApplicabilityBlock applicBlock = finishApplicabilityBlock(toReturn, matcher);
+            ApplicabilityBlock applicBlock = finishApplicabilityBlock(toReturn, matcher, inFile);
             String toReplace = toReturn.substring(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex());
             toReturn = toReturn.replace(toReplace, applicBlock.getInsideText());
             matcherIndex = applicBlock.getStartInsertIndex() + applicBlock.getInsideText().length();
@@ -221,7 +221,7 @@ public class BatFileProcessor {
       }
    }
 
-   private ApplicabilityBlock finishApplicabilityBlock(String toReturn, Matcher matcher) throws IOException {
+   private ApplicabilityBlock finishApplicabilityBlock(String toReturn, Matcher matcher, File inFile) throws IOException {
       ApplicabilityBlock applicBlock = applicBlocks.pop();
       applicBlock.setEndTextIndex(matcher.start());
       applicBlock.setEndInsertIndex(matcher.end());
@@ -278,6 +278,13 @@ public class BatFileProcessor {
          replacementText = fullText.replace(commentedReplacementText, replacementText);
       }
 
+      String fileName = inFile.getName();
+      //if replacementText has !, remove the string that starts with ! when checking .fileApplicability file
+      if (fileName.equals(".fileApplicability")) {
+         if (!replacementText.isEmpty() && replacementText.contains("!")) {
+            replacementText = replacementText.replaceAll("\\!(.*)", "");
+         }
+      }
       applicBlock.setInsideText(replacementText);
       return applicBlock;
    }
