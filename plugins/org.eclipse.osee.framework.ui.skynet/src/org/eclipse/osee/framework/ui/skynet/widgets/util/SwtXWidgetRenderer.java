@@ -122,8 +122,10 @@ public class SwtXWidgetRenderer {
       XWidget xWidget = xWidgetRenderItem.getXWidget();
       xWidgets.add(xWidget);
 
-      if (Strings.isInValid(xWidget.getLabel())) {
+      if (Strings.isValid(xWidgetRenderItem.getName())) {
          setName(xWidget, xWidgetRenderItem.getName());
+      } else if (Strings.isValid(xWidget.getLabel())) {
+         setName(xWidget, xWidget.getLabel());
       }
 
       if (Strings.isValid(xWidgetRenderItem.getToolTip())) {

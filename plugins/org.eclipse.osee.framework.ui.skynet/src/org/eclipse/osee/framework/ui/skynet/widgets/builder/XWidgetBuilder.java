@@ -272,7 +272,7 @@ public class XWidgetBuilder {
       newXWidget();
       setAttrTypeSettings(attrType);
       currItem.setXWidgetName(XHyperlinkWfdForEnumAttr.class.getSimpleName());
-      currItem.setName(attrType.getName());
+      currItem.setName(attrType.getUnqualifiedName());
       return this;
    }
 
