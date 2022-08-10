@@ -332,6 +332,14 @@
       </Operation>
    </extension>
    <extension
+         id="RealignActionableItemsBlam"
+         name="RealignActionableItemsBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.ide.RealignActionableItemsBlam">
+      </Operation>
+   </extension>
+   <extension
          id="CreatePortingWorkflows"
          name="CratePortingWorkflows"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
