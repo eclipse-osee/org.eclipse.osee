@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.model;
+package org.eclipse.osee.orcs.search;
 
 import java.util.LinkedList;
 import java.util.List;

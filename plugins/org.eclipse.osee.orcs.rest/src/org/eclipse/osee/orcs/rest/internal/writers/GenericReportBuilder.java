@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.GenericReport;
-import org.eclipse.osee.orcs.rest.model.ReportColumn;
-import org.eclipse.osee.orcs.rest.model.ReportFilter;
-import org.eclipse.osee.orcs.rest.model.ReportLevel;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.ReportColumn;
+import org.eclipse.osee.orcs.search.ReportFilter;
+import org.eclipse.osee.orcs.search.ReportLevel;
 
 /**
  * @author David W. Miller
