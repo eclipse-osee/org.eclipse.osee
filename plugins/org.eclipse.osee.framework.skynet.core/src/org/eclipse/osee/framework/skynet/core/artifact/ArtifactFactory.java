@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
@@ -73,7 +75,12 @@ public abstract class ArtifactFactory {
    }
 
    public static Long getNextArtifactId(Long uuid) {
-      return uuid == null ? ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid;
+      if (ArtifactToken.USE_LONG_IDS) {
+         return Lib.generateUuid();
+      } else {
+         return uuid == null ? ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid;
+      }
+      
    }
 
    public synchronized Artifact reflectExisitingArtifact(ArtifactId artId, String guid, ArtifactTypeToken artifactType, GammaId gammaId, BranchToken branch, ModificationType modificationType, ApplicabilityId applicabilityId) {

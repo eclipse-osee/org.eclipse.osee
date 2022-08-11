@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -111,9 +112,15 @@ public class CreateSystemBranches {
       tx.commit();
 
       List<IUserGroupArtifactToken> roles = superUser.getRoles();
-      roles.add(CoreUserGroups.AccountAdmin);
-      roles.add(CoreUserGroups.OseeAdmin);
-      roles.add(CoreUserGroups.OseeAccessAdmin);
+      if (!roles.contains(CoreUserGroups.AccountAdmin)) {
+         roles.add(CoreUserGroups.AccountAdmin);
+      }
+      if (!roles.contains(CoreUserGroups.OseeAdmin)) {
+         roles.add(CoreUserGroups.OseeAdmin);
+      }
+      if (!roles.contains(CoreUserGroups.OseeAccessAdmin)) {
+         roles.add(CoreUserGroups.OseeAccessAdmin);
+      }
       UserToken userWithRoles = UserToken.create(superUser.getId(), superUser.getName(), superUser.getEmail(),
          superUser.getUserId(), true, superUser.getLoginIds(), roles);
 
@@ -126,8 +133,8 @@ public class CreateSystemBranches {
       Conditions.assertFalse(bootsrapUsers.isEmpty(), "Bootstrap Users should NOT be empty.");
       users.addAll(bootsrapUsers);
       OseeProperties.setIsInTest(true);
+      userService.setUserForCurrentThread(UserId.valueOf(userWithRoles));
       TransactionId txId = userService.createUsers(users, "Create System Users");
-      userService.setUserForCurrentThread(userWithRoles.getLoginIds().get(0));
       OseeProperties.setIsInTest(false);
       return txId;
    }

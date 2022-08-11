@@ -779,7 +779,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          relTypeId = relTypeId.replaceAll(" ", "");
          if (Strings.isNumeric(relTypeId)) {
             orcsApi.getJdbcService().getClient().runQuery(chStmt -> relations.add(getJaxRelation(chStmt, artIds)),
-               query, branch.getIdString(), relTypeId);
+               query, branch.getId(), Long.valueOf(relTypeId));
          }
       }
 

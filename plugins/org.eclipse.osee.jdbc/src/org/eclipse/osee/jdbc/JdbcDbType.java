@@ -81,11 +81,11 @@ public class JdbcDbType extends BaseId {
    public String getRegularExpMatchSql(String field) {
       if (equals(oracle)) {
          return "REGEXP_LIKE (" + field + ", ?)";
-      }
-      if (matches(postgresql, hsql)) {
+      } else if (equals(hsql)) {
          return "REGEXP_MATCHES (" + field + ", ?)";
-      }
-      if (equals(mysql)) {
+      } else if (equals(postgresql)) {
+         return "exists (select * from REGEXP_MATCHES (" + field + ", ?))";
+      } else if (equals(mysql)) {
          return "(" + field + " REGEXP ?)";
       }
       throw newJdbcException("RegExp matching is not supported for db [%s]", this);

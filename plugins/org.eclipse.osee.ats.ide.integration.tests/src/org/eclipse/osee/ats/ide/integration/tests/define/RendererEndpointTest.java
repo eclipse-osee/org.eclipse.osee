@@ -56,7 +56,7 @@ public class RendererEndpointTest {
    private static final String endWordString = "</w:t></w:r></w:p>";
 
    private static RenderEndpoint renderEndpoint;
-   private static final BranchToken branch = DemoBranches.SAW_PL;
+   private static final BranchToken branch = DemoBranches.SAW_PL_Working_Branch;
    private static final Artifact parent =
       ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SoftwareRequirementsFolder, branch);
    private static final Artifact template = ArtifactQuery.getArtifactFromTypeAndName(

@@ -29,10 +29,6 @@ public interface RelationId extends Id {
       return Id.valueOf(id, RelationId::valueOf);
    }
 
-   public static RelationId valueOf(long id) {
-      return valueOf(Long.valueOf(id));
-   }
-
    public static RelationId valueOf(Long id) {
       final class RelationIdImpl extends BaseId implements RelationId {
          public RelationIdImpl(Long txId) {

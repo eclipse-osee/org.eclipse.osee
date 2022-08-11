@@ -145,7 +145,7 @@ public final class TestUtil {
 
    public static List<RelationLink> createLinks(int total, BranchId branch) {
       List<RelationLink> links = new ArrayList<>();
-      for (int index = 0; index < total; index++) {
+      for (Long index = 0L; index < total; index++) {
          RelationLink link = createRelationLink(RelationId.valueOf(index), ArtifactId.valueOf(index + 1),
             ArtifactId.valueOf(index + 2), branch, CoreRelationTypes.Allocation);
          links.add(link);

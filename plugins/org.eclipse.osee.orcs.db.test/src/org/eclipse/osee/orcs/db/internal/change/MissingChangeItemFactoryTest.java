@@ -252,7 +252,7 @@ public class MissingChangeItemFactoryTest {
 
       List<RelationData> relDatas = new LinkedList<>();
       RelationData relData1 =
-         createRelationData(RelationId.valueOf(11), artA, artC, GammaId.valueOf(88), ModificationType.NEW);
+         createRelationData(RelationId.valueOf(11L), artA, artC, GammaId.valueOf(88), ModificationType.NEW);
       relDatas.add(relData1);
 
       List<ArtifactData> destArtData = new LinkedList<>();
