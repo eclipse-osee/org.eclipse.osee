@@ -256,7 +256,7 @@ public class DataFactoryImplTest {
    public void testCreateRelationData() {
       ArtifactId aArt = ArtifactId.valueOf(4562);
       ArtifactId bArt = ArtifactId.valueOf(9513);
-      when(idFactory.getNextRelationId()).thenReturn(RelationId.valueOf(1));
+      when(idFactory.getNextRelationId()).thenReturn(RelationId.valueOf(1L));
 
       RelationData actual = dataFactory.createRelationData(Design_Design, COMMON, aArt, bArt, "My rationale");
 

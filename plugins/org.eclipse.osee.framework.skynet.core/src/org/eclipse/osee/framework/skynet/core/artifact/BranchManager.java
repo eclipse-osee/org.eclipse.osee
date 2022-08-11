@@ -147,7 +147,7 @@ public final class BranchManager {
    public static Collection<BranchToken> getBranchesByAssocArt(ArtifactToken art) {
       Collection<BranchToken> branches = new ArrayList<>(1);
       ConnectionHandler.getJdbcClient().runQuery(stmt -> branches.add(getBranchToken(stmt.getLong("branch_id"))),
-         SELECT_BRANCH_BY_ASSOC_ART, art.getIdString());
+         SELECT_BRANCH_BY_ASSOC_ART, art.getId());
       return branches;
    }
 

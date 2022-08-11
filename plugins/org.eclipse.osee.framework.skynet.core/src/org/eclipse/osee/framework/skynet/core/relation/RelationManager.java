@@ -532,7 +532,7 @@ public class RelationManager {
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
-         relation = getOrCreate(artifactA, artifactB, relationType, RelationId.valueOf(0), GammaId.valueOf(0),
+         relation = getOrCreate(artifactA, artifactB, relationType, RelationId.valueOf(0L), GammaId.valueOf(0),
             rationale, ModificationType.NEW, ApplicabilityId.BASE);
          relation.setDirty();
          if (relation.isDeleted()) {
@@ -612,7 +612,7 @@ public class RelationManager {
    public static synchronized RelationLink getOrCreate(ArtifactToken aArtifactId, ArtifactToken bArtifactId, RelationTypeToken relationType, RelationId relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
       BranchToken branch = aArtifactId.getBranch();
       RelationLink relation = null;
-      if (relationId.notEqual(RelationId.valueOf(0))) {
+      if (relationId.notEqual(RelationId.valueOf(0L))) {
          relation = getLoadedRelationById(relationId, aArtifactId, bArtifactId, branch);
       } else {
          relation = getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
