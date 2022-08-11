@@ -10,26 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.orcs.rest.model;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+package org.eclipse.osee.orcs.search;
+
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 
 /**
  * @author David W. Miller
  */
-public class ReportFilter {
-   private final String filterRegex;
+public class ArtifactIdReportColumn extends ReportColumn {
 
-   public ReportFilter(String filterRegex) {
-      this.filterRegex = filterRegex;
+   public ArtifactIdReportColumn(String name) {
+      super(name);
    }
 
-   public Boolean filterMatches(String toMatch) {
-      if (Strings.isValid(toMatch)) {
-         if (toMatch.matches(filterRegex)) {
-            return true;
-         }
+   @Override
+   public String getReportData(ArtifactReadable artifact) {
+      if (artifact == null) {
+         return "";
       }
-      return false;
+      return artifact.getIdString();
    }
 }
