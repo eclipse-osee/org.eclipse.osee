@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -113,8 +112,9 @@ public class ArtifactTransfer extends ByteArrayTransfer {
          out.close();
          byte[] bytes = out.toByteArray();
          super.javaToNative(bytes, transferData);
-      } catch (Exception e) {
+      } catch (Exception ex) {
          // it's best to send nothing if there were problems
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }
 
@@ -148,7 +148,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
          }
          return new ArtifactData(artifacts, url, source);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
          return null;
       }
    }
@@ -157,15 +157,14 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     * Reads a resource from the given stream.
     */
    private Artifact readArtifact(DataInputStream dataIn) throws IOException {
-      int artID = dataIn.readInt();
-      return ArtifactQuery.getArtifactFromId(artID, BranchId.valueOf(dataIn.readLong()));
+      return ArtifactQuery.getArtifactFromId(dataIn.readLong(), BranchId.valueOf(dataIn.readLong()));
    }
 
    /**
     * Writes the given resource to the given stream.
     */
    private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException {
-      dataOut.writeInt(artifact.getArtId());
+      dataOut.writeLong(artifact.getId());
       dataOut.writeLong(artifact.getBranch().getId());
    }
 }
