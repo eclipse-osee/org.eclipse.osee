@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -59,10 +59,10 @@ public class ArtifactLoaderTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   private static final int TOTAL_THREADS = 7;
-   private static final int NUM_ARTIFACTS = 100;
+   private static final int TOTAL_THREADS = 2;
+   private static final int NUM_ARTIFACTS = 40;
    private static final String ATTRIBUTE_VALUE = "now is the time";
-   private static final BranchId branch = CoreBranches.COMMON;
+   private static final BranchToken branch = CoreBranches.COMMON;
 
    @After
    public void tearDown() throws Exception {
@@ -81,7 +81,7 @@ public class ArtifactLoaderTest {
     * Another interesting side-effect, is this test also gives a repeatable case for duplicate relation loading. These
     * are caught by the SevereLoggingMonitor.
     */
-   @Test(timeout = 20000)
+   @Test(timeout = 40000)
    public void testThreadSafeLoading() throws Exception {
       // Create some software artifacts
       SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
