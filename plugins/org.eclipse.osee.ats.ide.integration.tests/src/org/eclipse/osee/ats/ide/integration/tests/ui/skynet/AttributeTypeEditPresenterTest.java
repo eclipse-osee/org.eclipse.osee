@@ -50,13 +50,6 @@ public class AttributeTypeEditPresenterTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final AttributeTypeToken[] selectableTypes = new AttributeTypeToken[] {
-      CoreAttributeTypes.RelationOrder,
-      CoreAttributeTypes.ContentUrl,
-      CoreAttributeTypes.Annotation,
-      CoreAttributeTypes.StaticId,
-      CoreAttributeTypes.Description};
-
    private AttributeTypeEditPresenter controller;
    private MockDisplay display;
    private Artifact artifact;
@@ -87,14 +80,17 @@ public class AttributeTypeEditPresenterTest {
       String expectedNoneMessage = "No attribute types available to add.";
       OperationType expectedType = OperationType.ADD_ITEM;
 
-      testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage);
+      List<AttributeTypeToken> selectableTypes = CoreArtifactTypes.Artifact.getValidAttributeTypes();
+      selectableTypes.remove(CoreAttributeTypes.Name);
+
+      testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage, selectableTypes);
 
       expectedTitle = "Delete Attribute Types";
       expectedOpMessage = "Select items to remove.";
       expectedNoneMessage = "No attribute types available to remove.";
       expectedType = OperationType.REMOVE_ITEM;
 
-      testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage);
+      testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage, selectableTypes);
    }
 
    private static void performOp(AttributeTypeEditPresenter controller, OperationType operationType) {
@@ -110,14 +106,14 @@ public class AttributeTypeEditPresenterTest {
       }
    }
 
-   private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage) {
+   private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage, List<AttributeTypeToken> selectableTypes) {
       editor.setWasDirtyStateCalled(false);
       display.setAddWidgetsAttributeTypes(null);
       display.setRemoveWidgetsAttributeTypes(null);
 
       // None Selected
       display.setSelected();
-      List<AttributeTypeId> selectable = new ArrayList<>(Arrays.asList(selectableTypes));
+      List<AttributeTypeId> selectable = new ArrayList<>(selectableTypes);
       performOp(controller, operationType);
 
       Assert.assertNull(display.getAddWidgetsAttributeTypes());
@@ -176,8 +172,6 @@ public class AttributeTypeEditPresenterTest {
 
       display.setAddWidgetsAttributeTypes(null);
       display.setRemoveWidgetsAttributeTypes(null);
-
-      //      artifact.deleteAttributes(CoreAttributeTypes.Name);
 
       // None Selectable
       display.setSelected();
