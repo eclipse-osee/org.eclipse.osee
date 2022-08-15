@@ -113,8 +113,8 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          return rd;
       }
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-      if (teamWf.isCompletedOrCancelled()) {
-         rd.errorf("%s is completed/cancelled and cannot be updated.", teamWf.toStringWithId());
+      if (teamWf.isCancelled()) {
+         rd.errorf("%s is cancelled and cannot be updated.", teamWf.toStringWithId());
          return rd;
       }
       TeamDefinition passedTeamDef =
