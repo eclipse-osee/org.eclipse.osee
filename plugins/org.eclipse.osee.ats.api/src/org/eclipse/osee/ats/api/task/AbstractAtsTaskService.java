@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -129,13 +129,13 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsWorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf) {
+   public Collection<WorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf) {
       Collection<IAttribute<Object>> workDefIds = atsApi.getAttributeResolver().getAttributes(
          teamWf.getTeamDefinition(), AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference);
-      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
+      List<WorkDefinition> workDefs = new ArrayList<WorkDefinition>();
       for (IAttribute<Object> attr : workDefIds) {
          ArtifactId id = (ArtifactId) attr.getValue();
-         IAtsWorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(id);
+         WorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(id);
          workDefs.add(workDef);
       }
       return workDefs;

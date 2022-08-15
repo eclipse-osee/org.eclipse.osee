@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
@@ -51,9 +51,9 @@ import org.eclipse.swt.widgets.TreeItem;
 public class UserRoleXViewer extends XViewer {
 
    private final XUserRoleViewer xUserRoleViewer;
-   private final IAtsWorkDefinition workDefinition;
+   private final WorkDefinition workDefinition;
 
-   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer, IAtsWorkDefinition workDefinition) {
+   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer, WorkDefinition workDefinition) {
       super(parent, style, new UserRoleXViewerFactory());
       this.xUserRoleViewer = xUserRoleViewer;
       this.workDefinition = workDefinition;

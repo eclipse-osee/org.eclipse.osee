@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -42,13 +42,13 @@ public class MockWorkItem implements IAtsWorkItem {
    private final String atsId;
    private IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
-   private final IAtsWorkDefinition workDefinition;
+   private final WorkDefinition workDefinition;
    private AtsUser completedBy;
    private AtsUser cancelledBy;
    private String completeFromState;
    private String cancelledFromState;
 
-   public MockWorkItem(String name, String currentStateName, IAtsWorkDefinition workDefinition, StateType StateType) {
+   public MockWorkItem(String name, String currentStateName, WorkDefinition workDefinition, StateType StateType) {
       this.name = name;
       atsId = name;
       this.stateMgr = new StateManager(this, new AtsLogFactory(), null);
@@ -104,7 +104,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsWorkDefinition getWorkDefinition() {
+   public WorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 

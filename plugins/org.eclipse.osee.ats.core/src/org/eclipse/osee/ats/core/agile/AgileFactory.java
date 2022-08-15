@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -201,7 +201,7 @@ public class AgileFactory {
       atsApi.getActionService().setAtsId(sprint, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
          null, changes);
 
-      IAtsWorkDefinition workDefinition =
+      WorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Sprint);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(sprint, workDefinition, changes);
 
@@ -236,7 +236,7 @@ public class AgileFactory {
       atsApi.getActionService().setAtsId(backlog, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
          null, changes);
 
-      IAtsWorkDefinition workDefinition =
+      WorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(backlog, workDefinition, changes);
 

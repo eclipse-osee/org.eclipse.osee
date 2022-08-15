@@ -23,7 +23,7 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeOutlinePage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -54,7 +54,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 public class WorkDefinitionViewer extends XNavigateItemAction {
 
    public static final String TITLE = "Work Definition Viewer";
-   private IAtsWorkDefinition workDef;
+   private WorkDefinition workDef;
    private WfeOutlinePage outlinePage;
 
    public WorkDefinitionViewer(XNavItemCat category) {
@@ -118,7 +118,7 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
                } catch (PartInitException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
-               workDef = (IAtsWorkDefinition) selectedRows.iterator().next().getData();
+               workDef = (WorkDefinition) selectedRows.iterator().next().getData();
                outlinePage.setInput(definitionViewer);
             }
          }
@@ -138,16 +138,16 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
 
       List<IResultsXViewerRow> workDefRows = new ArrayList<>();
       try {
-         List<IAtsWorkDefinition> workDefs = new ArrayList<>();
+         List<WorkDefinition> workDefs = new ArrayList<>();
          workDefs.addAll(AtsApiService.get().getWorkDefinitionService().getAllWorkDefinitions());
-         Collections.sort(workDefs, new Comparator<IAtsWorkDefinition>() {
+         Collections.sort(workDefs, new Comparator<WorkDefinition>() {
 
             @Override
-            public int compare(IAtsWorkDefinition o1, IAtsWorkDefinition o2) {
+            public int compare(WorkDefinition o1, WorkDefinition o2) {
                return o1.getName().compareTo(o2.getName());
             }
          });
-         for (IAtsWorkDefinition workDef : workDefs) {
+         for (WorkDefinition workDef : workDefs) {
             workDefRows.add(new ResultsXViewerRow(new String[] {workDef.getName(), workDef.getIdString()}, workDef));
          }
       } catch (OseeCoreException ex) {
@@ -158,7 +158,7 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
 
    }
 
-   public IAtsWorkDefinition getWorkDef() {
+   public WorkDefinition getWorkDef() {
       return workDef;
    }
 

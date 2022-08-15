@@ -86,7 +86,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    // for ReviewOsgiXml public void setLogger(Log logger)
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
    // for ReviewOsgiXml public void setAtsUserService(IAtsUserService userServiceClient)
-   // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
+   // for ReviewOsgiXml public void setWorkDefinitionProviderService(WorkDefinitionProviderService workDefinitionProviderService)
    // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
    // for ReviewOsgiXml public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider)

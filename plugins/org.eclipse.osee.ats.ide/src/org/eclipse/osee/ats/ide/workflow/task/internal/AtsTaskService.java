@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
@@ -92,7 +92,7 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          EntryComboComboDialog ed2 = null;
 
          // Determine if multiple work defs and/or miss-matched work defs
-         Collection<IAtsWorkDefinition> taskWorkDefs = atsApi.getTaskService().calculateTaskWorkDefs(teamWf);
+         Collection<WorkDefinition> taskWorkDefs = atsApi.getTaskService().calculateTaskWorkDefs(teamWf);
          String comment = "Create New Task";
          if (taskWorkDefs.size() == 0 || taskWorkDefs.size() == 1) {
             ed = new EntryComboDialog(comment, "Enter Task Title", RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
@@ -119,7 +119,7 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
                JaxAtsTask.create(newTaskData, title, atsApi.getUserService().getCurrentUser(), new Date());
             task.setId(ArtifactId.SENTINEL.getId());
             if (ed2 != null) {
-               task.setWorkDef(((IAtsWorkDefinition) ed2.getSelection2()).getIdString());
+               task.setWorkDef(((WorkDefinition) ed2.getSelection2()).getIdString());
             } else if (taskWorkDefs.size() == 1) {
                task.setWorkDef(taskWorkDefs.iterator().next().getIdString());
             }

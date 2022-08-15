@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -172,7 +172,7 @@ public class WorkflowManager {
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) {
       List<StateXWidgetPage> statePages = new ArrayList<>();
       if (workItem != null) {
-         IAtsWorkDefinition workDef = workItem.getWorkDefinition();
+         WorkDefinition workDef = workItem.getWorkDefinition();
          ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
          for (IAtsStateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
             workDef)) {

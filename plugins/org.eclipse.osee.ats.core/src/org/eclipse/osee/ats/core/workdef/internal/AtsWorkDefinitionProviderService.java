@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -33,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProviderService {
 
-   private static Map<Long, IAtsWorkDefinition> idToWorkDef = new HashMap<>();
+   private static Map<Long, WorkDefinition> idToWorkDef = new HashMap<>();
    private final Collection<IAtsWorkDefinitionProvider> workDefProviders = new ArrayList<>();
    private final Collection<IAtsWorkDefinitionProvider> workDefProviderProcessed = new ArrayList<>();
    private AtsWorkDefinitionProvider atsWorkDefProv;
@@ -64,7 +63,7 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
          handleProvider(workDefProvider);
       }
       XResultData rd = new XResultData();
-      for (IAtsWorkDefinition workDef : idToWorkDef.values()) {
+      for (WorkDefinition workDef : idToWorkDef.values()) {
          if (workDef.getResults().isErrors()) {
             rd.merge(workDef.getResults());
          }
@@ -76,7 +75,7 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
 
    private void handleProvider(IAtsWorkDefinitionProvider workDefProvider) {
       if (!workDefProviderProcessed.contains(workDefProvider)) {
-         for (IAtsWorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
+         for (WorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
             idToWorkDef.put(workDef.getId(), workDef);
          }
          workDefProviderProcessed.add(workDefProvider);
@@ -84,13 +83,13 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
    }
 
    @Override
-   public IAtsWorkDefinition getWorkDefinition(Long id) {
+   public WorkDefinition getWorkDefinition(Long id) {
       ensureLoaded();
       return idToWorkDef.get(id);
    }
 
    @Override
-   public Collection<IAtsWorkDefinition> getAll() {
+   public Collection<WorkDefinition> getAll() {
       ensureLoaded();
       return idToWorkDef.values();
    }

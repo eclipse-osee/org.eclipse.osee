@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -63,7 +63,7 @@ public interface IAtsTaskService {
       return !hasTasks(teamWf);
    }
 
-   Collection<IAtsWorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf);
+   Collection<WorkDefinition> calculateTaskWorkDefs(IAtsTeamWorkflow teamWf);
 
    default CreateTasksDefinitionBuilder createTasksSetDefinitionBuilder(AtsTaskDefToken taskSetToken) {
       return new CreateTasksDefinitionBuilder(taskSetToken);

@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -100,7 +100,7 @@ public class ConvertWorkDefinitionOperations {
             ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleAttributeValue(art,
                AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
             if (workDefArt.isValid()) {
-               IAtsWorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefArt);
+               WorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefArt);
                if (workDefinition == null || workDefinition.isInvalid()) {
                   rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
                } else {
@@ -144,7 +144,7 @@ public class ConvertWorkDefinitionOperations {
             ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleAttributeValue(art,
                AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
             if (workDefArt.isInvalid()) {
-               IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
+               WorkDefinition workDefinition = workItem.getWorkDefinition();
                if (workDefinition == null) {
                   rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
                } else {
@@ -189,7 +189,7 @@ public class ConvertWorkDefinitionOperations {
             ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleAttributeValue(art,
                AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
             if (workDefArt.isInvalid()) {
-               IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
+               WorkDefinition workDefinition = workItem.getWorkDefinition();
                if (workDefinition == null) {
                   rd.error(String.format("null Work Definition for %s", workItem.toStringWithId()));
                } else {
@@ -279,8 +279,7 @@ public class ConvertWorkDefinitionOperations {
             atsApi.getAttributeResolver().getSoleAttributeValue(artifact, newAttrType, ArtifactId.SENTINEL);
 
          if (newWorkDefArt.isInvalid()) {
-            IAtsWorkDefinition workDefinition =
-               atsApi.getWorkDefinitionService().getWorkDefinitionByName(oldWorkDefName);
+            WorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinitionByName(oldWorkDefName);
             if (workDefinition == null || workDefinition.isInvalid()) {
                rd.error(String.format("null/invalid Work Definition for work def name [%s] and art %s", oldWorkDefName,
                   artifact));

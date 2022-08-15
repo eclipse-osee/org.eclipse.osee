@@ -32,12 +32,12 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -166,7 +166,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
          } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
-         } else if (element instanceof IAtsWorkDefinition) {
+         } else if (element instanceof WorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
          } else if (element instanceof WidgetDefinition) {
             return ImageManager.getImage(FrameworkImage.GEAR);
@@ -219,8 +219,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.addAll(((WrappedLayout) element).getStateItems());
          } else if (element instanceof WrappedPercentWeight) {
             getChildrenFromWrappedPercentDefinition((WrappedPercentWeight) element, items);
-         } else if (element instanceof IAtsWorkDefinition) {
-            getChildrenFromWorkDefinition((IAtsWorkDefinition) element, items);
+         } else if (element instanceof WorkDefinition) {
+            getChildrenFromWorkDefinition((WorkDefinition) element, items);
          } else if (element instanceof IAtsStateDefinition) {
             getChildrenFromStateDefinition(element, items);
          } else if (element instanceof CompositeLayoutItem) {
@@ -268,7 +268,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       public Object getParent(Object element) {
          if (element instanceof AbstractWorkflowArtifact) {
             return workflowEditor;
-         } else if (element instanceof IAtsWorkDefinition) {
+         } else if (element instanceof WorkDefinition) {
             return workflowEditor != null ? workflowEditor : workDefViewer;
          } else if (element instanceof IAtsStateDefinition) {
             return ((IAtsStateDefinition) element).getWorkDefinition();
@@ -286,7 +286,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return false;
          } else if (element instanceof AbstractWorkflowArtifact) {
             return true;
-         } else if (element instanceof IAtsWorkDefinition) {
+         } else if (element instanceof WorkDefinition) {
             return true;
          } else if (element instanceof IAtsStateDefinition) {
             return true;
@@ -446,7 +446,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
       }
 
-      private void getChildrenFromWorkDefinition(IAtsWorkDefinition workDef, List<Object> items) {
+      private void getChildrenFromWorkDefinition(WorkDefinition workDef, List<Object> items) {
          try {
             items.add(workDef.getHeaderDef());
          } catch (OseeStateException ex) {
@@ -570,9 +570,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
    }
    private class WrappedPercentWeight {
 
-      private final IAtsWorkDefinition workDef;
+      private final WorkDefinition workDef;
 
-      public WrappedPercentWeight(IAtsWorkDefinition workDef) {
+      public WrappedPercentWeight(WorkDefinition workDef) {
          this.workDef = workDef;
       }
 
@@ -590,7 +590,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          return "Total Percent Weighting: exception (see error log)";
       }
 
-      public IAtsWorkDefinition getWorkDef() {
+      public WorkDefinition getWorkDef() {
          return workDef;
       }
 

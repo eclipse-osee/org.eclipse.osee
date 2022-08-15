@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -53,7 +53,7 @@ public class StateManagerUtilityTest {
    // @formatter:off
    @Mock IAtsWorkItem workItem;
    @Mock IAtsChangeSet changes;
-   @Mock IAtsWorkDefinition workDef;
+   @Mock WorkDefinition workDef;
    @Mock IAtsStateDefinition analyzeState, completedState;
    @Mock IAttributeResolver attrResolver;
    @Mock IAtsStateManager stateMgr;

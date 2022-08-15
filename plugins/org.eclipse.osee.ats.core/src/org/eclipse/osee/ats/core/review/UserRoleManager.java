@@ -37,9 +37,9 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -299,7 +299,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public IAtsWorkDefinition getWorkDefinition() {
+   public WorkDefinition getWorkDefinition() {
       return peerRev.getWorkDefinition();
    }
 }

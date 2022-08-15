@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -52,7 +52,7 @@ public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactRefere
             if (value.equals(SENTINEL)) {
                return "";
             }
-            IAtsWorkDefinition workDef =
+            WorkDefinition workDef =
                AtsApiService.get().getWorkDefinitionService().getWorkDefinition(Long.valueOf(value));
             isWorkDef = true;
             if (workDef != null && workDef.isValid()) {

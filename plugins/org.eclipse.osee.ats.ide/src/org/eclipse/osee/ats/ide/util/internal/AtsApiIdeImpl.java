@@ -97,7 +97,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
    // for ReviewOsgiXml public void setLogger(Log logger)
    // for ReviewOsgiXml public void setAtsEventService(IAtsEventService eventService)
-   // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
+   // for ReviewOsgiXml public void setWorkDefinitionProviderService(WorkDefinitionProviderService workDefinitionProviderService)
    // for ReviewOsgiXml public void setAtsUserService(IAtsUserService userServiceClient)
    // for ReviewOsgiXml public void addSearchDataProvider(IAtsSearchDataProvider provider)
    // for ReviewOsgiXml public void removeSearchDataProvider(IAtsSearchDataProvider provider)

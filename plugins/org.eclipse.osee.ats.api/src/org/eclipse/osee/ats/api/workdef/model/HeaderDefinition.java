@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 public class HeaderDefinition {
 
    private final List<LayoutItem> layoutItems = new ArrayList<>(5);
-   private final IAtsWorkDefinition workDefinition;
+   private final WorkDefinition workDefinition;
    private boolean showMetricsHeader = true;
    private boolean showWorkPackageHeader = true;
    private boolean showSiblingLinks = true;
@@ -36,7 +36,7 @@ public class HeaderDefinition {
       this.showWorkPackageHeader = showWorkPackageHeader;
    }
 
-   public HeaderDefinition(IAtsWorkDefinition workDefinition) {
+   public HeaderDefinition(WorkDefinition workDefinition) {
       this.workDefinition = workDefinition;
    }
 
@@ -52,7 +52,7 @@ public class HeaderDefinition {
       this.showMetricsHeader = showMetricsHeader;
    }
 
-   public IAtsWorkDefinition getWorkDefinition() {
+   public WorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 

@@ -44,11 +44,11 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -207,7 +207,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       atsApi.getActionService().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), null, changes);
 
-      IAtsWorkDefinition workDefinition =
+      WorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Review_Decision);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(decRev, workDefinition, changes);
 
@@ -332,7 +332,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(workDefinition, teamWf, teamWf.getTeamDefinition(), reviewTitle, againstState,
          new Date(), atsApi.getUserService().getCurrentUser(), changes);
    }
@@ -348,7 +348,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       IAtsTeamDefinition teamDef =
          actionableItem.getAtsApi().getActionableItemService().getTeamDefinitionInherited(actionableItem);
-      IAtsWorkDefinition workDefinition =
+      WorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
             actionableItem);
       IAtsPeerToPeerReview peerArt = createNewPeerToPeerReview(workDefinition, null, teamDef, reviewTitle, againstState,
@@ -357,7 +357,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return peerArt;
    }
 
-   private IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   private IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       Conditions.assertNotNull(workDefinition, "WorkDefinition");
       ArtifactTypeToken reviewArtType = workDefinition.getArtType();
       IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(reviewArtType,

@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.WorkDefTaskDemoForCrEstimating;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamProductLine;
@@ -48,9 +48,9 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimpleAnal
 public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
 
    @Override
-   public Collection<IAtsWorkDefinition> getWorkDefinitions() {
+   public Collection<WorkDefinition> getWorkDefinitions() {
       // return empty if not AtsDB
-      List<IAtsWorkDefinition> ret = new ArrayList<IAtsWorkDefinition>();
+      List<WorkDefinition> ret = new ArrayList<WorkDefinition>();
       // @formatter:off
          ret.addAll(Arrays.asList(
             new WorkDefGoal().build(),

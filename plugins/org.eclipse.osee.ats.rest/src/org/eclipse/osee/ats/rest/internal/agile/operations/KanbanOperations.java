@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -300,7 +300,7 @@ public class KanbanOperations {
 
    private void addAvailableStates(JaxKbSprint items, IAgileItem aItem, IAtsWorkItem workItem, ArtifactToken artifact, AtsApi atsApi, Collection<String> ignoreStates) {
       try {
-         IAtsWorkDefinition workDef = workItem.getWorkDefinition();
+         WorkDefinition workDef = workItem.getWorkDefinition();
          for (IAtsStateDefinition stateDef : atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDef)) {
             if (ignoreStates.contains(stateDef.getName())) {
                continue;

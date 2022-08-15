@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -46,7 +46,7 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    IAtsLog getLog();
 
-   IAtsWorkDefinition getWorkDefinition();
+   WorkDefinition getWorkDefinition();
 
    IAtsStateDefinition getStateDefinition();
 
@@ -211,7 +211,7 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          }
 
          @Override
-         public IAtsWorkDefinition getWorkDefinition() {
+         public WorkDefinition getWorkDefinition() {
             return null;
          }
 

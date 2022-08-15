@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -42,14 +42,14 @@ import org.eclipse.swt.widgets.Control;
  * @author Donald G. Dunne
  */
 public class NewRoleDialog extends MessageDialog {
-   private final IAtsWorkDefinition workDefinition;
+   private final WorkDefinition workDefinition;
 
    private XComboViewer roleCombo;
    private XHyperlabelMemberSelection usersLink;
    private PeerToPeerReviewArtifact reviewArt;
    private Button okButton;
 
-   public NewRoleDialog(IAtsWorkDefinition workDefinition) {
+   public NewRoleDialog(WorkDefinition workDefinition) {
       super(Displays.getActiveShell(), "New Role", null, "Enter New Roles", MessageDialog.QUESTION,
          new String[] {"OK", "Cancel"}, 0);
       this.workDefinition = workDefinition;

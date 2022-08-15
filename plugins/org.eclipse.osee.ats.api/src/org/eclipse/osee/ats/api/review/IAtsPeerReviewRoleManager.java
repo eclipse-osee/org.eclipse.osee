@@ -18,7 +18,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+
 
 /**
  * @author Donald G. Dunne
@@ -43,6 +44,6 @@ public interface IAtsPeerReviewRoleManager {
 
    List<UserRole> getUserRoles(ReviewRole role);
 
-   IAtsWorkDefinition getWorkDefinition();
+   WorkDefinition getWorkDefinition();
 
 }
