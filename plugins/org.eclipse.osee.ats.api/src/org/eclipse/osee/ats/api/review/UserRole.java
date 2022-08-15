@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.api.review;
 
 import java.text.NumberFormat;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -51,11 +51,11 @@ public class UserRole {
       this.completed = completed;
    }
 
-   public UserRole(String xml, IAtsWorkDefinition workDefinition) {
+   public UserRole(String xml, WorkDefinition workDefinition) {
       fromXml(xml, workDefinition);
    }
 
-   public void update(UserRole dItem, IAtsWorkDefinition workDefinition) {
+   public void update(UserRole dItem, WorkDefinition workDefinition) {
       fromXml(dItem.toXml(), workDefinition);
    }
 
@@ -69,7 +69,7 @@ public class UserRole {
       return sb.toString();
    }
 
-   private void fromXml(String xml, IAtsWorkDefinition workDefinition) {
+   private void fromXml(String xml, WorkDefinition workDefinition) {
       try {
          this.role = workDefinition.fromName(AXml.getTagData(xml, "role"));
          this.userId = AXml.getTagData(xml, "userId");

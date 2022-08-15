@@ -43,8 +43,8 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
@@ -385,7 +385,7 @@ public class AtsActionService implements IAtsActionService {
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
       Conditions.assertNotNull(teamDef, "Team Definition can not be null");
-      IAtsWorkDefinition workDef =
+      WorkDefinition workDef =
          atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);
       Conditions.assertNotNull(workDef, "Work Definition can not be null");
 
@@ -450,7 +450,7 @@ public class AtsActionService implements IAtsActionService {
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
-      IAtsWorkDefinition workDef = null;
+      WorkDefinition workDef = null;
       // Determine of any osgi registered listeners want to provide work def
       if (actionListeners != null) {
          for (INewActionListener listener : actionListeners) {
@@ -501,7 +501,7 @@ public class AtsActionService implements IAtsActionService {
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artToken));
       }
 
-      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, workDef, changes);
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs((IAtsWorkItem) teamWf, workDef, changes);
       setArtifactIdentifyData(action, teamWf, changes);
 
       /**
@@ -549,7 +549,7 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
+   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes) {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
       Conditions.checkNotNull(changes, "changes");

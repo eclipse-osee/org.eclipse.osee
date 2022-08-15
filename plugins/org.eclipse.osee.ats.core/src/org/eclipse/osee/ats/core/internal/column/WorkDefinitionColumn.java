@@ -17,7 +17,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumn;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +34,7 @@ public class WorkDefinitionColumn implements AtsColumn {
    @Override
    public String getColumnText(IAtsObject atsObject) {
       if (atsObject instanceof IAtsWorkItem) {
-         IAtsWorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition((IAtsWorkItem) atsObject);
+         WorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition((IAtsWorkItem) atsObject);
          if (workDef != null) {
             return workDef.getName();
          }

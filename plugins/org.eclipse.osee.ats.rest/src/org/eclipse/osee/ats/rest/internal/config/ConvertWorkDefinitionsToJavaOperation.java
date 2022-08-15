@@ -53,7 +53,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //         //         String dslSheet = OseeInf.getResourceContents("atsConfig/" + workDef, WorkDefinitionSheet.class);
       //         String dslSheet =
       //            atsApi.getAttributeResolver().getSoleAttributeValueAsString(workDefArt, AtsAttributeTypes.DslSheet, "");
-      //         IAtsWorkDefinition wd = atsApi.getWorkDefinitionService().getWorkDefinitionFromStr(dslSheet);
+      //         WorkDefinition wd = atsApi.getWorkDefinitionService().getWorkDefinitionFromStr(dslSheet);
       //
       //         // Confirm file isn't already converted
       //         File oldFile = new File(

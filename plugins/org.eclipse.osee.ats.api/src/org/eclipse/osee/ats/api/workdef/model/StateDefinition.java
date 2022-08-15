@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -38,7 +37,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
-   private IAtsWorkDefinition workDefinition;
+   private WorkDefinition workDefinition;
    private int stateWeight = 0;
    private Integer recommendedPercentComplete = null;
    private StateColor color = null;
@@ -86,12 +85,12 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    }
 
    @Override
-   public IAtsWorkDefinition getWorkDefinition() {
+   public WorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 
    @Override
-   public void setWorkDefinition(IAtsWorkDefinition workDefinition) {
+   public void setWorkDefinition(WorkDefinition workDefinition) {
       this.workDefinition = workDefinition;
    }
 

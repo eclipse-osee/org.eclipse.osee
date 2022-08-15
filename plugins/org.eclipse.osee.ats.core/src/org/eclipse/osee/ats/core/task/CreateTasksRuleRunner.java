@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -84,7 +84,7 @@ public class CreateTasksRuleRunner {
             jTask.getAssigneeAccountIds().add(ArtifactId.valueOf(accountId));
          }
          if (createTaskDef.getWorkDefTok().isValid()) {
-            IAtsWorkDefinition workDef =
+            WorkDefinition workDef =
                atsApi.getWorkDefinitionService().getWorkDefinition(createTaskDef.getWorkDefTok());
             if (workDef != null) {
                jTask.setWorkDef(workDef.getIdString());

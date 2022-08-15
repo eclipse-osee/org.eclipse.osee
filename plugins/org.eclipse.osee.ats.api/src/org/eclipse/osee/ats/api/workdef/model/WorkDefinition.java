@@ -22,8 +22,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefinition {
+public class WorkDefinition extends AbstractWorkDefItem {
 
    private final List<IAtsStateDefinition> states = new ArrayList<>(5);
    private final CountingMap<String> labelCount = new CountingMap<String>();
@@ -57,7 +57,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       headerDef = new HeaderDefinition(this);
    }
 
-   @Override
    public IAtsStateDefinition getStateByName(String name) {
       for (IAtsStateDefinition state : states) {
          if (state.getName().equals(name)) {
@@ -67,7 +66,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return null;
    }
 
-   @Override
    public IAtsStateDefinition getStartState() {
       return startState;
    }
@@ -81,22 +79,18 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return state;
    }
 
-   @Override
    public List<IAtsStateDefinition> getStates() {
       return states;
    }
 
-   @Override
    public HeaderDefinition getHeaderDef() {
       return headerDef;
    }
 
-   @Override
    public boolean hasHeaderDefinitionItems() {
       return headerDef != null && !headerDef.getLayoutItems().isEmpty();
    }
 
-   @Override
    public HeaderDefinition getDefaultHeaderDef() {
 
       HeaderDefinition defaultHeaderDef = new HeaderDefinition(this);
@@ -106,17 +100,14 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return defaultHeaderDef;
    }
 
-   @Override
    public void setHeaderDefinition(HeaderDefinition headerDef) {
       this.headerDef = headerDef;
    }
 
-   @Override
    public boolean isShowStateMetrics() {
       return showStateMetrics;
    }
 
-   @Override
    public void setShowStateMetrics(boolean showStateMetrics) {
       this.showStateMetrics = showStateMetrics;
    }
@@ -125,7 +116,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       createTasksDefs.add(createTasksDef);
    }
 
-   @Override
    public List<CreateTasksDefinition> getCreateTasksDefs() {
       return createTasksDefs;
    }
@@ -134,12 +124,10 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return labelCount;
    }
 
-   @Override
    public List<XViewerColumn> getReviewDefectColumns() {
       return reviewDefectColumns;
    }
 
-   @Override
    public void setReviewDefectColumns(List<XViewerColumn> reviewDefectColumns) {
       this.reviewDefectColumns = reviewDefectColumns;
    }
@@ -148,7 +136,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       reviewRoleMap.put(role, minimum);
    }
 
-   @Override
    public Set<ReviewRole> getReviewRoles() {
       return reviewRoleMap.keySet();
    }
@@ -157,17 +144,14 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       reviewRoleTypeMap.put(reviewRoleType, minimum);
    }
 
-   @Override
    public Map<ReviewRoleType, Integer> getReviewRoleTypeMap() {
       return reviewRoleTypeMap;
    }
 
-   @Override
    public Map<ReviewRole, Integer> getReviewRoleMap() {
       return reviewRoleMap;
    }
 
-   @Override
    public ReviewRole fromName(String name) {
       for (ReviewRole role : reviewRoleMap.keySet()) {
          if (role.getName().equals(name)) {
@@ -180,7 +164,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return newRole;
    }
 
-   @Override
    public XResultData getResults() {
       return results;
    }
@@ -193,8 +176,12 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return options;
    }
 
-   @Override
    public boolean hasOption(WorkDefOption workDefOption) {
       return options.contains(workDefOption);
    }
+
+   public void addCreateTasksDefinition(CreateTasksDefinitionBuilder createTasksDefBldr) {
+      getCreateTasksDefs().add(createTasksDefBldr.getCreateTasksDef());
+   }
+
 }

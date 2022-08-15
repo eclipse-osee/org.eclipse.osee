@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -227,7 +227,7 @@ public class WfeHeaderComposite extends Composite {
       headerComp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
       toolkit.adapt(headerComp);
 
-      IAtsWorkDefinition workDef = workItem.getWorkDefinition();
+      WorkDefinition workDef = workItem.getWorkDefinition();
       Label label = FormsUtil.createLabelValue(toolkit, headerComp, "Work Definition: ", workDef.getName());
       label.addListener(SWT.MouseDoubleClick, new Listener() {
 

@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -76,7 +76,7 @@ public class CreateTasksDefinitionTransitionToTest {
             .andStaticTask("Second Task", "desc2", StateToken.Implement) //
             .andStaticTask("Third Task", "desc2", StateToken.Implement, DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign); //
 
-      IAtsWorkDefinition swDesignWorkDef = AtsApiService.get().getWorkDefinitionService().getWorkDefinition(
+      WorkDefinition swDesignWorkDef = AtsApiService.get().getWorkDefinitionService().getWorkDefinition(
          DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
       swDesignWorkDef.addCreateTasksDefinition(implementTaskSet);
 

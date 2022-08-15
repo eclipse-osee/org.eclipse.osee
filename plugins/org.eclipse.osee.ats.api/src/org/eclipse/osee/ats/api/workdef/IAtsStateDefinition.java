@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 
 /**
@@ -33,9 +34,9 @@ public interface IAtsStateDefinition extends IStateToken {
 
    List<IAtsStateDefinition> getToStates();
 
-   IAtsWorkDefinition getWorkDefinition();
+   WorkDefinition getWorkDefinition();
 
-   void setWorkDefinition(IAtsWorkDefinition workDefinition);
+   void setWorkDefinition(WorkDefinition workDefinition);
 
    void setLayoutItems(List<LayoutItem> layoutToSet);
 

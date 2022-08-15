@@ -15,9 +15,9 @@ package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
@@ -50,10 +50,10 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    protected SwtXWidgetRenderer dynamicXWidgetLayout;
    protected final IAtsStateDefinition stateDefinition;
-   protected final IAtsWorkDefinition workDefinition;
+   protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
 
-   public StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workDefinition, IAtsStateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
       this.awa = awa;
       this.workDefinition = workDefinition;
       this.stateDefinition = stateDefinition;
@@ -64,14 +64,14 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       }
    }
 
-   public StateXWidgetPage(IAtsWorkDefinition workFlowDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workFlowDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, AbstractWorkflowArtifact awa) {
       this(workFlowDefinition, stateDefinition, xWidgetsXml, optionResolver, null, awa);
    }
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
       this(workDefinition, stateDefinition, optionResolver, dynamicWidgetLayoutListener, awa);
       try {
          if (xWidgetsXml != null) {

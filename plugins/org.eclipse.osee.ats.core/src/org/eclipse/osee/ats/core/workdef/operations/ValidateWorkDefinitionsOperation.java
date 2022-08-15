@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.core.workdef.operations;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -35,7 +35,7 @@ public class ValidateWorkDefinitionsOperation {
 
    public XResultData run() {
       XResultData results = new XResultData();
-      for (IAtsWorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
+      for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
          results.logf("Validating workDef [%s]\n", workDef.getName());
          for (IAtsStateDefinition stateDef : workDef.getStates()) {
             results.logf("   Validating state [%s]\n", stateDef.getName());

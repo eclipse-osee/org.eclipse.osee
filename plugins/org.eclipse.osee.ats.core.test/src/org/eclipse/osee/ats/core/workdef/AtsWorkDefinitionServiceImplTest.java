@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -70,9 +69,9 @@ public class AtsWorkDefinitionServiceImplTest {
    @Mock IAtsPeerToPeerReview peerReview;
    @Mock XResultData resultData;
    @Mock IAtsTeamWorkflow teamWf;
-   @Mock IAtsWorkDefinition defaultPeerToPeerWorkDef;
-   @Mock IAtsWorkDefinition myPeerToPeerWorkDef;
-   @Mock IAtsWorkDefinition myTaskWorkDef;
+   @Mock WorkDefinition defaultPeerToPeerWorkDef;
+   @Mock WorkDefinition myPeerToPeerWorkDef;
+   @Mock WorkDefinition myTaskWorkDef;
    @Mock ITeamWorkflowProvidersLazy teamWorkflowProviders;
    @Mock IAttributeResolver attributeResolver;
    @Mock IAtsTask task;
@@ -123,7 +122,7 @@ public class AtsWorkDefinitionServiceImplTest {
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, ArtifactId.SENTINEL)).thenReturn(
             ArtifactId.SENTINEL);
 
-      IAtsWorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
+      WorkDefinition workDef = workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
       assertEquals(defaultPeerToPeerWorkDef, workDef);
    }
 
@@ -146,7 +145,7 @@ public class AtsWorkDefinitionServiceImplTest {
       when(workDefinitionProviderService.getWorkDefinition(MyPeerToPeerWorkDefArt.getId())).thenReturn(
          myPeerToPeerWorkDef);
 
-      IAtsWorkDefinition workDef =
+      WorkDefinition workDef =
          workDefService.getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(actionableItem);
 
       assertEquals(myPeerToPeerWorkDef, workDef);
@@ -281,10 +280,10 @@ public class AtsWorkDefinitionServiceImplTest {
 
    @Test
    public void testEqualsObject() {
-      IAtsWorkDefinition obj = new WorkDefinition(15L, "hello");
+      WorkDefinition obj = new WorkDefinition(15L, "hello");
       Assert.assertTrue(obj.equals(obj));
 
-      IAtsWorkDefinition obj2 = new WorkDefinition(15L, "hello");
+      WorkDefinition obj2 = new WorkDefinition(15L, "hello");
 
       Assert.assertTrue(obj.equals(obj2));
       Assert.assertFalse(obj.equals(null));

@@ -30,8 +30,8 @@ import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheckProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
@@ -319,7 +319,7 @@ public class AtsHealthCheckOperation {
       public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
          if (workItem.isInWork()) {
             String currentStatename = workItem.getStateMgr().getCurrentStateName();
-            IAtsWorkDefinition workDef = workItem.getWorkDefinition();
+            WorkDefinition workDef = workItem.getWorkDefinition();
             if (workDef.getStateByName(currentStatename) == null) {
                results.log(artifact, "TestCurrentStateIsInWorkDef",
                   String.format("Error: Current State [%s] not valid for Work Definition [%s] for " + //

@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -65,7 +65,7 @@ public class CreateTasksOperation {
    private XResultData results;
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
-   private IAtsWorkDefinition taskWorkDef;
+   private WorkDefinition taskWorkDef;
 
    public CreateTasksOperation(NewTaskSet newTaskSet, AtsApi atsApi) {
       this.newTaskSet = newTaskSet;

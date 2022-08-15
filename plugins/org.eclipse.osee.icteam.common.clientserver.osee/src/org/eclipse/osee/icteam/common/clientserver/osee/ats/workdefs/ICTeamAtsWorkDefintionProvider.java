@@ -14,18 +14,18 @@ package org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 
 /**
  * The class provides Work definitions for ICTeam
- * 
+ *
  * @author Ajay Chandrahasan
  */
 public class ICTeamAtsWorkDefintionProvider implements IAtsWorkDefinitionProvider {
 
    @Override
-   public Collection<IAtsWorkDefinition> getWorkDefinitions() {
+   public Collection<WorkDefinition> getWorkDefinitions() {
 
       return Arrays.asList(new WorkDefiCTeam().build());
    }

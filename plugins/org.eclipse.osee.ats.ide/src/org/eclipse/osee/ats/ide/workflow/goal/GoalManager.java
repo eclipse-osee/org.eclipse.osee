@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -66,13 +66,13 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    }
 
    public static GoalArtifact createGoal(String title, IAtsChangeSet changes) {
-      IAtsWorkDefinition workDef =
+      WorkDefinition workDef =
          AtsApiService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
       return createGoal(title, AtsArtifactTypes.Goal, workDef,
          AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(), changes, null);
    }
 
-   public static GoalArtifact createGoal(String title, ArtifactTypeToken artifactType, IAtsWorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
+   public static GoalArtifact createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
       GoalArtifact goalArt =
          (GoalArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), title);
 
@@ -80,7 +80,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       Conditions.assertNotNull(useTeamDef, "Team Definition can not be null for %s", goalArt.toStringWithId());
       AtsApiService.get().getActionService().setAtsId(goalArt, useTeamDef, workItemListener, changes);
 
-      IAtsWorkDefinition useWorkDefinition = workDefinition;
+      WorkDefinition useWorkDefinition = workDefinition;
       if (useWorkDefinition == null) {
          useWorkDefinition =
             AtsApiService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);

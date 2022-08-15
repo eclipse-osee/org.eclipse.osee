@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -37,11 +37,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
    protected SwtXWidgetRenderer dynamicXWidgetLayout;
-   protected final IAtsWorkDefinition workDefinition;
+   protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
    private final Collection<LayoutItem> layoutItems;
 
-   public XWidgetPage(IAtsWorkItem workItem, IAtsWorkDefinition workDefinition, IXWidgetOptionResolver optionResolver, Collection<LayoutItem> layoutItems) {
+   public XWidgetPage(IAtsWorkItem workItem, WorkDefinition workDefinition, IXWidgetOptionResolver optionResolver, Collection<LayoutItem> layoutItems) {
       this.workDefinition = workDefinition;
       this.layoutItems = layoutItems;
       this.awa = (AbstractWorkflowArtifact) workItem;

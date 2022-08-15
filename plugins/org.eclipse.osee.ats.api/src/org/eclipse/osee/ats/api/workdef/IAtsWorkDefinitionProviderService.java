@@ -20,9 +20,9 @@ public interface IAtsWorkDefinitionProviderService {
 
    void addWorkDefinitionProvider(IAtsWorkDefinitionProvider workDefProvider);
 
-   IAtsWorkDefinition getWorkDefinition(Long id);
+   WorkDefinition getWorkDefinition(Long id);
 
-   Collection<IAtsWorkDefinition> getAll();
+   Collection<WorkDefinition> getAll();
 
    void addWorkDefinition(WorkDefinition workDef);
 

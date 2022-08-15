@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.core.workdef.builder;
 
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +24,7 @@ public class HeaderDefinitionBuilder {
 
    private final HeaderDefinition headerDefinition;
 
-   public HeaderDefinitionBuilder(IAtsWorkDefinition workDefinition) {
+   public HeaderDefinitionBuilder(WorkDefinition workDefinition) {
       headerDefinition = new HeaderDefinition(workDefinition);
    }
 

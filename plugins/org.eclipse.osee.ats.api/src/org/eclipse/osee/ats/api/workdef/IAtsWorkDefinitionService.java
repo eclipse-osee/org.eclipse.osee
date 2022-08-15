@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -37,25 +38,25 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public interface IAtsWorkDefinitionService {
 
-   void internalSetWorkDefinition(IAtsWorkItem workItem, IAtsWorkDefinition workDef);
+   void internalSetWorkDefinition(IAtsWorkItem workItem, WorkDefinition workDef);
 
-   IAtsWorkDefinition getWorkDefinition(IAtsWorkItem workItem);
+   WorkDefinition getWorkDefinition(IAtsWorkItem workItem);
 
-   IAtsWorkDefinition getWorkDefinitionByName(String name);
+   WorkDefinition getWorkDefinitionByName(String name);
 
-   IAtsWorkDefinition getDefaultPeerToPeerWorkflowDefinition();
+   WorkDefinition getDefaultPeerToPeerWorkflowDefinition();
 
-   IAtsWorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreated(IAtsTeamWorkflow teamWf);
+   WorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreated(IAtsTeamWorkflow teamWf);
 
-   IAtsWorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem);
+   WorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem);
 
-   IAtsWorkDefinition computedWorkDefinitionForTaskNotYetCreated(IAtsTeamWorkflow teamWf);
+   WorkDefinition computedWorkDefinitionForTaskNotYetCreated(IAtsTeamWorkflow teamWf);
 
-   boolean isStateWeightingEnabled(IAtsWorkDefinition workDef);
+   boolean isStateWeightingEnabled(WorkDefinition workDef);
 
-   Collection<String> getStateNames(IAtsWorkDefinition workDef);
+   Collection<String> getStateNames(WorkDefinition workDef);
 
-   List<IAtsStateDefinition> getStatesOrderedByOrdinal(IAtsWorkDefinition workDef);
+   List<IAtsStateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef);
 
    /**
     * Recursively decend StateItems and grab all widgetDefs.<br>
@@ -66,7 +67,7 @@ public interface IAtsWorkDefinitionService {
 
    List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<LayoutItem> layoutItems);
 
-   IAtsWorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review);
+   WorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review);
 
    IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName);
 
@@ -87,21 +88,21 @@ public interface IAtsWorkDefinitionService {
 
    boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef);
 
-   Collection<IAtsWorkDefinition> getAllWorkDefinitions();
+   Collection<WorkDefinition> getAllWorkDefinitions();
 
-   IAtsWorkDefinition getWorkDefinition(Long id);
+   WorkDefinition getWorkDefinition(Long id);
 
-   IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem);
+   WorkDefinition computeWorkDefinition(IAtsWorkItem workItem);
 
    ArtifactToken getWorkDefArt(String workDefName);
 
-   IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef, Collection<INewActionListener> newActionListeners);
+   WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef, Collection<INewActionListener> newActionListeners);
 
    void setWorkDefinitionAttrs(IAtsTeamDefinition topTeam, NamedIdBase id, IAtsChangeSet changes);
 
-   void setWorkDefinitionAttrs(IAtsWorkItem workItem, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
+   void setWorkDefinitionAttrs(IAtsWorkItem workItem, WorkDefinition workDefinition, IAtsChangeSet changes);
 
-   void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
+   void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, WorkDefinition workDefinition, IAtsChangeSet changes);
 
    void internalClearWorkDefinition(IAtsWorkItem workItem);
 
@@ -109,18 +110,18 @@ public interface IAtsWorkDefinitionService {
 
    void setWorkDefinitionAttrs(IAtsTeamWorkflow teamWf, NamedIdBase id, IAtsChangeSet changes);
 
-   IAtsWorkDefinition getWorkDefinition(Id id);
+   WorkDefinition getWorkDefinition(Id id);
 
-   IAtsWorkDefinition getWorkDefinitionFromAsObject(IAtsObject atsObject, AttributeTypeToken workDefAttrTypeId);
+   WorkDefinition getWorkDefinitionFromAsObject(IAtsObject atsObject, AttributeTypeToken workDefAttrTypeId);
 
    XResultData validateWorkDefinitions();
 
-   IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem, boolean useAttr);
+   WorkDefinition computeWorkDefinition(IAtsWorkItem workItem, boolean useAttr);
 
    /**
-    * @return widget defintions from header and all states
+    * @return widget definitions from header and all states
     */
-   Collection<WidgetDefinition> getWidgets(IAtsWorkDefinition workDef);
+   Collection<WidgetDefinition> getWidgets(WorkDefinition workDef);
 
    public Collection<String> updateAllValidStateNames();
 

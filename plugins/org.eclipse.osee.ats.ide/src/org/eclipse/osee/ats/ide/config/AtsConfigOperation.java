@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -59,7 +59,7 @@ import org.eclipse.ui.progress.UIJob;
 public class AtsConfigOperation extends AbstractOperation {
 
    public static interface Display {
-      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, IAtsWorkDefinition workDefinition);
+      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, WorkDefinition workDefinition);
    }
 
    private final String name;
@@ -69,7 +69,7 @@ public class AtsConfigOperation extends AbstractOperation {
    private final Collection<String> actionableItemsNames;
    private IAtsTeamDefinition teamDef;
    private Collection<IAtsActionableItem> actionableItems;
-   private IAtsWorkDefinition workDefinition = null;
+   private WorkDefinition workDefinition = null;
 
    /**
     * @param name = name of work definition if workDefName is not set
@@ -85,7 +85,7 @@ public class AtsConfigOperation extends AbstractOperation {
       this.actionableItemsNames = actionableItems;
    }
 
-   public IAtsWorkDefinition getWorkDefinition() {
+   public WorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 
@@ -175,7 +175,7 @@ public class AtsConfigOperation extends AbstractOperation {
       }
    }
 
-   private IAtsWorkDefinition createOrGetWorkflowDefinition(XResultData resultData) {
+   private WorkDefinition createOrGetWorkflowDefinition(XResultData resultData) {
       return AtsApiService.get().getWorkDefinitionService().getWorkDefinition(
          AtsWorkDefinitionTokens.WorkDef_Team_Default);
    }
@@ -183,7 +183,7 @@ public class AtsConfigOperation extends AbstractOperation {
    public static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final IAtsWorkDefinition workDefinition) {
+      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {

@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
@@ -50,7 +50,7 @@ public class StateManagerTest extends AbstractUserTest {
    private StateManager stateMgr;
 
    // @formatter:off
-   @Mock private IAtsWorkDefinition workDef;
+   @Mock private WorkDefinition workDef;
    @Mock private IAtsStateDefinition endorseStateDef;
    @Mock private IAtsStateDefinition analyzeStateDef;
    @Mock private IAtsLogFactory logFactory;

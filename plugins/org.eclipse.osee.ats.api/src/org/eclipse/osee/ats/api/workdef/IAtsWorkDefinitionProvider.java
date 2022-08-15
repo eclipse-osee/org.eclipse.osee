@@ -14,13 +14,14 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 
 /**
  * Interface for bundles providing instantiated Workflow Definitions
- * 
+ *
  * @author Donald G. Dunne
  */
 public interface IAtsWorkDefinitionProvider {
 
-   Collection<IAtsWorkDefinition> getWorkDefinitions();
+   Collection<WorkDefinition> getWorkDefinitions();
 }
