@@ -48,7 +48,8 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
       writer.write(".art_id = ");
       writer.write(itemAlias);
       writer.write(".b_art_id");
-      writer.write(") AND ");
+      writer.write(")");
+      writer.writeAnd();
       writer.writeEqualsAnd(itemAlias, txsAlias, "gamma_id");
       writer.writeTxBranchFilter(txsAlias);
    }

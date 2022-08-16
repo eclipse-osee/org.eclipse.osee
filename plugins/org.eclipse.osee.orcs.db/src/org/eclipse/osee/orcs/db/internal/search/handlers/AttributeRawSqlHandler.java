@@ -97,7 +97,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
          writer.write(".attr_type_id = ");
          writer.write(typeJoinAlias);
          writer.write(".id");
-         writer.write(" AND ");
+         writer.writeAnd();
          writer.write(typeJoinAlias);
          writer.write(".query_id = ?");
          writer.addParameter(typeJoinQuery.getQueryId());
@@ -105,7 +105,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
 
       if (values.size() == 1) {
          String value = values.iterator().next();
-         writer.write(" AND ");
+         writer.writeAnd();
          if (ignoreCase) {
             writer.write("lower(");
          }
@@ -123,7 +123,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
       }
 
       if (valueJoinQuery != null) {
-         writer.write(" AND ");
+         writer.writeAnd();
          if (ignoreCase) {
             writer.write("lower(");
          }
@@ -132,7 +132,8 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
          String ending = ignoreCase ? ") = " : " = ";
          writer.write(ending);
          writer.write(valueJoinAlias);
-         writer.write(".id AND ");
+         writer.write(".id");
+         writer.writeAnd();
          writer.write(valueJoinAlias);
          writer.write(".query_id = ?");
          writer.addParameter(valueJoinQuery.getQueryId());
@@ -149,15 +150,16 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
             writer.write(attrAlias);
             writer.write(".art_id");
             if (index + 1 < aSize) {
-               writer.write(" AND ");
+               writer.writeAnd();
             }
          }
       }
-      writer.write(" AND ");
+      writer.writeAnd();
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
-      writer.write(".gamma_id AND ");
+      writer.write(".gamma_id");
+      writer.writeAnd();
       writer.writeTxBranchFilter(txsAlias);
 
    }

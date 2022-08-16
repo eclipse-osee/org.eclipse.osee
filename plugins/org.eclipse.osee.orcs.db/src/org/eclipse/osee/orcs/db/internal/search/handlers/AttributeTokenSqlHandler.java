@@ -106,7 +106,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             }
 
             if (!criteria.isIncludeAllTypes()) {
-               writer.write(" AND ");
+               writer.writeAnd();
                if (joinQuery == null) {
                   writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
                } else {
@@ -147,7 +147,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       writer.write(gammaAlias);
       writer.write(".gamma_id");
       if (!criteria.isIncludeAllTypes()) {
-         writer.write(" AND ");
+         writer.writeAnd();
          if (joinQuery == null) {
             writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
          } else {
@@ -155,7 +155,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
          }
       }
-      writer.write(" AND ");
+      writer.writeAnd();
       writer.writeEqualsAnd("att", "txs", "gamma_id");
       writer.writeTxBranchFilter("txs", true);
    }
@@ -180,7 +180,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
          }
       }
-      writer.write(" AND ");
+      writer.writeAnd();
       writer.writeEqualsAnd("att", "txs", "gamma_id");
       writer.writeTxBranchFilter("txs", true);
       if (criteria.getValues().size() == 1) {

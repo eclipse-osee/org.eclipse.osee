@@ -77,7 +77,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       String artJoinAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
       writeTxFilter(txsAlias, artJoinAlias, allowDeleted);
-      write(" AND ");
+      writeAnd();
       write(txsAlias);
       write(".branch_id = ");
       write(artJoinAlias);
@@ -128,13 +128,13 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          write(artJoinAlias);
          write(".id3");
          if (!areDeletedIncluded) {
-            write(" AND ");
+            writeAnd();
             write(txsAlias);
             write(".mod_type");
             write(" != ");
             write(ModificationType.DELETED.getIdString());
          } else if (!areDeletedSame) {
-            write(" AND ");
+            writeAnd();
             buildDeletedClause(txsAlias);
          }
       } else {
@@ -168,7 +168,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
             write("(");
             buildTableGamma(artTables, txsAlias);
-            write(" AND ");
+            writeAnd();
             buildTxClause(txsAlias);
             write(")");
             count++;
@@ -180,7 +180,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
 
             write("(");
             buildTableGamma(attrTables, txsAlias);
-            write(" AND ");
+            writeAnd();
             buildTxClause(txsAlias);
             write(")");
             count++;
@@ -190,11 +190,11 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          List<String> relationTables = getAliases(OseeDb.RELATION_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
-               write(" AND ");
+               writeAnd();
             }
             write("(");
             buildTableGamma(relationTables, txsAlias);
-            write(" AND ");
+            writeAnd();
             buildTxClause(txsAlias);
             write(")");
             count++;

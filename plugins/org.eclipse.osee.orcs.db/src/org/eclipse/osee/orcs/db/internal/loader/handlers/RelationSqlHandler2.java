@@ -78,19 +78,20 @@ public class RelationSqlHandler2 extends SqlHandler<CriteriaRelation2> {
    public void addPredicates(AbstractSqlWriter writer) {
       writer.write("(%s.a_art_id = %s.id2 OR %s.b_art_id = %s.id2)", relationAlias, jArtAlias, relationAlias,
          jArtAlias);
-      writer.write(" AND ");
+      writer.writeAnd();
       writer.write(jArtAlias);
       writer.write(".query_id = ?");
       writer.addParameter(criteria.getQueryId());
 
       if (!typeIds.isEmpty()) {
-         writer.write(" AND ");
+         writer.writeAnd();
          if (typeIds.size() > 1) {
             joinTypeQuery = writer.writeJoin(typeIds);
             writer.write(relationAlias);
             writer.write(".rel_type = ");
             writer.write(jTypeIdAlias);
-            writer.write(".id AND ");
+            writer.write(".id");
+            writer.writeAnd();
             writer.write(jTypeIdAlias);
             writer.write(".query_id = ?");
             writer.addParameter(joinTypeQuery.getQueryId());
@@ -101,12 +102,12 @@ public class RelationSqlHandler2 extends SqlHandler<CriteriaRelation2> {
          }
       }
 
-      writer.write(" AND ");
+      writer.writeAnd();
       writer.write(relationAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id");
-      writer.write("\n AND ");
+      writer.writeAndLn();
       writer.writeTxBranchFilter(txsAlias);
    }
 }

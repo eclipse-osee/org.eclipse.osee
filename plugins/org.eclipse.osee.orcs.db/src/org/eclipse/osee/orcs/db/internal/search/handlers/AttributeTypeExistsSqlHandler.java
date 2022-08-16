@@ -55,7 +55,9 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          writer.write(" WHERE txs.gamma_id = attr.gamma_id");
          if (types.size() > 1) {
             AbstractJoinQuery joinQuery = writer.writeJoin(types);
-            writer.write(" AND attr.attr_type_id = id.id AND ");
+            writer.writeAnd();
+            writer.write("attr.attr_type_id = id.id");
+            writer.writeAnd();
             writer.writeEqualsParameterAnd("id", "query_id", joinQuery.getQueryId());
          } else {
             writer.writeEqualsParameterAnd("att", "attr_type_id", types.iterator().next());
@@ -87,7 +89,8 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          writer.write(attrAlias);
          writer.write(".attr_type_id = ");
          writer.write(jIdAlias);
-         writer.write(".id AND ");
+         writer.write(".id");
+         writer.writeAnd();
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
@@ -111,7 +114,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
             writer.write(".art_id");
 
             if (index + 1 < aSize) {
-               writer.write(" AND ");
+               writer.writeAnd();
             }
          }
       }
@@ -120,7 +123,8 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          writer.write(cteAlias);
          writer.write(".transaction_id = ");
          writer.write(txsAlias);
-         writer.write(".transaction_id AND ");
+         writer.write(".transaction_id");
+         writer.writeAnd();
          writer.write(cteAlias);
          writer.write(".art_id = ");
          writer.write(attrAlias);
@@ -130,7 +134,8 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
-      writer.write(".gamma_id AND ");
+      writer.write(".gamma_id");
+      writer.writeAnd();
 
       boolean includeDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(writer.getOptions());
       writer.writeTxBranchFilter(txsAlias, includeDeletedAttributes);

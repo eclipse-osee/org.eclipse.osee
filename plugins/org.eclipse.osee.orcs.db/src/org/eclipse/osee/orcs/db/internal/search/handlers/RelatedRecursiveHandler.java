@@ -39,25 +39,29 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
             "SELECT b_art_id,rel_type top_rel_type,rel_order top_rel_order, 1 FROM osee_relation rel, osee_txs txs WHERE ");
          writer.writeEqualsParameterAnd("a_art_id", criteria.getStartArtifact());
          writer.writeEqualsParameterAnd("rel_type", criteria.getType());
-         writer.write("rel.gamma_id = txs.gamma_id AND ");
+         writer.write("rel.gamma_id = txs.gamma_id");
+         writer.writeAnd();
          writer.writeTxBranchFilter("txs");
          writer.writeCteRecursiveUnion();
          writer.write(
             " SELECT b_art_id,rel_type top_rel_type,rel_order top_rel_order, child_level + 1 FROM " + cteAlias);
          writer.write(", osee_relation rel, osee_txs txs");
-         writer.write(" WHERE a_art_id = id AND rel_type = ? AND rel.gamma_id = txs.gamma_id AND ");
+         writer.write(" WHERE a_art_id = id AND rel_type = ? AND rel.gamma_id = txs.gamma_id");
+         writer.writeAnd();
          writer.addParameter(criteria.getType());
          writer.writeTxBranchFilter("txs");
       } else {
          writer.write("SELECT b_art_id, 1 FROM osee_relation_link rel, osee_txs txs WHERE ");
          writer.writeEqualsParameterAnd("a_art_id", criteria.getStartArtifact());
          writer.writeEqualsParameterAnd("rel_link_type_id", criteria.getType());
-         writer.write("rel.gamma_id = txs.gamma_id AND ");
+         writer.write("rel.gamma_id = txs.gamma_id");
+         writer.writeAnd();
          writer.writeTxBranchFilter("txs");
          writer.writeCteRecursiveUnion();
          writer.write(" SELECT b_art_id, child_level + 1 FROM " + cteAlias);
          writer.write(", osee_relation_link rel, osee_txs txs");
-         writer.write(" WHERE a_art_id = id AND rel_link_type_id = ? AND rel.gamma_id = txs.gamma_id AND ");
+         writer.write(" WHERE a_art_id = id AND rel_link_type_id = ? AND rel.gamma_id = txs.gamma_id");
+         writer.writeAnd();
          writer.addParameter(criteria.getType());
          writer.writeTxBranchFilter("txs");
       }

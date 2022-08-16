@@ -63,7 +63,7 @@ public abstract class MainTableFieldSqlHandler extends SqlHandler<CriteriaMainTa
          }
          AbstractJoinQuery joinQuery = writer.writeJoin(values);
          writer.writeEquals(mainAlias, column, jIdAlias, "id");
-         writer.write(" AND ");
+         writer.writeAnd();
          writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
       } else {
          Id value = values.iterator().next();

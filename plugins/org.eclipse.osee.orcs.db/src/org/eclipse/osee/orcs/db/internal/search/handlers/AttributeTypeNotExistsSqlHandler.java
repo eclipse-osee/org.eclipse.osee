@@ -66,7 +66,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
          joinQuery = writer.writeJoin(typeIds);
 
          writer.writeEquals(attAlias, "attr_type_id", jIdAlias, "id");
-         writer.write(" AND ");
+         writer.writeAnd();
          writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
       } else {
          writer.writeEqualsParameter(attAlias, "attr_type_id", types.iterator().next());
@@ -75,7 +75,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
          writer.write(" AND value = ?");
          writer.addParameter(criteria.getValue());
       }
-      writer.write(" AND ");
+      writer.writeAnd();
 
       writer.writeEqualsAnd(attAlias, txsNotAlias, "gamma_id");
       writer.writeTxBranchFilter(txsNotAlias);

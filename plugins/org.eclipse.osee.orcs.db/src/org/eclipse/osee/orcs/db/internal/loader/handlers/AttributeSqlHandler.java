@@ -75,20 +75,22 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       writer.write(attrAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
-      writer.write(".id2 AND ");
+      writer.write(".id2");
+      writer.writeAnd();
       writer.write(jArtAlias);
       writer.write(".query_id = ?");
       writer.addParameter(criteria.getQueryId());
 
       Collection<AttributeId> ids = criteria.getIds();
       if (!ids.isEmpty()) {
-         writer.write(" AND ");
+         writer.writeAnd();
          if (ids.size() > 1) {
             joinIdQuery = writer.writeJoin(ids);
             writer.write(attrAlias);
             writer.write(".attr_id = ");
             writer.write(jIdAlias);
-            writer.write(".id AND ");
+            writer.write(".id");
+            writer.writeAnd();
             writer.write(jIdAlias);
             writer.write(".query_id = ?");
             writer.addParameter(joinIdQuery.getQueryId());
@@ -101,13 +103,14 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
 
       Collection<? extends AttributeTypeId> types = criteria.getTypes();
       if (!types.isEmpty()) {
-         writer.write(" AND ");
+         writer.writeAnd();
          if (types.size() > 1) {
             joinTypeQuery = writer.writeJoin(types);
             writer.write(attrAlias);
             writer.write(".attr_type_id = ");
             writer.write(jTypeIdAlias);
-            writer.write(".id AND ");
+            writer.write(".id");
+            writer.writeAnd();
             writer.write(jTypeIdAlias);
             writer.write(".query_id = ?");
             writer.addParameter(joinTypeQuery.getQueryId());
@@ -118,12 +121,12 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
          }
       }
 
-      writer.write(" AND ");
+      writer.writeAnd();
       writer.write(attrAlias);
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id");
-      writer.write("\n AND ");
+      writer.writeAndLn();
       writer.writeTxBranchFilter(txsAlias);
    }
 }
