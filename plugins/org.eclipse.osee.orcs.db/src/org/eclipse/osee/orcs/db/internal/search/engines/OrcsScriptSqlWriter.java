@@ -159,19 +159,19 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
       writeTxFilter(txsAlias, allowDeleted);
       if (hasAlias(OseeDb.BRANCH_TABLE)) {
          String alias = getFirstAlias(OseeDb.BRANCH_TABLE);
-         write(" AND ");
+         writeAnd();
          write(txsAlias);
          write(".branch_id = ");
          write(alias);
          write(".branch_id");
       } else if (hasAlias(OseeDb.TX_DETAILS_TABLE)) {
          String alias = getFirstAlias(OseeDb.TX_DETAILS_TABLE);
-         write(" AND ");
+         writeAnd();
          write(txsAlias);
          write(".transaction_id = ");
          write(alias);
          write(".transaction_id");
-         write(" AND ");
+         writeAnd();
          write(txsAlias);
          write(".branch_id = ");
          write(alias);

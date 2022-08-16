@@ -64,7 +64,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          }
          writer.write("\n WHERE  txs.gamma_id = rel.gamma_id AND \n");
          writePredicate(writer, "txs", "rel");
-         writer.write(" AND ");
+         writer.writeAnd();
          writer.writeTxBranchFilter("txs");
          writer.write("\n GROUP BY rel.a_art_id\n");
       }
@@ -97,7 +97,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       }
       writer.addParameter(typeSide.getGuid());
 
-      writer.write(" AND ");
+      writer.writeAnd();
       String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
       if (criteria.hasMultipleIds()) {
          AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
@@ -105,7 +105,8 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          writer.write(aOrbArtId);
          writer.write(" = ");
          writer.write(jIdAlias);
-         writer.write(".id AND ");
+         writer.write(".id");
+         writer.writeAnd();
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());

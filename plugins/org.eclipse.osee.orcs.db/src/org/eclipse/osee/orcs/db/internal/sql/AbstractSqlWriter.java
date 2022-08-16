@@ -42,7 +42,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSqlWriter implements HasOptions {
-   private static final String AND_NEW_LINE = " AND\n";
+   private static final String AND = " AND ";
+   private static final String AND_NEW_LINE = AND + "\n";
    private final List<String> tableEntries = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
    private final JdbcClient jdbcClient;
@@ -240,7 +241,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public void writeBranchFilter(String txsAlias) {
       BranchId branch = rootQueryData.getBranch();
       if (branch.isValid()) {
-         write(" AND ");
+         writeAnd();
          writeEqualsParameter(txsAlias, "branch_id", branch);
       } else {
          throw new OseeArgumentException("writeBranchFilter: branch id must be valid not:" + branch);
@@ -253,7 +254,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          write(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
          if (!allowDeleted) {
-            write(" AND ");
+            writeAnd();
             write(txsAlias);
             write(".mod_type <> ");
             write(ModificationType.DELETED.getIdString());
@@ -315,7 +316,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
             if (first) {
                first = false;
             } else {
-               write(AND_NEW_LINE);
+               writeAndLn();
             }
             handler.addPredicates(this);
          }
@@ -323,7 +324,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       if (mainTableAliasExists(OseeDb.ARTIFACT_TABLE)) {
          if (!first) {
-            write(" AND ");
+            writeAnd();
          }
          String mainTableAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
          String mainTxsAlias = getMainTableAlias(OseeDb.TXS_TABLE);
@@ -335,11 +336,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
          writeTxBranchFilter(mainTxsAlias);
          if (queryDataCursor.getAppId().isValid()) {
-            write(" AND ");
+            writeAnd();
             writeEqualsParameter(mainTxsAlias, "app_id", queryDataCursor.getAppId());
          }
          if (queryDataCursor.getView().isValid()) {
-            write(" AND ");
+            writeAnd();
             writeEqualsParameterAnd(tupleAlias, "tuple_type", CoreTupleTypes.ViewApplicability);
             writeEqualsParameterAnd(tupleAlias, "e1", queryDataCursor.getView());
             writeEqualsAnd(tupleAlias, tupleTxsAlias, "gamma_id");
@@ -354,7 +355,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public void writeAnd() {
-      write(" AND ");
+      removeDanglingSeparator(AND);
+      removeDanglingSeparator(AND_NEW_LINE);
+      write(AND);
    }
 
    public void writeAndLn() {
@@ -473,7 +476,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeEqualsAnd(String table1, String table2, String column) {
       writeEquals(table1, table2, column);
-      write(" AND ");
+      writeAnd();
    }
 
    public void writeEquals(String table1, String column1, String table2, String column2) {
@@ -482,7 +485,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeEqualsAnd(String table1, String column1, String table2, String column2) {
       writeEquals(table1, column1, table2, column2);
-      write(" AND ");
+      writeAnd();
    }
 
    public void addParameter(Object parameter) {
@@ -497,7 +500,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeEqualsParameterAnd(String table, String column, Object parameter) {
       writeEqualsParameter(table, column, parameter);
-      write(" AND ");
+      writeAnd();
    }
 
    public void writeEqualsParameter(String column, Object parameter) {
@@ -508,7 +511,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeEqualsParameterAnd(String column, Object parameter) {
       writeEqualsParameter(column, parameter);
-      write(" AND ");
+      writeAnd();
    }
 
    protected void addJoin(AbstractJoinQuery join) {

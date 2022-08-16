@@ -318,7 +318,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("\n FROM %s, osee_relation_link rel, osee_txs txs", artWithAlias);
       write("\n WHERE ");
       write(artWithAlias);
-      write(".art_id IN (a_art_id, b_art_id) AND ");
+      write(".art_id IN (a_art_id, b_art_id)");
+      writeAnd();
       writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writeTxBranchFilter(relTxsAlias);
    }
@@ -334,7 +335,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("\n FROM %s, osee_relation rel, osee_txs txs", artWithAlias);
       write("\n WHERE ");
       write(artWithAlias);
-      write(".art_id IN (a_art_id, b_art_id) AND ");
+      write(".art_id IN (a_art_id, b_art_id)");
+      writeAnd();
       writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writeTxBranchFilter(relTxsAlias);
    }

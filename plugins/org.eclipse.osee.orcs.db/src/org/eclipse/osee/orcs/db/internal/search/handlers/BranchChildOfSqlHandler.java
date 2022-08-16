@@ -36,7 +36,8 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
    public void writeCommonTableExpression(final AbstractSqlWriter writer) {
       cteAlias = writer.startRecursiveCommonTableExpression("chof", "(child_id, branch_level)");
       writer.write("SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n");
-      writer.write(" WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND ");
+      writer.write(" WHERE anch_br1.parent_branch_id = anch_br2.branch_id");
+      writer.writeAnd();
       writer.writeEqualsParameter("anch_br2", "branch_id", criteria.getParent());
       writer.writeCteRecursiveUnion();
       writer.write(" SELECT branch_id, branch_level + 1 FROM " + cteAlias + ", osee_branch br");
