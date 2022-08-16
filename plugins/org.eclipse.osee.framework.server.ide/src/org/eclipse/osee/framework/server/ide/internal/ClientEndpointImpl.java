@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.server.ide.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -50,7 +52,9 @@ import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.model.ClientDetails;
 import org.eclipse.osee.framework.server.ide.api.client.model.ClientInfo;
@@ -146,6 +150,36 @@ public class ClientEndpointImpl implements ClientEndpoint {
    public IdeVersion getSupportedVersions() {
       IdeVersion versions = new IdeVersion();
       versions.addVersion(OseeCodeVersion.getVersion());
+      try {
+         File versFile = new File("OseeSupportedVersions.txt");
+         System.out.println("Reading SupportedVersions.txt: " + versFile.getAbsolutePath());
+         String fileStr = Lib.fileToString(versFile);
+         System.out.println(String.format("Matching version [%s]", OseeCodeVersion.getVersion()));
+         if (Strings.isValid(fileStr)) {
+            for (String line : fileStr.split("\\|")) {
+               System.out.println(line);
+               boolean match = false;
+               for (String keyValue : line.split(":")) {
+                  if (!match && keyValue.equals(OseeCodeVersion.getVersion())) {
+                     System.out.println(String.format("Found This Version [%s]", keyValue));
+                     match = true;
+                  } else if (match) {
+                     for (String ver : keyValue.split(";")) {
+                        ver = ver.replaceAll("^ ", "");
+                        ver = ver.replaceAll(" $", "");
+                        if (Strings.isValid(ver)) {
+                           System.out.println(String.format("--- Supporting Version [%s]", ver));
+                           versions.addVersion(ver);
+                        }
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(getClass(), Level.WARNING, "Exception reading SupportedVersions.txt");
+      }
       return versions;
    }
 
