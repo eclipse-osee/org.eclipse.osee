@@ -64,7 +64,7 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setDbDriver(config.getDbDriver());
       sessionGrant.setDbLogin(config.getDbUsername());
       sessionGrant.setDbUrl(config.getDbUri());
-      boolean useOracleHints = OseeSql.useOracleHints(config.getDbProps());
+      boolean useOracleHints = true;
       sessionGrant.setDbConnectionProperties(config.getDbProps());
       sessionGrant.setDbDatabaseName(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "");
       sessionGrant.setDbDatabasePath(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "");
