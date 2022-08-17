@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -178,10 +177,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             art = getArtifact(storeObject);
          }
          if (art == null) {
-            art = AtsArtifactQuery.getArtifactFromIdOrNull(atsObject.getId());
+            art = (Artifact) AtsApiService.get().getQueryService().getArtifact(atsObject.getId());
          }
       } else if (obj instanceof ArtifactId) {
-         art = AtsArtifactQuery.getArtifactFromIdOrNull(((ArtifactId) obj).getId());
+         art = (Artifact) AtsApiService.get().getQueryService().getArtifact(((ArtifactId) obj).getId());
       }
       // If artifact can't be loaded, check that is't not a new artifact in this change set
       if (art == null && obj instanceof Id) {

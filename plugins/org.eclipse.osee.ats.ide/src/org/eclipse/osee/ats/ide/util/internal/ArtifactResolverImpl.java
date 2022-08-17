@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +35,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject instanceof Artifact) {
          return AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
       }
-      Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getId());
+      Artifact artifact = (Artifact) AtsApiService.get().getQueryService().getArtifact(atsObject.getId());
       return artifact;
    }
 
