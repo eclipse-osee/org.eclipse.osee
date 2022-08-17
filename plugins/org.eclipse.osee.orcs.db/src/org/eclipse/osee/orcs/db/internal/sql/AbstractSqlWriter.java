@@ -110,6 +110,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          cteAlias = startCommonTableExpression(ctePrefix);
       }
 
+      writeStartWithPreSelect(handlers);
       computeTables(handlers);
       writeSelect(handlers);
       write("\n FROM ");
@@ -119,6 +120,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writePredicates(handlers);
 
       removeDanglingSeparator("\n WHERE ");
+
+      writeEndWithPreSelect(handlers);
 
       writeGroupAndOrder(handlers);
       return cteAlias;
@@ -130,22 +133,27 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public String startRecursiveCommonTableExpression(String prefix, String parameters) {
       boolean isRecursive = parameters != null;
       String cteAlias = getNextAlias(prefix);
+      String originalAlias = cteAlias; //this provides a reference to the cteAlias regardless if the cteAlias gets chopped
       if (firstCte) {
          write("WITH ");
-         firstCte = false;
-      } else {
-         write("),\n");
-      }
-      if (isRecursive) {
          write(jdbcClient.getDbType().getRecursiveWithSql());
          write(" ");
+         firstCte = false;
+      } else if (!originalAlias.contains("rn")) {
+         write("),\n");
+      }
+      if (cteAlias.contains("rn")) {
+         write(") t1 ");
+         cteAlias = cteAlias.substring(0, cteAlias.length() - 1);
       }
       write(cteAlias);
       if (isRecursive) {
          write(" ");
          write(parameters);
       }
-      write(" AS (\n ");
+      if (!originalAlias.contains("rn")) {
+         write(" AS (\n ");
+      }
       return cteAlias;
    }
 
@@ -174,6 +182,20 @@ public abstract class AbstractSqlWriter implements HasOptions {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          handler.writeCommonTableExpression(this);
+      }
+   }
+
+   private void writeStartWithPreSelect(Iterable<SqlHandler<?>> handlers) {
+      for (SqlHandler<?> handler : handlers) {
+         setHandlerLevel(handler);
+         handler.startWithPreSelect(this);
+      }
+   }
+
+   private void writeEndWithPreSelect(Iterable<SqlHandler<?>> handlers) {
+      for (SqlHandler<?> handler : handlers) {
+         setHandlerLevel(handler);
+         handler.endWithPreSelect(this);
       }
    }
 

@@ -55,4 +55,16 @@ public abstract class SqlHandler<T extends Criteria> {
    public void writeSelectFields(AbstractSqlWriter writer) {
       // Do Nothing
    }
+
+   public boolean shouldWriteAnd() {
+      return true;
+   }
+
+   public void startWithPreSelect(AbstractSqlWriter writer) {
+
+   }
+
+   public void endWithPreSelect(AbstractSqlWriter writer) {
+
+   }
 }

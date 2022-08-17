@@ -61,6 +61,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
@@ -785,5 +786,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public List<BranchCategoryToken> getBranchCategories() {
       return queryFactory.branchQuery().getBranchCategories(branch);
+   }
+
+   @Override
+   public QueryBuilder isOnPage(long pageNum, long pageSize) {
+      return addAndCheck(new CriteriaPagination(pageNum, pageSize));
    }
 }
