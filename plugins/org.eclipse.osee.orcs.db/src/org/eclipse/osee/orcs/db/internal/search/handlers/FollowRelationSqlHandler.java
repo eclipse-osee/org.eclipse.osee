@@ -104,4 +104,11 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
    public RelationSide getRelationSide() {
       return criteria.getType().getSide();
    }
+
+   @Override
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      if (this.criteria.getType().isNewRelationTable()) {
+         writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
+      }
+   }
 }

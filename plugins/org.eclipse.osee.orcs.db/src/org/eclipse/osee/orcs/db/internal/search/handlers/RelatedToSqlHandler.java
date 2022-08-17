@@ -165,7 +165,9 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
-      // Do Nothing
+      if (this.criteria.getType().isNewRelationTable()) {
+         writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
+      }
    }
 
 }

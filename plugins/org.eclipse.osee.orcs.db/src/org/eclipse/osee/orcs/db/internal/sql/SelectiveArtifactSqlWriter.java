@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
@@ -173,8 +173,10 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                   if (regexMatcher.find()) {//Finds Matching Pattern in String
                      if (regexMatcher.group(1).contains("osee_relation rel")) {
                         write("SELECT " + art + ".* from " + art);
-                     } else {
+                     } else if (rootQueryData.getCriteriaByType(CriteriaRelatedTo.class).isEmpty()) {
                         write("SELECT " + art + ".*, 0 as top_rel_type, 0 as top_rel_order from " + art);
+                     } else {
+                        write("SELECT " + art + ".* from " + art);
                      }
                   }
                } else {
@@ -355,18 +357,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
-         if (this.rootQueryData.hasCriteriaType(CriteriaRelatedTo.class)) {
-            List<CriteriaRelatedTo> crt = this.rootQueryData.getCriteriaByType(CriteriaRelatedTo.class);
-            if (crt.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
-               write(", rel_type as top_rel_type, rel_order as top_rel_order");
-            }
-         } else if (this.rootQueryData.hasCriteriaType(CriteriaRelatedRecursive.class)) {
-            List<CriteriaRelatedRecursive> crr = this.rootQueryData.getCriteriaByType(CriteriaRelatedRecursive.class);
-            if (crr.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
-               write(", top_rel_type, top_rel_order");
-            }
-         } else if (this.getTableEntries().stream().filter(a -> a.startsWith("osee_relation rel")).count() > 0) {
-            write(", rel_type as top_rel_type, rel_order as top_rel_order");
+         if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
+            CriteriaPagination.class)) {
+            write(", 0 as rn");
          }
       } else if (relsAlias != null) {
          writeSelectFields(relsAlias, "*", artAlias, "art_type_id");

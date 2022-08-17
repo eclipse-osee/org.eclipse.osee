@@ -126,6 +126,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder excludeDeleted();
 
+   QueryBuilder isOnPage(long pageNum, long pageSize);
+
    QueryBuilder andId(ArtifactId id);
 
    QueryBuilder andIds(Collection<? extends ArtifactId> ids);
