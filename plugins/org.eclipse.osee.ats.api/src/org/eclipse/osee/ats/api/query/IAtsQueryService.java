@@ -164,6 +164,9 @@ public interface IAtsQueryService {
 
    ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeToken artifactType, String name);
 
+   /**
+    * @return artifact or null
+    */
    ArtifactToken getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag);
 
    ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag);

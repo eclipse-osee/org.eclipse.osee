@@ -17,12 +17,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -31,7 +33,6 @@ import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
@@ -232,8 +233,9 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       // This does id search
       List<String> validIds = data.getIds();
       if (!validIds.isEmpty()) {
-         for (Artifact art : AtsArtifactQuery.getArtifactListFromIds(validIds)) {
-            artifacts.add(art);
+         for (Entry<String, IAtsWorkItem> entry : AtsApiService.get().getQueryService().getWorkItemsByAtsId(
+            validIds).entrySet()) {
+            artifacts.add((Artifact) entry.getValue().getStoreObject());
          }
       }
 
