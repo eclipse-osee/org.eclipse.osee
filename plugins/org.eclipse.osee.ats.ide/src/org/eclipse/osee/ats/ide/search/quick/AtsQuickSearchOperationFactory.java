@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.search;
+package org.eclipse.osee.ats.ide.search.quick;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.operation.IOperation;

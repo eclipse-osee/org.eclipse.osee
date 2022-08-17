@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
+import org.eclipse.osee.ats.ide.search.quick.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
