@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.search;
+package org.eclipse.osee.ats.ide.search.quick;
 
 import java.io.File;
 import java.util.logging.Level;
