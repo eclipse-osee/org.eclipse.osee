@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -612,7 +613,7 @@ public class IcdGenerator {
          }
          for (InterfaceStructureToken struct : structs) {
 
-            int rowIndex = 4; // Start elements on 4th row
+            AtomicInteger rowIndex = new AtomicInteger(4); // Start elements on 4th row
             int byteLocation = 0;
             writer.createSheet(structureLinks.get(struct));
 
@@ -630,7 +631,7 @@ public class IcdGenerator {
                   Integer byteSize = (int) element.getElementSizeInBytes();
                   printHeaderStructureRow(writer, rowIndex, view, element, byteLocation, byteSize, platformType);
                   byteLocation = byteLocation + byteSize;
-                  rowIndex++;
+                  rowIndex.getAndAdd(1);
                }
             } else {
                for (int i = 0; i < info.elements.size(); i++) {
@@ -650,7 +651,6 @@ public class IcdGenerator {
                      byteSize = byteSize * (endIndex - startIndex + 1);
                   }
                   byteLocation = byteLocation + byteSize;
-                  rowIndex++;
                }
             }
 
@@ -662,7 +662,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printHeaderStructureRow(ExcelWorkbookWriter writer, int rowIndex, ArtifactId view, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) {
+   private void printHeaderStructureRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactId view, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -680,22 +680,22 @@ public class IcdGenerator {
       String description = element.getDescription() == Strings.EMPTY_STRING ? "n/a" : element.getDescription();
       String notes = element.getNotes();
 
-      writer.writeCell(rowIndex, 0, beginWord);
-      writer.writeCell(rowIndex, 1, beginByte);
-      writer.writeCell(rowIndex, 2, byteSize);
-      writer.writeCell(rowIndex, 3, endWord);
-      writer.writeCell(rowIndex, 4, endByte);
-      writer.writeCell(rowIndex, 5, dataType);
-      writer.writeCell(rowIndex, 6, elementName);
-      writer.writeCell(rowIndex, 7, units);
-      writer.writeCell(rowIndex, 8, validRange);
-      writer.writeCell(rowIndex, 9, alterable);
-      writer.writeCell(rowIndex, 10, description, CELLSTYLE.WRAP);
-      writer.writeCell(rowIndex, 11, "n/a");
-      writer.writeCell(rowIndex, 12, notes);
+      writer.writeCell(rowIndex.get(), 0, beginWord);
+      writer.writeCell(rowIndex.get(), 1, beginByte);
+      writer.writeCell(rowIndex.get(), 2, byteSize);
+      writer.writeCell(rowIndex.get(), 3, endWord);
+      writer.writeCell(rowIndex.get(), 4, endByte);
+      writer.writeCell(rowIndex.get(), 5, dataType);
+      writer.writeCell(rowIndex.get(), 6, elementName);
+      writer.writeCell(rowIndex.get(), 7, units);
+      writer.writeCell(rowIndex.get(), 8, validRange);
+      writer.writeCell(rowIndex.get(), 9, alterable);
+      writer.writeCell(rowIndex.get(), 10, description, CELLSTYLE.WRAP);
+      writer.writeCell(rowIndex.get(), 11, "n/a");
+      writer.writeCell(rowIndex.get(), 12, notes);
    }
 
-   private void printDataElementRow(ExcelWorkbookWriter writer, int rowIndex, ArtifactId view, ArtifactReadable structure, ArtifactReadable element, Integer byteLocation, Integer byteSize, ArtifactReadable platformType, boolean bytesChanged) {
+   private void printDataElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactId view, ArtifactReadable structure, ArtifactReadable element, Integer byteLocation, Integer byteSize, ArtifactReadable platformType, boolean bytesChanged) {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -736,6 +736,7 @@ public class IcdGenerator {
          ArtifactReadable enumDef = platformType.getRelated(
             CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
+         enumLiterals = enumDef.getName() + ":\n";
          enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumDef.getId()));
          for (ArtifactReadable enumState : enumDef.getRelated(
             CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
@@ -769,19 +770,19 @@ public class IcdGenerator {
          int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
          for (int i = startIndex; i < endIndex + 1; i++) {
             //@formatter:off
-            writer.writeCell(rowIndex, 0, beginWord, byteStyle);
-            writer.writeCell(rowIndex, 1, beginByte, byteStyle);
-            writer.writeCell(rowIndex, 2, byteSize, byteStyle);
-            writer.writeCell(rowIndex, 3, endWord, byteStyle);
-            writer.writeCell(rowIndex, 4, endByte, byteStyle);
-            writer.writeCell(rowIndex, 5, dataType, pTypeStyle);
-            writer.writeCell(rowIndex, 6, elementName + " " + Integer.toString(i), getCellColor(element, CoreAttributeTypes.Name.getId()));
-            writer.writeCell(rowIndex, 7, units, pTypeStyle);
-            writer.writeCell(rowIndex, 8, validRange, pTypeStyle);
-            writer.writeCell(rowIndex, 9, alterable, getCellColor(element, CoreAttributeTypes.InterfaceElementAlterable.getId()));
-            writer.writeCell(rowIndex, 10, description, getCellColor(element, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex, 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex, 12, notes, getCellColor(element, CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 0, beginWord, byteStyle);
+            writer.writeCell(rowIndex.get(), 1, beginByte, byteStyle);
+            writer.writeCell(rowIndex.get(), 2, byteSize, byteStyle);
+            writer.writeCell(rowIndex.get(), 3, endWord, byteStyle);
+            writer.writeCell(rowIndex.get(), 4, endByte, byteStyle);
+            writer.writeCell(rowIndex.get(), 5, dataType, pTypeStyle);
+            writer.writeCell(rowIndex.get(), 6, elementName + " " + Integer.toString(i), getCellColor(element, CoreAttributeTypes.Name.getId()));
+            writer.writeCell(rowIndex.get(), 7, units, pTypeStyle);
+            writer.writeCell(rowIndex.get(), 8, validRange, pTypeStyle);
+            writer.writeCell(rowIndex.get(), 9, alterable, getCellColor(element, CoreAttributeTypes.InterfaceElementAlterable.getId()));
+            writer.writeCell(rowIndex.get(), 10, description, getCellColor(element, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 12, notes, getCellColor(element, CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
             //@formatter:on
 
             byteLocation = byteLocation + byteSize;
@@ -789,24 +790,27 @@ public class IcdGenerator {
             beginByte = Math.floorMod(byteLocation, 4);
             endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
             endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
+
+            rowIndex.getAndAdd(1);
          }
 
       } else {
          //@formatter:off
-         writer.writeCell(rowIndex, 0, beginWord, byteStyle);
-         writer.writeCell(rowIndex, 1, beginByte, byteStyle);
-         writer.writeCell(rowIndex, 2, byteSize, byteStyle);
-         writer.writeCell(rowIndex, 3, endWord, byteStyle);
-         writer.writeCell(rowIndex, 4, endByte, byteStyle);
-         writer.writeCell(rowIndex, 5, dataType, pTypeStyle);
-         writer.writeCell(rowIndex, 6, elementName, getCellColor(element, CoreAttributeTypes.Name.getId()));
-         writer.writeCell(rowIndex, 7, units, pTypeStyle);
-         writer.writeCell(rowIndex, 8, validRange, pTypeStyle);
-         writer.writeCell(rowIndex, 9, alterable, getCellColor(element, CoreAttributeTypes.InterfaceElementAlterable.getId()));
-         writer.writeCell(rowIndex, 10, description, getCellColor(element, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
-         writer.writeCell(rowIndex, 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
-         writer.writeCell(rowIndex, 12, notes, getCellColor(element, CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 0, beginWord, byteStyle);
+         writer.writeCell(rowIndex.get(), 1, beginByte, byteStyle);
+         writer.writeCell(rowIndex.get(), 2, byteSize, byteStyle);
+         writer.writeCell(rowIndex.get(), 3, endWord, byteStyle);
+         writer.writeCell(rowIndex.get(), 4, endByte, byteStyle);
+         writer.writeCell(rowIndex.get(), 5, dataType, pTypeStyle);
+         writer.writeCell(rowIndex.get(), 6, elementName, getCellColor(element, CoreAttributeTypes.Name.getId()));
+         writer.writeCell(rowIndex.get(), 7, units, pTypeStyle);
+         writer.writeCell(rowIndex.get(), 8, validRange, pTypeStyle);
+         writer.writeCell(rowIndex.get(), 9, alterable, getCellColor(element, CoreAttributeTypes.InterfaceElementAlterable.getId()));
+         writer.writeCell(rowIndex.get(), 10, description, getCellColor(element, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 12, notes, getCellColor(element, CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
          //@formatter:on
+         rowIndex.getAndAdd(1);
       }
 
    }
