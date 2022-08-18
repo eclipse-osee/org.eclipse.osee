@@ -75,6 +75,7 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       JsonNode readTree = jaxRsApi.readTree(Lib.inputStreamToString(entityStream));
       BranchId branch = BranchId.valueOf(readTree.get("branch").asLong());
       Map<String, ArtifactToken> artifactsByName = new HashMap<>();
+      Map<String, ArtifactToken> artifactsByKeys = new HashMap<>();
 
       String txComment = readTree.get("txComment").asText();
       if (Strings.isInValid(txComment)) {
@@ -83,16 +84,16 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
 
       TransactionBuilder tx = txFactory.createTransaction(branch, txComment);
 
-      createArtifacts(readTree, artifactsByName, tx);
+      createArtifacts(readTree, artifactsByName, artifactsByKeys, tx);
       modifyArtifacts(readTree, artifactsByName, tx);
       deleteArtifacts(readTree, tx);
       deleteRelations(readTree, tx);
-      addRelations(readTree, tx);
+      addRelations(readTree, artifactsByKeys, tx);
 
       return tx;
    }
 
-   private void createArtifacts(JsonNode root, Map<String, ArtifactToken> artifactsByName, TransactionBuilder tx) {
+   private void createArtifacts(JsonNode root, Map<String, ArtifactToken> artifactsByName, Map<String, ArtifactToken> artifactsByKeys, TransactionBuilder tx) {
       if (root.has("createArtifacts")) {
          for (JsonNode artifactJson : root.get("createArtifacts")) {
             ApplicabilityId appId;
@@ -105,6 +106,10 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
             ArtifactTypeToken artifactType = getArtifactType(artifactJson);
             ArtifactToken artifact = tx.createArtifact(artifactType, artifactJson.get("name").asText(), appId);
             artifactsByName.put(artifact.getName(), artifact);
+
+            if (artifactJson.has("key")) {
+               artifactsByKeys.put(artifactJson.get("key").asText(), artifact);
+            }
 
             readAttributes(tx, artifactJson, artifact, "attributes");
             readrelations(tx, artifactsByName, artifactJson, artifact);
@@ -149,7 +154,7 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       }
    }
 
-   private void addRelations(JsonNode root, TransactionBuilder tx) {
+   private void addRelations(JsonNode root, Map<String, ArtifactToken> artifactsByKeys, TransactionBuilder tx) {
       if (root.has("addRelations")) {
          for (JsonNode relation : root.get("addRelations")) {
             RelationTypeToken relationType = getRelationType(relation);
@@ -159,8 +164,18 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
                relation.get("relatedArtifact").asLong()) : ArtifactId.SENTINEL;
             String afterArtifact = relation.has("afterArtifact") ? relation.get("afterArtifact").asText() : "end";
 
-            ArtifactId artA = ArtifactId.valueOf(relation.get("aArtId").asLong());
-            ArtifactId artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
+            ArtifactId artA;
+            ArtifactId artB;
+            if (artifactsByKeys.containsKey(relation.get("aArtId").asText())) {
+               artA = ArtifactId.valueOf(artifactsByKeys.get(relation.get("aArtId").asText()).getId());
+            } else {
+               artA = ArtifactId.valueOf(relation.get("aArtId").asLong());
+            }
+            if (artifactsByKeys.containsKey(relation.get("bArtId").asText())) {
+               artB = ArtifactId.valueOf(artifactsByKeys.get(relation.get("bArtId").asText()).getId());
+            } else {
+               artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
+            }
 
             if (relationType.isNewRelationTable()) {
                tx.relate(artA, relationType, artB, relatedArtifact, afterArtifact);
