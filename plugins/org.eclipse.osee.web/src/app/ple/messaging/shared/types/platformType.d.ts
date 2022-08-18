@@ -32,3 +32,12 @@ export interface PlatformType {
     name: string
     
 }
+
+export interface platformTypeImportToken extends Pick<PlatformType, 
+'id' | 'name' | 'description' | 
+'interfacePlatformTypeDefaultValue' |
+'interfacePlatformTypeMinval' |
+'interfacePlatformTypeMaxval' |
+'interfacePlatformTypeBitSize' |
+'interfacePlatformTypeUnits' |
+'interfaceLogicalType'>{}

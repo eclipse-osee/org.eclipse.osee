@@ -27,16 +27,16 @@ import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 export class EnumerationSetService {
 
   constructor (private http: HttpClient,private builder: TransactionBuilderService, private transactionService: TransactionService) { }
-  createEnumSet(branchId:string,type:enumSet|Partial<enumSet>,relations:relation[], transaction?:transaction) {
-    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.ENUMSET, relations, transaction, branchId, "Create Enum Set"));
+  createEnumSet(branchId:string,type:enumSet|Partial<enumSet>,relations:relation[], transaction?:transaction, key?:string) {
+    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.ENUMSET, relations, transaction, branchId, "Create Enum Set", key));
   }
 
   changeEnumSet(branchId: string, type: Partial<enumSet>,transaction?:transaction) {
     return of<transaction>(this.builder.modifyArtifact(type,transaction,branchId,"Change enum set attributes"));
   }
 
-  createEnum(branchId:string,type:enumeration|Partial<enumeration>,relations:relation[], transaction?:transaction) {
-    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.ENUM, relations, transaction, branchId, "Create Enum"));
+  createEnum(branchId:string,type:enumeration|Partial<enumeration>,relations:relation[], transaction?:transaction, key?:string) {
+    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.ENUM, relations, transaction, branchId, "Create Enum", key));
   }
 
   changeEnum(branchId: string, type: enumeration | Partial<enumeration>, transaction?: transaction) {
@@ -47,13 +47,14 @@ export class EnumerationSetService {
     return of<relation>({ typeName: "Interface Platform Type Enumeration Set", sideA: sideA });
   }
 
-  createPlatformTypeToEnumSetRelation(sideB?: string) {
-    return of<relation>({ typeName: "Interface Platform Type Enumeration Set", sideB: sideB });
+  createPlatformTypeToEnumSetRelation(sideB?: string, sideA?: string) {
+    return of<relation>({ typeName: "Interface Platform Type Enumeration Set", sideA: sideA, sideB: sideB });
   }
 
-  createEnumToEnumSetRelation(sideA?: string) {
-    return of<relation>({ typeName: "Interface Enumeration Definition", sideA: sideA });
+  createEnumToEnumSetRelation(sideA?: string, sideB?: string) {
+    return of<relation>({ typeName: "Interface Enumeration Definition", sideA: sideA, sideB: sideB });
   }
+
   getEnumSets(branchId: string) {
     return this.http.get<enumerationSet[]>(apiURL + "/mim/branch/" + branchId + "/enumerations/");
   }
@@ -63,5 +64,9 @@ export class EnumerationSetService {
   }
   performMutation(body: transaction) {
     return this.transactionService.performMutation(body)
+  }
+
+  addRelation(branchId:string,relation:relation,transaction?:transaction) {
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating EnumSet'))
   }
 }

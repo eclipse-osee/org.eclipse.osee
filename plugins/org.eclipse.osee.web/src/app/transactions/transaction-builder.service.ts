@@ -35,7 +35,8 @@ export class TransactionBuilderService {
     relations: relation[],
     transaction?: transaction,
     branchId?: string,
-    txComment?: string
+    txComment?: string,
+    key?: string
   ): transaction {
     let currentTransaction: transaction = transaction || {
       branch: branchId || '',
@@ -76,10 +77,12 @@ export class TransactionBuilderService {
       applicabilityId: value?.applicabilityId,
       attributes: attributes,
       relations: relations,
+      key: key
     };
     currentTransaction.createArtifacts!.push(artifact);
     return currentTransaction;
   }
+
   modifyArtifact<T extends Partial<artifact>>(
     value: T,
     transaction?: transaction,
@@ -125,6 +128,7 @@ export class TransactionBuilderService {
     //relation code
     return currentTransaction;
   }
+
   deleteArtifact(
     value: string,
     transaction?: transaction,
@@ -200,7 +204,7 @@ export class TransactionBuilderService {
     if (!currentTransaction?.addRelations) {
       currentTransaction.addRelations = [];
     }
-    currentTransaction.addRelations.push({ typeName: typeName, typeId: typeId, aArtId: firstId, bArtId: secondId, rationale: rationale })
+    currentTransaction.addRelations.push({ typeName: typeName, typeId: typeId, aArtId: firstId, bArtId: secondId, rationale: rationale})
     return currentTransaction;
   }
 

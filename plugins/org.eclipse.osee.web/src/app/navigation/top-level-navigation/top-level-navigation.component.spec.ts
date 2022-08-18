@@ -12,7 +12,11 @@
  **********************************************************************/
 import { LayoutModule } from '@angular/cdk/layout';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 
 describe('TopLevelNavigationComponent', () => {
@@ -22,8 +26,12 @@ describe('TopLevelNavigationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        MatIconModule,
+        MatListModule,
+        MatToolbarModule,
         NoopAnimationsModule,
-        LayoutModule
+        LayoutModule,
+        RouterTestingModule
       ],
       declarations: [ TopLevelNavigationComponent ],
     })

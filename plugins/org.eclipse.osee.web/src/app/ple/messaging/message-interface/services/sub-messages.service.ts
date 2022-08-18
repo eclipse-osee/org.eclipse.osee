@@ -45,14 +45,14 @@ export class SubMessagesService {
     return of(this.builder.modifyArtifact(submessage, undefined, branchId, "Update SubMessage"));
   }
 
-  addRelation(branchId:string,relation:relation) {
-    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Relating SubMessage'))
+  addRelation(branchId:string,relation:relation, transaction?:transaction) {
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating SubMessage'))
   }
   deleteRelation(branchId:string,relation:relation) {
     return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Relating SubMessage'))
   }
-  createSubMessage(branchId: string, submessage: Partial<subMessage>, relations: relation[]) {
-    return of(this.builder.createArtifact(submessage, ARTIFACTTYPEID.SUBMESSAGE, relations, undefined, branchId, "Create SubMessage"));
+  createSubMessage(branchId: string, submessage: Partial<subMessage>, relations: relation[], transaction?: transaction, key?: string) {
+    return of(this.builder.createArtifact(submessage, ARTIFACTTYPEID.SUBMESSAGE, relations, transaction, branchId, "Create SubMessage", key));
   }
   deleteSubMessage(branchId: string, submessageId: string) {
     return of(this.builder.deleteArtifact(submessageId,undefined,branchId,'Deleting Submessage'))

@@ -71,7 +71,7 @@ describe('CurrentGraphService', () => {
     changeNode(branchId: string, node: Partial<node>) {
       return of(transactionMock)
     },
-    performMutation(branchId: string, body: transaction) {
+    performMutation(transaction: transaction) {
       return of(transactionResultMock);
     },
     deleteArtifact(branchId: string, artId: string) {
@@ -94,7 +94,7 @@ describe('CurrentGraphService', () => {
     changeConnection(branchId: string, connection: Partial<connection>) {
       return of(transactionMock);
     },
-    performMutation(branchId: string, body: transaction) {
+    performMutation(transaction: transaction) {
       return of(transactionResultMock);
     },
     deleteRelation(branchId: string, relation: relation, transaction?: transaction) {

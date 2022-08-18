@@ -138,7 +138,7 @@ export class CurrentGraphService {
       take(1),
       switchMap(branchId => this.connectionService.changeConnection(branchId, connection).pipe(
         take(1),
-        switchMap(transaction => this.connectionService.performMutation(branchId, transaction).pipe(
+        switchMap(transaction => this.connectionService.performMutation(transaction).pipe(
           tap(() => {
             this.update = true;
           })
@@ -156,7 +156,7 @@ export class CurrentGraphService {
           take(1),
           switchMap((node) => iif(() => edge.source === nodeId, this.connectionService.createNodeRelation((node?.id) || '', false, id), this.connectionService.createNodeRelation((node?.id) || '', true, id)).pipe( //create primary relation if nodeId==source else nodeId==target create secondary relation
             switchMap((relation) => this.connectionService.deleteRelation(branchId, relation).pipe( //turn into transaction
-              switchMap((transaction) => this.connectionService.performMutation(branchId, transaction).pipe(
+              switchMap((transaction) => this.connectionService.performMutation(transaction).pipe(
                 tap(() => {
                   this.update = true;
                 })
@@ -173,7 +173,7 @@ export class CurrentGraphService {
       take(1),
       switchMap(branchId => this.nodeService.changeNode(branchId, node).pipe(
         take(1),
-        switchMap((transaction) => this.nodeService.performMutation(branchId, transaction).pipe(
+        switchMap((transaction) => this.nodeService.performMutation(transaction).pipe(
           tap(() => {
             this.update = true;
           })
@@ -186,7 +186,7 @@ export class CurrentGraphService {
       take(1),
       switchMap(branchId => this.nodeService.deleteArtifact(branchId, nodeId).pipe(
         take(1),
-        switchMap((transaction) => this.nodeService.performMutation(branchId, transaction).pipe(
+        switchMap((transaction) => this.nodeService.performMutation(transaction).pipe(
           tap(() => {
             this.update = true;
           })
@@ -211,7 +211,7 @@ export class CurrentGraphService {
             map(latest => [latest[0], latest[1]]),
             switchMap((relations) => this.connectionService.createConnection(branchId, connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
               take(1),
-              switchMap((newConnection) => this.connectionService.performMutation(branchId, newConnection).pipe(
+              switchMap((newConnection) => this.connectionService.performMutation(newConnection).pipe(
                 tap(() => {
                   this.update = true;
                 })
@@ -223,7 +223,7 @@ export class CurrentGraphService {
             map(latest => [latest[0], latest[1]]),
             switchMap((relations) => this.connectionService.createConnection(branchId, connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
               take(1),
-              switchMap((newConnection) => this.connectionService.performMutation(branchId, newConnection).pipe(
+              switchMap((newConnection) => this.connectionService.performMutation(newConnection).pipe(
                 tap(() => {
                   this.update = true;
                 })
@@ -240,7 +240,7 @@ export class CurrentGraphService {
       take(1),
       switchMap(branchId => this.nodeService.createNode(branchId, node).pipe(
         take(1),
-        switchMap((transaction) => this.nodeService.performMutation(branchId, transaction).pipe(
+        switchMap((transaction) => this.nodeService.performMutation(transaction).pipe(
           tap(() => {
             this.update = true;
           })
@@ -265,9 +265,9 @@ export class CurrentGraphService {
   }
 
   updatePreferences(preferences: settingsDialogData) {
-    return combineLatest([this.routeStateService.id,this.createUserPreferenceBranchTransaction(preferences.editable)]).pipe(
+    return this.createUserPreferenceBranchTransaction(preferences.editable).pipe(
       take(1),
-      switchMap(([branchId,transaction]) => this.nodeService.performMutation(branchId, transaction).pipe(
+      switchMap(transaction => this.nodeService.performMutation(transaction).pipe(
         take(1),
         tap(() => {
           this.update = true

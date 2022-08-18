@@ -39,8 +39,18 @@ export interface nodeChanges{
 export interface node {
     id?: string,
     name: string,
-    description?: string
+    description?: string,
     applicability?:applic
+    
+}
+
+export interface nodeToken {
+    id?: string,
+    name: string,
+    description?: string,
+    applicability?:applic,
+    color?:string,
+    address?:string
     
 }
 

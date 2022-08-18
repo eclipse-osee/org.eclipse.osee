@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { transaction } from '../../../../transactions/transaction';
+import { relation, transaction } from '../../../../transactions/transaction';
 import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
@@ -44,10 +44,11 @@ export class NodeService {
     return of(this.builder.deleteArtifact(artId, undefined, branchId, 'Delete Node'));
   }
 
-  createNode(branchId: string, node: Partial<node>) {
-    return of(this.builder.createArtifact(node, ARTIFACTTYPEID.NODE, [], undefined, branchId, "Create Node"));
+  createNode(branchId: string, node: Partial<node>, transaction?: transaction, key?: string) {
+    return of(this.builder.createArtifact(node, ARTIFACTTYPEID.NODE, [], transaction, branchId, "Create Node", key));
   }
-  performMutation(branchId:string,body:transaction) {
+
+  performMutation(body:transaction) {
     return this.transactionService.performMutation(body)
   }
 }

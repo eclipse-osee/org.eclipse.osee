@@ -27,6 +27,7 @@ const routes: Routes = [
   { path: 'structureNames', loadChildren: () => import('./structure-names/structure-names.module').then(m => m.StructureNamesModule) },
   { path: ':branchType/:branchId/type/:typeId', loadChildren: () => import('./type-detail/type-detail.module').then(m => m.TypeDetailModule) },
   { path: 'reports', loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule) },
+  { path: 'import', loadChildren: () => import('./import/import.module').then(m => m.ImportModule) },
 ];
 
 @NgModule({

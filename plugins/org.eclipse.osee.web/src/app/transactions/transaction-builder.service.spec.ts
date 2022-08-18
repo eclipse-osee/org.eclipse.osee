@@ -51,6 +51,7 @@ describe('TransactionBuilderService', () => {
               },
             ],
             relations: [],
+            key:undefined
           },
         ],
       };
@@ -108,6 +109,7 @@ describe('TransactionBuilderService', () => {
               },
             ],
             relations: [],
+            key:undefined
           },
           {
             name: 'artifact456',
@@ -115,6 +117,7 @@ describe('TransactionBuilderService', () => {
             typeId: '23456',
             attributes: [],
             relations: [],
+            key:undefined
           },
         ],
       });

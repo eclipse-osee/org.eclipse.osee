@@ -25,6 +25,7 @@ export interface transaction {
 export interface createArtifact {
   typeId: string;
   name: string;
+  key?: string;
   applicabilityId?: string;
   attributes?: attributeType[];
   relations?: relation[];

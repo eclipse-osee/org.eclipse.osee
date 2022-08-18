@@ -52,14 +52,14 @@ export class ElementService {
     }
     return of(relation);
   }
-  createElement(body: Partial<element>, branchId: string, relations: relation[]) {
+  createElement(body: Partial<element>, branchId: string, relations: relation[], transaction?: transaction, key?: string) {
     if (body.interfaceElementIndexEnd === 0 && body.interfaceElementIndexStart === 0) {
       delete body.interfaceElementIndexEnd;
       delete body.interfaceElementIndexStart;
-      return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT, relations, undefined, branchId, "Create Element"));
+      return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT, relations, transaction, branchId, "Create Element", key));
     } else {
       delete body.interfaceElementAlterable;
-      return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT_ARRAY, relations, undefined, branchId, "Create Element"));
+      return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT_ARRAY, relations, transaction, branchId, "Create Element", key));
     }
   }
   changeElement(body: Partial<element>, branchId: string) {

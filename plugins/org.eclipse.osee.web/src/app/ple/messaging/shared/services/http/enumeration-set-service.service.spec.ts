@@ -82,11 +82,12 @@ describe('EnumerationSetServiceService', () => {
     scheduler.run(() => {
       let relation: relation = {
         typeName: "Interface Platform Type Enumeration Set",
-        sideB:'10'
+        sideB:'10',
+        sideA:'11',
       }
       const expectedFilterValues = { a:relation};
       const expectedMarble = '(a|)';
-      scheduler.expectObservable(service.createPlatformTypeToEnumSetRelation('10')).toBe(expectedMarble, expectedFilterValues);
+      scheduler.expectObservable(service.createPlatformTypeToEnumSetRelation('10', '11')).toBe(expectedMarble, expectedFilterValues);
     })
   })
 
@@ -94,11 +95,12 @@ describe('EnumerationSetServiceService', () => {
     scheduler.run(() => {
       let relation: relation = {
         typeName: "Interface Enumeration Definition",
-        sideA:'10'
+        sideA:'10',
+        sideB:'11'
       }
       const expectedFilterValues = { a:relation};
       const expectedMarble = '(a|)';
-      scheduler.expectObservable(service.createEnumToEnumSetRelation('10')).toBe(expectedMarble, expectedFilterValues);
+      scheduler.expectObservable(service.createEnumToEnumSetRelation('10', '11')).toBe(expectedMarble, expectedFilterValues);
     })
   })
 

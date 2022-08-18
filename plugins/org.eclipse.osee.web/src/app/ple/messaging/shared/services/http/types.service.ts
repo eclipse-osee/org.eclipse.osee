@@ -46,8 +46,8 @@ export class TypesService {
     return this.http.get<PlatformType>(apiURL + "/mim/branch/" + branchId + "/types/"+platformTypeId)
   }
 
-  createPlatformType(branchId:string,type:PlatformType|Partial<PlatformType>,relations:relation[]) {
-    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.PLATFORMTYPE, relations, undefined, branchId, "Create Platform Type"));
+  createPlatformType(branchId:string,type:PlatformType|Partial<PlatformType>,relations:relation[], transaction?:transaction, key?:string) {
+    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.PLATFORMTYPE, relations, transaction, branchId, "Create Platform Type", key));
   }
 
   changePlatformType(branchId: string, type: Partial<PlatformType>) {
