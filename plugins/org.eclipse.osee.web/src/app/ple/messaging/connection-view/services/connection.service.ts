@@ -59,13 +59,23 @@ export class ConnectionService {
     return of(this.builder.createArtifact(connection, ARTIFACTTYPEID.CONNECTION, relations, undefined, branchId, "Create Connection and Relate to Node(s): " + relations[0].sideB + " , " + relations[1].sideB));
   }
 
+  createConnectionNoRelations(branchId:string,connection:connection,transaction?:transaction, key?:string) {
+    return of(this.builder.createArtifact(connection, ARTIFACTTYPEID.CONNECTION, [], transaction, branchId, "Create Connection", key));
+  }
+
   changeConnection(branchId: string, connection: Partial<connection>) {
     return of(this.builder.modifyArtifact(connection,undefined,branchId,"Change connection attributes"));
   }
+
   deleteRelation(branchId:string,relation:relation,transaction?:transaction) {
-    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))
+    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Unrelating Connection'))
   }
-  performMutation(branchId:string,body:transaction) {
-    return this.transactionService.performMutation(body)
+
+  addRelation(branchId:string,relation:relation,transaction?:transaction) {
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Connection'))
+  }
+
+  performMutation(transaction:transaction) {
+    return this.transactionService.performMutation(transaction)
   }
 }

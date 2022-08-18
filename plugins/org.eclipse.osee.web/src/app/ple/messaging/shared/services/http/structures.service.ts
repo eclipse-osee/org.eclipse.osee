@@ -47,14 +47,14 @@ export class StructuresService {
     }
     return of(relation);
   }
-  createStructure(body: Partial<structure>, branchId: string, relations:relation[]) {
-    return of(this.builder.createArtifact(body, ARTIFACTTYPEID.STRUCTURE, relations, undefined, branchId, "Create Structure"));
+  createStructure(body: Partial<structure>, branchId: string, relations:relation[], transaction?:transaction, key?:string) {
+    return of(this.builder.createArtifact(body, ARTIFACTTYPEID.STRUCTURE, relations, transaction, branchId, "Create Structure", key));
   }
   changeStructure(body: Partial<structure>, branchId: string) {
     return of(this.builder.modifyArtifact(body, undefined, branchId, "Change Structure"));
   }
-  addRelation(branchId:string,relation:relation) {
-    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Relating SubMessage'))
+  addRelation(branchId:string,relation:relation,transaction?:transaction) {
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating SubMessage'))
   }
   performMutation(transaction:transaction) {
     return this.transactionService.performMutation(transaction)

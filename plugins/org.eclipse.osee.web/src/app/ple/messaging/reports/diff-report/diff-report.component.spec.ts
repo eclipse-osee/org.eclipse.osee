@@ -12,6 +12,7 @@
  **********************************************************************/
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { TestScheduler } from 'rxjs/testing';
 import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
@@ -40,6 +41,7 @@ describe('DiffReportComponent', () => {
       imports: [
         CommonModule,
         GenericButtonsModule,
+        MatIconModule,
         MatTableModule],
       declarations: [  
         ConnectionDiffsComponent, 

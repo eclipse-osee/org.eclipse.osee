@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,6 +35,7 @@ describe('AppComponent', () => {
         RouterTestingModule,
         MatSidenavModule,
         NoopAnimationsModule,
+        MatIconModule,
         MatToolbarModule
       ],
       declarations: [

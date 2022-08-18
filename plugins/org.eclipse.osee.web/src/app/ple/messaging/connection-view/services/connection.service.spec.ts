@@ -82,12 +82,33 @@ describe('ConnectionService', () => {
               name: 'connection',
               applicabilityId: undefined,
               attributes: [{typeName:"Interface Transport Type",value:transportType.Ethernet}],
-              relations:[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}]
+              relations:[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}],
+              key:undefined
             }]
           }
           const expectedfilterValues = { a: extransaction };
           const expectedMarble = '(a|)'
           scheduler.expectObservable(service.createConnection('10',{name:'connection',transportType:transportType.Ethernet},[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}])).toBe(expectedMarble, expectedfilterValues)
+        })
+      })
+
+      it('should create a valid connection with no relations', () => {
+        scheduler.run(() => {
+          let extransaction: transaction = {
+            branch: '10',
+            txComment: "Create Connection",
+            createArtifacts: [{
+              typeId: '126164394421696910',
+              name: 'connection',
+              applicabilityId: undefined,
+              attributes: [{typeName:"Interface Transport Type",value:transportType.Ethernet}],
+              relations:[],
+              key:'10'
+            }]
+          }
+          const expectedfilterValues = { a: extransaction };
+          const expectedMarble = '(a|)'
+          scheduler.expectObservable(service.createConnectionNoRelations('10',{name:'connection',transportType:transportType.Ethernet}, undefined, '10')).toBe(expectedMarble, expectedfilterValues)
         })
       })
 
@@ -109,7 +130,7 @@ describe('ConnectionService', () => {
       })
 
       it('should perform a mutation', () => {
-        service.performMutation('10', { branch: '10', txComment: '' }).subscribe();
+        service.performMutation({ branch: '10', txComment: '' }).subscribe();
         const req = httpTestingController.expectOne(apiURL+'/orcs/txs');
         expect(req.request.method).toEqual('POST');
         req.flush({});
@@ -126,7 +147,7 @@ describe('ConnectionService', () => {
           sideA:undefined
         }
         let transaction = transactionMock;
-        transaction.txComment = "Relating Element";
+        transaction.txComment = "Unrelating Connection";
         transaction.deleteRelations = [{ typeName: 'Interface Connection Secondary Node', typeId: undefined, aArtId: undefined, bArtId: '10', rationale: undefined }];
         const expectedObservable = { a: transaction }
         const expectedMarble = '(a|)'

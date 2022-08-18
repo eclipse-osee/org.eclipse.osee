@@ -14,9 +14,10 @@ import { difference } from "src/app/types/change-report/change-report";
 import { applic } from "../../../../types/applicability/applic";
 import { subMessage, subMessageWithChanges } from "./sub-messages";
 import { ConnectionNode } from './connection-nodes'
+import { nodeToken } from "../../shared/types/node";
 
 export interface message {
-    [index:string]:string|subMessage|subMessageWithChanges|boolean|applic|Array<subMessage|subMessageWithChanges>|undefined|messageChanges,
+    [index:string]:string|subMessage|subMessageWithChanges|boolean|applic|Array<subMessage|subMessageWithChanges>|undefined|messageChanges|nodeToken,
     id: string,
     name: string,
     description: string ,
@@ -27,7 +28,7 @@ export interface message {
     interfaceMessageType: string ,
     interfaceMessageNumber: string,
     applicability?:applic,
-    initiatingNode: ConnectionNode
+    initiatingNode: ConnectionNode 
 }
 
 export interface messageWithChanges extends message{
@@ -47,4 +48,11 @@ export interface messageChanges{
     interfaceMessageNumber?: difference,
     applicability?:difference,
     initiatingNode?: difference
+}
+
+export interface messageToken extends Pick<message, 
+    'id'|'name'|'description'|'subMessages'|'interfaceMessageRate'|
+    'interfaceMessagePeriodicity'|'interfaceMessageWriteAccess'|
+    'interfaceMessageType'|'interfaceMessageNumber'|'applicability'> {
+    initiatingNode: nodeToken
 }

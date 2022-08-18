@@ -52,17 +52,21 @@ export class MessagesService {
   getMessage(branchId: string, messageId: string,connectionId:string):Observable<message> {
     return this.http.get<message>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/"+messageId);
   }
+
   getConnection(branchId: string,connectionId:string) {
     return this.http.get<connection>(apiURL + "/mim/branch/" + branchId + "/connections/" + connectionId);
   }
+
   getConnectionName(branchId: string, connectionId: string) {
     return this.getConnection(branchId, connectionId).pipe(
       map(x=>x.name)
     )
   }
+
   getConnectionNodes(branchId: string, connectionId: string) {
     return this.http.get<ConnectionNode[]>(apiURL + "/mim/branch/" + branchId + "/nodes/connection/" + connectionId);
   }
+
   createConnectionRelation(connectionId:string, messageId?:string) {
     let relation: relation = {
       typeName: 'Interface Connection Content',
@@ -71,6 +75,7 @@ export class MessagesService {
     }
     return of(relation);
   }
+
   createNodeRelation(messageId: string, nodeId?: string) {
     let relation: relation = {
       typeName: 'Interface Message Sending Node',
@@ -79,19 +84,27 @@ export class MessagesService {
     }
     return of(relation);
   }
+
   changeMessage(branchId: string, message: Partial<message>) {
     return of(this.builder.modifyArtifact(message, undefined, branchId, "Update Message"));
   }
 
-  createMessage(branchId: string, message: Partial<message>,relations:relation[]) {
-    return of(this.builder.createArtifact(message, ARTIFACTTYPEID.MESSAGE, relations, undefined, branchId, "Create Message"));
+  createMessage(branchId: string, message: Partial<message>,relations:relation[], transaction?: transaction, key?: string) {
+    return of(this.builder.createArtifact(message, ARTIFACTTYPEID.MESSAGE, relations, transaction, branchId, "Create Message", key));
   }
+
   deleteMessage(branchId: string, messageId: string, transaction?:transaction) {
     return of(this.builder.deleteArtifact(messageId, transaction, branchId, "Deleting message"));
   }
+
+  addRelation(branchId:string,relation:relation,transaction?:transaction) {
+    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Message'))
+  }
+
   deleteRelation(branchId: string, relation: relation) {
     return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Removing message'))
   }
+
   performMutation(body:transaction) {
     return this.transactionService.performMutation(body)
   }

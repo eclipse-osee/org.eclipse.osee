@@ -45,3 +45,7 @@ export interface elementWithChanges extends element{
     deleted: boolean,
     changes: hasChanges<element>
 }
+
+export interface elementImportToken extends Pick<element, 
+    'id' | 'name' | 'description' | 'notes' | 'interfaceElementAlterable' | 
+    'interfaceElementIndexEnd' | 'interfaceElementIndexStart'> {}
