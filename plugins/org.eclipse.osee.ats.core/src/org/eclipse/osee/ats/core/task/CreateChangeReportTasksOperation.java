@@ -254,7 +254,9 @@ public class CreateChangeReportTasksOperation {
             } else {
                rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
             }
-            atsApi.getVersionService().setTargetedVersion(destTeamWf, targetedVersion, changes);
+            if (changes != null) {
+               atsApi.getVersionService().setTargetedVersion(destTeamWf, targetedVersion, changes);
+            }
             if (changes != null && atsApi.getRelationResolver().areNotRelated(chgRptTeamWf, AtsRelationTypes.Derive_To,
                destTeamWf)) {
                changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
