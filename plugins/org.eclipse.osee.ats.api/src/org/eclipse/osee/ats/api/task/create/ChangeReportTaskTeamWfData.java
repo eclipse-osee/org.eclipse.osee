@@ -50,6 +50,37 @@ public class ChangeReportTaskTeamWfData {
       // for jax-rs
    }
 
+   public void addTaskMatch(ChangeReportTaskMatch taskMatch) {
+      String taskName = taskMatch.getTaskName();
+      for (ChangeReportTaskMatch existTaskMatch : taskMatches) {
+         if (existTaskMatch.getTaskName().equals(taskName)) {
+            rd.warningf("Duplicate task name found [%s]; skipping", taskName);
+            return;
+         }
+      }
+      this.taskMatches.add(taskMatch);
+   }
+
+   public ChangeReportTaskMatch addTaskMatch(ArtifactToken art, ChangeReportTaskMatchType changeReportTaskMatchType, boolean deleted, String format, Object... data) {
+      ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
+      String taskName = String.format(format, data);
+      for (ChangeReportTaskMatch existTaskMatch : taskMatches) {
+         if (existTaskMatch.getTaskName().equals(taskName)) {
+            rd.logf("Duplicate task name found [%s]; skipping\n", taskName);
+            return null;
+         }
+      }
+      taskMatch.setTaskName(taskName);
+      if (art != null) {
+         taskMatch.setChgRptArt(art);
+         taskMatch.setChgRptArtName(art.getName());
+         taskMatch.setChgRptArtDeleted(deleted);
+      }
+      taskMatch.setType(changeReportTaskMatchType);
+      taskMatches.add(taskMatch);
+      return taskMatch;
+   }
+
    public WorkType getWorkType() {
       return workType;
    }
@@ -102,10 +133,6 @@ public class ChangeReportTaskTeamWfData {
       this.taskMatches = taskMatches;
    }
 
-   public void addTaskMatch(ChangeReportTaskMatch taskMatch) {
-      this.taskMatches.add(taskMatch);
-   }
-
    public Set<String> getTaskNames() {
       Set<String> names = new HashSet<>();
       for (ChangeReportTaskMatch taskMatch : getTaskMatches()) {
@@ -123,19 +150,6 @@ public class ChangeReportTaskTeamWfData {
          }
       }
       return null;
-   }
-
-   public ChangeReportTaskMatch addTaskMatch(ArtifactToken art, ChangeReportTaskMatchType changeReportTaskMatchType, boolean deleted, String format, Object... data) {
-      ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
-      taskMatch.setTaskName(String.format(format, data));
-      if (art != null) {
-         taskMatch.setChgRptArt(art);
-         taskMatch.setChgRptArtName(art.getName());
-         taskMatch.setChgRptArtDeleted(deleted);
-      }
-      taskMatch.setType(changeReportTaskMatchType);
-      taskMatches.add(taskMatch);
-      return taskMatch;
    }
 
    public ArtifactToken getDestTeamDef() {
