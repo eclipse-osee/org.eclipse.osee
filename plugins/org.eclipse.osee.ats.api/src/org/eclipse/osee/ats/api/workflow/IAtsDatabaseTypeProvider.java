@@ -13,10 +13,7 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
-import java.util.Collections;
-import java.util.List;
 import org.eclipse.osee.ats.api.config.AtsAttrValCol;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 
 /**
@@ -30,12 +27,5 @@ public interface IAtsDatabaseTypeProvider {
    public AttributeTypeEnum<?> getPriorityAttrType();
 
    AtsAttrValCol getPriorityColumnToken();
-
-   /**
-    * @return Default ChangeType values for whole database
-    */
-   default public List<ChangeTypes> getChangeTypeValues() {
-      return Collections.emptyList();
-   }
 
 }

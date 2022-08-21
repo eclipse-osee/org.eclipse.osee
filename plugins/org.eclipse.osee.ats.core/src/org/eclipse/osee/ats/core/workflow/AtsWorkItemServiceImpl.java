@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -59,7 +58,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
@@ -670,17 +668,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          List<ChangeTypes> cTypes = workDef.getChangeTypes();
          if (!cTypes.isEmpty()) {
             changeTypes = cTypes;
-         }
-      }
-
-      if (changeTypes == null) {
-         for (IAtsDatabaseTypeProvider provider : AtsApiService.get().getDatabaseTypeProviders()) {
-            if (provider.useFactory()) {
-               if (provider.getChangeTypeValues() != null) {
-                  changeTypes = provider.getChangeTypeValues();
-                  break;
-               }
-            }
          }
       }
 
