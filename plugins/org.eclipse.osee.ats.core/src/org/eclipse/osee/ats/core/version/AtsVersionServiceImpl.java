@@ -469,7 +469,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public String getTargetedVersionStr(IAtsWorkItem workItem, IAtsVersionService versionService) {
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
       if (teamWf != null) {
-         IAtsVersion version = versionService.getTargetedVersion(workItem);
+         IAtsVersion version = versionService.getTargetedVersion(teamWf);
          if (version != null) {
             if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
                String errStr =
