@@ -74,6 +74,7 @@ public class LisFileParser implements DispoImporterApi {
    private static final String IMPORTED_RESULTS = "IMPORTED_RESULTS";
    private static final String LOG = "\\s*(log).*";
    private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
+   private static final String IF_ELSIF = "(.*\\b(IF|ELSIF)\\b\\s*[^:]*$)";
    private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
    private static final String WHEN_CASE = "(.*\\bWHEN\\b\\s*[^:]*$)";
    private static final String CASE_STATEMENT = "(.*(\\bCASE|case|default|\\s+.+[:].*))";
@@ -455,16 +456,13 @@ public class LisFileParser implements DispoImporterApi {
          } else {
             text = lineData.getFirst().trim();
             if (statementCoverageItem.getNumConditions() == 2) {
-               location = String.format("%s.%s", lineNumber, "T");
-               String locationF = String.format("%s.%s", lineNumber, "F");
-
-               if (!lineData.getFirst().matches(WHEN_FOR) //
-                  && !lineData.getFirst().matches(EXIT_WHEN) //
-                  && !lineData.getFirst().matches(LOG) //
-               ) {
+               if (lineData.getFirst().matches(IF_ELSIF)) {
+                  location = String.format("%s.%s", lineNumber, "T");
+                  String locationF = String.format("%s.%s", lineNumber, "F");
                   addDiscrepancy(discrepancies, location, text);
                   addDiscrepancy(discrepancies, locationF, text);
                } else {
+                  location = String.valueOf(lineNumber);
                   addDiscrepancy(discrepancies, location, text);
                }
             } else if (statementCoverageItem.getNumConditions() == 1 //

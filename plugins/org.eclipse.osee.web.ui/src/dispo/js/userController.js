@@ -379,7 +379,6 @@ app.controller('userController', [
                     $scope.annotations = data;
                     if ($scope.isCoverage) {
                         $scope.annotations.sort(sortStuff);
-                        CoverageFactory.setTextForNonDefaultAnnotations($scope.annotations, $scope.selectedItem.discrepanciesList);
                         $scope.annotations = CoverageFactory.treeAnnotations(data);
                         CoverageFactory.writeoutNode($scope.annotations, 0, $scope.subGridOptions.data);
                     } else {
