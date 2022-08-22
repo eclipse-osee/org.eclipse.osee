@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
@@ -85,7 +86,8 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
          AiLabelProvider labelProvider = new AiLabelProvider(null);
          CheckBoxStateFilteredTreeDialog<IAtsActionableItem> dialog =
             new CheckBoxStateFilteredTreeDialog<IAtsActionableItem>("Select Actionable Item(s)",
-               "Select Actionable Item(s)", new ActionableItemTreeContentProvider(Active.Both), labelProvider);
+               "Select Actionable Item(s)", new ActionableItemTreeContentProvider(Active.Both), labelProvider,
+               new ToStringViewerSorter());
          labelProvider.setTreeViewer(dialog.getTreeViewer());
          if (ais == null) {
             dialog.setInput(AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
