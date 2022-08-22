@@ -28,20 +28,6 @@ app.factory('CoverageFactory', function() {
         	return "";
         }
 	}
-	
-	CoverageFactory.setTextForNonDefaultAnnotations = function(annotations, discrepancies) {
-		for(var i = 0; i < annotations.length; i++) {
-			if(!annotations[i].isDefault) { 
-        		var coveredId = annotations[i].idsOfCoveredDiscrepancies[0]
-        		
-        		var discrepancyAddress = discrepancies[coveredId];
-        		if(discrepancyAddress != null)
-	        			return annotations[i].customerNotes;
-	        		else 
-	        			return annotations[i].customerNotes = "no text found";     		
-    		} 
-		}
-	}
     
 	var getReasonWhyIncomplete = function(annotation) {
 		var toReturn = [];
