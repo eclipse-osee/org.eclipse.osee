@@ -25,6 +25,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -61,12 +63,22 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector implements 
    }
 
    @Override
-   public String getValue(IAtsWorkItem teamWf, Map<Long, String> idToValueMap) {
-      return super.getColumnText(teamWf, null, 0);
+   public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
+      String value = super.getColumnText(workItem, null, 0);
+      if (Strings.isValid(value)) {
+         idToValueMap.put(workItem.getId(), value);
+      }
+      return value;
    }
 
    public String getValue(Object obj) {
-      return super.getColumnText(obj, null, 0);
+      String value = super.getColumnText(obj, null, 0);
+      if (Strings.isValid(value)) {
+         if (obj instanceof NamedId) {
+            idToValueMap.put(((NamedId) obj).getId(), value);
+         }
+      }
+      return value;
    }
 
    @Override
@@ -83,12 +95,14 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector implements 
 
    @Override
    public String getColumnText(Object obj, XViewerColumn column, int columnIndex) {
-      return BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap);
+      String value = BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap, this);
+      return value;
    }
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap);
+      String value = BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap, this);
+      return value;
    }
 
    @Override

@@ -115,33 +115,35 @@ public abstract class BackgroundLoadingPreComputedColumn extends XViewerAtsColum
 
    @Override
    public String getColumnText(Object obj, XViewerColumn column, int columnIndex) {
-      return getColumnText(obj, loading, loaded, preComputedValueMap);
+      return getColumnText(obj, loading, loaded, preComputedValueMap, this);
    }
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return getColumnText(obj, loading, loaded, preComputedValueMap);
+      return getColumnText(obj, loading, loaded, preComputedValueMap, this);
    }
 
    /**
     * Available for columns that can't extend BackgroundLoadingColumn but also used by this class's getColumnText above
     */
-   public static String getColumnText(Object obj, AtomicBoolean loading, AtomicBoolean loaded, Map<Long, String> idToValueMap) {
+   public static String getColumnText(Object obj, AtomicBoolean loading, AtomicBoolean loaded, Map<Long, String> idToValueMap, BackgroundLoadingValueProvider valueProvider) {
+      String value = "";
       try {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
-            String value = idToValueMap.get(workItem.getId());
-            // Need null here, cause empty string means calculation has been done and there is no value
-            if (value != null) {
-               return value;
-            } else {
-               return "unknown";
+            value = idToValueMap.get(workItem.getId());
+            /**
+             * Need null here, cause empty string means calculation has been done and there is no value
+             */
+            if (value == null) {
+               value = valueProvider.getValue(workItem, idToValueMap);
+               idToValueMap.put(workItem.getId(), value);
             }
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);
       }
-      return "";
+      return value;
    }
 
    @Override

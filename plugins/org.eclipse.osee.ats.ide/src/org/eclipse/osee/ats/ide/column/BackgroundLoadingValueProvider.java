@@ -33,7 +33,7 @@ public interface BackgroundLoadingValueProvider extends IXViewerValueColumn {
    /**
     * Allows for retriving value one workitem at a time; consider getValues for performance. only use this OR getValues
     */
-   public default String getValue(IAtsWorkItem teamWf, Map<Long, String> idToValueMap) {
+   public default String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       // for sub-class implementation
       return null;
    }
