@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest.synchronization.identifier;
+package org.eclipse.osee.define.rest.synchronization;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.eclipse.osee.define.rest.synchronization.LinkType;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
 
 /**
@@ -114,6 +113,145 @@ public enum IdentifierType implements LinkType {
     */
 
    SPEC_RELATION_TYPE("SRT", IdentifierTypeGroup.TYPE);
+
+   /**
+    * Class implements a unique identifier for each object representing a part of the Synchronization Artifact. The
+    * class is a nested static class to limit access to the constructor.
+    */
+
+   public static class Identifier {
+
+      /**
+       * Saves the string representation of the identifier.
+       */
+
+      private final String identifierText;
+
+      /**
+       * Save the {@link IdentifierType} of the {@link Identifier}.
+       */
+
+      private final IdentifierType identifierType;
+
+      /**
+       * Saves the pre-computed hash code for the {@link Identifier}.
+       */
+
+      private final int hashCode;
+
+      /**
+       * Save the numerical portion of the identifier.
+       */
+
+      private final Long identifierCount;
+
+      /**
+       * Creates a new {@link Identifier} object.
+       *
+       * @param text the Synchronization Artifact textual representation for the identifier.
+       * @param count the numerical portion of the identifier.
+       * @param type the {@link IdentifierType} associated with the identifier.
+       */
+
+      private Identifier(CharSequence text, Long count, IdentifierType type) {
+         this.identifierText = text.toString();
+         this.identifierType = type;
+         this.identifierCount = count;
+
+         this.hashCode = (int) ((type.ordinal() << 24) ^ ((count >> 32) & 0xFFFFFFFF) ^ (count & 0xFFFFFFFF));
+      }
+
+      /**
+       * Tests the {@link Identifier} with another {@link Object} for equality. The other {@link Object} must be
+       * non-null, have the same associated {@link IdentifierType} and the same numeric identifier to be equal.
+       *
+       * @return <code>true</code>, if the provided object is equal; otherwise, <code>false</code>.
+       */
+
+      @Override
+      public boolean equals(Object obj) {
+         return (obj != null) && (obj instanceof Identifier) && (this.identifierCount == ((Identifier) obj).identifierCount) && (this.identifierType == ((Identifier) obj).identifierType);
+      }
+
+      /**
+       * Gets the numeric portion of the identifier as a <code>long</code>.
+       *
+       * @return numeric portion of the identifier.
+       */
+
+      public long getCount() {
+         return this.identifierCount;
+      }
+
+      /**
+       * Gets the text representation of the identifier for use in the Synchronization Artifact.
+       *
+       * @return the {@link Identifier} String representation.
+       */
+
+      String getText() {
+         return this.identifierText;
+      }
+
+      /**
+       * Gets the identifier type.
+       *
+       * @return the associated {@link IdentifierType}.
+       */
+
+      public IdentifierType getType() {
+         return this.identifierType;
+      }
+
+      /**
+       * Gets the {@link Identifier} object's pre-computed hash code.
+       *
+       * @return a hash code for the {@link Identifier}.
+       */
+
+      @Override
+      public int hashCode() {
+         return this.hashCode;
+      }
+
+      /**
+       * Predicate to determine if the {@link IdentifierType} of this {@link Identifier} is a part of the specified
+       * {@link IdentifierTypeGroup}.
+       *
+       * @param identifierTypeGroup the identifier type group to check for membership in.
+       * @return <code>true</code> when the {@link IdentifierType} of this {@link Identifier} is a member of the
+       * specified {@link IdentifierTypeGroup}; otherwise, <code>false</code>.
+       */
+
+      public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
+         return this.identifierType.isInGroup(identifierTypeGroup);
+      }
+
+      /**
+       * Predicate to determine if the {@link IdentifierType} of the {@link Identifier} is the specified
+       * {@link IdentifierType}.
+       *
+       * @param identifierType the {@link IdentifierType} to check
+       * @return <code>true</code>, when the {@link IdentifierType} of this {@link Identifier} matches the specified
+       * {@link IdentifierType}; otherwise, <code>false</code>.
+       */
+
+      public boolean isType(IdentifierType identifierType) {
+         return this.identifierType.equals(identifierType);
+      }
+
+      /**
+       * Get a {@link String} representation of the {@link Identifier} for debugging purposes. There is no contract for
+       * the format of the returned string.
+       *
+       * @return a {@link String} representation of the {@link Identifier}.
+       */
+
+      @Override
+      public String toString() {
+         return this.identifierText;
+      }
+   }
 
    /**
     * Map of identifier type associations. Each Synchronization Artifact {@link GroveThing} that represents an object
@@ -263,6 +401,34 @@ public enum IdentifierType implements LinkType {
    }
 
    /**
+    * Creates a new unique {@link Identifier} for the Synchronization Artifact thing associated with the
+    * {@link IdentifierType}. This method is intended to only be called by the Synchronization Artifact thing
+    * constructors.
+    *
+    * @return a new {@link Identifier}.
+    */
+
+   public Identifier createIdentifier() {
+      var identifierCount = this.identifierCount.get();
+      var stringBuilder = this.stringBuilder.get();
+
+      stringBuilder.setLength(0);
+
+      //@formatter:off
+      stringBuilder
+         .append( this.identifierPrefix )
+         .append( "-" )
+         .append( Long.toString( identifierCount, 10 ) );
+      //@formatter:on
+
+      var identifier = new Identifier(stringBuilder, identifierCount++, this);
+
+      this.identifierCount.set(identifierCount);
+
+      return identifier;
+   }
+
+   /**
     * For {@link #SPECIFICATION}, {@link #SPEC_OBJECT}, and {@link #SPEC_RELATION} {@link IdentifierTypes} gets the
     * {@link IdentifierType} representing the associated {@link #SPECIFICATION_TYPE}, {@link #SPEC_OBJECT_TYPE}, or
     * {@link #SPEC_RELATION_TYPE} respectively.
@@ -286,10 +452,6 @@ public enum IdentifierType implements LinkType {
       }
 
       return associatedType;
-   }
-
-   public String getIdentifierPrefix() {
-      return this.identifierPrefix;
    }
 
    /**

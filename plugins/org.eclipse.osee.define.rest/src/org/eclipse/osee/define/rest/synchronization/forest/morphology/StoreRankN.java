@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.define.rest.synchronization.forest.morphology;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -48,32 +46,13 @@ class StoreRankN implements Store {
    private final StoreType storeType;
 
    /**
-    * When the {@link StoreType} is {@link StoreType#PRIMARY} the member saves a {@link Map} to provide the associations
-    * between the lowest rank keys and the {@link GroveThing}s. <code>null</code> is used as a sentinel value to
-    * indicate the {@link Store} does not support unique key mappings.
-    */
-
-   private final Map<Object, GroveThing> uniquePrimaryKeyMap;
-
-   /**
-    * When key validators are provided and the {@link StoreType} is {@link StoreType#PRIMARY} the key validator for the
-    * lowest rank key (highest validator array index) will be saved.
-    */
-
-   private final Predicate<Object> uniqueKeyValidator;
-
-   /**
-    * Creates a new empty store of the specified type and rank. For {@link StoreType#PRIMARY} a map of
-    * {@link GroveThing}s by the lowest rank key (highest key set array index) will also be maintained. For
-    * {@link StoreType#PRIMARY} {@link Store}s the lowest rank key must uniquely identify the {@link GroveThing}.
+    * Creates a new empty store of the specified rank.
     *
     * @param storeType specifies if the store uses primary or native keys.
-    * @param keyValidators an array of {@link Predicate}s used to validate the map keys.
-    * @throws NullPointerException when:
-    * <ul>
-    * <li>the <code>storeType</code> is <code>null</code>, or</li>
-    * <li>the <code>keyValidators</code> array is <code>null</code>.
-    * </ul>
+    * @param primaryKeyValidator the {@link Predicate} used to validate map keys.
+    * @param secondaryKeyValidator the {@link Function} used to validate secondary map keys.
+    * @throws NullPointerException when <code>storeType</code>, <code>primaryKeyValidator</code>, or
+    * <code>secondaryKeyValidator</code> are <code>null</code>.
     */
 
    public StoreRankN(StoreType storeType, int rank, Predicate<Object>[] keyValidators) {
@@ -81,20 +60,12 @@ class StoreRankN implements Store {
       //@formatter:off
       assert
             Objects.nonNull( storeType )
-         && ( storeType.equals( StoreType.NATIVE ) || storeType.equals( StoreType.PRIMARY ) )
-         && ( rank >= 1 )
+         && ( rank >= 0 )
          && ParameterArray.validateNonNullAndSize( keyValidators, rank, rank );
       //@formatter:on
 
       this.storeType = Objects.requireNonNull(storeType);
       this.primaryMap = new RankHashMap<>(null, rank, 1024, 0.75f, keyValidators);
-      if (StoreType.PRIMARY.equals(storeType) && (rank > 1)) {
-         this.uniquePrimaryKeyMap = new HashMap<>(1024, 0.75f);
-         this.uniqueKeyValidator = keyValidators[rank - 1];
-      } else {
-         this.uniquePrimaryKeyMap = null;
-         this.uniqueKeyValidator = null;
-      }
    }
 
    /**
@@ -106,20 +77,7 @@ class StoreRankN implements Store {
    @Override
    public void add(GroveThing groveThing) {
       assert Objects.nonNull(groveThing);
-
-      //@formatter:off
-      this.storeType.getKeys(groveThing).ifPresent
-         (
-            ( keys ) ->
-            {
-               this.primaryMap.associate(groveThing, keys);
-
-               if (Objects.nonNull(this.uniquePrimaryKeyMap)) {
-                  this.uniquePrimaryKeyMap.put(keys[keys.length - 1], groveThing);
-               }
-            }
-         );
-      //@formatter:on
+      this.storeType.getKeys(groveThing).ifPresent(keys -> this.primaryMap.associate(groveThing, keys));
    }
 
    /**
@@ -138,28 +96,6 @@ class StoreRankN implements Store {
    @Override
    public Optional<GroveThing> get(Object... keys) {
       return this.primaryMap.get(keys);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<GroveThing> getByUniqueKey(Object uniqueKey) {
-
-      if (Objects.isNull(this.uniquePrimaryKeyMap)) {
-         return this.primaryMap.get(uniqueKey);
-      }
-
-      //@formatter:off
-      assert
-              Objects.nonNull( uniqueKey )
-           && (    Objects.isNull( this.uniqueKeyValidator )
-                || this.uniqueKeyValidator.test( uniqueKey ) )
-         : "StoreRankN::getByUniqueKey, key failed validation.";
-      //@formatter:on
-
-      return Optional.ofNullable(this.uniquePrimaryKeyMap.get(uniqueKey));
    }
 
    /**

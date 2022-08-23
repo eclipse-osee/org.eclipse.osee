@@ -12,8 +12,8 @@
  **********************************************************************/
 
 /**
- * This is a private package of the <code>org.eclipse.osee.define.rest</code> OSGi bundle which implements the
- * "synchronization" REST API end point for the {@link DefineApplication} JAX-RS {@link javax.ws.rs.core.Application}.
+ * This is a private package of the <code>org.eclipse.osee.define.rest.synchronization</code> OSGi bundle which implements the
+ * the JAX-RS {@link javax.ws.rs.core.Application} for processing requests to the "synchronization" REST API end point.
  * <p>
  * The Synchronization Artifact REST API end point is primarily designed to produce ReqIF artifacts. ReqIF is an OMG
  * industry standard for the exchange of requirements data. The package is designed for creating the necessary parts of
@@ -22,37 +22,25 @@
  * {@link SynchronizationArtifactBuilder} interface. This separation is to accommodate the production of synchronization
  * artifacts with other formats as long as those formats do not require any data from the ORCS API that is not also
  * needed for a ReqIF document.
- * </p>
  * <h2>Terminology</h2>
  * <dl>
- * <dt>Foreign DOM</dt>
- * <dd style="margin-bottom:1em">The Document Object Model that is produced and serialized for the Synchronization
- * Artifact is referred to as the Foreign DOM.</dd>
- * <dt>Foreign Identifier or Foreign Key</dt>
- * <dd style="margin-bottom:1em">A unique identifier for a foreign thing as defined by the Foreign DOM.</dd>
+ * <dt>Thing</dt>
+ * <dd style="margin-bottom:1em">To disambiguate the use of "object" from Java Objects and from ReqIF
+ * SpecificationGroveThing Objects, the classes used as components of the Synchronization Artifact DOM, the native OSEE
+ * DOM, and the foreign (ReqIF) DOM are referred to as "things".</dd>
  * <dt>Grove</dt>
  * <dd style="margin-bottom:1em">A grove refers to a collection of map like or tree like data structures.</dd>
- * <dt>Grove Thing</dt>
- * <dd style="margin-bottom:1em">The Grove Thing is the fundamental unit in the Synchronization Artifact DOM. It
- * encapsulates both a native thing and a foreign thing and the relationships between that Grove Thing and it's related
- * Grove Things in the Synchronization Artifact DOM.</dd>
- * <dt>Native DOM</dt>
- * <dd style="margin-bottom:1em">The OSEE artifacts assessed with the ORCS API to be included in the produced
- * Synchronization Artifact are referred to collectively as the Native DOM.</dd>
- * <dt>Native Identifier or Native Key</dt>
- * <dd style="margin-bottom:1em">A unique identifier for an OSEE thing as defined by OSEE implementation.</dd>
- * <dt>Primary Identifier or Primary Key</dt>
- * <dd style="margin-bottom:1em">A unique identifier assigned to each Grove Thing in the Synchronization Artifact DOM.
- * The Primary Identifier may or may not be used by the foreign DOM.</dd>
  * <dt>Synchronization Artifact DOM</dt>
  * <dd style="margin-bottom:1em">The Synchronization Artifact DOM is an intermediate Document Object Model that is built
  * from the OSEE artifacts to be included in the produced Synchronization Artifact.</dd>
- * <dt>Thing</dt>
- * <dd style="margin-bottom:1em">To disambiguate the use of "object" from Java Objects and from ReqIF SpecObjects, the
- * classes used as components of the Synchronization Artifact DOM, the native OSEE DOM, and the foreign (ReqIF) DOM are
- * referred to as "things".</dd>
+ * <dt>Native DOM</dt>
+ * <dd style="margin-bottom:1em">The OSEE artifacts assessed with the ORCS API to be included in the produced
+ * Synchronization Artifact are referred to collectively as the Native DOM.</dd>
+ * <dt>Foreign DOM</dt>
+ * <dd style="margin-bottom:1em">The ReqIF or other Document Object Model that is produced and serialized for the
+ * Synchronization Artifact is referred to as the Foreign DOM.</dd>
  * </dl>
- * <h2>Export Data Flow</h2>
+ * <h2>Data Flow</h2>
  *
  * <pre>
 Synchronization          +-----------------------------------------+

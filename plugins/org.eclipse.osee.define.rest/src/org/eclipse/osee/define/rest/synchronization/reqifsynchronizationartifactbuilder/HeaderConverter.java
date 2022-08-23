@@ -14,10 +14,10 @@
 package org.eclipse.osee.define.rest.synchronization.reqifsynchronizationartifactbuilder;
 
 import java.util.Objects;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
 import org.eclipse.osee.define.rest.synchronization.UnexpectedGroveThingTypeException;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeHeader;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.rmf.reqif10.ReqIF10Factory;
 import org.eclipse.rmf.reqif10.ReqIFHeader;
 

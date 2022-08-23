@@ -41,7 +41,7 @@ public interface SynchronizationEndpoint {
    @Path("export")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_OCTET_STREAM})
-   InputStream exporter(ExportRequest exportRequest);
+   InputStream export(ExportRequest exportRequest);
 
    /**
     * Makes a request to import a Synchronization Artifact.
@@ -55,10 +55,10 @@ public interface SynchronizationEndpoint {
    @Path("import")
    @Consumes({MediaType.MULTIPART_FORM_DATA})
    void
-      importer
+      importSynchronizationArtifact
          (
-            @Multipart( value = "importRequest", type = MediaType.APPLICATION_JSON )         ImportRequest importRequest,
-            @Multipart( value = "file",          type = MediaType.APPLICATION_OCTET_STREAM ) InputStream   inputStream
+            @Multipart( value = "postRequest", type = MediaType.APPLICATION_JSON )         ImportRequest importRequest,
+            @Multipart( value = "file",        type = MediaType.APPLICATION_OCTET_STREAM ) InputStream   inputStream
          );
    //@formatter:on
 

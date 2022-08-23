@@ -93,7 +93,7 @@ public class ServiceStart implements SynchronizationEndpoint {
 
       this.synchronizationEndpoint = SynchronizationEndpointImpl.create(this.orcsApi);
 
-      this.logger.warn("Synchronization Artifact Service Started - %s", System.getProperty("OseeApplicationServer"));
+      logger.warn("Synchronization Artifact Service Started - %s", System.getProperty("OseeApplicationServer"));
    }
 
    /*
@@ -105,8 +105,8 @@ public class ServiceStart implements SynchronizationEndpoint {
     */
 
    @Override
-   public InputStream exporter(ExportRequest exportRequest) {
-      return this.synchronizationEndpoint.exporter(exportRequest);
+   public InputStream export(ExportRequest exportRequest) {
+      return this.synchronizationEndpoint.export(exportRequest);
    }
 
    /**
@@ -114,8 +114,8 @@ public class ServiceStart implements SynchronizationEndpoint {
     */
 
    @Override
-   public void importer(ImportRequest importRequest, InputStream inputStream) {
-      this.synchronizationEndpoint.importer(importRequest, inputStream);
+   public void importSynchronizationArtifact(ImportRequest importRequest, InputStream inputStream) {
+      this.synchronizationEndpoint.importSynchronizationArtifact(importRequest, inputStream);
    }
 
 }

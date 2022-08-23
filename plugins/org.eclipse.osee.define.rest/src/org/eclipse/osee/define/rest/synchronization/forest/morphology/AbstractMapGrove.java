@@ -17,11 +17,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
 import org.eclipse.osee.define.rest.synchronization.forest.Grove;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThingNotFoundWithNativeKeysException;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 
 /**
@@ -211,15 +211,6 @@ public class AbstractMapGrove implements Grove {
     */
 
    @Override
-   public Optional<GroveThing> getByUniquePrimaryKey(Object uniquePrimaryKey) {
-      return this.primaryStore.getByUniqueKey(uniquePrimaryKey);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
    public IdentifierType getType() {
       assert (this.identifierType != null);
       return this.identifierType;
@@ -231,7 +222,7 @@ public class AbstractMapGrove implements Grove {
 
    @Override
    public int nativeRank() {
-      return Objects.nonNull( this.nativeStore ) ? this.nativeStore.rank() : 0;
+      return this.nativeStore.rank();
    }
 
    /**
@@ -241,15 +232,6 @@ public class AbstractMapGrove implements Grove {
    @Override
    public int rank() {
       return this.primaryStore.rank();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public int size() {
-      return this.primaryStore.size();
    }
 
    /**

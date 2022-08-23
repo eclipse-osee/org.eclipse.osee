@@ -21,40 +21,26 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.osee.define.rest.synchronization.ForeignThingFamily;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierTypeGroup;
 import org.eclipse.osee.define.rest.synchronization.IsSynchronizationArtifactBuilder;
-import org.eclipse.osee.define.rest.synchronization.RelationshipTerminal;
-import org.eclipse.osee.define.rest.synchronization.SimpleForeignThingFamily;
-import org.eclipse.osee.define.rest.synchronization.SpecObjectSliderForeignThingFamily;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationArtifact;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationArtifactBuilder;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationArtifactParseException;
-import org.eclipse.osee.define.rest.synchronization.SynchronizationArtifactSerializationException;
 import org.eclipse.osee.define.rest.synchronization.forest.Grove;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeDataType;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeDataTypeKey;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.jdk.core.util.EnumBiConsumerMap;
-import org.eclipse.osee.framework.jdk.core.util.EnumBiFunctionMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumConsumerMap;
-import org.eclipse.osee.framework.jdk.core.util.EnumFunctionMap;
 import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeDefinitionBoolean;
@@ -81,7 +67,6 @@ import org.eclipse.rmf.reqif10.DatatypeDefinitionReal;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionString;
 import org.eclipse.rmf.reqif10.DatatypeDefinitionXHTML;
 import org.eclipse.rmf.reqif10.EnumValue;
-import org.eclipse.rmf.reqif10.Identifiable;
 import org.eclipse.rmf.reqif10.ReqIF;
 import org.eclipse.rmf.reqif10.ReqIF10Factory;
 import org.eclipse.rmf.reqif10.ReqIFHeader;
@@ -108,15 +93,6 @@ import org.xml.sax.SAXParseException;
 public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtifactBuilder {
 
    /**
-    * A {@link Map} of {@link ForeignThingFamily} objects for the foreign Specifications and foreign Spec Objects
-    * contained in the imported ReqIF by the Specification or Spec Object foreign identifier. This map is generated from
-    * the foreign {@link SpecHierarchy}s contained in each foreign {@link Specification}. This map will not contain any
-    * of the foreign Specter Spec Objects.
-    */
-
-   Map<String, ForeignThingFamily> specObjectMap;
-
-   /**
     * Map of the {@link Consumer} implementations to be returned by the {@link #getConverter} method.
     */
 
@@ -139,403 +115,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
            Map.entry( IdentifierType.SPEC_RELATION,        SpecElementWithAttributesConverter::convert )
          );
    //@formatter:on
-
-   /**
-    * Map of {@link Function} implementations used to extract the all of the foreign things of the type specified by the
-    * map key from the ReqIF DOM. These functions are implemented in a "sunny day" manner an may throw
-    * {@link NullPointException}s when the ReqIF DOM does not contain any things of the specified type. The invocation
-    * of the functions in this map are wrapped in a try/catch the will return an empty stream if any exceptions occur.
-    */
-
-   //@formatter:off
-   @SuppressWarnings("unchecked")
-   private static final EnumFunctionMap<IdentifierType,ReqIFSynchronizationArtifactBuilder,Stream<ForeignThingFamily>> foreignThingsStreamSupplierMap =
-      EnumFunctionMap.ofEntries
-         (
-            IdentifierType.class,
-            Map.entry
-               (
-                  IdentifierType.ATTRIBUTE_DEFINITION,
-                  ( builder ) -> builder.reqIf.getCoreContent().getSpecTypes().stream()
-                                  .flatMap
-                                     (
-                                        ( specType ) -> specType.getSpecAttributes().stream()
-                                                           .map
-                                                              (
-                                                                 ( specAttribute ) ->
-                                                                 {
-                                                                    var specTypeIdentifierType =
-                                                                       ( specType instanceof SpecificationType )
-                                                                          ? IdentifierType.SPECIFICATION_TYPE
-                                                                          : ( specType instanceof SpecObjectType )
-                                                                               ? IdentifierType.SPEC_OBJECT_TYPE
-                                                                               : ( specType instanceof SpecRelationType )
-                                                                                    ? IdentifierType.SPEC_RELATION_TYPE
-                                                                                    : null;
-
-                                                                    return
-                                                                       new SimpleForeignThingFamily
-                                                                              (
-                                                                                 specAttribute,
-                                                                                 new String[]
-                                                                                 {
-                                                                                    ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( specTypeIdentifierType,              builder, specType      ),
-                                                                                    ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.ATTRIBUTE_DEFINITION, builder, specAttribute )
-                                                                                 },
-                                                                                 new IdentifierType[]
-                                                                                 {
-                                                                                    specTypeIdentifierType,
-                                                                                    IdentifierType.ATTRIBUTE_DEFINITION
-                                                                                 }
-                                                                              );
-                                                                 }
-                                                              )
-                                     )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.ATTRIBUTE_VALUE,
-                  ( builder ) -> Arrays.stream
-                                  (
-                                     new Stream []
-                                     {
-                                        builder.reqIf.getCoreContent().getSpecifications().stream()
-                                           .flatMap
-                                              (
-                                                 ( specification ) -> specification.getValues().stream()
-                                                                         .map
-                                                                            (
-                                                                               ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
-                                                                                                                                 (
-                                                                                                                                   attributeValue,
-                                                                                                                                   new String[]
-                                                                                                                                   {
-                                                                                                                                     ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPECIFICATION,   builder, specification  ),
-                                                                                                                                     ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.ATTRIBUTE_VALUE, builder, attributeValue )
-                                                                                                                                   },
-                                                                                                                                   new IdentifierType[]
-                                                                                                                                   {
-                                                                                                                                     IdentifierType.SPECIFICATION,
-                                                                                                                                     IdentifierType.ATTRIBUTE_VALUE
-                                                                                                                                   }
-                                                                                                                                 )
-                                                                            )
-                                              ),
-
-                                        builder.reqIf.getCoreContent().getSpecObjects().stream()
-                                           .flatMap
-                                              (
-                                                 ( specObject ) -> builder.specObjectMap.containsKey( specObject.getIdentifier() )
-                                                                      ? specObject.getValues().stream()
-                                                                           .map
-                                                                              (
-                                                                                ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
-                                                                                                                                  (
-                                                                                                                                    attributeValue,
-                                                                                                                                    new String[]
-                                                                                                                                    {
-                                                                                                                                      ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPEC_OBJECT,     builder, specObject     ),
-                                                                                                                                      ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.ATTRIBUTE_VALUE, builder, attributeValue )
-                                                                                                                                    },
-                                                                                                                                    new IdentifierType[]
-                                                                                                                                    {
-                                                                                                                                      IdentifierType.SPEC_OBJECT,
-                                                                                                                                      IdentifierType.ATTRIBUTE_VALUE
-                                                                                                                                    }
-                                                                                                                                  )
-                                                                            )
-                                                                      : specObject.getValues().stream()
-                                                                           .map
-                                                                              (
-                                                                                ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
-                                                                                                                                  (
-                                                                                                                                    attributeValue,
-                                                                                                                                    new String[]
-                                                                                                                                    {
-                                                                                                                                      ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPECTER_SPEC_OBJECT,     builder, specObject     ),
-                                                                                                                                      ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.ATTRIBUTE_VALUE, builder, attributeValue )
-                                                                                                                                    },
-                                                                                                                                    new IdentifierType[]
-                                                                                                                                    {
-                                                                                                                                      IdentifierType.SPECTER_SPEC_OBJECT,
-                                                                                                                                      IdentifierType.ATTRIBUTE_VALUE
-                                                                                                                                    }
-                                                                                                                                  )
-                                                                              )
-                                              ),
-
-                                        builder.reqIf.getCoreContent().getSpecRelations().stream()
-                                           .flatMap
-                                              (
-                                                 ( specRelation ) -> specRelation.getValues().stream()
-                                                                        .map
-                                                                           (
-                                                                              ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
-                                                                                                                                (
-                                                                                                                                   attributeValue,
-                                                                                                                                   new String[]
-                                                                                                                                   {
-                                                                                                                                     ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPEC_RELATION,   builder, specRelation   ),
-                                                                                                                                     ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.ATTRIBUTE_VALUE, builder, attributeValue )
-                                                                                                                                   },
-                                                                                                                                   new IdentifierType[]
-                                                                                                                                   {
-                                                                                                                                     IdentifierType.SPEC_RELATION,
-                                                                                                                                     IdentifierType.ATTRIBUTE_VALUE
-                                                                                                                                   }
-                                                                                                                                 )
-                                                                           )
-                                              )
-                                     }
-                                  )
-                                  .flatMap( ( inStream ) -> inStream )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.DATA_TYPE_DEFINITION,
-                  ( builder ) -> builder.reqIf.getCoreContent().getDatatypes().stream()
-                                  .map
-                                     (
-                                        ( datatypeDefinition ) -> new SimpleForeignThingFamily
-                                                                         (
-                                                                            datatypeDefinition,
-                                                                            new String[]
-                                                                            {
-                                                                               ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.DATA_TYPE_DEFINITION, builder, datatypeDefinition )
-                                                                            },
-                                                                            new IdentifierType[]
-                                                                            {
-                                                                               IdentifierType.DATA_TYPE_DEFINITION
-                                                                            }
-                                                                         )
-                                     )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.ENUM_VALUE,
-                  ( builder ) -> builder.reqIf.getCoreContent().getDatatypes().stream()
-                                    .filter( ( datatypeDefinition ) -> datatypeDefinition instanceof DatatypeDefinitionEnumeration )
-                                    .flatMap
-                                       (
-                                          ( datatypeDefinitionEnumeration ) ->
-
-                                             ((DatatypeDefinitionEnumeration) datatypeDefinitionEnumeration).getSpecifiedValues().stream()
-                                                .map
-                                                   (
-                                                      ( enumValue ) ->  new SimpleForeignThingFamily
-                                                                               (
-                                                                                 enumValue,
-                                                                                 new String[]
-                                                                                 {
-                                                                                   ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.ENUM_VALUE,      builder, enumValue                     )
-                                                                                 },
-                                                                                 new IdentifierType[]
-                                                                                 {
-                                                                                   IdentifierType.ENUM_VALUE
-                                                                                 }
-                                                                               )
-                                                   )
-                                       )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.HEADER,
-                  ( builder ) -> Stream.empty()
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.SPECIFICATION,
-                  ( builder ) -> builder.reqIf.getCoreContent().getSpecifications().stream()
-                                  .map
-                                     (
-                                        ( specification ) -> new SimpleForeignThingFamily
-                                                                    (
-                                                                       specification,
-                                                                       new String[]
-                                                                       {
-                                                                          ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPECIFICATION, builder, specification )
-                                                                       },
-                                                                       new IdentifierType[]
-                                                                       {
-                                                                          IdentifierType.SPECIFICATION
-                                                                       }
-                                                                    )
-                                     )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.SPECIFICATION_TYPE,
-                  ( builder ) -> builder.reqIf.getCoreContent().getSpecTypes().stream()
-                                  .filter( ( specType ) -> specType instanceof SpecificationType )
-                                  .map
-                                     (
-                                        ( specificationType ) -> new SimpleForeignThingFamily
-                                                                        (
-                                                                           specificationType,
-                                                                           new String[]
-                                                                           {
-                                                                              ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPECIFICATION_TYPE, builder, specificationType )
-                                                                           },
-                                                                           new IdentifierType[]
-                                                                           {
-                                                                              IdentifierType.SPECIFICATION_TYPE
-                                                                           }
-                                                                        )
-                                     )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.SPECTER_SPEC_OBJECT,
-                  ( builder ) ->
-                     builder.reqIf.getCoreContent().getSpecObjects().stream()
-                        .filter
-                           (
-                              ( specObject ) -> !builder.specObjectMap.containsKey( specObject.getIdentifier() )
-                           )
-                        .map
-                           (
-                              ( specterSpecObject ) -> new SimpleForeignThingFamily
-                                                              (
-                                                                 specterSpecObject,
-                                                                 new String[]
-                                                                 {
-                                                                    ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPECTER_SPEC_OBJECT, builder, specterSpecObject )
-                                                                 },
-                                                                 new IdentifierType[]
-                                                                 {
-                                                                    IdentifierType.SPECTER_SPEC_OBJECT
-                                                                 }
-                                                              )
-                           )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.SPEC_OBJECT,
-                  ( builder ) ->
-                     builder.specObjectMap.values().stream()
-               ),
-
-            Map.entry
-            (
-               IdentifierType.SPEC_OBJECT_TYPE,
-               ( builder ) -> builder.reqIf.getCoreContent().getSpecTypes().stream()
-                               .filter( ( specType ) -> specType instanceof SpecObjectType )
-                               .map
-                                  (
-                                     ( specObjectType ) -> new SimpleForeignThingFamily
-                                                                  (
-                                                                     specObjectType,
-                                                                     new String[]
-                                                                     {
-                                                                        ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPEC_OBJECT_TYPE, builder, specObjectType )
-                                                                     },
-                                                                     new IdentifierType[]
-                                                                     {
-                                                                        IdentifierType.SPEC_OBJECT_TYPE
-                                                                     }
-                                                                  )
-                                  )
-            ),
-
-            Map.entry
-               (
-                  IdentifierType.SPEC_RELATION,
-                  ( builder ) -> builder.reqIf.getCoreContent().getSpecRelations().stream()
-                  .map
-                     (
-                        ( specRelation ) -> new SimpleForeignThingFamily
-                                                   (
-                                                      specRelation,
-                                                      new String[]
-                                                      {
-                                                         ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPEC_RELATION, builder, specRelation )
-                                                      },
-                                                      new IdentifierType[]
-                                                      {
-                                                         IdentifierType.SPEC_RELATION
-                                                      }
-                                                    )
-                     )
-               ),
-
-            Map.entry
-               (
-                  IdentifierType.SPEC_RELATION_TYPE,
-                  ( builder ) -> builder.reqIf.getCoreContent().getSpecTypes().stream()
-                                  .filter( ( specType ) -> specType instanceof SpecRelationType )
-                                  .map
-                                     (
-                                        ( specRelationType ) -> new SimpleForeignThingFamily
-                                                                       (
-                                                                          specRelationType,
-                                                                          new String[]
-                                                                             {
-                                                                                ReqIFSynchronizationArtifactBuilder.keyExtractorMap.apply( IdentifierType.SPEC_RELATION_TYPE, builder, specRelationType )
-                                                                             },
-                                                                          new IdentifierType[]
-                                                                             {
-                                                                                IdentifierType.SPEC_RELATION_TYPE
-                                                                             }
-                                                                       )
-                                     )
-               )
-         );
-   //@formatter:on
-
-   /**
-    * Saves an implementation of the {@link BiFunction} interface for extracting the identifier from a foreign thing
-    * implementing the {@link Identifiable} interface.
-    */
-
-   //@formatter:off
-   private static final BiFunction<ReqIFSynchronizationArtifactBuilder,Object,String> identifiableKeyExtractor =
-      new BiFunction<ReqIFSynchronizationArtifactBuilder,Object,String>() {
-         @Override
-         public String apply(ReqIFSynchronizationArtifactBuilder builder, Object identifiable ) {
-            return ((Identifiable) identifiable).getIdentifier();
-         }
-      };
-   //@formatter:on
-
-   /**
-    * A counter for generating identifiers for {@link AttributeValue} things in the ReqIF DOM. {@link AttributeValue}s
-    * are a special case for being the foreign thing in a {@link GroveThing} because {@link AttributeValue} foreign
-    * things do not have identifiers in the ReqIF DOM.
-    */
-
-   private AtomicLong attributeValueCount;
-
-   /**
-    * Saves a map of {@link BiFunction} implementations for extracting or generating foreign identifier strings for each
-    * type of {@link GroveThing}.
-    */
-
-   //@formatter:off
-   private static final EnumBiFunctionMap<IdentifierType,ReqIFSynchronizationArtifactBuilder,Object,String> keyExtractorMap =
-     EnumBiFunctionMap.ofEntries
-        (
-           IdentifierType.class,
-           Map.entry( IdentifierType.ATTRIBUTE_DEFINITION, ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.ATTRIBUTE_VALUE,      ( builder, foreignThing ) -> "AV-" + Long.toString( builder.attributeValueCount.getAndIncrement() ) ),
-           Map.entry( IdentifierType.DATA_TYPE_DEFINITION, ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.ENUM_VALUE,           ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.HEADER,               ( builder, foreignThing ) -> ((ReqIFHeader) foreignThing).getIdentifier() ),
-           Map.entry( IdentifierType.SPECIFICATION,        ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.SPECIFICATION_TYPE,   ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.SPECTER_SPEC_OBJECT,  ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.SPEC_OBJECT,          ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.SPEC_OBJECT_TYPE,     ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.SPEC_RELATION,        ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor ),
-           Map.entry( IdentifierType.SPEC_RELATION_TYPE,   ReqIFSynchronizationArtifactBuilder.identifiableKeyExtractor )
-        );
 
    /**
     * Time {@link ZoneId} constant for "Zulu".
@@ -620,8 +199,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    public ReqIFSynchronizationArtifactBuilder() {
 
-      this.reqIf = null;
-      this.attributeValueCount = null;
+      this.reqIf = ReqIF10Factory.eINSTANCE.createReqIF();
    }
 
    /**
@@ -640,7 +218,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    @Override
    public boolean build(SynchronizationArtifact synchronizationArtifact) {
 
-      this.reqIf = ReqIF10Factory.eINSTANCE.createReqIF();
       var forest = synchronizationArtifact.getForest();
 
       //@formatter:off
@@ -883,7 +460,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
                 * Get the Specification Grove Thing by identifier
                 */
 
-               var specificationGroveThing = specObjectGrove.getByUniquePrimaryKey( specificationIdentifier ).get();
+               var specificationGroveThing = specObjectGrove.getByPrimaryKeys( specificationIdentifier, specificationIdentifier ).get();
 
                /*
                 * Get the ReqIF Specification and children list
@@ -891,13 +468,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
                var reqifSpecification         = (Specification) specificationGroveThing.getForeignThing();
                var reqifSpecificationChildren = reqifSpecification.getChildren();
-
-               assert
-                    reqifSpecificationChildren.size() == 0
-                  : new StringBuilder( 1024 )
-                           .append( "ReqIFSynchronizationArtifactBuilder::build, ReqIF Specification children list is not empty when starting to build hierarchy." ).append( "\n" )
-                           .append( "   Specification: " ).append( specificationIdentifier ).append( "\n" )
-                           .toString();
 
                /*
                 * Set the ReqIF children list for the specification on the SpecificationGroveThing
@@ -913,28 +483,28 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
                   /*
                    * The stream will contain key sets for the specifications as well. Filter out
-                   * the specification key sets so only the Spec Object key sets remain.
+                   * the specifications so only the Spec Objects remain.
                    */
 
-                  .filter( ( keySet ) -> keySet[2].getType().equals( IdentifierType.SPEC_OBJECT ) )
+                  .filter
+                     (
+                        ( keySet ) ->
+                        {
+                           return keySet[2].getType().equals( IdentifierType.SPEC_OBJECT );
+                        }
+                     )
                   .forEach
                      (
                         ( keySet ) ->
                         {
-                           assert
-                                ParameterArray.validateNonNullAndSize( keySet, 3,  3 )
-                              : new StringBuilder( 1024 )
-                                       .append( "ReqIFSynchronizationArtifactBuilder::build, Spec Object key set failed validation while building hierarchy." ).append( "\n" )
-                                       .append( "   Spec Object Key Set:" ).append( Arrays.stream( keySet ).map( Identifier::toString ).collect( Collectors.joining( ", ", "[ ", " ]" ) ) ).append( "\n" )
-                                       .toString();
-
-                           var parentGroveThing     = specObjectGrove.getByUniquePrimaryKey( keySet[ 1 ] ).get();
-                           var specObjectGroveThing = specObjectGrove.getByUniquePrimaryKey( keySet[ 2 ] ).get();
+                           assert ParameterArray.validateNonNullAndSize( keySet, 3,  3);
 
                            /*
-                            * Create a SpecHierarchy and children list for the Spec Object and save
-                            * it in the Grove Thing
+                            * Get the Spec Object GroveThing to be processed
                             */
+
+                           var specObjectIdentifier = keySet[2];
+                           var specObjectGroveThing = specObjectGrove.getByPrimaryKeys( specificationIdentifier, specObjectIdentifier ).get();
 
                            var reqifSpecObject      = (SpecObject) specObjectGroveThing.getForeignThing();
                            var reqifSpecHierarchy   = ReqIF10Factory.eINSTANCE.createSpecHierarchy();
@@ -943,14 +513,29 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
                            reqifSpecHierarchy.setObject( reqifSpecObject );
                            specObjectGroveThing.setForeignHierarchy( reqifChildren );
 
+
                            /*
-                            * The parent Spec Object must have already been processed. Get the ReqIF
-                            * children list for the parent GroveThing. Add the ReqIF Spec Hierarchy
-                            * object for the Spec Object to the parent's ReqIF child list.
+                            *  Get the parent GroveThing. Might be a Spec Object or a Specification
+                            */
+
+                           var parentIdentifier = keySet[1];
+
+                           var parentGroveThing = specificationIdentifier.equals( parentIdentifier )
+                              ? specObjectGrove.getByPrimaryKeys( specificationIdentifier, specificationIdentifier ).get()
+                              : specObjectGrove.getByPrimaryKeys( specificationIdentifier, parentIdentifier ).get();
+
+                           //Parent Spec Object must have already been processed
+
+                           /*
+                            * Get the ReqIF children list for the parent GroveThing.
                             */
 
                            @SuppressWarnings( "unchecked" )
                            var parentReqifChildren = (EList<SpecHierarchy>) parentGroveThing.getForeignHierarchy();
+
+                           /*
+                            * Add the ReqIF Spec Hierarchy object for the Spec Object to the parent's ReqIF child list
+                            */
 
                            parentReqifChildren.add( reqifSpecHierarchy );
 
@@ -969,19 +554,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       this.reqIf.getToolExtensions().add(reqifToolExtension);
 
-      return true;
-   }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @implNote This implementation of the {@link SynchronizationArtifactBuilder} interface does not hold any resources
-    * that need to be released.
-    */
-
-   @Override
-   public void close() {
-      ;
+      return false;
    }
 
    /**
@@ -992,8 +565,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public void deserialize(InputStream inputStream) {
-
-      this.attributeValueCount = new AtomicLong();
 
       var resourceSet = new ResourceSetImpl();
 
@@ -1041,158 +612,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
          throw new SynchronizationArtifactParseException("Failed to get root ReqIF object.");
       }
 
-      this.reqIf = (ReqIF) rootEObject;
-
-      /*
-       * Index the hierarchical information for Spec Objects
-       */
-
-      var specObjects = this.reqIf.getCoreContent().getSpecObjects();
-
-      //@formatter:off
-      this.specObjectMap =
-         this.reqIf.getCoreContent().getSpecifications().stream()
-            .flatMap
-               (
-                  ( specification ) ->
-
-                     Stream.concat
-                        (
-                           Stream.of( new SpecObjectSliderForeignThingFamily( specification ) ),
-                           SpecObjectSliderForeignThingFamily.start( specification ).flatMap( SpecObjectSliderForeignThingFamily::flatten )
-                        )
-               )
-            .collect
-               (
-                  Collectors.toMap
-                     (
-                        ( foreignThingFamily )                       -> ((Identifiable) foreignThingFamily.getChild()).getIdentifier(),
-                        ( foreignThingFamily )                       -> (ForeignThingFamily) foreignThingFamily,
-                        ( foreignThingFamilyA, foreignThingFamilyB ) -> foreignThingFamilyA,
-                        ()                                           -> new LinkedHashMap<String,ForeignThingFamily>( specObjects.size() * 5 )
-                     )
-               );
-       //@formatter:on
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<String> getAttributeDefinition(GroveThing attributeValueGroveThing) {
-      return AttributeValueUtils.getAttributeDefinitionIdentifier(
-         (AttributeValue) attributeValueGroveThing.getForeignThing());
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Stream<String> getAttributeDefinitions(GroveThing specTypeGroveThing) {
-      return ((SpecType) specTypeGroveThing.getForeignThing()).getSpecAttributes().stream().map(
-         AttributeDefinition::getIdentifier);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<String> getDatatypeDefinition(GroveThing attributeDefinitionGroveThing) {
-      return AttributeDefinitionUtils.getDatatypeDefinitionIdentifier(
-         (AttributeDefinition) attributeDefinitionGroveThing.getForeignThing());
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Stream<String> getEnumValues(GroveThing datatypeDefinitionGroveThing) {
-      var datatypeDefinition = (DatatypeDefinition) datatypeDefinitionGroveThing.getForeignThing();
-
-      if (!(datatypeDefinition instanceof DatatypeDefinitionEnumeration)) {
-         return Stream.empty();
-      }
-
-      return ((DatatypeDefinitionEnumeration) datatypeDefinition).getSpecifiedValues().stream().map(
-         Identifiable::getIdentifier);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Stream<ForeignThingFamily> getForeignThings(IdentifierType identifierType) {
-      try {
-         return ReqIFSynchronizationArtifactBuilder.foreignThingsStreamSupplierMap.apply(identifierType, this);
-      } catch (Exception e) {
-         /*
-          * An exception may occur when the ReqIF DOM is incomplete or does not contain any things of the requested
-          * type. Eat the exception and return an empty stream.
-          */
-         return Stream.empty();
-      }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<String> getSpecificationType(GroveThing specificationGroveThing) {
-      return Optional.ofNullable(((Specification) specificationGroveThing.getForeignThing()).getType().getIdentifier());
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing, RelationshipTerminal relationshipTerminal) {
-      try {
-         var specRelation = (SpecRelation) specRelationGroveThing.getForeignThing();
-         //@formatter:off
-         var specObjectIdentifierString =
-                  relationshipTerminal.equals( RelationshipTerminal.SOURCE )
-                     ? specRelation.getSource().getIdentifier()
-                     : specRelation.getTarget().getIdentifier();
-
-         return Optional.ofNullable( this.specObjectMap.get( specObjectIdentifierString ) );
-         //@formatter:on
-      } catch (Exception e) {
-         return Optional.empty();
-      }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<String> getSpecObjectType(GroveThing specObjectGroveThing) {
-      return Optional.ofNullable(((SpecObject) specObjectGroveThing.getForeignThing()).getType().getIdentifier());
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<String> getSpecRelationType(GroveThing specRelationGroveThing) {
-      return Optional.ofNullable(((SpecRelation) specRelationGroveThing.getForeignThing()).getType().getIdentifier());
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public boolean isEnumerated(GroveThing attributeValueGroveThing) {
-      return attributeValueGroveThing.getForeignThing() instanceof AttributeValueEnumeration;
+      var reqifTestDocument = (ReqIF) rootEObject;
    }
 
    /**
@@ -1220,11 +640,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       var uri = URI.createFileURI("o.reqif");
 
       Resource resource = resourceSet.createResource(uri);
-
-      if (Objects.isNull(resource)) {
-         throw new SynchronizationArtifactSerializationException("Failed to create ECore Resource for serialization.");
-      }
-
       resource.getContents().add(this.reqIf);
 
       var outputStream = new ByteArrayOutputStream() {
@@ -1236,7 +651,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       try {
          resource.save(outputStream, null);
       } catch (Exception e) {
-         throw new SynchronizationArtifactSerializationException("Resource Save Failed", e);
+         throw new RuntimeException("Resource Save Failed", e);
       }
 
       var inputStream = new ByteArrayInputStream(outputStream.getBuffer(), 0, outputStream.size());
