@@ -159,7 +159,8 @@ public class UserServiceImpl implements UserService {
 
    private synchronized void ensureLoaded() {
       if (loginIdToUser.isEmpty()) {
-         for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).asArtifacts()) {
+         for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).follow(
+            CoreRelationTypes.Users_Artifact).asArtifacts()) {
             UserToken user = toUser(userArtifact);
 
             if (user.isValid() && !user.getIdString().isEmpty()) {
