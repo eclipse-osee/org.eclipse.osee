@@ -11,21 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.synchronization;
+package org.eclipse.osee.ats.ide.integration.tests.publishing;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * Test suite for the Synchronization REST API end point.
+ * Test suite for the Publishing REST API end point.
  *
  * @author Loren K. Ashley
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SynchronizationEndpointTest.class, ReqifRelationships.class})
+@Suite.SuiteClasses({PublishingSharedArtifactsFolderTest.class})
 
-public class SynchronizationTestSuite {
+public class PublishingTestSuite {
    // Test Suite
 }
 

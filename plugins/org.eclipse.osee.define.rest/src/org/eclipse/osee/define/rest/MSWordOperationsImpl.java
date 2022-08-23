@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -40,7 +41,13 @@ import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.define.rest.publishing.MSWordPreviewPublisher;
 import org.eclipse.osee.define.rest.publishing.MSWordTemplatePublisher;
+import org.eclipse.osee.define.rest.publishing.PublishingErrorLog;
+import org.eclipse.osee.define.rest.publishing.PublishingSharedArtifactsFolder;
+import org.eclipse.osee.define.rest.publishing.PublishingUtils;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.ReportConstants;
@@ -207,4 +214,55 @@ public class MSWordOperationsImpl implements MSWordOperations {
       builder.header("Content-Disposition", "attachment; filename=" + fileName);
       return builder.build();
    }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws BadRequestException {@inheritDoc}
+    */
+
+   @Override
+   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
+
+      var publishingUtils = new PublishingUtils(this.orcsApi);
+      var publishingErrorLog = new PublishingErrorLog();
+
+      //@formatter:off
+      var publishingSharedArtifactsFolder =
+         ArtifactTypeToken.SENTINEL.equals( artifactType )
+            ? PublishingSharedArtifactsFolder.create
+                 (
+                   publishingUtils,
+                   publishingErrorLog,
+                   BranchId.create( branch.getId(), view ),
+                   "Shared Artifacts Folder",
+                   ArtifactToken.valueOf( sharedFolder.getId(), branch ),
+                   attributeType
+                 )
+            : PublishingSharedArtifactsFolder.create
+                    (
+                      publishingUtils,
+                      publishingErrorLog,
+                      BranchId.create( branch.getId(), view ),
+                      "Shared Artifacts Folder",
+                      ArtifactToken.valueOf( sharedFolder.getId(), branch ),
+                      artifactType,
+                      attributeType
+                    );
+      //@formatter:on
+
+      var sharedArtifacts = publishingSharedArtifactsFolder.getSharedArtifacts(attributeValue);
+
+      if (publishingErrorLog.size() > 0) {
+         var message = new StringBuilder(1024);
+         publishingErrorLog.publishErrorLog(message);
+         throw new BadRequestException(message.toString(), Response.status(Response.Status.BAD_REQUEST).build());
+      }
+
+      @SuppressWarnings("unchecked")
+      var sharedArtifactTokens = (List<ArtifactToken>) (Object) sharedArtifacts;
+
+      return sharedArtifactTokens;
+   }
+
 }

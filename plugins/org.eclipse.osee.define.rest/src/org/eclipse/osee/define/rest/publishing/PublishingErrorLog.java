@@ -22,10 +22,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.WordMLWriter;
 
 /**
- * @author Loren K. Ashley
- */
-
-/**
  * Encapsulates a log of {@link PublishingArtifactError} objects that can be inserted in to the document being
  * published.
  *
@@ -93,6 +89,36 @@ public class PublishingErrorLog {
    }
 
    /**
+    * Publishes the error log to the provided {@link StringBuilder} in a text list format. The error log is not cleared.
+    *
+    * @param stringBuilder the {@link StringBuilder} to publish the error log to.
+    */
+
+   public void publishErrorLog(StringBuilder stringBuilder) {
+
+      if (this.publishingErrors.isEmpty()) {
+         return;
+      }
+
+      var count = 0;
+
+      for (PublishingArtifactError error : this.publishingErrors) {
+
+         //@formatter:off
+         stringBuilder
+            .append( count++ ).append( ":" ).append( "\n" )
+            .append( "   Artifact Id:   " ).append( error.getArtId()             ).append( "\n" )
+            .append( "   Artifact Name: " ).append( error.getArtName()           ).append( "\n" )
+            .append( "   Artifact Type: " ).append( error.getArtType().getName() ).append( "\n" )
+            .append( "   Error:         " ).append( error.getErrorDescription()  ).append( "\n" )
+            .append( "\n" )
+            ;
+         //@formatter:on
+      }
+
+   }
+
+   /**
     * Publishes the error log to the provided {@link WordMLWriter} in a table format. The error log is not cleared.
     *
     * @param wordMl the {@link WordMLWriter} to publish the error log to.
@@ -112,6 +138,16 @@ public class PublishingErrorLog {
       }
 
       wordMl.endErrorLog();
+   }
+
+   /**
+    * Gets the number of errors on the publishing error log.
+    *
+    * @return the number of errors on the log.
+    */
+
+   public int size() {
+      return this.publishingErrors.size();
    }
 
 }
