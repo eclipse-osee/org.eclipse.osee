@@ -86,7 +86,7 @@ public final class DefineApplication extends Application {
               new GitEndpointImpl(activityLog, orcsApi, defineApi),
               new DataRightsSwReqAndCodeResource(activityLog, resourceRegistry, orcsApi),
               new DataRightsEndpointImpl(defineApi),
-              new RenderEndpointImpl(defineApi),
+              new RenderEndpointImpl(defineApi,orcsApi),
               new DefineBranchEndpointImpl(jdbcClient, orcsApi),
               new ImportEndpointImpl(defineApi),
               SynchronizationEndpointImpl.create(this.orcsApi)

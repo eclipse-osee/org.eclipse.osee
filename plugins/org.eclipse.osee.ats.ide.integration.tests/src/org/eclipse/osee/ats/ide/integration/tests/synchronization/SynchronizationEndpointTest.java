@@ -100,6 +100,7 @@ import org.junit.rules.TestRule;
  *
  * @author Loren K. Ashley
  */
+
 public class SynchronizationEndpointTest {
    /**
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.

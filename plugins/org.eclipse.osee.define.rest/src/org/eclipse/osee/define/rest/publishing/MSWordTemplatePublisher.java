@@ -288,7 +288,7 @@ public class MSWordTemplatePublisher {
    protected String setUpTemplateWithOptions(ArtifactId templateArtId) {
       String template = "", options = "";
       ArtifactReadable templateArtifact;
-      if (templateArtId != ArtifactId.SENTINEL) {
+      if (!templateArtId.equals(ArtifactId.SENTINEL)) {
          templateArtifact = orcsApi.getQueryFactory().fromBranch(COMMON).andId(templateArtId).getArtifact();
          template = templateArtifact.getSoleAttributeAsString(WholeWordContent, "");
          options = templateArtifact.getSoleAttributeAsString(RendererOptions, "");
