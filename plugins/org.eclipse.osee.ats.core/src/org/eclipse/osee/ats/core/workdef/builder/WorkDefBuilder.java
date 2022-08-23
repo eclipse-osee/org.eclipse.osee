@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -239,5 +240,12 @@ public class WorkDefBuilder {
 
    public void andPointsAttributeType(AttributeTypeToken pointsAttrType) {
       workDef.setPointsAttrType(pointsAttrType);
+   }
+
+   public WorkDefBuilder andPriorities(Priorities... priorities) {
+      for (Priorities type : priorities) {
+         workDef.getPriorities().add(type);
+      }
+      return this;
    }
 }

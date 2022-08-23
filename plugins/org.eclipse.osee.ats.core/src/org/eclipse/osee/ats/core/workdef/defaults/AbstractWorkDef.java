@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.core.workdef.defaults;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
@@ -23,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.ChangeTypeWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.PriorityWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -65,8 +65,7 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
       return new CompositeLayoutItem(11, //
          new ChangeTypeWidgetDefinition(true).andRequired(), //
          new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(AtsAttributeTypes.Priority, "XHyperlinkLabelValueSelectionDam", REQUIRED_FOR_TRANSITION,
-            AUTO_SAVE), //
+         new PriorityWidgetDefinition(true), //
          new WidgetDefinition("   ", "XLabel"), //
          new WidgetDefinition(pointsAttrType, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
          new WidgetDefinition("   ", "XLabel"), //

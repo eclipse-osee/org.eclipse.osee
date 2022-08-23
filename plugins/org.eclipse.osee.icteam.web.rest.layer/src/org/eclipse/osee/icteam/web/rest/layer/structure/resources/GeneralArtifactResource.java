@@ -14,7 +14,6 @@ package org.eclipse.osee.icteam.web.rest.layer.structure.resources;
 
 import flexjson.JSONSerializer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +27,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.AgileChangeTypeEnum;
-import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType.PriorityEnum;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.icteam.common.artifact.interfaces.ITransferableArtifact;
@@ -76,10 +75,7 @@ public class GeneralArtifactResource extends AbstractConfigResource {
                valuesAsOrderedStringSet.add(changeTypeEnum.getName());
             }
          } else if (AtsAttributeTypes.Priority.getId() == Long.parseLong(attrName)) {
-            Collection<PriorityEnum> enumValues = AtsAttributeTypes.Priority.getEnumValues();
-            for (PriorityEnum changeTypeEnum : enumValues) {
-               valuesAsOrderedStringSet.add(changeTypeEnum.getName());
-            }
+            valuesAsOrderedStringSet.addAll(Priorities.getValuesStrs());
          }
          List<ITransferableArtifact> list = new ArrayList<ITransferableArtifact>();
          for (String string : valuesAsOrderedStringSet) {

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -165,5 +166,9 @@ public interface IAtsWorkItemService {
    List<ChangeTypes> getChangeTypeOptions(IAtsObject atsObject);
 
    Pair<Boolean, Collection<ChangeTypes>> hasSameChangeTypes(Collection<IAtsTeamWorkflow> teamWfs);
+
+   Pair<Boolean, Collection<Priorities>> hasSamePriorities(Collection<IAtsTeamWorkflow> teamWfs);
+
+   List<Priorities> getPrioritiesOptions(IAtsObject atsObject);
 
 }

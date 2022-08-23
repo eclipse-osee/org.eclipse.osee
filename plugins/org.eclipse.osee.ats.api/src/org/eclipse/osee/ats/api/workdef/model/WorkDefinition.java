@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -48,6 +49,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private final List<WorkDefOption> options = new ArrayList<>();
    private final List<ChangeTypes> changeTypes = new ArrayList<>();
    private AttributeTypeToken pointsAttrType = AtsAttributeTypes.PointsNumeric;
+   private final List<Priorities> priorities = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -198,5 +200,9 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public void setPointsAttrType(AttributeTypeToken pointsAttrType) {
       this.pointsAttrType = pointsAttrType;
+   }
+
+   public List<Priorities> getPriorities() {
+      return priorities;
    }
 }

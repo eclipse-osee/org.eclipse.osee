@@ -30,12 +30,12 @@ public class ChangeTypes extends OseeEnum {
    private static final List<ChangeTypes> values = new ArrayList<>();
 
    public static final ChangeTypes None = new ChangeTypes("None");
-   public static final ChangeTypes Support = new ChangeTypes("Support", "");;
-   public static final ChangeTypes Problem = new ChangeTypes("Problem", "");;
-   public static final ChangeTypes Improvement = new ChangeTypes("Improvement", "");;
-   public static final ChangeTypes Refinement = new ChangeTypes("Refinement", "Small change");;
-   public static final ChangeTypes InitialDev = new ChangeTypes("Initial Dev", "");;
-   public static final ChangeTypes Fix = new ChangeTypes("Fix", "");;
+   public static final ChangeTypes Support = new ChangeTypes("Support", "");
+   public static final ChangeTypes Problem = new ChangeTypes("Problem", "");
+   public static final ChangeTypes Improvement = new ChangeTypes("Improvement", "");
+   public static final ChangeTypes Refinement = new ChangeTypes("Refinement", "Small change");
+   public static final ChangeTypes InitialDev = new ChangeTypes("Initial Dev", "");
+   public static final ChangeTypes Fix = new ChangeTypes("Fix", "");
    public static final List<ChangeTypes> DEFAULT_CHANGE_TYPES =
       Arrays.asList(ChangeTypes.Improvement, ChangeTypes.Problem, ChangeTypes.Refinement, ChangeTypes.Support);
 

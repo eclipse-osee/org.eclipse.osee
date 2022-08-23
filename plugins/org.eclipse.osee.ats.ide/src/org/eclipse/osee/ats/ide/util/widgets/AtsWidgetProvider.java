@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.column.PriorityColumn;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintBurndownButton;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintBurnupButton;
 import org.eclipse.osee.ats.ide.agile.XOpenSprintDataTableButton;
@@ -157,6 +159,21 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
             return new XHyperlinkChangeTypeSelectionDam(name, types.toArray(new ChangeTypes[types.size()]));
          } else if (widgetName.equals(XHyperlinkChangeTypeSelection.WIDGET_ID)) {
             return new XHyperlinkChangeTypeSelection(name, types.toArray(new ChangeTypes[types.size()]));
+         }
+      } else if (widgetName.equals(XHyperlinkPrioritySelection.WIDGET_ID) || widgetName.equals(
+         XHyperlinkPrioritySelectionDam.WIDGET_ID)) {
+         String priorityTypesStr = (String) rItem.getParameters().get(Priorities.PRIORITY_PARAM_KEY);
+         List<Priorities> types = new ArrayList<>();
+         if (Strings.isValid(priorityTypesStr)) {
+            for (String priStr : priorityTypesStr.split(";")) {
+               Priorities cType = PriorityColumn.getPriority(priStr, AtsApiService.get());
+               types.add(cType);
+            }
+         }
+         if (widgetName.equals(XHyperlinkPrioritySelectionDam.WIDGET_ID)) {
+            return new XHyperlinkPrioritySelectionDam(name, types.toArray(new Priorities[types.size()]));
+         } else if (widgetName.equals(XHyperlinkPrioritySelection.WIDGET_ID)) {
+            return new XHyperlinkPrioritySelection(name, types.toArray(new Priorities[types.size()]));
          }
       }
       return toReturn;

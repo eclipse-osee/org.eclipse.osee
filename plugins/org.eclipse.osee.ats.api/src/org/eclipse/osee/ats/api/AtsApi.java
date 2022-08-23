@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
@@ -49,7 +48,6 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
-import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -239,7 +237,5 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    default public void setStaticIdValue(IAtsWorkItem workItem, String key, String value, IAtsChangeSet changes) {
       getAttributeResolver().setStaticIdValue(workItem, key, value, changes);
    }
-
-   List<IAtsDatabaseTypeProvider> getDatabaseTypeProviders();
 
 }

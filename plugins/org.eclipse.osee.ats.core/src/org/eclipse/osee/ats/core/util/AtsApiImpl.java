@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
-import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -134,7 +133,6 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsLogFactory logFactory;
    protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
    protected IAtsNotificationService notificationService;
-   protected List<IAtsDatabaseTypeProvider> databaseTypeProviders = new LinkedList<>();
    protected IAtsAccessService atsAccessService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
@@ -177,15 +175,6 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
-   }
-
-   public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider) {
-      databaseTypeProviders.add(provider);
-   }
-
-   @Override
-   public List<IAtsDatabaseTypeProvider> getDatabaseTypeProviders() {
-      return databaseTypeProviders;
    }
 
    public void start() {

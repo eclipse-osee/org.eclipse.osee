@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
 import org.eclipse.osee.ats.core.column.ParentTitleColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
+import org.eclipse.osee.ats.core.column.PriorityColumn;
 import org.eclipse.osee.ats.core.column.SprintOrderColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TargetedVersionColumn;
@@ -115,8 +116,6 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.NotesColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.PercentCompleteWorkflowColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.PercentCompleteWorkflowColumn, atsApi);
-         } else if (id.equals(AtsColumnTokens.PriorityColumn.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnTokens.PriorityColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.UnPlannedWorkColumn.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnTokens.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnTokens.CrashOrBlankDisplayColumn.getId())) {
@@ -174,6 +173,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new CancelledReasonDetailsColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.ChangeTypeColumn.getId())) {
             column = new ChangeTypeColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.PriorityColumn.getId())) {
+            column = new PriorityColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.CompletedByColumn.getId())) {
             column = new CompletedByColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.CompletedCancelledByColumn.getId())) {

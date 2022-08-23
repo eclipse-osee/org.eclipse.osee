@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
-import org.eclipse.osee.ats.ide.column.PriorityColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
+import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;

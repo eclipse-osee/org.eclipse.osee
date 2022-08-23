@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.workflow.chgtype;
+package org.eclipse.osee.ats.ide.workflow.priority;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -34,21 +34,21 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeDialog extends FilteredListDialog<ChangeTypes> {
+public class PriorityDialog extends FilteredListDialog<Priorities> {
 
    private final Collection<IAtsTeamWorkflow> teamWfs;
    private boolean clearAllowed = true;
    private Composite container;
-   private ChangeTypes initialChgType = null;
+   private Priorities initialPriority = null;
 
-   public ChangeTypeDialog(Collection<IAtsTeamWorkflow> teamWfs, List<ChangeTypes> changeTypes) {
-      super("Select Change Type", "Select Change Type", new ChangeLabelProvider());
+   public PriorityDialog(Collection<IAtsTeamWorkflow> teamWfs, List<Priorities> priorities) {
+      super("Select Priority", "Select Priority", new PriorityLabelProvider());
       if (teamWfs != null) {
          this.teamWfs = teamWfs;
          setInput(getValues());
       } else {
          this.teamWfs = null;
-         setInput(changeTypes);
+         setInput(priorities);
       }
    }
 
@@ -58,8 +58,8 @@ public class ChangeTypeDialog extends FilteredListDialog<ChangeTypes> {
       this.container = container;
       Control control = super.createDialogArea(container);
 
-      if (initialChgType != null) {
-         super.setSelection(Arrays.asList(initialChgType).toArray());
+      if (initialPriority != null) {
+         super.setSelection(Arrays.asList(initialPriority).toArray());
       }
 
       if (clearAllowed) {
@@ -104,26 +104,25 @@ public class ChangeTypeDialog extends FilteredListDialog<ChangeTypes> {
       this.clearAllowed = clearAllowed;
    }
 
-   private Collection<ChangeTypes> getValues() {
+   private Collection<Priorities> getValues() {
 
-      Pair<Boolean, Collection<ChangeTypes>> pair =
-         AtsApiService.get().getWorkItemService().hasSameChangeTypes(teamWfs);
-      boolean sameChangeTypes = pair.getFirst();
-      Collection<ChangeTypes> changeTypes = pair.getSecond();
+      Pair<Boolean, Collection<Priorities>> pair = AtsApiService.get().getWorkItemService().hasSamePriorities(teamWfs);
+      boolean samePriorities = pair.getFirst();
+      Collection<Priorities> changeTypes = pair.getSecond();
 
-      if (!sameChangeTypes) {
-         AWorkbench.popup("Can not change Change Type for teams with different Change Types");
+      if (!samePriorities) {
+         AWorkbench.popup("Can not change Priority for teams with different Priorities");
          return java.util.Collections.emptyList();
       }
 
       return changeTypes;
    }
 
-   public void setSelected(ChangeTypes changeType) {
+   public void setSelected(Priorities priorities) {
       if (Widgets.isAccessible(container)) {
-         super.setSelection(Arrays.asList(changeType).toArray());
+         super.setSelection(Arrays.asList(priorities).toArray());
       } else {
-         initialChgType = changeType;
+         initialPriority = priorities;
       }
    }
 }

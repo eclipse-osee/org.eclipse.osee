@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.AgileChangeTypeEnum;
-import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType.PriorityEnum;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -1562,10 +1562,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
 
          Set<String> valuesAsOrderedStringSetPriority = new HashSet<>();
 
-         Collection<PriorityEnum> enumValues2 = AtsAttributeTypes.Priority.getEnumValues();
-         for (PriorityEnum changeTypeEnum : enumValues2) {
-            valuesAsOrderedStringSetPriority.add(changeTypeEnum.getName());
-         }
+         valuesAsOrderedStringSetPriority.addAll(Priorities.getValuesStrs());
          priorityTypeList.addAll(valuesAsOrderedStringSetPriority);
 
          List<String> nextStateList = getNextStateList(guid);

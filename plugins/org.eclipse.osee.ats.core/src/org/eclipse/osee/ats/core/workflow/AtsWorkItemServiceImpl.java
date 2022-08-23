@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -694,5 +695,62 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return new Pair<Boolean, Collection<ChangeTypes>>(sameChangeTypes, changeTypes);
+   }
+
+   @Override
+   public List<Priorities> getPrioritiesOptions(IAtsObject atsObject) {
+
+      WorkDefinition workDef = null;
+
+      if (atsObject instanceof IAtsActionableItem) {
+         IAtsActionableItem ai = (IAtsActionableItem) atsObject;
+         IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
+         ArtifactId workDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
+            AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+         if (workDefId.isValid()) {
+            workDef = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
+         }
+      } else if (atsObject instanceof IAtsTeamDefinition) {
+         IAtsTeamDefinition teamDef = (IAtsTeamDefinition) atsObject;
+         ArtifactId workDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(teamDef,
+            AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+         if (workDefId.isValid()) {
+            workDef = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
+         }
+      } else if (atsObject instanceof IAtsTeamWorkflow) {
+         workDef = ((IAtsTeamWorkflow) atsObject).getWorkDefinition();
+      }
+
+      List<Priorities> priorities = null;
+      if (workDef != null) {
+         List<Priorities> pris = workDef.getPriorities();
+         if (!pris.isEmpty()) {
+            priorities = pris;
+         }
+      }
+
+      if (priorities == null) {
+         priorities = Priorities.DEFAULT_PRIORITIES;
+      }
+
+      return priorities;
+   }
+
+   @Override
+   public Pair<Boolean, Collection<Priorities>> hasSamePriorities(Collection<IAtsTeamWorkflow> teamWfs) {
+      boolean samePriorities = true;
+      Collection<Priorities> priorities = null;
+      for (IAtsTeamWorkflow teamWf : teamWfs) {
+         Collection<Priorities> pris = getPrioritiesOptions(teamWf);
+         if (priorities == null) {
+            priorities = pris;
+         } else {
+            if (!Collections.isEqual(priorities, pris)) {
+               samePriorities = false;
+               break;
+            }
+         }
+      }
+      return new Pair<Boolean, Collection<Priorities>>(samePriorities, priorities);
    }
 }

@@ -21,10 +21,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -34,10 +35,12 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -50,7 +53,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -60,14 +65,19 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class CreateActionFromTaskBlam extends AbstractBlam {
 
    private final static String TASKS = "Tasks (drop here)";
-   private final static String TITLE = "New Title (blank for same title)";
+   private final static String TITLE = "Title";
    private final static String ACTIONABLE_ITEMS = "Actionable Item(s)";
    private final static String CHANGE_TYPE = "Change Type";
    private final static String PRIORITY = "Priority";
    private Collection<TaskArtifact> taskArtifacts;
+   private final AtsApi atsApi;
+   private XHyperlinkChangeTypeSelection changeTypeWidget;
+   private XHyperlinkPrioritySelection priorityWidget;
+   private XHyperlabelActionableItemSelection aiWidget;
 
    public CreateActionFromTaskBlam() {
       // do nothing
+      atsApi = AtsApiService.get();
    }
 
    @Override
@@ -80,14 +90,14 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                String title = variableMap.getString(TITLE);
                Collection<IAtsActionableItem> aiasArts =
                   variableMap.getCollection(IAtsActionableItem.class, ACTIONABLE_ITEMS);
-               String changeTypeStr = variableMap.getString(CHANGE_TYPE);
-               if (changeTypeStr == null || changeTypeStr.equals("--select--")) {
+               ChangeTypes changeType = (ChangeTypes) variableMap.getValue(CHANGE_TYPE);
+               if (changeType == null) {
                   AWorkbench.popup("ERROR", "Must select a Change Type");
                   return;
                }
-               ChangeTypes changeType = ChangeTypes.valueOf(changeTypeStr);
-               String priority = variableMap.getString(PRIORITY);
-               if (priority == null || priority.equals("--select--")) {
+
+               Priorities priority = (Priorities) variableMap.getValue(PRIORITY);
+               if (priority == null) {
                   AWorkbench.popup("ERROR", "Must select a Priority");
                   return;
                }
@@ -109,7 +119,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                   AtsUtilClient.setEmailEnabled(false);
                   Collection<TaskArtifact> taskArts = Collections.castAll(artifacts);
                   Collection<IAtsActionableItem> aias = Collections.castAll(aiasArts);
-                  handleCreateActions(taskArts, title, aias, changeType, priority, monitor);
+                  handleCreateActions(taskArts, title, aias, changeType, priority.getName(), monitor);
                } catch (Exception ex) {
                   log(ex);
                } finally {
@@ -125,15 +135,15 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeTypes changeType, String priority, IProgressMonitor monitor) {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Actions from Tasks");
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
          String useTitle = title;
          if (!Strings.isValid(useTitle)) {
             useTitle = task.getName();
          }
-         ActionResult result = AtsApiService.get().getActionService().createAction(
-            AtsApiService.get().getUserService().getCurrentUser(), useTitle, getDescription(task), changeType, priority,
-            false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
+         ActionResult result = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(),
+            useTitle, getDescription(task), changeType, priority, false, null, aias, new Date(),
+            atsApi.getUserService().getCurrentUser(), null, changes);
 
          for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             newTeamArts.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
@@ -163,24 +173,40 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       if (xWidget.getLabel().equals(TASKS) && taskArtifacts != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
          viewer.setInput(taskArtifacts);
+      } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
+         changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
+      } else if (xWidget.getLabel().equals(PRIORITY)) {
+         priorityWidget = (XHyperlinkPrioritySelection) xWidget;
+      } else if (xWidget.getLabel().equals(ACTIONABLE_ITEMS)) {
+         aiWidget = (XHyperlabelActionableItemSelection) xWidget;
+         aiWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               Collection<IAtsActionableItem> ais = aiWidget.getSelectedActionableItems();
+               if (!ais.isEmpty()) {
+                  IAtsActionableItem ai = ais.iterator().next();
+
+                  List<ChangeTypes> changeTypeOptions = atsApi.getWorkItemService().getChangeTypeOptions(ai);
+                  changeTypeWidget.setSelectable(changeTypeOptions);
+
+                  List<Priorities> priorityOptions = atsApi.getWorkItemService().getPrioritiesOptions(ai);
+                  priorityWidget.setSelectable(priorityOptions);
+               }
+            }
+         });
       }
    }
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TASKS + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XHyperlabelActionableItemSelection\" displayName=\"" + ACTIONABLE_ITEMS + "\" horizontalLabel=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-         //
-         "<XWidget displayName=\"" + CHANGE_TYPE + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-            ChangeTypes.getDefaultValuesStrs()) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
-         //
-         "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-            AtsAttributeTypes.Priority.getEnumStrValues()) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
-         //
-         "</xWidgets>";
+   public List<XWidgetRendererItem> getXWidgetItems() {
+      XWidgetBuilder wb = new XWidgetBuilder();
+      wb.andWidget(TASKS, "XListDropViewer");
+      wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
+      wb.andXText(TITLE).andDefault(getDefaultTitle()).andRequired().endWidget();
+      wb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
+      wb.andPriority().andRequired().endWidget();
+      return wb.getItems();
    }
 
    /**
@@ -197,7 +223,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
             }
          }
       }
-      return AXml.textToXml(title);
+      return title;
    }
 
    @Override

@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
@@ -47,13 +45,6 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
    @Test
    public void testGetValidOriginators() throws Exception {
       getFirstAndCountGreater("ats/attr/Originator", 6);
-   }
-
-   @Test
-   public void testGetValidPriority() throws Exception {
-      getFirstAndCount(AttributeKey.Priority.getUrl(), 5);
-      Object object = getFirstAndCount("ats/attr/" + AtsAttributeTypes.Priority.getName(), 5);
-      Assert.assertEquals("1", object);
    }
 
 }
