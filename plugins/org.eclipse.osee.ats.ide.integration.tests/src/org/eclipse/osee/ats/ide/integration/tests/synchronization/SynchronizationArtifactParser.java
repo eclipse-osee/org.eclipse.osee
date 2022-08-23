@@ -553,15 +553,15 @@ class SynchronizationArtifactParser {
                 );
       //@formatter:on
 
-      try (var reqIfInputStream = this.synchronizationEndpoint.exporter(exportRequest)) {
+      try (var reqIfInputStream = this.synchronizationEndpoint.export(exportRequest)) {
 
          try {
-            this.resource.load(reqIfInputStream, null);
+            resource.load(reqIfInputStream, null);
          } catch (Exception e) {
             throw new RuntimeException("Resource Load Failed", e);
          }
 
-         var eObjectList = this.resource.getContents();
+         var eObjectList = resource.getContents();
 
          if (Objects.isNull(eObjectList)) {
             throw new RuntimeException("EObjectList is null.");
@@ -587,8 +587,8 @@ class SynchronizationArtifactParser {
 
       } catch (Exception e) {
 
-         if (this.resource.isLoaded()) {
-            this.resource.unload();
+         if (resource.isLoaded()) {
+            resource.unload();
          }
 
          this.reqifTestDocument = null;

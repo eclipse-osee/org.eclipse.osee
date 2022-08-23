@@ -13,33 +13,27 @@
 
 package org.eclipse.osee.define.rest.synchronization.forest;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
-import org.eclipse.osee.define.rest.synchronization.Direction;
-import org.eclipse.osee.define.rest.synchronization.ForeignThingFamily;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierTypeGroup;
 import org.eclipse.osee.define.rest.synchronization.LinkType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeDataTypeKey;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeHeader;
 import org.eclipse.osee.define.rest.synchronization.forest.morphology.AbstractGroveThing;
 import org.eclipse.osee.define.rest.synchronization.forest.morphology.AbstractMapGrove;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierFactory;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
-import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
  * Class encapsulates the data structures for the Synchronization Artifact Document Object Model. There is a
@@ -217,7 +211,7 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * @author Loren K. Ashley
  */
 
-public class Forest implements ToMessage {
+public class Forest {
 
    /**
     * Assertion guard rail for the minimum rank of a grove's primary store.
@@ -258,6 +252,12 @@ public class Forest implements ToMessage {
 
       @SuppressWarnings("unused")
       IdentifierType identifierType;
+
+      /**
+       * The {@link Supplier} used to obtain a unique {@link Identifier} for each created {@link GroveThing}.
+       */
+
+      Supplier<Identifier> keySupplier;
 
       /**
        * {@link Map} of {@link AbstractGroveThing.LinkRank} indicators by {@link LinkType}. {@link GroveThing} instances
@@ -347,6 +347,7 @@ public class Forest implements ToMessage {
        *
        * @param identifierType the {@link IdentifierType} of the Synchronization Artifact thing initialization
        * parameters are for.
+       * @param keySupplier a {@link Supplier} of unique {@link Identifier} objects.
        * @param primaryRank the number of map levels used to index the {@link GroveThing} instances by primary keys.
        * @param nativeRank the number of map levels used to index {@link GroveThing} instances by native keys.
        * @param providesNativeKeys when <code>true</code>, the <code>nativeKeyFunctions<code> will be applied to the
@@ -374,6 +375,7 @@ public class Forest implements ToMessage {
       GroveThingInitializationRecord
          (
             IdentifierType                             identifierType,
+            Supplier<Identifier>                       keySupplier,
             int                                        primaryRank,
             int                                        nativeRank,
             boolean                                    providesNativeKeys,
@@ -388,6 +390,10 @@ public class Forest implements ToMessage {
          assert
               Objects.nonNull( identifierType )
             : "Bad GroveThingInitializationRecord, identifier type is null.";
+
+         assert
+              Objects.nonNull( keySupplier )
+            : "Bad GroveThingInitializationRecord for " + identifierType.toString() + " keySupplier is null.";
 
          assert
                ( primaryRank >= Forest.minPrimaryRank )
@@ -446,6 +452,7 @@ public class Forest implements ToMessage {
            : "Bad GroveThingInitializationRecord for " + identifierType.toString() + " nativeKeyFunctions are provided and length does not match nativeRank.";
 
          this.identifierType       = identifierType;
+         this.keySupplier          = keySupplier;
          this.primaryRank          = primaryRank;
          this.nativeRank           = nativeRank;
          this.providesNativeKeys   = providesNativeKeys;
@@ -537,7 +544,7 @@ public class Forest implements ToMessage {
                      return
                         Objects.nonNull( key )
                         && ( key instanceof Identifier )
-                        && ((Identifier)key).getType().equals( this.identifierType );
+                        && ((Identifier)key).getType().equals( identifierType );
                   }
                };
 
@@ -559,9 +566,9 @@ public class Forest implements ToMessage {
 
                      var keyType = ((Identifier) key).getType();
 
-                     for (int i = 0; i < this.identifierTypes.length; i++)
+                     for (int i = 0; i < identifierTypes.length; i++)
                      {
-                        if (keyType.equals(this.identifierTypes[i]))
+                        if (keyType.equals(identifierTypes[i]))
                         {
                            return true;
                         }
@@ -578,7 +585,7 @@ public class Forest implements ToMessage {
       }
 
       Predicate<Object[]> getNativeThingsValidator() {
-      //@formatter:off
+         //@formatter:off
          return
             Objects.nonNull( this.validNativeThings )
                ? new Predicate<Object[]>()
@@ -626,7 +633,7 @@ public class Forest implements ToMessage {
       }
 
       Predicate<Object>[] getNativeKeyValidators() {
-      //@formatter:off
+         //@formatter:off
          if (Objects.isNull( this.validNativeKeyTypes )) {
             return null;
          }
@@ -648,7 +655,7 @@ public class Forest implements ToMessage {
                   //@formatter:off
                      return
                         Objects.nonNull( key )
-                        && this.keyClass.isInstance( key );
+                        && keyClass.isInstance( key );
                      //@formatter:on
                }
             };
@@ -660,7 +667,7 @@ public class Forest implements ToMessage {
    }
 
    //@formatter:off
-   @SuppressWarnings({"unchecked", "unlikely-arg-type"})
+   @SuppressWarnings("unchecked")
    private static Map<IdentifierType,GroveThingInitializationRecord> groveThingInitializers =
       Map.ofEntries
          (
@@ -670,6 +677,7 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.ATTRIBUTE_DEFINITION,
+                            IdentifierType.ATTRIBUTE_DEFINITION::createIdentifier, /* Key Supplier         */
                             2,                                                     /* Primary Rank         */
                             1,                                                     /* Native Rank          */
                             false,                                                 /* Does not provide native keys */
@@ -706,6 +714,7 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.ATTRIBUTE_VALUE,
+                            IdentifierType.ATTRIBUTE_VALUE::createIdentifier,      /* Key Supplier         */
                             2,                                                     /* Primary Rank         */
                             1,                                                     /* Native Rank          */
                             false,                                                 /* Does not provides native keys */
@@ -738,6 +747,7 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.DATA_TYPE_DEFINITION,
+                            IdentifierType.DATA_TYPE_DEFINITION::createIdentifier, /* Key Supplier         */
                             1,                                                     /* Primary Rank         */
                             1,                                                     /* Native Rank          */
                             true,                                                  /* Provides Native Keys */
@@ -771,29 +781,30 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.ENUM_VALUE,
-                            1,                                                     /* Primary Rank                        */
-                            2,                                                     /* Native Rank                         */
-                            true,                                                  /* Provides Native Keys                */
-                            null,                                                  /* Link Type Validator                 */
-                            Map.of(),                                              /* Link Rank Map                       */
-                            new IdentifierType[][]                                 /* Allowed Primary Key Types           */
+                            IdentifierType.ENUM_VALUE::createIdentifier,           /* Key Supplier         */
+                            1,                                                     /* Primary Rank         */
+                            2,                                                     /* Native Rank          */
+                            true,                                                  /* Provides Native Keys */
+                            null,                                                  /* Link Type Validator  */
+                            Map.of(),                                              /* Link Rank Map        */
+                            new IdentifierType[][]                                 /* Allowed Primary Key Types */
                             {
                                { IdentifierType.ENUM_VALUE }
                             },
-                            new Class<?>[]                                         /* Valid Native Types                  */
+                            new Class<?>[]                                         /* Valid Native Types   */
                             {
                                AttributeTypeToken.class,
                                EnumToken.class
                             },
-                            new Class<?>[]                                         /* Allowed Native Key Classes          */
+                            new Class<?>[]                                         /* Allowed Native Key Classes */
                             {
-                               Long.class,                                         /* Key class for AttributeTypeToken    */
-                               Long.class                                          /* Key class for EnumToken             */
+                               Long.class,
+                               Long.class
                             },
-                            new Function[]                                         /* Native Key Functions                */
+                            new Function[]                                         /* Native Key Functions */
                             {
-                               ( nativeThing ) -> ((Id) nativeThing).getId(),      /* Extract Key from AttributeTypeToken */
-                               ( nativeThing ) -> ((Id) nativeThing).getId()       /* Extract Key from EnumToken          */
+                               ( nativeThing ) -> ((Id) nativeThing).getId(),
+                               ( nativeThing ) -> ((Id) nativeThing).getId()
                             }
                          )
                ),
@@ -804,6 +815,7 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.HEADER,
+                            IdentifierType.HEADER::createIdentifier,               /* Key Supplier         */
                             1,                                                     /* Primary Rank         */
                             1,                                                     /* Native Rank          */
                             false,                                                 /* Does not provides native keys, there is only one Header */
@@ -828,6 +840,7 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.SPECIFICATION,
+                            IdentifierType.SPECIFICATION::createIdentifier,        /* Key Supplier         */
                             1,                                                     /* Primary Rank         */
                             1,                                                     /* Native Rank          */
                             true,                                                  /* Provides Native Keys */
@@ -861,6 +874,7 @@ public class Forest implements ToMessage {
                   new GroveThingInitializationRecord
                          (
                             IdentifierType.SPECTER_SPEC_OBJECT,
+                            IdentifierType.SPECTER_SPEC_OBJECT::createIdentifier,  /* Key Supplier         */
                             1,                                                     /* Primary Rank         */
                             1,                                                     /* Native Rank          */
                             true,                                                  /* Provides Native Keys */
@@ -896,6 +910,7 @@ public class Forest implements ToMessage {
                    new GroveThingInitializationRecord
                           (
                              IdentifierType.SPEC_OBJECT,
+                             IdentifierType.SPEC_OBJECT::createIdentifier,          /* Key Supplier         */
                              3,                                                     /* Primary Rank         */
                              1,                                                     /* Native Rank          */
                              true,                                                  /* Provides Native Keys */
@@ -939,6 +954,7 @@ public class Forest implements ToMessage {
                     new GroveThingInitializationRecord
                            (
                               IdentifierType.SPEC_RELATION,
+                              IdentifierType.SPEC_RELATION::createIdentifier,        /* Key Supplier         */
                               1,                                                     /* Primary Rank         */
                               3,                                                     /* Native Rank          */
                               true,                                                  /* Provides Native Keys */
@@ -981,6 +997,7 @@ public class Forest implements ToMessage {
                     new GroveThingInitializationRecord
                            (
                               IdentifierType.SPECIFICATION_TYPE,
+                              IdentifierType.SPECIFICATION_TYPE::createIdentifier,   /* Key Supplier         */
                               1,                                                     /* Primary Rank         */
                               1,                                                     /* Native Rank          */
                               true,                                                  /* Provides Native Keys */
@@ -1014,6 +1031,7 @@ public class Forest implements ToMessage {
                     new GroveThingInitializationRecord
                            (
                               IdentifierType.SPEC_OBJECT_TYPE,
+                              IdentifierType.SPEC_OBJECT_TYPE::createIdentifier,     /* Key Supplier         */
                               1,                                                     /* Primary Rank         */
                               1,                                                     /* Native Rank          */
                               true,                                                  /* Provides Native Keys */
@@ -1047,6 +1065,7 @@ public class Forest implements ToMessage {
                     new GroveThingInitializationRecord
                            (
                               IdentifierType.SPEC_RELATION_TYPE,
+                              IdentifierType.SPEC_RELATION_TYPE::createIdentifier,   /* Key Supplier         */
                               1,                                                     /* Primary Rank         */
                               1,                                                     /* Native Rank          */
                               true,                                                  /* Provides Native Keys */
@@ -1083,28 +1102,10 @@ public class Forest implements ToMessage {
    private final Map<IdentifierType, Grove> groveMap;
 
    /**
-    * The factory for creating {@link GroveThing} identifiers.
+    * Constructor creates the data structures for a new Synchronization Artifact.
     */
 
-   private final IdentifierFactory identifierFactory;
-
-   /**
-    * The direction (export or import) of the operation.
-    */
-
-   private final Direction direction;
-
-   /**
-    * Constructor creates the data structures for a new Synchronization Artifact. Each Synchronization Artifact export
-    * or import should use it's own {@link Forest}.
-    *
-    * @param direction the Synchronization Artifact operation is either export or import.
-    * @throws NullPointerException when the parameter <code>direction</code> is <code>null</code>.
-    */
-
-   public Forest(Direction direction) {
-
-      Objects.requireNonNull(direction, "Forest::new, parameter \"direction\" is null.");
+   public Forest() {
 
       var groveMap = new LinkedHashMap<IdentifierType, Grove>() {
 
@@ -1132,21 +1133,18 @@ public class Forest implements ToMessage {
        * things.
        */
 
-      groveMap.put(Forest.createGrove(IdentifierType.HEADER));
-      groveMap.put(Forest.createGrove(IdentifierType.ENUM_VALUE));
-      groveMap.put(Forest.createGrove(IdentifierType.DATA_TYPE_DEFINITION));
-      groveMap.put(Forest.createGrove(IdentifierType.SPECIFICATION_TYPE));
-      groveMap.put(Forest.createGrove(IdentifierType.SPEC_OBJECT_TYPE));
-      groveMap.put(Forest.createGrove(IdentifierType.SPEC_RELATION_TYPE));
-      groveMap.put(Forest.createGrove(IdentifierType.ATTRIBUTE_DEFINITION));
-      groveMap.put(Forest.createGrove(IdentifierType.SPECIFICATION));
-      groveMap.put(Forest.createGrove(IdentifierType.SPECTER_SPEC_OBJECT));
-      groveMap.put(Forest.createGrove(IdentifierType.SPEC_OBJECT));
-      groveMap.put(Forest.createGrove(IdentifierType.SPEC_RELATION));
-      groveMap.put(Forest.createGrove(IdentifierType.ATTRIBUTE_VALUE));
-
-      this.direction = direction;
-      this.identifierFactory = new IdentifierFactory(direction.getIdentifierFactoryType());
+      groveMap.put(this.createGrove(IdentifierType.HEADER));
+      groveMap.put(this.createGrove(IdentifierType.ENUM_VALUE));
+      groveMap.put(this.createGrove(IdentifierType.DATA_TYPE_DEFINITION));
+      groveMap.put(this.createGrove(IdentifierType.ATTRIBUTE_DEFINITION));
+      groveMap.put(this.createGrove(IdentifierType.SPECIFICATION_TYPE));
+      groveMap.put(this.createGrove(IdentifierType.SPEC_OBJECT_TYPE));
+      groveMap.put(this.createGrove(IdentifierType.SPEC_RELATION_TYPE));
+      groveMap.put(this.createGrove(IdentifierType.SPECIFICATION));
+      groveMap.put(this.createGrove(IdentifierType.SPECTER_SPEC_OBJECT));
+      groveMap.put(this.createGrove(IdentifierType.SPEC_OBJECT));
+      groveMap.put(this.createGrove(IdentifierType.SPEC_RELATION));
+      groveMap.put(this.createGrove(IdentifierType.ATTRIBUTE_VALUE));
    }
 
    /**
@@ -1156,44 +1154,32 @@ public class Forest implements ToMessage {
     * @return the created {@link Grove} implementation.
     */
 
-   private static Grove createGrove(IdentifierType identifierType) {
+   private Grove createGrove(IdentifierType identifierType) {
 
       var groveThingInitializer = Forest.groveThingInitializers.get(identifierType);
 
-      //@formatter:off
-      return
-         new AbstractMapGrove
-                (
-                   identifierType,
-                   groveThingInitializer.providesNativeKeys,
-                   groveThingInitializer.getPrimaryKeyValidators(),
-                   groveThingInitializer.getNativeKeyValidators()
-                );
-      //@formatter"on
+      return new AbstractMapGrove(identifierType, groveThingInitializer.providesNativeKeys,
+         groveThingInitializer.getPrimaryKeyValidators(), groveThingInitializer.getNativeKeyValidators());
    }
 
    /**
-    * For Synchronization Artifact exports, creates a new {@link GroveThing} for the specified {@link IdentifierType} with a unique {@link Identifier}.
+    * Creates a new {@link GroveThing} implementation with a unique {@link Identifier} of the class associated with the
+    * {@link IdentifierType}.
     *
-    * @param identifierType the type of {@link GroveThing} to create.
+    * @param identifierType the type of object to create.
     * @param parents the hierarchical parent of the {@link GroveThing} to be created.
     * @return a new {@link GroveThing}.
-    * @throws IllegalStateException when the {@link Forest} was created with a {@link Direction} other than {@link Direction#EXPORT}.
     */
 
    public GroveThing createGroveThing(IdentifierType identifierType, GroveThing... parents) {
 
-      if (!Direction.EXPORT.equals(this.direction)) {
-         throw new IllegalStateException();
-      }
-
       var groveThingInitializer = Forest.groveThingInitializers.get(identifierType);
 
       //@formatter:off
       return
          new AbstractGroveThing
                (
-                 this.identifierFactory.createIdentifier(identifierType),
+                 groveThingInitializer.keySupplier.get(),
                  groveThingInitializer.primaryRank,
                  groveThingInitializer.nativeRank,
                  groveThingInitializer.providesNativeKeys,
@@ -1204,104 +1190,7 @@ public class Forest implements ToMessage {
                  groveThingInitializer.nativeKeyFunctions,
                  parents
                );
-      //@formatter:on
-   }
-
-   /**
-    * For Synchronization Artifact imports, creates a new {@link GroveThing} for the specified {@link IdentifierType}
-    * with a unique {@link Identifier}.
-    *
-    * @param foreignThingFamily a {@link ForeignThingFamily} containing the foreign thing, its identifier and the
-    * identifiers of it's hierarchical parents.
-    * @return a new {@link GroveThing}.
-    */
-
-   public GroveThing createGroveThingFromForeignThing(IdentifierType groveIdentifierType, ForeignThingFamily foreignThingFamily) {
-
-      if (!Direction.IMPORT.equals(this.direction)) {
-         throw new IllegalStateException();
-      }
-
-      var stringForeignKeys = foreignThingFamily.getForeignIdentifiersAsStrings();
-      var identifierTypes = foreignThingFamily.getIdentifierTypes();
-      var foreignThing = foreignThingFamily.getChild();
-
-      //@formatter:off
-      if(    Objects.isNull( stringForeignKeys )
-          || ( stringForeignKeys.length <= 0 )
-          || Objects.isNull( identifierTypes )
-          || ( identifierTypes.length != stringForeignKeys.length )
-          || Objects.isNull( foreignThing ) ) {
-         throw new CreateGroveThingFromForeignThingException( "bad foreign thing record", foreignThingFamily );
-      }
-      //@formatter:on
-
-      var count = stringForeignKeys.length;
-      var parents = new GroveThing[count - 1];
-      var groveThingIdentifierType = identifierTypes[count - 1];
-
-      if (groveThingIdentifierType != groveIdentifierType) {
-         var grove = this.getGrove(groveThingIdentifierType);
-         var groveThingForeignIdentifierString = stringForeignKeys[count - 1];
-         var primaryIdentifier = this.getPrimaryIdentifierByForeignIdentifierString(groveThingIdentifierType,
-            groveThingForeignIdentifierString).get();
-         var groveThing = grove.getByUniquePrimaryKey(primaryIdentifier).get();
-
-         return groveThing;
-      }
-
-      for (var i = 0; i < count - 1; i++) {
-         var identifierType = identifierTypes[i];
-         var stringForeignKey = stringForeignKeys[i];
-         //@formatter:off
-         var primaryIdentifier =
-            this.getPrimaryIdentifierByForeignIdentifierString(identifierType, stringForeignKey)
-               .orElseThrow
-                  (
-                     () -> new CreateGroveThingFromForeignThingException
-                                  (
-                                     "failed to get primary identifier from foreign thing identifier",
-                                     stringForeignKey,
-                                     foreignThingFamily
-                                  )
-                  );
-
-         parents[ i ] =
-            this.getGrove(identifierType).getByUniquePrimaryKey(primaryIdentifier)
-               .orElseThrow
-                  (
-                     () -> new CreateGroveThingFromForeignThingException
-                                  (
-                                     "grove thing not found for foreign thing identifier",
-                                     stringForeignKey,
-                                     foreignThingFamily
-                                  )
-                  );
          //@formatter:on
-      }
-
-      var groveThingInitializer = Forest.groveThingInitializers.get(groveThingIdentifierType);
-
-      //@formatter:off
-      var groveThing =
-         new AbstractGroveThing
-               (
-                 this.identifierFactory.createIdentifier(groveThingIdentifierType,stringForeignKeys[count-1]),
-                 groveThingInitializer.primaryRank,
-                 groveThingInitializer.nativeRank,
-                 groveThingInitializer.providesNativeKeys,
-                 groveThingInitializer.linkTypeValidator,
-                 groveThingInitializer.linkRank,
-                 groveThingInitializer.parentsValidator,
-                 groveThingInitializer.nativeThingsValidator,
-                 groveThingInitializer.nativeKeyFunctions,
-                 parents
-               );
-      //@formatter:on
-
-      groveThing.setForeignThing(foreignThing);
-
-      return groveThing;
    }
 
    /**
@@ -1317,24 +1206,6 @@ public class Forest implements ToMessage {
    }
 
    /**
-    * Looks up the primary {@link Identifier} associated with the provided string representation of a foreign thing
-    * identifier. A {@link GroveThing} is created to contain each foreign thing from an imported Synchronization
-    * Artifact. A primary {@link Identifier} is created for each {@link GroveThing} from the string representation of
-    * the contained foreign thing's identifier.
-    *
-    * @param identifierType the type of primary {@link Identifier} to look up.
-    * @param foreignIdentifierString the string representation of the foreign thing's identifier.
-    * @return when an primary {@link Identifier} of the specified {@link IdentifierType} is associated with the provided
-    * foreign thing identifier, an {@link Optional} containing the associated primary {@link Identifier}; otherwise, an
-    * empty {@link Optional}.
-    */
-
-   public Optional<Identifier> getPrimaryIdentifierByForeignIdentifierString(IdentifierType identifierType, String foreignIdentifierString) {
-      return this.identifierFactory.getPrimaryIdentifierByForeignIdentifierString(identifierType,
-         foreignIdentifierString);
-   }
-
-   /**
     * Returns an ordered stream of the {@link Grove} implementations in the {@link Forest}.
     *
     * @return a {@link Stream} of the {@link Grove}s in the {@link Forest}.
@@ -1343,103 +1214,6 @@ public class Forest implements ToMessage {
    public Stream<Grove> stream() {
       return this.groveMap.values().stream();
    }
-
-   /**
-    * Returns an unordered {@link Stream} of the {@link GroveThing}s in the {@link Grove}s specified by the provided
-    * {@link IdentifierType}s.
-    *
-    * @param groveIdentifierTypes an array of the {@link IdentifierType}s for the {@link Grove}s to be streamed.
-    * @return a {@link Stream} of the {@link GroveThing}s in the specified {@link Grove}s.
-    */
-
-   public Stream<GroveThing> streamGroves(IdentifierType... groveIdentifierTypes) {
-
-      //@formatter:off
-      assert
-              Objects.nonNull( groveIdentifierTypes )
-           && ( groveIdentifierTypes.length > 0 )
-         : "Forest::streamGroves, no groves specified.";
-      //@formatter:on
-
-      return Arrays.stream(groveIdentifierTypes).map(this::getGrove).flatMap(Grove::stream);
-   }
-
-   /**
-    * Returns an unordered {@link Stream} of the {@link GroveThing}s in the {@link Grove}s specified by the provided
-    * {@link StreamEntry}s. If a {@link StreamEntry} contains a filter {@link Predicate}, it will be used to filter the
-    * {@link GroveThing}s from the {@link Grove} specified by the {@link StreamEntry}'s {@link IdentifierType}.
-    *
-    * @param streamEntries an array of the {@link StreamEntry}s for the {@link Grove}s to be streamed.
-    * @return a {@link Stream} of the {@link GroveThing}s, possibly filtered, in the specified {@link Grove}s.
-    */
-
-   public Stream<GroveThing> streamGroves(StreamEntry... streamEntries) {
-      //@formatter:off
-      assert
-              Objects.nonNull( streamEntries )
-           && ( streamEntries.length > 0 )
-         : "Forest::streamGroves, no groves specified.";
-      //@formatter:on
-
-      //@formatter:off
-      return
-         Arrays.stream( streamEntries )
-            .flatMap
-               (
-                  (streamEntry) ->
-                  {
-                     var grove = this.groveMap.get(streamEntry.getIdentifierType());
-
-                     return
-                        streamEntry.hasFilter()
-                           ? grove.stream().filter( streamEntry.getFilter() )
-                           : grove.stream();
-                  }
-               );
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public StringBuilder toMessage(int indent, StringBuilder message) {
-      var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
-      var indent0 = IndentedString.indentString(indent + 0);
-      var indent1 = IndentedString.indentString(indent + 1);
-      var indent2 = IndentedString.indentString(indent + 2);
-
-      var name = this.getClass().getName();
-
-      //@formatter:off
-      outMessage
-         .append( indent0 ).append( name ).append( "\n" )
-         .append( indent1 ).append( "Direction: " ).append( this.direction ).append( "\n" )
-         .append( indent1 ).append( "Grove Map: " ).append( "\n" ).append( "\n" );
-
-      this.groveMap.values().stream()
-         .forEach
-            (
-               ( grove ) -> outMessage
-                               .append( indent2 ).append( "Type:        " ).append( grove.getType()    ).append( "\n" )
-                               .append( indent2 ).append( "Grove Size:  " ).append( grove.size()       ).append( "\n" )
-                               .append( indent2 ).append( "Native Rank: " ).append( grove.nativeRank() ).append( "\n" )
-                               .append( indent2 ).append( "Rank:        " ).append( grove.rank()       ).append( "\n" )
-                               .append( "\n" )
-            );
-
-      return outMessage;
-   }
-
-    /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public String toString() {
-      return this.toMessage(0, null).toString();
-   }
-
 }
 
 /* EOF */

@@ -15,9 +15,9 @@ package org.eclipse.osee.define.rest.synchronization.forest;
 
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
 import org.eclipse.osee.define.rest.synchronization.forest.morphology.DuplicateGroveEntryException;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -34,9 +34,8 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * <h2>Key Sets</h2>
  * <p>
  * Each key set must contain enough keys to be able to uniquely identify the {@link GroveThing}. However, key sets may
- * contain more keys than what is sufficient to uniquely identify the the {@link GroveThing}. For example, a key set may
- * contain additional keys to organize the {@link GroveThing} implementations within the store. The lowest rank key in a
- * primary key set must uniquely identify the {@link GroveThing}.
+ * contain more keys that what is sufficient to uniquely identify the the {@link GroveThing}. For example, a key set may
+ * contain additional keys to organize the {@link GroveThing} implementations within the store.
  * <p>
  * <h2>Rank</h2>
  * <p>
@@ -48,9 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * @implNote The data store implementations generally assume {@link Grove} and {@link GroveThing} implementations are
  * compatible. Bad results or exceptions may occur but the code does not check for incompatibilities unless assertions
  * are enabled.
- * <p>
  * @author Loren K. Ashley
- * <p>
  */
 
 public interface Grove extends ToMessage {
@@ -129,16 +126,6 @@ public interface Grove extends ToMessage {
    GroveThing getByNativeKeysOrElseThrow(Object... nativeKeys);
 
    /**
-    * Get the {@link GroveThing} associated with the unique primary key.
-    *
-    * @param uniquePrimaryKey the key.
-    * @return when an association with the provided <code>uniquePrimayKey</code> exists, an {@link Optional} containing
-    * the associated {@link GroveThing}; otherwise, an empty {@link Optional}.
-    */
-
-   Optional<GroveThing> getByUniquePrimaryKey(Object uniquePrimaryKey);
-
-   /**
     * Gets the {@link IdentifierType} associated with the {@link Grove}. In a Synchronization Artifact DOM there is a
     * {@link Grove} for each of the Synchronization Artifact "things". Some of the {@link Grove}s allow the storage of
     * more than one type of {@link GroveThing} or of a {@link GroveThing} superclass. This method cannot be used to
@@ -164,14 +151,6 @@ public interface Grove extends ToMessage {
     */
 
    int rank();
-
-   /**
-    * Returns the number of {@link GroveThing} objects in the {@link Grove}.
-    *
-    * @return the number of entries.
-    */
-
-   int size();
 
    /**
     * Returns an unordered {@link Stream} of the {@link GroveThing} implementations stored in the {@link Grove} under

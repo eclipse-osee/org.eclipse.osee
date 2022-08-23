@@ -14,8 +14,6 @@
 package org.eclipse.osee.define.rest.synchronization;
 
 import java.util.Objects;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 
 /**
  * {@link RuntimeException} which is thrown when an unexpected {@link IdentifierType} is encountered.

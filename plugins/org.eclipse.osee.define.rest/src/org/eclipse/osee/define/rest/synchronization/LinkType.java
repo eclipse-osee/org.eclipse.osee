@@ -14,8 +14,6 @@
 package org.eclipse.osee.define.rest.synchronization;
 
 import java.util.Map;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 
 /**
  * An empty interface used to union the {@link IdentifierType} and {@link IdentifierTypeGroup} enumerations for use as

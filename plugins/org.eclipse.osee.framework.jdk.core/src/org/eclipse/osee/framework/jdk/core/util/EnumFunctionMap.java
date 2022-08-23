@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Implementation of the {@link EnumFunctionalInterfaceMap} interface for {@link Function} functional interfaces.
@@ -41,21 +42,20 @@ public class EnumFunctionMap<K extends Enum<K>, T, R> extends AbstractEnumFuncti
    }
 
    /**
-    * Looks up and performs the {@link Function} associated with the provided key.
+    * Looks up and performs the {@link Supplier} associated with the provided key.
     *
-    * @param key the key whose associated {@link Function} is to be performed.
-    * @param t the function argument
-    * @return the result provided by the {@link Function} functional interface implementation.
+    * @param key the key whose associated {@link Supplier} is to be performed.
+    * @return the result provided by the {@link Supplier} functional interface implementation.
     * @throws NullPointerException when the provided key is <code>null</code>.
     * @throws NoSuchElementException when there is no map association for the provided key.
     */
 
-   public R apply(K key, T t) {
+   public R apply(K key, T value) {
       var function = this.enumMap.get(Objects.requireNonNull(key));
       if (function == null) {
          throw new NoSuchElementException();
       }
-      return function.apply(t);
+      return function.apply(value);
    }
 
    /**

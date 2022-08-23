@@ -15,15 +15,17 @@ package org.eclipse.osee.define.rest.synchronization;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
 import org.eclipse.osee.define.rest.synchronization.forest.Forest;
 import org.eclipse.osee.define.rest.synchronization.forest.Grove;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
-import org.eclipse.osee.define.rest.synchronization.forest.StreamEntry;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.ArtifactTypeTokens;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeDataTypeKey;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeDataTypeKeyFactory;
@@ -31,10 +33,6 @@ import org.eclipse.osee.define.rest.synchronization.forest.denizens.NativeHeader
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.SpecRelationArtifactReadable;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.SpecterSpecObjectArtifactReadable;
 import org.eclipse.osee.define.rest.synchronization.forest.denizens.UnknownAttributeTypeTokenException;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -47,6 +45,8 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWiring;
 
 /**
  * Class builds a Synchronization Artifact from the OSEE artifact trees specified by branch identifier and artifact
@@ -55,19 +55,49 @@ import org.eclipse.osee.orcs.OrcsApi;
  * @author Loren K. Ashley
  */
 
-public class SynchronizationArtifact implements AutoCloseable, ToMessage {
+public class SynchronizationArtifact implements ToMessage {
 
    /**
-    * Map used to collect unique OSEE artifact types
+    * A {@link Map} of the supported {@link SynchronizationArtifactBuilder} classes by their artifact type
+    * {@link String} identifiers.
     */
 
-   private final CommonObjectTypeContainerMap commonObjectTypeContainerMap;
+   private static Map<String, Class<?>> synchronizationArtifactBuilderClassMap;
 
-   /**
-    * Saves the export or import direction of the Synchronization Artifact operation.
+   /*
+    * Find the available {@link SynchronizationArtifactBuilder} classes.
     */
 
-   private final Direction direction;
+   static {
+
+      SynchronizationArtifact.synchronizationArtifactBuilderClassMap = new HashMap<>();
+
+      var bundleContext = FrameworkUtil.getBundle(SynchronizationArtifact.class).getBundleContext();
+      var bundle = bundleContext.getBundle();
+      var bundleSymbolicNamePath = bundle.getSymbolicName().replace('.', '/');
+      var bundleWiring = bundle.adapt(BundleWiring.class);
+      var classLoader = bundleWiring.getClassLoader();
+      var resources = bundleWiring.listResources(bundleSymbolicNamePath, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
+
+      resources.forEach(resource -> {
+         try {
+            var className = resource.substring(0, resource.indexOf('.')).replace('/', '.');
+            var theClass = classLoader.loadClass(className);
+            var isSynchronizationArtifactBuilder = theClass.getAnnotation(IsSynchronizationArtifactBuilder.class);
+            if (isSynchronizationArtifactBuilder != null) {
+               SynchronizationArtifact.synchronizationArtifactBuilderClassMap.put(
+                  isSynchronizationArtifactBuilder.artifactType(), theClass);
+            }
+         } catch (Exception e) {
+            /*
+             * Eat exceptions in the static initializer. If the Synchronization Artifact Build implementations are not
+             * found, an UnknownSynchronizationArtifactTypeException will be thrown when trying to create an instance of
+             * this class.
+             */
+         }
+      });
+
+   }
 
    /**
     * Data structures used to hold the Synchronization Artifact DOM.
@@ -82,16 +112,22 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
    private final OrcsApi orcsApi;
 
    /**
-    * Handle to the OSEE ORCS Token Service to obtain OSEE tokens.
+    * Map used to collect unique OSEE artifact types
     */
 
-   private final OrcsTokenService orcsTokenService;
+   private final CommonObjectTypeContainerMap commonObjectTypeContainerMap;
 
    /**
     * Saves the processing instructions
     */
 
    private final RootList rootList;
+
+   /**
+    * The {@link SynchronizationArtifactBuilder} to be used for this Synchronization Artifact.
+    */
+
+   private final SynchronizationArtifactBuilder synchronizationArtifactBuilder;
 
    /**
     * Each Synchronization Artifact needs it's own factory for producing {@link NativeDataTypeKey} objects since each
@@ -101,68 +137,89 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
    private final NativeDataTypeKeyFactory nativeDataTypeKeyFactory;
 
    /**
-    * The {@link SynchronizationArtifactBuilder} to be used for this Synchronization Artifact.
-    */
-
-   private final SynchronizationArtifactBuilder synchronizationArtifactBuilder;
-
-   /**
     * Creates a new empty SynchronizationArtifact.
     *
     * @param rootList the Synchronization Artifact building instructions.
+    * @param synchronizationArtifactBuilder the {@link SynchronizationArtifactBuilder} for the type of Synchronization
+    * Artifact to be built.
     */
 
-   private SynchronizationArtifact(RootList rootList) {
+   private SynchronizationArtifact(RootList rootList, SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
+
+      //@formatter:off
+      assert
+            Objects.nonNull(rootList)
+         && Objects.nonNull(rootList.getOrcsApi())
+         && Objects.nonNull(synchronizationArtifactBuilder);
+      //@formatter:on
 
       IdentifierType.resetIdentifierCounts();
       this.rootList = rootList;
-      this.direction = rootList.getDirection();
-      this.synchronizationArtifactBuilder = rootList.getSynchronizationArtifactBuilder();
+      this.synchronizationArtifactBuilder = synchronizationArtifactBuilder;
       this.orcsApi = rootList.getOrcsApi();
-      this.orcsTokenService = rootList.getOrcsTokenService();
       this.commonObjectTypeContainerMap = new CommonObjectTypeContainerMap();
+      this.forest = new Forest();
       this.nativeDataTypeKeyFactory = new NativeDataTypeKeyFactory();
-      this.forest = new Forest(this.direction);
    }
 
    /**
-    * Factory method to create an empty Synchronization Artifact.
+    * Factory method to create a empty Synchronization Artifact.
     *
     * @param rootList a list of the OSEE artifacts to be included in the Synchronization Artifact.
     * @return an empty {@link SynchronizationArtifact}.
-    * @throws UnknownSynchronizationArtifactTypeException when a {@link SynchronizationArtifactBuilder} could not be
-    * created for the artifact type.
-    * @throws NullPointerException when the {@link RootList} parameter; or it's {@link OrcsApi} or
-    * {@link OrcsApi#tokenService} is <code>null</code>.
+    * @throws UnknownArtifactTypeException when a {@link SynchronizationArtifactBuilder} could not be created for the
+    * artifact type.
+    * @throws NullPointerException when the {@link RootList} parameter or it's {@link OrcsApi} is <code>null</code>.
     */
 
    public static SynchronizationArtifact create(RootList rootList) throws UnknownSynchronizationArtifactTypeException {
 
-      Objects.requireNonNull(rootList, "SynchronizationArtifact::create, parameter \"rootList\" is null.");
+      Objects.requireNonNull(rootList);
+      Objects.requireNonNull(rootList.getOrcsApi());
 
-      return new SynchronizationArtifact(rootList);
+      var synchronizationArtifactType = rootList.getSynchronizationArtifactType();
+
+      if (!SynchronizationArtifact.synchronizationArtifactBuilderClassMap.containsKey(synchronizationArtifactType)) {
+         throw new UnknownSynchronizationArtifactTypeException(synchronizationArtifactType);
+      }
+
+      var synchronizationArtifactBuilder =
+         SynchronizationArtifact.getSynchronizationArtifactBuilder(synchronizationArtifactType);
+
+      SynchronizationArtifact synchronizationArtifact =
+         new SynchronizationArtifact(rootList, synchronizationArtifactBuilder);
+
+      return synchronizationArtifact;
    }
 
    /**
-    * Closes the {@link SynchronizationArtifactBuilder} implementation.
+    * Gets the {@link SynchronizationArtifactBuilder} for the type of Synchronization Artifact to be built.
+    *
+    * @param artifactType the type of Synchronization Artifact to be built.
+    * @return the {@link SynchronizationArtifactBuilder} to build the Synchronization Artifact with.
+    * @throws UnknownSynchronizationArtifactTypeException when a {@link SynchronizationArtifactBuilder} could not be
+    * created for the artifact type.
     */
 
-   @Override
-   public void close() {
-      this.synchronizationArtifactBuilder.close();
+   private static SynchronizationArtifactBuilder getSynchronizationArtifactBuilder(String artifactType) throws UnknownSynchronizationArtifactTypeException {
+      try {
+         //@formatter:off
+         return
+            (SynchronizationArtifactBuilder) SynchronizationArtifact.synchronizationArtifactBuilderClassMap
+               .get( artifactType )
+               .getConstructor( (Class<?>[]) null )
+               .newInstance( (Object[]) null );
+         //@formatter:on
+      } catch (Exception e) {
+         throw new UnknownSynchronizationArtifactTypeException(artifactType, e);
+      }
    }
 
    /**
     * Builds the Synchronization Artifact according to the instructions provided to the constructor.
-    *
-    * @throws IllegalStateException when call for {@link Direction} other than {@link Direction#EXPORT}.
     */
 
    public void build() {
-
-      if (!this.direction.equals(Direction.EXPORT)) {
-         throw new IllegalStateException();
-      }
 
       /*
        * Create the HeaderGroveThing
@@ -220,7 +277,7 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
       //@formatter:off
       this.forest.stream().forEach
          (
-            ( grove ) -> this.synchronizationArtifactBuilder.getConverter( grove.getType() ).ifPresent
+            ( grove ) -> this.getSynchronizationArtifactBuilder().getConverter( grove.getType() ).ifPresent
                             (
                               ( converter ) -> grove.stream().filter( groveThing -> groveThing.getIdentifier().getType().equals( grove.getType() ) ).forEach( converter::accept )
                             )
@@ -232,328 +289,6 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
        */
 
       this.synchronizationArtifactBuilder.build(this);
-   }
-
-   /**
-    * Builds the Synchronization Artifact from the foreign DOM
-    *
-    * @throws IllegalStateException when call for {@link Direction} other than {@link Direction#IMPORT}.
-    */
-
-   public void buildForeign() {
-
-      if (!this.direction.equals(Direction.IMPORT)) {
-         throw new IllegalStateException();
-      }
-
-      //@formatter:off
-      var attributeDefinitionGrove = this.forest.getGrove( IdentifierType.ATTRIBUTE_DEFINITION );
-      var datatypeDefinitionGrove  = this.forest.getGrove( IdentifierType.DATA_TYPE_DEFINITION );
-      var specificationTypeGrove   = this.forest.getGrove( IdentifierType.SPECIFICATION_TYPE   );
-      var specObjectTypeGrove      = this.forest.getGrove( IdentifierType.SPEC_OBJECT_TYPE     );
-      var specRelationTypeGrove    = this.forest.getGrove( IdentifierType.SPEC_RELATION_TYPE   );
-      var specObjectGrove          = this.forest.getGrove( IdentifierType.SPEC_OBJECT          );
-      var enumValueGrove           = this.forest.getGrove( IdentifierType.ENUM_VALUE           );
-      //@formatter:on
-
-      /*
-       * Populate the Forest with GroveThings created from each foreign thing.
-       */
-
-      //@formatter:off
-      this.forest.stream().forEach
-         (
-            ( grove ) ->
-               this.synchronizationArtifactBuilder.getForeignThings( grove.getType() )
-                  .map
-                     (
-                        ( foreignThingFamily ) -> this.forest.createGroveThingFromForeignThing( grove.getType(), foreignThingFamily )
-                     )
-                  .forEach( grove::add )
-         );
-      //@formatter:on
-
-      /*
-       * Connect Data Type Definitions to Enum Values
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.DATA_TYPE_DEFINITION
-         )
-         .forEach
-            (
-               ( datatypeDefinitionGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getEnumValues( datatypeDefinitionGroveThing )
-                     .map
-                        (
-                           ( enumValue ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.ENUM_VALUE, enumValue )
-                        )
-                     .flatMap( Optional::stream )
-                     .map( enumValueGrove::getByPrimaryKeys )
-                     .flatMap( Optional::stream )
-                     .forEach
-                        (
-                           ( enumValueGroveThing ) -> datatypeDefinitionGroveThing.setLinkVectorElement( IdentifierType.ENUM_VALUE, enumValueGroveThing )
-                        )
-            );
-
-      /*
-       * Connect Attribute Definitions to Data Type Definitions
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.ATTRIBUTE_DEFINITION
-         )
-         .forEach
-            (
-               ( attributeDefinitionGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getDatatypeDefinition( attributeDefinitionGroveThing )
-                     .flatMap
-                        (
-                          ( datatypeDefinitionIdentifierString ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.DATA_TYPE_DEFINITION, datatypeDefinitionIdentifierString )
-                        )
-                     .flatMap( datatypeDefinitionGrove::getByPrimaryKeys )
-                     .ifPresent
-                        (
-                           ( datatypeDefinitionGroveThing ) -> attributeDefinitionGroveThing.setLinkScalar( IdentifierType.DATA_TYPE_DEFINITION, datatypeDefinitionGroveThing )
-                        )
-            );
-      //@formatter:on
-
-      /*
-       * Connect Specification Types, Spec Object Types, and Spec Relation Types to Attribute Definitions
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.SPECIFICATION_TYPE,
-            IdentifierType.SPEC_OBJECT_TYPE,
-            IdentifierType.SPEC_RELATION_TYPE
-         )
-      .forEach
-         (
-            ( specTypeGroveThing ) ->
-
-               this.synchronizationArtifactBuilder.getAttributeDefinitions( specTypeGroveThing )
-                  .forEach
-                     (
-                        ( attributeDefinitionIdentifierString ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.ATTRIBUTE_DEFINITION, attributeDefinitionIdentifierString )
-                           .flatMap
-                              (
-                                 ( attributeDefinitionIdentifier ) -> attributeDefinitionGrove.getByPrimaryKeys( specTypeGroveThing.getIdentifier(), attributeDefinitionIdentifier )
-                              )
-                           .ifPresent
-                              (
-                                 ( attributeDefinitionGroveThing ) -> specTypeGroveThing.setLinkVectorElement( IdentifierType.ATTRIBUTE_DEFINITION, attributeDefinitionGroveThing )
-                              )
-                     )
-         );
-      //@formatter:on
-
-      /*
-       * Connect Specifications to the corresponding Specification Type
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.SPECIFICATION
-         )
-         .forEach
-            (
-               ( specificationGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getSpecificationType( specificationGroveThing )
-                     .flatMap
-                        (
-                           ( specificationTypeIdentifierString ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.SPECIFICATION_TYPE, specificationTypeIdentifierString )
-                        )
-                     .flatMap( specificationTypeGrove::getByPrimaryKeys )
-                     .ifPresent
-                        (
-                           ( specificationTypeGroveThing ) -> specificationGroveThing.setLinkScalar( IdentifierType.SPECIFICATION_TYPE, specificationTypeGroveThing )
-                        )
-            );
-      //@formatter:on
-
-      /*
-       * Connect Spec Objects to the corresponding Spec Object Type
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            StreamEntry.create( IdentifierType.SPEC_OBJECT, ( groveThing ) -> groveThing.isType( IdentifierType.SPEC_OBJECT ) ),
-            StreamEntry.create( IdentifierType.SPECTER_SPEC_OBJECT )
-         )
-         .forEach
-            (
-               ( specObjectGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getSpecObjectType( specObjectGroveThing )
-                     .flatMap
-                        (
-                           ( specObjectTypeIdentifierString ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.SPEC_OBJECT_TYPE, specObjectTypeIdentifierString )
-                        )
-                     .flatMap( specObjectTypeGrove::getByPrimaryKeys )
-                     .ifPresent
-                        (
-                           ( specObjectTypeGroveThing ) -> specObjectGroveThing.setLinkScalar( IdentifierType.SPEC_OBJECT_TYPE, specObjectTypeGroveThing )
-                        )
-
-            );
-      //@formatter:on
-
-      /*
-       * Connect Spec Relations to Spec Relation Types
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.SPEC_RELATION
-         )
-         .forEach
-            (
-               ( specRelationGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getSpecRelationType( specRelationGroveThing )
-                     .flatMap
-                        (
-                           ( specRelationTypeIdentifierString ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.SPEC_RELATION_TYPE, specRelationTypeIdentifierString )
-                        )
-                     .flatMap( specRelationTypeGrove::getByPrimaryKeys )
-                     .ifPresent
-                        (
-                           ( specRelationTypeGroveThing ) -> specRelationGroveThing.setLinkScalar( IdentifierType.SPEC_RELATION_TYPE, specRelationTypeGroveThing )
-                        )
-            );
-      //@formatter:on
-
-      /*
-       * Connect Attribute Values to Attribute Definitions
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.ATTRIBUTE_VALUE
-         )
-         .forEach
-            (
-               ( attributeValueGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getAttributeDefinition( attributeValueGroveThing )
-                     .flatMap
-                        (
-                           ( attributeDefinitionIdentifierString ) -> this.forest.getPrimaryIdentifierByForeignIdentifierString( IdentifierType.ATTRIBUTE_DEFINITION, attributeDefinitionIdentifierString )
-                        )
-                     .flatMap
-                        (
-                           ( attributeDefinitionIdentifier ) ->
-                           {
-                              var parentGroveThing = attributeValueGroveThing.getParent( -1 ).get();
-                              var parentGroveThingIdentifier = parentGroveThing.getIdentifier();
-                              var associatedType = parentGroveThingIdentifier.getType().getAssociatedType();
-                              var typeGroveThing = parentGroveThing.getLinkScalar( associatedType )
-                                                      .orElseGet
-                                                         (
-                                                            () ->
-                                                            {
-                                                               int a = 3;
-                                                               a++;
-                                                               return (a==10) ? null : null;
-                                                            }
-                                                         );
-
-                              return
-                                 attributeDefinitionGrove.getByPrimaryKeys
-                                                             (
-                                                               typeGroveThing.getIdentifier(),
-                                                               attributeDefinitionIdentifier
-                                                             );
-                           }
-                        )
-                     .ifPresent
-                        (
-                           ( attributeDefinitionGroveThing ) -> attributeValueGroveThing.setLinkScalar( IdentifierType.ATTRIBUTE_DEFINITION, attributeDefinitionGroveThing )
-                        )
-            );
-      //@formatter:on
-
-      /*
-       * Connect Spec Relations to Spec Objects
-       */
-
-      //@formatter:off
-      this.forest.streamGroves
-         (
-            IdentifierType.SPEC_RELATION
-         )
-         .forEach
-            (
-               ( specRelationGroveThing ) ->
-
-                  this.synchronizationArtifactBuilder.getSpecObject( specRelationGroveThing, RelationshipTerminal.SOURCE )
-                     .flatMap
-                        (
-                           ( sourceSpecObjectForeignThingFamily ) ->
-                           {
-                              var foreignPrimaryKeys = sourceSpecObjectForeignThingFamily.getForeignIdentifiersAsStrings();
-                              var foreignIdentifierTypes = sourceSpecObjectForeignThingFamily.getIdentifierTypes();
-                              var primaryKeys = new Identifier[foreignPrimaryKeys.length];
-
-                              for( var i = 0; i < foreignPrimaryKeys.length; i++ )
-                              {
-                                 primaryKeys[i] = this.forest.getPrimaryIdentifierByForeignIdentifierString( foreignIdentifierTypes[i], foreignPrimaryKeys[i] ).get();
-                              }
-
-                              return Optional.of( primaryKeys );
-                           }
-                        )
-                     .flatMap( specObjectGrove::getByPrimaryKeys )
-
-                     .ifPresent
-                        (
-                           ( sourceSpecObjectGroveThing ) ->
-
-                              this.synchronizationArtifactBuilder.getSpecObject( specRelationGroveThing, RelationshipTerminal.TARGET )
-                                 .flatMap
-                                    (
-                                       ( targetSpecObjectForeignThingFamily ) ->
-                                       {
-                                          var foreignPrimaryKeys = targetSpecObjectForeignThingFamily.getForeignIdentifiersAsStrings();
-                                          var foreignIdentifierTypes = targetSpecObjectForeignThingFamily.getIdentifierTypes();
-                                          var primaryKeys = new Identifier[foreignPrimaryKeys.length];
-
-                                          for( var i = 0; i < foreignPrimaryKeys.length; i++ )
-                                          {
-                                             primaryKeys[i] = this.forest.getPrimaryIdentifierByForeignIdentifierString( foreignIdentifierTypes[i], foreignPrimaryKeys[i] ).get();
-                                          }
-
-                                          return Optional.of( primaryKeys );
-                                       }
-                                    )
-                                 .flatMap( specObjectGrove::getByPrimaryKeys )
-                                 .ifPresent
-                                    (
-                                       ( targetSpecObjectGroveThing ) ->
-                                       {
-                                          specRelationGroveThing.setLinkVectorElement( IdentifierType.SPEC_OBJECT, sourceSpecObjectGroveThing );
-                                          specRelationGroveThing.setLinkVectorElement( IdentifierType.SPEC_OBJECT, targetSpecObjectGroveThing );
-                                       }
-                                    )
-                        )
-            );
-      //@formatter:on
-
    }
 
    /**
@@ -760,6 +495,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
 
    private GroveThing getOrCreateSpecterSpecObjectGroveThing(Long specterId, Supplier<String> specterNameSupplier) {
 
+      var orcsTokenService = this.orcsApi.tokenService();
+
       //@formatter:off
       return
          this.getForest().getGrove( IdentifierType.SPECTER_SPEC_OBJECT ).getByNativeKeys( specterId )
@@ -773,7 +510,7 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
                         (
                            new SpecterSpecObjectArtifactReadable
                            (
-                             ArtifactTypeTokens.createSpecterSpecObjectArtifactTypeToken( this.orcsTokenService ),
+                             ArtifactTypeTokens.createSpecterSpecObjectArtifactTypeToken( orcsTokenService ),
                              specterId,
                              specterNameSupplier.get()
                            )
@@ -786,7 +523,7 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
                            IdentifierType.SPEC_OBJECT_TYPE,
                            this.getOrCreateCommonObjectType
                               (
-                                ArtifactTypeTokens.createSpecterSpecObjectArtifactTypeToken( this.orcsTokenService ),
+                                ArtifactTypeTokens.createSpecterSpecObjectArtifactTypeToken( orcsTokenService ),
                                 IdentifierType.SPEC_OBJECT_TYPE
                               )
                         );
@@ -1122,12 +859,17 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
        * Synchronization Artifact.
        */
 
-      this.forest.streamGroves
+      Arrays.stream
          (
-           IdentifierType.SPEC_OBJECT,
-           IdentifierType.SPEC_RELATION,
-           IdentifierType.SPECTER_SPEC_OBJECT
+            new IdentifierType[]
+            {
+               IdentifierType.SPEC_OBJECT,
+               IdentifierType.SPEC_RELATION,
+               IdentifierType.SPECTER_SPEC_OBJECT
+            }
          )
+         .map( this.getForest()::getGrove )
+         .flatMap( Grove::stream )
          .forEach
          (
             ( groveThing ) ->
@@ -1166,57 +908,57 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
 
                                  try
                                  {
-                                    if( ( (NativeDataTypeKey) attributeDefinitionGroveThing.getLinkScalar( IdentifierType.DATA_TYPE_DEFINITION).get().getNativeThing()).isEnumerated() )
-                                    {
-
-                                       /*
-                                        * Enumerations may have multiple values and also require a reference to the data type
-                                        * definition for the enumeration member(s).
-                                        */
-
-                                       var nativeAttributeValueList = nativeArtifactReadable.getAttributeValues(nativeAttributeTypeToken);
-                                       var enumValueGroveThingList  = new ArrayList<GroveThing>(nativeAttributeValueList.size());
-                                       var nativeAttributeTypeEnum  = nativeAttributeTypeToken.toEnum();
-
-                                       nativeAttributeValueList.forEach
-                                          (
-                                             ( oseeAttributeValueEnumerationMemberString ) ->
-                                             {
-                                                var ordinal             = nativeAttributeTypeEnum.getEnumOrdinal( (String) oseeAttributeValueEnumerationMemberString );
-                                                var enumValueGroveThing = enumValueGrove.getByNativeKeys( nativeAttributeTypeToken.getId(), ordinal );
-
-                                                enumValueGroveThingList.add(enumValueGroveThing.get());
-                                             }
-                                          );
-
-                                       /*
-                                        * For enumerations the native thing is a list (possibly empty) of references to the
-                                        * enumeration member data type definitions.
-                                        */
-
-                                       attributeValueGroveThing.setNativeThings(enumValueGroveThingList);
-
-                                    }
-                                    else
-                                    {
-                                       /*
-                                        * Non-enumerated value. A single value for the attribute is expected. An exception will
-                                        * be thrown if the attribute does not have a value or has more than one value.
-                                        */
-
-                                       var nativeAttributeValue = nativeArtifactReadable.getSoleAttributeValue(nativeAttributeTypeToken);
-
-                                       attributeValueGroveThing.setNativeThings(nativeAttributeValue);
-                                    }
+                                 if( ( (NativeDataTypeKey) attributeDefinitionGroveThing.getLinkScalar( IdentifierType.DATA_TYPE_DEFINITION).get().getNativeThing()).isEnumerated() )
+                                 {
 
                                     /*
-                                     * The attributeValueGroveThing is added to the grove as the last thing so that any
-                                     * exceptions that might occur during the attribute value processing will just result in the
-                                     * attribute value being skipped instead of an incomplete attributeValueGroveThing having
-                                     * been added to the grove.
+                                     * Enumerations may have multiple values and also require a reference to the data type
+                                     * definition for the enumeration member(s).
                                      */
 
-                                    attributeValueGrove.add( attributeValueGroveThing );
+                                    var nativeAttributeValueList = nativeArtifactReadable.getAttributeValues(nativeAttributeTypeToken);
+                                    var enumValueGroveThingList  = new ArrayList<GroveThing>(nativeAttributeValueList.size());
+                                    var nativeAttributeTypeEnum  = nativeAttributeTypeToken.toEnum();
+
+                                    nativeAttributeValueList.forEach
+                                       (
+                                          ( oseeAttributeValueEnumerationMemberString ) ->
+                                          {
+                                             var ordinal             = nativeAttributeTypeEnum.getEnumOrdinal( (String) oseeAttributeValueEnumerationMemberString );
+                                             var enumValueGroveThing = enumValueGrove.getByNativeKeys( nativeAttributeTypeToken.getId(), ordinal );
+
+                                             enumValueGroveThingList.add(enumValueGroveThing.get());
+                                          }
+                                       );
+
+                                    /*
+                                     * For enumerations the native thing is a list (possibly empty) of references to the
+                                     * enumeration member data type definitions.
+                                     */
+
+                                    attributeValueGroveThing.setNativeThings(enumValueGroveThingList);
+
+                                 }
+                                 else
+                                 {
+                                    /*
+                                     * Non-enumerated value. A single value for the attribute is expected. An exception will
+                                     * be thrown if the attribute does not have a value or has more than one value.
+                                     */
+
+                                    var nativeAttributeValue = nativeArtifactReadable.getSoleAttributeValue(nativeAttributeTypeToken);
+
+                                    attributeValueGroveThing.setNativeThings(nativeAttributeValue);
+                                 }
+
+                                 /*
+                                  * The attributeValueGroveThing is added to the grove as the last thing so that any
+                                  * exceptions that might occur during the attribute value processing will just result in the
+                                  * attribute value being skipped instead of an incomplete attributeValueGroveThing having
+                                  * been added to the grove.
+                                  */
+
+                                 attributeValueGrove.add(attributeValueGroveThing);
                                  }
                                  catch( UnknownAttributeTypeTokenException uatte )
                                  {

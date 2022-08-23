@@ -59,18 +59,6 @@ interface Store extends ToMessage {
    Optional<GroveThing> get(Object... keys);
 
    /**
-    * When the lowest rank key (highest key set array index) uniquely identifies the {@link GroveThing} the
-    * {@link Store} implementation may also provide an association map that allows retrieval of the {@link GroveThing}
-    * with just the unique key.
-    *
-    * @param key the unique key.
-    * @return if an association exists between the provided <code>key</code> and a {@link GroveThing}, an
-    * {@link Optional} containing the associated {@link GroveThing}; otherwise, an empty {@link Optional}.
-    */
-
-   Optional<GroveThing> getByUniqueKey(Object key);
-
-   /**
     * Gets the {@link StoreType} of the store.
     *
     * @return the {@link StoreType}.

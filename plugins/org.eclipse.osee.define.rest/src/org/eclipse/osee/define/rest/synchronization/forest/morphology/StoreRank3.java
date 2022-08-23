@@ -15,16 +15,18 @@ package org.eclipse.osee.define.rest.synchronization.forest.morphology;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.define.rest.synchronization.util.HierarchyTree;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
@@ -69,13 +71,12 @@ class StoreRank3 implements Store {
    private final Predicate<Object>[] keyValidators;
 
    /**
-    * A {@link Map} of the lowest rank keys and the {@link GroveThing}s added to the {@link Store}. This map is used to
+    * A set of the {@link Identifier}s for each {@link GroveThing} added to the {@link Store}. This set is used to
     * detect when a duplicate {@link GroveThing} is being added to the {@link Store}. This is used to prevent a
-    * {@link GroveThing} from being added to more than one of the hierarchy trees. It is also used to provide the unique
-    * key lookup of {@link GroveThing}s.
+    * {@link GroveThing} from being added to more than one of the hierarchy trees.
     */
 
-   private final Map<Object, GroveThing> uniquePrimaryKeyMap;
+   private final Set<Identifier> quickDuplicateSet;
 
    /**
     * Saves the {@link StoreType} which contains a {@link Function} used to extract the map keys from a
@@ -98,19 +99,13 @@ class StoreRank3 implements Store {
 
    @SuppressWarnings("unchecked")
    public StoreRank3(StoreType storeType, Predicate<Object> primaryKeyValidator, Predicate<Object> secondaryKeyValidator, Predicate<Object> tertiaryKeyValidator) {
-      //@formatter:off
-      assert
-              Objects.nonNull( storeType )
-           && StoreType.PRIMARY_HIERARCHY.equals( storeType )
-         : "StoreRank3::new, parameter \"storeType\" is invalid.";
-      //@formatter:on
       this.storeType = storeType;
       this.keyValidators = new Predicate[] {
          Objects.requireNonNull(primaryKeyValidator),
          Objects.requireNonNull(secondaryKeyValidator),
          Objects.requireNonNull(tertiaryKeyValidator)};
-      this.hierarchyTrees = new HashMap<>(1024, 0.75f);
-      this.uniquePrimaryKeyMap = new HashMap<>(1024, 0.75f);
+      this.hierarchyTrees = new HashMap<>();
+      this.quickDuplicateSet = new HashSet<>();
    }
 
    /**
@@ -142,7 +137,7 @@ class StoreRank3 implements Store {
 
          var key = groveThing.getIdentifier();
 
-         if (this.uniquePrimaryKeyMap.containsKey(key)) {
+         if (this.quickDuplicateSet.contains(key)) {
             throw new DuplicateStoreEntryException(this, groveThing);
          }
 
@@ -151,7 +146,7 @@ class StoreRank3 implements Store {
          hierarchyTree.setRoot(key, groveThing);
 
          this.hierarchyTrees.put(key, hierarchyTree);
-         this.uniquePrimaryKeyMap.put(key, groveThing);
+         this.quickDuplicateSet.add(key);
 
       } else {
          groveThing.getPrimaryKeys().ifPresent(keys -> {
@@ -172,7 +167,7 @@ class StoreRank3 implements Store {
                         .append( groveThing ).append( "\n" );
             //@formatter:on
 
-            if (this.uniquePrimaryKeyMap.containsKey(keys[2])) {
+            if (this.quickDuplicateSet.contains(keys[2])) {
                throw new DuplicateStoreEntryException(this, groveThing);
             }
 
@@ -185,7 +180,7 @@ class StoreRank3 implements Store {
             }
 
             hierarchyTree.insertLast((Identifier) keys[1], (Identifier) keys[2], groveThing);
-            this.uniquePrimaryKeyMap.put(keys[2], groveThing);
+            this.quickDuplicateSet.add((Identifier) keys[2]);
          });
       }
    }
@@ -282,25 +277,6 @@ class StoreRank3 implements Store {
          default:
             throw new IllegalArgumentException();
       }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Optional<GroveThing> getByUniqueKey(Object uniqueKey) {
-
-      //@formatter:off
-      assert
-              Objects.nonNull( uniqueKey )
-           && (    Objects.isNull( this.keyValidators )
-                || Objects.isNull( this.keyValidators[1])
-                || this.keyValidators[1].test( uniqueKey ) )
-         : "StoreRank3::getByUniqueKey, key failed validation.";
-      //@formatter:on
-
-      return Optional.ofNullable(this.uniquePrimaryKeyMap.get(uniqueKey));
    }
 
    /**
@@ -482,9 +458,7 @@ class StoreRank3 implements Store {
 
       //@formatter:off
       return
-         this.streamKeysAtAndBelow(keys)
-            .map    ( this.uniquePrimaryKeyMap::get )
-            .filter ( Objects::nonNull )
+         this.stream( keys )
             .map    ( GroveThing::getPrimaryKeys )
             .filter ( Optional::isPresent )
             .map    ( Optional::get )
@@ -505,7 +479,6 @@ class StoreRank3 implements Store {
                          }
                          return keyArray;
                       });
-       //@formatter:on
    }
 
    /**

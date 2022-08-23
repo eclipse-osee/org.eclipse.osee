@@ -25,12 +25,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType;
+import org.eclipse.osee.define.rest.synchronization.IdentifierTypeGroup;
 import org.eclipse.osee.define.rest.synchronization.LinkType;
 import org.eclipse.osee.define.rest.synchronization.UnexpectedGroveThingTypeException;
+import org.eclipse.osee.define.rest.synchronization.IdentifierType.Identifier;
 import org.eclipse.osee.define.rest.synchronization.forest.GroveThing;
-import org.eclipse.osee.define.rest.synchronization.identifier.Identifier;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
-import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
@@ -245,7 +245,6 @@ public class AbstractGroveThing implements GroveThing {
    //@formatter:on
 
       //@formatter:off
-
       /*
        * Assert the constructor parameters are sane:
        * * Identifier is non-null
@@ -253,29 +252,37 @@ public class AbstractGroveThing implements GroveThing {
        * * parents array if non-null and non-empty is a valid size with valid contents
        */
 
-      var reason =
-         Objects.isNull( groveThingKey )
-            ? "AbstractGroveThing constructor GroveThingKey is null."
-            : (    ( primaryRank < AbstractGroveThing.minGroveThingRank )
-                || ( primaryRank > AbstractGroveThing.maxGroveThingRank ) )
-                 ? "AbstractGroveThing constructor Priamry Rank is out of range."
-               : (    ( nativeRank < AbstractGroveThing.minNativeGroveThingRank )
-                   || ( nativeRank > AbstractGroveThing.maxNativeGroveThingRank ) )
-                    ? "AbstractGroveThing constructor Priamry Rank is out of range."
-                    : Objects.isNull( linkRank )
-                         ? "AbstractGroveThing constructor Link Rank is null."
-                         : Objects.isNull( parentsValidator )
-                            ? "AbstractGroveThing constructor Parent Validator is null."
-                            : !parentsValidator.test( parents )
-                                 ? "AbstractGroveThing constructor parents failed to validate."
-                                 : Objects.isNull( nativeThingValidator )
-                                      ? "AbstractGroveThing constructor Native Thing Validator is null."
-                                      : null;
-      //@formatter:on
+      assert
+            Objects.nonNull( groveThingKey )
+         : "AbstractGroveThing constructor GroveThingKey is null.";
 
-      if (Objects.nonNull(reason)) {
-         throw new GroveThingCreationException(reason, groveThingKey, primaryRank, nativeRank, parents);
-      }
+      assert
+            ( primaryRank >= AbstractGroveThing.minGroveThingRank       )
+         && ( primaryRank <= AbstractGroveThing.maxGroveThingRank       )
+         : "AbstractGroveThing constructor Priamry Rank is out of range.";
+
+      assert
+            ( nativeRank  >= AbstractGroveThing.minNativeGroveThingRank )
+         && ( nativeRank  <= AbstractGroveThing.maxNativeGroveThingRank )
+         : "AbstractGroveThing constructor Priamry Rank is out of range.";
+
+      assert
+           Objects.nonNull( linkRank )
+         : "AbstractGroveThing constructor Link Rank is null.";
+
+      assert
+           Objects.nonNull( parentsValidator )
+         : "AbstractGroveThing constructor Parent Validator is null.";
+
+      assert
+           parentsValidator.test( parents )
+         : "AbstractGroveThing constructor parents failed to validate.";
+
+      assert
+           Objects.nonNull( nativeThingValidator )
+         : "AbstractGroveThing constructor Native Thing Validator is null.";
+
+      //@formatter:on
 
       this.primaryRank = primaryRank;
       this.nativeRank = nativeRank;
@@ -521,40 +528,23 @@ public class AbstractGroveThing implements GroveThing {
 
    /**
     * {@inheritDoc}
-    *
-    * @throws NullPointerException {@inheritDoc}
-    * @throws IllegalStateException {@inheritDoc}
     */
 
    @Override
    public void setForeignHierarchy(Object foreignHierarchy) {
-
-      if (Objects.nonNull(this.foreignHierarchy)) {
-         throw new IllegalStateException(
-            "AbstractGroveThing::setForeignHierarchy, attempt to set member \"foreignHierarchy\" when already set.");
-      }
-
-      this.foreignHierarchy = Objects.requireNonNull(foreignHierarchy);
+      this.foreignHierarchy = foreignHierarchy;
    }
 
    /**
     * {@inheritDoc}
-    *
-    * @throws NullPointerException {@inheritDoc}
-    * @throws IllegalStateException {@inheritDoc}
     */
 
    @Override
-   public GroveThing setForeignThing(Object foreignThing) {
+   public void setForeignThing(Object foreignThing) {
+      assert Objects.nonNull(foreignThing);
+      assert Objects.isNull(this.foreignThing);
 
-      if (Objects.nonNull(this.foreignThing)) {
-         throw new IllegalStateException(
-            "AbstractGroveThing::setForeignThing, attempt to set member \"foreignThing\" when already set.");
-      }
-
-      this.foreignThing = Objects.requireNonNull(foreignThing);
-
-      return this;
+      this.foreignThing = foreignThing;
    }
 
    /**
