@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.column.ev.WorkPackageTypeColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
+import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;

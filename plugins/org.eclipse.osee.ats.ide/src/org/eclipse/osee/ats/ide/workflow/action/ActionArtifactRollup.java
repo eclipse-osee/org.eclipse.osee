@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -36,7 +35,6 @@ public class ActionArtifactRollup {
 
    private final IAtsAction action;
    private final AtsApiIde atsApi;
-   private static AttributeTypeToken priorityAttrType;
 
    public ActionArtifactRollup(IAtsAction action) {
       this.action = action;
@@ -133,21 +131,8 @@ public class ActionArtifactRollup {
       }
    }
 
-   private AttributeTypeToken getPrioirtyAttrType() {
-      if (priorityAttrType == null) {
-         for (IAtsDatabaseTypeProvider provider : atsApi.getDatabaseTypeProviders()) {
-            if (provider.useFactory()) {
-               priorityAttrType = provider.getPriorityAttrType();
-               return priorityAttrType;
-            }
-         }
-         priorityAttrType = AtsAttributeTypes.Priority;
-      }
-      return priorityAttrType;
-   }
-
    private void resetPriorityOffChildren() {
-      AttributeTypeToken attrType = getPrioirtyAttrType();
+      AttributeTypeToken attrType = AtsAttributeTypes.Priority;
       String priorityType = null;
       Collection<IAtsTeamWorkflow> teamArts = atsApi.getWorkItemService().getTeams(action);
       if (teamArts.size() == 1) {

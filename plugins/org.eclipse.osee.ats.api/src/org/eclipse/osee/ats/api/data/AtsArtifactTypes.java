@@ -250,7 +250,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(OriginatingPcrId)
       .zeroOrOne(PcrToolId)
       .zeroOrOne(PercentRework)
-      .zeroOrOne(Priority, Priority.Priority5)
+      .zeroOrOne(PointsAttributeType)
+      .zeroOrOne(Priority)
       .zeroOrOne(Problem)
       .zeroOrOne(ProductLineApprovedBy)
       .zeroOrOne(ProductLineApprovedDate)
@@ -274,7 +275,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType)
       .zeroOrOne(NeedBy)
-      .zeroOrOne(Priority, Priority.Priority5));
+      .zeroOrOne(Priority));
 
    ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, TASK, AbstractWorkflowArtifact)
       .zeroOrOne(RelatedToState)

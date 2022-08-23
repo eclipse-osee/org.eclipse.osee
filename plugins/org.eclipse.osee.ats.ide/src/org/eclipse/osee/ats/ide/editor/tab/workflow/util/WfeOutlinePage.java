@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -160,7 +161,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
          if (element instanceof WorkDefinitionViewer) {
             items.add(((WorkDefinitionViewer) element).getWorkDef());
          } else if (element instanceof WrappedChangeTypes) {
-            items.addAll(((WrappedChangeTypes) element).getTypes());
+            items.addAll(((WrappedChangeTypes) element).getChangeTypes());
+         } else if (element instanceof WrappedPriorities) {
+            items.addAll(((WrappedPriorities) element).getPriorities());
          } else if (element instanceof WorkflowEditor) {
             items.add(((WorkflowEditor) element).getWorkItem());
             items.add(new WrappedStateItems(AtsApiService.get().getWorkItemService().getWorkItemHooks()));
@@ -221,6 +224,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ((HeaderDefinition) element).getWorkDefinition();
          } else if (element instanceof WrappedChangeTypes) {
             return workflowEditor.getWorkItem().getWorkDefinition();
+         } else if (element instanceof WrappedPriorities) {
+            return workflowEditor.getWorkItem().getWorkDefinition();
          } else if (element instanceof String) {
             return workflowEditor != null ? workflowEditor : workDefViewer;
          }
@@ -260,7 +265,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
             }
             return false;
          } else if (element instanceof WrappedChangeTypes) {
-            return !((WrappedChangeTypes) element).getTypes().isEmpty();
+            return !((WrappedChangeTypes) element).getChangeTypes().isEmpty();
+         } else if (element instanceof WrappedPriorities) {
+            return !((WrappedPriorities) element).getPriorities().isEmpty();
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
          } else if (element instanceof WrappedDecisionReviews) {
@@ -397,6 +404,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromWorkDefinition(WorkDefinition workDef, List<Object> items) {
          items.add(new WrappedChangeTypes(workDef));
+         items.add(new WrappedPriorities(workDef));
          try {
             items.add(workDef.getHeaderDef());
          } catch (OseeStateException ex) {
@@ -509,8 +517,31 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
       }
 
-      public Collection<ChangeTypes> getTypes() {
+      public Collection<ChangeTypes> getChangeTypes() {
          return workDef.getChangeTypes();
+      }
+
+   }
+
+   private class WrappedPriorities {
+      private final String name = "Priorities";
+      private final WorkDefinition workDef;
+
+      public WrappedPriorities(WorkDefinition workDef) {
+         this.workDef = workDef;
+      }
+
+      @Override
+      public String toString() {
+         if (workDef.getPriorities() != null) {
+            return name + (workDef.getPriorities().isEmpty() ? " (Empty)" : "");
+         } else {
+            return name;
+         }
+      }
+
+      public Collection<Priorities> getPriorities() {
+         return workDef.getPriorities();
       }
    }
 
@@ -722,6 +753,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.WORKFLOW_DEFINITION);
          } else if (element instanceof WrappedChangeTypes) {
             return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
+         } else if (element instanceof WrappedPriorities) {
+            return ImageManager.getImage(FrameworkImage.PAGE);
          } else if (element instanceof ChangeTypes) {
             return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
          }

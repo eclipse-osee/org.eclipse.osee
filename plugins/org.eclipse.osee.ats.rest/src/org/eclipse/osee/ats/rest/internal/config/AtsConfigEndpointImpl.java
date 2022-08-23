@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;

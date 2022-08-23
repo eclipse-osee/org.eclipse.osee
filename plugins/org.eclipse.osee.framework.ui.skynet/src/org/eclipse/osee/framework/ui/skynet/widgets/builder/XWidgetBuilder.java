@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -311,6 +312,24 @@ public class XWidgetBuilder {
       currItem.setXWidgetName("XHyperlinkChangeTypeSelection");
       String string = Collections.toString(";", ChangeTypes.DEFAULT_CHANGE_TYPES);
       currItem.addParameter("ChangeType", string);
+      return this;
+   }
+
+   public XWidgetBuilder andPriority() {
+      newXWidget();
+      currItem.setName("Priority");
+      currItem.setXWidgetName("XHyperlinkPrioritySelection");
+      String string = Collections.toString(";", Priorities.DEFAULT_PRIORITIES);
+      currItem.addParameter("Priority", string);
+      return this;
+   }
+
+   public XWidgetBuilder andPriority(List<Priorities> priorities) {
+      newXWidget();
+      currItem.setName("Priority");
+      currItem.setXWidgetName("XHyperlinkPrioritySelection");
+      String string = Collections.toString(";", priorities);
+      currItem.addParameter("Priority", string);
       return this;
    }
 

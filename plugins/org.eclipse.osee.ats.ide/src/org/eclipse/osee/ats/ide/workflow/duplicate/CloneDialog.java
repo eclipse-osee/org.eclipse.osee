@@ -103,7 +103,7 @@ public class CloneDialog extends XWidgetsDialog {
    }
 
    private String getPriorityOptions() {
-      return Collections.toString(",", AtsAttributeTypes.Priority.getEnumStrValues());
+      return Collections.toString(",", atsApi.getWorkItemService().getPrioritiesOptions(teamWf));
    }
 
    private String getChangeTypeOptions() {

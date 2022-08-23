@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -19,9 +19,9 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.workflow.chgtype.ChangeTypeDialog;
+import org.eclipse.osee.ats.ide.workflow.priority.PriorityDialog;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -40,30 +40,30 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlinkChangeTypeSelection extends GenericXWidget {
+public class XHyperlinkPrioritySelection extends GenericXWidget {
 
-   public static final String WIDGET_ID = XHyperlinkChangeTypeSelection.class.getSimpleName();
+   public static final String WIDGET_ID = XHyperlinkPrioritySelection.class.getSimpleName();
 
    protected Hyperlink labelHyperlink;
    protected Label labelWidget;
    protected Label valueLabel;
    protected Composite comp;
    protected boolean includeColon = true;
-   protected ChangeTypes selected = ChangeTypes.None;
-   protected final List<ChangeTypes> changeTypes = new ArrayList<>();;
+   protected Priorities selected = Priorities.None;
+   protected final List<Priorities> priorities = new ArrayList<>();;
 
-   public XHyperlinkChangeTypeSelection() {
+   public XHyperlinkPrioritySelection() {
       this("");
    }
 
-   public XHyperlinkChangeTypeSelection(String label) {
+   public XHyperlinkPrioritySelection(String label) {
       super(label);
    }
 
-   public XHyperlinkChangeTypeSelection(String label, ChangeTypes... changeTypes) {
+   public XHyperlinkPrioritySelection(String label, Priorities... priorities) {
       super(label);
-      for (ChangeTypes type : changeTypes) {
-         this.changeTypes.add(type);
+      for (Priorities type : priorities) {
+         this.priorities.add(type);
       }
    }
 
@@ -71,7 +71,7 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
     * Override this method to provide changing value
     */
    public String getCurrentValue() {
-      if (selected == null || selected.equals(ChangeTypes.None)) {
+      if (selected == null || selected.equals(Priorities.None)) {
          return "Not Set";
       }
       return selected.name();
@@ -109,11 +109,7 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
             @Override
             public void handleEvent(Event event) {
                if (event.button == 1) {
-                  ChangeTypeDialog dialog = new ChangeTypeDialog(null, getChangeTypes());
-                  // TBD - select default?  need to add to workDef if desired
-                  //                     if (defaultChgType != null) {
-                  //                        dialog.setSelected(defaultChgType);
-                  //                     }
+                  PriorityDialog dialog = new PriorityDialog(null, getPriorities());
                   if (dialog.open() == Window.OK) {
                      selected = dialog.getSelected();
                      handleSelected(selected);
@@ -150,11 +146,11 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
       refresh();
    }
 
-   protected List<ChangeTypes> getChangeTypes() {
-      return changeTypes;
+   protected List<Priorities> getPriorities() {
+      return priorities;
    }
 
-   protected void handleSelected(ChangeTypes selected) {
+   protected void handleSelected(Priorities selected) {
       refresh();
       notifyXModifiedListeners();
    }
@@ -221,40 +217,40 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
    }
 
    public void setSelected(String name) {
-      for (ChangeTypes type : changeTypes) {
-         if (name.equals(type.name())) {
-            selected = type;
+      for (Priorities pri : priorities) {
+         if (name.equals(pri.name())) {
+            selected = pri;
             break;
          }
       }
       refresh();
    }
 
-   public void setSelectable(Collection<ChangeTypes> changeTypes) {
-      this.changeTypes.clear();
-      this.changeTypes.addAll(changeTypes);
+   public void setSelectable(Collection<Priorities> priorities) {
+      this.priorities.clear();
+      this.priorities.addAll(priorities);
    }
 
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();
-      if (isRequiredEntry() && (selected == null || selected == ChangeTypes.None)) {
-         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must Select Change Type");
+      if (isRequiredEntry() && (selected == null || selected == Priorities.None)) {
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Must Select Priority");
       }
       return status;
    }
 
-   public ChangeTypes getSelected() {
+   public Priorities getSelected() {
       return selected;
    }
 
-   public void setSelected(ChangeTypes selected) {
+   public void setSelected(Priorities selected) {
       this.selected = selected;
       refresh();
    }
 
-   public List<ChangeTypes> getSelectable() {
-      return changeTypes;
+   public List<Priorities> getSelectable() {
+      return priorities;
    }
 
    @Override

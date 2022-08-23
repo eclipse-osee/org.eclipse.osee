@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -42,10 +43,10 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
+import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -55,7 +56,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -90,8 +90,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    protected static final String NEED_BY = "Need By";
    protected XText titleWidget;
    protected XText descWidget;
-   protected XHyperlinkChangeTypeSelection changeWidget;
-   protected XHyperlinkWfdForEnumAttr priorityWidget;
+   protected XHyperlinkChangeTypeSelection changeTypeWidget;
+   protected XHyperlinkPrioritySelection priorityWidget;
    protected XHyperlabelActionableItemSelection aiWidget;
    protected final AtsApi atsApi;
    protected XWidgetBuilder wb;
@@ -141,8 +141,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          log("Invalid Change Type");
       }
 
-      String priority = variableMap.getString(PRIORITY);
-      if (Strings.isInValid(priority)) {
+      Priorities priority = (Priorities) variableMap.getValue(PRIORITY);
+      if (priority == null) {
          log("Select Priority");
          valid = false;
       }
@@ -160,8 +160,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
       IAtsChangeSet changes = atsApi.createChangeSet(getName());
       actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priority, false, needBy, actionableItems, new Date(), atsApi.getUserService().getCurrentUser(),
-         Collections.singleton(this), changes);
+         cType, priority.getName(), false, needBy, actionableItems, new Date(),
+         atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
 
       if (actionResult.getResults().isErrors()) {
          XResultDataUI.report(actionResult.getResults(), getTitle());
@@ -193,7 +193,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
       addWidgetsAfterDescription(wb);
       wb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
-      wb.andXHyperLinkEnumAttr(getPriorityAttr()).andRequired().endWidget();
+      wb.andPriority().andRequired().endWidget();
       addWidgetAfterPriority();
       wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endWidget();
       return wb.getItems();
@@ -290,10 +290,10 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       } else if (xWidget.getLabel().equals(DESCRIPTION)) {
          descWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
-         changeWidget = (XHyperlinkChangeTypeSelection) xWidget;
-         setChangeTypeWidget(changeWidget);
+         changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
+         setChangeTypeWidget(changeTypeWidget);
       } else if (xWidget.getLabel().equals(PRIORITY)) {
-         priorityWidget = (XHyperlinkWfdForEnumAttr) xWidget;
+         priorityWidget = (XHyperlinkPrioritySelection) xWidget;
       } else if (xWidget instanceof XHyperlabelActionableItemSelection) {
          aiWidget = (XHyperlabelActionableItemSelection) xWidget;
          aiWidget.addXModifiedListener(new XModifiedListener() {
@@ -301,6 +301,18 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
             @Override
             public void widgetModified(XWidget widget) {
                updateTeamComposites();
+
+               Collection<IAtsActionableItem> ais = aiWidget.getSelectedActionableItems();
+               if (!ais.isEmpty()) {
+                  IAtsActionableItem ai = ais.iterator().next();
+
+                  List<ChangeTypes> changeTypeOptions = atsApi.getWorkItemService().getChangeTypeOptions(ai);
+                  changeTypeWidget.setSelectable(changeTypeOptions);
+
+                  List<Priorities> priorityOptions = atsApi.getWorkItemService().getPrioritiesOptions(ai);
+                  priorityWidget.setSelectable(priorityOptions);
+               }
+
             }
          });
       }
@@ -334,17 +346,19 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          for (IAtsActionableItem ai : atsApi.getConfigService().getConfigurations().getIdToAi().values()) {
             if (ai.getName().equals("ATS")) {
                ais.add(ai);
-            }
-            if (ai.getName().equals("SAW Requirements")) {
+            } else if (ai.getName().equals("SAW Requirements")) {
+               ais.add(ai);
+            } else if (ai.getName().contains("Requirements")) {
                ais.add(ai);
             }
          }
          aiWidget.setSelectedAIs(ais);
          titleWidget.set(title);
          descWidget.set("Description...");
-         Collection<ChangeTypes> cTypes = setChangeTypeWidget(changeWidget);
-         changeWidget.setSelected(cTypes.iterator().next().name());
-         priorityWidget.setSelected("1");
+         Collection<ChangeTypes> cTypes = setChangeTypeWidget(changeTypeWidget);
+         changeTypeWidget.setSelected(cTypes.iterator().next().name());
+         List<Priorities> selectable = priorityWidget.getSelectable();
+         priorityWidget.setSelected(selectable.iterator().next());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -433,10 +447,6 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    protected int getChangeTypeRowColumns() {
       return 6;
-   }
-
-   protected AttributeTypeToken getPriorityAttr() {
-      return AtsAttributeTypes.Priority;
    }
 
 }

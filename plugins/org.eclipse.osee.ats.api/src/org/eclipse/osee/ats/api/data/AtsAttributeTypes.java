@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewFormalTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.RiskAnalysisAttributeType;
@@ -149,7 +148,7 @@ public interface AtsAttributeTypes {
    PointAttributeType Points = ats.createEnum(new PointAttributeType());
    AttributeTypeString PointsAttributeType = ats.createString(1152921573057888257L, "ats.Points Attribute Type", MediaType.TEXT_PLAIN, "Used to store the agile points type name (ats.Points or ats.Points Numeric).");
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", MediaType.TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.", DisplayHint.SingleLine);
-   PriorityAttributeType Priority = ats.createEnum(new PriorityAttributeType());
+   AttributeTypeString Priority = ats.createString(1152921504606847179L, "ats.Priority", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", MediaType.TEXT_PLAIN, "Problem found during analysis.", DisplayHint.MultiLine);
    AttributeTypeDate ProblemFirstObserved = ats.createDate(8431670117014503949L, "ats.Problem First Observed", AttributeTypeToken.TEXT_CALENDAR, "Date of Problem First Observed");
    AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
