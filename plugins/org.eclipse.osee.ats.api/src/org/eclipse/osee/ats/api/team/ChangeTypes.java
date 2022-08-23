@@ -118,4 +118,12 @@ public class ChangeTypes extends OseeEnum {
       }
       return vals;
    }
+
+   public static List<String> getValuesStrs() {
+      List<String> vals = new ArrayList<>();
+      for (ChangeTypes type : values) {
+         vals.add(type.name());
+      }
+      return vals;
+   }
 }

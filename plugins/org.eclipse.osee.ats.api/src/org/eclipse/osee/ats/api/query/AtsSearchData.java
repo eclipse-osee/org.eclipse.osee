@@ -34,6 +34,7 @@ public class AtsSearchData {
    @JsonSerialize(using = ToStringSerializer.class)
    private Long id; // id of this AtsSearchData, not id of something to search
    private String searchName = "";
+   private String changeType = "";
    private String userId = "";
    private String title = "";
    private List<StateType> stateTypes;
@@ -273,6 +274,14 @@ public class AtsSearchData {
 
    public void setAttrValues(AttributeValues attrValues) {
       this.attrValues = attrValues;
+   }
+
+   public String getChangeType() {
+      return changeType;
+   }
+
+   public void setChangeType(String changeType) {
+      this.changeType = changeType;
    }
 
 }
