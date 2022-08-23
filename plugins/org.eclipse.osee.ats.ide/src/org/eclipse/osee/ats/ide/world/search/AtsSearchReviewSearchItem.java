@@ -74,8 +74,9 @@ public class AtsSearchReviewSearchItem extends AtsSearchWorkflowSearchItem {
       getTitle().addWidget();
       getAi().addWidget(3);
       getTeamDef().addWidget(2);
-      getVersion().addWidget(8);
+      getVersion().addWidget(4);
       getStateType().addWidget();
+      getChangeType().addWidget(6);
       getUser().addWidget();
       getUserType().addWidget();
       getStateName().addWidget();

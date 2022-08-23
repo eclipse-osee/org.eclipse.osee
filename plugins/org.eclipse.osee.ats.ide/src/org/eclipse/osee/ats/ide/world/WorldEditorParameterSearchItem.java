@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.AttributeValuesSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.ChangeTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.InsertionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ProgramSearchWidget;
@@ -86,6 +87,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private ActionableItemSearchWidget ai;
    private VersionSearchWidget version;
    private StateNameSearchWidget stateName;
+   private ChangeTypeSearchWidget changeType;
    private ProgramSearchWidget program;
    private InsertionSearchWidget insertion;
    private InsertionActivitySearchWidget insertionFeature;
@@ -247,6 +249,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getVersion().setupTeamDef(getTeamDef().getWidget());
       } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {
          getStateName().setup(widget);
+      } else if (widget.getLabel().equals(ChangeTypeSearchWidget.CHANGE_TYPE)) {
+         getChangeType().setup(widget);
       } else if (widget.getLabel().equals(StateTypeSearchWidget.STATE_TYPE)) {
          getStateType().setup(widget);
          getStateType().set(StateType.Working);
@@ -400,6 +404,13 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          stateName = new StateNameSearchWidget(this);
       }
       return stateName;
+   }
+
+   public ChangeTypeSearchWidget getChangeType() {
+      if (changeType == null) {
+         changeType = new ChangeTypeSearchWidget(this);
+      }
+      return changeType;
    }
 
    public ProgramSearchWidget getProgram() {
