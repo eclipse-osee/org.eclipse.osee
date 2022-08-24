@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
@@ -44,9 +43,8 @@ public class OseePerspective implements IPerspectiveFactory {
    public void defineActions(final IPageLayout layout) {
       layout.addShowViewShortcut(NavigateView.VIEW_ID);
       layout.addShowViewShortcut(ActionWalkerView.VIEW_ID);
-
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
-      layout.addShowViewShortcut(BranchView.VIEW_ID);
+      layout.addShowViewShortcut(BranchSearchView.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactTypeWalker.VIEW_ID);
       layout.addShowViewShortcut("osee.admin.AdminView");
@@ -69,12 +67,7 @@ public class OseePerspective implements IPerspectiveFactory {
       left.addView(NavigateView.VIEW_ID);
       leftBottom.addView(QuickSearchView.VIEW_ID);
       right.addView(ArtifactExplorer.VIEW_ID);
-
-      if (AtsApiService.get().getUserService().isAtsAdmin()) {
-         bottomLeft.addView(BranchSearchView.VIEW_ID);
-      } else {
-         bottomLeft.addView(BranchView.VIEW_ID);
-      }
+      bottomLeft.addView(BranchSearchView.VIEW_ID);
       bottomLeft.addView(NewSearchUI.SEARCH_VIEW_ID);
       bottomLeft.addPlaceholder(MergeView.VIEW_ID);
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
