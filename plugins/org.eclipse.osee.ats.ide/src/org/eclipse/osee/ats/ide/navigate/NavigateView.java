@@ -165,14 +165,15 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                         });
                         refreshUserLabel();
 
-                        GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-                        gridData.heightHint = 15;
+                        GridData gridData = new GridData(SWT.CENTER, SWT.TOP, true, false);
+                        gridData.heightHint = 20;
                         userLabel.setLayoutData(gridData);
 
                         xNavComp.refresh();
 
-                        parent.getParent().layout(true);
+                        xNavComp.layout(true);
                         parent.layout(true);
+                        parent.getParent().layout(true);
 
                         OseeStatusContributionItemFactory.addTo(navView, false);
                         addExtensionPointListenerBecauseOfWorkspaceLoading();
