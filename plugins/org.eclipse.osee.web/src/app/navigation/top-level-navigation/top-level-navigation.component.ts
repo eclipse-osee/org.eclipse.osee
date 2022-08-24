@@ -15,6 +15,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import navigationStructure from './top-level-navigation-structure';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 
 @Component({
   selector: 'osee-top-level-navigation',
@@ -24,6 +25,7 @@ import navigationStructure from './top-level-navigation-structure';
 export class TopLevelNavigationComponent {
 
   navElements = navigationStructure; // structure that stores the navigation elements
+  userIsAdmin = this.userService.userIsAdmin;
 
-  constructor(public router: Router) {}
+  constructor(public router: Router, private userService: UserDataAccountService) {}
 }

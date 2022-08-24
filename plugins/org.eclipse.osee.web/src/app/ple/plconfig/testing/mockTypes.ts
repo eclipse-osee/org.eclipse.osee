@@ -119,7 +119,8 @@ export const testDataUser : user = {
   artifactId: '0',
   idString: '0',
   idIntValue: 0,
-  uuid: 0
+  uuid: 0,
+  roles: []
 }
 
 export const testUsers = [{testDataUser}]

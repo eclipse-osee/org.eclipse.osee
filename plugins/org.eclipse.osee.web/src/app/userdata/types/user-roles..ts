@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,11 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { UserDataAccountService } from "src/app/userdata/services/user-data-account.service";
-import { testDataUser } from "./mockTypes";
-
-export const userDataAccountServiceMock: Partial<UserDataAccountService> = {
-    user:of(testDataUser),
-    userIsAdmin:of(true)
-  }
+export enum UserRoles {
+    OSEE_ADMIN = '52247'
+}

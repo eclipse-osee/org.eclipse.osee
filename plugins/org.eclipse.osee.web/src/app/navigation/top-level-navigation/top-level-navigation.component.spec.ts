@@ -17,6 +17,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 
 describe('TopLevelNavigationComponent', () => {
@@ -32,6 +34,9 @@ describe('TopLevelNavigationComponent', () => {
         NoopAnimationsModule,
         LayoutModule,
         RouterTestingModule
+      ],
+      providers:[
+        {provide:UserDataAccountService, useValue:userDataAccountServiceMock}
       ],
       declarations: [ TopLevelNavigationComponent ],
     })

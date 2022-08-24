@@ -26,5 +26,11 @@ export interface user {
     artifactId: string,
     idString: string,
     idIntValue: number,
-    uuid:number
+    uuid:number,
+    roles: userRole[]
+}
+
+export interface userRole {
+    id: string,
+    name: string
 }
