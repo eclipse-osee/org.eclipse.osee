@@ -21,6 +21,7 @@ export interface navigationElement {
   label: string,
   isDropdown: boolean,
   isDropdownOpen: boolean,
+  isAdminRequired: boolean,
   routerLink: string,
   children: navigationElement[]
 }
@@ -31,6 +32,7 @@ const navigationStructure:navigationElement[] = [
     label: 'Product Line Engineering',
     isDropdown: true,
     isDropdownOpen: false,
+    isAdminRequired: false,
     routerLink: '/ple',
     children: [
       // Level-2
@@ -38,6 +40,7 @@ const navigationStructure:navigationElement[] = [
         label: 'Product Line Engineering - Home',
         isDropdown: false,
         isDropdownOpen: false,
+        isAdminRequired: false,
         routerLink: '/ple',
         children:[]
       },
@@ -45,6 +48,7 @@ const navigationStructure:navigationElement[] = [
         label: 'Product Line Configuration',
         isDropdown: false,
         isDropdownOpen: false,
+        isAdminRequired: false,
         routerLink: '/ple/plconfig',
         children:[]
       },
@@ -52,6 +56,7 @@ const navigationStructure:navigationElement[] = [
         label: 'Messaging Configuration',
         isDropdown: true,
         isDropdownOpen: false,
+        isAdminRequired: false,
         routerLink: '/ple/messaging',
         children:[
           // Level-3
@@ -59,6 +64,7 @@ const navigationStructure:navigationElement[] = [
             label: 'Message Configuration - Home',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging',
             children:[]
           },
@@ -66,6 +72,7 @@ const navigationStructure:navigationElement[] = [
             label: 'Connection View',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging/connections',
             children:[]
           },
@@ -73,6 +80,7 @@ const navigationStructure:navigationElement[] = [
             label: 'Type View',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging/types',
             children:[]
           },
@@ -80,6 +88,7 @@ const navigationStructure:navigationElement[] = [
             label: 'Help Pages',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging/help',
             children:[]
           },
@@ -87,6 +96,7 @@ const navigationStructure:navigationElement[] = [
             label: 'Structure Names Page',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging/structureNames',
             children:[]
           },
@@ -94,6 +104,7 @@ const navigationStructure:navigationElement[] = [
             label: 'Find Elements by Type',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging/typeSearch',
             children:[]
           },
@@ -101,7 +112,16 @@ const navigationStructure:navigationElement[] = [
             label: 'Go to Reports',
             isDropdown: false,
             isDropdownOpen: false,
+            isAdminRequired: false,
             routerLink: '/ple/messaging/reports',
+            children:[]
+          },
+          {
+            label: 'Go to Import Page',
+            isDropdown: false,
+            isDropdownOpen: false,
+            isAdminRequired: true,
+            routerLink: '/ple/messaging/import',
             children:[]
           }
         ]

@@ -13,9 +13,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { iif, Observable, of } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
-import { apiURL, environment, OSEEAuthURL } from 'src/environments/environment';
-import { user } from '../types/user-data-user';
+import { shareReplay, switchMap } from 'rxjs/operators';
+import { environment, OSEEAuthURL } from 'src/environments/environment';
+import { user } from '../types/user-data-user.d';
+import { UserRoles } from '../types/user-roles.';
 import { UserHeaderService } from './user-header.service';
 
 @Injectable({
@@ -27,6 +28,7 @@ export class UserDataAccountService {
   private _fetchFromApi = iif(() => this.userHeaderService.useCustomHeaders,
     this.http.get<user>(OSEEAuthURL, { headers: this.userHeaderService.headers }),
     this.http.get<user>(OSEEAuthURL));
+
   private _devUser=of<user>({
     id: '61106791',
     name: 'Joe Smith',
@@ -44,7 +46,9 @@ export class UserDataAccountService {
     idString: '',
     idIntValue: 0,
     uuid: 0,
+    roles: []
   })
+
   private _user = iif(
     () => environment.production,
     this._fetchFromApi,
@@ -52,7 +56,16 @@ export class UserDataAccountService {
   ).pipe(
     shareReplay({ bufferSize: 1, refCount: true }),
   );
+
+  private _userIsAdmin = this._user.pipe(
+    switchMap(user => of(user.roles.map(u => u.id).includes(UserRoles.OSEE_ADMIN)))
+  )
+
   public get user(): Observable<user> {
     return this._user;
+  }
+
+  public get userIsAdmin() {
+    return this._userIsAdmin;
   }
 }

@@ -20,6 +20,9 @@
     <button mat-raised-button color="primary" routerLink="structureNames" class="message-button-3" data-cy="structure-nav-button">Go To Structure Names Page</button>
     <button mat-raised-button color="primary" routerLink="typeSearch" class="message-button-4" data-cy="typesearch-nav-button">Find elements by type</button>
     <button mat-raised-button color="primary" routerLink="reports" class="message-button-5" data-cy="mimreport-nav-button">Go to Reports</button>
+    <ng-container *ngIf="userIsAdmin|async">
+        <button mat-raised-button color="primary" routerLink="import" class="message-button-6" data-cy="mimimport-nav-button">Go to Import Page</button>
+    </ng-container>
     <div class="messaging-bottom">
             
     </div>

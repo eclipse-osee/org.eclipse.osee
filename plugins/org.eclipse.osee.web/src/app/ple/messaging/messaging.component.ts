@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
+import { tap } from 'rxjs/operators';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 
 @Component({
   selector: 'app-messaging',
@@ -19,9 +21,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MessagingComponent implements OnInit {
 
-  constructor() { }
+  constructor(private userService: UserDataAccountService) { }
 
   ngOnInit(): void {
   }
+
+  userIsAdmin = this.userService.userIsAdmin;
 
 }
