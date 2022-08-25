@@ -57,10 +57,6 @@ public class ActionResult {
       return arts;
    }
 
-   public Collection<IAtsTeamWorkflow> getTeams() {
-      return this.teamWfs;
-   }
-
    public IAtsTeamWorkflow getFirstTeam() {
       return teamWfs.iterator().next();
    }

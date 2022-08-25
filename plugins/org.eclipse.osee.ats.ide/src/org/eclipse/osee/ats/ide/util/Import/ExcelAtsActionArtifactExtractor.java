@@ -231,7 +231,7 @@ public class ExcelAtsActionArtifactExtractor {
                   AtsApiService.get().getActionableItemService().getActionableItems(aData.actionableItems), createdDate,
                   createdBy, null, changes);
                actionNameToAction.put(aData.title, aResult);
-               for (IAtsTeamWorkflow teamWf : aResult.getTeams()) {
+               for (IAtsTeamWorkflow teamWf : aResult.getTeamWfs()) {
                   processTeamWorkflow(changes, aData, teamWf);
                   teamWfs.add(teamWf);
                }
@@ -253,7 +253,7 @@ public class ExcelAtsActionArtifactExtractor {
                   IAtsTeamWorkflow teamWf = AtsApiService.get().getActionService().createTeamWorkflow(
                      actionResult.getAction(), entry.getKey(), entry.getValue(), aData.assignees, changes, createdDate,
                      createdBy, null, CreateTeamOption.Duplicate_If_Exists);
-                  actionResult.getTeams().add(teamWf);
+                  actionResult.getTeamWfs().add(teamWf);
                   processTeamWorkflow(changes, aData, teamWf);
                   teamWfs.add(teamWf);
                }

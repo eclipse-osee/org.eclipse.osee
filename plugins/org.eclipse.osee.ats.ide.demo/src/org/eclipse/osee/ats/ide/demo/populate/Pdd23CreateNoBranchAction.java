@@ -56,12 +56,12 @@ public class Pdd23CreateNoBranchAction implements IPopulateDemoDatabase {
       ActionResult actionResult = AtsApiService.get().getActionService().createAction(null, title,
          "Problem with the Diagram View", ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get(),
-            TransitionOption.OverrideAssigneeCheck);
+         TeamWorkFlowManager dtwm =
+            new TeamWorkFlowManager(teamWf, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
 
          if (isSwDesign) {
             // transition to analyze

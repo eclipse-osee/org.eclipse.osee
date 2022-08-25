@@ -64,15 +64,15 @@ public class FrameworkAccessTestUtil {
          String priority = "2";
 
          ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
-            DemoArtifactToken.SAW_Access_Control_Req_TeamWf.getName(), "see title", ChangeTypes.Problem, priority, false,
-            null, aias, createdDate, createdBy, Arrays.asList(new ArtifactTokenActionListener()), changes);
+            DemoArtifactToken.SAW_Access_Control_Req_TeamWf.getName(), "see title", ChangeTypes.Problem, priority,
+            false, null, aias, createdDate, createdBy, Arrays.asList(new ArtifactTokenActionListener()), changes);
 
          changes.execute();
 
          Assert.assertTrue(actionResult.getResults().isSuccess());
 
-         Assert.assertEquals(3, actionResult.getTeams().size());
-         for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+         Assert.assertEquals(3, actionResult.getTeamWfs().size());
+         for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
             if (teamWf.getTeamDefinition().equals(DemoArtifactToken.SAW_Requirements.getId())) {
                reqTeamWf = teamWf;
             } else if (teamWf.getTeamDefinition().equals(DemoArtifactToken.SAW_Code.getId())) {

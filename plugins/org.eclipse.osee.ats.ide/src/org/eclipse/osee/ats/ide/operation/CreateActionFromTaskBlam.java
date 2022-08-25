@@ -135,7 +135,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
             AtsApiService.get().getUserService().getCurrentUser(), useTitle, getDescription(task), changeType, priority,
             false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
 
-         for (IAtsTeamWorkflow teamWf : result.getTeams()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             newTeamArts.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
             changes.relate(teamWf, CoreRelationTypes.SupportingInfo_SupportingInfo, task);
             changes.add(teamWf);

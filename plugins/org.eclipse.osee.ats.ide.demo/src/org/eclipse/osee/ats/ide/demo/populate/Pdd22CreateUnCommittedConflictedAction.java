@@ -62,7 +62,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
          DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "Problem with the Diagram View",
          ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
 
          TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get(),
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -86,7 +86,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       changes.execute();
 
       TeamWorkFlowArtifact reqTeamArt = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
          if (teamWf.getTeamDefinition().getName().contains("Req")) {
             reqTeamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }

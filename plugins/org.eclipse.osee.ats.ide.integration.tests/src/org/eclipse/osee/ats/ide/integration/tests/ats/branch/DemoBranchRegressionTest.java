@@ -141,7 +141,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    private IAtsTeamWorkflow getCodeTeamWf() {
       IAtsTeamWorkflow codeWf = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
          if (teamWf.isOfType(getCodeTeamWfArtType())) {
             codeWf = teamWf;
             break;
