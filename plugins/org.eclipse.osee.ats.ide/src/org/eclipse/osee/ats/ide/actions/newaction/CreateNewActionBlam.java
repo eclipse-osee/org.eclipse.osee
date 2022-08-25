@@ -177,7 +177,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          log(actionResult.getResults().toString());
          return;
       }
-      Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeams();
+      Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeamWfs();
       if (teamWfs.size() == 1) {
          WorkflowEditor.edit(teamWfs.iterator().next());
       } else {

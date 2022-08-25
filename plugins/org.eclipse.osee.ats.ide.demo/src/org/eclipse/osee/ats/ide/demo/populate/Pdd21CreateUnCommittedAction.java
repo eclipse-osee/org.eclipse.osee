@@ -69,7 +69,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
       actionResult = AtsApiService.get().getActionService().createAction(null, title, "Problem with the Diagram View",
          ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
@@ -137,7 +137,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
       changes.execute();
 
       TeamWorkFlowArtifact reqTeamArt = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
          if (teamWf.getTeamDefinition().getName().contains("Req")) {
             reqTeamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }

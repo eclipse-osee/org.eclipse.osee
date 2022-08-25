@@ -66,7 +66,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
          DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "Problem with the Diagram View",
          ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
 
          if (teamWf.getTeamDefinition().getName().contains(
             "Req") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Req")) {
@@ -105,7 +105,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       changes.execute();
 
       TeamWorkFlowArtifact reqTeamArt = null;
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
          if (teamWf.getTeamDefinition().getName().contains("Req")) {
             reqTeamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }

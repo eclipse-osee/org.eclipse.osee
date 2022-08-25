@@ -200,7 +200,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    @Override
    public void wizardCompleted(ActionResult actionResult, IAtsChangeSet changes) {
-      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
 
          wizardCompletedAssignees(teamWf, teamDef);
