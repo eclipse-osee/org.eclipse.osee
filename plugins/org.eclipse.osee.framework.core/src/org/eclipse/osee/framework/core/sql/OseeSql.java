@@ -106,14 +106,14 @@ public enum OseeSql {
       return hints;
    }
 
-   public static Properties getSqlProperties(boolean areHintsSupported, boolean useOracleHints) {
+   public static Properties getSqlProperties(boolean areHintsSupported) {
       Properties sqlProperties = new Properties();
       for (OseeSql oseeSql : OseeSql.values()) {
          String sql;
 
          if (oseeSql.hints == null) {
             sql = oseeSql.sql;
-         } else if (areHintsSupported && useOracleHints) {
+         } else if (areHintsSupported) {
             sql = String.format(oseeSql.sql, oseeSql.hints);
          } else {
             sql = String.format(oseeSql.sql, "");
