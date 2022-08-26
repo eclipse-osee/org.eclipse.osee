@@ -54,7 +54,7 @@ public class ChangeReportTaskTeamWfData {
       String taskName = taskMatch.getTaskName();
       for (ChangeReportTaskMatch existTaskMatch : taskMatches) {
          if (existTaskMatch.getTaskName().equals(taskName)) {
-            rd.warningf("Duplicate task name found [%s]; skipping", taskName);
+            rd.warningf("Duplicate task name found [%s]; skipping\n", taskName);
             return;
          }
       }
