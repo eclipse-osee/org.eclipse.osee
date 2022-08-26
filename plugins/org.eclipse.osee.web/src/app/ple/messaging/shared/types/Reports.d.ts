@@ -20,5 +20,6 @@ export interface MimReport {
     httpMethod: HttpMethods,
     fileExtension: FileExtensions,
     fileNamePrefix: string,
-    producesMediaType: ProducesMediaType
+    producesMediaType: ProducesMediaType,
+    diffAvailable: boolean
 }

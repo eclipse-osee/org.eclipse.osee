@@ -1,0 +1,492 @@
+/*********************************************************************
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+package org.eclipse.osee.mim.internal;
+
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
+import org.eclipse.osee.mim.ICDImportApi;
+import org.eclipse.osee.mim.types.InterfaceElementImportToken;
+import org.eclipse.osee.mim.types.InterfaceEnumeration;
+import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
+import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceNode;
+import org.eclipse.osee.mim.types.InterfaceStructureToken;
+import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.MimImportSummary;
+import org.eclipse.osee.mim.types.PlatformTypeImportToken;
+
+/**
+ * @author Ryan T. Baldwin
+ */
+public class IcdImportApiImpl implements ICDImportApi {
+
+   private final ExcelWorkbookReader reader;
+   private MimImportSummary summary;
+
+   private Long id = 1L;
+
+   public IcdImportApiImpl(InputStream inputStream) {
+      this.reader = new ExcelWorkbookReader(inputStream);
+   }
+
+   @Override
+   public MimImportSummary getSummary() {
+      summary = new MimImportSummary();
+
+      reader.setActiveSheet("Message and Submessage Summary");
+
+      // Primary Node
+      String nodeName = reader.getCellStringValue(0, 0).split(" ")[0];
+      InterfaceNode primaryNode = new InterfaceNode(id, nodeName);
+      primaryNode.setApplicability(ApplicabilityToken.BASE);
+      primaryNode.setAddress("");
+      primaryNode.setColor("");
+      primaryNode.setDescription("");
+      summary.setPrimaryNode(primaryNode);
+      incrementId();
+
+      // Secondary Node
+      nodeName = reader.getCellStringValue(0, 5).split(" ")[0];
+      InterfaceNode secondaryNode = new InterfaceNode(id, nodeName);
+      secondaryNode.setApplicability(ApplicabilityToken.BASE);
+      secondaryNode.setAddress("");
+      secondaryNode.setColor("");
+      secondaryNode.setDescription("");
+      summary.setSecondaryNode(secondaryNode);
+      incrementId();
+
+      // Messages and SubMessages
+      List<String> primaryRegions = reader.getMergedRegions().stream().filter(
+         r -> r.split(":")[0].charAt(0) == 'A' && r.split(":")[1].charAt(0) == 'A').collect(Collectors.toList());
+      List<String> secondaryRegions = reader.getMergedRegions().stream().filter(
+         r -> r.split(":")[0].charAt(0) == 'F' && r.split(":")[1].charAt(0) == 'F').collect(Collectors.toList());
+
+      Map<String, Long> submessageIds = new HashMap<>();
+      for (String region : primaryRegions) {
+         String[] split = region.split(":");
+         int start = Integer.parseInt(split[0].substring(1)) - 1; // Subtract 1 due to 0-based indexing
+         int end = Integer.parseInt(split[1].substring(1)) - 1;
+         readMessage(primaryNode, start, end, 0, submessageIds);
+      }
+
+      for (String region : secondaryRegions) {
+         String[] split = region.split(":");
+         int start = Integer.parseInt(split[0].substring(1)) - 1;
+         int end = Integer.parseInt(split[1].substring(1)) - 1;
+         readMessage(secondaryNode, start, end, 5, submessageIds);
+      }
+
+      // Structures and Elements
+      reader.setActiveSheet("Structure Summary");
+      List<String> structureSheetNames = new LinkedList<>();
+      int rowIndex = 4;
+      while (reader.rowExists(rowIndex)) {
+         String nameFormula = reader.getCellHyperlinkString(rowIndex, 1);
+         String sheetName = nameFormula.split("!")[0].replace("'", "");
+         if (!sheetName.contains(" Header")) { // Skip header structures (they're auto-generated)
+            structureSheetNames.add(sheetName);
+         }
+         rowIndex++;
+      }
+
+      Map<String, InterfaceElementImportToken> elements = new HashMap<>();
+      Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
+
+      // Create a boolean type to avoid extra processing for booleans
+      platformTypes.put("boolean",
+         new PlatformTypeImportToken(id, "Boolean", "boolean", "8", "0", "1", "", "", "", "0 to 1"));
+      incrementId();
+
+      for (String sheetName : structureSheetNames) {
+         reader.setActiveSheet(sheetName);
+         InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
+         readStructureElements(structure, elements, platformTypes);
+      }
+
+      for (PlatformTypeImportToken pTypeToken : platformTypes.values()) {
+         summary.getPlatformTypes().add(pTypeToken);
+      }
+
+      // Sort messages by node and message number
+      Collections.sort(summary.getMessages(), new Comparator<InterfaceMessageToken>() {
+         @Override
+         public int compare(InterfaceMessageToken o1, InterfaceMessageToken o2) {
+            if (o1.getInitiatingNode().getName().equals(o2.getInitiatingNode().getName())) {
+               if (Integer.parseInt(o1.getInterfaceMessageNumber()) > Integer.parseInt(
+                  o2.getInterfaceMessageNumber())) {
+                  return 1;
+               } else {
+                  return -1;
+               }
+            }
+            if (o1.getInitiatingNode().getName().equals(primaryNode.getName())) {
+               return -1;
+            } else {
+               return 1;
+            }
+         }
+      });
+
+      reader.closeWorkbook();
+      return summary;
+   }
+
+   private void readMessage(InterfaceNode node, int firstRow, int lastRow, int colOffset, Map<String, Long> subMessageIdMap) {
+      String messageNumber = reader.getCellStringValue(firstRow, 0 + colOffset);
+      String rate = reader.getCellStringValue(firstRow, 1 + colOffset);
+      String write = reader.getCellStringValue(firstRow, 2 + colOffset);
+      String name = reader.getCellStringValue(firstRow, 3 + colOffset);
+
+      if (messageNumber.equals("0")) {
+         return;
+      }
+
+      String periodicity = rate.equals("Aperiodic") ? rate : "Periodic";
+      rate = rate.equals("Aperiodic") ? "1" : rate.split(" ")[0];
+
+      InterfaceMessageToken message = new InterfaceMessageToken(id, name);
+      message.setInterfaceMessageNumber("" + messageNumber);
+      message.setInterfaceMessageRate(rate);
+      message.setInterfaceMessagePeriodicity(periodicity);
+      message.setInterfaceMessageWriteAccess(write.equals("W"));
+      message.setApplicability(ApplicabilityToken.BASE);
+      message.setInitiatingNode(node);
+      message.setInterfaceMessageType("Operational");
+      message.setDescription("");
+      incrementId();
+
+      List<String> subMessageIds = new LinkedList<>();
+      int subMsgNum = 1;
+      for (int i = firstRow + 2; i <= lastRow; i++) {
+         String label = reader.getCellStringValue(i, 3 + colOffset);
+         if (label == null || !label.contains("Submessage")) {
+            break;
+         }
+         String subMessageName = reader.getCellStringValue(i, 4 + colOffset);
+         InterfaceSubMessageToken subMessage = new InterfaceSubMessageToken(id, subMessageName);
+         subMessage.setApplicability(ApplicabilityToken.BASE);
+         subMessage.setInterfaceSubMessageNumber("" + subMsgNum);
+         subMessage.setDescription("");
+         subMessageIds.add("" + id);
+         subMessageIdMap.put(getSubMessageMapKey(messageNumber, subMsgNum + "", node.getName()), id);
+         incrementId();
+         summary.getSubMessages().add(subMessage);
+         subMsgNum++;
+
+      }
+      summary.getMessageSubmessageRelations().put(message.getIdString(), subMessageIds);
+      summary.getMessages().add(message);
+   }
+
+   private InterfaceStructureToken readStructure(InterfaceNode primaryNode, InterfaceNode secondaryNode, Map<String, Long> subMessageIdMap) {
+      int structureRow = 1;
+      String name = reader.getCellStringValue(structureRow, 1);
+      String category = reader.getCellStringValue(structureRow, 4);
+      String txRate = reader.getCellValue(structureRow, 5).toString();
+      String minSim = reader.getCellValue(structureRow, 6).toString();
+      String maxSim = reader.getCellValue(structureRow, 7).toString();
+      String nodeName = reader.getCellStringValue(structureRow, 10);
+      String msgNum = reader.getCellStringValue(structureRow, 11);
+      String subMsgNum = reader.getCellStringValue(structureRow, 12);
+      String taskfileType = reader.getCellValue(structureRow, 13).toString();
+      String description = reader.getCellStringValue(structureRow, 14);
+
+      InterfaceStructureToken structure = new InterfaceStructureToken(id, name);
+      incrementId();
+      structure.setApplicability(ApplicabilityToken.BASE);
+      structure.setInterfaceStructureCategory(category);
+      structure.setInterfaceMinSimultaneity(toIntString(minSim));
+      structure.setInterfaceMaxSimultaneity(toIntString(maxSim));
+      structure.setDescription(description);
+
+      // task file is "n/a" for some structures. In that case, set to 0.
+      int taskFile;
+      try {
+         taskFile = Integer.parseInt(taskfileType);
+      } catch (NumberFormatException e) {
+         taskFile = 0;
+      }
+      structure.setInterfaceTaskFileType(taskFile);
+
+      // Find message based on node and number and update with new information
+      InterfaceMessageToken message = InterfaceMessageToken.SENTINEL;
+      for (InterfaceMessageToken msg : summary.getMessages()) {
+         if (msg.getInterfaceMessageNumber().equals(msgNum + "") && msg.getInitiatingNode().getName().equals(
+            nodeName)) {
+            message = msg;
+            break;
+         }
+      }
+
+      // If the message does not exist, create a new one
+      if (!message.isValid()) {
+         message = new InterfaceMessageToken(id, "Message " + msgNum);
+         message.setInterfaceMessageNumber("" + msgNum);
+         message.setInterfaceMessageWriteAccess(false);
+         message.setApplicability(ApplicabilityToken.BASE);
+         message.setInitiatingNode(primaryNode.getName().equals(nodeName) ? primaryNode : secondaryNode);
+         message.setInterfaceMessageType("Connection");
+         message.setDescription("");
+         incrementId();
+         summary.getMessages().add(message);
+      }
+
+      // txRate will either be a double like 20.0 if periodic, or 20-A if aperiodic
+      String[] txRateSplit = txRate.split("-");
+      String txRateInt = txRateSplit[0].split("[.]")[0];
+      String periodicity = txRateSplit.length == 2 && txRateSplit[1].equals("A") ? "Aperiodic" : "Periodic";
+      message.setInterfaceMessageRate(txRateInt);
+      message.setInterfaceMessagePeriodicity(periodicity);
+
+      // If the submessage does not exist, create a new one
+      String subMsgKey = getSubMessageMapKey(msgNum, subMsgNum, nodeName);
+      if (!subMessageIdMap.containsKey(subMsgKey)) {
+         InterfaceSubMessageToken subMessage = new InterfaceSubMessageToken(id, "SubMessage " + subMsgNum);
+         incrementId();
+         subMessage.setInterfaceSubMessageNumber(subMsgNum + "");
+         subMessage.setApplicability(ApplicabilityToken.BASE);
+         subMessage.setDescription("");
+         summary.getSubMessages().add(subMessage);
+         List<String> msgRels =
+            summary.getMessageSubmessageRelations().getOrDefault(message.getIdString(), new LinkedList<>());
+         msgRels.add(subMessage.getIdString());
+         summary.getMessageSubmessageRelations().put(message.getIdString(), msgRels);
+         subMessageIdMap.put(getSubMessageMapKey(msgNum, subMsgNum, nodeName), subMessage.getId());
+      }
+
+      Long subMsgId = subMessageIdMap.get(subMsgKey);
+      List<String> rels =
+         summary.getSubMessageStructureRelations().getOrDefault(subMsgId.toString(), new LinkedList<>());
+      rels.add(structure.getIdString());
+      summary.getSubMessageStructureRelations().put(subMsgId.toString(), rels);
+
+      summary.getStructures().add(structure);
+
+      return structure;
+   }
+
+   private void readStructureElements(InterfaceStructureToken structure, Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes) {
+      int rowIndex = 4;
+      InterfaceElementImportToken previousElement = InterfaceElementImportToken.SENTINEL;
+      PlatformTypeImportToken previousPType = PlatformTypeImportToken.SENTINEL;
+      while (reader.rowExists(rowIndex)) {
+         int numBytes = (int) reader.getCellNumericValue(rowIndex, 2);
+         String logicalType = reader.getCellStringValue(rowIndex, 5);
+         String name = reader.getCellStringValue(rowIndex, 6);
+         String units = reader.getCellStringValue(rowIndex, 7);
+         String validRange = reader.getCellStringValue(rowIndex, 8);
+         boolean alterable = reader.getCellStringValue(rowIndex, 9).equals("Yes");
+         String description = reader.getCellStringValue(rowIndex, 10);
+         String enumDesc = reader.getCellStringValue(rowIndex, 11);
+         String notes = reader.getCellStringValue(rowIndex, 12);
+
+         PlatformTypeImportToken pType = PlatformTypeImportToken.SENTINEL;
+         if (logicalType.equals("boolean")) {
+            pType = platformTypes.get("boolean");
+         } else if (logicalType.equals("enumeration")) {
+            String enumName = enumDesc.split("\n")[0].split(":")[0].replaceAll("[()]", "").trim();
+            enumName = enumName.contains("See Taskfile Type") ? "Taskfile Type" : enumName;
+            enumName =
+               enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches("^\\d+\\s*") ? name : enumName;
+            if (platformTypes.containsKey(enumName)) {
+               pType = platformTypes.get(enumName);
+            } else {
+               pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", "", "", "",
+                  validRange);
+               incrementId();
+               platformTypes.put(enumName, pType);
+
+               InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(id, enumName);
+               incrementId();
+               enumSet.setDescription(enumDesc);
+               enumSet.setApplicability(ApplicabilityToken.BASE);
+               summary.getEnumSets().add(enumSet);
+               summary.getPlatformTypeEnumSetRelations().put(pType.getIdString(),
+                  new LinkedList<>(Arrays.asList(enumSet.getIdString())));
+
+               String[] enumDescLines = enumDesc.split("\n");
+               for (String line : enumDescLines) {
+                  if (line.trim().matches("^\\s*\\d+\\s*[-=].*")) {
+                     String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
+                     int ordinal = Integer.parseInt(splitLine[0]);
+                     InterfaceEnumeration enumeration = new InterfaceEnumeration(id, splitLine[1].trim());
+                     incrementId();
+                     enumeration.setApplicability(ApplicabilityToken.BASE);
+                     enumeration.setOrdinal(ordinal);
+                     summary.getEnums().add(enumeration);
+                     List<String> rels =
+                        summary.getEnumSetEnumRelations().getOrDefault(enumSet.getIdString(), new LinkedList<>());
+                     rels.add(enumeration.getIdString());
+                     summary.getEnumSetEnumRelations().put(enumSet.getIdString(), rels);
+                  }
+               }
+            }
+         } else {
+            // Transform data
+            units = units.contains("n/a") ? "" : units;
+            String minVal = "";
+            String maxVal = "";
+            String[] range = validRange.split(" to ");
+            if (range.length == 1 && range[0].split(" ").length == 1) {
+               minVal = range[0].trim();
+               maxVal = range[0].trim();
+               validRange = range[0].trim();
+            } else if (range.length == 2) {
+               minVal = range[0].trim();
+               maxVal = range[1].trim();
+               validRange = range[0] + " to " + range[1];
+            }
+
+            String pTypeName = getPlatformTypeName(logicalType, minVal, maxVal, units, numBytes);
+            if (platformTypes.containsKey(pTypeName)) {
+               pType = platformTypes.get(pTypeName);
+            } else {
+               pType = new PlatformTypeImportToken(id, pTypeName, logicalType, (numBytes * 8) + "", minVal, maxVal,
+                  units, "", "", validRange);
+               incrementId();
+               platformTypes.put(pTypeName, pType);
+            }
+         }
+
+         String elementKey = getElementKey(name, alterable, description, notes, pType.getId());
+         InterfaceElementImportToken element = InterfaceElementImportToken.SENTINEL;
+         boolean relateElement = true;
+         if (elements.containsKey(elementKey)) {
+            element = elements.get(elementKey);
+            previousElement = element;
+            previousPType = pType;
+         } else if (name.matches(".*\\s\\d+$") && !name.matches(
+            ".*\\s(and)\\s\\d+$") && previousElement.isValid() && previousPType.isValid() && compareElementsForArray(
+               previousElement.getName(), name, previousPType.getId(), pType.getId())) {
+            String[] nameSplit = name.split(" ");
+            int arrayNum = Integer.parseInt(nameSplit[nameSplit.length - 1]);
+            if (previousElement.getInterfaceElementIndexStart() == 0) {
+               String[] prevNameSplit = previousElement.getName().split(" ");
+               int prevArrayNum = Integer.parseInt(prevNameSplit[prevNameSplit.length - 1]);
+               previousElement.setInterfaceElementIndexStart(prevArrayNum);
+            }
+            previousElement.setInterfaceElementIndexEnd(arrayNum);
+            relateElement = false;
+         } else {
+            element = new InterfaceElementImportToken(id, name);
+            incrementId();
+            element.setInterfaceElementAlterable(alterable);
+            element.setDescription(description);
+            element.setNotes(notes);
+            elements.put(elementKey, element);
+            summary.getElements().add(element);
+            summary.getElementPlatformTypeRelations().put(element.getIdString(),
+               new LinkedList<>(Arrays.asList(pType.getIdString())));
+            previousElement = element;
+            previousPType = pType;
+         }
+
+         if (relateElement) {
+            List<String> rels =
+               summary.getStructureElementRelations().getOrDefault(structure.getIdString(), new LinkedList<>());
+            rels.add(element.getIdString());
+            summary.getStructureElementRelations().put(structure.getIdString(), rels);
+         }
+
+         rowIndex++;
+      }
+   }
+
+   /**
+    * Converts a double within a string to an integer and returns as a string. If non-numeric characters exist, return
+    * the original string.
+    *
+    * @param str
+    * @return
+    */
+   private String toIntString(String str) {
+      String result = "";
+      try {
+         int val = (int) Double.parseDouble(str);
+         result = val + "";
+      } catch (NumberFormatException e) {
+         result = str;
+      }
+      return result;
+   }
+
+   private boolean compareElementsForArray(String name1, String name2, Long pTypeId1, Long pTypeId2) {
+      String n1 = name1.split("\\s\\d+$")[0];
+      String n2 = name2.split("\\s\\d+$")[0];
+      return n1.equals(n2) && pTypeId1 == pTypeId2;
+   }
+
+   private String getSubMessageMapKey(String messageNum, String subMessageNum, String nodeName) {
+      return nodeName + messageNum + subMessageNum;
+   }
+
+   private String getPlatformTypeName(String logicalType, String min, String max, String units, int bytes) {
+      String name = "";
+      switch (logicalType) {
+         case "character":
+            name += "Char";
+            break;
+         case "double":
+            name += "Double";
+            break;
+         case "float":
+            name += "Float";
+            break;
+         case "sInteger":
+            name += "SInt";
+            break;
+         case "sShort":
+            name += "SShort";
+            break;
+         case "uInteger":
+            name += "UInt";
+            break;
+         case "uLong":
+            name += "ULong";
+            break;
+         case "uShort":
+            name += "UShort";
+            break;
+      }
+
+      if (!units.isEmpty()) {
+         name += "_" + units;
+      }
+      if (!min.isEmpty()) {
+         name += "_" + min;
+      }
+      if (!max.isEmpty()) {
+         name += "_" + max;
+      }
+      name += "_" + bytes;
+
+      return name;
+   }
+
+   private String getElementKey(String name, boolean alterable, String description, String notes, Long pTypeId) {
+      return name + "_" + alterable + "_" + description.hashCode() + "_" + notes.hashCode() + "_" + pTypeId;
+   }
+
+   private void incrementId() {
+      id++;
+   }
+}

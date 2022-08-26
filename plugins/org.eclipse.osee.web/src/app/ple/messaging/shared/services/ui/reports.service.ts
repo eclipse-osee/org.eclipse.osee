@@ -30,6 +30,7 @@ export class ReportsService {
   private _connection: BehaviorSubject<connection> = new BehaviorSubject<connection>({name: '', transportType: transportType.Ethernet});
   private _requestBody: BehaviorSubject<string> = new BehaviorSubject('');
   private _requestBodyFile: BehaviorSubject<File|undefined> = new BehaviorSubject<File|undefined>(undefined);
+  private _includeDiff: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   getReports() {
     return this.http.get<MimReport[]>(apiURL+'/mim/reports').pipe(
@@ -58,11 +59,11 @@ export class ReportsService {
   }
 
   private getReport(report: MimReport, branchId: string, connection?: connection) {
-    return combineLatest(([this.requestBody, this.requestBodyFile])).pipe(
+    return combineLatest(([this.requestBody, this.requestBodyFile, this.includeDiff])).pipe(
       take(1),
-      switchMap(([input, file]) => 
+      switchMap(([input, file, includeDiff]) => 
         iif(() => report !== undefined && report.url !== '' && branchId !== '' && connection !== undefined && connection.id !== '-1', 
-          this.fileService.getFileAsBlob(report.httpMethod, report.url.replace('<branchId>', branchId).replace('<connectionId>', connection?.id!), file === undefined ? input : file),
+          this.fileService.getFileAsBlob(report.httpMethod, report.url.replace('<branchId>', branchId).replace('<connectionId>', connection?.id!).replace('<diffAvailable>', includeDiff+''), file === undefined ? input : file),
           of(new Blob()))
     ))
   }
@@ -113,6 +114,14 @@ export class ReportsService {
 
   set RequestBodyFile(requestBodyFile: File) {
     this.requestBodyFile.next(requestBodyFile)
+  }
+
+  get includeDiff() {
+    return this._includeDiff;
+  }
+
+  set IncludeDiff(value: boolean) {
+    this._includeDiff.next(value);
   }
 
 }
