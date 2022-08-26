@@ -14,11 +14,9 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -38,9 +36,9 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
    }
 
    @Override
-   public MimUserPreference getPreferences(BranchId branch, UserId accountId) {
-      ArtifactReadable user =
-         mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(accountId).asArtifact();
+   public MimUserPreference getPreferences(BranchId branch) {
+      ArtifactReadable user = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         mimApi.getOrcsApi().userService().getUser()).asArtifact();
       BranchToken selectedBranch = mimApi.getOrcsApi().getQueryFactory().branchQuery().andId(branch).getOneOrSentinel();
       boolean hasWriteAccess = !mimApi.getOrcsApi().getAccessControlService().hasBranchPermission(user, selectedBranch,
          PermissionEnum.WRITE, null).isErrors();
@@ -48,10 +46,10 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
    }
 
    @Override
-   public List<String> getBranchPreferences(UserId accountId) {
+   public List<String> getBranchPreferences() {
       List<String> prefs = new LinkedList<String>();
       List<String> tempPrefs = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         ArtifactId.valueOf(accountId.getId())).asArtifact().getAttributeValues(
+         mimApi.getOrcsApi().userService().getUser()).asArtifact().getAttributeValues(
             CoreAttributeTypes.MimBranchPreferences);
       prefs.addAll(tempPrefs);
       return prefs;

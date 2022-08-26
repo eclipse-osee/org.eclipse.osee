@@ -12,16 +12,13 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.List;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.types.MimUserPreference;
 
 /**
@@ -33,11 +30,11 @@ public interface MimUserPreferenceEndpoint {
    @GET()
    @Path("{branchId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public MimUserPreference getPreferences(@PathParam("branchId") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId);
+   public MimUserPreference getPreferences(@PathParam("branchId") BranchId branch);
 
    @GET()
    @Path("branches")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getBranchPreferences(@HeaderParam(OSEE_ACCOUNT_ID) UserId accountId);
+   public List<String> getBranchPreferences();
 
 }
