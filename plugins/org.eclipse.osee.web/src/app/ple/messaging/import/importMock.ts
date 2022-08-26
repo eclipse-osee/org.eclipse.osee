@@ -78,7 +78,8 @@ export const importSummaryMock: ImportSummary = {
             "interfacePlatformTypeMinval": "",
             "interfacePlatformTypeBitSize": "32",
             "interfaceLogicalType": "enumeration",
-            "interfacePlatformTypeUnits": ""
+            "interfacePlatformTypeUnits": "",
+            "interfacePlatformTypeValidRangeDescription": ""
         }
     ],
     "enumSets": [

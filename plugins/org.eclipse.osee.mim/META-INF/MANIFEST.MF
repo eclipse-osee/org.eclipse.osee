@@ -8,11 +8,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.mim,
- org.eclipse.osee.mim.internal,
  org.eclipse.osee.mim.types
 Import-Package: com.fasterxml.jackson.annotation,
  javax.ws.rs,
  javax.ws.rs.core,
+ org.apache.cxf.jaxrs.ext.multipart,
  org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.query,
  org.eclipse.osee.framework.core,

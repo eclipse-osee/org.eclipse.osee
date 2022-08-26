@@ -21,6 +21,7 @@ export const mimReportsMock: MimReport[] = [
         httpMethod: HttpMethods.GET,
         fileExtension: FileExtensions.XML,
         fileNamePrefix: 'Prefix',
-        producesMediaType: ProducesMediaType.XML
+        producesMediaType: ProducesMediaType.XML,
+        diffAvailable: true
     }
 ];

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.internal;
+package org.eclipse.osee.mim;
 
 import org.eclipse.osee.mim.types.MimImportSummary;
 

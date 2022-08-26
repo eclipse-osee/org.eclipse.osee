@@ -94,4 +94,12 @@ export class ReportsComponent implements OnInit {
     this.reportsService.Connection = connection;
   }
 
+  get includeDiff() {
+    return this.reportsService.includeDiff.value;
+  }
+
+  set includeDiff(value: boolean) {
+    this.reportsService.IncludeDiff = value;
+  }
+
 }

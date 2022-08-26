@@ -27,6 +27,7 @@ public class MimReportToken extends PLGenericDBObject {
    private String fileExtension;
    private String fileNamePrefix;
    private String producesMediaType;
+   private boolean diffAvailable;
 
    public MimReportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -41,6 +42,7 @@ public class MimReportToken extends PLGenericDBObject {
       this.setHttpMethod(art.getSoleAttributeAsString(CoreAttributeTypes.HttpMethod, ""));
       this.setFileExtension(art.getSoleAttributeAsString(CoreAttributeTypes.FileExtension, ""));
       this.setProducesMediaType(art.getSoleAttributeAsString(CoreAttributeTypes.ProducesMediaType, ""));
+      this.setDiffAvailable(art.getSoleAttributeValue(CoreAttributeTypes.DiffAvailable, false));
    }
 
    /**
@@ -93,6 +95,14 @@ public class MimReportToken extends PLGenericDBObject {
 
    public void setProducesMediaType(String producesMediaType) {
       this.producesMediaType = producesMediaType;
+   }
+
+   public boolean isDiffAvailable() {
+      return diffAvailable;
+   }
+
+   public void setDiffAvailable(boolean diffAvailable) {
+      this.diffAvailable = diffAvailable;
    }
 
 }

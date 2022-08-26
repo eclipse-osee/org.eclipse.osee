@@ -103,6 +103,18 @@ public class ExcelWorkbookReader {
 
    public String getCellFormulaValue(int rowIndex, int cellIndex) {
       checkActiveSheet();
+      Cell cell = getCell(rowIndex, cellIndex);
+      return cell.getCellFormula();
+   }
+
+   public String getCellHyperlinkString(int rowIndex, int cellIndex) {
+      checkActiveSheet();
+      Cell cell = getCell(rowIndex, cellIndex);
+      return cell.getHyperlink().getAddress();
+   }
+
+   private Cell getCell(int rowIndex, int cellIndex) {
+      checkActiveSheet();
       Row row = activeSheet.getRow(rowIndex);
       if (row == null) {
          throw new OseeArgumentException(
@@ -113,7 +125,7 @@ public class ExcelWorkbookReader {
          throw new OseeArgumentException(
             "Cell index " + cellIndex + " is invalid for row " + rowIndex + " on sheet " + activeSheet.getSheetName());
       }
-      return cell.getCellFormula();
+      return cell;
    }
 
    public boolean rowExists(int rowIndex) {

@@ -24,7 +24,7 @@
                 <ng-container *ngIf="(reports|async) as _reports">
                     <h2 class="mat-title">Downloadable Reports</h2>
                     <div class="reports-form">
-                        <mat-form-field appearance="fill">
+                        <mat-form-field class="form-field" appearance="fill">
                             <mat-label>{{reportSelectionText|async}}</mat-label>
                             <mat-select (selectionChange)="selectReport($event)" [disabled]="_reports.length===0" [(value)]="selectedReport">
                                 <mat-option *ngFor="let option of _reports" [value]="option" [id]="option.id">
@@ -33,7 +33,7 @@
                             </mat-select>
                         </mat-form-field>
                         <ng-container *ngIf="(connections|async) as _connections">
-                            <mat-form-field appearance="fill">
+                            <mat-form-field class="form-field" appearance="fill">
                                 <mat-label>{{connectionSelectionText|async}}</mat-label>
                                 <mat-select (selectionChange)="selectConnection($event)" [disabled]="_connections.length===0" [(value)]="selectedConnection">
                                     <mat-option *ngFor="let option of _connections" [value]="option" [id]="option.id!">
@@ -45,10 +45,15 @@
                         <ng-container *ngIf="selectedReport?.httpMethod === 'POST'">
                             <p>Select a file or enter JSON</p>
                             <input type="file" (change)="selectFile($event)" accept=".json,.csv,.txt">
-                            <mat-form-field appearance="fill" class="reports-form-request-body">
+                            <mat-form-field  appearance="fill" class="reports-form-request-body">
                                 <mat-label>Enter JSON</mat-label>
                                 <textarea matInput [(ngModel)]="requestBody" placeholder="{...}"></textarea>
                             </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="selectedReport?.diffAvailable">
+                            <mat-checkbox class="diff-checkbox" [(ngModel)]="includeDiff" color="primary" cdkFocusInitial>
+                                <mat-label>Show differences in report</mat-label>  
+                            </mat-checkbox>
                         </ng-container>
                         <button mat-raised-button color="primary" (click)="getSelectedReport()" [disabled]="!selectedReport || !selectedConnection || selectedConnection.id === '-1'" class="reports-form-button">Get Report</button>
                     </div>

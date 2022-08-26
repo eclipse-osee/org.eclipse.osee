@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.mim;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -27,6 +29,6 @@ public interface IcdEndpoint {
 
    @GET()
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   Response getIcd();
+   Response getIcd(@DefaultValue("false") @QueryParam("diff") boolean diff);
 
 }

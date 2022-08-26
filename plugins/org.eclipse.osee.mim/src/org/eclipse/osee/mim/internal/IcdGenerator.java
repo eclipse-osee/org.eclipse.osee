@@ -83,8 +83,7 @@ public class IcdGenerator {
       this.interfaceDifferenceReportApi = mimApi.getInterfaceDifferenceReportApi();
    }
 
-   public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId) {
-
+   public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId, boolean diff) {
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
             connectionId).follow(CoreRelationTypes.InterfaceConnectionContent_Message).follow(
@@ -158,9 +157,11 @@ public class IcdGenerator {
          structureLinks.put(structure, sheetName);
       }
 
-      BranchId parentBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
-      diffs = interfaceDifferenceReportApi.getDifferences(branch, parentBranch);
+      if (diff) {
+         BranchId parentBranch =
+            orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
+         diffs = interfaceDifferenceReportApi.getDifferences(branch, parentBranch);
+      }
 
       createStructureInfo(branch, view, primaryNode, secondaryNode, messages);
 
@@ -709,7 +710,8 @@ public class IcdGenerator {
       String validRange;
       if (platformType.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfacePlatformTypeMinval)) {
          validRange = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMinval,
-            "n/a") + "-" + platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMaxval, "n/a");
+            "n/a") + " to " + platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMaxval,
+               "n/a");
       } else {
          if (dataType.equals("enumeration")) {
             validRange = "see enumerated literals";

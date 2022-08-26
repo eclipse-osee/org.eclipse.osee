@@ -40,4 +40,5 @@ export interface platformTypeImportToken extends Pick<PlatformType,
 'interfacePlatformTypeMaxval' |
 'interfacePlatformTypeBitSize' |
 'interfacePlatformTypeUnits' |
-'interfaceLogicalType'>{}
+'interfaceLogicalType' | 
+'interfacePlatformTypeValidRangeDescription'>{}

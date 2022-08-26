@@ -28,19 +28,21 @@ public final class IcdStreamingOutput implements StreamingOutput {
    private final BranchId branch;
    private final ArtifactId viewId;
    private final ArtifactId connectionId;
+   private final boolean diff;
 
-   public IcdStreamingOutput(MimApi mimApi, BranchId branch, ArtifactId viewId, ArtifactId connectionId) {
+   public IcdStreamingOutput(MimApi mimApi, BranchId branch, ArtifactId viewId, ArtifactId connectionId, boolean diff) {
       this.branch = branch;
       this.viewId = viewId;
       this.connectionId = connectionId;
       this.mimApi = mimApi;
+      this.diff = diff;
    }
 
    @Override
    public void write(OutputStream output) {
       try {
          IcdGenerator generator = new IcdGenerator(mimApi);
-         generator.runOperation(output, branch, viewId, connectionId);
+         generator.runOperation(output, branch, viewId, connectionId, diff);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
