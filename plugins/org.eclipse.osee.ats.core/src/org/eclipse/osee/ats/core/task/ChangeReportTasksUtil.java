@@ -98,24 +98,27 @@ public class ChangeReportTasksUtil {
 
       // Find static task def matches
       List<IAtsTask> staticTasksFound = new LinkedList<IAtsTask>();
-      for (IAtsTask task : tasks) {
-         boolean found = false;
-         for (StaticTaskDefinition taskDef : crtd.getSetDef().getStaticTaskDefs()) {
-            if (task.getName().equals(taskDef.getName())) {
-               for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
-                  if (taskMatch.getTaskName().equals(task.getName())) {
-                     taskMatch.setTaskName(task.getName());
-                     taskMatch.setType(ChangeReportTaskMatchType.Match);
-                     taskMatch.setTaskWf(task);
-                     taskMatch.setTaskTok(task.getArtifactToken());
-                     staticTasksFound.add(task);
-                     found = true;
-                     break;
+      List<StaticTaskDefinition> staticTaskDefs = crtd.getSetDef().getStaticTaskDefs();
+      if (!staticTaskDefs.isEmpty()) {
+         for (IAtsTask task : tasks) {
+            boolean found = false;
+            for (StaticTaskDefinition taskDef : staticTaskDefs) {
+               if (task.getName().equals(taskDef.getName())) {
+                  for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+                     if (taskMatch.getTaskName().equals(task.getName())) {
+                        taskMatch.setTaskName(task.getName());
+                        taskMatch.setType(ChangeReportTaskMatchType.Match);
+                        taskMatch.setTaskWf(task);
+                        taskMatch.setTaskTok(task.getArtifactToken());
+                        staticTasksFound.add(task);
+                        found = true;
+                        break;
+                     }
                   }
                }
-            }
-            if (found) {
-               break;
+               if (found) {
+                  break;
+               }
             }
          }
       }
