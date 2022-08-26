@@ -62,7 +62,6 @@ public class ChangeReportTaskTeamWfData {
    }
 
    public ChangeReportTaskMatch addTaskMatch(ArtifactToken art, ChangeReportTaskMatchType changeReportTaskMatchType, boolean deleted, String format, Object... data) {
-      ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
       String taskName = String.format(format, data);
       for (ChangeReportTaskMatch existTaskMatch : taskMatches) {
          if (existTaskMatch.getTaskName().equals(taskName)) {
@@ -70,6 +69,7 @@ public class ChangeReportTaskTeamWfData {
             return null;
          }
       }
+      ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
       taskMatch.setTaskName(taskName);
       if (art != null) {
          taskMatch.setChgRptArt(art);
