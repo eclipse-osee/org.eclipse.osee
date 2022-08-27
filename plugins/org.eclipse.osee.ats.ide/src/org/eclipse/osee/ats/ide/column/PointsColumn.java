@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -132,6 +133,11 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
                   return true;
                } catch (Exception ex) {
                   // do nothing
+               }
+            } else if (Strings.isInValid(entry)) {
+               IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
+               for (IAtsWorkItem workItem : workItems) {
+                  changes.deleteAttributes(workItem, pointsAttrType);
                }
             }
          }

@@ -152,27 +152,31 @@ public class ClientEndpointImpl implements ClientEndpoint {
       versions.addVersion(OseeCodeVersion.getVersion());
       try {
          File versFile = new File("OseeSupportedVersions.txt");
-         System.out.println("Reading SupportedVersions.txt: " + versFile.getAbsolutePath());
-         String fileStr = Lib.fileToString(versFile);
-         System.out.println(String.format("Matching version [%s]", OseeCodeVersion.getVersion()));
-         if (Strings.isValid(fileStr)) {
-            for (String line : fileStr.split("\\|")) {
-               System.out.println(line);
-               boolean match = false;
-               for (String keyValue : line.split(":")) {
-                  if (!match && keyValue.equals(OseeCodeVersion.getVersion())) {
-                     System.out.println(String.format("Found This Version [%s]", keyValue));
-                     match = true;
-                  } else if (match) {
-                     for (String ver : keyValue.split(";")) {
-                        ver = ver.replaceAll("^ ", "");
-                        ver = ver.replaceAll(" $", "");
-                        if (Strings.isValid(ver)) {
-                           System.out.println(String.format("--- Supporting Version [%s]", ver));
-                           versions.addVersion(ver);
+         if (!versFile.exists()) {
+            System.out.println("No SupportedVersions.txt: " + versFile.getAbsolutePath());
+         } else {
+            System.out.println("Reading SupportedVersions.txt: " + versFile.getAbsolutePath());
+            String fileStr = Lib.fileToString(versFile);
+            System.out.println(String.format("Matching version [%s]", OseeCodeVersion.getVersion()));
+            if (Strings.isValid(fileStr)) {
+               for (String line : fileStr.split("\\|")) {
+                  System.out.println(line);
+                  boolean match = false;
+                  for (String keyValue : line.split(":")) {
+                     if (!match && keyValue.equals(OseeCodeVersion.getVersion())) {
+                        System.out.println(String.format("Found This Version [%s]", keyValue));
+                        match = true;
+                     } else if (match) {
+                        for (String ver : keyValue.split(";")) {
+                           ver = ver.replaceAll("^ ", "");
+                           ver = ver.replaceAll(" $", "");
+                           if (Strings.isValid(ver)) {
+                              System.out.println(String.format("--- Supporting Version [%s]", ver));
+                              versions.addVersion(ver);
+                           }
                         }
+                        break;
                      }
-                     break;
                   }
                }
             }

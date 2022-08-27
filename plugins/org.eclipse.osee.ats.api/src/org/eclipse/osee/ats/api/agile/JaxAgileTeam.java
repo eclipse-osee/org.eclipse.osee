@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +27,7 @@ public class JaxAgileTeam extends JaxAtsObject {
    private List<Long> atsTeamIds = new ArrayList<>();
    private ArtifactId backlogId = ArtifactId.SENTINEL;
    private ArtifactId sprintId = ArtifactId.SENTINEL;
+   private AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
    private String description = "";
 
    public List<Long> getAtsTeamIds() {
@@ -60,6 +62,14 @@ public class JaxAgileTeam extends JaxAtsObject {
 
    public void setSprintId(ArtifactId sprintId) {
       this.sprintId = sprintId;
+   }
+
+   public AttributeTypeToken getPointsAttrType() {
+      return pointsAttrType;
+   }
+
+   public void setPointsAttrType(AttributeTypeToken pointsAttrType) {
+      this.pointsAttrType = pointsAttrType;
    }
 
 }
