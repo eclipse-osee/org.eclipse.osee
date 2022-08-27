@@ -42,8 +42,8 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -558,7 +558,7 @@ public class AtsActionService implements IAtsActionService {
       // set for bootstrapping issues only when creating initial work item
       atsApi.getWorkDefinitionService().internalSetWorkDefinition(workItem, workDefinition);
 
-      IAtsStateDefinition startState = workDefinition.getStartState();
+      StateDefinition startState = workDefinition.getStartState();
       StateManager stateMgr = new StateManager(workItem, new AtsLogFactory(), atsApi);
       workItem.setStateMgr(stateMgr);
 

@@ -73,7 +73,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //         jFile = jFile.replaceAll("2345", String.valueOf(getId(dslSheet, workDefArt, wd.getName())));
       //
       //         String statesStr = "";
-      //         for (IAtsStateDefinition state : wd.getStates()) {
+      //         for (StateDefinition state : wd.getStates()) {
       //            String str = stateTemplate;
       //            str = str.replaceFirst("PUT_ORDINAL_HERE", String.valueOf(state.getOrdinal()));
       //            str = str.replaceFirst("PUT_NAME_HERE", state.getName());
@@ -98,7 +98,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //               str = str.replaceFirst("PUT_TO_STATES_HERE\n", "");
       //            } else {
       //               String toStates = "";
-      //               for (IAtsStateDefinition toState : state.getToStates()) {
+      //               for (StateDefinition toState : state.getToStates()) {
       //                  toStates += "StateToken." + getStateNameToken(toState.getName()) + ",";
       //                  // Only need on java state token
       //                  if (!stateNames.contains(toState.getName())) {
@@ -114,7 +114,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //               str = str.replaceFirst("PUT_OV_STATES_HERE\n", "");
       //            } else {
       //               String toStates = "";
-      //               for (IAtsStateDefinition toState : state.getOverrideAttributeValidationStates()) {
+      //               for (StateDefinition toState : state.getOverrideAttributeValidationStates()) {
       //                  toStates += "StateToken." + getStateNameToken(toState.getName()) + ",";
       //               }
       //               str = str.replaceFirst("PUT_OV_STATES_HERE",
@@ -174,7 +174,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
    //      return workDefArt.getId();
    //   }
    //
-   //   private String getLayoutStr(IAtsStateDefinition state, ArtifactToken workDefArt) {
+   //   private String getLayoutStr(StateDefinition state, ArtifactToken workDefArt) {
    //      StringBuilder sb = new StringBuilder();
    //      for (LayoutItem item : state.getLayoutItems()) {
    //         handleLayoutItem(sb, item);

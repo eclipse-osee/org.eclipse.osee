@@ -36,13 +36,13 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -178,12 +178,12 @@ public class TransitionManager implements IExecuteListener {
          try {
             helper.getChangeSet().add(workItem);
             // Validate toState valid
-            IAtsStateDefinition fromStateDef = workItem.getStateDefinition();
+            StateDefinition fromStateDef = workItem.getStateDefinition();
             if (fromStateDef == null) {
                OseeLog.log(TransitionManager.class, Level.SEVERE,
                   String.format("from state for workItem %s is null", workItem.getName()));
             } else {
-               IAtsStateDefinition toStateDef = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
+               StateDefinition toStateDef = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
                if (toStateDef == null) {
                   results.addResult(workItem,
                      new TransitionResult(
@@ -195,7 +195,7 @@ public class TransitionManager implements IExecuteListener {
                // Ignore transitions to the same state
                if (!fromStateDef.equals(toStateDef)) {
                   // Validate transition from fromState and toState
-                  List<IAtsStateDefinition> toStatesWithReturnStates = workItemService.getAllToStates(workItem);
+                  List<StateDefinition> toStatesWithReturnStates = workItemService.getAllToStates(workItem);
                   if (!helper.isOverrideTransitionValidityCheck() && !toStatesWithReturnStates.contains(
                      toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
                      String errStr =
@@ -258,7 +258,7 @@ public class TransitionManager implements IExecuteListener {
       return results;
    }
 
-   public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+   public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, StateDefinition fromStateDef, StateDefinition toStateDef) {
       // Check extension points for valid transition
       for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
          try {
@@ -304,8 +304,8 @@ public class TransitionManager implements IExecuteListener {
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             try {
 
-               IAtsStateDefinition fromState = workItem.getStateDefinition();
-               IAtsStateDefinition toState = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
+               StateDefinition fromState = workItem.getStateDefinition();
+               StateDefinition toState = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
 
                //Ignore transitions to the same state
                if (!fromState.equals(toState)) {
@@ -387,7 +387,7 @@ public class TransitionManager implements IExecuteListener {
 
    }
 
-   private void isWorkingBranchTransitionable(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+   private void isWorkingBranchTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
       if (workItem.isTeamWorkflow()) {
          if (helper.isWorkingBranchInWork((IAtsTeamWorkflow) workItem)) {
             if (toStateDef.getName().equals(TeamState.Cancelled.getName())) {
@@ -404,11 +404,11 @@ public class TransitionManager implements IExecuteListener {
    /**
     * @return true if toState is visited and is toState is earlier than current state
     */
-   private boolean isOverrideAttributeValidationState(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+   private boolean isOverrideAttributeValidationState(IAtsWorkItem workItem, StateDefinition toStateDef) {
       List<String> visitedStateNames = workItem.getStateMgr().getVisitedStateNames();
       if (visitedStateNames.contains(toStateDef.getName())) {
-         IAtsStateDefinition currState = workItem.getStateDefinition();
-         for (IAtsStateDefinition stateDef : toStateDef.getWorkDefinition().getStates()) {
+         StateDefinition currState = workItem.getStateDefinition();
+         for (StateDefinition stateDef : toStateDef.getWorkDefinition().getStates()) {
             if (stateDef.getName().equals(toStateDef.getName())) {
                if (toStateDef.getOrdinal() < currState.getOrdinal()) {
                   return true;
@@ -419,7 +419,7 @@ public class TransitionManager implements IExecuteListener {
       return false;
    }
 
-   private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+   private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
       boolean isOverrideAttributeValidationState =
          helper.isOverrideTransitionValidityCheck() || isOverrideAttributeValidationState(workItem, toStateDef);
       if (toStateDef.getStateType().isCancelledState()) {
@@ -462,7 +462,7 @@ public class TransitionManager implements IExecuteListener {
       }
    }
 
-   private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+   private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
       if (workItem.isTeamWorkflow() && toStateDef.getStateType().isCancelledState()) {
          for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
             ReviewBlockType reviewBlockType = reviewService.getReviewBlockType(review);
@@ -475,7 +475,7 @@ public class TransitionManager implements IExecuteListener {
       }
    }
 
-   public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef, IAtsTaskService taskService) {
+   public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef, IAtsTaskService taskService) {
       if (!workItem.isTeamWorkflow()) {
          return;
       }
@@ -505,13 +505,13 @@ public class TransitionManager implements IExecuteListener {
       }
    }
 
-   private void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+   private void logWorkflowCancelledEvent(IAtsWorkItem workItem, StateDefinition fromState, StateDefinition toState, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       logWorkflowCancelledEvent(workItem, fromState, toState, cancelDate, helper.getCancellationReason(),
          helper.getCancellationReasonAttrType(), helper.getCancellationReasonDetails(), cancelBy, changes,
          attrResolver);
    }
 
-   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, String cancelReason, AttributeTypeToken cancelReasonAttrType, String cancelReasonDetails, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, StateDefinition fromState, StateDefinition toState, Date cancelDate, String cancelReason, AttributeTypeToken cancelReasonAttrType, String cancelReasonDetails, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), cancelReason, cancelDate,
          cancelBy.getUserId());
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
@@ -531,7 +531,7 @@ public class TransitionManager implements IExecuteListener {
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+   private void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledBy, changes);
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledDate, changes);
@@ -543,7 +543,7 @@ public class TransitionManager implements IExecuteListener {
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes) {
+   private void logWorkflowCompletedEvent(IAtsWorkItem workItem, StateDefinition fromState, StateDefinition toState, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes) {
       workItem.getLog().addLog(LogType.StateComplete, fromState.getName(), "", cancelDate, cancelBy.getUserId());
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId(), changes);
@@ -554,7 +554,7 @@ public class TransitionManager implements IExecuteListener {
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+   private void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedBy, changes);
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate, changes);
@@ -563,7 +563,7 @@ public class TransitionManager implements IExecuteListener {
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private static void validateUpdatePercentComplete(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes) {
+   private static void validateUpdatePercentComplete(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes) {
       IAtsStateManager stateMgr = workItem.getStateMgr();
       Integer percent = stateMgr.getPercentCompleteValue();
       if (percent == null) {
@@ -617,7 +617,7 @@ public class TransitionManager implements IExecuteListener {
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
-   public List<? extends AtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) {
+   public List<? extends AtsUser> getToAssignees(IAtsWorkItem workItem, StateDefinition toState) {
       List<AtsUser> toAssignees = new ArrayList<>();
       if (toState.getStateType().isWorkingState()) {
          Collection<? extends AtsUser> requestedAssignees = helper.getToAssignees(workItem);

@@ -38,13 +38,13 @@ import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -314,11 +314,11 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public List<IAtsStateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef) {
-      List<IAtsStateDefinition> orderedPages = new ArrayList<>();
-      List<IAtsStateDefinition> unOrderedPages = new ArrayList<>();
+   public List<StateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef) {
+      List<StateDefinition> orderedPages = new ArrayList<>();
+      List<StateDefinition> unOrderedPages = new ArrayList<>();
       for (int x = 1; x < workDef.getStates().size() + 1; x++) {
-         for (IAtsStateDefinition state : workDef.getStates()) {
+         for (StateDefinition state : workDef.getStates()) {
             if (state.getOrdinal() == x) {
                orderedPages.add(state);
             } else if (state.getOrdinal() == 0 && !unOrderedPages.contains(state)) {
@@ -336,20 +336,20 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     * Note: Modifing this list will not affect the state widgets. Use addStateItem().
     */
    @Override
-   public List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef) {
+   public List<WidgetDefinition> getWidgetsFromLayoutItems(StateDefinition stateDef) {
       List<WidgetDefinition> widgets = new ArrayList<>();
       getWidgets(stateDef, widgets, stateDef.getLayoutItems());
       return widgets;
    }
 
    @Override
-   public List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<LayoutItem> layoutItems) {
+   public List<WidgetDefinition> getWidgetsFromLayoutItems(StateDefinition stateDef, List<LayoutItem> layoutItems) {
       List<WidgetDefinition> widgets = new ArrayList<>();
       getWidgets(stateDef, widgets, layoutItems);
       return widgets;
    }
 
-   private static void getWidgets(IAtsStateDefinition stateDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
+   private static void getWidgets(StateDefinition stateDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
             getWidgets(stateDef, widgets, ((CompositeLayoutItem) lItem).getaLayoutItems());
@@ -373,14 +373,14 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public Collection<WidgetDefinition> getWidgets(WorkDefinition workDef) {
       List<WidgetDefinition> widgets = new ArrayList<>();
       getWidgets(workDef.getHeaderDef(), widgets, workDef.getHeaderDef().getLayoutItems());
-      for (IAtsStateDefinition stateDef : workDef.getStates()) {
+      for (StateDefinition stateDef : workDef.getStates()) {
          getWidgets(stateDef, widgets, stateDef.getLayoutItems());
       }
       return widgets;
    }
 
    @Override
-   public boolean hasWidgetNamed(IAtsStateDefinition stateDef, String name) {
+   public boolean hasWidgetNamed(StateDefinition stateDef, String name) {
       for (WidgetDefinition widgetDef : getWidgetsFromLayoutItems(stateDef)) {
          if (widgetDef.getName().equals(name)) {
             return true;
@@ -402,7 +402,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public boolean isStateWeightingEnabled(WorkDefinition workDef) {
-      for (IAtsStateDefinition stateDef : workDef.getStates()) {
+      for (StateDefinition stateDef : workDef.getStates()) {
          if (stateDef.getStateWeight() != 0) {
             return true;
          }
@@ -411,7 +411,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) {
+   public StateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) {
       return getWorkDefinition(workItem).getStateByName(stateName);
    }
 
@@ -467,7 +467,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
+   public boolean isInState(IAtsWorkItem workItem, StateDefinition stateDef) {
       return workItem.getStateMgr().getCurrentStateName().equals(stateDef.getName());
    }
 

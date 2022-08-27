@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -72,7 +72,7 @@ public abstract class XWorkingBranchButtonAbstract extends XWorkingBranchWidgetA
    }
 
    protected boolean isWidgetInState(String widgetName) {
-      IAtsStateDefinition stateDefinition = getTeamArt().getStateDefinition();
+      StateDefinition stateDefinition = getTeamArt().getStateDefinition();
       boolean hasWidgetNamed =
          getTeamArt().getAtsApi().getWorkDefinitionService().hasWidgetNamed(stateDefinition, widgetName);
 

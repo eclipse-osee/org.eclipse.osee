@@ -31,11 +31,11 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
@@ -108,7 +108,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
                try {
                   AbstractWorkflowArtifact awa = workflowEditor.getWorkItem();
                   if (awa != null) {
-                     IAtsStateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage(awa).getStateDefinition();
+                     StateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage(awa).getStateDefinition();
                      StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
                      getTreeViewer().expandToLevel(awa, 2);
                      getTreeViewer().expandToLevel(stateDef, 1);
@@ -172,7 +172,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             getChildrenFromWrappedPercentDefinition((WrappedPercentWeight) element, items);
          } else if (element instanceof WorkDefinition) {
             getChildrenFromWorkDefinition((WorkDefinition) element, items);
-         } else if (element instanceof IAtsStateDefinition) {
+         } else if (element instanceof StateDefinition) {
             getChildrenFromStateDefinition(element, items);
          } else if (element instanceof CompositeLayoutItem) {
             items.addAll(((CompositeLayoutItem) element).getaLayoutItems());
@@ -215,8 +215,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return workflowEditor;
          } else if (element instanceof WorkDefinition) {
             return workflowEditor != null ? workflowEditor : workDefViewer;
-         } else if (element instanceof IAtsStateDefinition) {
-            return ((IAtsStateDefinition) element).getWorkDefinition();
+         } else if (element instanceof StateDefinition) {
+            return ((StateDefinition) element).getWorkDefinition();
          } else if (element instanceof HeaderDefinition) {
             return ((HeaderDefinition) element).getWorkDefinition();
          } else if (element instanceof WrappedChangeTypes) {
@@ -235,7 +235,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof WorkDefinition) {
             return true;
-         } else if (element instanceof IAtsStateDefinition) {
+         } else if (element instanceof StateDefinition) {
             return true;
          } else if (element instanceof CompositeLayoutItem) {
             return true;
@@ -285,7 +285,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
          try {
-            for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+            for (StateDefinition stateDef : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
                weightDef.getWorkDef())) {
                items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
             }
@@ -360,7 +360,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromStateDefinition(Object element, List<Object> items) {
-         IAtsStateDefinition stateDef = (IAtsStateDefinition) element;
+         StateDefinition stateDef = (StateDefinition) element;
          items.add("Ordinal: " + stateDef.getOrdinal());
          if (Strings.isValid(stateDef.getDescription())) {
             items.add("Description: " + stateDef.getDescription());
@@ -438,9 +438,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
    }
 
    private class WrappedRules {
-      private final IAtsStateDefinition stateDef;
+      private final StateDefinition stateDef;
 
-      public WrappedRules(IAtsStateDefinition stateDef) {
+      public WrappedRules(StateDefinition stateDef) {
          this.stateDef = stateDef;
       }
 
@@ -516,9 +516,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    private class WrappedStates {
       private final String name;
-      private final Collection<IAtsStateDefinition> states;
+      private final Collection<StateDefinition> states;
 
-      public WrappedStates(String name, Collection<IAtsStateDefinition> states) {
+      public WrappedStates(String name, Collection<StateDefinition> states) {
          this.name = name;
          this.states = states;
       }
@@ -532,7 +532,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
       }
 
-      public Collection<IAtsStateDefinition> getStates() {
+      public Collection<StateDefinition> getStates() {
          return states;
       }
    }
@@ -639,9 +639,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    private class WrappedTransitions {
 
-      private final IAtsStateDefinition stateDef;
+      private final StateDefinition stateDef;
 
-      public WrappedTransitions(IAtsStateDefinition stateDef) {
+      public WrappedTransitions(StateDefinition stateDef) {
          this.stateDef = stateDef;
       }
 
@@ -694,7 +694,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ((WorkflowEditor) element).getTitleImage();
          } else if (element instanceof AbstractWorkflowArtifact) {
             return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
-         } else if (element instanceof IAtsStateDefinition) {
+         } else if (element instanceof StateDefinition) {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
          } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);

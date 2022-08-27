@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
@@ -51,8 +51,8 @@ public class StateManagerTest extends AbstractUserTest {
 
    // @formatter:off
    @Mock private WorkDefinition workDef;
-   @Mock private IAtsStateDefinition endorseStateDef;
-   @Mock private IAtsStateDefinition analyzeStateDef;
+   @Mock private StateDefinition endorseStateDef;
+   @Mock private StateDefinition analyzeStateDef;
    @Mock private IAtsLogFactory logFactory;
    @Mock private AtsApi atsApi;
    // @formatter:on
@@ -430,7 +430,7 @@ public class StateManagerTest extends AbstractUserTest {
       IAtsWorkItem awa = mock(IAtsWorkItem.class);
       StateManager mgr = new StateManager(awa, logFactory, atsApi);
 
-      IAtsStateDefinition state = mock(IAtsStateDefinition.class);
+      StateDefinition state = mock(StateDefinition.class);
       when(state.getName()).thenReturn("Endorse");
 
       List<AtsUser> assignees = Collections.emptyList();

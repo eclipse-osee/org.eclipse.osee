@@ -32,10 +32,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -67,7 +67,7 @@ public class AtsMockitoTest {
    @Mock protected IAtsTask task1, task2;
    @Mock protected ActionableItem testAi, testAi2;
    @Mock protected IAtsAction action;
-   @Mock protected IAtsStateDefinition analyze, implement, completed, cancelled;
+   @Mock protected StateDefinition analyze, implement, completed, cancelled;
    @Mock protected WorkDefinition workDef;
    @Mock protected WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    @Mock protected IAttributeResolver attrResolver;
@@ -190,7 +190,7 @@ public class AtsMockitoTest {
       when(version.getId()).thenReturn(Lib.generateId());
    }
 
-   private void initializeState(IAtsStateDefinition state, String name, StateType type, int ordinal, List<IAtsStateDefinition> toStates, List<IAtsStateDefinition> overrideValidationStates) {
+   private void initializeState(StateDefinition state, String name, StateType type, int ordinal, List<StateDefinition> toStates, List<StateDefinition> overrideValidationStates) {
       when(state.getName()).thenReturn(name);
       when(state.getWorkDefinition()).thenReturn(workDef);
       when(state.getStateType()).thenReturn(type);
@@ -210,7 +210,7 @@ public class AtsMockitoTest {
       return workDef;
    }
 
-   public IAtsStateDefinition getAnalyzeStateDef() {
+   public StateDefinition getAnalyzeStateDef() {
       return analyze;
    }
 
@@ -222,15 +222,15 @@ public class AtsMockitoTest {
       return workPackageWidgetDef;
    }
 
-   public IAtsStateDefinition getImplementStateDef() {
+   public StateDefinition getImplementStateDef() {
       return implement;
    }
 
-   public IAtsStateDefinition getCompletedStateDef() {
+   public StateDefinition getCompletedStateDef() {
       return completed;
    }
 
-   public IAtsStateDefinition getCancelledStateDef() {
+   public StateDefinition getCancelledStateDef() {
       return cancelled;
    }
 

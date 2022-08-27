@@ -36,9 +36,9 @@ import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -176,7 +176,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, StateDefinition toStateDef) {
       return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, atsApi);
    }
 
@@ -491,8 +491,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsStateDefinition getStateByName(IAtsWorkItem workItem, String name) {
-      for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
+   public StateDefinition getStateByName(IAtsWorkItem workItem, String name) {
+      for (StateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
          if (stateDef.getName().equals(name)) {
             return stateDef;
          }
@@ -526,9 +526,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public List<IAtsStateDefinition> getAllToStates(IAtsWorkItem workItem) {
-      List<IAtsStateDefinition> allPages = new ArrayList<>();
-      IAtsStateDefinition currState = workItem.getStateDefinition();
+   public List<StateDefinition> getAllToStates(IAtsWorkItem workItem) {
+      List<StateDefinition> allPages = new ArrayList<>();
+      StateDefinition currState = workItem.getStateDefinition();
       if (currState == null) {
          return allPages;
       }
@@ -536,14 +536,14 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       // Add default toState or complete/cancelled return states
       if (currState.getToStates().isEmpty()) {
          if (currState.getStateType().isCompletedState()) {
-            IAtsStateDefinition completedFromState =
+            StateDefinition completedFromState =
                workItem.getWorkDefinition().getStateByName(workItem.getCompletedFromState());
             if (completedFromState != null && !allPages.contains(completedFromState)) {
                allPages.add(completedFromState);
             }
          }
          if (currState.getStateType().isCancelledState()) {
-            IAtsStateDefinition cancelledFromState =
+            StateDefinition cancelledFromState =
                workItem.getWorkDefinition().getStateByName(workItem.getCancelledFromState());
             if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {
                allPages.add(cancelledFromState);
@@ -555,7 +555,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
       // Add return-to states
       for (String visitedStateName : workItem.getStateMgr().getVisitedStateNames()) {
-         for (IAtsStateDefinition state : workItem.getWorkDefinition().getStates()) {
+         for (StateDefinition state : workItem.getWorkDefinition().getStates()) {
             if (state.getName().equals(visitedStateName)) {
                if (!allPages.contains(state)) {
                   allPages.add(state);
@@ -566,7 +566,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       }
 
       // Add remaining toStates
-      for (IAtsStateDefinition toState : currState.getToStates()) {
+      for (StateDefinition toState : currState.getToStates()) {
          if (!allPages.contains(toState)) {
             allPages.add(toState);
          }
@@ -578,8 +578,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsStateDefinition getDefaultToState(IAtsWorkItem workItem) {
-      List<IAtsStateDefinition> states = getAllToStates(workItem);
+   public StateDefinition getDefaultToState(IAtsWorkItem workItem) {
+      List<StateDefinition> states = getAllToStates(workItem);
       if (!states.isEmpty()) {
          return states.iterator().next();
       }

@@ -18,7 +18,6 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -39,7 +38,7 @@ public class AtsXWidgetValidatorTest {
    private static AtsXWidgetValidator validator = new AtsXWidgetValidator() {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return null;
       }
    };

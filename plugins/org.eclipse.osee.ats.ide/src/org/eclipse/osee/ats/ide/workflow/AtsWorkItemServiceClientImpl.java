@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
@@ -95,7 +95,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       transData.setWorkItems(helper.getWorkItems());
 
       // Set dummy cancel reason
-      IAtsStateDefinition toStateDef = atsApi.getWorkDefinitionService().getStateDefinitionByName(
+      StateDefinition toStateDef = atsApi.getWorkDefinitionService().getStateDefinitionByName(
          helper.getWorkItems().iterator().next(), helper.getToStateName());
       if (toStateDef.getStateType() == StateType.Cancelled) {
          transData.setCancellationReason("temp reason");

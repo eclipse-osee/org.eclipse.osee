@@ -14,9 +14,9 @@
 package org.eclipse.osee.ats.core.workdef.operations;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -37,7 +37,7 @@ public class ValidateWorkDefinitionsOperation {
       XResultData results = new XResultData();
       for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
          results.logf("Validating workDef [%s]\n", workDef.getName());
-         for (IAtsStateDefinition stateDef : workDef.getStates()) {
+         for (StateDefinition stateDef : workDef.getStates()) {
             results.logf("   Validating state [%s]\n", stateDef.getName());
             for (LayoutItem layoutItem : stateDef.getLayoutItems()) {
                validateLayoutItem(layoutItem, results);

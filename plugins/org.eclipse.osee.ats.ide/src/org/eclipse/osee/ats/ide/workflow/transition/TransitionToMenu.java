@@ -34,8 +34,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -66,9 +66,9 @@ public class TransitionToMenu {
       MenuManager editMenuManager =
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
       final Set<IAtsWorkItem> workItems = new HashSet<>();
-      List<IAtsStateDefinition> toStateDefs = new ArrayList<>();
+      List<StateDefinition> toStateDefs = new ArrayList<>();
       String workDefinitionId = null;
-      Map<String, IAtsStateDefinition> stateNameToStateDef = new HashMap<>();
+      Map<String, StateDefinition> stateNameToStateDef = new HashMap<>();
       boolean multipleWorkDefinitions = false;
       for (Artifact art : workflowArtifacts) {
          if (art instanceof AbstractWorkflowArtifact) {
@@ -82,7 +82,7 @@ public class TransitionToMenu {
                }
             }
             try {
-               for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkItemService().getAllToStates(awa)) {
+               for (StateDefinition stateDef : AtsApiService.get().getWorkItemService().getAllToStates(awa)) {
                   toStateDefs.add(stateDef);
                   stateNameToStateDef.put(stateDef.getName(), stateDef);
                }
@@ -103,7 +103,7 @@ public class TransitionToMenu {
             });
       } else {
          List<String> toStateNames = new ArrayList<>();
-         for (IAtsStateDefinition stateDef : toStateDefs) {
+         for (StateDefinition stateDef : toStateDefs) {
             if (!toStateNames.contains(stateDef.getName())) {
                toStateNames.add(stateDef.getName());
             }
@@ -127,24 +127,24 @@ public class TransitionToMenu {
       return editMenuManager;
    }
 
-   private static String getTransitionToString(String stateDefName, boolean multipleWorkDefinitions, Map<String, IAtsStateDefinition> stateNameToStateDef) {
+   private static String getTransitionToString(String stateDefName, boolean multipleWorkDefinitions, Map<String, StateDefinition> stateNameToStateDef) {
       if (multipleWorkDefinitions) {
          return stateDefName;
       } else {
-         IAtsStateDefinition stateDef = stateNameToStateDef.get(stateDefName);
+         StateDefinition stateDef = stateNameToStateDef.get(stateDefName);
          return String.format("%s%s%s", stateDef.getName(), getStateTypeName(stateDef),
             getDefaultStatePercent(stateDef));
       }
    }
 
-   private static Object getDefaultStatePercent(IAtsStateDefinition stateDef) {
+   private static Object getDefaultStatePercent(StateDefinition stateDef) {
       if (stateDef.getRecommendedPercentComplete() != null && stateDef.getRecommendedPercentComplete() != 0) {
          return String.format(" - %d%%", stateDef.getRecommendedPercentComplete());
       }
       return "";
    }
 
-   private static String getStateTypeName(IAtsStateDefinition stateDef) {
+   private static String getStateTypeName(StateDefinition stateDef) {
       return stateDef.getStateType().isWorkingState() || stateDef.getName().equals(
          TeamState.Completed.getName()) || stateDef.getName().equals(
             TeamState.Cancelled.getName()) ? "" : " (" + stateDef.getStateType().name() + ")";
@@ -175,7 +175,7 @@ public class TransitionToMenu {
                @Override
                public void run() {
                   IAtsWorkItem workItem = getWorkItems().iterator().next();
-                  IAtsStateDefinition stateDef = null;
+                  StateDefinition stateDef = null;
                   try {
                      stateDef = AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(workItem,
                         getToStateName());

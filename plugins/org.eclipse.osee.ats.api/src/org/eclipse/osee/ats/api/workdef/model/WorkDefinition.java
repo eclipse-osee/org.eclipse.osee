@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -36,12 +35,12 @@ import org.eclipse.osee.framework.jdk.core.type.CountingMap;
  */
 public class WorkDefinition extends AbstractWorkDefItem {
 
-   private final List<IAtsStateDefinition> states = new ArrayList<>(5);
+   private final List<StateDefinition> states = new ArrayList<>(5);
    private final CountingMap<String> labelCount = new CountingMap<String>();
    private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
    private final Map<ReviewRole, Integer> reviewRoleMap = new ConcurrentHashMap<>();
    private final Map<ReviewRoleType, Integer> reviewRoleTypeMap = new ConcurrentHashMap<>();
-   private IAtsStateDefinition startState;
+   private StateDefinition startState;
    private HeaderDefinition headerDef;
    private boolean showStateMetrics = false;
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
@@ -62,8 +61,8 @@ public class WorkDefinition extends AbstractWorkDefItem {
       headerDef = new HeaderDefinition(this);
    }
 
-   public IAtsStateDefinition getStateByName(String name) {
-      for (IAtsStateDefinition state : states) {
+   public StateDefinition getStateByName(String name) {
+      for (StateDefinition state : states) {
          if (state.getName().equals(name)) {
             return state;
          }
@@ -71,20 +70,20 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return null;
    }
 
-   public IAtsStateDefinition getStartState() {
+   public StateDefinition getStartState() {
       return startState;
    }
 
-   public void setStartState(IAtsStateDefinition startState) {
+   public void setStartState(StateDefinition startState) {
       this.startState = startState;
    }
 
-   public IAtsStateDefinition addState(IAtsStateDefinition state) {
+   public StateDefinition addState(StateDefinition state) {
       states.add(state);
       return state;
    }
 
-   public List<IAtsStateDefinition> getStates() {
+   public List<StateDefinition> getStates() {
       return states;
    }
 

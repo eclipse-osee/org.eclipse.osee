@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
@@ -57,7 +57,7 @@ public interface IAtsWorkItemService {
 
    void clearImplementersCache(IAtsWorkItem workItem);
 
-   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef);
+   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, StateDefinition toStateDef);
 
    Collection<IAtsTransitionHook> getTransitionHooks();
 
@@ -135,7 +135,7 @@ public interface IAtsWorkItemService {
 
    Collection<IAtsWorkItemHook> getWorkItemHooks();
 
-   IAtsStateDefinition getStateByName(IAtsWorkItem workItem, String name);
+   StateDefinition getStateByName(IAtsWorkItem workItem, String name);
 
    TransitionResults transition(TransitionData transData);
 
@@ -146,9 +146,9 @@ public interface IAtsWorkItemService {
    /**
     * @return Ordered list of states able to transition to with default, then return states, then toStates
     */
-   List<IAtsStateDefinition> getAllToStates(IAtsWorkItem workItem);
+   List<StateDefinition> getAllToStates(IAtsWorkItem workItem);
 
-   IAtsStateDefinition getDefaultToState(IAtsWorkItem workItem);
+   StateDefinition getDefaultToState(IAtsWorkItem workItem);
 
    JournalData getJournalData(IAtsWorkItem workItem, JournalData journalData);
 

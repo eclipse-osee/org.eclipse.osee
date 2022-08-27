@@ -26,10 +26,10 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -71,7 +71,7 @@ public class TransitionManagerTest {
 
    // @formatter:off
    @Mock private IAtsTask task;
-   @Mock private IAtsStateDefinition toStateDef;
+   @Mock private StateDefinition toStateDef;
    @Mock private IAtsWorkItemService workItemService;
    @Mock private IAtsTaskService taskService;
    @Mock private IAtsStateManager teamWfStateMgr, taskStateMgr;
@@ -261,7 +261,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      IAtsStateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
+      StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -296,7 +296,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      IAtsStateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
+      StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();

@@ -35,9 +35,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -147,7 +147,7 @@ public class WorkItemNotificationProcessor {
             }
          }
          try {
-            IAtsStateDefinition stateDefinition = workItem.getStateDefinition();
+            StateDefinition stateDefinition = workItem.getStateDefinition();
             StateType stateType = stateDefinition.getStateType();
             boolean notificationTypeIsCompletedOrCancelled =
                types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed);

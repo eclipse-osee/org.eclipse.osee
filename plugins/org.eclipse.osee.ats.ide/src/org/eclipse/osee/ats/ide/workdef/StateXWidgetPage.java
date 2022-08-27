@@ -14,9 +14,9 @@
 package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -49,11 +49,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
 
    protected SwtXWidgetRenderer dynamicXWidgetLayout;
-   protected final IAtsStateDefinition stateDefinition;
+   protected final StateDefinition stateDefinition;
    protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
 
-   public StateXWidgetPage(WorkDefinition workDefinition, IAtsStateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
       this.awa = awa;
       this.workDefinition = workDefinition;
       this.stateDefinition = stateDefinition;
@@ -64,14 +64,14 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       }
    }
 
-   public StateXWidgetPage(WorkDefinition workFlowDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workFlowDefinition, StateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, AbstractWorkflowArtifact awa) {
       this(workFlowDefinition, stateDefinition, xWidgetsXml, optionResolver, null, awa);
    }
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public StateXWidgetPage(WorkDefinition workDefinition, IAtsStateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
       this(workDefinition, stateDefinition, optionResolver, dynamicWidgetLayoutListener, awa);
       try {
          if (xWidgetsXml != null) {
@@ -130,7 +130,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       StringBuffer sb = new StringBuffer(
          stateDefinition.getName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
       try {
-         for (IAtsStateDefinition page : stateDefinition.getToStates()) {
+         for (StateDefinition page : stateDefinition.getToStates()) {
             sb.append("-> " + page.getName() + "\n");
          }
       } catch (Exception ex) {
@@ -161,7 +161,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return stateDefinition.getStateType();
    }
 
-   public IAtsStateDefinition getStateDefinition() {
+   public StateDefinition getStateDefinition() {
       return stateDefinition;
    }
 
@@ -233,7 +233,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       }
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) {
       // Check extension points for page creation
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {

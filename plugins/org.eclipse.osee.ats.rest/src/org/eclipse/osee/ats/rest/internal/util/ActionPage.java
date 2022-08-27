@@ -23,9 +23,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -184,7 +184,7 @@ public class ActionPage {
          html = html.replaceAll("PUT_ATS_ID_HERE", workItem.getAtsId());
          html = html.replaceFirst("PUT_TO_STATE_LIST_HERE", getToStateList());
          String defaultToStateValue = "";
-         IAtsStateDefinition defaultToState = atsApi.getWorkItemService().getDefaultToState(workItem);
+         StateDefinition defaultToState = atsApi.getWorkItemService().getDefaultToState(workItem);
          if (defaultToState != null) {
             defaultToStateValue = "value=\"" + defaultToState.getName() + "\"";
          }
@@ -197,7 +197,7 @@ public class ActionPage {
 
    private String getToStateList() {
       StringBuilder sb = new StringBuilder("<datalist id=\"ToStateList\">\n");
-      for (IAtsStateDefinition state : atsApi.getWorkItemService().getAllToStates(workItem)) {
+      for (StateDefinition state : atsApi.getWorkItemService().getAllToStates(workItem)) {
          sb.append("<option value=\"");
          sb.append(state.getName());
          sb.append("\" id=\"");
@@ -228,10 +228,10 @@ public class ActionPage {
       WorkDefinition workDefinition = workItem.getWorkDefinition();
       IAtsStateManager stateMgr = workItem.getStateMgr();
       Collection<String> visitedStates = stateMgr.getVisitedStateNames();
-      List<IAtsStateDefinition> statesOrderedByOrdinal =
+      List<StateDefinition> statesOrderedByOrdinal =
          atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDefinition);
       for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
-         IAtsStateDefinition state = statesOrderedByOrdinal.get(index);
+         StateDefinition state = statesOrderedByOrdinal.get(index);
          if (visitedStates.contains(state.getName())) {
             String stateHtmlTemplate = getStateHtmlTemplate();
 

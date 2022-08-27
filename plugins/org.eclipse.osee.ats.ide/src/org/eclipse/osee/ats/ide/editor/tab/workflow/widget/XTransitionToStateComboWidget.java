@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.ide.workdef.StateDefinitionViewSorter;
@@ -57,7 +57,7 @@ public class XTransitionToStateComboWidget extends XComboViewer implements Artif
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          awa = (AbstractWorkflowArtifact) artifact;
          List<Object> states = new ArrayList<>();
-         for (IAtsStateDefinition nextState : AtsApiService.get().getWorkItemService().getAllToStates(awa)) {
+         for (StateDefinition nextState : AtsApiService.get().getWorkItemService().getAllToStates(awa)) {
             if (!states.contains(nextState)) {
                states.add(nextState);
             }
@@ -69,7 +69,7 @@ public class XTransitionToStateComboWidget extends XComboViewer implements Artif
 
          super.createControls(parent, horizontalSpan);
 
-         IAtsStateDefinition defaultToState = AtsApiService.get().getWorkItemService().getDefaultToState(awa);
+         StateDefinition defaultToState = AtsApiService.get().getWorkItemService().getDefaultToState(awa);
 
          // Set default page from workflow default
          ArrayList<Object> defaultPage = new ArrayList<>();

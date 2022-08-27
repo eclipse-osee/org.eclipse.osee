@@ -43,11 +43,11 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
@@ -151,7 +151,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       }
    }
 
-   public boolean isValidateReviewBlocking(IAtsStateDefinition stateDefinition) {
+   public boolean isValidateReviewBlocking(StateDefinition stateDefinition) {
       return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
    }
 
@@ -247,7 +247,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return sb.toString();
    }
 
-   public static boolean isValidatePage(IAtsStateDefinition stateDefinition) {
+   public static boolean isValidatePage(StateDefinition stateDefinition) {
       if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name())) {
          return true;
       }

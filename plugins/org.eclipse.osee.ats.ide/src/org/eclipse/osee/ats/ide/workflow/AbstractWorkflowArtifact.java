@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -247,14 +247,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public IAtsStateDefinition getStateDefinition() {
+   public StateDefinition getStateDefinition() {
       if (getStateMgr().getCurrentStateName() == null) {
          return null;
       }
       return getWorkDefinition().getStateByName(getStateMgr().getCurrentStateName());
    }
 
-   public IAtsStateDefinition getStateDefinitionByName(String name) {
+   public StateDefinition getStateDefinitionByName(String name) {
       return getWorkDefinition().getStateByName(name);
    }
 

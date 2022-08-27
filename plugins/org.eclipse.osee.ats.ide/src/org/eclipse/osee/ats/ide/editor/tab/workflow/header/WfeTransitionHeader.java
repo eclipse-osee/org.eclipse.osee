@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
@@ -76,7 +76,7 @@ public class WfeTransitionHeader extends Composite {
    private final Label transitionAssigneesLabel;
    private final AbstractWorkflowArtifact workItem;
    private final WorkflowEditor editor;
-   private IAtsStateDefinition userSelectedTransitionToState;
+   private StateDefinition userSelectedTransitionToState;
    private final boolean isEditable;
    private final Hyperlink transitionLabelLink;
    private final Hyperlink stateLabelLink;
@@ -120,7 +120,7 @@ public class WfeTransitionHeader extends Composite {
          @Override
          public void linkActivated(HyperlinkEvent e) {
             try {
-               IAtsStateDefinition selState = handleChangeTransitionToState(workItem, isEditable, getToState());
+               StateDefinition selState = handleChangeTransitionToState(workItem, isEditable, getToState());
                if (selState != null) {
                   userSelectedTransitionToState = selState;
                   handleTransitionButtonSelection();
@@ -173,8 +173,8 @@ public class WfeTransitionHeader extends Composite {
       }
    }
 
-   public static IAtsStateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
-      List<IAtsStateDefinition> states = AtsApiService.get().getWorkItemService().getAllToStates(awa);
+   public static StateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, StateDefinition toStateDef) {
+      List<StateDefinition> states = AtsApiService.get().getWorkItemService().getAllToStates(awa);
       ListSelectionDialogNoSave dialog =
          new ListSelectionDialogNoSave(Collections.castAll(states), Displays.getActiveShell().getShell(),
             "Select Transition-To State", null, "Select the state to transition to.\n\n" //
@@ -184,14 +184,14 @@ public class WfeTransitionHeader extends Composite {
 
       if (dialog.open() == Window.OK) {
          Object obj = dialog.getSelected();
-         return (IAtsStateDefinition) obj;
+         return (StateDefinition) obj;
       }
 
       return null;
    }
 
    public void handleTransitionButtonSelection() {
-      final IAtsStateDefinition toStateDef = getToState();
+      final StateDefinition toStateDef = getToState();
       if (toStateDef == null) {
          AWorkbench.popup("Must select state to transition.");
          refresh();
@@ -204,7 +204,7 @@ public class WfeTransitionHeader extends Composite {
       handleTransitionButtonSelection(workItem, isEditable, toStateDef, editor, this);
    }
 
-   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
+   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, StateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
       ITransitionHelper helper = new TransitionHelperAdapter(AtsApiService.get()) {
 
          @Override
@@ -230,7 +230,7 @@ public class WfeTransitionHeader extends Composite {
 
                @Override
                public void run() {
-                  IAtsStateDefinition toStateDef;
+                  StateDefinition toStateDef;
                   try {
                      toStateDef =
                         AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(awa, getToStateName());
@@ -349,8 +349,8 @@ public class WfeTransitionHeader extends Composite {
       refresh();
    }
 
-   public IAtsStateDefinition getToState() {
-      IAtsStateDefinition state = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
+   public StateDefinition getToState() {
+      StateDefinition state = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
       if (userSelectedTransitionToState != null) {
          return userSelectedTransitionToState;
       }
@@ -369,7 +369,7 @@ public class WfeTransitionHeader extends Composite {
             state = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
          }
          // Find page corresponding to override state name
-         for (IAtsStateDefinition toState : workItem.getStateDefinition().getToStates()) {
+         for (StateDefinition toState : workItem.getStateDefinition().getToStates()) {
             if (toState.getName().equals(transitionStateOverride)) {
                state = toState;
                break;
@@ -385,7 +385,7 @@ public class WfeTransitionHeader extends Composite {
          @Override
          public void run() {
             if (Widgets.isAccessible(transitionAssigneesLabel)) {
-               IAtsStateDefinition toState = userSelectedTransitionToState;
+               StateDefinition toState = userSelectedTransitionToState;
                if (toState == null) {
                   toState = AtsApiService.get().getWorkItemService().getDefaultToState(workItem);
                }

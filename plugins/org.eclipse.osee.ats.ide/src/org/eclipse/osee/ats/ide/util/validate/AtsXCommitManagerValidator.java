@@ -17,10 +17,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -40,7 +40,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
       "All branches must be configured for commit.";
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
          try {
@@ -81,7 +81,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
       return result;
    }
 
-   protected boolean transitionToWithWorkingBranchRuleExists(IAtsStateDefinition toStateDef) {
+   protected boolean transitionToWithWorkingBranchRuleExists(StateDefinition toStateDef) {
       return toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name());
    }
 
