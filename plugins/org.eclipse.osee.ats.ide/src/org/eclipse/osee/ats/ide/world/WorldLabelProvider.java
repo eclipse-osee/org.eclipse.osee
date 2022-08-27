@@ -20,7 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -93,7 +93,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (element instanceof IAtsWorkItem) {
             if (xCol.getId().equals(AtsColumnTokens.StateColumn.getId())) {
-               IAtsStateDefinition state = ((AbstractWorkflowArtifact) element).getStateDefinition();
+               StateDefinition state = ((AbstractWorkflowArtifact) element).getStateDefinition();
                if (state == null) {
                   OseeLog.logf(Activator.class, Level.SEVERE, "State null for %s",
                      ((IAtsWorkItem) element).toStringWithId());

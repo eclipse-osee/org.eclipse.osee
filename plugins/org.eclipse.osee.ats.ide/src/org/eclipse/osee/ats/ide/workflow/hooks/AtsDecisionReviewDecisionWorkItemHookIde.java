@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -54,7 +54,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
       if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getName().equals(
          DecisionReviewState.Decision.getName())) {
          if (xWidget == null) {

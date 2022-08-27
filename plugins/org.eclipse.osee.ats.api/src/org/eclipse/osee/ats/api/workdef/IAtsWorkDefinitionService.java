@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -56,20 +57,20 @@ public interface IAtsWorkDefinitionService {
 
    Collection<String> getStateNames(WorkDefinition workDef);
 
-   List<IAtsStateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef);
+   List<StateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef);
 
    /**
     * Recursively decend StateItems and grab all widgetDefs.<br>
     * <br>
     * Note: Modifing this list will not affect the state widgets. Use addStateItem().
     */
-   List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef);
+   List<WidgetDefinition> getWidgetsFromLayoutItems(StateDefinition stateDef);
 
-   List<WidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef, List<LayoutItem> layoutItems);
+   List<WidgetDefinition> getWidgetsFromLayoutItems(StateDefinition stateDef, List<LayoutItem> layoutItems);
 
    WorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review);
 
-   IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName);
+   StateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName);
 
    /**
     * @return unique set of state names from work definitions. This should only be used to store state names, not
@@ -82,11 +83,11 @@ public interface IAtsWorkDefinitionService {
     */
    Collection<String> getAllValidStateNamesFromConfig();
 
-   boolean hasWidgetNamed(IAtsStateDefinition stateDef, String name);
+   boolean hasWidgetNamed(StateDefinition stateDef, String name);
 
    boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption rule);
 
-   boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef);
+   boolean isInState(IAtsWorkItem workItem, StateDefinition stateDef);
 
    Collection<WorkDefinition> getAllWorkDefinitions();
 

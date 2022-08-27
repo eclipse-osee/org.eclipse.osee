@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -158,7 +158,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsStateDefinition getStateDefinition() {
+   public StateDefinition getStateDefinition() {
       String currentStateName = getStateMgr().getCurrentStateName();
       if (currentStateName == null) {
          return null;
@@ -166,7 +166,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       return getWorkDefinition().getStateByName(currentStateName);
    }
 
-   public IAtsStateDefinition getStateDefinitionByName(String name) {
+   public StateDefinition getStateDefinitionByName(String name) {
       return getWorkDefinition().getStateByName(name);
    }
 

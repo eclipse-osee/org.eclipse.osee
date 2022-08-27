@@ -29,9 +29,9 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -239,7 +239,7 @@ public class StateManager implements IAtsStateManager {
       if (assignees == null) {
          return;
       }
-      IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
+      StateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
       StateType stateType = stateDef.getStateType();
       setAssignees(stateName, stateType, assignees);
    }

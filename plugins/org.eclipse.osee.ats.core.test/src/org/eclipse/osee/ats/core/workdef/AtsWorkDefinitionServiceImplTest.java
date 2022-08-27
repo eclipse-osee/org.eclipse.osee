@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -211,7 +210,7 @@ public class AtsWorkDefinitionServiceImplTest {
       analyze.setOrdinal(2);
       implement.setOrdinal(3);
       Assert.assertEquals(4, def.getStates().size());
-      List<IAtsStateDefinition> states = new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByOrdinal(def);
+      List<StateDefinition> states = new AtsWorkDefinitionServiceImpl(atsApi, null).getStatesOrderedByOrdinal(def);
       Assert.assertEquals(endorse, states.get(0));
       Assert.assertEquals(analyze, states.get(1));
       Assert.assertEquals(implement, states.get(2));

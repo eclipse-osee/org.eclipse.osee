@@ -51,8 +51,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
@@ -204,12 +204,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       List<String> states = new LinkedList<>();
       IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
       states.add(atsApi.getWorkItemService().getDefaultToState(teamWf).getName());
-      for (IAtsStateDefinition state : teamWf.getStateDefinition().getToStates()) {
+      for (StateDefinition state : teamWf.getStateDefinition().getToStates()) {
          if (!states.contains(state.getName())) {
             states.add(state.getName());
          }
       }
-      for (IAtsStateDefinition state : atsApi.getWorkItemService().getAllToStates(teamWf)) {
+      for (StateDefinition state : atsApi.getWorkItemService().getAllToStates(teamWf)) {
          if (!states.contains(state.getName())) {
             states.add(state.getName());
          }

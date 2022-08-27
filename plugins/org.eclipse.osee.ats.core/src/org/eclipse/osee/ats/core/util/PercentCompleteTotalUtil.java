@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -44,7 +44,7 @@ public class PercentCompleteTotalUtil {
          } else {
             if (atsApi.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
                // Calculate total percent using configured weighting
-               for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
+               for (StateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
                   if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {
                      percent = addStatePercentWithWeight(atsApi, percent, workItem, stateDef);
                   }
@@ -54,7 +54,7 @@ public class PercentCompleteTotalUtil {
                if (percent == 0) {
                   if (isAnyStateHavePercentEntered(workItem)) {
                      int numStates = 0;
-                     for (IAtsStateDefinition state : workItem.getWorkDefinition().getStates()) {
+                     for (StateDefinition state : workItem.getWorkDefinition().getStates()) {
                         if (!state.getStateType().isCompletedState() && !state.getStateType().isCancelledState()) {
                            percent += getPercentCompleteSMAStateTotal(workItem, state, atsApi);
                            numStates++;
@@ -71,7 +71,7 @@ public class PercentCompleteTotalUtil {
       return percent;
    }
 
-   private static int addStatePercentWithWeight(AtsApi atsApi, int percent, IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
+   private static int addStatePercentWithWeight(AtsApi atsApi, int percent, IAtsWorkItem workItem, StateDefinition stateDef) {
       double stateWeightInt = stateDef.getStateWeight();
       double weight = stateWeightInt / 100;
       int percentCompleteForState = getPercentCompleteSMAStateTotal(workItem, stateDef, atsApi);

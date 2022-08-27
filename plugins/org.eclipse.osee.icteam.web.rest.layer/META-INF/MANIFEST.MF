@@ -59,3 +59,4 @@ Import-Package: com.google.common.util.concurrent,
  org.osgi.framework,
  org.osgi.service.packageadmin,
  org.osgi.util.tracker
+Require-Bundle: org.eclipse.osee.ats.api

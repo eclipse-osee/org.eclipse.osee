@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -301,7 +301,7 @@ public class KanbanOperations {
    private void addAvailableStates(JaxKbSprint items, IAgileItem aItem, IAtsWorkItem workItem, ArtifactToken artifact, AtsApi atsApi, Collection<String> ignoreStates) {
       try {
          WorkDefinition workDef = workItem.getWorkDefinition();
-         for (IAtsStateDefinition stateDef : atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDef)) {
+         for (StateDefinition stateDef : atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDef)) {
             if (ignoreStates.contains(stateDef.getName())) {
                continue;
             }
@@ -317,7 +317,7 @@ public class KanbanOperations {
                state.setName(stateDef.getName());
                state.setOrdinal(stateDef.getOrdinal());
                state.setStateType(stateDef.getStateType().name());
-               for (IAtsStateDefinition toState : stateDef.getToStates()) {
+               for (StateDefinition toState : stateDef.getToStates()) {
                   state.getToStates().add(toState.getName());
                }
                items.getAvailableStates().add(state);

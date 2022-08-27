@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -88,7 +88,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       Assert.assertTrue(decisionComboDam.getComboBox().isEnabled());
       Assert.assertTrue(decisionComboDam.isRequiredEntry());
 
-      IAtsStateDefinition reviewStateDef =
+      StateDefinition reviewStateDef =
          peerRev.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
 
       // make call to state item that should

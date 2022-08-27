@@ -17,9 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +39,7 @@ public interface IAtsPeerReviewRoleManager {
 
    List<AtsUser> getRoleUsers(Collection<UserRole> roles);
 
-   UserRoleError validateRoleTypeMinimums(IAtsStateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr);
+   UserRoleError validateRoleTypeMinimums(StateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr);
 
    List<UserRole> getUserRoles(ReviewRole role);
 

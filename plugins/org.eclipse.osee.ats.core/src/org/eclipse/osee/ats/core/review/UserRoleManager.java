@@ -36,9 +36,9 @@ import org.eclipse.osee.ats.api.review.UserRoleError;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -138,7 +138,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public UserRoleError validateRoleTypeMinimums(IAtsStateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr) {
+   public UserRoleError validateRoleTypeMinimums(StateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr) {
       for (Entry<ReviewRoleType, Integer> expectedEntry : expectedRoleTypeMap.entrySet()) {
          int actualCount = actualTypeCountMap.get(expectedEntry.getKey());
          int expectedCount = expectedEntry.getValue();

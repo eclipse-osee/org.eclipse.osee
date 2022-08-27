@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -74,7 +73,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       XComboDam decisionComboDam = new XComboDam("Decision");
       // set combo values an verify they got set
       decisionComboDam.setDataStrings(new String[] {"One", "Two", "Three"});
-      IAtsStateDefinition stateDef = new StateDefinition("Decision");
+      StateDefinition stateDef = new StateDefinition("Decision");
       Assert.assertEquals("Two", decisionComboDam.getDisplayArray()[2]);
 
       // make call to state item that should set options based on artifact's attribute value

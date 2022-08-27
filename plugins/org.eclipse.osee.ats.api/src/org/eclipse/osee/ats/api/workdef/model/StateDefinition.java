@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
-import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -28,13 +27,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDefinition {
+public class StateDefinition extends AbstractWorkDefItem implements IStateToken {
 
    private StateType StateType;
    private int ordinal = 0;
    private List<LayoutItem> stateItems = new ArrayList<>(5);
    private final RuleManager ruleMgr = new RuleManager();
-   private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
+   private final List<StateDefinition> toStates = new ArrayList<>(5);
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
    private WorkDefinition workDefinition;
@@ -48,7 +47,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       super(Long.valueOf(name.hashCode()), name);
    }
 
-   @Override
    public List<LayoutItem> getLayoutItems() {
       return stateItems;
    }
@@ -58,7 +56,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return StateType;
    }
 
-   @Override
    public void setLayoutItems(List<LayoutItem> layoutToSet) {
       this.stateItems = layoutToSet;
    }
@@ -67,7 +64,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       this.StateType = StateType;
    }
 
-   @Override
    public int getOrdinal() {
       return ordinal;
    }
@@ -76,20 +72,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       this.ordinal = ordinal;
    }
 
-   @Override
-   public List<IAtsStateDefinition> getToStates() {
-      if (toStates.size() == 1 && toStates.iterator().next() == StateToken.ANY) {
-         return workDefinition.getStates();
-      }
+   public List<StateDefinition> getToStates() {
       return toStates;
    }
 
-   @Override
    public WorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 
-   @Override
    public void setWorkDefinition(WorkDefinition workDefinition) {
       this.workDefinition = workDefinition;
    }
@@ -103,7 +93,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
     * Returns fully qualified name of <work definition name>.<this state name
     */
 
-   @Override
    public String getFullName() {
       if (workDefinition != null) {
          return workDefinition.getName() + "." + getName();
@@ -126,7 +115,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
          equals = true;
       } else if (obj != null) {
          if (getClass() == obj.getClass()) {
-            IAtsStateDefinition other = (IAtsStateDefinition) obj;
+            StateDefinition other = (StateDefinition) obj;
             if (Strings.isValid(getName()) && Strings.isValid(other.getName()) && getName().equals(other.getName())) {
                equals = true;
             }
@@ -135,17 +124,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       return equals;
    }
 
-   @Override
    public List<IAtsDecisionReviewDefinition> getDecisionReviews() {
       return decisionReviews;
    }
 
-   @Override
    public List<IAtsPeerReviewDefinition> getPeerReviews() {
       return peerReviews;
    }
 
-   @Override
    public int getStateWeight() {
       return stateWeight;
    }
@@ -165,7 +151,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       this.recommendedPercentComplete = recommendedPercentComplete;
    }
 
-   @Override
    public Integer getRecommendedPercentComplete() {
       return recommendedPercentComplete;
    }
@@ -174,7 +159,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       this.color = stateColor;
    }
 
-   @Override
    public StateColor getColor() {
       return color;
    }
@@ -183,7 +167,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       ruleMgr.removeRule(rule);
    }
 
-   @Override
    public List<String> getRules() {
       return ruleMgr.getRules();
    }
@@ -192,7 +175,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       ruleMgr.addRule(rule);
    }
 
-   @Override
    public boolean hasRule(String rule) {
       return ruleMgr.hasRule(rule);
    }
@@ -205,22 +187,18 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
       peerReviews.add(reviewDefinition);
    }
 
-   @Override
    public void addTransitionListener(IAtsTransitionHook transitionListener) {
       transitionListeners.add(transitionListener);
    }
 
-   @Override
    public List<IAtsTransitionHook> getTransitionListeners() {
       return transitionListeners;
    }
 
-   @Override
    public List<StateOption> getStateOptions() {
       return stateOptions;
    }
 
-   @Override
    public void setStateOptions(List<StateOption> stateOptions) {
       this.stateOptions = stateOptions;
    }

@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +42,7 @@ public class AtsPeerToPeerReviewPrepareWorkItemHookIde implements IAtsWorkItemHo
    }
 
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
       try {
          if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
             stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //

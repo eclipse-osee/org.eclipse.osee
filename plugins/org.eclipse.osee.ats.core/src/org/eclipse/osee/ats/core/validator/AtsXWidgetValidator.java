@@ -17,10 +17,10 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
-   public boolean isTransitionToComplete(IAtsStateDefinition toStateDef) {
+   public boolean isTransitionToComplete(StateDefinition toStateDef) {
       return toStateDef.getStateType().isCompletedState();
    }
 
@@ -48,7 +48,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition",
             widgetDef.getName());
@@ -60,7 +60,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi);
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
 
    public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) {
       for (Date date : valueProvider.getDateValues()) {

@@ -16,9 +16,9 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.editor.stateItem;
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -62,7 +62,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    public static void testCleanup() throws Exception {
       // Test adds the atsForceAssigneesToTeamLeads; remove it before and after test
       if (teamArt != null) {
-         // IAtsStateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+         // StateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
          // authStateDef.removeRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
       }
 
@@ -88,7 +88,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       IStateToken fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
       IStateToken toState = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
 
-      IAtsStateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+      StateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
       authStateDef.getRules().add(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
 
       // make call to state item that should set options based on artifact's attribute value

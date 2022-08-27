@@ -17,9 +17,9 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
@@ -54,7 +54,7 @@ public class AtsForceAssigneesToTeamLeadsWorkItemHook implements IAtsTransitionH
       }
    }
 
-   private boolean isForceAssigneesToTeamLeads(IAtsStateDefinition stateDefinition) {
+   private boolean isForceAssigneesToTeamLeads(StateDefinition stateDefinition) {
       return stateDefinition.hasRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
    }
 

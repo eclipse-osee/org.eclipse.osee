@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.note.NoteType;
 import org.eclipse.osee.ats.ide.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -54,7 +54,7 @@ public class AddNoteAction extends AbstractAtsAction {
       ArrayList<String> artifactNames = new ArrayList<>();
       Map<String, String> selectedToStateName = new HashMap<>();
       artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-      for (IAtsStateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+      for (StateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
          sma.getWorkDefinition())) {
          String displayName = "\"" + stateDefinition.getName() + "\" State";
          artifactNames.add(displayName);

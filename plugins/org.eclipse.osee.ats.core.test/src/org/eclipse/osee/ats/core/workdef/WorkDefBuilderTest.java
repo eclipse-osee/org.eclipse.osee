@@ -13,9 +13,9 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.junit.Assert;
@@ -143,11 +143,11 @@ public class WorkDefBuilderTest {
       WorkDefinition workDef = anyBld.getWorkDefinition();
       Assert.assertTrue(workDef.getResults().isSuccess());
 
-      IAtsStateDefinition state = workDef.getStateByName(StateToken.Analyze.getName());
+      StateDefinition state = workDef.getStateByName(StateToken.Analyze.getName());
       Assert.assertNotNull(state);
       Assert.assertEquals(2, state.getToStates().size());
-      IAtsStateDefinition completed = workDef.getStateByName(StateToken.Completed.getName());
-      IAtsStateDefinition cancelled = workDef.getStateByName(StateToken.Cancelled.getName());
+      StateDefinition completed = workDef.getStateByName(StateToken.Completed.getName());
+      StateDefinition cancelled = workDef.getStateByName(StateToken.Cancelled.getName());
       Assert.assertTrue(state.getToStates().contains(completed));
       Assert.assertTrue(state.getToStates().contains(cancelled));
    }

@@ -41,12 +41,12 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -102,7 +102,7 @@ public class AtsTestUtil {
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
    private static ActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static IAtsAction actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
-   private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
+   private static StateDefinition analyze, implement, completed, cancelled = null;
    private static WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
    private static Boolean productionDatastore;
@@ -156,7 +156,7 @@ public class AtsTestUtil {
       }
    }
 
-   public static IAtsStateDefinition getAnalyzeStateDef() {
+   public static StateDefinition getAnalyzeStateDef() {
       ensureLoaded();
       if (analyze == null) {
          analyze = teamWf.getWorkDefinition().getStateByName("Analyze");
@@ -190,7 +190,7 @@ public class AtsTestUtil {
       return workPackageWidgetDef;
    }
 
-   public static IAtsStateDefinition getImplementStateDef() {
+   public static StateDefinition getImplementStateDef() {
       ensureLoaded();
       if (implement == null) {
          implement = teamWf.getWorkDefinition().getStateByName("Implement");
@@ -198,7 +198,7 @@ public class AtsTestUtil {
       return implement;
    }
 
-   public static IAtsStateDefinition getCompletedStateDef() {
+   public static StateDefinition getCompletedStateDef() {
       ensureLoaded();
       if (completed == null) {
          completed = teamWf.getWorkDefinition().getStateByName("Completed");
@@ -206,7 +206,7 @@ public class AtsTestUtil {
       return completed;
    }
 
-   public static IAtsStateDefinition getCancelledStateDef() {
+   public static StateDefinition getCancelledStateDef() {
       ensureLoaded();
       if (cancelled == null) {
          cancelled = teamWf.getWorkDefinition().getStateByName("Cancelled");

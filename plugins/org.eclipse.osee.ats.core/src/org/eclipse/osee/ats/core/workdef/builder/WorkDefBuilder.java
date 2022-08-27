@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -63,11 +63,11 @@ public class WorkDefBuilder {
       if (ordinal <= 0) {
          rd.errorf("Ordinal must be > 1 for state [%s]\n", name);
       }
-      IAtsStateDefinition stateByName = workDef.getStateByName(name);
+      StateDefinition stateByName = workDef.getStateByName(name);
       if (stateByName != null) {
          rd.errorf("State with name [%s] already exists\n", name);
       }
-      for (IAtsStateDefinition state : workDef.getStates()) {
+      for (StateDefinition state : workDef.getStates()) {
          if (state.getOrdinal() == ordinal) {
             rd.errorf("Ordinal [%s] already exists in state [%s]\n", ordinal, name);
          }
@@ -84,7 +84,7 @@ public class WorkDefBuilder {
          // getLayoutFromState
          StateToken fromLayoutStateToken = stateDefBuilder.getAndLayoutFromState();
          if (fromLayoutStateToken != null) {
-            IAtsStateDefinition copyState = getStateDefinition(fromLayoutStateToken.getName());
+            StateDefinition copyState = getStateDefinition(fromLayoutStateToken.getName());
             if (stateDefBuilder.state.getOrdinal() < copyState.getOrdinal()) {
                workDef.getResults().errorf("Cannot import layout from undefined state.");
             }
@@ -94,7 +94,7 @@ public class WorkDefBuilder {
          // toStates
          for (StateToken toStateToken : stateDefBuilder.getToStateTokens()) {
             if (defaultToStateToken != StateToken.ANY) {
-               IAtsStateDefinition toState = getStateDefinition(toStateToken.getName());
+               StateDefinition toState = getStateDefinition(toStateToken.getName());
                Conditions.assertNotNull(toState,
                   String.format("toState [%s] can't be null in state [%s] and work def [%s]", toStateToken,
                      stateDefBuilder.getName(), workDef.getName()));
@@ -127,7 +127,7 @@ public class WorkDefBuilder {
 
       // Loop through states
       Set<String> currStateLayoutItemNames;
-      for (IAtsStateDefinition currState : workDef.getStates()) {
+      for (StateDefinition currState : workDef.getStates()) {
          currStateLayoutItemNames = new HashSet<String>();
          allLayoutItemsToStringSet(currStateLayoutItemNames, currState.getLayoutItems());
          for (String label : currStateLayoutItemNames) {
@@ -150,7 +150,7 @@ public class WorkDefBuilder {
       }
    }
 
-   private IAtsStateDefinition getStateDefinition(String name) {
+   private StateDefinition getStateDefinition(String name) {
       for (StateDefBuilder stateDefBldr : stateDefBuilders) {
          if (stateDefBldr.state.getName().equals(name)) {
             return stateDefBldr.state;

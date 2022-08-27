@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -215,7 +214,7 @@ public class StateDefBuilder {
       return this.getLayoutFromState;
    }
 
-   public StateDefBuilder addToState(IAtsStateDefinition toState) {
+   public StateDefBuilder addToState(StateDefinition toState) {
       state.getToStates().add(toState);
       return this;
    }

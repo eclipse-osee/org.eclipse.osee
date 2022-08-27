@@ -20,9 +20,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
@@ -43,7 +43,7 @@ public class AtsXWidgetValidateManager {
       getProviders().remove(provider);
    }
 
-   public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results, IValueProvider valueProvider, WidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
+   public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       for (IAtsXWidgetValidatorProvider provider : getProviders()) {
          for (IAtsXWidgetValidator validator : provider.getValidators()) {
             try {
@@ -72,7 +72,7 @@ public class AtsXWidgetValidateManager {
       return providers;
    }
 
-   public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef, AtsApi atsApi) {
+   public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, StateDefinition toStateDef, AtsApi atsApi) {
       List<WidgetResult> results = new ArrayList<>();
       List<WidgetDefinition> widgetItems =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());
