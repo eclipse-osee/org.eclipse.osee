@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -57,13 +58,17 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
    }
 
    public CompositeLayoutItem getChangeTypeComposite() {
+      return getChangeTypeComposite(AtsAttributeTypes.PointsNumeric);
+   }
+
+   public CompositeLayoutItem getChangeTypeComposite(AttributeTypeToken pointsAttrType) {
       return new CompositeLayoutItem(11, //
          new ChangeTypeWidgetDefinition(true).andRequired(), //
          new WidgetDefinition("   ", "XLabel"), //
          new WidgetDefinition(AtsAttributeTypes.Priority, "XHyperlinkLabelValueSelectionDam", REQUIRED_FOR_TRANSITION,
             AUTO_SAVE), //
          new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(AtsAttributeTypes.Points, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
+         new WidgetDefinition(pointsAttrType, "XHyperlinkLabelValueSelectionDam", AUTO_SAVE), //
          new WidgetDefinition("   ", "XLabel"), //
          new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.END_COMPOSITE) //
       );

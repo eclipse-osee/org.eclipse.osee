@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -54,6 +55,7 @@ import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -188,6 +190,13 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             } else if (art.isOfType(AtsArtifactTypes.AgileTeam)) {
                JaxAgileTeam agileTeam = AgileFactory.createJaxTeam(atsApi.getAgileService().getAgileTeam(art));
                configs.getIdToAgileTeam().put(agileTeam.getId(), agileTeam);
+               String pointsAttrTypeStr = art.getSoleAttributeAsString(AtsAttributeTypes.PointsAttributeType, "");
+               if (Strings.isValid(pointsAttrTypeStr)) {
+                  AttributeTypeToken pointsAttrType = atsApi.tokenService().getAttributeType(pointsAttrTypeStr);
+                  if (pointsAttrType != null) {
+                     agileTeam.setPointsAttrType(pointsAttrType);
+                  }
+               }
                Collection<ArtifactToken> atsTeams =
                   atsApi.getRelationResolver().getRelated(art, AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam);
                for (ArtifactToken teamDef : atsTeams) {

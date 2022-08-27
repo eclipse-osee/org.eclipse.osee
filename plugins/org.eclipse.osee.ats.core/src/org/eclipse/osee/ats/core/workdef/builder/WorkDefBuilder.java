@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -234,5 +235,9 @@ public class WorkDefBuilder {
          workDef.getChangeTypes().add(type);
       }
       return this;
+   }
+
+   public void andPointsAttributeType(AttributeTypeToken pointsAttrType) {
+      workDef.setPointsAttrType(pointsAttrType);
    }
 }

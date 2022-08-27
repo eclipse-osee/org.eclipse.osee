@@ -116,12 +116,29 @@ public class AgileService implements IAgileService {
 
    @Override
    public AttributeTypeToken getPointsAttrType(IAtsWorkItem workItem) {
+      // This performs better; To set different attr type, WorkDef needs to overwrite default PointsNumeric
+      if (workItem.getWorkDefinition().getPointsAttrType().isValid()) {
+         return workItem.getWorkDefinition().getPointsAttrType();
+      }
       AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
-      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-      if (teamWf != null) {
-         IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
-         if (agileTeam != null) {
-            pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+      Long aTeamId = atsApi.getConfigService().getConfigurations().getTeamDefToAgileTeam().get(
+         workItem.getParentTeamWorkflow().getTeamDefinition().getId());
+      if (aTeamId != null && aTeamId > 0) {
+         JaxAgileTeam aTeam = atsApi.getConfigService().getConfigurations().getIdToAgileTeam().get(aTeamId);
+         if (aTeam != null) {
+            AttributeTypeToken ptsAttrType = aTeam.getPointsAttrType();
+            if (ptsAttrType.isValid()) {
+               pointsAttrType = ptsAttrType;
+            }
+         }
+      }
+      if (pointsAttrType.isInvalid()) {
+         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+         if (teamWf != null) {
+            IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
+            if (agileTeam != null) {
+               pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+            }
          }
       }
       if (pointsAttrType.isInvalid()) {

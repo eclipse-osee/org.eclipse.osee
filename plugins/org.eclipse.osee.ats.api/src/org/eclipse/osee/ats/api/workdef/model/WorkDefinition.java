@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 
@@ -46,6 +48,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private XResultData results = new XResultData();
    private final List<WorkDefOption> options = new ArrayList<>();
    private final List<ChangeTypes> changeTypes = new ArrayList<>();
+   private AttributeTypeToken pointsAttrType = AtsAttributeTypes.PointsNumeric;
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -188,5 +191,13 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public List<ChangeTypes> getChangeTypes() {
       return changeTypes;
+   }
+
+   public AttributeTypeToken getPointsAttrType() {
+      return pointsAttrType;
+   }
+
+   public void setPointsAttrType(AttributeTypeToken pointsAttrType) {
+      this.pointsAttrType = pointsAttrType;
    }
 }

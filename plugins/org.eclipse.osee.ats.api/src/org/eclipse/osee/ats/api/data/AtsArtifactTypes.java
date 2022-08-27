@@ -250,7 +250,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(OriginatingPcrId)
       .zeroOrOne(PcrToolId)
       .zeroOrOne(PercentRework)
-      .zeroOrOne(PointsAttributeType)
       .zeroOrOne(Priority, Priority.Priority5)
       .zeroOrOne(Problem)
       .zeroOrOne(ProductLineApprovedBy)
