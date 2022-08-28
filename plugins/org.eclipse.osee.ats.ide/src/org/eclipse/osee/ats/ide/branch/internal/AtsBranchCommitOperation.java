@@ -14,10 +14,14 @@
 package org.eclipse.osee.ats.ide.branch.internal;
 
 import java.util.Date;
+import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.core.branch.BranchOperationsUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -129,6 +133,21 @@ public class AtsBranchCommitOperation {
             if (added) {
                changes.execute();
             }
+
+            // Notify osgi IAtsWorkItemHooks
+            for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+               item.committed(teamArt, rd);
+            }
+
+            // Notify stateDef IAtsWorkItemHooks
+            IStateToken currStateToken = teamArt.getStateMgr().getCurrentState();
+            WorkDefinition workDef = teamArt.getWorkDefinition();
+            StateDefinition currState = workDef.getStateByName(currStateToken.getName());
+            List<IAtsWorkItemHook> listeners = currState.getWorkItemListeners();
+            for (IAtsWorkItemHook hook : listeners) {
+               hook.committed(teamArt, rd);
+            }
+
          }
       } catch (Exception ex) {
          rd.errorf("Exception committing branch %s", Lib.exceptionToString(ex));

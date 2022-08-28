@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTaskCommitHook;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -250,6 +251,11 @@ public class StateDefBuilder {
 
    public StateDefBuilder andTransitionListener(AtsTaskDefToken taskDefToken) {
       state.addTransitionListener(new CreateChangeReportTaskTransitionHook(taskDefToken));
+      return this;
+   }
+
+   public StateDefBuilder andWorkItemListener(AtsTaskDefToken taskDefToken) {
+      state.addWorkItemListener(new CreateChangeReportTaskCommitHook(taskDefToken));
       return this;
    }
 

@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -41,6 +42,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    private Integer recommendedPercentComplete = null;
    private StateColor color = null;
    private final List<IAtsTransitionHook> transitionListeners = new ArrayList<>();
+   private final List<IAtsWorkItemHook> workItemListeners = new ArrayList<>();
    private List<StateOption> stateOptions = new ArrayList<>();
 
    public StateDefinition(String name) {
@@ -191,6 +193,10 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
       transitionListeners.add(transitionListener);
    }
 
+   public void addWorkItemListener(IAtsWorkItemHook workItemHook) {
+      workItemListeners.add(workItemHook);
+   }
+
    public List<IAtsTransitionHook> getTransitionListeners() {
       return transitionListeners;
    }
@@ -201,6 +207,10 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    public void setStateOptions(List<StateOption> stateOptions) {
       this.stateOptions = stateOptions;
+   }
+
+   public List<IAtsWorkItemHook> getWorkItemListeners() {
+      return workItemListeners;
    }
 
 }

@@ -40,10 +40,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -249,8 +251,25 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public String getSafeName(ArtifactId art) {
-      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(art)).getSafeName();
+   public String getSafeName(ArtifactToken art) {
+      BranchToken branch = art.getBranch();
+      if (branch.isInvalid() && art instanceof ArtifactReadable) {
+         branch = ((ArtifactReadable) art).getBranch();
+      }
+      if (branch.isInvalid()) {
+         throw new OseeArgumentException("Can't determine branch from art [%s]", art.toStringWithId());
+      }
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(art, branch,
+         DeletionFlag.INCLUDE_DELETED)).getSafeName();
+   }
+
+   @Override
+   public String getSafeName(ArtifactToken art, BranchId branch) {
+      if (branch.isInvalid()) {
+         throw new OseeArgumentException("Can't determine branch from art [%s]", art.toStringWithId());
+      }
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(art, branch,
+         DeletionFlag.INCLUDE_DELETED)).getSafeName();
    }
 
    @Override

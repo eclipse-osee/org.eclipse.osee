@@ -79,6 +79,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
+         .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //

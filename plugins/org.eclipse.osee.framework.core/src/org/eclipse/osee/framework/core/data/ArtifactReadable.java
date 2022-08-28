@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EnumToken;
@@ -86,6 +87,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
 
+   @SuppressWarnings("unchecked")
    default <T extends EnumToken> boolean attributeMatches(AttributeTypeEnum<T> attributeType, T... values) {
       T enumValue = getSoleAttributeValue(attributeType);
       return enumValue.matches(values);
@@ -191,6 +193,10 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 
    List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType);
+
+   default Collection<String> getTags() {
+      return Collections.castAll(getAttributeValues(CoreAttributeTypes.StaticId));
+   }
 
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
 
@@ -345,6 +351,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
       @Override
       public void getDescendants(List<ArtifactReadable> descendants) {
+         // do nothing
       }
 
       @Override
@@ -437,4 +444,5 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          return ApplicabilityToken.BASE;
       }
    }
+
 }

@@ -188,4 +188,8 @@ public interface IAtsChangeSet {
 
    void deleteRelation(RelationId relation);
 
+   void addTag(ArtifactToken artifact, String tag);
+
+   void addTag(IAtsObject atsObject, String tag);
+
 }

@@ -18,10 +18,9 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,20 +47,11 @@ public class BranchManagerTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   private BranchId testBranch;
-
-   @After
-   public void tearDown() {
-      if (testBranch != null) {
-         BranchManager.purgeBranch(testBranch);
-      }
-   }
-
    @Test
    public void testBranchName() {
       String branchName = testInfo.getQualifiedTestName();
       String branchReNamed = String.format("%s - Renamed", branchName);
-      BranchId testBranch = BranchManager.createWorkingBranch(CoreBranches.COMMON, branchName);
+      BranchId testBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_3, branchName);
 
       Assert.assertEquals(branchName, BranchManager.getBranchName(testBranch));
 

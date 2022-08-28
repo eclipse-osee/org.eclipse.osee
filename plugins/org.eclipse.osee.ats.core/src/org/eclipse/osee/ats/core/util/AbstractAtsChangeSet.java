@@ -309,4 +309,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       return branch;
    }
 
+   @Override
+   public void addTag(IAtsObject atsObject, String tag) {
+      if (!atsObject.getTags().contains(tag)) {
+         addAttribute(atsObject, CoreAttributeTypes.StaticId, tag);
+      }
+   }
+
 }

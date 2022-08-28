@@ -49,7 +49,8 @@ public class ChangeReportTasksUtil {
    public static final String TASKS_MUST_BE_AUTOGEN_TASKS = "Tasks must be Auto Generated Tasks";
    public static final String TASKS_MUST_BE_AUTOGEN_CHANGE_REPORT_RELATED_TASKS =
       "Tasks must be Auto Generated Change Report Related Tasks";
-   public static String DISABLE_AUTO_TASK_GENERATION = "disableTaskCreation";
+   public final static String FINAL_TASK_GEN_TAG = "finalTaskgen";
+   public final static String FINAL_TASK_GEN_MSG = "Final Task Generation has already been run.";
 
    private ChangeReportTasksUtil() {
       // helper methods
@@ -78,8 +79,8 @@ public class ChangeReportTasksUtil {
       if (workOrParentBranch != null) {
          crtd.setWorkOrParentBranch(workOrParentBranch.getIdString());
       }
-      if (changeItems == null) {
-         crtd.getResults().warning("No Change Items (Change Report or Commit) Found");
+      if (changeItems == null || changeItems.isEmpty()) {
+         crtd.getResults().log("No Change Items (Working Branch or Commit) Found");
          return;
       } else {
          crtd.setChangeItems(changeItems);

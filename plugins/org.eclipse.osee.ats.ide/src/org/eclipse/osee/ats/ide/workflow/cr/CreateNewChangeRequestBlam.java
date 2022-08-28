@@ -247,7 +247,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       log(results.toString());
 
       // Return if failed
-      if (results.isErrors()) {
+      if (priority == null || results.isErrors()) {
          return;
       }
 
