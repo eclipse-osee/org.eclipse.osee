@@ -115,7 +115,9 @@ public interface IAtsStoreService {
 
    Collection<ArtifactToken> getDescendants(ArtifactToken art);
 
-   String getSafeName(ArtifactId art);
+   String getSafeName(ArtifactToken art);
+
+   String getSafeName(ArtifactToken chgRptArt, BranchId branch);
 
    ArtifactTypeToken getArtifactType(ArtifactId artId, BranchId branch);
 

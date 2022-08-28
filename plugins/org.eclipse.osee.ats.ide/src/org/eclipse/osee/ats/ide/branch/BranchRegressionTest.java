@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -94,9 +95,9 @@ public abstract class BranchRegressionTest {
    private static final String PRE_BRANCH_CHANGES = "testMakePreBranchChanges_";
    public static String PRE_BRANCH_ARTIFACT_NAME = "Pre-Branch Artifact to Delete";
    protected static Artifact actionArt;
-   protected static TeamWorkFlowArtifact reqTeam;
-   protected static TeamWorkFlowArtifact codeTeam;
-   protected static TeamWorkFlowArtifact testTeam;
+   protected static TeamWorkFlowArtifact reqTeamWf;
+   protected static TeamWorkFlowArtifact codeTeamWf;
+   protected static TeamWorkFlowArtifact testTeamWf;
 
    public static String SOFTWARE_REQUIREMENTS = "Software Requirements";
    public static String FIRST_ARTIFACT = "First Artifact";
@@ -199,9 +200,14 @@ public abstract class BranchRegressionTest {
       testXWorkingBranchAfterBranchCommit();
 
       testChangesMadeWereCommitted();
+      if (testCreationAfterCommit()) {
+         testCodeTaskCreationAfterReqCommitOrTransition();
+      }
 
       testRequirementsWorkflowCompletion();
-      testCodeTaskCreationAfterReqCompletion();
+      if (testCreationAfterTransition()) {
+         testCodeTaskCreationAfterReqCommitOrTransition();
+      }
 
       testShowRelatedTasksAction(); // Extend with additional checks
       testShowRelatedRequirementAction(); // Extend with additional checks
@@ -313,29 +319,29 @@ public abstract class BranchRegressionTest {
    protected void testTeamWorkflows(Collection<IAtsTeamWorkflow> teamWfs) {
       for (IAtsTeamWorkflow teamWf : teamWfs) {
          if (teamWf.getTeamDefinition().getName().contains("Req")) {
-            reqTeam = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+            reqTeamWf = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }
          if (hasCodeWorkflow() && teamWf.getTeamDefinition().getName().contains("Code")) {
-            codeTeam = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+            codeTeamWf = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }
          if (teamWf.getTeamDefinition().getName().contains("Test")) {
-            testTeam = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+            testTeamWf = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }
       }
 
-      actionArt = (Artifact) reqTeam.getParentAction().getStoreObject();
+      actionArt = (Artifact) reqTeamWf.getParentAction().getStoreObject();
 
-      Assert.assertNotNull("Req workflow not created", reqTeam);
+      Assert.assertNotNull("Req workflow not created", reqTeamWf);
       if (hasCodeWorkflow()) {
-         Assert.assertNotNull("Code workflow not created", codeTeam);
+         Assert.assertNotNull("Code workflow not created", codeTeamWf);
       }
-      Assert.assertNotNull("Test workflow not created", testTeam);
+      Assert.assertNotNull("Test workflow not created", testTeamWf);
       Assert.assertNotNull("Action not created", actionArt);
 
-      WorkflowEditor.editArtifact(reqTeam);
+      WorkflowEditor.editArtifact(reqTeamWf);
 
       // Verify the enablement of XWorkingBranch
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
+      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Not_Started, enablement.getStatus());
       Assert.assertTrue("Create Branch Button should be enabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertFalse("Show Artifact Explorer Button should be disabled",
@@ -346,15 +352,15 @@ public abstract class BranchRegressionTest {
 
    public void testXCommitManagerAfterActionCreate() {
       Assert.assertEquals("Should be no committed branches", 0,
-         AtsApiService.get().getBranchService().getBranchesCommittedTo(reqTeam).size());
+         AtsApiService.get().getBranchService().getBranchesCommittedTo(reqTeamWf).size());
    }
 
    public void testCreateBranchFirstTime() {
-      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeam, true);
-      workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeamWf, true);
+      workingBranch = reqTeamWf.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
 
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
+      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Changes_InProgress, enablement.getStatus());
       Assert.assertFalse("Create Branch Button should be disabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertTrue("Show Artifact Explorer Button should be enabled",
@@ -365,10 +371,10 @@ public abstract class BranchRegressionTest {
 
    public void testDeleteBranch() {
       // verify deletion of the workingBranch
-      AtsApiService.get().getBranchServiceIde().deleteWorkingBranch(reqTeam, false, true);
-      Assert.assertTrue(reqTeam.getWorkingBranch().isInvalid());
+      AtsApiService.get().getBranchServiceIde().deleteWorkingBranch(reqTeamWf, false, true);
+      Assert.assertTrue(reqTeamWf.getWorkingBranch().isInvalid());
 
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
+      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Not_Started, enablement.getStatus());
       Assert.assertTrue("Create Branch Button should be enabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertFalse("Show Artifact Explorer Button should be disabled",
@@ -379,9 +385,9 @@ public abstract class BranchRegressionTest {
 
    public void testXCommitManagerAfterDeleteBranch() {
       IAtsBranchService branchService = AtsApiService.get().getBranchService();
-      Collection<CommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      Collection<CommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeamWf);
       for (CommitConfigItem configArt : configArtSet) {
-         CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configArt);
+         CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeamWf, configArt);
          Assert.assertTrue(
             "XCommitManager Status not as expected: " + CommitStatus.Working_Branch_Not_Created.name() + " [" + configArt.getCommitFullDisplayName() + "]",
             xCommitStatus.equals(CommitStatus.Working_Branch_Not_Created));
@@ -389,15 +395,15 @@ public abstract class BranchRegressionTest {
    }
 
    public void testCreateBranchSecondTime() {
-      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeam, true);
-      workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeamWf, true);
+      workingBranch = reqTeamWf.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
    }
 
    public void testXWorkingBranchAfterSecondCreateBranch() {
 
       // Verify the new status of the XWorkingBranch
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
+      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Changes_InProgress, enablement.getStatus());
       Assert.assertFalse("Create Branch Button should be disabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertTrue("Show Artifact Explorer Button should be enabled",
@@ -408,7 +414,7 @@ public abstract class BranchRegressionTest {
 
    public void testBranchesListedInXCommitManager() {
       IAtsBranchService branchService = AtsApiService.get().getBranchService();
-      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeamWf);
       // Verify the Parallel Branches listed in the XCommitManager
       Assert.assertTrue("parallel workingBranch check failed => " + configItems.size(),
          configItems.size() == getBranchNames().size());
@@ -513,7 +519,7 @@ public abstract class BranchRegressionTest {
 
    public void testWorkingBranchCommit() {
       IAtsBranchService branchService = AtsApiService.get().getBranchService();
-      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeamWf);
       // Since commit workingBranch is a separate job, a callback will resume this thread
       // commit all of the branches
       Assert.assertTrue(
@@ -526,8 +532,8 @@ public abstract class BranchRegressionTest {
             configItem.getBaselineBranchId())) {
             BranchId branch = branchService.getBranch(configItem);
 
-            XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
-               branchService.isBranchesAllCommittedExcept(reqTeam, branch), new XResultData());
+            XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamWf, false, true,
+               branch, branchService.isBranchesAllCommittedExcept(reqTeamWf, branch), new XResultData());
             Assert.assertTrue("Commit Failed " + rd.toString(), rd.isSuccess());
          }
       }
@@ -538,8 +544,8 @@ public abstract class BranchRegressionTest {
          if (branchService.isBranchValid(
             configItem) && !BranchManager.getParentBranch(workingBranch).equals(configItem.getBaselineBranchId())) {
             BranchId branch = branchService.getBranch(configItem);
-            XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
-               branchService.isBranchesAllCommittedExcept(reqTeam, branch), new XResultData());
+            XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamWf, false, true,
+               branch, branchService.isBranchesAllCommittedExcept(reqTeamWf, branch), new XResultData());
             Assert.assertTrue("Commit Failed " + rd.toString(), rd.isSuccess());
             commitCount++;
          }
@@ -551,9 +557,9 @@ public abstract class BranchRegressionTest {
 
    public void testXWorkingBranchAfterBranchCommit() {
 
-      WorkflowEditor.editArtifact(reqTeam);
+      WorkflowEditor.editArtifact(reqTeamWf);
 
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
+      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Changes_NotPermitted__BranchCommitted, enablement.getStatus());
       Assert.assertFalse("Create Branch Button should be disabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertFalse("Show Artifact Explorer Button should be disabled",
@@ -563,9 +569,9 @@ public abstract class BranchRegressionTest {
 
       // Verify the XCommitManager's status; All branches should be CommitStatus.Committed
       IAtsBranchService branchService = AtsApiService.get().getBranchService();
-      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeamWf);
       for (CommitConfigItem configItem : configItems) {
-         CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configItem);
+         CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeamWf, configItem);
          Assert.assertTrue(
             "XCommitManager Status not as expected: " + CommitStatus.Committed.name() + " [" + configItem.getCommitFullDisplayName() + "]",
             xCommitStatus.equals(CommitStatus.Committed));
@@ -575,7 +581,8 @@ public abstract class BranchRegressionTest {
    public void testChangesMadeWereCommitted() {
       // Verify that the changes made on the workingBranch were committed to the main workingBranch
       // TODO This needs to be updated do handle multiple config artifacts when test gets updated to test for multiples
-      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(reqTeam);
+      ChangeData changeData =
+         AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(reqTeamWf);
 
       // Check for modified artifacts
       Collection<Artifact> artifactsModified =
@@ -634,7 +641,7 @@ public abstract class BranchRegressionTest {
    public void testRequirementsWorkflowCompletion() {
       // Complete Requirements and Start Code/Test
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("testRequirementsWorkflowCompletion");
-      TransitionHelper helper = new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeam),
+      TransitionHelper helper = new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeamWf),
          getRequirementsCompletedState().getName(), null, null, changes, AtsApiService.get(),
          TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
@@ -675,35 +682,44 @@ public abstract class BranchRegressionTest {
       return java.util.Collections.emptyList();
    }
 
+   protected boolean testCreationAfterTransition() {
+      return true;
+   }
+
+   protected boolean testCreationAfterCommit() {
+      return false;
+   }
+
    /**
     * Uses getFinalTaskNames() to test final tasks after req transition
     */
-   protected void testCodeTaskCreationAfterReqCompletion() {
+   protected void testCodeTaskCreationAfterReqCommitOrTransition() {
 
-      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
-         if (team.getTeamDefinition().toString().contains("Req")) {
+      for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
+         if (teamWf.getTeamDefinition().toString().contains("Req")) {
+            Assert.assertTrue(teamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG));
             continue;
          }
          IAtsTeamWorkflow testWf = null, codeWf = null;
-         if (team.isOfType(getTestTeamWfArtType())) {
-            testWf = team;
-         } else if (team.isOfType(getCodeTeamWfArtType())) {
-            codeWf = team;
+         if (teamWf.isOfType(getTestTeamWfArtType())) {
+            testWf = teamWf;
+         } else if (teamWf.isOfType(getCodeTeamWfArtType())) {
+            codeWf = teamWf;
          }
          Assert.assertTrue(testWf != null || codeWf != null);
 
          int loopCount = 0;
          int count = 0;
-         Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(team);
+         Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(teamWf);
          while (getFinalTaskNames().size() != count && loopCount < 10) {
             try {
                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                // do nothing
             }
-            AtsApiService.get().getStoreService().reload(Arrays.asList(team));
+            AtsApiService.get().getStoreService().reload(Arrays.asList(teamWf));
 
-            tasks = AtsApiService.get().getTaskService().getTasks(team);
+            tasks = AtsApiService.get().getTaskService().getTasks(teamWf);
             count = tasks.size();
 
             loopCount++;

@@ -33,6 +33,10 @@ public interface IAtsWorkItemHook {
       return rd;
    }
 
+   default public void committed(IAtsTeamWorkflow teamWf, XResultData rd) {
+      // do nothing
+   }
+
    default public XResultData creatingBranch(IAtsTeamWorkflow teamWf, XResultData rd) {
       return rd;
    }

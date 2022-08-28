@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTaskCommitHook;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
@@ -116,7 +116,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       testTeamWorkflows(teamWfs);
 
       changes.reset(getClass().getSimpleName() + " - transition req wf");
-      TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeam, AtsApiService.get());
+      TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeamWf, AtsApiService.get());
       mgr.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();
    }
@@ -260,8 +260,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      ChangeReportTaskData data = CreateChangeReportTaskTransitionHook.runChangeReportTaskOperation(codeWf,
-         TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges, changes, asUser);
+      ChangeReportTaskData data = CreateChangeReportTaskCommitHook.runChangeReportTaskOperation(codeWf,
+         TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges, false, changes, asUser);
       changes.executeIfNeeded();
 
       Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());
@@ -273,7 +273,9 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
       Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(codeWf);
 
-      Assert.assertEquals(expected.size(), tasks.size());
+      int expectedSize = expected.size();
+      int actualSize = tasks.size();
+      Assert.assertEquals(expectedSize, actualSize);
 
       for (IAtsTask task : tasks) {
          boolean contains = expected.contains(task.getName());

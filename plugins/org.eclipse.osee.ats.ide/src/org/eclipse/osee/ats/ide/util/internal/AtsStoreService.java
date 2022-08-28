@@ -13,9 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.internal;
 
-import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +50,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -283,7 +282,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public String getSafeName(ArtifactId art) {
+   public String getSafeName(ArtifactToken art) {
       String safeName = "Unknown";
       if (art.isInvalid()) {
          safeName = "Sentinal";
@@ -295,6 +294,22 @@ public class AtsStoreService implements IAtsStoreService {
          if (artifact != null) {
             safeName = artifact.getName();
          }
+      }
+      return safeName;
+   }
+
+   @Override
+   public String getSafeName(ArtifactToken art, BranchId branch) {
+      String safeName = "unknown";
+      if (art.isInvalid()) {
+         safeName = "Sentinal";
+      } else if (art instanceof Artifact) {
+         safeName = ((Artifact) art).getName();
+      } else if (branch.isInvalid()) {
+         throw new OseeArgumentException("Can't determine branch from art [%s]", art.toStringWithId());
+      } else {
+         safeName =
+            ((Artifact) atsApi.getQueryService().getArtifact(art, branch, DeletionFlag.INCLUDE_DELETED)).getSafeName();
       }
       return safeName;
    }
@@ -338,8 +353,6 @@ public class AtsStoreService implements IAtsStoreService {
          for (String server : servers) {
             atsApi.getServerEndpoints().getConfigEndpoint().requestCacheReload();
             try {
-               ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-               URL url = new URL(String.format("http://%s%s", server, "/ats/config/clearcache"));
                WebTarget target = AtsApiService.get().jaxRsApi().newTargetUrl(
                   String.format("http://%s%s", server, "/ats/config/clearcache"));
                Response response = target.request().get();

@@ -69,6 +69,7 @@ public class ChangeReportTaskData {
    private ArtifactId actionId;
    private IAtsChangeSet changes;
    private Set<ArtifactId> ids;
+   boolean finalTaskGen = false;
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -238,6 +239,19 @@ public class ChangeReportTaskData {
 
    public void setOperationName(String operationName) {
       this.operationName = operationName;
+   }
+
+   public boolean isFinalTaskGen() {
+      return finalTaskGen;
+   }
+
+   public void setFinalTaskGen(boolean finalTaskGen) {
+      this.finalTaskGen = finalTaskGen;
+   }
+
+   @JsonIgnore
+   public boolean isNoChangeItems() {
+      return changeItems == null || changeItems.isEmpty();
    }
 
 }

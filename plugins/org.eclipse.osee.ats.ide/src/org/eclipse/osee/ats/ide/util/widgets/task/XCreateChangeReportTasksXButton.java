@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
@@ -56,6 +58,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
    boolean creating = false;
    boolean debug = false; // true to display more detail regarding task matches
    boolean reportOnly = false; // true to not persist; used for debugging
+   AtsApi atsApi;
 
    public XCreateChangeReportTasksXButton(String name, AtsTaskDefToken... taskDefTokens) {
       super(name);
@@ -66,6 +69,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
       setImage(ImageManager.getImage(AtsImage.PLAY_GREEN));
       setToolTip(String.format("Click to Create/Update Change Report Tasks from [%s]", name));
       addXModifiedListener(listener);
+      atsApi = AtsApiService.get();
    }
 
    private final XModifiedListener listener = new XModifiedListener() {
@@ -97,6 +101,13 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
       if (reportOnly) {
          useName = useName + " (ReportOnly)";
       }
+
+      if (!reportOnly && hostTeamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG)) {
+         AWorkbench.popup(ChangeReportTasksUtil.FINAL_TASK_GEN_MSG);
+         creating = false;
+         return;
+      }
+
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), useName, useName + "?")) {
          creating = false;
          return;
@@ -136,6 +147,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
                      // Use booleans above to debug task matches
                      crtd.setDebug(debug);
                      crtd.setReportOnly(reportOnly);
+                     crtd.setFinalTaskGen(false);
 
                      crtd = AtsApiService.get().getTaskService().createTasks(crtd);
                      XResultDataUI.report(crtd.getResults(), getName());

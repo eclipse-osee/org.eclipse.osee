@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -542,4 +543,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          transaction.execute();
       }
    }
+
+   @Override
+   public void addTag(ArtifactToken artifact, String tag) {
+      if (!((Artifact) artifact).getTags().contains(tag)) {
+         addAttribute(artifact, CoreAttributeTypes.StaticId, tag);
+      }
+   }
+
 }

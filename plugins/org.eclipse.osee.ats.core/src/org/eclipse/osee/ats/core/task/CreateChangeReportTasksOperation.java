@@ -99,6 +99,12 @@ public class CreateChangeReportTasksOperation {
             rd.error("No Host Team Workflow can be found.\n");
             return crtd;
          }
+
+         if (!crtd.isReportOnly() && hostTeamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG)) {
+            rd.log(ChangeReportTasksUtil.FINAL_TASK_GEN_MSG);
+            return crtd;
+         }
+
          crtd.getIdToTeamWf().put(hostTeamWf.getId(), hostTeamWf);
          rd.logf("Creating from host Team Wf %s\n", hostTeamWf.toStringWithId());
 
@@ -148,7 +154,7 @@ public class CreateChangeReportTasksOperation {
 
          // Generate and store ChangeItems from branch or commit
          ChangeReportTasksUtil.getBranchOrCommitChangeData(crtd, setDef);
-         if (crtd.getResults().isErrors()) {
+         if (crtd.getResults().isErrors() || crtd.isNoChangeItems()) {
             return crtd;
          }
 
@@ -400,7 +406,8 @@ public class CreateChangeReportTasksOperation {
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
                String safeName = "";
                if (taskMatch.getChgRptArt().isValid()) {
-                  safeName = atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt());
+                  safeName =
+                     atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt(), crtd.getWorkOrParentBranchId());
                }
                table.getRows().add(new XResultTableRow( //
                   taskMatch.getChgRptArtName(), //
@@ -418,6 +425,9 @@ public class CreateChangeReportTasksOperation {
          if (reportOnly) {
             return crtd;
          } else if (changes != null) {
+            if (crtd.isFinalTaskGen()) {
+               changes.addTag(hostTeamWf, ChangeReportTasksUtil.FINAL_TASK_GEN_TAG);
+            }
             TransactionId transId = changes.executeIfNeeded();
             crtd.getResults().log("\n");
             if (transId != null && transId.isValid()) {

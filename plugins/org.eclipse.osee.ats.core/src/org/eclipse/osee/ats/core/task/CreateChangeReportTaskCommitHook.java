@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
@@ -21,9 +22,11 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -31,31 +34,38 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  *
  * @author Donald G. Dunne
  */
-public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook {
+public class CreateChangeReportTaskCommitHook implements IAtsWorkItemHook {
 
    private final AtsTaskDefToken taskDefToken;
 
-   public CreateChangeReportTaskTransitionHook(AtsTaskDefToken taskDefToken) {
+   public CreateChangeReportTaskCommitHook(AtsTaskDefToken taskDefToken) {
       this.taskDefToken = taskDefToken;
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
-      if (!workItem.isTeamWorkflow()) {
+   public void committed(IAtsTeamWorkflow teamWf, XResultData rd) {
+      AtsApi atsApi = AtsApiService.get();
+
+      if (teamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG)) {
+         rd.log(ChangeReportTasksUtil.FINAL_TASK_GEN_MSG);
          return;
       }
-      if (!toState.getStateType().isCompleted()) {
+
+      Collection<BranchToken> branchesCommittedTo = atsApi.getBranchService().getBranchesCommittedTo(teamWf);
+      if (branchesCommittedTo.size() != 1) {
          return;
       }
-      Thread thread = new Thread("Create/Update Tasks") {
+      Thread thread = new Thread("Create/Update Tasks on Commit") {
          @Override
          public void run() {
             // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
             CreateTasksDefinitionBuilder taskSetDefinition =
                AtsApiService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
-            if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(workItem,
+            if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(teamWf,
                AtsApiService.get())) {
-               ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, true, changes, asUser);
+               IAtsChangeSet changes = atsApi.createChangeSet(getName());
+               ChangeReportTaskData data = runChangeReportTaskOperation(teamWf, taskDefToken, true, changes,
+                  atsApi.getUserService().getCurrentUser());
                if (data.getResults().isErrors()) {
                   throw new OseeArgumentException(data.getResults().toString());
                }
@@ -89,7 +99,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
 
    @Override
    public String getDescription() {
-      return "Checks for and runs Change Report Task Set Definitions during tranisition";
+      return "Checks for and runs Change Report Task Set Definitions after first commit";
    }
 
 }
