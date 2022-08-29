@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -40,7 +41,6 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -185,7 +185,6 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       }
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       this.variableMap = variableMap;
@@ -262,10 +261,10 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
          return;
       }
       Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeamWfs();
-      if (teamWfs.size() > 1) {
-         WorldEditor.open(new WorldEditorSimpleProvider(getName(), (Collection<? extends ArtifactId>) teamWfs));
-      } else {
+      if (teamWfs.size() == 1) {
          WorkflowEditor.edit(teamWfs.iterator().next());
+      } else {
+         WorldEditor.open(new WorldEditorSimpleProvider("New CR Workflows", AtsObjects.getArtifacts(teamWfs)));
       }
    }
 
