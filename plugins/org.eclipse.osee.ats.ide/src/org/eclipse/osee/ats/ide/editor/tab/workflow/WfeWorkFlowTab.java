@@ -454,6 +454,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                   relationsSection.refresh();
                }
                historySection.refresh();
+
+               setEditorWidgets();
             }
 
          });
