@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  * @author Luciano T. Vaglienti
  */
 public class MimUserPreference extends PLGenericDBObject {
+   public static final MimUserPreference SENTINEL = new MimUserPreference();
    private boolean isInEditMode = false;
    private boolean hasBranchPref = false;
    private List<MimUserColumnPreference> columnPreferences = new LinkedList<MimUserColumnPreference>();
