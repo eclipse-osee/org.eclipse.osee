@@ -37,12 +37,18 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
 
    @Override
    public MimUserPreference getPreferences(BranchId branch) {
-      ArtifactReadable user = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         mimApi.getOrcsApi().userService().getUser()).asArtifact();
-      BranchToken selectedBranch = mimApi.getOrcsApi().getQueryFactory().branchQuery().andId(branch).getOneOrSentinel();
-      boolean hasWriteAccess = !mimApi.getOrcsApi().getAccessControlService().hasBranchPermission(user, selectedBranch,
-         PermissionEnum.WRITE, null).isErrors();
-      return new MimUserPreference(user, branch, hasWriteAccess);
+      System.out.println(
+         "MIM User Preferences Endpoint - UserService user ID = " + mimApi.getOrcsApi().userService().getUser().getIdString());
+      if (mimApi.getOrcsApi().userService().getUser().isValid()) {
+         ArtifactReadable user = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+            mimApi.getOrcsApi().userService().getUser()).asArtifact();
+         BranchToken selectedBranch =
+            mimApi.getOrcsApi().getQueryFactory().branchQuery().andId(branch).getOneOrSentinel();
+         boolean hasWriteAccess = !mimApi.getOrcsApi().getAccessControlService().hasBranchPermission(user,
+            selectedBranch, PermissionEnum.WRITE, null).isErrors();
+         return new MimUserPreference(user, branch, hasWriteAccess);
+      }
+      return MimUserPreference.SENTINEL;
    }
 
    @Override
