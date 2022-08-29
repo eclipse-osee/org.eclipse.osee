@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -47,6 +48,10 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 public interface IAtsQueryService {
 
    IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes);
+
+   default public Collection<IAtsWorkItem> getWorkItems(Collection<ArtifactToken> artifacts) {
+      return Collections.castAll(artifacts);
+   }
 
    /**
     * Run query that returns art_ids of IAtsWorkItems to return
@@ -221,6 +226,8 @@ public interface IAtsQueryService {
    ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch);
 
    Collection<ArtifactToken> getArtifacts(AttributeTypeToken attrType, String value, BranchToken branch);
+
+   Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, AttributeTypeToken attrType, String value, BranchToken branch);
 
    ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name, BranchToken branch);
 
