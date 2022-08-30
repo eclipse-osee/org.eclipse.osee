@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
+import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
@@ -82,5 +83,7 @@ public interface IAtsServerEndpointProvider {
    GitEndpoint getGitEndpoint();
 
    JiraEndpoint getJiraEndpoint();
+
+   MetricsEndpointApi getMetricsEp();
 
 }

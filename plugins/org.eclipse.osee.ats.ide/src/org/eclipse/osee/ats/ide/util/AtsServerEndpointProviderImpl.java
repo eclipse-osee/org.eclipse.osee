@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
+import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
@@ -66,6 +67,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsActionUiEndpointApi actionUiEp;
    private GitEndpoint gitEp;
    private JiraEndpoint jiraEp;
+   private MetricsEndpointApi metricsEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -248,5 +250,13 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          jiraEp = jaxRsApi.newProxy(getAtsTarget(), JiraEndpoint.class);
       }
       return jiraEp;
+   }
+
+   @Override
+   public MetricsEndpointApi getMetricsEp() {
+      if (metricsEp == null) {
+         metricsEp = jaxRsApi.newProxy(getAtsTarget(), MetricsEndpointApi.class);
+      }
+      return metricsEp;
    }
 }

@@ -13,13 +13,192 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
+   IAtsTeamWorkflow SENTINEL = createSentinel();
+
    IAtsTeamDefinition getTeamDefinition();
+
+   public static IAtsTeamWorkflow createSentinel() {
+      final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsTeamWorkflow {
+
+         @Override
+         public ArtifactTypeToken getArtifactType() {
+            return null;
+         }
+
+         @Override
+         public List<AtsUser> getAssignees() {
+            return null;
+         }
+
+         @Override
+         public List<AtsUser> getImplementers() {
+            return null;
+         }
+
+         @Override
+         public String getAtsId() {
+            return null;
+         }
+
+         @Override
+         public IAtsTeamWorkflow getParentTeamWorkflow() {
+            return null;
+         }
+
+         @Override
+         public IAtsStateManager getStateMgr() {
+            return null;
+         }
+
+         @Override
+         public IAtsLog getLog() {
+            return null;
+         }
+
+         @Override
+         public AtsUser getCreatedBy() {
+            return null;
+         }
+
+         @Override
+         public Date getCreatedDate() {
+            return null;
+         }
+
+         @Override
+         public AtsUser getCompletedBy() {
+            return null;
+         }
+
+         @Override
+         public AtsUser getCancelledBy() {
+            return null;
+         }
+
+         @Override
+         public String getCompletedFromState() {
+            return null;
+         }
+
+         @Override
+         public String getCancelledFromState() {
+            return null;
+         }
+
+         @Override
+         public String getArtifactTypeName() {
+            return null;
+         }
+
+         @Override
+         public Date getCompletedDate() {
+            return null;
+         }
+
+         @Override
+         public Date getCancelledDate() {
+            return null;
+         }
+
+         @Override
+         public String getCancelledReason() {
+            return null;
+         }
+
+         @Override
+         public IAtsAction getParentAction() {
+            return null;
+         }
+
+         @Override
+         public void setStateMgr(IAtsStateManager stateMgr) {
+            // do nothing
+         }
+
+         @Override
+         public void clearCaches() {
+            // do nothing
+         }
+
+         @Override
+         public AtsApi getAtsApi() {
+            return null;
+         }
+
+         @Override
+         public boolean isInState(IStateToken state) {
+            return false;
+         }
+
+         @Override
+         public Collection<WorkType> getWorkTypes() {
+            return null;
+         }
+
+         @Override
+         public boolean isWorkType(WorkType workType) {
+            return false;
+         }
+
+         @Override
+         public Collection<String> getTags() {
+            return null;
+         }
+
+         @Override
+         public boolean hasTag(String tag) {
+            return false;
+         }
+
+         @Override
+         public boolean isSprint() {
+            return false;
+         }
+
+         @Override
+         public Set<IAtsActionableItem> getActionableItems() {
+            return null;
+         }
+
+         @Override
+         public IAtsTeamDefinition getTeamDefinition() {
+            return null;
+         }
+
+         @Override
+         public WorkDefinition getWorkDefinition() {
+            return null;
+         }
+
+         @Override
+         public StateDefinition getStateDefinition() {
+            return null;
+         }
+
+      }
+      return new IAtsWorkItemSentinel();
+   }
 }
