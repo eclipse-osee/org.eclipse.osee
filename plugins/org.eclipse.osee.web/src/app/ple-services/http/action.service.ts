@@ -47,6 +47,10 @@ export class ActionService {
   public getVersions(arbId: string): Observable<targetedVersion[]> {
     return this.http.get<targetedVersion[]>(apiURL+'/ats/teamwf/' + arbId + '/version?sort=true');
   }
+
+  public getChangeTypes(arbId: string): Observable<targetedVersion[]> {
+    return this.http.get<targetedVersion[]>(apiURL+'/ats/teamwf/' + arbId + '/changeTypes?sort=true');
+  }
   public createBranch(body: newActionInterface): Observable<newActionResponse> {
     return this.http.post<newActionResponse>(apiURL+'/ats/action/branch', body);
   }

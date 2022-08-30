@@ -11,27 +11,51 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { user } from "src/app/userdata/types/user-data-user";
-import { NameValuePair } from "./base-types/NameValuePair";
+import { IdNameDescription, NameValuePair } from "./base-types/NameValuePair";
 import { PlConfigBranchListingBranch } from "./pl-config-branch";
 import { response } from "../../../types/responses";
 import { pluser } from "./pl-config-users";
 
+export enum PRIORITY{
+    LowestPriority="1",
+    LowPriority="2",
+    MediumPriority="3",
+    HighPriority = "4",
+    HighestPriority="5" 
+}
 export interface PLConfigCreateActionInterface {
     originator: user,
     actionableItem: actionableItem,
     targetedVersion: string,
     title: string,
-    description:string,
+    description: string,
+    priority: PRIORITY,
+    changeType: {
+        id: string,
+        name: string,
+        idString: string,
+        idIntValue: number,
+        description: string
+    }
+    
 }
 export class PLConfigCreateAction implements PLConfigCreateActionInterface{
     constructor(currentUser: user) {
         this.originator = currentUser;
     }
+    priority=PRIORITY.LowestPriority;
     originator: user;
     actionableItem: actionableItem = new actionableItem();
     targetedVersion: string = '';
     title: string = '';
     description: string = '';
+    changeType = {
+        id: '-1',
+        name: '',
+        idString: '-1',
+        idIntValue: -1,
+        description:''
+    }
 }
 export interface actionableItemInterface extends NameValuePair {
 }
@@ -111,6 +135,8 @@ export interface newActionInterface {
     asUserId: string,
     createdByUserId: string,
     versionId: string,
+    priority: PRIORITY,
+    changeType: IdNameDescription
 }
 export class CreateAction implements newActionInterface{
     constructor(config?: PLConfigCreateAction) {
@@ -121,14 +147,18 @@ export class CreateAction implements newActionInterface{
         }
         this.asUserId = config && config.originator.id || '';
         this.createdByUserId= config && config.originator.id || '';
-        this.versionId= config && config.targetedVersion || '';
+        this.versionId = config && config.targetedVersion || '';
+        this.priority = config && config.priority || PRIORITY.LowestPriority;
+        this.changeType = config && { id:config.changeType.id,name:config.changeType.name,description:config.changeType.description } || { id: '-1', name: '',description:'' };
     }
-    title: string ='';
-    description: string='';
-    aiIds: string[]=[];
-    asUserId: string='';
-    createdByUserId: string='';
-    versionId: string='';
+    changeType: IdNameDescription = {id:'-1',name:'',description:''};
+    priority: PRIORITY = PRIORITY.LowestPriority;
+    title: string = '';
+    description: string = '';
+    aiIds: string[] = [];
+    asUserId: string = '';
+    createdByUserId: string = '';
+    versionId: string = '';
 
 }
 export interface newActionResponse {

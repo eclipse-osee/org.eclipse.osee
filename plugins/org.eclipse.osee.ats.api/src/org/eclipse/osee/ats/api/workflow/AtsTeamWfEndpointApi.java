@@ -23,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -50,6 +51,15 @@ public interface AtsTeamWfEndpointApi {
    @Path("{id}")
    @Produces({MediaType.APPLICATION_JSON})
    IAtsTeamWorkflow getTeamWorkflow(@PathParam("id") String id);
+
+   /**
+    * @param id can be ai,teamdef,workflow id
+    */
+   @GET
+   @IdentityView
+   @Path("{id}/changeTypes")
+   @Produces({MediaType.APPLICATION_JSON})
+   Collection<ChangeTypes> getChangeTypes(@PathParam("id") String id, @QueryParam("sort") String sort);
 
    @PUT
    @Path("{id}/addchangeids/{teamId}")

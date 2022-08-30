@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { switchMap } from 'rxjs/operators';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { ActionStateButtonService } from '../../../services/action-state-button.service';
 import { PLConfigCreateAction } from '../../../../ple/plconfig/types/pl-config-actions';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
@@ -42,6 +42,8 @@ export class ActionDropDownComponent implements OnInit,OnChanges {
           minWidth: '60%',
         })
         .afterClosed().pipe(
+          take(1),
+          filter((val):val is PLConfigCreateAction=> val!==undefined),
           switchMap((value) => this.actionService.doAddAction(value,this.category)),
       )
     )

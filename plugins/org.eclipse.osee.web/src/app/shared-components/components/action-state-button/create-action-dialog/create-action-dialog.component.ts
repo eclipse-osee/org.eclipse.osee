@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
 import { share} from 'rxjs/operators';
 import { ActionService } from '../../../../ple-services/http/action.service';
 import { PlConfigUserService } from '../../../../ple/plconfig/services/pl-config-user.service';
-import { actionableItem, PLConfigCreateAction, targetedVersion } from '../../../../ple/plconfig/types/pl-config-actions';
+import { actionableItem, PLConfigCreateAction, PRIORITY, targetedVersion } from '../../../../ple/plconfig/types/pl-config-actions';
 import { ActionStateButtonService } from '../../../services/action-state-button.service';
 /**
  * Dialog for creating a new action with the correct workType and category.
@@ -30,6 +30,12 @@ export class CreateActionDialogComponent implements OnInit {
   users = this.userService.usersSorted;
   actionableItems: Observable<actionableItem[]> = this.actionService.actionableItems.pipe(share());
   targetedVersions!: Observable<targetedVersion[]>;
+  changeTypes!:Observable<targetedVersion[]>;
+  private _priorityKeys = Object.keys(PRIORITY);
+  private _priorityValues = Object.values(PRIORITY);
+  priorities = this._priorityKeys.map((item, row) => {
+    return {name:item.split(/(?=[A-Z])/).join(" "),value:this._priorityValues[row]}
+  })
   constructor(public dialogRef: MatDialogRef<CreateActionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: PLConfigCreateAction, public actionService: ActionStateButtonService, public userService: PlConfigUserService) { 
   }
 
@@ -40,6 +46,7 @@ export class CreateActionDialogComponent implements OnInit {
   }
   selectActionableItem() {
     this.targetedVersions = this.actionService.getVersions(this.data.actionableItem.id);
+    this.changeTypes=this.actionService.getChangeTypes(this.data.actionableItem.id);
   }
 
 }

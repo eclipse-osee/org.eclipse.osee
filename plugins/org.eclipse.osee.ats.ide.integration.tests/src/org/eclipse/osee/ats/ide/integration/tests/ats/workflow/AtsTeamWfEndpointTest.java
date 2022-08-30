@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -71,6 +72,13 @@ public class AtsTeamWfEndpointTest {
       changes.unrelate(codeTeamWorkFlow.getArtifactId(), AtsRelationTypes.TeamWorkflowToRelease_Release, release);
       changes.deleteArtifact(release);
       changes.execute();
+   }
+
+   @Test
+   public void testGetChangeTypes() {
+      Collection<ChangeTypes> changeTypes =
+         teamWfEp.getChangeTypes(DemoUtil.getSawCodeUnCommittedWf().getArtifactId().getIdString(), "true");
+      Assert.assertTrue(changeTypes.size() == 4);
    }
 
    @Test
