@@ -15,7 +15,8 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
@@ -45,7 +46,8 @@ public class ChangeTypeSearchWidget extends AbstractXComboViewerSearchWidget<Str
 
    @Override
    public Collection<String> getInput() {
-      List<String> cTypes = ChangeTypes.getValuesStrs();
+      Set<String> cTypes = new HashSet<String>();
+      cTypes.addAll(ChangeTypes.getValuesStrs());
       cTypes.remove(ChangeTypes.None.getName());
       return cTypes;
    }
