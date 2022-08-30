@@ -91,6 +91,7 @@ public class AtsSearchData {
       item.setAiIds(getAiIds());
       item.setVersionId(getVersionId());
       item.setState(getState());
+      item.setChangeType(getChangeType());
       item.setProgramId(getProgramId());
       item.setInsertionId(getInsertionId());
       item.setInsertionActivityId(getInsertionActivityId());

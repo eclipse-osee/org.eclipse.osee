@@ -138,4 +138,6 @@ public interface IAtsQuery {
 
    IAtsQuery andIds(Collection<ArtifactId> ids);
 
+   IAtsQuery andChangeType(String changeType);
+
 }

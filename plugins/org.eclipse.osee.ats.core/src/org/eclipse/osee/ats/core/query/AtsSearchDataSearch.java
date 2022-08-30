@@ -128,6 +128,9 @@ public class AtsSearchDataSearch {
       if (Strings.isValid(data.getState())) {
          query.andState(data.getState());
       }
+      if (Strings.isValid(data.getChangeType())) {
+         query.andChangeType(data.getChangeType());
+      }
       if (data.getProgramId() > 0L) {
          query.andProgram(data.getProgramId());
       }

@@ -72,6 +72,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Collection<Long> aiIds;
    protected Long versionId;
    protected String stateName;
+   protected String changeType;
    protected Long programId;
    protected Long insertionId;
    protected Long insertionActivityId;
@@ -730,6 +731,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
+   public IAtsQuery andChangeType(String changeType) {
+      this.changeType = changeType;
+      return this;
+   }
+
+   @Override
    public IAtsQuery andProgram(Long programId) {
       this.programId = programId;
       return this;
@@ -770,6 +777,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
 
       addStateTypeNameAndAttributeCriteria();
+
+      addChangeTypeCriteria();
    }
 
    public abstract void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes);
@@ -841,6 +850,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addStateNameCriteria() {
       if (stateName != null) {
          queryAnd(AtsAttributeTypes.CurrentState, stateName + ";", QueryOption.CONTAINS_MATCH_OPTIONS);
+      }
+   }
+
+   private void addChangeTypeCriteria() {
+      if (changeType != null) {
+         queryAnd(AtsAttributeTypes.ChangeType, changeType, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -1028,5 +1043,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    protected abstract void queryAndExists(AttributeTypeToken attributeType);
+
+   public String getChangeType() {
+      return changeType;
+   }
+
+   public void setChangeType(String changeType) {
+      this.changeType = changeType;
+   }
 
 }
