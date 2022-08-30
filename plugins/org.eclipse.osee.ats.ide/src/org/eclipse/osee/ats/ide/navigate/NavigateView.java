@@ -216,9 +216,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
                   userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
                }
+               str += " - [" + ClientSessionManager.getSession().getAuthenticationProtocol() + "]";
                userLabel.setText(str);
-               str += " - [" + System.getProperty(
-                  "user.name") + "] - [" + ClientSessionManager.getSession().getAuthenticationProtocol() + "]";
+               str += " - [" + System.getProperty("user.name") + "]";
                userLabel.setToolTipText(str);
             }
          };
@@ -272,7 +272,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    private String getWhoAmI() {
       try {
          String userName = AtsApiService.get().userService().getUser().getName();
-         return String.format("[%s] - [%s]", AtsApiService.get().getAtsBranch().getName(), userName);
+         return String.format("[%s]", userName);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();
