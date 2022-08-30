@@ -83,6 +83,10 @@ export class ActionStateButtonService {
   getVersions(actionableItem: string) {
     return this.actionService.getVersions(actionableItem)
   }
+
+  getChangeTypes(actionableItem: string) {
+    return this.actionService.getChangeTypes(actionableItem)
+  }
   private _branchState =this.currentBranchService.currentBranchDetail;
   private _branchAction = this.branchState.pipe(
     switchMap((val) =>

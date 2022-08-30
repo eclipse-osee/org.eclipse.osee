@@ -518,11 +518,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          ais.add(ai);
 
          IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+         ChangeTypes changeType =
+            newActionData.getChangeType().isValid() ? newActionData.getChangeType() : ChangeTypes.Improvement;
          IAtsVersion version =
             atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
          ActionResult actionResult = atsApi.getActionService().createAction(asUser, newActionData.getTitle(),
-            newActionData.getDescription(), ChangeTypes.Improvement, newActionData.getPriority(), false, null, ais,
-            new Date(), atsApi.getUserService().getCurrentUser(), null, changes);
+            newActionData.getDescription(), changeType, newActionData.getPriority(), false, null, ais, new Date(),
+            atsApi.getUserService().getCurrentUser(), null, changes);
 
          IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
          atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);

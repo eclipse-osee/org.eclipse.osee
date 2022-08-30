@@ -31,6 +31,14 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-form-field *ngIf="data.actionableItem.id.length !=0">
+            <mat-label>Select Change Type</mat-label>
+            <mat-select [(ngModel)]="data.changeType" required data-cy="select-change-type">
+                <mat-option *ngFor="let item of (changeTypes |async)" [value]="item" [attr.data-cy]="'option-'+item.name">
+                    {{item.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <mat-form-field [style.fontSize.px]="18">
         <mat-label>Title</mat-label>
@@ -41,12 +49,21 @@
         <mat-label>Description</mat-label>
         <input matInput type="text" [(ngModel)]="data.description" #input required data-cy="action-description">
     </mat-form-field>
+    <br>
+    <mat-form-field [style.fontSize.px]="18">
+        <mat-label>Select Priority</mat-label>
+        <mat-select [(ngModel)]="data.priority" required data-cy="select-priority">
+            <mat-option *ngFor="let item of priorities" [value]="item.value" [attr.data-cy]="'option-'+item.name">
+                {{item.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">
         Cancel
     </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.description.length ===0 || data.title.length ===0 || data.targetedVersion.length ===0 || data.actionableItem.id.length ===0 || data.originator.id.length ===0" data-cy="submit-btn">
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.description.length ===0 || data.title.length ===0 || data.targetedVersion.length ===0 || data.actionableItem.id.length ===0 || data.originator.id.length ===0 || data.changeType.id.length ===0" data-cy="submit-btn">
         Create Action
     </button>
 </div>

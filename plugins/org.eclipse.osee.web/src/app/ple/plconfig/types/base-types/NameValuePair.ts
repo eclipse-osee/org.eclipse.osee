@@ -14,3 +14,9 @@ export interface NameValuePair {
     id: string,
     name: string
 }
+
+export interface IdNameDescription {
+    id: string,
+    name: string,
+    description: string
+}

@@ -21,11 +21,13 @@ import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -224,5 +226,23 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       }
 
       return rd;
+   }
+
+   @Override
+   public Collection<ChangeTypes> getChangeTypes(String id, String sort) {
+      ArtifactToken artifact = atsApi.getQueryService().getArtifact(Long.valueOf(id));
+      IAtsObject atsObj =
+         artifact.isOfType(AtsArtifactTypes.ActionableItem) ? atsApi.getActionableItemService().getActionableItemById(
+            artifact) : artifact.isOfType(
+               AtsArtifactTypes.TeamDefinition) ? atsApi.getTeamDefinitionService().getTeamDefinitionById(
+                  artifact) : artifact.isOfType(
+                     AtsArtifactTypes.WorkDefinition) ? atsApi.getWorkItemService().getWorkItem(artifact) : null;
+
+      List<ChangeTypes> changeTypes = atsApi.getWorkItemService().getChangeTypeOptions(atsObj);
+      if ("true".equals(sort)) {
+         Collections.sort(changeTypes);
+      }
+
+      return changeTypes;
    }
 }

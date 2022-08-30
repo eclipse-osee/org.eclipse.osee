@@ -12,7 +12,7 @@
  **********************************************************************/
 import { user } from "src/app/userdata/types/user-data-user"
 import { NameValuePair } from "../types/base-types/NameValuePair";
-import { action, newActionResponse, targetedVersion, teamWorkflow, transitionAction } from "../types/pl-config-actions"
+import { action, newActionResponse, PRIORITY, targetedVersion, teamWorkflow, transitionAction } from "../types/pl-config-actions"
 import { PlConfigBranchListingBranch } from "../types/pl-config-branch";
 import { commitResponse, response, transitionResponse } from "../../../types/responses";
 
@@ -161,6 +161,8 @@ export const testNewActionData = {
     asUserId: '0',
     createdByUserId: '0',
     versionId: '0',
+    priority: PRIORITY.LowestPriority,
+    changeType: {id:'-1',name:'',description:''}
   };
   export const testDataPlConfigBranchListingBranch: PlConfigBranchListingBranch =
   {
