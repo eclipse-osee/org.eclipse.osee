@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinit
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.world.AtsWorldEndpointImpl;
+import org.eclipse.osee.ats.rest.metrics.MetricsEndpointImpl;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -150,6 +151,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsTeamWfEndpointImpl(atsApiServer));
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new JiraEndpointImpl(atsApiServer));
+      singletons.add(new MetricsEndpointImpl(atsApiServer, orcsApi));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));
