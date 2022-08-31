@@ -144,6 +144,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
 
    public InterfaceStructureElementToken(Long id, String name, ApplicabilityToken applicability, PlatformTypeToken pType) {
       super(id, name);
+      this.setDescription("");
+      this.setNotes("");
       this.setInterfaceElementAlterable(false);
       this.setInterfaceElementIndexStart(0);
       this.setInterfaceElementIndexEnd(0);

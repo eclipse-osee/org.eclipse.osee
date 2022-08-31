@@ -13,10 +13,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
-import { iif, of } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { from, iif, of } from 'rxjs';
+import { filter, scan, startWith, switchMap, tap } from 'rxjs/operators';
+import { applic } from 'src/app/types/applicability/applic';
 import { ConnectionService } from '../connection-view/services/connection.service';
 import { RouteStateService } from '../connection-view/services/route-state-service.service';
+import { ApplicabilityListService } from '../shared/services/http/applicability-list.service';
 import { ReportsService } from '../shared/services/ui/reports.service';
 import { connection, transportType } from '../shared/types/connection';
 import { MimReport } from '../shared/types/Reports';
@@ -28,7 +30,7 @@ import { MimReport } from '../shared/types/Reports';
 })
 export class ReportsComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private routerState: RouteStateService, private reportsService: ReportsService, private connectionService: ConnectionService) { }
+  constructor(private route: ActivatedRoute, private routerState: RouteStateService, private reportsService: ReportsService, private connectionService: ConnectionService, private applicService: ApplicabilityListService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -38,6 +40,7 @@ export class ReportsComponent implements OnInit {
   }
 
   selectedReport: MimReport|undefined = undefined;
+  selectedApplic: applic = {id:'-1', name:'None'};
   
   branchId = this.reportsService.branchId;
   branchType = this.reportsService.branchType;
@@ -58,12 +61,25 @@ export class ReportsComponent implements OnInit {
     switchMap(connections => iif(() => connections.length > 0, of("Select a Connection"), of("No connections available")))
   )
 
+  applicViews = this.branchId.pipe(
+    filter(v => v !== ''),
+    switchMap(branchId => this.applicService.getViews(branchId).pipe(
+      switchMap(applics => from(applics).pipe(
+        startWith({id:'-1', name:'None'} as applic),
+        scan((acc, curr) => {
+          acc.push(curr);
+          return acc;
+        }, [] as applic[])
+      ))
+    ))
+  )
+
   selectReport(event: MatSelectChange) {
     this.selectedReport = event.value;
   }
 
   getSelectedReport() {
-    this.reportsService.downloadReport(this.selectedReport).subscribe();
+    this.reportsService.downloadReport(this.selectedReport, this.selectedApplic.id).subscribe();
   }
 
   selectConnection(event: MatSelectChange) {

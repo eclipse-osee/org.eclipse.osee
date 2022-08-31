@@ -37,7 +37,7 @@ public class MimReportToken extends PLGenericDBObject {
       this();
       this.setId(art.getId());
       this.setName(art.getName());
-      this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.ContentUrl, ""));
+      this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.EndpointUrl, ""));
       this.setFileNamePrefix(art.getSoleAttributeValue(CoreAttributeTypes.FileNamePrefix, ""));
       this.setHttpMethod(art.getSoleAttributeAsString(CoreAttributeTypes.HttpMethod, ""));
       this.setFileExtension(art.getSoleAttributeAsString(CoreAttributeTypes.FileExtension, ""));

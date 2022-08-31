@@ -42,6 +42,16 @@
                                 </mat-select>
                             </mat-form-field>
                         </ng-container>
+                        <ng-container *ngIf="(applicViews|async) as _views">
+                            <mat-form-field class="form-field" appearance="fill">
+                                <mat-label>Select a view</mat-label>
+                                <mat-select [disabled]="_views.length===0" [(value)]="selectedApplic">
+                                    <mat-option *ngFor="let option of _views" [value]="option" [id]="option.id!">
+                                        {{option.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
                         <ng-container *ngIf="selectedReport?.httpMethod === 'POST'">
                             <p>Select a file or enter JSON</p>
                             <input type="file" (change)="selectFile($event)" accept=".json,.csv,.txt">

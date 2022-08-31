@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
+import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.ICDImportApi;
 import org.eclipse.osee.mim.types.InterfaceElementImportToken;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
@@ -45,7 +46,7 @@ public class IcdImportApiImpl implements ICDImportApi {
    private Long id = 1L;
 
    public IcdImportApiImpl(InputStream inputStream) {
-      this.reader = new ExcelWorkbookReader(inputStream);
+      this.reader = new ExcelWorkbookReader(inputStream, WorkbookFormat.XLSX);
    }
 
    @Override
@@ -370,11 +371,15 @@ public class IcdImportApiImpl implements ICDImportApi {
          String elementKey = getElementKey(name, alterable, description, notes, pType.getId());
          InterfaceElementImportToken element = InterfaceElementImportToken.SENTINEL;
          boolean relateElement = true;
-         if (elements.containsKey(elementKey)) {
+         boolean possibleArray = name.matches(".*\\s\\d+$") && !name.matches(".*\\s(and)\\s\\d+$");
+
+         // If an element is possibly part of an array, do not reuse it.
+         // There could be other elements with the same name that are single elements or part of a different size array.
+         if (!possibleArray && elements.containsKey(elementKey)) {
             element = elements.get(elementKey);
             previousElement = element;
             previousPType = pType;
-         } else if (name.matches(".*\\s\\d+$") && !name.matches(
+         } else if (possibleArray && name.matches(".*\\s\\d+$") && !name.matches(
             ".*\\s(and)\\s\\d+$") && previousElement.isValid() && previousPType.isValid() && compareElementsForArray(
                previousElement.getName(), name, previousPType.getId(), pType.getId())) {
             String[] nameSplit = name.split(" ");

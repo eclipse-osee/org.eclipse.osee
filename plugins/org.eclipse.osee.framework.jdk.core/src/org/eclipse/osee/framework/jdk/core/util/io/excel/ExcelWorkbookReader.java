@@ -21,16 +21,19 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 
 public class ExcelWorkbookReader {
 
    private Workbook workbook;
    private Sheet activeSheet;
 
-   public ExcelWorkbookReader(InputStream inputStream) {
+   public ExcelWorkbookReader(InputStream inputStream, WorkbookFormat format) {
       try {
-         this.workbook = new HSSFWorkbook(inputStream);
+         this.workbook =
+            format.equals(WorkbookFormat.XLS) ? new HSSFWorkbook(inputStream) : new XSSFWorkbook(inputStream);
       } catch (IOException ex) {
          System.out.println(ex);
       }

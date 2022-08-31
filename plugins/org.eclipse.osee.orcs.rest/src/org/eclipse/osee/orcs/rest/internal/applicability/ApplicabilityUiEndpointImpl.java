@@ -76,8 +76,8 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    }
 
    @Override
-   public ApplicabilityBranchConfig getConfig(BranchId branch, Boolean showAll) {
-      return ops.getConfig(branch, showAll);
+   public ApplicabilityBranchConfig getConfig(BranchId branch) {
+      return ops.getConfig(branch);
    }
 
 }

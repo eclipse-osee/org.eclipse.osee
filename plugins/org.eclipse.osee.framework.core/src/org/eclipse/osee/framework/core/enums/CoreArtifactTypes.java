@@ -270,9 +270,11 @@ public interface CoreArtifactTypes {
       .exactlyOne(CoreAttributeTypes.FileExtension)
       .exactlyOne(CoreAttributeTypes.FileNamePrefix)
       .exactlyOne(CoreAttributeTypes.ProducesMediaType)
-      .exactlyOne(CoreAttributeTypes.DiffAvailable));
+      .exactlyOne(CoreAttributeTypes.DiffAvailable)
+      .exactlyOne(CoreAttributeTypes.EndpointUrl));
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
-   ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Artifact));
+   ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Artifact)
+      .exactlyOne(CoreAttributeTypes.EndpointUrl));
    ArtifactTypeToken RootArtifact = osee.add(osee.artifactType(10L, "Root Artifact", false, Artifact));
    ArtifactTypeToken SafetyAssessment = osee.add(osee.artifactType(59L, "Safety Assessment", false, Artifact)
       .zeroOrOne(ParagraphNumber)
