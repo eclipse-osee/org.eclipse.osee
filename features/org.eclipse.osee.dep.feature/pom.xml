@@ -57,7 +57,8 @@
 							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-client" />
-								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />	
+								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
+								<plugin id="org.apache.poi.ooxml.schemas" />
 								<plugin id="org.eclipse.osgi" />		
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.eclipse.m2e.maven.runtime" />

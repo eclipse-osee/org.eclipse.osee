@@ -67,6 +67,7 @@
 							   <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
+							   <plugin id="org.apache.poi.ooxml.schemas" />
 							   <plugin id="javax.annotation" />
 							   <plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 							   <plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />	
