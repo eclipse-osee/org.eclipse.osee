@@ -32,7 +32,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public interface OrcsApplicability {
 
-   ApplicabilityBranchConfig getConfig(BranchId branchId, boolean showAll);
+   ApplicabilityBranchConfig getConfig(BranchId branchId);
 
    FeatureDefinition getFeatureDefinition(ArtifactReadable featureArt);
 

@@ -25,4 +25,8 @@ export class ApplicabilityListService {
   getApplicabilities(branchId: string | number) {
     return this.http.get<applic[]>(apiURL+'/orcs/branch/'+branchId+'/applic')
   }
+
+  getViews(branchId: string | number) {
+    return this.http.get<applic[]>(apiURL+'/orcs/branch/'+branchId+'/applic/views')
+  }
 }

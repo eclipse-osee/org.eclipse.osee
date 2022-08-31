@@ -38,10 +38,10 @@ export class ReportsService {
     );
   }
 
-  downloadReport(report: MimReport|undefined) {
+  downloadReport(report: MimReport|undefined, viewId: string) {
       return combineLatest([this.branchId, this._connection]).pipe(
         take(1),
-        switchMap(([branchId, connection]) => iif(()=>report !== undefined, this.getReport(report as MimReport, branchId, connection).pipe(
+        switchMap(([branchId, connection]) => iif(()=>report !== undefined, this.getReport(report as MimReport, branchId, viewId, connection).pipe(
           map(res => {
             if (res.size !== 0) {
               const blob = new Blob([res], {type: report?.producesMediaType})
@@ -58,12 +58,17 @@ export class ReportsService {
       )
   }
 
-  private getReport(report: MimReport, branchId: string, connection?: connection) {
+  private getReport(report: MimReport, branchId: string, viewId: string, connection?: connection) {
     return combineLatest(([this.requestBody, this.requestBodyFile, this.includeDiff])).pipe(
       take(1),
       switchMap(([input, file, includeDiff]) => 
         iif(() => report !== undefined && report.url !== '' && branchId !== '' && connection !== undefined && connection.id !== '-1', 
-          this.fileService.getFileAsBlob(report.httpMethod, report.url.replace('<branchId>', branchId).replace('<connectionId>', connection?.id!).replace('<diffAvailable>', includeDiff+''), file === undefined ? input : file),
+          this.fileService.getFileAsBlob(report.httpMethod, 
+            report.url.replace('<branchId>', branchId)
+            .replace('<connectionId>', connection?.id!)
+            .replace('<diffAvailable>', includeDiff+'')
+            .replace('<viewId>', viewId), 
+            file === undefined ? input : file),
           of(new Blob()))
     ))
   }

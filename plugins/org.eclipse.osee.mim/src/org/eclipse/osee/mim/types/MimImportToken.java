@@ -32,7 +32,7 @@ public class MimImportToken extends PLGenericDBObject {
       this();
       this.setId(art.getId());
       this.setName(art.getName());
-      this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.ContentUrl, ""));
+      this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.EndpointUrl, ""));
    }
 
    /**

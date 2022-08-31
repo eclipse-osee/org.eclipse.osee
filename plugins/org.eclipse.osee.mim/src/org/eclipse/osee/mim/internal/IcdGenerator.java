@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -68,6 +69,7 @@ public class IcdGenerator {
    private final Map<ArtifactId, InterfaceSubMessageToken> messageHeaders;
    private final Map<String, InterfaceStructureToken> messageHeaderStructures;
    private Map<ArtifactId, MimDifferenceItem> diffs;
+   private List<ApplicabilityToken> applicTokens;
 
    public IcdGenerator(MimApi mimApi) {
       this.orcsApi = mimApi.getOrcsApi();
@@ -84,11 +86,14 @@ public class IcdGenerator {
    }
 
    public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId, boolean diff) {
+      applicTokens = orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, branch);
+
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
             connectionId).follow(CoreRelationTypes.InterfaceConnectionContent_Message).follow(
                CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).follow(
                   CoreRelationTypes.InterfaceSubMessageContent_Structure).asArtifact();
+
       ArtifactReadable primaryNode =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceNode).andId(
             conn.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getAtMostOneOrDefault(
@@ -99,85 +104,96 @@ public class IcdGenerator {
             conn.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL)).asArtifact();
 
-      List<ArtifactReadable> messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionContent_Message).getList();
-      List<ArtifactReadable> subMessages = new ArrayList<>();
+      List<ArtifactReadable> messages = new LinkedList<>();
+      List<ArtifactReadable> subMessages = new LinkedList<>();
       List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
-      List<InterfaceStructureToken> structures = new ArrayList<>();
+      List<InterfaceStructureToken> structures = new LinkedList<>();
       SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
-      for (ArtifactReadable message : messages) {
-         ArtifactReadable sendingNode =
-            (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
-                  primaryNode.getIdString())) ? primaryNode : secondaryNode;
-         InterfaceMessageToken msg = new InterfaceMessageToken(message);
-         msg.setInitiatingNode(new InterfaceNode(sendingNode));
-         List<ArtifactReadable> messageSubMessages =
-            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
-         List<InterfaceSubMessageToken> smsgTokens =
-            messageSubMessages.stream().map(art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
-         if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "error").equals("Operational")) {
-            InterfaceSubMessageToken header = interfaceMessageApi.getMessageHeader(msg);
-            messageHeaders.put(ArtifactId.valueOf(message.getId()), header);
-            smsgTokens.add(0, header);
 
-            InterfaceStructureToken headerStruct =
-               interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId()));
-            messageHeaderStructures.put(header.getName(), headerStruct);
-         }
-         subMessages.addAll(messageSubMessages);
-         subMessagesWithHeaders.addAll(smsgTokens);
-         for (InterfaceSubMessageToken smsg : smsgTokens) {
-            List<InterfaceStructureToken> structs = new LinkedList<>();
-            if (smsg.getId() == 0) {
-               structs.add(0,
-                  interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId())));
-            } else {
-               structs.addAll(smsg.getArtifactReadable().getRelated(
-                  CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
-                     art -> new InterfaceStructureToken(art)).collect(Collectors.toList()));
+      if (isApplicable(conn) && isApplicable(primaryNode) && isApplicable(secondaryNode)) {
+         messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionContent_Message).getList().stream().filter(
+            m -> isApplicable(m)).collect(Collectors.toList());
+
+         for (ArtifactReadable message : messages) {
+            ArtifactReadable sendingNode =
+               (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+                  ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
+                     primaryNode.getIdString())) ? primaryNode : secondaryNode;
+            InterfaceMessageToken msg = new InterfaceMessageToken(message);
+            msg.setInitiatingNode(new InterfaceNode(sendingNode));
+
+            List<ArtifactReadable> messageSubMessages = message.getRelated(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
+                  s -> isApplicable(s)).collect(Collectors.toList());
+            List<InterfaceSubMessageToken> smsgTokens =
+               messageSubMessages.stream().map(art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
+
+            if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "error").equals(
+               "Operational")) {
+               InterfaceSubMessageToken header = interfaceMessageApi.getMessageHeader(msg);
+               messageHeaders.put(ArtifactId.valueOf(message.getId()), header);
+               smsgTokens.add(0, header);
+
+               InterfaceStructureToken headerStruct =
+                  interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId()));
+               messageHeaderStructures.put(header.getName(), headerStruct);
             }
-            structures.addAll(structs);
-         }
-      }
-
-      int worksheetIndex = 0;
-      for (InterfaceStructureToken structure : structures) {
-         worksheetIndex++;
-         String sheetName = structure.getName().replace("Command Taskfile", "CT").replace("Status Taskfile", "ST");
-         if (sheetName.length() > 30) {
-            sheetName = sheetName.substring(0, 25) + "_" + Integer.toString(worksheetIndex);
-         }
-         if (structure.getArtifactReadable() != null) {
-            String abbrevName =
-               structure.getArtifactReadable().getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, "null");
-            if (!abbrevName.equals("null")) {
-               sheetName = abbrevName;
+            subMessages.addAll(messageSubMessages);
+            subMessagesWithHeaders.addAll(smsgTokens);
+            for (InterfaceSubMessageToken smsg : smsgTokens) {
+               List<InterfaceStructureToken> structs = new LinkedList<>();
+               if (smsg.getId() == 0) {
+                  structs.add(0,
+                     interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId())));
+               } else {
+                  structs.addAll(smsg.getArtifactReadable().getRelated(
+                     CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().filter(
+                        s -> isApplicable(s)).map(art -> new InterfaceStructureToken(art)).collect(
+                           Collectors.toList()));
+               }
+               structures.addAll(structs);
             }
          }
-         structureLinks.put(structure, sheetName);
-      }
 
-      if (diff) {
-         BranchId parentBranch =
-            orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
-         diffs = interfaceDifferenceReportApi.getDifferences(branch, parentBranch);
-      }
+         int worksheetIndex = 0;
+         for (InterfaceStructureToken structure : structures) {
+            worksheetIndex++;
+            String sheetName = structure.getName().replace("Command Taskfile", "CT").replace("Status Taskfile", "ST");
+            if (sheetName.length() > 30) {
+               sheetName = sheetName.substring(0, 25) + "_" + Integer.toString(worksheetIndex);
+            }
+            if (structure.getArtifactReadable() != null) {
+               String abbrevName = structure.getArtifactReadable().getSoleAttributeAsString(
+                  CoreAttributeTypes.GeneralStringData, "null");
+               if (!abbrevName.equals("null")) {
+                  sheetName = abbrevName;
+               }
+            }
+            structureLinks.put(structure, sheetName);
+         }
 
-      createStructureInfo(branch, view, primaryNode, secondaryNode, messages);
+         if (diff) {
+            BranchId parentBranch =
+               orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
+            diffs = interfaceDifferenceReportApi.getDifferences(branch, parentBranch);
+         }
+
+         createStructureInfo(branch, primaryNode, secondaryNode, messages);
+      }
 
       // Write sheets
-      ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLS);
+      ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
       createChangeSummary(writer, branch);
       createMessageSubMessageSummary(writer, conn, primaryNode, secondaryNode, messages, subMessages);
       createStructureNamesSheet(writer, structureLinks);
-      createStructureSummarySheet(writer, branch, view, primaryNode, secondaryNode, messages, structureLinks);
-      createStructureSheets(writer, view, subMessagesWithHeaders, structures, structureLinks);
+      createStructureSummarySheet(writer, branch, primaryNode, secondaryNode, messages, structureLinks);
+      createStructureSheets(writer, subMessagesWithHeaders, structures, structureLinks);
 
       writer.writeWorkbook();
       writer.closeWorkbook();
    }
 
-   private void createStructureInfo(BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) {
+   private void createStructureInfo(BranchId branch, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) {
       for (ArtifactReadable message : messages) {
          ArtifactReadable sendingNode =
             (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
@@ -235,7 +251,7 @@ public class IcdGenerator {
                if (struct.getId() == 0) {
                   elements = struct.getElements();
                } else {
-                  elementArts = orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+                  elementArts = orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(
                      CoreRelationTypes.InterfaceStructureContent_Structure, struct.getArtifactReadable()).follow(
                         CoreRelationTypes.InterfaceElementPlatformType_PlatformType).follow(
                            CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).follow(
@@ -407,7 +423,7 @@ public class IcdGenerator {
       }
    }
 
-   private void createStructureSummarySheet(ExcelWorkbookWriter writer, BranchId branch, ArtifactId view, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, SortedMap<InterfaceStructureToken, String> structureLinks) {
+   private void createStructureSummarySheet(ExcelWorkbookWriter writer, BranchId branch, ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages, SortedMap<InterfaceStructureToken, String> structureLinks) {
       int totalMinSim = 0;
       int totalMaxSim = 0;
       int totalNumAttrs = 0;
@@ -586,7 +602,7 @@ public class IcdGenerator {
       //@formatter:on
    }
 
-   private void createStructureSheets(ExcelWorkbookWriter writer, ArtifactId view, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<InterfaceStructureToken, String> structureLinks) {
+   private void createStructureSheets(ExcelWorkbookWriter writer, List<InterfaceSubMessageToken> subMessages, List<InterfaceStructureToken> structures, SortedMap<InterfaceStructureToken, String> structureLinks) {
       String[] elementHeaders = {
          "Begin Word",
          "Begin Byte",
@@ -630,21 +646,26 @@ public class IcdGenerator {
                for (InterfaceStructureElementToken element : struct.getElements()) {
                   PlatformTypeToken platformType = element.getPlatformType();
                   Integer byteSize = (int) element.getElementSizeInBytes();
-                  printHeaderStructureRow(writer, rowIndex, view, element, byteLocation, byteSize, platformType);
+                  printHeaderStructureRow(writer, rowIndex, element, byteLocation, byteSize, platformType);
                   byteLocation = byteLocation + byteSize;
                   rowIndex.getAndAdd(1);
                }
             } else {
                for (int i = 0; i < info.elements.size(); i++) {
                   ArtifactReadable element = info.elements.get(i);
-                  ArtifactReadable platformType = element.getRelated(
-                     CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
-                        ArtifactReadable.SENTINEL);
+                  InterfaceStructureElementToken elementToken = new InterfaceStructureElementToken(element);
 
-                  Integer byteSize = Integer.valueOf(
-                     platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeBitSize, "0")) / 8;
-                  printDataElementRow(writer, rowIndex, view, struct.getArtifactReadable(), element, byteLocation,
-                     byteSize, platformType, i >= info.byteChangeIndex);
+                  Integer byteSize = (int) elementToken.getInterfacePlatformTypeByteSize();
+
+                  // If the element is not applicable, replace it with a spare of the same size
+                  if (!isApplicable(element)) {
+                     int bitSize = (int) elementToken.getElementSizeInBits();
+                     PlatformTypeToken pType = new PlatformTypeToken(0L, "Spare", "spare", bitSize + "", "", "", "");
+                     elementToken = new InterfaceStructureElementToken(0L, "Spare", struct.getApplicability(), pType);
+                  }
+
+                  printDataElementRow(writer, rowIndex, struct.getArtifactReadable(), elementToken, byteLocation,
+                     byteSize, i >= info.byteChangeIndex);
                   if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
                      int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
                      int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
@@ -663,7 +684,7 @@ public class IcdGenerator {
       }
    }
 
-   private void printHeaderStructureRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactId view, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) {
+   private void printHeaderStructureRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, InterfaceStructureElementToken element, Integer byteLocation, Integer byteSize, PlatformTypeToken platformType) {
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
@@ -696,80 +717,76 @@ public class IcdGenerator {
       writer.writeCell(rowIndex.get(), 12, notes);
    }
 
-   private void printDataElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactId view, ArtifactReadable structure, ArtifactReadable element, Integer byteLocation, Integer byteSize, ArtifactReadable platformType, boolean bytesChanged) {
+   private void printDataElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactReadable structure, InterfaceStructureElementToken elementToken, Integer byteLocation, Integer byteSize, boolean bytesChanged) {
+      PlatformTypeToken platformType = elementToken.getPlatformType();
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
-      String enumLiterals = element.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, "");
-      String elementName = element.getSoleAttributeValue(CoreAttributeTypes.Name);
-      String dataType = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfaceLogicalType, "n/a");
+      String enumLiterals = "";
+      String elementName = elementToken.getName();
+      String dataType = elementToken.getLogicalType().isEmpty() ? "n/a" : elementToken.getLogicalType();
       dataType = dataType.replace("unsigned long", "uLong").replace("unsigned short", "uShort").replace("short",
          "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
-      String units = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeUnits, "n/a");
-      String validRange;
-      if (platformType.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfacePlatformTypeMinval)) {
-         validRange = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMinval,
-            "n/a") + " to " + platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeMaxval,
-               "n/a");
+      String units = elementToken.getUnits().isEmpty() ? "n/a" : elementToken.getUnits();
+      Integer startIndex = elementToken.getInterfaceElementIndexStart();
+      Integer endIndex = elementToken.getInterfaceElementIndexEnd();
+      String minVal =
+         elementToken.getInterfacePlatformTypeMinval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMinval();
+      String maxVal =
+         elementToken.getInterfacePlatformTypeMaxval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMaxval();
+      String validRange = "";
+      if (dataType.equals("enumeration")) {
+         validRange = "see enumerated literals";
+      } else if (dataType.equals("boolean")) {
+         validRange = "0 to 1";
+      } else if (platformType != null && platformType.isValid() && !platformType.getInterfacePlatformTypeValidRangeDescription().isEmpty()) {
+         validRange = platformType.getInterfacePlatformTypeValidRangeDescription();
       } else {
-         if (dataType.equals("enumeration")) {
-            validRange = "see enumerated literals";
-         } else if (dataType.equals("boolean")) {
-            validRange = "0 to 1";
-         } else {
-            validRange = platformType.getSoleAttributeAsString(
-               CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, " ");
-         }
+         validRange = minVal + " to " + maxVal;
       }
-      String alterable = element.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementAlterable, "No");
 
-      if (alterable.equalsIgnoreCase("true")) {
-         alterable = "Yes";
-      } else {
-         alterable = "No";
-      }
-      String description = element.getSoleAttributeAsString(CoreAttributeTypes.Description, "n/a");
-      String notes = element.getSoleAttributeAsString(CoreAttributeTypes.Notes, " ");
+      String alterable = elementToken.getInterfaceElementAlterable() ? "Yes" : "No";
+
+      String description = elementToken.getDescription().isEmpty() ? "n/a" : elementToken.getDescription();
+      String notes = elementToken.getNotes().isEmpty() ? "" : elementToken.getNotes();
       boolean enumChanged = false;
 
-      if (platformType.getExistingRelationTypes().contains(CoreRelationTypes.InterfacePlatformTypeEnumeration)) {
-         enumLiterals = "";
-         ArtifactReadable enumDef = platformType.getRelated(
+      if (platformType != null && dataType.equals("enumeration")) {
+         ArtifactReadable enumDef = platformType.getArtifactReadable().getRelated(
             CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
          enumLiterals = enumDef.getName() + ":\n";
          enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumDef.getId()));
          for (ArtifactReadable enumState : enumDef.getRelated(
-            CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
+            CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList().stream().filter(
+               e -> isApplicable(e)).collect(Collectors.toList())) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "\n";
             enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumState.getId()));
          }
       } else {
-         enumLiterals = platformType.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, " ");
-         if (enumLiterals.equals(" ")) {
-            enumLiterals = platformType.getSoleAttributeAsString(CoreAttributeTypes.Description, " ");
+         if (platformType != null && enumLiterals.equals(" ")) {
+            enumLiterals = platformType.getDescription();
          }
       }
 
       MimDifferenceItem structDiff = diffs.get(ArtifactId.valueOf(structure.getId()));
-      MimDifferenceItem elementDiff = diffs.get(ArtifactId.valueOf(element.getId()));
-      boolean elementAdded = structDiff != null && structDiff.getRelationChanges().containsKey(ArtifactId.valueOf(
-         element.getId())) && structDiff.getRelationChanges().get(ArtifactId.valueOf(element.getId())).isAdded();
+      MimDifferenceItem elementDiff = diffs.get(ArtifactId.valueOf(elementToken.getId()));
+      boolean elementAdded = structDiff != null && structDiff.getRelationChanges().containsKey(
+         ArtifactId.valueOf(elementToken.getId())) && structDiff.getRelationChanges().get(
+            ArtifactId.valueOf(elementToken.getId())).isAdded();
       boolean platformTypeChanged = elementDiff != null && !elementDiff.getRelationChanges().isEmpty();
-      CELLSTYLE pTypeStyle = elementAdded || getCellColor(element, false).equals(
+      CELLSTYLE pTypeStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : platformTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
-      CELLSTYLE enumStyle = elementAdded || getCellColor(element, false).equals(
+      CELLSTYLE enumStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : enumChanged || platformTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
-      CELLSTYLE byteStyle = elementAdded || getCellColor(element, false).equals(
+      CELLSTYLE byteStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : bytesChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
-      if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
-         int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
-         int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
+      if (!startIndex.equals(endIndex)) {
          for (int i = startIndex; i < endIndex + 1; i++) {
             //@formatter:off
             writer.writeCell(rowIndex.get(), 0, beginWord, byteStyle);
@@ -778,13 +795,13 @@ public class IcdGenerator {
             writer.writeCell(rowIndex.get(), 3, endWord, byteStyle);
             writer.writeCell(rowIndex.get(), 4, endByte, byteStyle);
             writer.writeCell(rowIndex.get(), 5, dataType, pTypeStyle);
-            writer.writeCell(rowIndex.get(), 6, elementName + " " + Integer.toString(i), getCellColor(element, CoreAttributeTypes.Name.getId()));
+            writer.writeCell(rowIndex.get(), 6, elementName + " " + Integer.toString(i), getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId()));
             writer.writeCell(rowIndex.get(), 7, units, pTypeStyle);
             writer.writeCell(rowIndex.get(), 8, validRange, pTypeStyle);
-            writer.writeCell(rowIndex.get(), 9, alterable, getCellColor(element, CoreAttributeTypes.InterfaceElementAlterable.getId()));
-            writer.writeCell(rowIndex.get(), 10, description, getCellColor(element, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 9, alterable, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId()));
+            writer.writeCell(rowIndex.get(), 10, description, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
             writer.writeCell(rowIndex.get(), 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 12, notes, getCellColor(element, CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 12, notes, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
             //@formatter:on
 
             byteLocation = byteLocation + byteSize;
@@ -804,13 +821,13 @@ public class IcdGenerator {
          writer.writeCell(rowIndex.get(), 3, endWord, byteStyle);
          writer.writeCell(rowIndex.get(), 4, endByte, byteStyle);
          writer.writeCell(rowIndex.get(), 5, dataType, pTypeStyle);
-         writer.writeCell(rowIndex.get(), 6, elementName, getCellColor(element, CoreAttributeTypes.Name.getId()));
+         writer.writeCell(rowIndex.get(), 6, elementName, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId()));
          writer.writeCell(rowIndex.get(), 7, units, pTypeStyle);
          writer.writeCell(rowIndex.get(), 8, validRange, pTypeStyle);
-         writer.writeCell(rowIndex.get(), 9, alterable, getCellColor(element, CoreAttributeTypes.InterfaceElementAlterable.getId()));
-         writer.writeCell(rowIndex.get(), 10, description, getCellColor(element, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 9, alterable, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId()));
+         writer.writeCell(rowIndex.get(), 10, description, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
          writer.writeCell(rowIndex.get(), 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
-         writer.writeCell(rowIndex.get(), 12, notes, getCellColor(element, CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 12, notes, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
          //@formatter:on
          rowIndex.getAndAdd(1);
       }
@@ -912,14 +929,18 @@ public class IcdGenerator {
          for (int j = 0; j < numSubMessages; j++) {
             if (j < primarySubMessages.size()) {
                ArtifactReadable subMessage = primarySubMessages.get(j);
-               writer.writeCell(rowIndex, 3, "Submessage " + (j + 1) + ":",
+               writer.writeCell(rowIndex, 3,
+                  "Submessage " + subMessage.getSoleAttributeAsString(
+                     CoreAttributeTypes.InterfaceSubMessageNumber) + ":",
                   getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
                writer.writeCell(rowIndex, 4, subMessage.getName(),
                   getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
             }
             if (j < secondarySubMessages.size()) {
                ArtifactReadable subMessage = secondarySubMessages.get(j);
-               writer.writeCell(rowIndex, 8, "Submessage " + (j + 1) + ":",
+               writer.writeCell(rowIndex, 8,
+                  "Submessage " + subMessage.getSoleAttributeAsString(
+                     CoreAttributeTypes.InterfaceSubMessageNumber) + ":",
                   getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
                writer.writeCell(rowIndex, 9, subMessage.getName(),
                   getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
@@ -946,6 +967,10 @@ public class IcdGenerator {
       writer.setColumnWidth(1, 3000);
       writer.setColumnWidth(5, 3000);
       writer.setColumnWidth(6, 3000);
+   }
+
+   private boolean isApplicable(ArtifactReadable artifact) {
+      return applicTokens.contains(artifact.getApplicabilityToken());
    }
 
    private CELLSTYLE getCellColor(ArtifactReadable artifact, boolean changed) {

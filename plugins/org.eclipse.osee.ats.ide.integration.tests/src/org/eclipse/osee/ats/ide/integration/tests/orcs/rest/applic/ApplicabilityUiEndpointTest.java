@@ -59,13 +59,13 @@ public class ApplicabilityUiEndpointTest {
       ApplicabilityUiEndpoint applUiEndpoint = ServiceUtil.getOseeClient().getApplicabilityUiEndpoint();
       Assert.assertNotNull(applUiEndpoint);
 
-      ApplicabilityBranchConfig config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()), false);
+      ApplicabilityBranchConfig config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()));
       Assert.assertNotNull(config);
 
       Assert.assertEquals(4, config.getViews().size());
       Assert.assertEquals(DemoBranches.SAW_PL.getId(), config.getBranch().getId());
 
-      config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()), true);
+      config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()));
       Assert.assertNotNull(config);
 
    }

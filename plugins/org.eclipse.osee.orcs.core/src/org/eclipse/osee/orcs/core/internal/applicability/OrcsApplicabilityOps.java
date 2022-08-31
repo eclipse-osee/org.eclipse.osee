@@ -88,7 +88,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
     * @return config as defined in Feature artifacts
     */
    @Override
-   public ApplicabilityBranchConfig getConfig(BranchId branchId, boolean showAll) {
+   public ApplicabilityBranchConfig getConfig(BranchId branchId) {
       ApplicabilityBranchConfig config = new ApplicabilityBranchConfig();
       Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getExactlyOne();
 
@@ -1420,7 +1420,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          List<ArtifactReadable> views =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).andRelatedTo(
                CoreRelationTypes.PlConfigurationGroup_Group, cfgGroup).asArtifacts();
-         ApplicabilityBranchConfig current = getConfig(branch, false);
+         ApplicabilityBranchConfig current = getConfig(branch);
          ConfigurationGroupDefinition currentGroup =
             current.getGroups().stream().filter(p -> p.getId().equals(id)).findFirst().get();
          if (!currentGroup.getConfigurations().isEmpty()) {

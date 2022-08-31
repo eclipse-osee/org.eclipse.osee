@@ -103,6 +103,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString DoorsModId = osee.createString(5326122488147393161L, "Doors Mod ID", MediaType.TEXT_PLAIN, "Modified External doors id for import support", DisplayHint.SingleLine );
    AttributeTypeString Effectivity = osee.createStringNoTag(1152921504606847108L, "Effectivity", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Email = osee.createString(1152921504606847082L, "Email", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString EndpointUrl = osee.createString(1103659738810857581L, "Endpoint URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExcludePath = osee.createString(1152921504606847708L, "Exclude Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Extension = osee.createString(1152921504606847064L, "Extension", MediaType.TEXT_PLAIN, "");
    FACETechStandardVersionAttributeType FACEVersion = osee.createEnum(new FACETechStandardVersionAttributeType());

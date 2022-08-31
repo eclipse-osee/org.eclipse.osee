@@ -33,7 +33,7 @@
                             <label for="file-upload" class="input-label">
                                 <button mat-raised-button color="primary">Select File</button>
                             </label>
-                            <input id="file-upload" type="file" (change)="selectFile($event)" accept=".xls">
+                            <input id="file-upload" type="file" (change)="selectFile($event)" accept=".xlsx, .xls">
                             <ng-container *ngIf="(importSuccess|async) as _importSuccess; else summary">
                                 <div class="import-summary">
                                     <ng-container *ngIf="_importSuccess">

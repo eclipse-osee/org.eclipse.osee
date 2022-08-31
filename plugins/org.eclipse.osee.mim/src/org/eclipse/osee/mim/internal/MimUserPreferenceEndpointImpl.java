@@ -37,8 +37,6 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
 
    @Override
    public MimUserPreference getPreferences(BranchId branch) {
-      System.out.println(
-         "MIM User Preferences Endpoint - UserService user ID = " + mimApi.getOrcsApi().userService().getUser().getIdString());
       if (mimApi.getOrcsApi().userService().getUser().isValid()) {
          ArtifactReadable user = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
             mimApi.getOrcsApi().userService().getUser()).asArtifact();
