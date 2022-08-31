@@ -67,6 +67,7 @@
 							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 							   <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
+							   <plugin id="org.apache.poi.ooxml.schemas" />
 							   <plugin id="javax.xml.bind" />
 							   <plugin id="org.eclipse.jdt.launching" />
 							   <plugin id="javax.annotation" />
