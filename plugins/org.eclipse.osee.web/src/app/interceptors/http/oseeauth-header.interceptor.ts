@@ -38,7 +38,8 @@ export class OSEEAuthHeaderInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (request.url.includes(apiURL) && this.currentUser!==undefined && request.url!==OSEEAuthURL) {
-      request = request.clone({ headers: request.headers.set('osee.account.id', this.currentUser?.id || '') })
+      console.log(this.currentUser);
+      //request = request.clone({ headers: request.headers.set('osee.account.id', this.currentUser?.id || '') })
     }
     return next.handle(request);
   }
