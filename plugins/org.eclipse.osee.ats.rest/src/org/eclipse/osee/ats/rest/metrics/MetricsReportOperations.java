@@ -6,7 +6,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.rest.metrics;
 
-import java.io.InputStream;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -28,12 +27,11 @@ public class MetricsReportOperations {
       this.orcsApi = orcsApi;
    }
 
-   public InputStream generateDevProgressReport(String targetVersion, Date startDate, Date endDate, int weekday, int iterationLength, boolean periodic, boolean nonPeriodic, boolean periodicTask, boolean nonPeriodicTask) {
+   public Response generateDevProgressReport(String targetVersion, Date startDate, Date endDate, int weekday, int iterationLength, boolean periodic, boolean nonPeriodic, boolean periodicTask, boolean nonPeriodicTask) {
       String fileName = String.format("DevelopmentProgressMetrics_%s_%s.xml", targetVersion, Lib.getDateTimeString());
       StreamingOutput streamingOutput = new DevProgressMetricsReport(orcsApi, atsApi, fileName, targetVersion,
          startDate, endDate, weekday, iterationLength, periodic, nonPeriodic, periodicTask, nonPeriodicTask);
-      Response response = buildResponse(streamingOutput, fileName);
-      return response.readEntity(InputStream.class);
+      return buildResponse(streamingOutput, fileName);
    }
 
    private Response buildResponse(StreamingOutput streamingOutput, String fileName) {
