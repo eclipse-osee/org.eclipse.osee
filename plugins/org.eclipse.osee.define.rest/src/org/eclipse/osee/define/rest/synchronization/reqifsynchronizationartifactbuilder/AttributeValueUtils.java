@@ -13,8 +13,13 @@
 
 package org.eclipse.osee.define.rest.synchronization.reqifsynchronizationartifactbuilder;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
+import org.eclipse.osee.define.rest.synchronization.ForeignThingFamily;
+import org.eclipse.osee.define.rest.synchronization.SimpleForeignThingFamily;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeValue;
 import org.eclipse.rmf.reqif10.AttributeValueBoolean;
@@ -24,6 +29,7 @@ import org.eclipse.rmf.reqif10.AttributeValueInteger;
 import org.eclipse.rmf.reqif10.AttributeValueReal;
 import org.eclipse.rmf.reqif10.AttributeValueString;
 import org.eclipse.rmf.reqif10.AttributeValueXHTML;
+import org.eclipse.rmf.reqif10.Identifiable;
 
 /**
  * This class contains various methods for {@link AttributeValue} foreign things.
@@ -32,6 +38,13 @@ import org.eclipse.rmf.reqif10.AttributeValueXHTML;
  */
 
 public class AttributeValueUtils {
+
+   /**
+    * Private constructor to prevent instantiation of the class.
+    */
+
+   private AttributeValueUtils() {
+   }
 
    /**
     * Gets the identifier of the {@link AttributeDefinition} referenced by the {@link AttributeValue} sub-class.
@@ -66,6 +79,118 @@ public class AttributeValueUtils {
             ? Optional.ofNullable( attributeDefinition.getIdentifier() )
             : Optional.empty();
       //@formatter:on
+   }
+
+   /**
+    * Creates an unordered {@link Stream} of {@link ForeignThingFamily} objects representing the ReqIF Attribute Values
+    * in the ReqIF DOM. The stream will contain all attributes values from all of the ReqIF Specifications, Spec
+    * Objects, and Spec Relations.
+    *
+    * @param builder the {@link ReqIFSynchronizationArtifactBuilder}.
+    * @return a {@link Stream} of {@link ForeignThingFamily} objects.
+    */
+
+   @SuppressWarnings("unchecked")
+   static Stream<ForeignThingFamily> extract(ReqIFSynchronizationArtifactBuilder builder) {
+      //@formatter:off
+      return
+         Arrays.stream
+      (
+         (Stream<ForeignThingFamily>[])
+         new Stream []
+         {
+            builder.reqIf.getCoreContent().getSpecifications().stream()
+               .flatMap
+                  (
+                     ( specification ) -> specification.getValues().stream()
+                                             .map
+                                                (
+                                                   ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
+                                                                                                     (
+                                                                                                       attributeValue,
+                                                                                                       new String[]
+                                                                                                       {
+                                                                                                         ((Identifiable) specification).getIdentifier(),
+                                                                                                         "AV-" + Long.toString( builder.getAndIncrementAttributeValueCount() )
+                                                                                                       },
+                                                                                                       new IdentifierType[]
+                                                                                                       {
+                                                                                                         IdentifierType.SPECIFICATION,
+                                                                                                         IdentifierType.ATTRIBUTE_VALUE
+                                                                                                       }
+                                                                                                     )
+                                                )
+                  ),
+
+            builder.reqIf.getCoreContent().getSpecObjects().stream()
+               .flatMap
+                  (
+                     ( specObject ) -> builder.specObjectMap.containsKey( specObject.getIdentifier() )
+                                          ? specObject.getValues().stream()
+                                               .map
+                                                  (
+                                                    ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
+                                                                                                      (
+                                                                                                        attributeValue,
+                                                                                                        new String[]
+                                                                                                        {
+                                                                                                          ((Identifiable) specObject).getIdentifier(),
+                                                                                                          "AV-" + Long.toString( builder.getAndIncrementAttributeValueCount() )
+                                                                                                        },
+                                                                                                        new IdentifierType[]
+                                                                                                        {
+                                                                                                          IdentifierType.SPEC_OBJECT,
+                                                                                                          IdentifierType.ATTRIBUTE_VALUE
+                                                                                                        }
+                                                                                                      )
+                                                )
+                                          : specObject.getValues().stream()
+                                               .map
+                                                  (
+                                                    ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
+                                                                                                      (
+                                                                                                        attributeValue,
+                                                                                                        new String[]
+                                                                                                        {
+                                                                                                          ((Identifiable) specObject).getIdentifier(),
+                                                                                                          "AV-" + Long.toString( builder.getAndIncrementAttributeValueCount() )
+                                                                                                        },
+                                                                                                        new IdentifierType[]
+                                                                                                        {
+                                                                                                          IdentifierType.SPECTER_SPEC_OBJECT,
+                                                                                                          IdentifierType.ATTRIBUTE_VALUE
+                                                                                                        }
+                                                                                                      )
+                                                  )
+                  ),
+
+            builder.reqIf.getCoreContent().getSpecRelations().stream()
+               .flatMap
+                  (
+                     ( specRelation ) -> specRelation.getValues().stream()
+                                            .map
+                                               (
+                                                  ( attributeValue ) -> (ForeignThingFamily) new SimpleForeignThingFamily
+                                                                                                    (
+                                                                                                       attributeValue,
+                                                                                                       new String[]
+                                                                                                       {
+                                                                                                         ((Identifiable) specRelation).getIdentifier(),
+                                                                                                         "AV-" + Long.toString( builder.getAndIncrementAttributeValueCount() )
+                                                                                                       },
+                                                                                                       new IdentifierType[]
+                                                                                                       {
+                                                                                                         IdentifierType.SPEC_RELATION,
+                                                                                                         IdentifierType.ATTRIBUTE_VALUE
+                                                                                                       }
+                                                                                                     )
+                                               )
+                  )
+         }
+      )
+      .flatMap( ( inStream ) -> inStream );
+      //@formatter:off
+
    }
 }
 

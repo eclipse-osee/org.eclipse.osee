@@ -25,6 +25,7 @@ import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
+import org.eclipse.osee.define.rest.publishing.PublishingPermissions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -46,6 +47,7 @@ public final class RenderEndpointImpl implements RenderEndpoint {
    public RenderEndpointImpl(DefineApi defineApi, OrcsApi orcsApi) {
       this.defineApi = defineApi;
       this.orcsApi = orcsApi;
+      PublishingPermissions.create(orcsApi);
    }
 
    /**
@@ -54,12 +56,11 @@ public final class RenderEndpointImpl implements RenderEndpoint {
     * @throws NotAuthorizedException when the user is not a member of the {@link CoreUserGroups#OseeAccessAdmin}.
     */
 
-   private void verifyAccess() {
+   private static void verifyAccess() {
       try {
-         this.orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+         PublishingPermissions.verify();
       } catch (OseeAccessDeniedException e) {
-         throw new NotAuthorizedException("User must have OSEE Admin role.",
-            Response.status(Response.Status.UNAUTHORIZED).build());
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build());
       }
    }
 
@@ -96,7 +97,7 @@ public final class RenderEndpointImpl implements RenderEndpoint {
 
    @Override
    public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
-      this.verifyAccess();
+      RenderEndpointImpl.verifyAccess();
 
       StringBuilder message = null;
 

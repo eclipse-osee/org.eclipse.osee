@@ -99,6 +99,7 @@ public class CreateSystemBranches {
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.AccountAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAccessAdmin);
+      tx.createArtifact(userGroupsFolder, CoreUserGroups.Publishing);
 
       ArtifactId globalPreferences = tx.createArtifact(oseeConfig, CoreArtifactTokens.GlobalPreferences);
       tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);

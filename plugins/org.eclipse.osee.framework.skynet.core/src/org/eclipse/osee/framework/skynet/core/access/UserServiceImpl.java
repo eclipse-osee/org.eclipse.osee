@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.skynet.core.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -37,27 +36,84 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 
 /**
+ * Client Implementation
+ *
  * @author Donald G. Dunne
  */
+
 public class UserServiceImpl implements UserService {
 
    private static List<IUserGroupArtifactToken> userGrps;
 
-   private boolean loading = false;
+   public static void clearCache() {
+      userGrps = null;
+   }
+
+   /**
+    * @return User Groups for current user
+    */
+
+   public static List<IUserGroupArtifactToken> getUserGrps() {
+      if (userGrps == null) {
+         userGrps = new ArrayList<>();
+         for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+            userGrps.add(new UserGroupImpl(userGrp));
+         }
+      }
+      return userGrps;
+   }
 
    private boolean beforeUserCreation = false;
 
+   private boolean loading = false;
+
    @Override
-   public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
-      Artifact userGroupArt = null;
-      if (userGroup instanceof Artifact) {
-         userGroupArt = (Artifact) userGroup;
-      }
-      if (userGroupArt == null) {
-         userGroupArt = ArtifactQuery.getArtifactFromId(userGroup, CoreBranches.COMMON);
-         return new UserGroupImpl(userGroupArt);
-      }
-      return null;
+   public void clearCaches() {
+      //implementation does not have a cache to clear
+   }
+
+   @Override
+   public TransactionId createUsers(Iterable<UserToken> users, String comment) {
+      DatastoreEndpoint datastoreEndpoint = ServiceUtil.getOseeClient().getDatastoreEndpoint();
+      return datastoreEndpoint.createUsers(users);
+   }
+
+   /**
+    * not used in client since jwt is server side only currently.
+    */
+
+   @Override
+   public String getLoginKey() {
+      return "";
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getMyUserGroups() {
+      return UserServiceImpl.getUserGrps();
+   }
+
+   @Override
+   public UserToken getUser() {
+      return UserManager.getUser();
+   }
+
+   @Override
+   public UserToken getUser(Long accountId) {
+      return UserManager.getUserByArtId(UserId.valueOf(accountId));
+   }
+
+   @Override
+   public UserToken getUserByUserId(String userId) {
+      return UserManager.getUserByUserId(userId);
+   }
+
+   @Override
+   public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
+      return new UserGroupImpl(userGroupArt);
    }
 
    @Override
@@ -71,103 +127,16 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
-      return new UserGroupImpl(userGroupArt);
-   }
-
-   /**
-    * @return User Groups for current user
-    */
-   public static List<IUserGroupArtifactToken> getUserGrps() {
-      if (userGrps == null) {
-         userGrps = new ArrayList<>();
-         for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-            userGrps.add(new UserGroupImpl(userGrp));
-         }
+   public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
+      Artifact userGroupArt = null;
+      if (userGroup instanceof Artifact) {
+         userGroupArt = (Artifact) userGroup;
       }
-      return userGrps;
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getMyUserGroups() {
-      return UserServiceImpl.getUserGrps();
-   }
-
-   @Override
-   public boolean isInUserGroup(IUserGroupArtifactToken... userGroups) {
-      boolean isInGroup = false;
-      Collection<IUserGroupArtifactToken> userGrps = getMyUserGroups();
-      for (IUserGroupArtifactToken userGroup : userGroups) {
-         if (userGrps.contains(userGroup)) {
-            isInGroup = true;
-            break;
-         }
+      if (userGroupArt == null) {
+         userGroupArt = ArtifactQuery.getArtifactFromId(userGroup, CoreBranches.COMMON);
+         return new UserGroupImpl(userGroupArt);
       }
-      return isInGroup;
-   }
-
-   @Override
-   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
-
-      List<UserToken> users = new ArrayList<>();
-      Artifact userGrpArt = ArtifactQuery.getArtifactFromToken(userGroup);
-      if (userGrpArt != null && userGrpArt.isValid()) {
-         List<Artifact> list = userGrpArt.getRelatedArtifacts(CoreRelationTypes.Users_User);
-         for (Artifact art : list) {
-            User user = (User) art;
-            users.add(user);
-         }
-      }
-
-      return users;
-   }
-
-   @Override
-   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id) {
-      ArtifactToken art = ArtifactQuery.getArtifactTokenFromId(CoreBranches.COMMON, userGroup);
-      if (art.isInvalid()) {
-         return false;
-      }
-      return getUserGroup(userGroup).isMember(id);
-   }
-
-   @Override
-   public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user) {
-      return isUserMember(userGroup, user.getId());
-   }
-
-   @Override
-   public UserToken getUser() {
-      return UserManager.getUser();
-   }
-
-   @Override
-   public void setUserForCurrentThread(String loginId) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public TransactionId createUsers(Iterable<UserToken> users, String comment) {
-      DatastoreEndpoint datastoreEndpoint = ServiceUtil.getOseeClient().getDatastoreEndpoint();
-      return datastoreEndpoint.createUsers(users);
-   }
-
-   @Override
-   public void setUserForCurrentThread(UserId accountId) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public boolean isBeforeUserCreation() {
-      return beforeUserCreation;
-   }
-
-   @Override
-   public void setBeforeUserCreation(boolean beforeUserCreation) {
-      this.beforeUserCreation = beforeUserCreation;
-      if (!OseeProperties.isInDbInit()) {
-         throw new OseeStateException("No user creation outside of dbinit");
-      }
+      return null;
    }
 
    @Override
@@ -187,30 +156,56 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
+   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
+
+      List<UserToken> users = new ArrayList<>();
+      Artifact userGrpArt = ArtifactQuery.getArtifactFromToken(userGroup);
+      if (userGrpArt != null && userGrpArt.isValid()) {
+         List<Artifact> list = userGrpArt.getRelatedArtifacts(CoreRelationTypes.Users_User);
+         for (Artifact art : list) {
+            User user = (User) art;
+            users.add(user);
+         }
+      }
+
+      return users;
+   }
+
+   @Override
+   public boolean isBeforeUserCreation() {
+      return beforeUserCreation;
+   }
+
+   @Override
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id) {
+      ArtifactToken art = ArtifactQuery.getArtifactTokenFromId(CoreBranches.COMMON, userGroup);
+      if (art.isInvalid()) {
+         return false;
+      }
+      return getUserGroup(userGroup).isMember(id);
+   }
+
+   @Override
+   public void setBeforeUserCreation(boolean beforeUserCreation) {
+      this.beforeUserCreation = beforeUserCreation;
+      if (!OseeProperties.isInDbInit()) {
+         throw new OseeStateException("No user creation outside of dbinit");
+      }
+   }
+
+   @Override
+   public void setUserForCurrentThread(String loginId) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setUserForCurrentThread(UserId accountId) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public void setUserLoading(boolean loading) {
       this.loading = loading;
-   }
-
-   @Override
-   public UserToken getUserByUserId(String userId) {
-      return UserManager.getUserByUserId(userId);
-   }
-
-   @Override
-   public UserToken getUser(Long accountId) {
-      return UserManager.getUserByArtId(UserId.valueOf(accountId));
-   }
-
-   public static void clearCache() {
-      userGrps = null;
-   }
-
-   /**
-    * not used in client since jwt is server side only currently.
-    */
-   @Override
-   public String getLoginKey() {
-      return "";
    }
 
 }

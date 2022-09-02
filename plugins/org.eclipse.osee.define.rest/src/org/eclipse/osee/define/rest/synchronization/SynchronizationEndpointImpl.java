@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.define.api.synchronization.ExportRequest;
 import org.eclipse.osee.define.api.synchronization.ImportRequest;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.rest.publishing.PublishingPermissions;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
@@ -83,6 +84,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
     */
 
    public synchronized static SynchronizationEndpointImpl create(OrcsApi orcsApi) {
+      PublishingPermissions.create(orcsApi);
       //@formatter:off
       return
          Objects.isNull( SynchronizationEndpointImpl.synchronizationEndpointImpl )
@@ -212,18 +214,27 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
    }
 
    /**
+    * Verifies the threads current user is authorized to access the REST API.
+    *
+    * @throws NotAuthorizedException when the user is not a member of the {@link CoreUserGroups#OseeAccessAdmin}.
+    */
+
+   private static void verifyAccess() {
+      try {
+         PublishingPermissions.verify();
+      } catch (OseeAccessDeniedException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build());
+      }
+   }
+
+   /**
     * {@inheritDoc}
     */
 
    @Override
    public InputStream exporter(ExportRequest exportRequest) {
 
-      try {
-         this.orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-      } catch (OseeAccessDeniedException e) {
-         throw new NotAuthorizedException(SynchronizationEndpointImpl.buildExceptionMessage(e),
-            Response.status(Response.Status.UNAUTHORIZED).build());
-      }
+      SynchronizationEndpointImpl.verifyAccess();
 
       if (Objects.isNull(exportRequest) || !exportRequest.isValid()) {
          throw new BadRequestException(SynchronizationEndpointImpl.buildBadInputMessage("exportRequest", exportRequest),
@@ -282,12 +293,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
 
       try {
 
-         try {
-            this.orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-         } catch (OseeAccessDeniedException e) {
-            throw new NotAuthorizedException(SynchronizationEndpointImpl.buildExceptionMessage(e),
-               Response.status(Response.Status.UNAUTHORIZED).build());
-         }
+         SynchronizationEndpointImpl.verifyAccess();
 
          if (Objects.isNull(importRequest) || !importRequest.isValid()) {
             throw new BadRequestException(

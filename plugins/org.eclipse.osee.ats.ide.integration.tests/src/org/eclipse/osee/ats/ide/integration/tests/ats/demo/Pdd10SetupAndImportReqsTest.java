@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
@@ -38,13 +39,13 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
 
       // Test Demo Users
       List<Artifact> userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
-      Assert.assertEquals(22, userArts.size());
+      Assert.assertEquals(DemoUsers.values().size() + 3, userArts.size());
 
       Collection<AtsUser> users = AtsApiService.get().getUserService().getUsers();
-      Assert.assertEquals(22, users.size());
+      Assert.assertEquals(DemoUsers.values().size() + 3, users.size());
 
       Collection<AtsUser> users2 = AtsApiService.get().getUserService().getUsers(Active.Active);
-      Assert.assertEquals(19, users2.size());
+      Assert.assertEquals(DemoUsers.values().size(), users2.size());
 
       Pdd10SetupAndImportReqs create = new Pdd10SetupAndImportReqs();
       create.run();
