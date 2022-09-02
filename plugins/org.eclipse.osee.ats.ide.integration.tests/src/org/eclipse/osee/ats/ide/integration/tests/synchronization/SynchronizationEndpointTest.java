@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -50,7 +49,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.EnumFunctionMap;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -92,6 +90,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 /**
@@ -106,40 +105,65 @@ public class SynchronizationEndpointTest {
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
     * The default (normal for testing) value is <code>true</code>.
     */
+
    private static boolean setValues = true;
+
    /**
-    * Testing rule used to prevent modification of a production database. This is a {@link ClassRule} which will prevent
-    * the <code>BeforeClass</code> method from running on a production database. A {@link TestRule} is not applied to
-    * <code>BeforeClass</code> class methods and will therefore not provide any protection.
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd></dt>
     */
+
+   //@formatter:off
    @ClassRule
-   public static NotProductionDataStoreRule rule = new NotProductionDataStoreRule();
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NotProductionDataStoreRule() );
+   //@formatter:on
+
    /**
     * Enumeration of the expected ReqIF {@link Identifiable} subclasses.
     */
+
    private static enum IdentifiableType {
+
       /**
        * {@link IdentifiableType} for {@link AttributeDefinition} subclass.
        */
+
       ATTRIBUTE_DEFINITION,
+
       /**
        * {@link IdentifiableType} for {@link DatatypeDefinition} subclass.
        */
+
       DATATYPE_DEFINITION,
+
       /**
        * {@link IdentifiableType} for unknown or unexpected subclass.
        */
+
       ERROR,
+
       /**
        * {@link IdentifiableType} for {@link SpecificationType} subclass.
        */
+
       SPEC_TYPE;
+
       /**
        * Classifies a subclass of the type {@link Identifiable}.
        *
        * @param identifiableClass the class of the {@link Identifiable} subclass object to be classified.
        * @return an {@link IdentifiableType} member describing the subclass.
        */
+
       static IdentifiableType classify(Class<? extends Identifiable> identifiableClass) {
          //@formatter:off
          return
@@ -1499,17 +1523,8 @@ public class SynchronizationEndpointTest {
    public static void testSetup() {
       //@formatter:off
       /*
-       * When the test suit is run directly it will be in Database Initialization mode.
+       * Create the test documents
        */
-      if( OseeProperties.isInDbInit() )
-      {
-         /*
-          * Get out of database initialization mode and re-authenticate as the test user
-          */
-         OseeProperties.setInDbInit( false );
-         ClientSessionManager.releaseSession();
-         ClientSessionManager.getSession();
-      }
       var testDocumentBuilder = new TestDocumentBuilder( SynchronizationEndpointTest.setValues );
       testDocumentBuilder.buildDocument
                              (
@@ -1635,6 +1650,7 @@ public class SynchronizationEndpointTest {
       var synchronizationArtifactType = "ZooCreatures";
       var exceptionCought = false;
       try {
+         @SuppressWarnings("unused")
          var reqIf = SynchronizationEndpointTest.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
             synchronizationArtifactType);
       } catch (Exception exception) {

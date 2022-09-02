@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifa
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAccessAdmin;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAdmin;
+import static org.eclipse.osee.framework.core.enums.CoreUserGroups.Publishing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,8 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
+ * Defines demonstration users.
+ *
  * @author Donald G. Dunne
  */
 public class DemoUsers implements BootstrapUserProvider {
@@ -35,25 +38,26 @@ public class DemoUsers implements BootstrapUserProvider {
    public static List<UserToken> values = new ArrayList<UserToken>();
 
    // @formatter:off
-   public static final UserToken Joe_Smith = create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, Arrays.asList("3333"), AgileUser, EarnedValueUser, DefaultArtifactEditor, AccountAdmin);
-   public static final UserToken Kay_Jones = create(5896672, "Kay Jones", "kay@boeing.com", "4444", true, AgileUser, EarnedValueUser);
-   public static final UserToken Jason_Michael = create(277990, "Jason Michael", "jason@boeing.com", "5555", true, OseeAdmin, OseeAccessAdmin);
-   public static final UserToken Alex_Kay = create(8006939, "Alex Kay", "", "6666", true, AgileUser, EarnedValueUser);
-   public static final UserToken Kay_Jason = create(1402067349, "Kay Jason", "kayj@boeing.com", "7777", true, AgileUser, EarnedValueUser);
-   public static final UserToken Steven_Kohn = create(1668581959, "Steven Kohn", "stevenk@boeing.com", "8888", true, AgileUser, EarnedValueUser);
-   public static final UserToken John_Stevens = create(1643660349, "John Stevens", "johns@boeing.com", "9999", true, AgileUser, EarnedValueUser);
-   public static final UserToken Keith_Johnson = create(25923706, "Keith Johnson", "keithj@boeing.com", "1010", true, AgileUser, EarnedValueUser);
-   public static final UserToken Michael_Alex = create(1580073488, "Michael Alex", "michaela@boeing.com", "1212", true, AgileUser, EarnedValueUser);
-   public static final UserToken Janice_Michael = create(608369853, "Janice Michael", "janicem@boeing.com", "1313", true, AgileUser, EarnedValueUser);
-   public static final UserToken Maichael_Johnson = create(1944108438, "Maichael Johnson", "maichaelj@boeing.com", "1414", true, AgileUser, EarnedValueUser);
-   public static final UserToken Roland_Stevens = create(785160932, "Roland Stevens", "rolands@boeing.com", "1515", true, AgileUser, EarnedValueUser);
-   public static final UserToken Jeffery_Kay = create(86470632, "Jeffery Kay", "jeffk@boeing.com", "1616", true, AgileUser, EarnedValueUser);
-   public static final UserToken Karmen_John = create(208906425, "Karmen John", "karmenj@boeing.com", "1717", true, AgileUser, EarnedValueUser);
-   public static final UserToken Steven_Michael = create(170310871, "Steven Michael", "stevenm@boeing.com", "1818", true, AgileUser, EarnedValueUser);
-   public static final UserToken Jason_Stevens = create(322597199, "Jason Stevens", "jasons@boeing.com", "1919", true, AgileUser, EarnedValueUser);
-   public static final UserToken Michael_John = create(1290938604, "Michael John", "michaelj@boeing.com", "2121", true, AgileUser, EarnedValueUser);
-   public static final UserToken Kay_Wheeler = create(1645633521, "Kay Wheeler", "kayw@boeing.com", "2323", true, AgileUser, EarnedValueUser);
-   public static final UserToken Inactive_Steve = create(5808093, "Inactive Steve", "insactiveSteve@boeing.com", "2424", false, AgileUser, EarnedValueUser);
+   public static final UserToken Joe_Smith        = create(   61106791L, "Joe Smith",        "joe@boeing.com",            "3333", true,  Arrays.asList("3333"),   AgileUser, EarnedValueUser, DefaultArtifactEditor, AccountAdmin );
+   public static final UserToken Kay_Jones        = create(    5896672L, "Kay Jones",        "kay@boeing.com",            "4444", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Jason_Michael    = create(     277990L, "Jason Michael",    "jason@boeing.com",          "5555", true,                           OseeAdmin, OseeAccessAdmin );
+   public static final UserToken Alex_Kay         = create(    8006939L, "Alex Kay",         "",                          "6666", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Kay_Jason        = create( 1402067349L, "Kay Jason",        "kayj@boeing.com",           "7777", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Steven_Kohn      = create( 1668581959L, "Steven Kohn",      "stevenk@boeing.com",        "8888", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken John_Stevens     = create( 1643660349L, "John Stevens",     "johns@boeing.com",          "9999", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Keith_Johnson    = create(   25923706L, "Keith Johnson",    "keithj@boeing.com",         "1010", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Michael_Alex     = create( 1580073488L, "Michael Alex",     "michaela@boeing.com",       "1212", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Janice_Michael   = create(  608369853L, "Janice Michael",   "janicem@boeing.com",        "1313", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Maichael_Johnson = create( 1944108438L, "Maichael Johnson", "maichaelj@boeing.com",      "1414", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Roland_Stevens   = create(  785160932L, "Roland Stevens",   "rolands@boeing.com",        "1515", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Jeffery_Kay      = create(   86470632L, "Jeffery Kay",      "jeffk@boeing.com",          "1616", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Karmen_John      = create(  208906425L, "Karmen John",      "karmenj@boeing.com",        "1717", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Steven_Michael   = create(  170310871L, "Steven Michael",   "stevenm@boeing.com",        "1818", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Jason_Stevens    = create(  322597199L, "Jason Stevens",    "jasons@boeing.com",         "1919", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Michael_John     = create( 1290938604L, "Michael John",     "michaelj@boeing.com",       "2121", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Kay_Wheeler      = create(  645633521L, "Kay Wheeler",      "kayw@boeing.com",           "2323", true,                           AgileUser, EarnedValueUser );
+   public static final UserToken Inactive_Steve   = create(    5808093L, "Inactive Steve",   "insactiveSteve@boeing.com", "2424", false,                          AgileUser, EarnedValueUser );
+   public static final UserToken Choe_Yun_ui      = create( 1961856040L, "Choe Yun-ui",      "yunuic@boeing.com",         "1234", true,  Arrays.asList("1234AD"), Publishing );
 
    public static final String Joe_Smith_And_Kay_Jones = DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName();
    public static final String Kay_Jones_And_Joe_Smith = DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName();

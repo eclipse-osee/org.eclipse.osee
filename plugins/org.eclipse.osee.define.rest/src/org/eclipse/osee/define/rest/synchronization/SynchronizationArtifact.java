@@ -462,16 +462,7 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
                               var parentGroveThing = attributeValueGroveThing.getParent( -1 ).get();
                               var parentGroveThingIdentifier = parentGroveThing.getIdentifier();
                               var associatedType = parentGroveThingIdentifier.getType().getAssociatedType();
-                              var typeGroveThing = parentGroveThing.getLinkScalar( associatedType )
-                                                      .orElseGet
-                                                         (
-                                                            () ->
-                                                            {
-                                                               int a = 3;
-                                                               a++;
-                                                               return (a==10) ? null : null;
-                                                            }
-                                                         );
+                              var typeGroveThing = parentGroveThing.getLinkScalar( associatedType ).get();
 
                               return
                                  attributeDefinitionGrove.getByPrimaryKeys

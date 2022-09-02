@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelationshipRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
+import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.define.api.RenderEndpoint;
@@ -42,6 +43,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 public class PublishingSharedArtifactsFolderTest {
@@ -54,13 +56,23 @@ public class PublishingSharedArtifactsFolderTest {
    private static boolean setValues = true;
 
    /**
-    * Testing rule used to prevent modification of a production database. This is a {@link ClassRule} which will prevent
-    * the <code>BeforeClass</code> method from running on a production database. A {@link TestRule} is not applied to
-    * <code>BeforeClass</code> class methods and will therefore not provide any protection.
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd></dt>
     */
 
+   //@formatter:off
    @ClassRule
-   public static NotProductionDataStoreRule rule = new NotProductionDataStoreRule();
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NotProductionDataStoreRule() );
+   //@formatter:on
 
    /**
     * List of {@link ArtifactInfoRecords} describing the test artifacts.

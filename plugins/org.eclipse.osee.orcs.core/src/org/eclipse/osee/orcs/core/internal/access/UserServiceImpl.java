@@ -45,17 +45,20 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
+ * Server Implementation
+ *
  * @author Donald G. Dunne
  */
-public class UserServiceImpl implements UserService {
-   private final OrcsApi orcsApi;
-   private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
-   private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
-   private final ConcurrentHashMap<UserId, UserToken> accountIdToUser = new ConcurrentHashMap<>();
-   private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
-   private final String loginKey;
 
+public class UserServiceImpl implements UserService {
+   private final ConcurrentHashMap<UserId, UserToken> accountIdToUser = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
+   private final String loginKey;
+   private final OrcsApi orcsApi;
    private final QueryBuilder query;
+   private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
+
+   private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
 
    public UserServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -64,175 +67,8 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public String getLoginKey() {
-      return this.loginKey;
-   }
-
-   @Override
-   public IUserGroup getOseeAdmin() {
-      return getUserGroup(CoreUserGroups.OseeAdmin);
-   }
-
-   @Override
-   public IUserGroup getOseeAccessAdmin() {
-      return getUserGroup(CoreUserGroups.OseeAccessAdmin);
-   }
-
-   @Override
-   public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
-      ArtifactReadable userGroupArt = null;
-      if (userGroup instanceof ArtifactReadable) {
-         userGroupArt = (ArtifactReadable) userGroup;
-      }
-      if (userGroupArt == null) {
-         ArtifactId art =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrSentinal();
-         if (art.isValid() && art instanceof ArtifactReadable) {
-            userGroupArt = (ArtifactReadable) art;
-         }
-      }
-      if (userGroupArt != null) {
-         return new UserGroupImpl(userGroupArt);
-      }
-      return null;
-   }
-
-   @Override
-   public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
-      IUserGroup group = getUserGroupOrNull(userGroup);
-      if (group != null) {
-         return group;
-      } else {
-         throw new OseeArgumentException("parameter must be artifact");
-      }
-   }
-
-   @Override
-   public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
-      return new UserGroupImpl(userGroupArt);
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getMyUserGroups() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public boolean isInUserGroup(IUserGroupArtifactToken... userGroups) {
-      Collection<IUserGroupArtifactToken> myUserGroups = getMyUserGroups();
-      for (IUserGroupArtifactToken userGrp : userGroups) {
-         if (myUserGroups.contains(userGrp)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
-   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id) {
-      ArtifactToken art =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrSentinal();
-      if (art.isInvalid()) {
-         return false;
-      }
-      return getUserGroup(userGroup).isMember(id);
-   }
-
-   @Override
-   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user) {
-      return isUserMember(userGroup, user.getId());
-   }
-
-   @Override
-   public UserToken getUser() {
-      UserToken user = threadToUser.get(Thread.currentThread());
-      if (user == null) {
-         user = UserToken.SENTINEL;
-      }
-      return user;
-   }
-
-   private synchronized void ensureLoaded() {
-      if (loginIdToUser.isEmpty()) {
-         for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).follow(
-            CoreRelationTypes.Users_Artifact).asArtifacts()) {
-            UserToken user = toUser(userArtifact);
-
-            if (user.isValid() && !user.getIdString().isEmpty()) {
-               accountIdToUser.put(UserId.valueOf(user.getId()), user);
-            }
-            String userId = user.getUserId();
-            if (user.isValid() && !userId.isEmpty()) {
-               userIdToUser.put(userId, user);
-
-               for (String loginId : user.getLoginIds()) {
-                  if (Strings.isValid(loginId)) {
-                     loginIdToUser.put(loginId, user);
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   private UserToken toUser(ArtifactReadable userArtifact) {
-      try {
-         List<ArtifactReadable> groups =
-            userArtifact.getRelated(CoreRelationTypes.Users_Artifact, CoreArtifactTypes.UserGroup);
-
-         List<IUserGroupArtifactToken> roles = new ArrayList<>(groups.size());
-         for (ArtifactReadable group : groups) {
-            roles.add(new UserGroupArtifactToken(group.getId(), group.getName()));
-         }
-         return UserToken.create(userArtifact.getId(), userArtifact.getName(),
-            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email, ""),
-            userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId, ""),
-            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active, false),
-            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles,
-            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
-      } catch (Exception ex) {
-         return UserToken.SENTINEL;
-      }
-   }
-
-   @Override
-   public void setUserForCurrentThread(String loginId) {
-      ensureLoaded();
-      UserToken user = loginIdToUser.get(loginId);
-      if (user == null) {
-         List<ArtifactReadable> userArtifacts = query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
-         if (userArtifacts.size() == 1) {
-            user = toUser(userArtifacts.get(0));
-         }
-      }
-      if (user != null && user.isValid()) {
-         threadToUser.put(Thread.currentThread(), user);
-      }
-   }
-
-   @Override
-   public void setUserForCurrentThread(UserId accountId) {
-      if (accountId.isValid()) {
-         ensureLoaded();
-         UserToken user = accountIdToUser.get(accountId);
-         if (user == null) {
-            List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
-            if (userArtifacts.size() == 1) {
-               user = toUser(userArtifacts.get(0));
-               if (user.isValid()) {
-                  accountIdToUser.put(user, user);
-               }
-            }
-         }
-         if (user != null && user.isValid()) {
-            threadToUser.put(Thread.currentThread(), user);
-         }
-      }
+   public void clearCaches() {
+      loginIdToUser.clear();
    }
 
    @SuppressWarnings("unlikely-arg-type")
@@ -295,6 +131,43 @@ public class UserServiceImpl implements UserService {
       return tx.commit();
    }
 
+   private synchronized void ensureLoaded() {
+      if (loginIdToUser.isEmpty()) {
+         for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).follow(
+            CoreRelationTypes.Users_Artifact).asArtifacts()) {
+            UserToken user = toUser(userArtifact);
+
+            if (user.isValid() && !user.getIdString().isEmpty()) {
+               accountIdToUser.put(UserId.valueOf(user.getId()), user);
+            }
+            String userId = user.getUserId();
+            if (user.isValid() && !userId.isEmpty()) {
+               userIdToUser.put(userId, user);
+
+               for (String loginId : user.getLoginIds()) {
+                  if (Strings.isValid(loginId)) {
+                     loginIdToUser.put(loginId, user);
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   @Override
+   public String getLoginKey() {
+      return this.loginKey;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getMyUserGroups() {
+      return this.getUser().getRoles();
+   }
+
    private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact, TransactionBuilder tx, ArtifactToken userGroupHeader) {
       ArtifactToken userGroupArt = userGroupToArtifact.get(userGroup);
       if (userGroupArt == null) {
@@ -309,15 +182,8 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
-   public void clearCaches() {
-      loginIdToUser.clear();
-   }
-
-   @Override
-   public UserToken getUserByUserId(String userId) {
-      ensureLoaded();
-
-      UserToken user = userIdToUser.get(userId);
+   public UserToken getUser() {
+      UserToken user = threadToUser.get(Thread.currentThread());
       if (user == null) {
          user = UserToken.SENTINEL;
       }
@@ -336,11 +202,141 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
+   public UserToken getUserByUserId(String userId) {
+      ensureLoaded();
+
+      UserToken user = userIdToUser.get(userId);
+      if (user == null) {
+         user = UserToken.SENTINEL;
+      }
+      return user;
+   }
+
+   @Override
+   public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
+      return new UserGroupImpl(userGroupArt);
+   }
+
+   @Override
+   public IUserGroup getUserGroup(IUserGroupArtifactToken userGroup) {
+      IUserGroup group = getUserGroupOrNull(userGroup);
+      if (group != null) {
+         return group;
+      } else {
+         throw new OseeArgumentException("parameter must be artifact");
+      }
+   }
+
+   @Override
+   public IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup) {
+      ArtifactReadable userGroupArt = null;
+      if (userGroup instanceof ArtifactReadable) {
+         userGroupArt = (ArtifactReadable) userGroup;
+      }
+      if (userGroupArt == null) {
+         ArtifactId art =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrSentinal();
+         if (art.isValid() && art instanceof ArtifactReadable) {
+            userGroupArt = (ArtifactReadable) art;
+         }
+      }
+      if (userGroupArt != null) {
+         return new UserGroupImpl(userGroupArt);
+      }
+      return null;
+   }
+
+   @Override
+   public UserToken getUserIfLoaded() {
+      return UserToken.SENTINEL;
+   }
+
+   @Override
+   public UserToken getUserIfLoaded(Long accountId) {
+      return UserToken.SENTINEL;
+   }
+
+   @Override
+   public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public boolean isBeforeUserCreation() {
       return false;
    }
 
    @Override
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id) {
+      ArtifactToken art =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrSentinal();
+      if (art.isInvalid()) {
+         return false;
+      }
+      return getUserGroup(userGroup).isMember(id);
+   }
+
+   @Override
    public void setBeforeUserCreation(boolean beforeUserCreation) {
+   }
+
+   @Override
+   public void setUserForCurrentThread(String loginId) {
+      ensureLoaded();
+      UserToken user = loginIdToUser.get(loginId);
+      if (user == null) {
+         List<ArtifactReadable> userArtifacts = query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
+         if (userArtifacts.size() == 1) {
+            user = toUser(userArtifacts.get(0));
+         }
+      }
+      if (user != null && user.isValid()) {
+         threadToUser.put(Thread.currentThread(), user);
+      }
+   }
+
+   @Override
+   public void setUserForCurrentThread(UserId accountId) {
+      if (accountId.isValid()) {
+         ensureLoaded();
+         UserToken user = accountIdToUser.get(accountId);
+         if (user == null) {
+            List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
+            if (userArtifacts.size() == 1) {
+               user = toUser(userArtifacts.get(0));
+               if (user.isValid()) {
+                  accountIdToUser.put(user, user);
+               }
+            }
+         }
+         if (user != null && user.isValid()) {
+            threadToUser.put(Thread.currentThread(), user);
+         }
+      }
+   }
+
+   private UserToken toUser(ArtifactReadable userArtifact) {
+      try {
+         List<ArtifactReadable> groups =
+            userArtifact.getRelated(CoreRelationTypes.Users_Artifact, CoreArtifactTypes.UserGroup);
+
+         List<IUserGroupArtifactToken> roles = new ArrayList<>(groups.size());
+         for (ArtifactReadable group : groups) {
+            roles.add(new UserGroupArtifactToken(group.getId(), group.getName()));
+         }
+         return UserToken.create(userArtifact.getId(), userArtifact.getName(),
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email, ""),
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId, ""),
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active, false),
+            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles,
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
+      } catch (Exception ex) {
+         return UserToken.SENTINEL;
+      }
+   }
+
+   @Override
+   public void setUserLoading(boolean loading) {
+      ;
    }
 }

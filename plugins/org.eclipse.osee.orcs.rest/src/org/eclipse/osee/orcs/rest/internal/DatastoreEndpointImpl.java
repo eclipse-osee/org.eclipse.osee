@@ -89,4 +89,13 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    public UserToken getUserInfo(String userId) {
       return userService.getUserByUserId(userId);
    }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public void clearUserCache() {
+      userService.clearCaches();
+   }
 }

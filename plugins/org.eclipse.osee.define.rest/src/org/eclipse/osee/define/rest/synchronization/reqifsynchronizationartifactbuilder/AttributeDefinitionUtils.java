@@ -15,6 +15,10 @@ package org.eclipse.osee.define.rest.synchronization.reqifsynchronizationartifac
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
+import org.eclipse.osee.define.rest.synchronization.ForeignThingFamily;
+import org.eclipse.osee.define.rest.synchronization.SimpleForeignThingFamily;
+import org.eclipse.osee.define.rest.synchronization.identifier.IdentifierType;
 import org.eclipse.rmf.reqif10.AttributeDefinition;
 import org.eclipse.rmf.reqif10.AttributeDefinitionBoolean;
 import org.eclipse.rmf.reqif10.AttributeDefinitionDate;
@@ -24,6 +28,7 @@ import org.eclipse.rmf.reqif10.AttributeDefinitionReal;
 import org.eclipse.rmf.reqif10.AttributeDefinitionString;
 import org.eclipse.rmf.reqif10.AttributeDefinitionXHTML;
 import org.eclipse.rmf.reqif10.DatatypeDefinition;
+import org.eclipse.rmf.reqif10.Identifiable;
 
 /**
  * This class contains various methods for {@link AttributeDefinition} foreign things.
@@ -32,6 +37,13 @@ import org.eclipse.rmf.reqif10.DatatypeDefinition;
  */
 
 public class AttributeDefinitionUtils {
+
+   /**
+    * Private constructor to prevent instantiation of the class.
+    */
+
+   private AttributeDefinitionUtils() {
+   }
 
    /**
     * Gets the identifier of the {@link DatatypeDefinition} referenced by the {@link AttributeDefinition} sub-class.
@@ -67,6 +79,49 @@ public class AttributeDefinitionUtils {
             : Optional.empty();
       //@formatter:on
    }
+
+   /**
+    * Creates an unordered {@link Stream} of {@link ForeignThingFamily} objects representing the ReqIF Attribute
+    * Definitions in the ReqIF DOM.
+    *
+    * @param builder the {@link ReqIFSynchronizationArtifactBuilder}.
+    * @return a {@link Stream} of {@link ForeignThingFamily} objects.
+    */
+
+   static Stream<ForeignThingFamily> extract(ReqIFSynchronizationArtifactBuilder builder) {
+      //@formatter:off
+      return
+         builder.reqIf.getCoreContent().getSpecTypes().stream()
+            .flatMap
+               (
+                  ( specType ) ->
+                  {
+                     var specTypeIdentifierType = SpecTypeUtils.getIdentifierType(specType).orElseThrow();
+
+                     return
+                        specType.getSpecAttributes().stream()
+                           .map
+                              (
+                                 ( specAttribute ) -> new SimpleForeignThingFamily
+                                                             (
+                                                               specAttribute,
+                                                               new String[]
+                                                               {
+                                                                  ((Identifiable) specType).getIdentifier(),
+                                                                  ((Identifiable) specAttribute).getIdentifier(),
+                                                               },
+                                                               new IdentifierType[]
+                                                               {
+                                                                  specTypeIdentifierType,
+                                                                  IdentifierType.ATTRIBUTE_DEFINITION
+                                                               }
+                                                             )
+                              );
+                  }
+            );
+      //@formatter:on
+   }
+
 }
 
 /* EOF */

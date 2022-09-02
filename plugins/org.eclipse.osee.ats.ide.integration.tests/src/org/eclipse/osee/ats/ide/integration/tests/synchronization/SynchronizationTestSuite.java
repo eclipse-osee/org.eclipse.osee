@@ -22,11 +22,20 @@ import org.junit.runners.Suite;
  * @author Loren K. Ashley
  */
 
+//@formatter:off
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SynchronizationEndpointTest.class, ReqifRelationships.class})
+@Suite.SuiteClasses
+   (
+      {
+         SynchronizationEndpointTest.class,
+         ReqifRelationships.class,
+         Permissions.class
+      }
+   )
 
 public class SynchronizationTestSuite {
    // Test Suite
 }
+//@formatter:on
 
 /* EOF */
