@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -31,6 +32,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -51,6 +54,7 @@ public class PurgeUser extends AbstractBlam {
    private static int numOfUpdatedAuthoredTransactions = 0;
    private static int numOfUpdatedASideRelations = 0;
    private static int numOfUpdatedBSideRelations = 0;
+   private static boolean persist = false;
 
    private static final int defaultUpdateValue = -1;
 
@@ -70,9 +74,12 @@ public class PurgeUser extends AbstractBlam {
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
       Displays.ensureInDisplayThread(new Runnable() {
+
          @Override
          public void run() {
             try {
+               persist = variableMap.getBoolean("Persist");
+
                //TODO Allow for multiple users to be selected at one time.
                final User fromUser = variableMap.getUser(FROM_USER);
                if (fromUser == null) {
@@ -113,16 +120,20 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void confirmDeletionOfArtifact(final User fromUser) {
-      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
-         "Do you wish to delete the User artifact: " + fromUser.getName() + "?")) {
-         deleteArtifact(fromUser);
+      if (persist) {
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
+            "Do you wish to delete the User artifact: " + fromUser.getName() + "?")) {
+            deleteArtifact(fromUser);
+         }
       }
    }
 
    private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) {
       numOfAuthoredTransactions = jdbcClient.fetch(-1, GET_AUTHORED_TRANSACTIONS, fromUser);
-      numOfUpdatedAuthoredTransactions =
-         jdbcClient.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, toUser, fromUser);
+      if (persist) {
+         numOfUpdatedAuthoredTransactions =
+            jdbcClient.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, toUser, fromUser);
+      }
    }
 
    private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) {
@@ -132,12 +143,18 @@ public class PurgeUser extends AbstractBlam {
 
    private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) {
       numOfASideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_ASIDE, fromUser);
-      numOfUpdatedASideRelations = jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, toUser, fromUser);
+      if (persist) {
+         numOfUpdatedASideRelations =
+            jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, toUser, fromUser);
+      }
    }
 
    private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) {
       numOfBSideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_BSIDE, fromUser);
-      numOfUpdatedBSideRelations = jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, toUser, fromUser);
+      if (persist) {
+         numOfUpdatedBSideRelations =
+            jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, toUser, fromUser);
+      }
    }
 
    private void deleteArtifact(final User fromUser) {
@@ -147,6 +164,12 @@ public class PurgeUser extends AbstractBlam {
 
    private void displayReport(User toUser, User fromUser) {
       XResultData rd = new XResultData();
+      rd.logf("%s\n\n", getName());
+      if (persist) {
+         rd.logf("Persisted Changes to DB and Purged User Artifact\n\n", getName());
+      } else {
+         rd.logf("REPORT ONLY; No changes made\n\n", getName());
+      }
       try {
          String[] columnHeaders = new String[] {
             "FromUser",
@@ -179,17 +202,17 @@ public class PurgeUser extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuffer buffer = new StringBuffer("<xWidgets>");
-      buffer.append("<XWidget xwidgetType=\"XMembersComboAll\" displayName=\"" + FROM_USER + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XMembersComboAll\" displayName=\"" + TO_USER + "\" />");
-      buffer.append("</xWidgets>");
-      return buffer.toString();
+   public List<XWidgetRendererItem> getXWidgetItems() {
+      XWidgetBuilder wb = new XWidgetBuilder();
+      wb.andWidget(FROM_USER, "XMembersComboAll").endWidget();
+      wb.andWidget(TO_USER, "XMembersComboAll").endWidget();
+      wb.andXCheckbox("Persist").endWidget();
+      return wb.getItems();
    }
 
    @Override
    public String getDescriptionUsage() {
-      return "Purge the specified User.  You will be prompted to choose which user to re-assign existing transactions and relations.";
+      return "Purge the specified User.  Choose user to purge and user to re-assign existing transactions and relations.  Select Persist to make changes and purge User Artifact.";
    }
 
    @Override
