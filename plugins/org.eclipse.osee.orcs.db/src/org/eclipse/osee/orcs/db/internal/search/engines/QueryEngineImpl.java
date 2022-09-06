@@ -196,13 +196,23 @@ public class QueryEngineImpl implements QueryEngine {
 
       Consumer<JdbcStatement> jdbcConsumer = stmt -> {
          Long artId = stmt.getLong("art_id");
-
          ArtifactReadableImpl artifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(artId));
          if (artifact == null) {
             artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory);
             artifactMap.put(artifact, artifact);
             if (stmt.getLong("top") == 1) {
                artifactConsumer.accept(artifact);
+            }
+         } else {
+            /**
+             * if artifact is already in the map that means it was first found as a relation and applicability may not
+             * have been set
+             */
+            Long applicId = stmt.getLong("app_id");
+            artifactMap.get(ArtifactId.valueOf(artId)).getApplicabilityToken().setId(applicId);
+            if (OptionsUtil.getIncludeApplicabilityTokens(queryData.getRootQueryData().getOptions())) {
+               String applicValue = stmt.getString("app_value");
+               artifactMap.get(ArtifactId.valueOf(artId)).getApplicabilityToken().setName(applicValue);
             }
          }
 
