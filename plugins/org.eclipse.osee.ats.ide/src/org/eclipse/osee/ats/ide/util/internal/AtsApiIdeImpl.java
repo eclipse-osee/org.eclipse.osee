@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -33,7 +32,6 @@ import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
@@ -73,7 +71,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
-   private IAgileService agileService;
    private AtsQueryServiceIde queryServiceIde;
    private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
@@ -127,7 +124,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
       taskService = new AtsTaskService(this);
 
-      agileService = new AgileService(logger, this);
       notificationService = new AtsNotificationServiceImpl(this);
    }
 
@@ -205,11 +201,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public OseeClient getOseeClient() {
       return OsgiUtil.getService(getClass(), OseeClient.class);
-   }
-
-   @Override
-   public IAgileService getAgileService() {
-      return agileService;
    }
 
    @Override

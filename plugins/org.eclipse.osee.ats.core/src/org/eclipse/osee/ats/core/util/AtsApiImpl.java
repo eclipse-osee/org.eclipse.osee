@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
+import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
@@ -61,6 +62,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.action.AtsActionService;
+import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
@@ -134,6 +136,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
    protected IAtsNotificationService notificationService;
    protected IAtsAccessService atsAccessService;
+   protected IAgileService agileService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -190,6 +193,8 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
       logFactory = new AtsLogFactory();
       actionService = new AtsActionService(this);
+      agileService = new AgileService(logger, this);
+
    }
 
    public void stop() {
@@ -341,6 +346,11 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       }
       throw new OseeArgumentException("Namespace [%s] is not supported by any of the providers %s", namespace,
          searchDataProviders);
+   }
+
+   @Override
+   public IAgileService getAgileService() {
+      return agileService;
    }
 
    @Override

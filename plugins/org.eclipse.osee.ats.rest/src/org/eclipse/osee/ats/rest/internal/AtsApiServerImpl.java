@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
-import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.rest.AtsApiServer;
@@ -63,7 +62,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private OrcsApi orcsApi;
-   private IAgileService agileService;
    private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
    private AtsActionEndpointApi actionEndpoint;
    private IAtsHealthService healthService;
@@ -111,7 +109,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 
-      agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
