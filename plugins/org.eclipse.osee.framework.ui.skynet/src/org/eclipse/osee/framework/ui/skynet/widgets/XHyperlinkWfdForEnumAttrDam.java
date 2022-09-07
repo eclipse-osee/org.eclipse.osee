@@ -64,4 +64,9 @@ public class XHyperlinkWfdForEnumAttrDam extends XHyperlinkWfdForEnumAttr implem
       }
    }
 
+   @Override
+   public String getCurrentValue() {
+      return artifact.getSoleAttributeValue(attributeTypeToken, "");
+   }
+
 }
