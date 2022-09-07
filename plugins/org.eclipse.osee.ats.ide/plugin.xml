@@ -37,13 +37,6 @@
                id="org.eclipse.osee.ats.ide.world.WorldEditor"
                name="ATS World Editor">
          </editor>
-         <editor
-               class="org.eclipse.osee.ats.ide.workdef.viewer.AtsWorkDefConfigEditor"
-               default="false"
-               icon="OSEE-INF/images/workDef.gif"
-               id="org.eclipse.osee.ats.ide.workdef.viewer.AtsWorkflowConfigEditor"
-               name="ATS Work Definition Viewer">
-         </editor>
    </extension>
 <extension point="org.eclipse.ui.perspectives">
    <perspective

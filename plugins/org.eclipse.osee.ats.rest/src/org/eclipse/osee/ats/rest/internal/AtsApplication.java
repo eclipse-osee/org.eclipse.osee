@@ -38,8 +38,6 @@ import org.eclipse.osee.ats.rest.internal.config.ReportResource;
 import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
 import org.eclipse.osee.ats.rest.internal.config.VersionResource;
-import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
-import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsProductLineEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthEndpointImpl;
@@ -74,7 +72,6 @@ public class AtsApplication extends Application {
    private Log logger;
    private static OrcsApi orcsApi;
    private AtsApiServer atsApiServer;
-   private CpaServiceRegistry cpaRegistry;
    private JdbcService jdbcService;
 
    private ExecutorAdmin executorAdmin;
@@ -97,10 +94,6 @@ public class AtsApplication extends Application {
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
-   }
-
-   public void setCpaServiceRegistry(CpaServiceRegistry cpaRegistry) {
-      this.cpaRegistry = cpaRegistry;
    }
 
    public void start() {
@@ -129,7 +122,6 @@ public class AtsApplication extends Application {
 
       singletons.add(new StateResource(atsApiServer));
       singletons.add(new ConvertResource(atsApiServer));
-      singletons.add(new CpaResource(orcsApi, atsApiServer, cpaRegistry));
       singletons.add(new UserResource(atsApiServer.getUserService()));
 
       // Endpoints

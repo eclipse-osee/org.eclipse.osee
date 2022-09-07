@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
-import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
@@ -61,8 +60,6 @@ public interface IAtsServerEndpointProvider {
    public AtsActionUiEndpointApi getActionUiEndpoint();
 
    public AtsWorldEndpointApi getWorldEndpoint();
-
-   public AtsCpaEndpointApi getCpaEndpoint();
 
    AtsHealthEndpointApi getHealthEndpoint();
 

@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
-import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
@@ -56,7 +55,6 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsActionEndpointApi actionEp;
    private final AtsApi atsApi;
    private AtsWorldEndpointApi worldEp;
-   private AtsCpaEndpointApi cpaEp;
    private AgileEndpointApi agile;
    private CountryEndpointApi countryEp;
    private ProgramEndpointApi programEp;
@@ -177,14 +175,6 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          actionUiEp = jaxRsApi.newProxy(getAtsTarget(), AtsActionUiEndpointApi.class);
       }
       return actionUiEp;
-   }
-
-   @Override
-   public AtsCpaEndpointApi getCpaEndpoint() {
-      if (cpaEp == null) {
-         cpaEp = jaxRsApi.newProxy(getAtsTarget(), AtsCpaEndpointApi.class);
-      }
-      return cpaEp;
    }
 
    @Override
