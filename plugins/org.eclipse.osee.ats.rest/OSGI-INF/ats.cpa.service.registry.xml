@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry"/>
-  <service>
-      <provide interface="org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry"/>
-   </service>
-   <reference bind="addCpaService" cardinality="1..n" interface="org.eclipse.osee.ats.api.cpa.IAtsCpaService" name="IAtsCpaService" policy="dynamic" unbind="removeCpaService"/>
-</scr:component>

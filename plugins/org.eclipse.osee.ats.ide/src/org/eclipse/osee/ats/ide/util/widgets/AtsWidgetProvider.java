@@ -102,8 +102,6 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
       register(VersionMultiChoiceSelect.class);
       register(XArtifactReferencedAtsObjectAttributeWidget.class);
       register(XAssigneesListWidget.class);
-      register(XCpaOpenDuplicatedPcrWidget.class);
-      register(XCpaOpenOriginatingPcrWidget.class);
       register(XHyperlabelWorkflowApplicabilitySelection.class);
       register(XOpenSprintBurndownButton.class);
       register(XOpenSprintBurnupButton.class);

@@ -7,8 +7,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Osee-JaxRs-Resource: /web/*;path=/ats/cpa/ui,
- OSEE-INF/web/*;path=/ats
+Osee-JaxRs-Resource: OSEE-INF/web/*;path=/ats
 Osee-Template: OSEE-INF/templates/*.html
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
@@ -30,7 +29,6 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.ats.core.branch,
  org.eclipse.osee.ats.core.column,
  org.eclipse.osee.ats.core.config,
- org.eclipse.osee.ats.core.cpa,
  org.eclipse.osee.ats.core.event,
  org.eclipse.osee.ats.core.health,
  org.eclipse.osee.ats.core.notify,
