@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.ats.ide.world.search;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 
 /**
@@ -48,7 +46,5 @@ public abstract class AbstractWorkItemSearchItem extends AtsSearchWorkflowSearch
       data.getWorkItemTypes().addAll(getWorkItemTypes());
       return data;
    }
-
-   abstract Collection<WorkItemType> getWorkItemTypes();
 
 }

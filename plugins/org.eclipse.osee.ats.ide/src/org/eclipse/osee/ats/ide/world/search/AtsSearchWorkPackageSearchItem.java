@@ -60,7 +60,7 @@ public class AtsSearchWorkPackageSearchItem extends AbstractWorkItemSearchItem {
    }
 
    @Override
-   Collection<WorkItemType> getWorkItemTypes() {
+   public Collection<WorkItemType> getWorkItemTypes() {
       return Arrays.asList(WorkItemType.TeamWorkflow, WorkItemType.Task, WorkItemType.Review);
    }
 

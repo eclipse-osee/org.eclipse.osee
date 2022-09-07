@@ -60,7 +60,7 @@ public class AtsSearchTaskSearchItem extends AbstractWorkItemSearchItem {
    }
 
    @Override
-   Collection<WorkItemType> getWorkItemTypes() {
+   public Collection<WorkItemType> getWorkItemTypes() {
       return Arrays.asList(WorkItemType.Task);
    }
 

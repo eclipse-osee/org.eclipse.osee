@@ -55,7 +55,7 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
    }
 
    @Override
-   Collection<WorkItemType> getWorkItemTypes() {
+   public Collection<WorkItemType> getWorkItemTypes() {
       return Arrays.asList(WorkItemType.Goal);
    }
 
