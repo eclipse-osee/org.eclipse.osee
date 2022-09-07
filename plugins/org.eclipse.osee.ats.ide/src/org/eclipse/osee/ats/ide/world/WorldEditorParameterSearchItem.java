@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -117,7 +118,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
          }
-         if (workItemType != null && workItemType.get().isEmpty()) {
+         if (getWorkItemTypes().isEmpty() && (workItemType != null && workItemType.get().isEmpty())) {
             return new Result("You must select a workflow type.");
          }
          boolean teamExists = teamDef != null;
@@ -465,6 +466,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public void createToolbar(IToolBarManager toolBarManager, WorldEditor worldEditor) {
       // do nothing
+   }
+
+   public Collection<WorkItemType> getWorkItemTypes() {
+      return java.util.Collections.emptyList();
    }
 
 }

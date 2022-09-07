@@ -140,6 +140,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (showWorkItemWidgets() && getWorkItemType() != null) {
          data.getWorkItemTypes().clear();
          data.getWorkItemTypes().addAll(getWorkItemType().get());
+      } else if (!showWorkItemWidgets()) {
+         data.getWorkItemTypes().clear();
+         data.getWorkItemTypes().addAll(getWorkItemTypes());
       }
       if (data.getTeamDefIds() != null) {
          data.getTeamDefIds().clear();
