@@ -114,7 +114,9 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       event.feedback = DND.FEEDBACK_EXPAND;
       event.detail = DND.DROP_NONE;
 
-      getErrorToolTip().setVisible(false);
+      if (errorToolTip != null) {
+         errorToolTip.setVisible(false);
+      }
 
       if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
          ArtifactTransfer artTransfer = ArtifactTransfer.getInstance();
@@ -186,8 +188,8 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
                boolean hasPermission = false;
                try {
-                  hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
-                     relTypeSide, relatedArts, PermissionEnum.WRITE, null).isSuccess();
+                  hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, relTypeSide,
+                     relatedArts, PermissionEnum.WRITE, null).isSuccess();
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -209,8 +211,8 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                List<Artifact> related = Arrays.asList(
                   artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA());
 
-               hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, rts,
-                  related, PermissionEnum.WRITE, null).isSuccess();
+               hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, rts, related,
+                  PermissionEnum.WRITE, null).isSuccess();
 
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
