@@ -54,7 +54,7 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitsResolution);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeCompRate);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeDefaultValue);
-      attributes.add(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral);
+      attributes.add(CoreAttributeTypes.InterfaceElementEnumLiteral);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeMaxval);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeMinval);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeMsbValue);

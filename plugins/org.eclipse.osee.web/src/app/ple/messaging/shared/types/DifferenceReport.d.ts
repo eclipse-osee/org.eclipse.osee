@@ -123,6 +123,7 @@ export interface elementDiffItem {
     platformTypeName2: string,
     interfacePlatformTypeMinval: string,
     interfacePlatformTypeMaxval: string,
+    enumLiteral: string,
     enumeration?: string,
     diffInfo?: diffInfo
 }
@@ -139,7 +140,6 @@ export interface platformTypeDiffItem {
     interfacePlatformTypeUnits: string,
     interfacePlatformType2sComplement: string,
     interfacePlatformTypeAnalogAccuracy: string,
-    interfacePlatformTypeEnumLiteral: string,
     interfacePlatformTypeBitsResolution: string,
     interfacePlatformTypeValidRangeDescription: string,
     interfacePlatformTypeCompRate: string,

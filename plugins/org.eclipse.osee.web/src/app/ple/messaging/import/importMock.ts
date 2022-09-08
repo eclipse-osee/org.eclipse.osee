@@ -63,6 +63,7 @@ export const importSummaryMock: ImportSummary = {
             "name": "Element 1",
             "description": "",
             "notes": "",
+            "enumLiteral": "",
             "interfaceElementIndexStart": 0,
             "interfaceElementIndexEnd": 0,
             "interfaceElementAlterable": false

@@ -48,5 +48,5 @@ export interface elementWithChanges extends element{
 }
 
 export interface elementImportToken extends Pick<element, 
-    'id' | 'name' | 'description' | 'notes' | 'interfaceElementAlterable' | 
+    'id' | 'name' | 'description' | 'notes' | 'enumLiteral' | 'interfaceElementAlterable' | 
     'interfaceElementIndexEnd' | 'interfaceElementIndexStart'> {}

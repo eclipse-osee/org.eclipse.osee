@@ -20,6 +20,7 @@ public class InterfaceElementImportToken extends PLGenericDBObject {
    private Boolean InterfaceElementAlterable;
    private String Notes;
    private String Description;
+   private String enumLiteral;
    private Integer InterfaceElementIndexStart;
    private Integer InterfaceElementIndexEnd;
 
@@ -27,6 +28,7 @@ public class InterfaceElementImportToken extends PLGenericDBObject {
       super(id, name);
       setNotes("");
       setDescription("");
+      setEnumLiteral("");
       setInterfaceElementIndexStart(0);
       setInterfaceElementIndexEnd(0);
       setInterfaceElementAlterable(false);
@@ -62,6 +64,14 @@ public class InterfaceElementImportToken extends PLGenericDBObject {
     */
    public void setNotes(String notes) {
       Notes = notes;
+   }
+
+   public String getEnumLiteral() {
+      return enumLiteral;
+   }
+
+   public void setEnumLiteral(String enumLiteral) {
+      this.enumLiteral = enumLiteral;
    }
 
    /**
