@@ -13,8 +13,12 @@
 
 package org.eclipse.osee.orcs.account.admin.internal;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.Subscription;
@@ -39,19 +43,35 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi) {
    // for ReviewOsgiXml public void setAccountFactory(AccountFactory factory) {
 
+   private volatile Supplier<Collection<ArtifactReadable>> groupSupplier =
+      Suppliers.memoizeWithExpiration(getSupplier(), 20, TimeUnit.MINUTES);
+
+   private Collection<ArtifactReadable> getGroups() {
+      return groupSupplier.get();
+   }
+
+   private Supplier<Collection<ArtifactReadable>> getSupplier() {
+      return new Supplier<Collection<ArtifactReadable>>() {
+
+         @Override
+         public Collection<ArtifactReadable> get() {
+            return newQuery().andTypeEquals(CoreArtifactTypes.SubscriptionGroup).getResults().getList();
+         }
+      };
+   }
+
    @Override
    public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
       ResultSet<ArtifactReadable> accountResults =
          newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getResults();
       ArtifactReadable account = accountResults.getExactlyOne();
 
-      ResultSet<ArtifactReadable> allGroups =
-         newQuery().andTypeEquals(CoreArtifactTypes.SubscriptionGroup).getResults();
       List<Subscription> subscriptions = new ArrayList<>();
-      for (ArtifactReadable group : allGroups) {
+      for (ArtifactReadable group : getGroups()) {
          boolean related = account.areRelated(CoreRelationTypes.Users_Artifact, group);
          subscriptions.add(SubscriptionUtil.fromArtifactData(account, group, related));
       }
+
       return ResultSets.newResultSet(subscriptions);
    }
 

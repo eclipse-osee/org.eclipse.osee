@@ -116,22 +116,19 @@ public class EmailGroupsBlam extends AbstractBlam {
       }
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
-      for (Future<String> future : futures) {
-         logf(future.get());
-      }
-
    }
 
    private void sendEmailTo(EmailGroupsData data, final User user) {
       final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
-         logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
+         logf("ERROR: The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          return;
       }
       final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
          data.getReplyToAddress(), data.getSubject(), "", BodyType.Html);
       emailMessage.addHTMLBody(data.getHtmlResult(user));
-      String description = String.format("[%s] for [%s]", emailAddress, user);
+      String description = String.format("%s - [%s]", user, emailAddress);
+      logf(description);
       futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
    }
 
