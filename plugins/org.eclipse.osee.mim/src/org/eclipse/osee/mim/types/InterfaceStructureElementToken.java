@@ -79,7 +79,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       this.setInterfaceElementIndexEnd(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0));
       this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
-      this.setEnumLiteral(art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, ""));
+      this.setEnumLiteral(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementEnumLiteral, ""));
       ArtifactReadable pTypeArt =
          art.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(
             ArtifactReadable.SENTINEL);

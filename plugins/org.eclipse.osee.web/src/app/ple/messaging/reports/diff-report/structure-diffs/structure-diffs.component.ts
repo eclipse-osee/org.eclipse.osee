@@ -50,6 +50,7 @@ export class StructureDiffsComponent implements OnInit {
     'units',
     'enumeration',
     'interfaceElementAlterable',
+    'enumLiteral',
     'notes',
     'applicability'
   ]

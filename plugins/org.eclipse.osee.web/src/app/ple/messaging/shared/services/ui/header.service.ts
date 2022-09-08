@@ -140,6 +140,7 @@ export class HeaderService {
     { header: 'units', description: 'Element units', humanReadable: 'Units' },
     { header: 'enumeration', description: 'Element enumeration', humanReadable: 'Enumeration' },
     { header: 'interfaceElementAlterable', description: 'Alterability of element', humanReadable: 'Alterable' },
+    { header: 'enumLiteral', description: 'Enumerated Literals of element', humanReadable: 'Enumerated Literals' },
     { header: 'notes', description: 'Element notes', humanReadable: 'Notes' },
     { header: 'applicability', description: 'Applicability of the element', humanReadable: 'Applicability' },
   ])

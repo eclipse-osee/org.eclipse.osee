@@ -338,6 +338,8 @@ export class DiffReportService {
               item.diffInfo!.fieldsChanged['interfaceElementIndexStart'] = c.baselineVersion.value;
             } else if (c.itemTypeId === ATTRIBUTETYPEID.INTERFACEELEMENTEND) {
               item.diffInfo!.fieldsChanged['interfaceElementIndexEnd'] = c.baselineVersion.value;
+            } else if (c.itemTypeId === ATTRIBUTETYPEID.INTERFACEENUMLITERAL) {
+              item.diffInfo!.fieldsChanged['enumLiteral'] = c.baselineVersion.value;
             }
           } else if (this.isApplicabilityChange(c)) {
             item.diffInfo!.fieldsChanged['applicability'] = c.baselineVersion.applicabilityToken;
