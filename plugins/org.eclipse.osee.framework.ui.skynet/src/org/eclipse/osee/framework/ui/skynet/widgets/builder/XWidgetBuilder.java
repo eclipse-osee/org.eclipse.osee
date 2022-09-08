@@ -65,12 +65,6 @@ public class XWidgetBuilder {
       return this;
    }
 
-   public XWidgetBuilder andWidget(String widgetType) {
-      newXWidget();
-      currItem.setXWidgetName(widgetType);
-      return this;
-   }
-
    public List<XWidgetRendererItem> getItems() {
       if (currItem != null) {
          throw new OseeArgumentException("Can't get items without calling endWidget() on widget [%s]",
