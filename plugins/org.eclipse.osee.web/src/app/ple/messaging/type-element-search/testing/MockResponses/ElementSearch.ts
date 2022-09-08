@@ -100,6 +100,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
+        enumLiteral:'',
         paths: ['path 1'],
         buttonNames: ['name 1'],
         units:''
@@ -112,6 +113,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
+        enumLiteral:'',
         paths: ['path 1','path2'],
         buttonNames: ['name 1','name2'],
         units:''
@@ -124,6 +126,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
+        enumLiteral:'',
         paths: [],
         buttonNames: [],
         units:''
@@ -136,6 +139,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
+        enumLiteral:'',
         paths: ['path 1'],
         buttonNames: ['name 1'],
         units:''

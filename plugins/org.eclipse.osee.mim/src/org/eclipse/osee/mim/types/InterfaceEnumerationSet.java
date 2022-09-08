@@ -20,16 +20,17 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Luciano T. Vaglienti
  */
 public class InterfaceEnumerationSet extends PLGenericDBObject {
    public static final InterfaceEnumerationSet SENTINEL = new InterfaceEnumerationSet();
-   private String Description;
-   private ApplicabilityToken applicability;
+   private String Description = "";
+   private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
    private List<InterfaceEnumeration> enumerations = new LinkedList<InterfaceEnumeration>();
-   private ArtifactReadable artifactReadable;
+   private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
 
    public InterfaceEnumerationSet(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -40,7 +41,7 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-	  art.getRelated(CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList().stream().filter(
+      art.getRelated(CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList().stream().filter(
          a -> !a.getExistingAttributeTypes().isEmpty()).forEach(
             a -> getEnumerations().add(new InterfaceEnumeration(a)));
       this.artifactReadable = art;
@@ -51,6 +52,7 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
    }
 
    public InterfaceEnumerationSet() {
+      this(Id.SENTINEL, "");
    }
 
    /**

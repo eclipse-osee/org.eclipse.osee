@@ -73,7 +73,7 @@
             <ng-container *ngIf="(availableTypes|async) as _availableTypes">
                 <mat-form-field class="width-100">
                     <mat-label>Platform Type</mat-label>
-                    <mat-select [(ngModel)]="data.type" required [compareWith]="compareTypes">
+                    <mat-select [(ngModel)]="data.type" (ngModelChange)="updateEnumLiteral()" required [compareWith]="compareTypes">
                         <mat-option *ngFor="let selectableType of _availableTypes" [value]="selectableType">
                             {{selectableType.name}}
                         </mat-option>
@@ -118,6 +118,7 @@
                 <mat-label>Element Start Index: {{data.element.interfaceElementIndexStart}}</mat-label>
                 <mat-label>Element End Index: {{data.element.interfaceElementIndexEnd}}</mat-label>
                 <mat-label>Element Alterable: {{data.element.interfaceElementAlterable}}</mat-label>
+                <mat-label>Enumerated Literals: {{data.element.enumLiteral}}</mat-label>
                 <mat-label>Platform Type: {{data.type.name}}</mat-label>
             </div>
         </mat-dialog-content>

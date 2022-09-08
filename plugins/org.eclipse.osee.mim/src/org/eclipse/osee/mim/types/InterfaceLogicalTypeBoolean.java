@@ -36,8 +36,6 @@ public class InterfaceLogicalTypeBoolean extends InterfaceLogicalTypeGeneric {
          CoreAttributeTypes.InterfacePlatformTypeMinval));
       fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", false, true,
          CoreAttributeTypes.InterfacePlatformTypeMaxval));
-      fields.add(new InterfaceLogicalTypeField("Enum Literal", "InterfacePlatformTypeEnumLiteral", false, true,
-         CoreAttributeTypes.InterfacePlatformTypeEnumLiteral));
       fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true,
          CoreAttributeTypes.InterfacePlatformTypeDefaultValue));
       this.setFields(fields);

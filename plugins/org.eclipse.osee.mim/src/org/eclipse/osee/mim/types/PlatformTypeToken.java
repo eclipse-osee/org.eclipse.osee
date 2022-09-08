@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -29,8 +30,6 @@ public class PlatformTypeToken extends PLGenericDBObject {
    public static final PlatformTypeToken SENTINEL = new PlatformTypeToken();
 
    private String Name; //required
-
-   private String InterfacePlatformTypeEnumLiteral;
 
    private String InterfacePlatformTypeUnits;
 
@@ -58,6 +57,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
    private String InterfacePlatformType2sComplement; //required
 
    private ArtifactReadable artifactReadable;
+   private InterfaceEnumerationSet enumSet = InterfaceEnumerationSet.SENTINEL;
 
    public PlatformTypeToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -80,8 +80,6 @@ public class PlatformTypeToken extends PLGenericDBObject {
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeCompRate, ""));
       this.setInterfacePlatformTypeDefaultValue(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeDefaultValue, ""));
-      this.setInterfacePlatformTypeEnumLiteral(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeEnumLiteral, ""));
       this.setInterfacePlatformTypeMaxval(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeMaxval, ""));
       this.setInterfacePlatformTypeMinval(
@@ -94,6 +92,14 @@ public class PlatformTypeToken extends PLGenericDBObject {
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
 
+      if (this.getInterfaceLogicalType().equals("enumeration") && art.getRelated(
+         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getOneOrDefault(
+            ArtifactReadable.SENTINEL).isValid() && !art.getRelated(
+               CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getOneOrDefault(
+                  ArtifactReadable.SENTINEL).getExistingAttributeTypes().isEmpty()) {
+         this.setEnumSet(new InterfaceEnumerationSet(
+            art.getRelated(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getExactlyOne()));
+      }
       this.artifactReadable = art;
    }
 
@@ -117,20 +123,6 @@ public class PlatformTypeToken extends PLGenericDBObject {
    public PlatformTypeToken() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything
-   }
-
-   /**
-    * @return the interfacePlatformTypeEnumLiteral
-    */
-   public String getInterfacePlatformTypeEnumLiteral() {
-      return InterfacePlatformTypeEnumLiteral;
-   }
-
-   /**
-    * @param interfacePlatformTypeEnumLiteral the interfacePlatformTypeEnumLiteral to set
-    */
-   public void setInterfacePlatformTypeEnumLiteral(String interfacePlatformTypeEnumLiteral) {
-      InterfacePlatformTypeEnumLiteral = interfacePlatformTypeEnumLiteral;
    }
 
    /**
@@ -319,6 +311,20 @@ public class PlatformTypeToken extends PLGenericDBObject {
    @JsonIgnore
    public ArtifactReadable getArtifactReadable() {
       return artifactReadable;
+   }
+
+   /**
+    * @return the enumSet
+    */
+   public InterfaceEnumerationSet getEnumSet() {
+      return enumSet;
+   }
+
+   /**
+    * @param enumSet the enumSet to set
+    */
+   public void setEnumSet(InterfaceEnumerationSet enumSet) {
+      this.enumSet = enumSet;
    }
 
 }

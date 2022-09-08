@@ -62,8 +62,8 @@ export class ElementService {
       return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT_ARRAY, relations, transaction, branchId, "Create Element", key));
     }
   }
-  changeElement(body: Partial<element>, branchId: string) {
-    return of(this.builder.modifyArtifact(body, undefined, branchId, "Change Element"));
+  changeElement(body: Partial<element>, branchId: string,transaction?:transaction) {
+    return of(this.builder.modifyArtifact(body, transaction, branchId, "Change Element"));
   }
   addRelation(branchId:string,relation:relation,transaction?:transaction) {
     return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))

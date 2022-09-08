@@ -21,7 +21,8 @@ import { LayoutNotifierService } from 'src/app/layoutNotification/layout-notifie
 import { enumerationSet } from '../../../shared/types/enum';
 import { EditEnumSetDialogComponent } from '../../../shared/components/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { CurrentStructureService } from '../../services/current-structure.service';
-import { AddElementDialog } from '../../types/AddElementDialog';
+import { AddElementDialog } from '../../types/AddElementDialog.d';
+import { DefaultAddElementDialog } from '../../types/AddElementDialog'
 import { element } from '../../../shared/types/element.d';
 import { RemoveElementDialogData } from '../../types/RemoveElementDialog';
 import { structure, structureWithChanges } from '../../../shared/types/structure.d';
@@ -150,38 +151,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
     ).subscribe()
   }
   openAddElementDialog(structure: structure, afterElement?: string) {
-    let dialogData: AddElementDialog = {
-      id: structure?.id||'',
-      name: structure?.name||'',
-      element: {
-        id: '-1',
-        name: '',
-        description: '',
-        notes: '',
-        interfaceElementAlterable: true,
-        interfaceElementIndexEnd: 0,
-        interfaceElementIndexStart: 0,
-        units:''
-      },
-      type: {
-        id: '',
-        name: '',
-        description:'',
-        interfaceLogicalType: '',
-        interfacePlatform2sComplement: false,
-        interfacePlatformTypeAnalogAccuracy: '',
-        interfacePlatformTypeBitSize: '',
-        interfacePlatformTypeBitsResolution: '',
-        interfacePlatformTypeCompRate: '',
-        interfacePlatformTypeDefaultValue: '',
-        interfacePlatformTypeEnumLiteral: '',
-        interfacePlatformTypeMaxval: '',
-        interfacePlatformTypeMinval: '',
-        interfacePlatformTypeMsbValue: '',
-        interfacePlatformTypeUnits: '',
-        interfacePlatformTypeValidRangeDescription:''
-      }
-    }
+    const dialogData = new DefaultAddElementDialog(structure?.id||'',structure?.name||'');
     let dialogRef = this.dialog.open(AddElementDialogComponent, {
       data:dialogData
     });

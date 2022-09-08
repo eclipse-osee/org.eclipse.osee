@@ -124,6 +124,9 @@ export class TransactionBuilderService {
       applicabilityId: value?.applicability?.id,
       setAttributes: attributes,
     };
+    if (!currentTransaction.modifyArtifacts) {
+      currentTransaction.modifyArtifacts = [];
+    }
     currentTransaction.modifyArtifacts!.push(modifyArtifact);
     //relation code
     return currentTransaction;

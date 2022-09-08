@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
@@ -33,6 +34,11 @@ public class EnumerationSetEndpointImpl implements EnumerationSetEndpoint {
    @Override
    public List<InterfaceEnumerationSet> getEnumSets() {
       return enumSetApi.getAll(branch);
+   }
+
+   @Override
+   public InterfaceEnumerationSet getEnumSet(ArtifactId id) {
+      return enumSetApi.get(branch, id);
    }
 
 }

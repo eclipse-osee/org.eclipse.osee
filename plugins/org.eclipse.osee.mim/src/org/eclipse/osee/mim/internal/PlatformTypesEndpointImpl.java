@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -52,24 +51,12 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
 
    @Override
    public Collection<PlatformTypeToken> getPlatformTypes() {
-      try {
-         return platformApi.getAccessor().getAll(branch, PlatformTypeToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return null;
-      }
+      return platformApi.getAllWithEnumSet(branch);
    }
 
    @Override
    public PlatformTypeToken getPlatformType(ArtifactId typeId) {
-      try {
-         return platformApi.getAccessor().get(branch, typeId, PlatformTypeToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return null;
-      }
+      return platformApi.get(branch, typeId);
    }
 
    @Override

@@ -358,21 +358,25 @@ export class CurrentStructureService {
     );
   }
 
-  changeElementPlatformType(structureId: string, elementId: string, typeId: string) {
+  changeElementPlatformType(structureId: string, elementId: string, type:PlatformType) {
+    //need to modify to change element's enumLiteral attribute
     return combineLatest([this.BranchId,this.connectionId,this.MessageId, this.SubMessageId]).pipe(
       take(1),
       switchMap(([branchId,connection,message, submessage]) => this.elements.getElement(branchId, message, submessage, structureId, elementId, connection).pipe(
         take(1),
-        switchMap((element) => combineLatest([this.elements.createPlatformTypeRelation("" + (element.platformTypeId || -1), elementId), this.elements.createPlatformTypeRelation(typeId, elementId)]).pipe( //create relations for delete/add ops
+        switchMap((element) => combineLatest([this.elements.createPlatformTypeRelation("" + (element.platformTypeId || -1), elementId), this.elements.createPlatformTypeRelation(type.id||'', elementId)]).pipe( //create relations for delete/add ops
           take(1),
           switchMap(([deleteRelation, addRelation]) => this.elements.deleteRelation(branchId, deleteRelation).pipe( //create delete transaction
             take(1),
             switchMap((deleteTransaction) => this.elements.addRelation(branchId, addRelation, deleteTransaction).pipe( //create add transaction and merge with delete transaction
               take(1),
-              switchMap((transaction) => this.elements.performMutation(transaction).pipe(
-                tap(() => {
-                  this.ui.updateMessages = true;
-                })
+              switchMap(addTransaction => this.elements.changeElement({ id:elementId, enumLiteral: type.enumSet?.description }, branchId,addTransaction).pipe(
+                take(1),
+                switchMap((transaction) => this.elements.performMutation(transaction).pipe(
+                  tap(() => {
+                    this.ui.updateMessages = true;
+                  })
+                ))
               ))
             ))
           ))
@@ -792,7 +796,22 @@ export class CurrentStructureService {
                                 return structure as structureWithChanges
                               })
                             ),
-                            of()
+                            iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEENUMLITERAL,
+                            of(structure).pipe(
+                              map((structure) => {
+                                let index = structure.elements?.findIndex((el) => el.id === change.artId);
+                                structure.elements[index] = this._elementChangeSetup(structure.elements[index]);
+                                ((structure.elements)[index] as elementWithChanges).changes.enumLiteral = {
+                                  previousValue: change.baselineVersion.value as string,
+                                  currentValue: change.currentVersion.value as string,
+                                  transactionToken: change.currentVersion.transactionToken
+                                };
+                                (structure as structureWithChanges).hasElementChanges = true;
+                                return structure as structureWithChanges
+                              })
+                            ),
+                              of()
+                            )
                           )
                         )
                       )
@@ -865,6 +884,7 @@ export class CurrentStructureService {
                                 interfaceElementIndexEnd: { previousValue: initialEl.interfaceElementIndexEnd, currentValue: '', transactionToken: change.currentVersion.transactionToken },
                                 interfaceElementIndexStart: { previousValue: initialEl.interfaceElementIndexStart, currentValue: '', transactionToken: change.currentVersion.transactionToken },
                                 interfaceElementAlterable: { previousValue: initialEl.interfaceElementAlterable, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                enumLiteral:{ previousValue: initialEl.enumLiteral, currentValue: '', transactionToken: change.currentVersion.transactionToken },
                                 applicability:{previousValue:initialEl.applicability,currentValue:'',transactionToken:change.currentVersion.transactionToken},
                               }
                           }}),
@@ -1267,7 +1287,20 @@ export class CurrentStructureService {
                                                 return el as elementWithChanges;
                                               })
                                             ),
-                                            of(element)
+                                            iif(() => change.itemTypeId === ATTRIBUTETYPEID.INTERFACEENUMLITERAL,
+                                            of(element).pipe(
+                                              map((el) => {
+                                                el = this._elementChangeSetup(el);
+                                                (el as elementWithChanges).changes.enumLiteral = {
+                                                  previousValue: change.baselineVersion.value as string,
+                                                  currentValue: change.currentVersion.value as string,
+                                                  transactionToken: change.currentVersion.transactionToken
+                                                }
+                                                return el as elementWithChanges;
+                                              })
+                                            ),
+                                              of(element)
+                                            )
                                           )
                                         )
                                       )
@@ -1419,6 +1452,11 @@ export class CurrentStructureService {
                                           currentValue:el.notes,
                                           transactionToken: change.currentVersion.transactionToken
                                         };
+                                        (el as elementWithChanges).changes.enumLiteral = {
+                                          previousValue: '',
+                                          currentValue:el.notes,
+                                          transactionToken: change.currentVersion.transactionToken
+                                        };
                                         (el as elementWithChanges).changes.platformTypeName2 = {
                                           previousValue: '',
                                           currentValue:el.platformTypeName2,
@@ -1462,6 +1500,7 @@ export class CurrentStructureService {
                                           interfaceElementIndexEnd: { previousValue: initialEl.interfaceElementIndexEnd, currentValue: '', transactionToken: change.currentVersion.transactionToken },
                                           interfaceElementIndexStart: { previousValue: initialEl.interfaceElementIndexStart, currentValue: '', transactionToken: change.currentVersion.transactionToken },
                                           interfaceElementAlterable: { previousValue: initialEl.interfaceElementAlterable, currentValue: '', transactionToken: change.currentVersion.transactionToken },
+                                          enumLiteral:{ previousValue: initialEl.enumLiteral, currentValue: '', transactionToken: change.currentVersion.transactionToken },
                                           applicability:{previousValue:initialEl.applicability,currentValue:'',transactionToken:change.currentVersion.transactionToken},
                                         },
                                         deleted: true

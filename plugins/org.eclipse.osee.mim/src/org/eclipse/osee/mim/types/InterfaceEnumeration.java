@@ -17,15 +17,16 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Luciano T. Vaglienti
  */
 public class InterfaceEnumeration extends PLGenericDBObject {
    public static final InterfaceEnumeration SENTINEL = new InterfaceEnumeration();
-   private ApplicabilityToken applicability;
-   private Integer ordinal;
-   private ArtifactReadable artifactReadable;
+   private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
+   private Integer ordinal = 0;
+   private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
 
    public InterfaceEnumeration(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -36,7 +37,7 @@ public class InterfaceEnumeration extends PLGenericDBObject {
       this.setOrdinal(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceEnumOrdinal, 0));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-	  this.artifactReadable = art;
+      this.artifactReadable = art;
    }
 
    public InterfaceEnumeration(Long id, String name) {
@@ -44,6 +45,7 @@ public class InterfaceEnumeration extends PLGenericDBObject {
    }
 
    public InterfaceEnumeration() {
+      this(Id.SENTINEL, "");
    }
 
    /**

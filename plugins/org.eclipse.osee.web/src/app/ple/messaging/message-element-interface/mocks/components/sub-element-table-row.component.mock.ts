@@ -32,6 +32,7 @@ import { structure } from "../../../shared/types/structure";
          interfaceElementIndexEnd: 0,
          interfaceElementIndexStart: 0,
          interfaceElementAlterable: false,
+         enumLiteral:'',
          units:'Hertz'
      }
      @Input() structure: structure = {

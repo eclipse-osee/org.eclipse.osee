@@ -43,6 +43,7 @@ export class HeaderService {
     { header: 'notes', description: 'Notes corresponding to a given element, for example, specific enum literal descriptions for a given element', humanReadable: 'Notes' },
     { header: 'applicability', description: 'Applicability of a given element', humanReadable: 'Applicability' },
     { header: 'units', description: 'Units of the platform type associated with the given element', humanReadable: 'Units' },
+    { header: 'enumLiteral', description: 'Enumerated Literals of Element', humanReadable: 'Enumerated Literals' },
   ]).pipe(
     shareReplay({bufferSize:1,refCount:true})
   )
@@ -58,7 +59,6 @@ export class HeaderService {
     { header: 'sizeInBytes', description: '(Computed) Size of structure, given in bytes', humanReadable: 'Size(B)' },
     { header: 'bytesPerSecondMinimum', description: '(Computed) Minimum rate of a given structure calculated as Minimum Simultaneity x Size In Bytes', humanReadable: 'Min BPS' },
     { header: 'bytesPerSecondMaximum', description: '(Computed) Maximum rate of a given structure calculated as Maximum Simultaneity x Size In Bytes', humanReadable: 'Max BPS' },
-    // { header: 'GenerationIndicator', description: 'TBD?(need to figure out)', humanReadable: 'Indicator' },
     { header: 'applicability', description: 'Applicability of a given structure', humanReadable: 'Applicability' },
     { header: 'txRate', description: 'Transmission Rate of Message', humanReadable: 'Tx Rate'}
   ]).pipe(

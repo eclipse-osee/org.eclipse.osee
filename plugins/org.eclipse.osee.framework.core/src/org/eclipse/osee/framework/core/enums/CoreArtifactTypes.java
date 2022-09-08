@@ -241,7 +241,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(GeneralStringData));
    ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, Artifact)
       .zeroOrOne(InterfaceElementAlterable)
-      .zeroOrOne(Notes));
+      .zeroOrOne(Notes)
+      .zeroOrOne(InterfacePlatformTypeEnumLiteral));
    ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement)
       .exactlyOne(InterfaceElementIndexStart)
       .exactlyOne(InterfaceElementIndexEnd));
@@ -257,8 +258,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfacePlatformTypeBitsResolution)
       .zeroOrOne(InterfacePlatformTypeCompRate)
       .zeroOrOne(InterfacePlatformTypeAnalogAccuracy)
-      .zeroOrOne(InterfacePlatformTypeValidRangeDescription)
-      .zeroOrOne(InterfacePlatformTypeEnumLiteral));
+      .zeroOrOne(InterfacePlatformTypeValidRangeDescription));
    ArtifactTypeToken InterfaceEnum = osee.add(osee.artifactType(2455059983007225793L, "Interface Enumeration", false, Artifact)
       .exactlyOne(InterfaceEnumOrdinal));
    ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, Artifact));

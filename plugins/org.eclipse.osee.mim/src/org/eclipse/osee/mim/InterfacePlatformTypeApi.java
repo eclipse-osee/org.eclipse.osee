@@ -32,6 +32,8 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes);
 
+   List<PlatformTypeToken> getAllWithEnumSet(BranchId branch);
+
    List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes);
 
    PlatformTypeToken getWithAllParentRelations(BranchId branch, ArtifactId platformTypeId);
