@@ -35,7 +35,7 @@
                 </ng-container>
             </div>
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="updateType($event.option.value)">
-            <mat-option *ngFor="let option of filteredTypes | async" [value]="option.id" [id]="option!==undefined && option.id !==undefined ? option.id :''">
+            <mat-option *ngFor="let option of filteredTypes | async" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''">
               {{option.name}}
             </mat-option>
         </mat-autocomplete>

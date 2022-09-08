@@ -140,8 +140,9 @@ export class TypesUIService {
     )
   }
 
-  copyType<T extends PlatformType|Partial<PlatformType>>(body: T) {
+  copyType<T extends PlatformType | Partial<PlatformType>>(body: T) {
     this.removeId(body);
+    delete body.enumSet;
     return iif(()=>body.interfaceLogicalType==='enumeration' && 'enumerationSet' in body ,this.copyEnumeratedType(body as enumeratedPlatformType),this._typesService.createPlatformType(this._ui.id.getValue(), body, []).pipe(
         take(1),
         switchMap((transaction) => this._typesService.performMutation(transaction).pipe(
@@ -151,6 +152,7 @@ export class TypesUIService {
         ))
     ))
   }
+
   copyEnumeratedType(body: enumeratedPlatformType) {
     const { enumerationSet, ...type } = body;
     return this._ui.id.pipe(
@@ -160,7 +162,7 @@ export class TypesUIService {
         switchMap(relation => this._typesService.createPlatformType(branchId, type, [relation]).pipe(
           take(1),
           switchMap(platformTransaction => this.createEnumSet(enumerationSet).pipe(
-            switchMap(enumSetTransaction=>this.mergeEnumArray([platformTransaction,enumSetTransaction]))
+            map(_=>platformTransaction)
           ))
         ))
       )),
@@ -194,7 +196,8 @@ export class TypesUIService {
         switchMap(enumSetTransaction => this.createEnums(set).pipe(
           switchMap(enumTransaction=>this.mergeEnumArray([enumSetTransaction,enumTransaction]))
         ))
-      ))
+      )),
+      switchMap(enumTransaction=>this._typesService.performMutation(enumTransaction))
     )
   }
 

@@ -10,6 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
+import { enumerationSet } from './enum'
+
 /**
  * Platform Type as defined by the API, ids are required when fetching or updating a platform type
  */
@@ -23,7 +26,7 @@ export interface PlatformType {
     interfacePlatformTypeBitSize: string,
     interfacePlatformTypeCompRate: string,
     interfacePlatformTypeDefaultValue: string,
-    interfacePlatformTypeEnumLiteral: string,
+    enumSet?:enumerationSet //typically unavailable, only present on query
     interfacePlatformTypeMaxval: string,
     interfacePlatformTypeMinval: string,
     interfacePlatformTypeMsbValue: string,

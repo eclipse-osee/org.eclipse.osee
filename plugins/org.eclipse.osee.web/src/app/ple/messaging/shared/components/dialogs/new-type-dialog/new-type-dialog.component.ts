@@ -29,7 +29,7 @@ import {
 } from 'rxjs/operators';
 import { applic } from '../../../../../../types/applicability/applic';
 import { enumeration, enumerationSet } from '../../../types/enum';
-import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../types/logicaltype';
+import { logicalType, logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../types/logicaltype.d';
 import { logicalTypefieldValue, newPlatformTypeDialogReturnData } from '../../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../../types/platformType';
 import { ApplicabilityListUIService } from '../../../services/ui/applicability-list-ui.service';
@@ -187,11 +187,16 @@ export class NewTypeDialogComponent implements OnInit {
       }
       enumdescription+=(value.name+"="+value.ordinal)
     })
+    const fields = [
+      ...this.fields,
+      ...this._attributes.getValue().values(),
+      {
+        name: 'interfaceLogicalType',
+        value:this._typeName
+      }
+    ];
     let returnValue:newPlatformTypeDialogReturnData = {
-      fields: [
-        ...this.fields,
-        ...this._attributes.getValue().values()
-      ],
+      fields: fields,
       createEnum: this.createNewEnum.getValue(),
       enumSetName: this.enumSet?.name || '',
       enumSetId:this.enumSet?.id||'-1',

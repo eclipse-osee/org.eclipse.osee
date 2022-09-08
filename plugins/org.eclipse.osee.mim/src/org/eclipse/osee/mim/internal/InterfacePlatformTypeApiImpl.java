@@ -64,7 +64,10 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    @Override
    public PlatformTypeToken get(BranchId branch, ArtifactId platformTypeId) {
       try {
-         return this.getAccessor().get(branch, platformTypeId, PlatformTypeToken.class);
+         return this.getAccessor().get(branch, platformTypeId,
+            Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+               CoreRelationTypes.InterfaceEnumeration_EnumerationState),
+            PlatformTypeToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -177,12 +180,21 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    @Override
    public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
       try {
-         return this.getAccessor().getAllByQuery(branch, query, isExact, PlatformTypeToken.class);
+         return this.getAccessor().getAllByQuery(branch, query,
+            Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+               CoreRelationTypes.InterfaceEnumeration_EnumerationState),
+            isExact, PlatformTypeToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
       }
       return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch) {
+      return this.getAllWithRelations(branch,
+         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet));
    }
 
 }

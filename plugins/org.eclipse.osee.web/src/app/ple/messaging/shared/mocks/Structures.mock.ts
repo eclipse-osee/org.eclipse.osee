@@ -25,6 +25,7 @@ export const structuresMock: Required<structure>[] = [
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -58,6 +59,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -70,6 +72,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -82,6 +85,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -110,6 +114,7 @@ export const structuresPreChanges: structure[] = [
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -137,6 +142,7 @@ export const structuresPreChanges: structure[] = [
         notes: 'notes',
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
+        enumLiteral:'',
         interfaceElementAlterable: true,
         platformTypeName2: 'boolean',
         platformTypeId: 9,
@@ -174,6 +180,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         logicalType: 'enumeration',
+        enumLiteral:'',
         units:'',
         changes: {
           name: { previousValue: 'hello', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
@@ -184,6 +191,7 @@ export const structuresMockWithChangesMulti: (
           interfaceElementIndexStart: { previousValue: 0, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
           interfaceElementAlterable: { previousValue: true, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
           applicability: { previousValue: undefined, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
+          enumLiteral:{ previousValue: '', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } }
         }
       },
       {
@@ -194,6 +202,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:'',
@@ -222,7 +231,8 @@ export const structuresMockWithChangesMulti: (
           interfaceElementIndexEnd: { previousValue: 0, currentValue: 1, transactionToken: { id: '1222', branchId: '2780650236653788489' } },
           interfaceElementIndexStart: { previousValue: 0, currentValue: 0, transactionToken: { id: '1222', branchId: '2780650236653788489' } },
           notes: { previousValue: '', currentValue: 'notes', transactionToken: { id: '1222', branchId: '2780650236653788489' } },
-          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } }
+          units: { previousValue: 'hertz', currentValue: 'feet²/second²', transactionToken: { id: '1322', branchId: '2780650236653788489' } },
+          enumLiteral: { previousValue: '', currentValue: 'notes', transactionToken: { id: '1222', branchId: '2780650236653788489' } }
         },
       },
       {
@@ -233,6 +243,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:'',
@@ -259,6 +270,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:'',
@@ -361,6 +373,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units: '',
@@ -427,6 +440,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units: '',
@@ -501,6 +515,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         logicalType: 'enumeration',
+        enumLiteral:'',
         deleted: true,
         units:'',
         changes: {
@@ -512,6 +527,7 @@ export const structuresMockWithChangesMulti: (
             interfaceElementIndexStart: { previousValue: 0, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
             interfaceElementAlterable: { previousValue: true, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
             applicability: { previousValue: undefined, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
+            enumLiteral: { previousValue: '', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } }
         }
       },
       {
@@ -522,6 +538,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -534,6 +551,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -546,6 +564,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -614,6 +633,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -626,6 +646,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -638,6 +659,7 @@ export const structuresMockWithChangesMulti: (
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
         interfaceElementAlterable: true,
+        enumLiteral:'',
         platformTypeName2: 'boolean',
         platformTypeId: 9,
         units:''
@@ -705,6 +727,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementIndexEnd: 1,
       interfaceElementIndexStart: 0,
       logicalType: 'enumeration',
+      enumLiteral:'',
       deleted: true,
       units:'',
       changes: {
@@ -716,6 +739,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
           interfaceElementIndexStart: { previousValue: 0, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
           interfaceElementAlterable: { previousValue: true, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
           applicability: { previousValue: undefined, currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } },
+          enumLiteral:{ previousValue: '', currentValue: '', transactionToken: { id: '1223', branchId: '2780650236653788489' } }
       }
     },
     {
@@ -727,6 +751,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementIndexStart: 0,
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
+      enumLiteral:'',
       platformTypeId: 9,
       units:'',
       added: true,
@@ -757,6 +782,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementIndexStart: 0,
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
+      enumLiteral:'',
       platformTypeId: 9,
       units:'',
       changes: {
@@ -776,6 +802,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
       interfaceElementIndexStart: 0,
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
+      enumLiteral:'',
       platformTypeId: 9,
       units:'',
       changes: {
@@ -869,6 +896,7 @@ export const structuresMockWithChanges: structureWithChanges = {
       interfaceElementIndexStart: 0,
       interfaceElementAlterable: true,
       platformTypeName2: 'boolean',
+      enumLiteral:'',
       platformTypeId: 9,
       units: ''
     },

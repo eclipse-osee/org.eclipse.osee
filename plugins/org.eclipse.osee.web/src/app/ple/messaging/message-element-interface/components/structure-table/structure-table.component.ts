@@ -24,7 +24,8 @@ import { EditViewFreeTextFieldDialogComponent } from '../../../shared/components
 import { HeaderService } from '../../../shared/services/ui/header.service';
 import { EditViewFreeTextDialog } from '../../../shared/types/EditViewFreeTextDialog';
 import { CurrentStructureService } from '../../services/current-structure.service';
-import { AddElementDialog } from '../../types/AddElementDialog';
+import { AddElementDialog } from '../../types/AddElementDialog.d';
+import { DefaultAddElementDialog } from '../../types/AddElementDialog';
 import { AddStructureDialog } from '../../types/AddStructureDialog';
 import { element } from '../../../shared/types/element';
 import { structure, structureWithChanges } from '../../../shared/types/structure';
@@ -221,38 +222,7 @@ export class StructureTableComponent implements OnInit {
     return index;
   }
   openAddElementDialog(structure: structure | structureWithChanges) {
-    let dialogData: AddElementDialog = {
-      id: structure?.id||'',
-      name: structure?.name||'',
-      element: {
-        id: '-1',
-        name: '',
-        description: '',
-        notes: '',
-        interfaceElementAlterable: true,
-        interfaceElementIndexEnd: 0,
-        interfaceElementIndexStart: 0,
-        units:''
-      },
-      type: {
-        id: '',
-        name: '',
-        description:'',
-        interfaceLogicalType: '',
-        interfacePlatform2sComplement: false,
-        interfacePlatformTypeAnalogAccuracy: '',
-        interfacePlatformTypeBitSize: '',
-        interfacePlatformTypeBitsResolution: '',
-        interfacePlatformTypeCompRate: '',
-        interfacePlatformTypeDefaultValue: '',
-        interfacePlatformTypeEnumLiteral: '',
-        interfacePlatformTypeMaxval: '',
-        interfacePlatformTypeMinval: '',
-        interfacePlatformTypeMsbValue: '',
-        interfacePlatformTypeUnits: '',
-        interfacePlatformTypeValidRangeDescription:''
-      }
-    }
+    const dialogData = new DefaultAddElementDialog(structure?.id||'',structure?.name||'');
     let dialogRef = this.dialog.open(AddElementDialogComponent, {
       data: dialogData,
       minWidth:'80%'

@@ -124,7 +124,22 @@ describe('CurrentStateService', () => {
     scheduler.run(() => {
       let expectedObservable = { a: transactionResultMock };
       let expectedMarble = '(a|)';
-      scheduler.expectObservable(service.changeElementPlatformType('10', '20', '30')).toBe(expectedMarble, expectedObservable);
+      scheduler.expectObservable(service.changeElementPlatformType('10', '20', {
+        description: '',
+        interfaceLogicalType: '',
+        interfacePlatform2sComplement: false,
+        interfacePlatformTypeAnalogAccuracy: '',
+        interfacePlatformTypeBitsResolution: '',
+        interfacePlatformTypeBitSize: '',
+        interfacePlatformTypeCompRate: '',
+        interfacePlatformTypeDefaultValue: '',
+        interfacePlatformTypeMaxval: '',
+        interfacePlatformTypeMinval: '',
+        interfacePlatformTypeMsbValue: '',
+        interfacePlatformTypeUnits: '',
+        interfacePlatformTypeValidRangeDescription: '',
+        name: ''
+      })).toBe(expectedMarble, expectedObservable);
     })
   });
 

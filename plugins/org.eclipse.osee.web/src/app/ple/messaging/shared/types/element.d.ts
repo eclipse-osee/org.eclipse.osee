@@ -24,7 +24,8 @@ export interface element {
     interfaceElementIndexEnd: number,
     interfaceElementIndexStart: number,
     interfaceElementAlterable: boolean,
-    units:string,
+    units: string,
+    enumLiteral:string,
     platformTypeName2?: string,
     platformTypeId?: number
     beginWord?: number,

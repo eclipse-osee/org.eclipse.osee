@@ -77,13 +77,13 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
       switchMap(()=>this.structureService.partialUpdateElement(this._element,this.structureId))
     ), of(false))),
   )
-  filteredTypes = combineLatest(this._typeValue,this.availableTypes).pipe(
+  filteredTypes = combineLatest([this._typeValue,this.availableTypes]).pipe(
     switchMap(val => from(val[1]).pipe(
       filter((val: PlatformType) => val.name.toLowerCase().includes(this.isString(this.value)?this.value.toLowerCase():this.value as unknown as string)),
       scan((acc, curr) => [...acc, curr], [] as PlatformType[]),
     )),
   )
-  private _type: Subject<string> = new Subject();
+  private _type: Subject<PlatformType> = new Subject();
   private _sendType = this._type.pipe(
     share(),
     debounceTime(500),
@@ -113,7 +113,7 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
   updateImmediately(header: string, value: T) {
     this._immediateValue.next(value);
   }
-  updateType(value: string) {
+  updateType(value: PlatformType) {
     this._type.next(value);
   }
 

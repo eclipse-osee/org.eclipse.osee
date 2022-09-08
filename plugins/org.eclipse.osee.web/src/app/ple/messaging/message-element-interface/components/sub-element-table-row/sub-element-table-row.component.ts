@@ -37,7 +37,8 @@ export class SubElementTableRowComponent implements OnInit {
       name:'Base'
     },
     units:'',
-    interfaceElementAlterable: false
+    interfaceElementAlterable: false,
+    enumLiteral:''
   }
 
   @Input() structure: structure={
@@ -59,6 +60,7 @@ export class SubElementTableRowComponent implements OnInit {
     'units',
     'interfaceElementIndexStart',
     'interfaceElementIndexEnd',
+    'enumLiteral'
   ];
   @Input() filter:string=""
   layout = this.layoutNotifier.layout;

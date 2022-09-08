@@ -38,7 +38,7 @@ import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { SubElementTableRowComponentMock } from '../../mocks/components/sub-element-table-row.component.mock';
 import { elementsMock } from '../../../shared/mocks/element.mock';
 import { CurrentStructureService } from '../../services/current-structure.service';
-import { AddElementDialog } from '../../types/AddElementDialog';
+import { AddElementDialog } from '../../types/AddElementDialog.d';
 import { EditElementFieldComponent } from './edit-element-field/edit-element-field.component';
 
 import { SubElementTableComponent } from './sub-element-table.component';

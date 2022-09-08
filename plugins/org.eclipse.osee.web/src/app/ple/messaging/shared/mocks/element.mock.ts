@@ -21,6 +21,7 @@ export const elementsMock: element[] = [
         interfaceElementAlterable: true,
         interfaceElementIndexEnd: 1,
         interfaceElementIndexStart: 0,
+        enumLiteral:'',
         logicalType: 'enumeration',
         units:''
     }

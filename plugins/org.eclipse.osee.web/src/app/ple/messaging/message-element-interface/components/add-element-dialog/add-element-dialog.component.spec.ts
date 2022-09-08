@@ -49,7 +49,7 @@ import { TypesService } from '../../../shared/services/http/types.service';
 import { PlatformTypeQueryMock } from '../../mocks/components/PlatformTypeQuery.mock';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
 import { CurrentStructureService } from '../../services/current-structure.service';
-import { AddElementDialog } from '../../types/AddElementDialog';
+import { AddElementDialog } from '../../types/AddElementDialog.d';
 
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
@@ -70,7 +70,6 @@ describe('AddElementDialogComponent', () => {
       interfacePlatformTypeBitsResolution: '',
       interfacePlatformTypeCompRate: '',
       interfacePlatformTypeDefaultValue: '',
-      interfacePlatformTypeEnumLiteral: '',
       interfacePlatformTypeMaxval: '',
       interfacePlatformTypeMinval: '',
       interfacePlatformTypeMsbValue: '',
@@ -85,6 +84,7 @@ describe('AddElementDialogComponent', () => {
       interfaceElementAlterable: true,
       interfaceElementIndexEnd: 0,
       interfaceElementIndexStart: 0,
+      enumLiteral:'',
       units:''
     }
   }
