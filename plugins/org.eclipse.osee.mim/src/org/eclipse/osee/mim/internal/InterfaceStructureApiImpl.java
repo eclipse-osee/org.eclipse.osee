@@ -393,51 +393,24 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          for (InterfaceStructureToken structure : totalStructureList) {
             structure = this.parseStructure(branch, structure);
          }
-         /**
-          * Gets all structures that match filter conditions
-          */
-         List<InterfaceStructureToken> structureList =
-            (List<InterfaceStructureToken>) this.getAccessor().getAllByRelationAndFilter(branch,
-               CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter,
-               this.structureAttributeList, this.getFollowRelationDetails(), InterfaceStructureToken.class);
-         for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure);
-         }
-         /**
-          * Gets all elements that match filter conditions, then find their related structures and attach
-          */
-         List<InterfaceStructureElementToken> elements = this.interfaceElementApi.getFiltered(branch, filter);
-         for (InterfaceStructureElementToken element : elements) {
-            List<InterfaceStructureToken> subStructureList =
-               (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
-                  CoreRelationTypes.InterfaceStructureContent_DataElement, ArtifactId.valueOf(element.getId()),
-                  this.getFollowRelationDetails(), InterfaceStructureToken.class);
-            for (InterfaceStructureToken alternateStructure : subStructureList) {
-               if (totalStructureList.indexOf(alternateStructure) != -1 && totalStructureList.get(
-                  totalStructureList.indexOf(alternateStructure)).getElements().indexOf(element) != -1) {
-                  totalStructureList.set(totalStructureList.indexOf(alternateStructure),
-                     this.parseStructure(branch, totalStructureList.get(totalStructureList.indexOf(alternateStructure)),
-                        totalStructureList.get(totalStructureList.indexOf(alternateStructure)).getElements()));
-               }
-               List<InterfaceStructureElementToken> elementList = new LinkedList<InterfaceStructureElementToken>();
-               elementList.add(element);
-               alternateStructure.setElements(elementList);
-               if (totalStructureList.indexOf(alternateStructure) != -1) {
-                  if (!structureList.contains(alternateStructure)) {
-                     structureList.add(alternateStructure);
-                  } else {
-                     InterfaceStructureToken tempStructure2 =
-                        structureList.get(structureList.indexOf(alternateStructure));
-                     structureList.remove(alternateStructure);
-                     tempStructure2.getElements().add(element);
-                     structureList.add(tempStructure2);
-                  }
+
+         List<InterfaceStructureToken> structureList = totalStructureList;
+
+         for (InterfaceStructureToken struct : structureList) {
+            List<InterfaceStructureElementToken> elementList = new LinkedList<InterfaceStructureElementToken>();
+            for (InterfaceStructureElementToken element : struct.getElements()) {
+               ArtifactReadable art = element.getArtifactReadable();
+               List<String> allAttributes =
+                  art.getExistingAttributeTypes().stream().map(a -> art.getAttributeValuesAsString(a)).filter(
+                     b -> b.toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
+               if (!allAttributes.isEmpty()) {
+                  elementList.add(element);
                }
             }
+            struct.setElements(elementList);
          }
          return structureList;
       } catch (Exception ex) {
-         System.out.println(ex);
          return totalStructureList;
       }
    }
