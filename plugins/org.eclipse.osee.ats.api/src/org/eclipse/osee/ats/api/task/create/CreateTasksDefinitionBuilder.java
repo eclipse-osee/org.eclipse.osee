@@ -79,6 +79,10 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       return this;
    }
 
+   public CreateTasksDefinitionBuilder andStaticTask(String name, String desc) {
+      return andStaticTask(name, desc, null, AtsWorkDefinitionTokens.WorkDef_Task_Default);
+   }
+
    public CreateTasksDefinitionBuilder andStaticTask(String name) {
       return andStaticTask(name, null, null, AtsWorkDefinitionTokens.WorkDef_Task_Default);
    }
