@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.actions.wizard;
+package org.eclipse.osee.ats.ide.editor.tab.workflow.note;
 
 import java.util.Collection;
 import org.eclipse.jface.wizard.Wizard;
@@ -19,14 +19,14 @@ import org.eclipse.jface.wizard.Wizard;
 /**
  * @author Donald G. Dunne
  */
-public class NewNoteWizard extends Wizard {
-   public NewNotePage mainPage;
-   private final Collection<String> artifactNames;
+public class NewStateNoteWizard extends Wizard {
+   public NewStateNotePage mainPage;
+   private final Collection<String> stateNames;
 
-   public NewNoteWizard(Collection<String> artifactNames) {
+   public NewStateNoteWizard(Collection<String> stateNames) {
       super();
-      this.artifactNames = artifactNames;
-      setWindowTitle("New Note Wizard");
+      this.stateNames = stateNames;
+      setWindowTitle("New State Note Wizard");
    }
 
    @Override
@@ -36,7 +36,7 @@ public class NewNoteWizard extends Wizard {
 
    @Override
    public void addPages() {
-      mainPage = new NewNotePage(this);
+      mainPage = new NewStateNotePage(this);
       addPage(mainPage);
    }
 
@@ -45,7 +45,7 @@ public class NewNoteWizard extends Wizard {
       return mainPage.isPageComplete();
    }
 
-   public Collection<String> getArtifactNames() {
-      return artifactNames;
+   public Collection<String> getStateNames() {
+      return stateNames;
    }
 }

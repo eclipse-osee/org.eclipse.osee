@@ -80,7 +80,7 @@ public final class ConvertResource {
     */
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public ViewModel createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
+   public ViewModel runConversion(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
 
       String convertName = form.getFirst("convertName");
       String operation = form.getFirst("operation");
@@ -96,6 +96,6 @@ public final class ConvertResource {
          throw new OseeCoreException(results.toString());
       }
 
-      return RestUtil.simplePage(convertName, results.toString());
+      return RestUtil.simplePage(convertName, AHTML.textToHtml(results.toString()));
    }
 }

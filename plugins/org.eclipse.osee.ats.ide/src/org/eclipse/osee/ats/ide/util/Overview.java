@@ -115,6 +115,8 @@ public class Overview {
 
    public void addHeader(AbstractWorkflowArtifact awa, PreviewStyle... styles) {
       startBorderTable(100, false, "");
+      addRelationsBlock(awa);
+      addNotes(awa);
       addTable(getLabelValue("Title", awa.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
          AHTML.getLabelStr(labelFont, "State: ") + awa.getStateMgr().getCurrentStateName(),
@@ -164,15 +166,12 @@ public class Overview {
       addRelationTable("Is Supported By", CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
    }
 
-   public void addNotes(Artifact artifact) {
-      if (artifact instanceof AbstractWorkflowArtifact) {
-         String notesHtml =
-            AtsApiService.get().getWorkItemService().getNotes((AbstractWorkflowArtifact) artifact).getTable(null);
-         if (notesHtml.equals("")) {
-            return;
-         }
-         this.html.append(notesHtml);
+   public void addNotes(AbstractWorkflowArtifact artifact) {
+      String notesHtml = AtsApiService.get().getWorkItemService().getStateNoteService().getTable(artifact, null);
+      if (notesHtml.equals("")) {
+         return;
       }
+      this.html.append(notesHtml);
    }
 
    public static String getGenericArtifactTable(String name, Collection<Artifact> arts) {

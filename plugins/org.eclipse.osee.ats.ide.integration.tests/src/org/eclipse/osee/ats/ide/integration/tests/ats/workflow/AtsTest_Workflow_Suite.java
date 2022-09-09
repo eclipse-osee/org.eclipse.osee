@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
    AtsTeamWfEndpointTest.class,
    WorkItemsJsonReaderWriterTest.class,
    ConvertWorkflowStatesOperationTest.class,
+   AtsStateNoteServiceTest.class,
    // suites
    AtsTest_Workflow_Action_Suite.class,
    AtsTest_Workflow_Review_Suite.class,

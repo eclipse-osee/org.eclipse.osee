@@ -14,22 +14,21 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.ide.actions.AddNoteAction;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddStateNoteAction;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
-public class AddNoteActionTest extends AbstractAtsActionTest {
+public class AddStateNoteActionTest extends AbstractAtsActionTest {
 
    @Test
    public void testRun() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-      AddNoteAction action = (AddNoteAction) createAction();
+      AddStateNoteAction action = (AddStateNoteAction) createAction();
       action.setEmulateUi(true);
       action.runWithException();
       AtsTestUtil.getTeamWf().persist(getClass().getSimpleName());
@@ -39,13 +38,7 @@ public class AddNoteActionTest extends AbstractAtsActionTest {
    @Override
    public Action createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      return new AddNoteAction(AtsTestUtil.getTeamWf(), new IDirtiableEditor() {
-
-         @Override
-         public void onDirtied() {
-            // do nothing
-         }
-      });
+      return new AddStateNoteAction(AtsTestUtil.getTeamWf());
    }
 
 }

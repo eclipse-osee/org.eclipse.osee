@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.note.NoteItem;
+import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -109,7 +109,7 @@ public class WfePrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", computedId)}));
       resultData.addRaw(AHTML.endMultiColumnTable());
-      for (NoteItem note : AtsApiService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
+      for (AtsStateNote note : AtsApiService.get().getWorkItemService().getStateNoteService().getNotes(sma)) {
          if (note.getState().equals("")) {
             resultData.addRaw(note.toHTML() + AHTML.newline());
          }
@@ -171,7 +171,7 @@ public class WfePrint extends Action {
                continue;
             }
             StringBuffer notesSb = new StringBuffer();
-            for (NoteItem note : AtsApiService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
+            for (AtsStateNote note : AtsApiService.get().getWorkItemService().getStateNoteService().getNotes(sma)) {
                if (note.getState().equals(statePage.getName())) {
                   notesSb.append(note.toHTML());
                   notesSb.append(AHTML.newline());

@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.SWT;
@@ -25,14 +24,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
@@ -42,27 +38,6 @@ public class FormsUtil {
 
    public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
       return createLabelText(toolkit, comp, labelStr, valueStr, null);
-   }
-
-   public static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str) {
-      if (str.length() > 150) {
-         Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
-         label.setToolTipText("click to view all");
-         label.addListener(SWT.MouseUp, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-               new HtmlDialog("Note", null, str).open();
-            }
-         });
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = horizontalSpan;
-         label.setLayoutData(gd);
-      } else {
-         Label label = toolkit.createLabel(comp, str);
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = horizontalSpan;
-         label.setLayoutData(gd);
-      }
    }
 
    public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {

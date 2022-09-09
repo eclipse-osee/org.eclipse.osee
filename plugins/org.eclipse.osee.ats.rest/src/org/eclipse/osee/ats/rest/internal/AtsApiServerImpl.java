@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
+import org.eclipse.osee.ats.rest.internal.convert.ConvertStateNotesFromXmlToJson;
 import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.rest.internal.query.AtsQueryServiceImpl;
@@ -117,6 +118,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
+      addAtsDatabaseConversion(new ConvertStateNotesFromXmlToJson(logger, jdbcService.getClient(), orcsApi, this));
 
       notificationService = new AtsNotificationServiceImpl(this);
 

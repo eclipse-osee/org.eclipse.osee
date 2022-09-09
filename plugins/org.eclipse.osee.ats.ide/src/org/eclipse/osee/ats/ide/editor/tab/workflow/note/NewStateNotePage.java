@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.actions.wizard;
+package org.eclipse.osee.ats.ide.editor.tab.workflow.note;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.api.workflow.note.NoteType;
+import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -28,51 +28,39 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class NewNotePage extends WizardPage {
+public class NewStateNotePage extends WizardPage {
    public XList typeList;
    public XText noteText;
-   public XList artifactList;
-   private final NewNoteWizard wizard;
+   public XList stateList;
+   private final NewStateNoteWizard wizard;
 
-   public NewNotePage(NewNoteWizard wizard) {
-      super("Create new Note", "Create new Note", null);
+   public NewStateNotePage(NewStateNoteWizard wizard) {
+      super("Create New State Note", "Create New State Note", null);
       this.wizard = wizard;
    }
 
    @Override
    public void createControl(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NONE);
+      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      Composite topC = new Composite(composite, SWT.NONE);
+      topC.setLayout(ALayout.getZeroMarginLayout(2, false));
+      topC.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      Composite topCLeft = new Composite(topC, SWT.NONE);
+      topCLeft.setLayout(new GridLayout());
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 300;
+      topCLeft.setLayoutData(gd);
+
       typeList = new XList("Type");
       typeList.setRequiredEntry(true);
       typeList.setGrabHorizontal(true);
       typeList.setRequiredSelected(1, 1);
-      typeList.add(NoteType.getNames());
+      typeList.add(AtsStateNoteType.getNames());
       typeList.setVerticalLabel(true);
-      artifactList = new XList("Against State or Workflow");
-      artifactList.setVerticalLabel(true);
-      artifactList.setRequiredEntry(true);
-      artifactList.setGrabHorizontal(true);
-      artifactList.setRequiredSelected(1, 1);
-      artifactList.add(wizard.getArtifactNames());
-      noteText = new XText("Note");
-      noteText.setRequiredEntry(true);
-      noteText.setVerticalLabel(true);
-      noteText.setFillHorizontally(true);
-      noteText.setFillVertically(true);
-
-      Composite composite = new Composite(parent, SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      Composite topC = new Composite(composite, SWT.NONE);
-      topC.setLayout(ALayout.getZeroMarginLayout(2, false));
-      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-      topC.setLayoutData(gridData);
-
-      Composite topCLeft = new Composite(topC, SWT.NONE);
-      topCLeft.setLayout(new GridLayout());
-      gridData = new GridData(GridData.FILL_HORIZONTAL);
-      topCLeft.setLayoutData(gridData);
-
       typeList.createWidgets(topCLeft, 2);
       typeList.addSelectionListener(new SelectionAdapter() {
 
@@ -84,27 +72,36 @@ public class NewNotePage extends WizardPage {
 
       Composite topCRight = new Composite(topC, SWT.NONE);
       topCRight.setLayout(new GridLayout());
-      gridData = new GridData(GridData.FILL_HORIZONTAL);
-      topCRight.setLayoutData(gridData);
+      topCRight.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      artifactList.createWidgets(topCRight, 2);
-      artifactList.addSelectionListener(new SelectionAdapter() {
+      stateList = new XList("Against State");
+      stateList.setVerticalLabel(true);
+      stateList.setRequiredEntry(true);
+      stateList.setGrabHorizontal(true);
+      stateList.setRequiredSelected(1, 1);
+      stateList.add(wizard.getStateNames());
+      stateList.createWidgets(topCRight, 2);
+      stateList.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      stateList.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
             update();
          };
       });
-      gridData = new GridData(GridData.FILL_HORIZONTAL);
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
       gridData.widthHint = 300;
-      artifactList.getList().setLayoutData(gridData);
+      stateList.getList().setLayoutData(gridData);
 
       Composite bottomC = new Composite(composite, SWT.NONE);
       bottomC.setLayout(new GridLayout());
-      gridData = new GridData(GridData.FILL_BOTH);
-      bottomC.setLayoutData(gridData);
+      bottomC.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      noteText = new XText("Note");
+      noteText.setRequiredEntry(true);
+      noteText.setVerticalLabel(true);
       noteText.setFillHorizontally(true);
+      noteText.setFillVertically(true);
       noteText.createWidgets(bottomC, 2);
       noteText.addModifyListener(new ModifyListener() {
          @Override
@@ -117,6 +114,12 @@ public class NewNotePage extends WizardPage {
       noteText.getStyledText().setLayoutData(gridData2);
 
       setControl(composite);
+
+      topCRight.layout(true, true);
+      topCLeft.layout(true, true);
+      topC.layout(true, true);
+      composite.layout(true, true);
+      composite.getParent().layout(true, true);
    }
 
    public void update() {
@@ -131,7 +134,7 @@ public class NewNotePage extends WizardPage {
       if (typeList.getSelected().isEmpty()) {
          return false;
       }
-      if (artifactList.getSelected().isEmpty()) {
+      if (stateList.getSelected().isEmpty()) {
          return false;
       }
       return true;

@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
-import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
+import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -76,7 +76,7 @@ public interface IAtsWorkItemService {
     */
    String getCombinedPcrId(IAtsWorkItem workItem);
 
-   IAtsWorkItemNotes getNotes(IAtsWorkItem workItem);
+   IAtsStateNoteService getStateNoteService();
 
    ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
 

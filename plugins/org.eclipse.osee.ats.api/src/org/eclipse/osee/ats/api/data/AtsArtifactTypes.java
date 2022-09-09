@@ -209,7 +209,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Resolution)
       .zeroOrOne(StartDate)
       .any(State)
-      .zeroOrOne(StateNotes)
+      .any(StateNotes)
       .zeroOrOne(ReviewedBy)
       .zeroOrOne(ReviewedByDate)
       .zeroOrOne(UnplannedWork)

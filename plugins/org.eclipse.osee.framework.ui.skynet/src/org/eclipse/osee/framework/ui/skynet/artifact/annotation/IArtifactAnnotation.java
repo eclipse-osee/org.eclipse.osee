@@ -22,4 +22,5 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public interface IArtifactAnnotation {
 
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations);
+
 }

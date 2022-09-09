@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.actions;
+package org.eclipse.osee.ats.ide.editor.tab.workflow.note;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,44 +20,41 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workflow.note.NoteType;
-import org.eclipse.osee.ats.ide.actions.wizard.NewNoteWizard;
+import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
+import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
  */
-public class AddNoteAction extends AbstractAtsAction {
+public class AddStateNoteAction extends AbstractAtsAction {
 
-   private final AbstractWorkflowArtifact sma;
-   private final IDirtiableEditor dirtiable;
+   private final AbstractWorkflowArtifact workItem;
    private boolean emulate = false;
    private String selectedState;
-   private NoteType noteType;
+   private AtsStateNoteType noteType;
    private String noteText;
 
-   public AddNoteAction(AbstractWorkflowArtifact sma, IDirtiableEditor dirtiable) {
+   public AddStateNoteAction(AbstractWorkflowArtifact workItem) {
       super();
-      this.sma = sma;
-      this.dirtiable = dirtiable;
-      setText("Add Note");
+      this.workItem = workItem;
+      setText("Add State Note");
       setToolTipText(getText());
    }
 
    @Override
    public void runWithException() {
-      ArrayList<String> artifactNames = new ArrayList<>();
+      ArrayList<String> stateNames = new ArrayList<>();
       Map<String, String> selectedToStateName = new HashMap<>();
-      artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
       for (StateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
-         sma.getWorkDefinition())) {
+         workItem.getWorkDefinition())) {
          String displayName = "\"" + stateDefinition.getName() + "\" State";
-         artifactNames.add(displayName);
+         stateNames.add(displayName);
          selectedToStateName.put(displayName, stateDefinition.getName());
       }
 
@@ -67,34 +64,36 @@ public class AddNoteAction extends AbstractAtsAction {
             return;
          }
       } else {
-         boolean result = performUi(artifactNames);
+         boolean result = performUi(stateNames);
          if (!result) {
             return;
          }
       }
       String state = "";
-      if (!selectedState.startsWith(sma.getName() + " - ")) {
+      if (!selectedState.startsWith(workItem.getName() + " - ")) {
          state = selectedToStateName.get(selectedState);
       }
-      AtsApiService.get().getWorkItemService().getNotes(sma).addNote(noteType, state, noteText);
-      dirtiable.onDirtied();
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getText());
+      AtsApiService.get().getWorkItemService().getStateNoteService().addNote(workItem, noteType, state, noteText,
+         changes);
+      changes.execute();
    }
 
    private boolean performEmulate() {
       this.selectedState = "Endorse";
-      this.noteType = NoteType.Comment;
+      this.noteType = AtsStateNoteType.Info;
       this.noteText = "this is the comment";
       return true;
    }
 
-   private boolean performUi(ArrayList<String> artifactNames) {
-      NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
+   private boolean performUi(ArrayList<String> stateNames) {
+      NewStateNoteWizard noteWizard = new NewStateNoteWizard(stateNames);
       WizardDialog dialog =
          new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
       dialog.create();
       if (dialog.open() == Window.OK) {
-         selectedState = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
-         noteType = NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName());
+         selectedState = noteWizard.mainPage.stateList.getSelected().iterator().next().getName();
+         noteType = AtsStateNoteType.valueOf(noteWizard.mainPage.typeList.getSelected().iterator().next().getName());
          noteText = noteWizard.mainPage.noteText.get();
          return true;
       }

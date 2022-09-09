@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsNoteTest.class, NoteItemTest.class})
+@Suite.SuiteClasses({AtsStateNoteTest.class})
 public class AtsCore_Workflow_Note_Suite {
    // Test Suite
 }

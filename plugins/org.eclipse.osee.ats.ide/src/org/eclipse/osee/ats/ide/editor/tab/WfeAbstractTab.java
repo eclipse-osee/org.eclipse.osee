@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.actions.AddNoteAction;
 import org.eclipse.osee.ats.ide.actions.CopyActionDetailsAction;
 import org.eclipse.osee.ats.ide.actions.EmailActionAction;
 import org.eclipse.osee.ats.ide.actions.FavoriteAction;
@@ -31,6 +30,7 @@ import org.eclipse.osee.ats.ide.actions.ShowContextChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.ide.actions.ShowWordChangeReportAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddStateNoteAction;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -125,7 +125,7 @@ public abstract class WfeAbstractTab extends FormPage {
          toolBarMgr.add(new OpenParentAction(awa));
       }
       toolBarMgr.add(new EmailActionAction(editor));
-      toolBarMgr.add(new AddNoteAction(awa, editor));
+      toolBarMgr.add(new AddStateNoteAction(awa));
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
       toolBarMgr.add(new OpenActionViewAction());
       if (AtsApiService.get().getUserService().isAtsAdmin()) {

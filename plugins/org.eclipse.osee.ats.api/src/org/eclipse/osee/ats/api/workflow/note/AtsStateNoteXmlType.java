@@ -20,14 +20,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 /**
  * @author Donald G. Dunne
  */
-public enum NoteType {
+public enum AtsStateNoteXmlType {
    Comment,
    Question,
    Error,
    Other;
 
-   public static NoteType getType(String type) {
-      for (NoteType e : NoteType.values()) {
+   public static AtsStateNoteXmlType getType(String type) {
+      for (AtsStateNoteXmlType e : AtsStateNoteXmlType.values()) {
          if (e.name().equals(type)) {
             return e;
          }
@@ -37,7 +37,7 @@ public enum NoteType {
 
    public static List<String> getNames() {
       List<String> names = new ArrayList<>();
-      for (NoteType e : NoteType.values()) {
+      for (AtsStateNoteXmlType e : AtsStateNoteXmlType.values()) {
          names.add(e.name());
       }
       return names;
