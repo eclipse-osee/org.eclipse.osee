@@ -34,11 +34,14 @@ import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -177,6 +180,7 @@ public class WfeHeaderComposite extends Composite {
 
          createSMANotesHeader(this, editor.getToolkit(), numColumns);
          createStateNotesHeader(this, workItem, editor.getToolkit(), numColumns, null);
+         createAnnotationsHeader(this, editor.getToolkit());
 
          relatedComposite = new WfeRelatedComposite(this, SWT.NONE, editor);
          relatedComposite.create();
@@ -287,6 +291,16 @@ public class WfeHeaderComposite extends Composite {
          Label label = toolkit.createLabel(comp,
             "This is a historical version of this " + workItem.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      }
+   }
+
+   private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) {
+      try {
+         if (AttributeAnnotationManager.getAnnotations((Artifact) workItem.getStoreObject()).size() > 0) {
+            new AnnotationComposite(toolkit, comp, SWT.None, (Artifact) workItem.getStoreObject());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Exception resolving annotations", ex);
       }
    }
 
