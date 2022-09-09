@@ -95,7 +95,7 @@ public interface IAtsQueryService {
    Collection<ArtifactToken> getRelatedToTokens(BranchToken branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType);
 
    /**
-    * @param id artifact id or ATS Id
+    * @param artifact id or ATS Id
     */
    IAtsWorkItem getWorkItem(String id);
 
@@ -107,7 +107,7 @@ public interface IAtsQueryService {
    Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds);
 
    /**
-    * @param comma separated id artifact id or ATS Id
+    * @param comma separated artifact id or ATS Id
     */
    List<IAtsWorkItem> getWorkItemsByIds(String ids);
 
@@ -235,5 +235,7 @@ public interface IAtsQueryService {
     * Run query and return list of column,value of results
     */
    List<Map<String, String>> query(String query, Object... data);
+
+   Collection<IAtsWorkItem> getWorkItemsAtrTypeExists(AttributeTypeToken attrType);
 
 }

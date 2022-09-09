@@ -177,4 +177,17 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
       return labelHyperlink;
    }
 
+   @Override
+   public void dispose() {
+      super.dispose();
+      if (Widgets.isAccessible(labelHyperlink)) {
+         labelHyperlink.dispose();
+      }
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
+      if (Widgets.isAccessible(valueLabel)) {
+         valueLabel.dispose();
+      }
+   }
 }

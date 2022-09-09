@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -65,6 +66,12 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          + "art.gamma_id = txs.gamma_id " //
          + "AND txs.tx_current = 1 AND attr.ART_ID = art.ART_ID and " //
          + "attr.ATTR_TYPE_ID = ? and attr.VALUE = ?";
+
+   private static String ATTR_EXISTS_QUERY =
+      "SELECT unique art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE txs.branch_id = ? and " //
+         + "art.gamma_id = txs.gamma_id " //
+         + "AND txs.tx_current = 1 AND attr.ART_ID = art.ART_ID and " //
+         + "attr.ATTR_TYPE_ID = ?";
 
    public AbstractAtsQueryService(JdbcService jdbcService, AtsApi atsApi) {
       jdbcClient = jdbcService.getClient();
@@ -229,6 +236,18 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(),
          AtsAttributeTypes.LegacyPcrId.getIdString(), id)) {
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
+         if (workItem != null) {
+            workItems.add(workItem);
+         }
+      }
+      return workItems;
+   }
+
+   @Override
+   public Collection<IAtsWorkItem> getWorkItemsAtrTypeExists(AttributeTypeToken attrType) {
+      List<IAtsWorkItem> workItems = new LinkedList<>();
+      for (ArtifactToken art : getArtifactsFromQuery(ATTR_EXISTS_QUERY, atsApi.getAtsBranch(), attrType)) {
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
          if (workItem != null) {
             workItems.add(workItem);

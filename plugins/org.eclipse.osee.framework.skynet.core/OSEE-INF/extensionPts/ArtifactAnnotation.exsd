@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.osee.framework.skynet.core">
+<schema targetNamespace="org.eclipse.osee.framework.skynet.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="ArtifactAnnotation" name="ArtifactAnnotation"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="ArtifactAnnotation" minOccurs="1" maxOccurs="unbounded"/>
@@ -50,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.ui.skynet.artifact.annotation.IArtifactAnnotation"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -93,13 +98,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

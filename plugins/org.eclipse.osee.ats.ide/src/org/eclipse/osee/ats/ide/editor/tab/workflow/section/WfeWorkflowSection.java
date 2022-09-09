@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeStateNotesHeader;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StatePercentCompleteXWidget;
@@ -77,6 +77,7 @@ public class WfeWorkflowSection extends SectionPart {
    private boolean sectionCreated = false;
    private Section section;
    private final WorkflowEditor editor;
+   private WfeStateNotesHeader stateNotesHeader;
 
    public WfeWorkflowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
@@ -145,8 +146,7 @@ public class WfeWorkflowSection extends SectionPart {
       // mainComp.setBackground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
-      WfeHeaderComposite.createStateNotesHeader(mainComp, editor.getWorkItem(), editor.getToolkit(), 2,
-         statePage.getName());
+      stateNotesHeader = new WfeStateNotesHeader(mainComp, SWT.NONE, editor.getWorkItem(), statePage.getName(), editor);
 
       Composite workComp = createWorkArea(mainComp, statePage, editor.getToolkit());
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
@@ -453,6 +453,9 @@ public class WfeWorkflowSection extends SectionPart {
       }
       super.refresh();
       try {
+         if (Widgets.isAccessible(stateNotesHeader)) {
+            stateNotesHeader.refresh();
+         }
          for (XWidget xWidget : allXWidgets) {
             if (xWidget instanceof ArtifactStoredWidget) {
                // Reload with with current artifact/attribute/relation

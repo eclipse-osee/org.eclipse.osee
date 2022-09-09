@@ -52,7 +52,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
-import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
+import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -71,8 +71,7 @@ import org.eclipse.osee.ats.core.workflow.hooks.AtsHoldOrBlockedTransitionHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerReviewRoleDefectValidator;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
-import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
-import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
+import org.eclipse.osee.ats.core.workflow.note.AtsStateNoteServiceImpl;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
@@ -93,6 +92,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;
+   private IAtsStateNoteService stateNoteService;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = null;
@@ -246,8 +246,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsWorkItemNotes getNotes(IAtsWorkItem workItem) {
-      return new AtsWorkItemNotes(new ArtifactNote(workItem, atsApi), atsApi);
+   public IAtsStateNoteService getStateNoteService() {
+      if (stateNoteService == null) {
+         stateNoteService = new AtsStateNoteServiceImpl(atsApi);
+      }
+      return stateNoteService;
    }
 
    @Override

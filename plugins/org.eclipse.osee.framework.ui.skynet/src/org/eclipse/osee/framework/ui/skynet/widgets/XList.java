@@ -154,8 +154,7 @@ public class XList extends GenericXWidget {
          GridLayout gridLayout = new GridLayout();
          gridLayout.numColumns = numColumns;
          composite.setLayout(gridLayout);
-         GridData gd = new GridData(
-            GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.horizontalSpan = horizontalSpan;
          composite.setLayoutData(gd);
       } else {

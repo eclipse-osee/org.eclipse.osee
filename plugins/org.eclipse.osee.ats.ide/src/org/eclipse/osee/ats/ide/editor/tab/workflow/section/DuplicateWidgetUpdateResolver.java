@@ -45,7 +45,7 @@ public class DuplicateWidgetUpdateResolver {
     * @param xWidget The modified widget on the workflow.
     */
    public static void updateDuplicateWidgets(IManagedForm managedForm, AbstractWorkflowArtifact sma, XWidget xWidget) {
-      WorkDefinition workDef = (WorkDefinition) sma.getWorkDefinition();
+      WorkDefinition workDef = sma.getWorkDefinition();
       Object container = managedForm.getContainer();
       WfeWorkFlowTab currWfe = null;
       if (container instanceof WfeWorkFlowTab) {

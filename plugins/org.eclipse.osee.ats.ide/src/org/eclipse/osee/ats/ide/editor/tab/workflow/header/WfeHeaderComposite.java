@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -35,6 +34,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -59,6 +60,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
@@ -72,6 +74,7 @@ public class WfeHeaderComposite extends Composite {
    private WfeMetricsHeader metricsHeader;
    private final StateXWidgetPage currentStateXWidgetPage;
    private static Color LIGHT_GREY;
+   private static WfeStateNotesHeader stateNotesHeader;
    private final IManagedForm managedForm;
    private WfeCustomHeader customHeader;
    private WfeTitleHeader titleHeader;
@@ -122,6 +125,9 @@ public class WfeHeaderComposite extends Composite {
       }
       if (workPackageHeader != null) {
          workPackageHeader.refresh();
+      }
+      if (stateNotesHeader != null) {
+         stateNotesHeader.refresh();
       }
       if (relatedComposite != null) {
          relatedComposite.refresh();
@@ -178,8 +184,8 @@ public class WfeHeaderComposite extends Composite {
 
          customHeader = createCustomHeader(this, editor.getToolkit(), workItem, editor, managedForm);
 
-         createSMANotesHeader(this, editor.getToolkit(), numColumns);
-         createStateNotesHeader(this, workItem, editor.getToolkit(), numColumns, null);
+         createWorkflowNotesHeader(this, editor.getToolkit(), numColumns);
+         createStateNotesHeader(this, workItem, editor.getToolkit(), numColumns, null, editor);
          createAnnotationsHeader(this, editor.getToolkit());
 
          relatedComposite = new WfeRelatedComposite(this, SWT.NONE, editor);
@@ -256,22 +262,17 @@ public class WfeHeaderComposite extends Composite {
       dragDropBox.setBackground(getLightGreyColor());
    }
 
-   public void createSMANotesHeader(Composite comp, XFormToolkit toolkit, int horizontalSpan) {
+   public void createWorkflowNotesHeader(Composite comp, XFormToolkit toolkit, int horizontalSpan) {
       // Display Workflow Note
       String note = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.WorkflowNotes, "");
       if (!note.equals("")) {
-         FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
+         createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
       }
    }
 
-   public static void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan, String forStateName) {
-      // Display global Notes
-      for (NoteItem noteItem : AtsApiService.get().getWorkItemService().getNotes(workItem).getNoteItems()) {
-         if (forStateName == null || noteItem.getState().equals(forStateName)) {
-            FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString());
-         }
-      }
+   public void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan, String forStateName, WorkflowEditor editor) {
+      stateNotesHeader = new WfeStateNotesHeader(comp, SWT.NONE, workItem, null, editor);
    }
 
    public void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, int horizontalSpan, WorkflowEditor editor) {
@@ -422,6 +423,27 @@ public class WfeHeaderComposite extends Composite {
       relatedComposite.getXWidgets(widgets);
       customHeader.getXWidgets(widgets);
       return widgets;
+   }
+
+   public static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str) {
+      if (str.length() > 150) {
+         Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
+         label.setToolTipText("click to view all");
+         label.addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               new HtmlDialog("Note", null, str).open();
+            }
+         });
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         label.setLayoutData(gd);
+      } else {
+         Label label = toolkit.createLabel(comp, str);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         label.setLayoutData(gd);
+      }
    }
 
 }

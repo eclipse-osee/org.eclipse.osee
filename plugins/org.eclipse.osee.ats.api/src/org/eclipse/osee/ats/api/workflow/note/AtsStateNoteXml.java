@@ -21,15 +21,15 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class NoteItem {
+public class AtsStateNoteXml {
 
    private Date date;
-   private final String state;
+   private String state;
    private String msg;
-   private final UserToken user;
-   private NoteType type = NoteType.Other;
+   private UserToken user;
+   private AtsStateNoteXmlType type;
 
-   public NoteItem(NoteType type, String state, String date, UserToken user, String msg) {
+   public AtsStateNoteXml(AtsStateNoteXmlType type, String state, String date, UserToken user, String msg) {
       Long l = Long.valueOf(date);
       this.date = new Date(l.longValue());
       this.state = Strings.intern(state);
@@ -38,8 +38,8 @@ public class NoteItem {
       this.type = type;
    }
 
-   public NoteItem(String type, String state, String date, UserToken user, String msg) {
-      this(NoteType.getType(type), state, date, user, msg);
+   public AtsStateNoteXml(String type, String state, String date, UserToken user, String msg) {
+      this(AtsStateNoteXmlType.getType(type), state, date, user, msg);
    }
 
    public Date getDate() {
@@ -60,7 +60,7 @@ public class NoteItem {
 
    @Override
    public String toString() {
-      return String.format("Note: %s from %s%s on %s - %s", type, user.getName(), toStringState(),
+      return String.format("%s from %s%s on %s - %s", type, user.getName(), toStringState(),
          DateUtil.getMMDDYYHHMM(date), msg);
    }
 
@@ -72,12 +72,8 @@ public class NoteItem {
       return user;
    }
 
-   public NoteType getType() {
+   public AtsStateNoteXmlType getType() {
       return type;
-   }
-
-   public void setType(NoteType type) {
-      this.type = type;
    }
 
    public String toHTML() {
@@ -86,5 +82,17 @@ public class NoteItem {
 
    public String getState() {
       return state;
+   }
+
+   public void setState(String state) {
+      this.state = state;
+   }
+
+   public void setUser(UserToken user) {
+      this.user = user;
+   }
+
+   public void setType(AtsStateNoteXmlType type) {
+      this.type = type;
    }
 }
