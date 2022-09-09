@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotation;
+import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -284,6 +286,13 @@ public final class ArtifactImageManager {
       }
    }
 
+   public static Image getAnnotationImage(ArtifactAnnotation.Type annotationType) {
+      if (annotationType == ArtifactAnnotation.Type.Warning) {
+         return ImageManager.getImage(FrameworkImage.WARNING);
+      }
+      return ImageManager.getImage(FrameworkImage.INFO_LG);
+   }
+
    public synchronized static Image getImageFromType(ArtifactTypeToken type) {
       OseeImage image = type.getImage();
       if (image != null) {
@@ -341,6 +350,11 @@ public final class ArtifactImageManager {
             return getLockedImage(baseImageEnum, artifact);
          }
 
+         AttributeAnnotationManager.get(artifact);
+         if (AttributeAnnotationManager.isAnnotationWarning(artifact)) {
+            return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY,
+               Location.BOT_LEFT).getImageKey();
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
