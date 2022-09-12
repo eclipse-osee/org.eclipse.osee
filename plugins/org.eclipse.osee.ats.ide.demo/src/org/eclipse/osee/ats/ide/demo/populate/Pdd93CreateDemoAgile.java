@@ -213,17 +213,19 @@ public class Pdd93CreateDemoAgile {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
       newTeam.setName("Facilities Team");
       newTeam.setId(teamId);
-      Response response = AtsApiService.get().getServerEndpoints().getAgile().createTeam(newTeam);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
+      try (Response response = AtsApiService.get().getServerEndpoints().getAgile().createTeam(newTeam)) {
+         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+
+      }
       // Create Backlog
       JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
       backlog.setName("Facilities Backlog");
       backlog.setId(9991L);
       backlog.setTeamId(newTeam.getId());
-      response = agileEp.createBacklog(teamId, backlog);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-      response.close();
+      try (Response response = agileEp.createBacklog(teamId, backlog)) {
+         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      }
    }
 
    private void createCisAgileTeam(IAgileProgram aProgram) {
@@ -321,13 +323,13 @@ public class Pdd93CreateDemoAgile {
 
       // Create Sprints
       JaxNewAgileSprint sprint1 = newSprint(DemoArtifactToken.SAW_Sprint_1);
-      response = agile.createSprint(sprint1.getTeamId(), sprint1);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-
+      try (Response sprint1Response = agile.createSprint(sprint1.getTeamId(), sprint1)) {
+         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      }
       JaxNewAgileSprint sprint2 = newSprint(DemoArtifactToken.SAW_Sprint_2);
-      response = agile.createSprint(sprint2.getTeamId(), sprint2);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-
+      try (Response sprint2Response = agile.createSprint(sprint2.getTeamId(), sprint2)) {
+         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      }
       // Add items to Sprint
       JaxAgileItem completedItems = new JaxAgileItem();
       completedItems.setSprintId(DemoArtifactToken.SAW_Sprint_1.getId());
@@ -381,10 +383,10 @@ public class Pdd93CreateDemoAgile {
       // Create Feature Groups
       for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {
          JaxNewAgileFeatureGroup featureGroup = newFeatureGroup(name);
-         response = agile.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup);
-         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+         try (Response featGroup = agile.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup)) {
+            Assert.isTrue(Response.Status.CREATED.getStatusCode() == featGroup.getStatus());
+         }
       }
-      response.close();
       setupSprint2ForBurndown(DemoArtifactToken.SAW_Sprint_2.getId());
    }
 

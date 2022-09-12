@@ -251,7 +251,7 @@ public final class SkynetTransactionTest {
                   if (WorkerType.PRIMARY == workerType) {
 
                      try {
-                        lock.wait();
+                        lock.wait(100000);
                      } catch (InterruptedException ex) {
                         //
                      }

@@ -322,7 +322,7 @@ public final class Lib {
     * stopAt parent.
     *
     * @param stopAt path of the parent file to stop deleting at
-    * @param file to delete
+    * @param file   to delete
     * @return status <b>true</b> if successful
     */
    public static boolean deleteFileAndEmptyParents(String stopAt, File file) {
@@ -621,13 +621,13 @@ public final class Lib {
     * FROM the process through it's err stream. The "outThread" will be what come from the FROM the process through it's
     * normal output stream. The "inThread" is the stream for issuing commands TO the process.
     *
-    * @param proc The process whose streams we are setting up
+    * @param proc   The process whose streams we are setting up
     * @param output Where all info coming FROM the minicom is sent
-    * @param input Where all data going TO the minicom is sent
+    * @param input  Where all data going TO the minicom is sent
     * @return An array of threads in the following order:<br>
-    * --index 0 = Err Stream<br>
-    * --index 1 = output stream<br>
-    * --index 2 = input stream<br>
+    *         --index 0 = Err Stream<br>
+    *         --index 1 = output stream<br>
+    *         --index 2 = input stream<br>
     */
    public static Thread[] handleMinicomProcess(Process proc, Writer output, Reader input) {
       IOOutputThread errThread =
@@ -1021,7 +1021,7 @@ public final class Lib {
 
    /**
     * @return The path which was used to load the class file. If the file was loaded from a .jar, then the full path to
-    * the jar. If the file was loaded from a .class, then the path up to the root of the package.
+    *         the jar. If the file was loaded from a .class, then the path up to the root of the package.
     */
    public static String getClassLoadPath(Class<?> base) {
       /*
@@ -1246,7 +1246,7 @@ public final class Lib {
     * Finds the index of the closing bracket for a function.
     *
     * @param start -the index of the character AFTER the opening bracket for the function
-    * @param seq -sequence containing the local function
+    * @param seq   -sequence containing the local function
     * @return -the index of the matching bracket to the opening bracket of this function
     */
    public static int findTheEnd(int start, CharSequence seq) {
@@ -1419,14 +1419,15 @@ public final class Lib {
          destination.getParentFile().mkdirs();
       }
 
-      JarFile jarfile = new JarFile(jarFile.getAbsolutePath());
-      JarEntry jarEntry = jarfile.getJarEntry(entry);
+      try (JarFile jarfile = new JarFile(jarFile.getAbsolutePath())) {
+         JarEntry jarEntry = jarfile.getJarEntry(entry);
 
-      try (InputStream inputStream = new BufferedInputStream(jarfile.getInputStream(jarEntry));
-         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination))) {
-         inputStreamToOutputStream(inputStream, outputStream);
+         try (InputStream inputStream = new BufferedInputStream(jarfile.getInputStream(jarEntry));
+            OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destination))) {
+            inputStreamToOutputStream(inputStream, outputStream);
 
-         outputStream.flush();
+            outputStream.flush();
+         }
       } catch (Exception ex) {
          String information = String.format("JarFile: %s\nEntry: %s\nDestination: %s\n", jarFile.getAbsolutePath(),
             entry, destination.getAbsolutePath());
