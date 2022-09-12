@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.editor.tab.bit.action;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,6 +33,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BitUtil;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactState;
@@ -82,13 +85,21 @@ public class CreateSiblingAction extends Action {
          }
          ArtifactToken progArt = bid.getProgram();
          IAtsProgram program = atsApi.getProgramService().getProgramById(progArt);
-         Collection<IAtsActionableItem> ais = atsApi.getProgramService().getAis(program);
-         // Remove top AI
+         List<IAtsActionableItem> validAis = new ArrayList<>();
+         for (IAtsActionableItem ai : atsApi.getProgramService().getAis(program)) {
+            if (ai.getTags().contains(BitUtil.BIT_AI)) {
+               validAis.add(ai);
+            }
+         }
          IAtsTeamDefinition teamDef = atsApi.getProgramService().getTeamDefHoldingVersions(program);
-         IAtsActionableItem ai = teamDef.getActionableItems().iterator().next();
-         ais.remove(ai);
+         // Remove top AI if configured
+         if (!teamDef.getActionableItems().isEmpty()) {
+            IAtsActionableItem ai = teamDef.getActionableItems().iterator().next();
+            validAis.remove(ai);
+         }
 
-         ActionableItemTreeWithChildrenDialog dialog = new ActionableItemTreeWithChildrenDialog(Active.Active, ais);
+         ActionableItemTreeWithChildrenDialog dialog =
+            new ActionableItemTreeWithChildrenDialog(Active.Active, validAis);
          dialog.setAddIncludeAllCheckbox(false);
          if (dialog.open() == Window.OK) {
             handleSelection(bid, dialog.getChecked());
@@ -120,7 +131,7 @@ public class CreateSiblingAction extends Action {
                JaxTeamWorkflow jTeamWf = new JaxTeamWorkflow();
                jTeamWf.setName(jTeamWf.getTitle());
                jTeamWf.setNewAi(ai.getArtifactToken());
-               IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
+               IAtsVersion version = atsApi.getVersionService().getVersionById(selBid.getBuild());
                if (version != null) {
                   jTeamWf.setTargetVersion(version.getArtifactToken());
                }
@@ -133,6 +144,7 @@ public class CreateSiblingAction extends Action {
                XResultDataUI.report(bids.getResults(), "Error Creating Sibling Workflows");
             } else {
                ((Artifact) teamWf).reloadAttributesAndRelations();
+               ((Artifact) teamWf.getParentAction()).reloadAttributesAndRelations();
                atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
                   Arrays.asList(teamWf), bids.getTransaction());
             }

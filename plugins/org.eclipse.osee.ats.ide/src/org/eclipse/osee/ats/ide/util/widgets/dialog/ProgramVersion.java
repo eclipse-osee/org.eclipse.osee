@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
-import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
@@ -21,22 +20,18 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class ProgramVersion {
 
-   private final IAtsProgram program;
+   private final ArtifactToken programTok;
    private final IAtsVersion version;
    private final ArtifactToken progVerArt;
 
-   public ProgramVersion(IAtsProgram program, IAtsVersion version) {
-      this(program, version, ArtifactToken.SENTINEL);
-   }
-
-   public ProgramVersion(IAtsProgram program, IAtsVersion version, ArtifactToken progVerArt) {
-      this.program = program;
+   public ProgramVersion(ArtifactToken programTok, IAtsVersion version, ArtifactToken progVerArt) {
+      this.programTok = programTok;
       this.version = version;
       this.progVerArt = progVerArt;
    }
 
-   public IAtsProgram getProgram() {
-      return program;
+   public ArtifactToken getProgramTok() {
+      return programTok;
    }
 
    public IAtsVersion getVersion() {
@@ -45,10 +40,11 @@ public class ProgramVersion {
 
    @Override
    public String toString() {
-      return String.format("[%s] - [%s]", program.getName(), version.getName());
+      return String.format("[%s] - [%s]", programTok.getName(), version.getName());
    }
 
    public ArtifactToken getProgVerArt() {
       return progVerArt;
    }
+
 }

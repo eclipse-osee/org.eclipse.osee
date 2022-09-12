@@ -49,7 +49,7 @@ public class CompositeStateItemTest {
    @Test
    public void testGetStateItems() {
       CompositeLayoutItem comp = new CompositeLayoutItem();
-      Assert.assertEquals(0, comp.getaLayoutItems().size());
+      Assert.assertEquals(0, comp.getLayoutItems().size());
    }
 
 }

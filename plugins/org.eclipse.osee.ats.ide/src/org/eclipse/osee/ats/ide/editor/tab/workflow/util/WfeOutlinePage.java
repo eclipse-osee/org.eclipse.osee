@@ -178,7 +178,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof StateDefinition) {
             getChildrenFromStateDefinition(element, items);
          } else if (element instanceof CompositeLayoutItem) {
-            items.addAll(((CompositeLayoutItem) element).getaLayoutItems());
+            items.addAll(((CompositeLayoutItem) element).getLayoutItems());
          } else if (element instanceof User) {
             items.add("Assignee: " + ((User) element).getName());
          } else if (element instanceof WrappedStateItems) {

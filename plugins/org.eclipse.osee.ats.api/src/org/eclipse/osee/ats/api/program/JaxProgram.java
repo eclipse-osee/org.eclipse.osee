@@ -41,6 +41,7 @@ public class JaxProgram extends JaxNewAtsConfigObject implements IAtsProgram {
       jaxProgram.setId(program.getId());
       jaxProgram.setActive(program.isActive());
       jaxProgram.setDescription(program.getDescription());
+      jaxProgram.setStoreObject(artifact);
       return jaxProgram;
    }
 

@@ -19,8 +19,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -33,10 +32,7 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersion;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersionTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -59,13 +55,11 @@ public class NewProgramVersionAction extends Action {
    @Override
    public void run() {
       List<ProgramVersion> pvers = new ArrayList<>();
-      for (ArtifactToken progArt : ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.Program,
-         CoreBranches.COMMON, DeletionFlag.EXCLUDE_DELETED)) {
-         IAtsProgram program = atsApi.getProgramService().getProgramById(progArt);
-         for (ArtifactToken verArt : atsApi.getProgramService().getVersionsForProgram(program.getArtifactToken(),
+      for (JaxProgram jProg : atsApi.getConfigService().getConfigurations().getIdToProgram().values()) {
+         for (ArtifactToken progVerArt : atsApi.getProgramService().getProgramVersions(jProg.getArtifactToken(),
             false).getVersions()) {
-            IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
-            pvers.add(new ProgramVersion(program, version));
+            IAtsVersion version = atsApi.getVersionService().getVersionById(progVerArt);
+            pvers.add(new ProgramVersion(jProg.getArtifactToken(), version, progVerArt.getToken()));
          }
       }
       ProgramVersionTreeDialog dialog = new ProgramVersionTreeDialog(pvers);
@@ -78,7 +72,7 @@ public class NewProgramVersionAction extends Action {
             bid.setBids(bids);
             bid.setBidArt(ArtifactToken.valueOf(ArtifactId.SENTINEL, pVer.getVersion().getName()));
             bid.setBuild(pVer.getVersion().getArtifactToken());
-            bid.setProgram(pVer.getProgram().getArtifactToken());
+            bid.setProgram(pVer.getProgramTok());
             bid.setState(BuildImpactState.Open.getName());
             bids.addBuildImpactData(bid);
          }

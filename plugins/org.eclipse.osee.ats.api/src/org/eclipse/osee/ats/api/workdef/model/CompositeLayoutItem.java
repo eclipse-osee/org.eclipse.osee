@@ -48,7 +48,7 @@ public class CompositeLayoutItem extends LayoutItem {
       this.numColumns = numColumns;
    }
 
-   public List<LayoutItem> getaLayoutItems() {
+   public List<LayoutItem> getLayoutItems() {
       return childrenLayoutItems;
    }
 

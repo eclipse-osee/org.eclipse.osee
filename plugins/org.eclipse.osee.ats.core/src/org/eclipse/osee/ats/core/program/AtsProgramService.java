@@ -71,6 +71,7 @@ public class AtsProgramService implements IAtsProgramService {
    private AtsApi atsApi;
    private CacheLoader<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCacheLoader;
    private LoadingCache<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCache;
+   AtsProgramOperations programOps;
 
    public AtsProgramService(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -83,6 +84,13 @@ public class AtsProgramService implements IAtsProgramService {
       teamDefToAtsProgramCache = CacheBuilder.newBuilder() //
          .expireAfterWrite(15, TimeUnit.MINUTES) //
          .build(teamDefToAtsProgramCacheLoader);
+   }
+
+   private AtsProgramOperations getProgramOps() {
+      if (programOps == null) {
+         programOps = new AtsProgramOperations(atsApi);
+      }
+      return programOps;
    }
 
    @Override
@@ -513,22 +521,18 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public List<ProgramVersions> getProgramVersions(ArtifactTypeToken artType, boolean activeOnly) {
-      AtsProgramOperations ops = new AtsProgramOperations(atsApi);
-      return ops.getProgramVersions(artType, activeOnly);
+      return getProgramOps().getProgramVersionsList(artType, activeOnly);
    }
 
    @Override
-   public ProgramVersions getVersionsForProgram(ArtifactId program, boolean onlyActive) {
-      AtsProgramOperations ops = new AtsProgramOperations(atsApi);
-      ProgramVersions progVer = new ProgramVersions();
-      ops.getVersionsForProgram(program, onlyActive, progVer);
+   public ProgramVersions getProgramVersions(ArtifactToken program, boolean onlyActive) {
+      ProgramVersions progVer = getProgramOps().getProgramVersions(program, onlyActive);
       return progVer;
    }
 
    @Override
    public ArtifactToken getProgramFromVersion(ArtifactId version) {
-      AtsProgramOperations ops = new AtsProgramOperations(atsApi);
-      return ops.getProgramFromVersion(version);
+      return getProgramOps().getProgramFromVersion(version);
    }
 
    @Override

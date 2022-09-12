@@ -38,7 +38,7 @@ public class AtsProgramOperations {
       this.atsApi = atsApi;
    }
 
-   public List<ProgramVersions> getProgramVersions(ArtifactTypeToken programArtifactType, boolean onlyActive) {
+   public List<ProgramVersions> getProgramVersionsList(ArtifactTypeToken programArtifactType, boolean onlyActive) {
 
       Collection<ArtifactToken> programsArts =
          atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), true, programArtifactType);
@@ -49,12 +49,8 @@ public class AtsProgramOperations {
          if (onlyActive && !active) {
             continue;
          }
-         ProgramVersions progVer = new ProgramVersions();
-         progVer.setProgram(program);
-         progVers.add(progVer);
-
-         getVersionsForProgram(program, onlyActive, progVer);
-
+         ProgramVersions progVersions = getProgramVersions(program, onlyActive);
+         progVers.add(progVersions);
       }
       return progVers;
    }
@@ -71,14 +67,16 @@ public class AtsProgramOperations {
       return null;
    }
 
-   public void getVersionsForProgram(ArtifactId program, boolean onlyActive, ProgramVersions progVer) {
+   public ProgramVersions getProgramVersions(ArtifactToken program, boolean onlyActive) {
       ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleAttributeValue(program,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      ProgramVersions progVersions = new ProgramVersions();
+      progVersions.setProgram(program);
       if (teamDefId.isValid()) {
          TeamDefinition teamDef = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDefId.getId());
 
          if (teamDef != null) {
-            progVer.setTeam(ArtifactToken.valueOf(teamDef.getId(), teamDef.getName(), atsApi.getAtsBranch()));
+            progVersions.setTeam(ArtifactToken.valueOf(teamDef.getId(), teamDef.getName(), atsApi.getAtsBranch()));
 
             for (Long versionId : teamDef.getVersions()) {
                IAtsVersion version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(versionId);
@@ -88,9 +86,11 @@ public class AtsProgramOperations {
                   continue;
                }
 
-               progVer.addVersion(ArtifactToken.valueOf(version.getId(), version.getName(), atsApi.getAtsBranch()));
+               progVersions.addVersion(
+                  ArtifactToken.valueOf(version.getId(), version.getName(), atsApi.getAtsBranch()));
             }
          }
       }
+      return progVersions;
    }
 }

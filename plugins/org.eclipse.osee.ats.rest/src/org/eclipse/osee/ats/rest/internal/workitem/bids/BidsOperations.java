@@ -152,7 +152,15 @@ public class BidsOperations {
       bids.setTeamWf(teamWf.getStoreObject());
 
       IAtsProgram program = atsApi.getProgramService().getProgram(teamWf);
+      if (program == null || program.isInvalid()) {
+         bids.getResults().errorf("No Program found for workflow %s", teamWf.toStringWithAtsId());
+         return bids;
+      }
       BranchToken branch = atsApi.getProgramService().getProductLineBranch(program);
+      if (branch.isInvalid()) {
+         bids.getResults().errorf("No PL Branch found for program %s", program.toStringWithId());
+         return bids;
+      }
       for (ArtifactToken view : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
          bids.addConfig(view);
       }

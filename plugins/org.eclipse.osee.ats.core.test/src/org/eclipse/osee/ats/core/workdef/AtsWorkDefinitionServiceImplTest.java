@@ -182,9 +182,9 @@ public class AtsWorkDefinitionServiceImplTest {
       CompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
       def.getLayoutItems().add(stateItem2);
       WidgetDefinition widget2 = new WidgetDefinition("item 2");
-      stateItem2.getaLayoutItems().add(widget2);
+      stateItem2.getLayoutItems().add(widget2);
       WidgetDefinition widget3 = new WidgetDefinition("item 3");
-      stateItem2.getaLayoutItems().add(widget3);
+      stateItem2.getLayoutItems().add(widget3);
 
       Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 45"));
       Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 2"));
