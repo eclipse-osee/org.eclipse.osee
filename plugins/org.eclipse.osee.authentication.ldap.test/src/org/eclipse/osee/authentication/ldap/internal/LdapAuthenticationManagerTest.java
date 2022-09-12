@@ -284,7 +284,9 @@ public class LdapAuthenticationManagerTest {
       verify(connection).findAccount(filterCaptor.capture(), eq(LOWER_CASED_USERNAME));
       verify(connection).authenticate(LOWER_CASED_USERNAME, PASSWORD);
       verify(account).getDistinguishedName();
-      verify(client).getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD);
+      try (LdapConnection conn =
+         verify(client).getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
+      }
       verify(connection).close();
 
       LdapFilter filter = filterCaptor.getValue();

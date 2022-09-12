@@ -75,8 +75,8 @@ public class LDAPConnector {
    /**
     * Constructor of the LDAPConnector class
     *
-    * @param logger logging object
-    * @param env Hashtable of environment properties required for LDAPContext
+    * @param logger     logging object
+    * @param env        Hashtable of environment properties required for LDAPContext
     * @param searchBase String containing DC values required for searching LDAP e.g., "DC=eclipse,DC=com"
     */
    public LDAPConnector(final Log logger, final Hashtable<String, String> env, final String searchBase) {
@@ -86,11 +86,11 @@ public class LDAPConnector {
    /**
     * Constructor of the LDAPConnector class
     *
-    * @param logger logging object
-    * @param env Hashtable of environment properties required for LDAPContext
-    * @param searchBase String containing DC values required for searching LDAP e.g., "DC=eclipse,DC=com"
+    * @param logger              logging object
+    * @param env                 Hashtable of environment properties required for LDAPContext
+    * @param searchBase          String containing DC values required for searching LDAP e.g., "DC=eclipse,DC=com"
     * @param accountSearchFilter user account search pattern filter
-    * @param accountField user account attribute field name
+    * @param accountField        user account attribute field name
     */
    public LDAPConnector(final Log logger, final Hashtable<String, String> env, final String searchBase, final String accountSearchFilter, final String accountField) {
       this.logger = logger;
@@ -173,8 +173,8 @@ public class LDAPConnector {
     */
    public SearchResult getLdapUser(final String username) {
       SearchResult searchResult = null;
-      String searchFilter =
-         "(&(objectCategory=person)(|(sAMAccountName=" + username + "*)(givenName=" + username + "*)(displayname=" + username + "*)))";
+      String searchFilter = "(&(objectCategory=person)(|(sAMAccountName=" + username + "*)(givenName=" + username
+         + "*)(displayname=" + username + "*)))";
       SearchControls searchControls = new SearchControls();
       searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
@@ -275,11 +275,9 @@ public class LDAPConnector {
                // the server and port details
                String ldapURL = LDAPServerPrefix + ServerName + ":" + Port;
                env.put(Context.PROVIDER_URL, ldapURL);
-               ctxInstance = new InitialLdapContext(env, null);
+               //    ctxInstance = new InitialLdapContext(env, null);
             }
             statement.close();
-         } catch (NamingException e) {
-            OseeLog.logf(Activator.class, Level.SEVERE, "Failed to establish LDAP connection", (Object) null);
          } catch (OseeDataStoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -290,7 +288,13 @@ public class LDAPConnector {
             Lib.close(statement);
          }
       }
-      return ctxInstance;
+      Hashtable<String, String> env2 = new Hashtable<String, String>();
+
+      try {
+         return new InitialLdapContext(env2, null);
+      } catch (NamingException ex) {
+         return null;
+      }
    }
 
    public static LDAPConnector getConnector() {

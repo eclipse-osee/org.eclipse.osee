@@ -170,12 +170,13 @@ public class DispoSetResourceTest {
       DispoSetData setToEdt = new DispoSetData();
       setToEdt.setGuid(id1AsString);
       when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(true);
-      Response response = resource.deleteDispoSet(id1AsString, "");
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      try (Response response = resource.deleteDispoSet(id1AsString, "")) {
+         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(false);
-      response = resource.deleteDispoSet(id1AsString, "");
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-      response.close();
+         when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(false);
+      }
+      try (Response response2 = resource.deleteDispoSet(id1AsString, "")) {
+         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response2.getStatus());
+      }
    }
 }

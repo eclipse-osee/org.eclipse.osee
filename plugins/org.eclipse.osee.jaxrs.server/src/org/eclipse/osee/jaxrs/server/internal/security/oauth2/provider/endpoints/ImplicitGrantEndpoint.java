@@ -44,51 +44,55 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
    }
 
    protected Response createGrant(MultivaluedMap<String, String> params, Client client, String redirectUri, List<String> requestedScope, List<String> approvedScope, UserSubject userSubject, ServerAccessToken preAuthorizedToken) {
-      Response response = super.createGrant((OAuthRedirectionState) params, client, requestedScope, approvedScope,
-         userSubject, preAuthorizedToken);
+      try (Response response = super.createGrant((OAuthRedirectionState) params, client, requestedScope, approvedScope,
+         userSubject, preAuthorizedToken)) {
 
-      String forwardedServer = OAuthUtil.getForwarderServer();
+         String forwardedServer = OAuthUtil.getForwarderServer();
 
-      if (Strings.isValid(forwardedServer)) {
-         URI location = response.getLocation();
-         String scheme = location.getScheme();
+         if (Strings.isValid(forwardedServer)) {
+            URI location = response.getLocation();
+            String scheme = location.getScheme();
 
-         URI finalUri = UriBuilder//
-            .fromPath(forwardedServer)//
-            .scheme(scheme)//
-            .path(location.getRawPath())//
-            .replaceQuery(location.getRawQuery())//
-            .fragment(location.getRawFragment())//
-            .buildFromEncoded();
+            URI finalUri = UriBuilder//
+               .fromPath(forwardedServer)//
+               .scheme(scheme)//
+               .path(location.getRawPath())//
+               .replaceQuery(location.getRawQuery())//
+               .fragment(location.getRawFragment())//
+               .buildFromEncoded();
+            try (Response finalUriResponse = Response.seeOther(finalUri).build()) {
+               return finalUriResponse;
+            }
+         }
 
-         response = Response.seeOther(finalUri).build();
+         return response;
       }
-
-      return response;
    }
 
    @Override
    protected Response createErrorResponse(MultivaluedMap<String, String> params, String redirectUri, String error) {
-      Response response = super.createErrorResponse(params, redirectUri, error);
+      try (Response response = super.createErrorResponse(params, redirectUri, error)) {
 
-      String forwardedServer = OAuthUtil.getForwarderServer();
+         String forwardedServer = OAuthUtil.getForwarderServer();
 
-      if (Strings.isValid(forwardedServer)) {
-         URI location = response.getLocation();
-         String scheme = location.getScheme();
+         if (Strings.isValid(forwardedServer)) {
+            URI location = response.getLocation();
+            String scheme = location.getScheme();
 
-         URI finalUri = UriBuilder//
-            .fromPath(forwardedServer)//
-            .scheme(scheme)//
-            .path(location.getRawPath())//
-            .replaceQuery(location.getRawQuery())//
-            .fragment(location.getRawFragment())//
-            .buildFromEncoded();
+            URI finalUri = UriBuilder//
+               .fromPath(forwardedServer)//
+               .scheme(scheme)//
+               .path(location.getRawPath())//
+               .replaceQuery(location.getRawQuery())//
+               .fragment(location.getRawFragment())//
+               .buildFromEncoded();
+            try (Response finalUriResponse = Response.seeOther(finalUri).build()) {
+               return finalUriResponse;
+            }
+         }
 
-         response = Response.seeOther(finalUri).build();
+         return response;
       }
-
-      return response;
    }
 
    /**

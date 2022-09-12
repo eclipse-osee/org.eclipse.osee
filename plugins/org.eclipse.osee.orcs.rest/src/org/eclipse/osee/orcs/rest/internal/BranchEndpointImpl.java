@@ -19,7 +19,7 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
-import com.google.common.collect.Lists;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -89,6 +91,8 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar

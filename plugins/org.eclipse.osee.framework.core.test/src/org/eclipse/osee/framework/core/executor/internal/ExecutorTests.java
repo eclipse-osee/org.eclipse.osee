@@ -203,7 +203,7 @@ public class ExecutorTests {
             Object t = new Object();
             synchronized (t) {
                testStarted = true;
-               t.wait();
+               t.wait(10000);
             }
          }
       };

@@ -622,11 +622,12 @@ public class BranchEndpointTest {
             branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.create(newArtifact));
          // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
          Assert.assertTrue(branchesModded.isEmpty());
-
-         branchEndpoint.purgeBranch(setUpBranchId, false);
-         branchEndpoint.purgeBranch(testBranchIdOne, false);
-         branchEndpoint.purgeBranch(testBranchIdTwo, false);
-
+         try (Response res = branchEndpoint.purgeBranch(setUpBranchId, false)) {
+         }
+         try (Response res = branchEndpoint.purgeBranch(testBranchIdOne, false)) {
+         }
+         try (Response res = branchEndpoint.purgeBranch(testBranchIdTwo, false)) {
+         }
       }
 
    }
