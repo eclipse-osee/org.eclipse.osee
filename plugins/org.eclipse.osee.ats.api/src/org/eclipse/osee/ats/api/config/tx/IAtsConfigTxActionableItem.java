@@ -52,4 +52,6 @@ public interface IAtsConfigTxActionableItem {
 
    IAtsConfigTxActionableItem andAccessContexts(AccessContextToken... accessContexts);
 
+   IAtsConfigTxActionableItem andTag(String... tags);
+
 }

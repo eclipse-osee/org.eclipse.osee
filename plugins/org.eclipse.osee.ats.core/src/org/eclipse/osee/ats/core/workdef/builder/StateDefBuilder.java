@@ -170,9 +170,9 @@ public class StateDefBuilder {
          // Recurse through composite layout items
          else if (currItem instanceof CompositeLayoutItem) {
             CompositeLayoutItem compLayoutItem = (CompositeLayoutItem) currItem;
-            List<LayoutItem> currLayoutItems = new ArrayList<LayoutItem>(compLayoutItem.getaLayoutItems());
-            compLayoutItem.getaLayoutItems().clear();
-            insertLayoutAfter(compLayoutItem.getaLayoutItems(), attrTypeLocation, currLayoutItems, found,
+            List<LayoutItem> currLayoutItems = new ArrayList<LayoutItem>(compLayoutItem.getLayoutItems());
+            compLayoutItem.getLayoutItems().clear();
+            insertLayoutAfter(compLayoutItem.getLayoutItems(), attrTypeLocation, currLayoutItems, found,
                insertLayoutItems);
          }
       }

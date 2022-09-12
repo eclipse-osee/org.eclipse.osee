@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -100,6 +101,13 @@ public class JaxAtsObject extends NamedIdBase {
 
    public void setStoreObject(ArtifactToken artifact) {
       this.artifact = artifact;
+   }
+
+   public ArtifactToken getArtifactToken() {
+      if (artifact != null) {
+         return artifact;
+      }
+      return ArtifactToken.valueOf(id, getName(), CoreBranches.COMMON);
    }
 
    public Collection<WorkType> getWorkTypes() {

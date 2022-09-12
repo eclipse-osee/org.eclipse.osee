@@ -134,7 +134,7 @@ public class WidgetPageUtil {
 
       }
 
-      List<LayoutItem> stateItems = compositeLayoutItem.getaLayoutItems();
+      List<LayoutItem> stateItems = compositeLayoutItem.getLayoutItems();
       for (int x = 0; x < stateItems.size(); x++) {
          boolean lastWidget = x == stateItems.size() - 1;
          LayoutItem stateItem = stateItems.get(x);

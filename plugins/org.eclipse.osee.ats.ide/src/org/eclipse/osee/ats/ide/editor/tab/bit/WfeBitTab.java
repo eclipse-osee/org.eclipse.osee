@@ -158,10 +158,16 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
                   if (!Widgets.isAccessible(bodyComp)) {
                      return;
                   }
+                  if (bids.getResults().isErrors()) {
+                     xViewer.setLoading(false);
+                     xViewer.getStatusLabel().setText(bids.getResults().toString());
+                     return;
+                  }
                   storeExpandState();
                   xViewer.setBids(bids);
                   xViewer.loadTable();
                   restoreExpandState();
+                  xViewer.setLoading(false);
                }
             });
 

@@ -144,4 +144,12 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
       return this;
    }
 
+   @Override
+   public IAtsConfigTxActionableItem andTag(String... tags) {
+      for (String tag : tags) {
+         and(CoreAttributeTypes.StaticId, tag);
+      }
+      return this;
+   }
+
 }

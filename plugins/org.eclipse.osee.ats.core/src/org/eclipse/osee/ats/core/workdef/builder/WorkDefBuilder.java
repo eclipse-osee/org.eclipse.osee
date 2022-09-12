@@ -142,7 +142,7 @@ public class WorkDefBuilder {
    private void allLayoutItemsToStringSet(Set<String> ret, List<LayoutItem> inputList) {
       for (LayoutItem layItem : inputList) {
          if (layItem instanceof CompositeLayoutItem) {
-            for (LayoutItem compItem : ((CompositeLayoutItem) layItem).getaLayoutItems()) {
+            for (LayoutItem compItem : ((CompositeLayoutItem) layItem).getLayoutItems()) {
                ret.add(compItem.getName());
             }
          } else {

@@ -41,7 +41,8 @@ public class XHyperlinkWfdForConfiguration extends XHyperlinkWithFilteredDialog<
       }
       if (ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch).getViews().isEmpty()) {
          Branch fullBranch = BranchManager.getBranch(branch);
-         AWorkbench.popupf("No Valid Configurations found for build [%s]", fullBranch.getName());
+         AWorkbench.popupf("No Valid Configurations found for build [%s]",
+            (fullBranch == null ? branch.getIdString() : fullBranch.getIdString()));
          return false;
       }
       return true;

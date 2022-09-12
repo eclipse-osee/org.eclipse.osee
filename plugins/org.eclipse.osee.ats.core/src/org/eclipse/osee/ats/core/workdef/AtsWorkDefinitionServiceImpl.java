@@ -352,7 +352,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private static void getWidgets(StateDefinition stateDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
-            getWidgets(stateDef, widgets, ((CompositeLayoutItem) lItem).getaLayoutItems());
+            getWidgets(stateDef, widgets, ((CompositeLayoutItem) lItem).getLayoutItems());
          } else if (lItem instanceof WidgetDefinition) {
             widgets.add((WidgetDefinition) lItem);
          }
@@ -362,7 +362,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private static void getWidgets(HeaderDefinition headerDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
-            getWidgets(headerDef, widgets, ((CompositeLayoutItem) lItem).getaLayoutItems());
+            getWidgets(headerDef, widgets, ((CompositeLayoutItem) lItem).getLayoutItems());
          } else if (lItem instanceof WidgetDefinition) {
             widgets.add((WidgetDefinition) lItem);
          }

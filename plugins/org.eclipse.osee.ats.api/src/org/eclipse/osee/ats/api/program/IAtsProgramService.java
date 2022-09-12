@@ -123,7 +123,7 @@ public interface IAtsProgramService {
 
    List<ProgramVersions> getProgramVersions(ArtifactTypeToken artType, boolean activeOnly);
 
-   ProgramVersions getVersionsForProgram(ArtifactId program, boolean onlyActive);
+   ProgramVersions getProgramVersions(ArtifactToken program, boolean onlyActive);
 
    ArtifactToken getProgramFromVersion(ArtifactId version);
 

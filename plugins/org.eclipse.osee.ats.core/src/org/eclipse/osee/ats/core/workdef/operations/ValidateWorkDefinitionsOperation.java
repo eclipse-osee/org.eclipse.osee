@@ -60,7 +60,7 @@ public class ValidateWorkDefinitionsOperation {
          }
       } else if (layoutItem instanceof CompositeLayoutItem) {
          CompositeLayoutItem comp = (CompositeLayoutItem) layoutItem;
-         for (LayoutItem compLayoutItem : comp.getaLayoutItems()) {
+         for (LayoutItem compLayoutItem : comp.getLayoutItems()) {
             validateLayoutItem(compLayoutItem, results);
          }
       }

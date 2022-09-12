@@ -56,7 +56,7 @@ public class DeleteProgramVersionAction extends Action {
             IAtsProgram program = atsApi.getProgramService().getProgramById(bid.getProgram());
             IAtsVersion version =
                atsApi.getConfigService().getConfigurations().getIdToVersion().get(bid.getBuild().getId());
-            pvers.add(new ProgramVersion(program, version, bid.getBidArt()));
+            pvers.add(new ProgramVersion(program.getArtifactToken(), version, bid.getBidArt()));
          }
       }
       bids = new BuildImpactDatas();
@@ -69,7 +69,7 @@ public class DeleteProgramVersionAction extends Action {
             bid.setBids(bids);
             bid.setBidArt(pVer.getProgVerArt());
             bid.setBuild(pVer.getVersion().getArtifactToken());
-            bid.setProgram(pVer.getProgram().getArtifactToken());
+            bid.setProgram(pVer.getProgramTok());
             bids.addBuildImpactData(bid);
          }
          bids = atsApi.getServerEndpoints().getActionEndpoint().deleteBids(teamWf.getAtsId(), bids);

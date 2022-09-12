@@ -271,7 +271,7 @@ public class ActionPage {
          if (layout instanceof CompositeLayoutItem) {
             inComposite = true;
             sb.append("<tr><td><table width=\"100%\"><tr>");
-            addWidgets(sb, workItem, ((CompositeLayoutItem) layout).getaLayoutItems());
+            addWidgets(sb, workItem, ((CompositeLayoutItem) layout).getLayoutItems());
             sb.append("</tr></table></td></tr>");
             inComposite = false;
          } else {
