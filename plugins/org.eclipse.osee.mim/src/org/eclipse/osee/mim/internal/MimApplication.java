@@ -38,7 +38,7 @@ public class MimApplication extends Application {
       resources.add(new EnumEndpointImpl());
       resources.add(new MimUserPreferenceEndpointImpl(mimApi));
       resources.add(new MimReportsEndpointImpl(mimApi));
-      resources.add(new MimImportEndpointImpl(mimApi));
+      resources.add(new MimImportEndpointImpl(mimApi.getOrcsApi()));
    }
 
    public void stop() {

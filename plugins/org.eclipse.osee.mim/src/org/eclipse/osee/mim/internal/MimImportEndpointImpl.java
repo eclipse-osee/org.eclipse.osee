@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.mim.ICDImportApi;
-import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportEndpoint;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.MimImportToken;
@@ -36,8 +35,8 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
 
    private final OrcsApi orcsApi;
 
-   public MimImportEndpointImpl(MimApi mimApi) {
-      this.orcsApi = mimApi.getOrcsApi();
+   public MimImportEndpointImpl(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -53,12 +52,13 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
    }
 
    @Override
-   public MimImportSummary getImportSummary(InputStream stream) {
+   public MimImportSummary getImportSummary(BranchId branch, InputStream stream) {
       try {
          // Transfer to output stream to prevent the stream from closing mid-read
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          stream.transferTo(outputStream);
-         ICDImportApi importer = new IcdImportApiImpl(new ByteArrayInputStream(outputStream.toByteArray()));
+         ICDImportApi importer =
+            new IcdImportApiImpl(branch, new ByteArrayInputStream(outputStream.toByteArray()), orcsApi);
          outputStream.close();
          stream.close();
          return importer.getSummary();
