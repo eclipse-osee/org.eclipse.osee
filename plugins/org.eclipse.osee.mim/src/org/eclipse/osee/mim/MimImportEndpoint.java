@@ -19,9 +19,11 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.MimImportToken;
 
@@ -34,11 +36,11 @@ public interface MimImportEndpoint {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<MimImportToken> getImportOptions();
-   
+
    @POST
-   @Path("icd")
+   @Path("icd/{branchId}")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.MULTIPART_FORM_DATA)
-   public MimImportSummary getImportSummary(@Multipart("file") InputStream file);
+   public MimImportSummary getImportSummary(@PathParam("branchId") BranchId branch, @Multipart("file") InputStream file);
 
 }

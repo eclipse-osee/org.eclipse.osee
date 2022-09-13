@@ -665,7 +665,9 @@ public class IcdGenerator {
                   // If the element is not applicable, replace it with a spare of the same size
                   if (!isApplicable(element)) {
                      int bitSize = (int) elementToken.getElementSizeInBits();
-                     PlatformTypeToken pType = new PlatformTypeToken(0L, "Spare", "spare", bitSize + "", "", "", "");
+                     String logicalType = elementToken.getLogicalType();
+                     PlatformTypeToken pType =
+                        new PlatformTypeToken(0L, "Spare " + logicalType, logicalType, bitSize + "", "", "", "");
                      elementToken = new InterfaceStructureElementToken(0L, "Spare", struct.getApplicability(), pType);
                   }
 

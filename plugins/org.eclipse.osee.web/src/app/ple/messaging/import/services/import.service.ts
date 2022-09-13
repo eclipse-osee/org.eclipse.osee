@@ -46,13 +46,13 @@ export class ImportService {
   private _importSuccess$: BehaviorSubject<boolean|undefined> = new BehaviorSubject<boolean|undefined>(undefined);
   private _importInProgress$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  private _importSummary$ = combineLatest([this._selectedImportOption$, this._importFile$, this._importInProgress$]).pipe(
-    switchMap(([importOption, file, inProgress]) => iif(() => importOption !== undefined && file !== undefined && inProgress, 
+  private _importSummary$ = combineLatest([this.branchId, this._selectedImportOption$, this._importFile$, this._importInProgress$]).pipe(
+    switchMap(([branchId, importOption, file, inProgress]) => iif(() => importOption !== undefined && file !== undefined && inProgress, 
       of(new FormData()).pipe(
         tap(formData => {
           formData.append('file', new Blob([file!]), file?.name);
         }),
-        switchMap(formData => this.importHttpService.getImportSummary(importOption!.url, formData)),
+        switchMap(formData => this.importHttpService.getImportSummary(importOption!.url.replace('<branchId>', branchId), formData)),
       ), 
       of(undefined))
     ),

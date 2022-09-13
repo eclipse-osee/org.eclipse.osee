@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.ICDImportApi;
@@ -34,6 +36,8 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.PlatformTypeImportToken;
+import org.eclipse.osee.mim.types.PlatformTypeToken;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Ryan T. Baldwin
@@ -41,12 +45,16 @@ import org.eclipse.osee.mim.types.PlatformTypeImportToken;
 public class IcdImportApiImpl implements ICDImportApi {
 
    private final ExcelWorkbookReader reader;
+   private final OrcsApi orcsApi;
+   private final BranchId branch;
    private MimImportSummary summary;
 
    private Long id = 1L;
 
-   public IcdImportApiImpl(InputStream inputStream) {
+   public IcdImportApiImpl(BranchId branch, InputStream inputStream, OrcsApi orcsApi) {
       this.reader = new ExcelWorkbookReader(inputStream, WorkbookFormat.XLSX);
+      this.orcsApi = orcsApi;
+      this.branch = branch;
    }
 
    @Override
@@ -109,21 +117,37 @@ public class IcdImportApiImpl implements ICDImportApi {
          rowIndex++;
       }
 
+      List<PlatformTypeToken> existingPlatformTypes = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+         CoreArtifactTypes.InterfacePlatformType).asArtifacts().stream().map(a -> new PlatformTypeToken(a)).collect(
+            Collectors.toList());
       Map<String, InterfaceElementImportToken> elements = new HashMap<>();
       Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
+      List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
+
+      for (PlatformTypeToken type : existingPlatformTypes) {
+         String typeName = type.getInterfaceLogicalType().equals("enumeration") ? type.getName() : getPlatformTypeName(
+            type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
+            type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeUnits(),
+            Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
+         platformTypes.put(typeName, new PlatformTypeImportToken(type.getId(), type.getName()));
+      }
 
       // Create a boolean type to avoid extra processing for booleans
-      platformTypes.put("boolean",
-         new PlatformTypeImportToken(id, "Boolean", "boolean", "8", "0", "1", "", "", "", "0 to 1"));
-      incrementId();
+      if (!platformTypes.containsKey("boolean")) {
+         PlatformTypeImportToken boolToken =
+            new PlatformTypeImportToken(id, "Boolean", "boolean", "8", "0", "1", "", "", "", "0 to 1");
+         platformTypes.put("boolean", boolToken);
+         incrementId();
+         platformTypesToCreate.add(boolToken);
+      }
 
       for (String sheetName : structureSheetNames) {
          reader.setActiveSheet(sheetName);
          InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
-         readStructureElements(structure, elements, platformTypes);
+         readStructureElements(structure, elements, platformTypes, platformTypesToCreate);
       }
 
-      for (PlatformTypeImportToken pTypeToken : platformTypes.values()) {
+      for (PlatformTypeImportToken pTypeToken : platformTypesToCreate) {
          summary.getPlatformTypes().add(pTypeToken);
       }
 
@@ -285,7 +309,7 @@ public class IcdImportApiImpl implements ICDImportApi {
       return structure;
    }
 
-   private void readStructureElements(InterfaceStructureToken structure, Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes) {
+   private void readStructureElements(InterfaceStructureToken structure, Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes, List<PlatformTypeImportToken> platformTypesToCreate) {
       int rowIndex = 4;
       InterfaceElementImportToken previousElement = InterfaceElementImportToken.SENTINEL;
       PlatformTypeImportToken previousPType = PlatformTypeImportToken.SENTINEL;
@@ -315,6 +339,7 @@ public class IcdImportApiImpl implements ICDImportApi {
                   validRange);
                incrementId();
                platformTypes.put(enumName, pType);
+               platformTypesToCreate.add(pType);
 
                InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(id, enumName);
                incrementId();
@@ -365,6 +390,7 @@ public class IcdImportApiImpl implements ICDImportApi {
                   units, "", "", validRange);
                incrementId();
                platformTypes.put(pTypeName, pType);
+               platformTypesToCreate.add(pType);
             }
          }
 
@@ -445,6 +471,9 @@ public class IcdImportApiImpl implements ICDImportApi {
    }
 
    private String getPlatformTypeName(String logicalType, String min, String max, String units, int bytes) {
+      if (logicalType.equals("boolean")) {
+         return "boolean";
+      }
       String name = "";
       switch (logicalType) {
          case "character":
