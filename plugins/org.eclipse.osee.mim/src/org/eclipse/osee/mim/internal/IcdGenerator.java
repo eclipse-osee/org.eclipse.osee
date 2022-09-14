@@ -86,8 +86,13 @@ public class IcdGenerator {
    }
 
    public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId, boolean diff) {
-      applicTokens = orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, branch);
-
+      if (view.isValid()) {
+         applicTokens = orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, branch);
+      } else {
+         applicTokens =
+            orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values().stream().collect(
+               Collectors.toList());
+      }
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
             connectionId).follow(CoreRelationTypes.InterfaceConnectionContent_Message).follow(
