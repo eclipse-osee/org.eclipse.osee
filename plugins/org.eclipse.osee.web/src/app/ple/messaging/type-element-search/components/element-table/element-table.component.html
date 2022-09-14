@@ -34,7 +34,7 @@
                         <ng-container *ngIf="element.paths.length===1">
                             <ng-container *ngIf="branchType|async as _type">
                                 <ng-container *ngIf="branchId|async as _id">
-                                    <a mat-button [routerLink]="'/ple/messaging/'+_type+'/'+_id+element.paths[0]+'/.'">Go to</a>
+                                    <a mat-button [routerLink]="'/ple/messaging/'+_type+'/'+_id+element.paths[0]">Go to</a>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
