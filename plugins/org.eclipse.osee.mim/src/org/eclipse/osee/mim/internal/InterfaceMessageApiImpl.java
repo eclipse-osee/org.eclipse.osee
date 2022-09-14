@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -38,11 +39,13 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private ArtifactAccessor<InterfaceMessageToken> accessor;
    private final InterfaceNodeViewApi nodeApi;
    private final List<RelationTypeSide> relations;
+   private final List<RelationTypeSide> affectedRelations;
 
    InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi) {
       this.nodeApi = nodeApi;
       this.setAccessor(new InterfaceMessageAccessor(orcsApi));
       this.relations = createRelationTypeSideList();
+      this.affectedRelations = createAffectedRelations();
    }
 
    @Override
@@ -60,6 +63,12 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private List<RelationTypeSide> createRelationTypeSideList() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
       relations.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
+      return relations;
+   }
+
+   private List<RelationTypeSide> createAffectedRelations() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceConnectionContent_Message);
       return relations;
    }
 
@@ -180,6 +189,16 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceMessageToken>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

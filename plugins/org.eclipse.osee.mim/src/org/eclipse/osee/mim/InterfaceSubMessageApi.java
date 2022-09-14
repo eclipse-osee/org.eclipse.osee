@@ -16,13 +16,14 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface sub messages
  */
-public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubMessageToken> {
+public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubMessageToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
    ArtifactAccessor<InterfaceSubMessageToken> getAccessor();
 
    InterfaceSubMessageToken get(BranchId branch, ArtifactId subMessageId);

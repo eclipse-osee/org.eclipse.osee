@@ -24,7 +24,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
  * @author Luciano T. Vaglienti Api for accessing interface structures
  * @todo
  */
-public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStructureToken> {
+public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStructureToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    InterfaceStructureToken get(BranchId branch, ArtifactId artId);
 

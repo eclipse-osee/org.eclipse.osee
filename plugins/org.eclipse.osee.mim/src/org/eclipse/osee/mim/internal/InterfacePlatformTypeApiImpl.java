@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
@@ -38,15 +39,23 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    private ArtifactAccessor<PlatformTypeToken> accessor;
    private final List<AttributeTypeId> attributes;
+   private final List<RelationTypeSide> affectedRelations;
 
    InterfacePlatformTypeApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new PlatformTypeAccessor(orcsApi));
       this.attributes = this.createAttributeList();
+      this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
    @Override
    public ArtifactAccessor<PlatformTypeToken> getAccessor() {
       return accessor;
+   }
+
+   private List<RelationTypeSide> createAffectedRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      return relations;
    }
 
    /**
@@ -195,6 +204,16 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch) {
       return this.getAllWithRelations(branch,
          Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet));
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

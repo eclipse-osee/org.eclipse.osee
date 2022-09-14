@@ -23,7 +23,7 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
 /**
  * @author Luciano T. V@todo
  */
-public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructureElementToken> {
+public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructureElementToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    List<InterfaceStructureElementToken> getAll(BranchId branch);
 

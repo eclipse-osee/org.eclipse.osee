@@ -17,11 +17,12 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public interface InterfaceEnumerationApi extends QueryCapableMIMAPI<InterfaceEnumeration> {
+public interface InterfaceEnumerationApi extends QueryCapableMIMAPI<InterfaceEnumeration>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    ArtifactAccessor<InterfaceEnumeration> getAccessor();
 

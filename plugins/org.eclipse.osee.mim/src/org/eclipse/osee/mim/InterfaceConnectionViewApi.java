@@ -16,11 +16,12 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<InterfaceConnection> {
+public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<InterfaceConnection>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    ArtifactAccessor<InterfaceConnection> getAccessor();
 

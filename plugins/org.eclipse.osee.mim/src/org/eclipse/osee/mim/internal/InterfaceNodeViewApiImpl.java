@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PLGenericDBObject;
@@ -90,6 +91,17 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
          //
       }
       return new LinkedList<InterfaceNode>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         //nodes currently don't have affected artifacts
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, new LinkedList());
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

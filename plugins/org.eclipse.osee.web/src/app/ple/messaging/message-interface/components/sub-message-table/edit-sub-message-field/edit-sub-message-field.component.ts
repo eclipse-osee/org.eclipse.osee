@@ -13,6 +13,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, scan, share, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 import { subMessage } from '../../../types/sub-messages';
 
@@ -46,10 +47,11 @@ export class EditSubMessageFieldComponent<R extends keyof subMessage=any,T exten
   private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
     scan((acc, curr) => { if (acc.type === curr[1]) { acc.count++ } else { acc.count = 0; acc.type = curr[1] } acc.value = curr[0];return acc; }, { count: 0, type: '',value:undefined } as { count: number, type: string | null,value:T|undefined }),
     switchMap((update) => iif(() => update.type === null, of(true).pipe(
-      switchMap(val=>this.messageService.partialUpdateSubMessage(this._subMessage,this.messageId))
+      switchMap(value => this.warningService.openSubMessageDialog(this._subMessage)),
+      switchMap(value=>this.messageService.partialUpdateSubMessage(value,this.messageId))
     ), of(false))),
   )
-  constructor (private messageService: CurrentMessagesService) {
+  constructor (private messageService: CurrentMessagesService, private warningService: WarningDialogService) {
     this._updateValue.subscribe();
   }
 

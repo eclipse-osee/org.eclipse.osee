@@ -22,7 +22,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { enumsServiceMock } from '../../../shared/mocks/EnumsService.mock';
+import { warningDialogServiceMock } from '../../../shared/mocks/warning-dialog.ui.service.mock';
 import { EnumsService } from '../../../shared/services/http/enums.service';
+import { WarningDialogService } from '../../../shared/services/ui/warning-dialog.service';
 import { SharedMessagingModule } from '../../../shared/shared-messaging.module';
 import { CurrentStateServiceMock } from '../../mocks/services/CurrentStateService.mock';
 import { CurrentStructureService } from '../../services/current-structure.service';
@@ -41,7 +43,8 @@ describe('EditStructureFieldComponent', () => {
       imports: [HttpClientTestingModule, NoopAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule],
       providers: [
         { provide: CurrentStructureService, useValue: CurrentStateServiceMock },
-        { provide:EnumsService,useValue:enumsServiceMock}
+        { provide: EnumsService, useValue: enumsServiceMock },
+        { provide: WarningDialogService, useValue: warningDialogServiceMock }
       ],
       declarations: [ EditStructureFieldComponent ]
     })

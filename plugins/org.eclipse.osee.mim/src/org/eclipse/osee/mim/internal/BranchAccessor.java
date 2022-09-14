@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.mim.AffectedArtifactEndpoint;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
 import org.eclipse.osee.mim.GetAllMIMRelatedObjectsEndpoint;
 import org.eclipse.osee.mim.IcdEndpoint;
@@ -167,6 +168,15 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceDifferenceReportEndpoint getDifferencesEndpoint(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceDifferenceReportEndpointImpl(branch, mimApi.getInterfaceDifferenceReportApi());
+   }
+
+   @Path("{branch}/affected")
+   @Produces(MediaType.APPLICATION_JSON)
+   public AffectedArtifactEndpoint getAffectedArtifacts(@PathParam("branch") BranchId branch) {
+      return new AffectedArtifactEndpointImpl(branch, mimApi.getInterfaceConnectionViewApi(),
+         mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceStructureApi(),
+         mimApi.getInterfaceElementApi(), mimApi.getInterfacePlatformTypeApi(), mimApi.getInterfaceEnumerationSetApi(),
+         mimApi.getInterfaceEnumerationApi());
    }
 
    /**
