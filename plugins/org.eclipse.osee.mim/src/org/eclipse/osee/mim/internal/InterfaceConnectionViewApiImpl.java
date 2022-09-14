@@ -15,11 +15,14 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -31,14 +34,23 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewApi {
 
    private ArtifactAccessor<InterfaceConnection> accessor;
+   private final List<RelationTypeSide> affectedRelations;
 
    InterfaceConnectionViewApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceConnectionAccessor(orcsApi));
+      this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
    @Override
    public ArtifactAccessor<InterfaceConnection> getAccessor() {
       return this.accessor;
+   }
+
+   private List<RelationTypeSide> createAffectedRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceConnectionPrimary_Node);
+      relations.add(CoreRelationTypes.InterfaceConnectionSecondary_Node);
+      return relations;
    }
 
    /**
@@ -86,6 +98,19 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          System.out.println(ex);
       }
       return new LinkedList<InterfaceConnection>();
+   }
+
+   /**
+    * note: currently non-functional as there is no way to get both primary and secondary nodes in a single query
+    */
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

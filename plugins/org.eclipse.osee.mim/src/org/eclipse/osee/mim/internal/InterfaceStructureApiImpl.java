@@ -32,6 +32,7 @@ import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
@@ -51,6 +52,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    private final InterfaceMessageApi interfaceMessageApi;
    private final List<AttributeTypeId> structureAttributeList;
    private final List<RelationTypeSide> relations;
+   private final List<RelationTypeSide> affectedRelations;
 
    InterfaceStructureApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceElementApi interfaceElementApi, InterfaceMessageApi interfaceMessageApi) {
       this.setAccessor(new InterfaceStructureAccessor(orcsApi));
@@ -59,6 +61,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       this.interfaceMessageApi = interfaceMessageApi;
       this.structureAttributeList = this.createStructureAttributeList();
       this.relations = this.createRelationTypeSideList();
+      this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
    private ArtifactAccessor<InterfaceStructureToken> getAccessor() {
@@ -76,6 +79,12 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
       relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
       relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      return relations;
+   }
+
+   private List<RelationTypeSide> createAffectedRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceSubMessageContent_Structure);
       return relations;
    }
 
@@ -556,6 +565,16 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceStructureToken>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

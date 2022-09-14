@@ -37,9 +37,10 @@ import { NewTypeFormComponent } from './components/dialogs/new-type-form/new-typ
 import { NewAttributeFormFieldComponent } from './components/dialogs/new-attribute-form-field/new-attribute-form-field.component';
 import { EnumSetFormComponent } from './components/dialogs/enum-set-form/enum-set-form.component';
 import { EnumFormComponent } from './components/dialogs/enum-form/enum-form.component';
+import { AffectedArtifactDialogComponent } from './components/dialogs/affected-artifact-dialog/affected-artifact-dialog.component';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent],
+  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent, AffectedArtifactDialogComponent],
   imports: [
     CommonModule,
     MatDialogModule,

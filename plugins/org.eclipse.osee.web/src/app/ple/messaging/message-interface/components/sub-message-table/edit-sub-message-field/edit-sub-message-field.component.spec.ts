@@ -19,6 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { warningDialogServiceMock } from '../../../../shared/mocks/warning-dialog.ui.service.mock';
+import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
 import { CurrentMessageServiceMock } from '../../../mocks/services/CurrentMessageService.mock';
 import { ConvertSubMessageTitlesToStringPipe } from '../../../pipes/convert-sub-message-titles-to-string.pipe';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
@@ -33,7 +35,10 @@ describe('EditSubMessageFieldComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, NoopAnimationsModule],
-      providers:[{provide:CurrentMessagesService, useValue:CurrentMessageServiceMock}],
+      providers: [
+        { provide: CurrentMessagesService, useValue: CurrentMessageServiceMock },
+        { provide: WarningDialogService, useValue: warningDialogServiceMock }
+      ],
       declarations: [ EditSubMessageFieldComponent,ConvertSubMessageTitlesToStringPipe ]
     })
     .compileComponents();

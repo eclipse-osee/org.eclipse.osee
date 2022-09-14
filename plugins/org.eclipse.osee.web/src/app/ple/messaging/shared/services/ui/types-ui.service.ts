@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { iif, of, from, combineLatest } from 'rxjs';
-import { share, switchMap, repeatWhen, shareReplay, take, tap, mergeMap, reduce, concatMap, map } from 'rxjs/operators';
+import { share, switchMap, repeatWhen, shareReplay, take, tap, mergeMap, reduce, concatMap, map, filter } from 'rxjs/operators';
 import { transaction } from 'src/app/transactions/transaction';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { applic } from '../../../../../types/applicability/applic';
@@ -28,6 +28,7 @@ import { EnumerationUIService } from './enumeration-ui.service';
 export class TypesUIService {
 
   private _types = this._ui.id.pipe(
+    filter(id=>id!==''),
     share(),
     switchMap(x => this._typesService.getTypes(x).pipe(
       repeatWhen(_ => this._ui.update),
@@ -42,6 +43,7 @@ export class TypesUIService {
   getType( typeId: string) {
     return this._ui.id.pipe(
       take(1),
+      filter(id=>id!==''),
       share(),
       switchMap(branch => this._typesService.getType(branch, typeId).pipe(
         share()
@@ -56,12 +58,14 @@ export class TypesUIService {
   changeType(type:Partial<PlatformType>) {
     return this._ui.id.pipe(
       take(1),
+      filter(id=>id!==''),
       switchMap((branchId)=>this._typesService.changePlatformType(branchId,type))
     )
   }
   performMutation(body: transaction) {
     return this._ui.id.pipe(
       take(1),
+      filter(id=>id!==''),
     switchMap((branchId)=>this._typesService.performMutation(body))
     )
   }
@@ -157,6 +161,7 @@ export class TypesUIService {
     const { enumerationSet, ...type } = body;
     return this._ui.id.pipe(
       take(1),
+      filter(id=>id!==''),
       switchMap(branchId => this._enumSetService.createPlatformTypeToEnumSetRelation(body.enumerationSet.name).pipe(
         take(1),
         switchMap(relation => this._typesService.createPlatformType(branchId, type, [relation]).pipe(
@@ -175,6 +180,7 @@ export class TypesUIService {
   }
   createEnums(set: enumerationSet) {
     return this._ui.id.pipe(
+      filter(id=>id!==''),
       switchMap(id => of(set).pipe(
         take(1),
         concatMap(enumSet => from(enumSet.enumerations || []).pipe(
@@ -192,6 +198,7 @@ export class TypesUIService {
   createEnumSet(set: enumerationSet) {
     const { enumerations, ...body } = set;
     return this._ui.id.pipe(
+      filter(id=>id!==''),
       switchMap(id => this._enumSetService.createEnumSet(id, body, []).pipe(
         switchMap(enumSetTransaction => this.createEnums(set).pipe(
           switchMap(enumTransaction=>this.mergeEnumArray([enumSetTransaction,enumTransaction]))

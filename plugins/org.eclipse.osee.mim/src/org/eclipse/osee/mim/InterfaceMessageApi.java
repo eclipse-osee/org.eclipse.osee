@@ -18,13 +18,14 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface messages
  * @todo
  */
-public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessageToken> {
+public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessageToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    ArtifactAccessor<InterfaceMessageToken> getAccessor();
 

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -38,10 +39,18 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
 
    private ArtifactAccessor<InterfaceSubMessageToken> accessor;
    private final List<AttributeTypeId> subMessageAttributes;
+   private final List<RelationTypeSide> affectedRelations;
 
    InterfaceSubMessageApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceSubMessageAccessor(orcsApi));
       this.subMessageAttributes = createSubmessageAttributes();
+      this.affectedRelations = createAffectedRelations();
+   }
+
+   private List<RelationTypeSide> createAffectedRelations() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
+      return relations;
    }
 
    private void setAccessor(InterfaceSubMessageAccessor interfaceSubMessageAccessor) {
@@ -136,6 +145,16 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

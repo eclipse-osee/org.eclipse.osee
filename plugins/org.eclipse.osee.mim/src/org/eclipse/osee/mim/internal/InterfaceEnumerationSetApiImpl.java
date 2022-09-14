@@ -18,10 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -34,10 +36,18 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
 
    private ArtifactAccessor<InterfaceEnumerationSet> accessor;
    private final InterfaceEnumerationApi interfaceEnumerationApi;
+   private final List<RelationTypeSide> affectedRelations;
 
    public InterfaceEnumerationSetApiImpl(OrcsApi orcsApi, InterfaceEnumerationApi interfaceEnumerationApi) {
       this.setAccessor(new InterfaceEnumerationSetAccessor(orcsApi));
       this.interfaceEnumerationApi = interfaceEnumerationApi;
+      this.affectedRelations = this.createAffectedRelationTypeSideList();
+   }
+
+   private List<RelationTypeSide> createAffectedRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet);
+      return relations;
    }
 
    @Override
@@ -106,6 +116,16 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
          System.out.println(ex);
       }
       return new LinkedList<InterfaceEnumerationSet>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

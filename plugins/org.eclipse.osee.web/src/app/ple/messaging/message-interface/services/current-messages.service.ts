@@ -38,7 +38,7 @@ import { CurrentBranchInfoService } from '../../../../ple-services/httpui/curren
 export class CurrentMessagesService {
 
   private _messagesList = combineLatest([this.ui.filter, this.BranchId, this.connectionId]).pipe(
-    filter(([filter,branchId,connection])=>connection!==''),
+    filter(([filter,branchId,connection])=>connection!=='' && branchId!==''),
     share(),
     debounceTime(500),
     distinctUntilChanged(),
@@ -276,6 +276,11 @@ export class CurrentMessagesService {
     );
   }
 
+  /**
+   * @TODO update to query and decide to launch dialog yay/nay
+   * @param body 
+   * @returns 
+   */
   partialUpdateMessage(body: Partial<message>) {
     return this.BranchId.pipe(
       take(1),
@@ -577,7 +582,7 @@ export class CurrentMessagesService {
         //create new array, push prev onto array, set prev 
       }
     })
-    if (tempArray !== []) {
+    if (tempArray.length!==0) {
       returnValue.push(tempArray)
     }
     return returnValue;

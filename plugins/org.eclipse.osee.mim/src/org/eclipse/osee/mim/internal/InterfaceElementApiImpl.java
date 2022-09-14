@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -44,12 +45,14 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    private final InterfacePlatformTypeApi platformApi;
    private final List<AttributeTypeId> elementAttributeList;
    private final List<RelationTypeSide> relations;
+   private final List<RelationTypeSide> affectedRelations;
 
    InterfaceElementApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi platformTypeApi) {
       this.setAccessor(new InterfaceElementAccessor(orcsApi));
       this.platformApi = platformTypeApi;
       this.elementAttributeList = this.createElementAttributeList();
       this.relations = this.createRelationTypeSideList();
+      this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
    private List<AttributeTypeId> createElementAttributeList() {
@@ -66,6 +69,12 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    private List<RelationTypeSide> createRelationTypeSideList() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
       relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      return relations;
+   }
+
+   private List<RelationTypeSide> createAffectedRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
       return relations;
    }
 
@@ -348,6 +357,16 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceStructureElementToken>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

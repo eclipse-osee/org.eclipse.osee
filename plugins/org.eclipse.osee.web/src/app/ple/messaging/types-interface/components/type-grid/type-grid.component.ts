@@ -11,11 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, of, OperatorFunction } from 'rxjs';
-import { take, switchMap, filter, tap } from 'rxjs/operators';
-import { ColumnPreferencesDialogComponent } from '../../../shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
+import { BehaviorSubject, combineLatest, of, OperatorFunction, Subject } from 'rxjs';
+import { take, switchMap, filter, tap, takeUntil } from 'rxjs/operators';
 import { applic } from '../../../../../types/applicability/applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
@@ -29,11 +28,14 @@ import { NewTypeDialogComponent } from '../../../shared/components/dialogs/new-t
   templateUrl: './type-grid.component.html',
   styleUrls: ['./type-grid.component.sass']
 })
-export class TypeGridComponent implements OnInit, OnChanges {
+export class TypeGridComponent implements OnInit, OnChanges, OnDestroy {
+  private _done = new Subject();
   @Input() filterValue: string = "";
   columnCount= this.uiService.columnCount;
   gutterSize: string = "";
-  filteredData = this.typesService.typeData;
+  filteredData = this.typesService.typeData.pipe(
+    takeUntil(this._done)
+  );
   rowHeight: string = "";
   inEditMode = this.typesService.inEditMode;
   
@@ -52,6 +54,9 @@ export class TypeGridComponent implements OnInit, OnChanges {
     const combined = combineLatest([breakpoint, this.uiService.singleLineAdjustment]).subscribe((result) => {
       this.updateColumnsCount(result);
     })
+  }
+  ngOnDestroy(): void {
+    this._done.next();
   }
   
   ngOnChanges(changes: SimpleChanges): void {

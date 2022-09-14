@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.mim.ArtifactAccessor;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.MimAttributeQueryElement;
 import org.eclipse.osee.mim.types.MimRelatedArtifact;
@@ -40,6 +42,10 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements ArtifactAccessor<T> {
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private final OrcsApi orcsApi;
+
+   private Class<T> getType() {
+      return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+   }
 
    public ArtifactAccessorImpl(ArtifactTypeToken artifactType, OrcsApi orcsApi) {
       this.setArtifactType(artifactType);
@@ -129,37 +135,17 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      ArtifactReadable artifact = query.asArtifactOrSentinel();
-      if (artifact.isValid()) {
-         T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-         if (hasSetApplic(clazz) && !query.areApplicabilityTokensIncluded()) {
-            getSetApplic(clazz).invoke(returnObj,
-               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch));
-         }
-         return returnObj;
-      }
-      return clazz.getDeclaredConstructor().newInstance();
+      return fetchSingle(query, branch);
    }
 
    @Override
    public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, Collection<RelationTypeSide> followRelations, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      List<T> artifactList = new LinkedList<T>();
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(
          artifactType).andRelatedTo(relation, relatedId);
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      for (ArtifactReadable artifact : query.asArtifacts()) {
-         if (artifact.isValid()) {
-            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-            if (hasSetApplic(clazz) && !query.areApplicabilityTokensIncluded()) {
-               getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
-            }
-            artifactList.add(returnObj);
-         }
-      }
-      return artifactList;
+      return fetchCollection(query, branch);
    }
 
    @Override
@@ -170,42 +156,21 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      ArtifactReadable artifact = query.asArtifactOrSentinel();
-      if (artifact.isValid()) {
-         T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-         if (hasSetApplic(clazz) && !query.areApplicabilityTokensIncluded()) {
-            getSetApplic(clazz).invoke(returnObj,
-               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch));
-         }
-         return returnObj;
-      }
-      return clazz.getDeclaredConstructor().newInstance();
+      return fetchSingle(query, branch);
    }
 
    @Override
    public Collection<T> getAll(BranchId branch, Collection<RelationTypeSide> followRelations, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      List<T> artifactList = new LinkedList<T>();
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      for (ArtifactReadable artifact : query.asArtifacts()) {
-         if (artifact.isValid()) {
-            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-            if (hasSetApplic(clazz) && !query.areApplicabilityTokensIncluded()) {
-               getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
-            }
-            artifactList.add(returnObj);
-         }
-      }
-      return artifactList;
+      return fetchCollection(query, branch);
    }
 
    @Override
    public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      List<T> artifactList = new LinkedList<T>();
 
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).and(
@@ -214,17 +179,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      for (ArtifactReadable artifact : query.asArtifacts()) {
-         if (artifact.isValid() && !query.areApplicabilityTokensIncluded()) {
-            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-            if (hasSetApplic(clazz)) {
-               getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
-            }
-            artifactList.add(returnObj);
-         }
-      }
-      return artifactList;
+      return fetchCollection(query, branch);
    }
 
    @Override
@@ -234,21 +189,11 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      ArtifactReadable artifact = query.asArtifactOrSentinel();
-      if (artifact.isValid()) {
-         T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-         if (hasSetApplic(clazz) && !query.areApplicabilityTokensIncluded()) {
-            getSetApplic(clazz).invoke(returnObj,
-               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
-         }
-         return returnObj;
-      }
-      return clazz.getDeclaredConstructor().newInstance();
+      return fetchSingle(query, branch);
    }
 
    @Override
    public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      List<T> artifactList = new LinkedList<T>();
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
             relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
@@ -256,22 +201,11 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);
       }
-      for (ArtifactReadable artifact : query.asArtifacts()) {
-         if (artifact.isValid()) {
-            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-            if (hasSetApplic(clazz) && !query.areApplicabilityTokensIncluded()) {
-               getSetApplic(clazz).invoke(returnObj,
-                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
-            }
-            artifactList.add(returnObj);
-         }
-      }
-      return artifactList;
+      return fetchCollection(query, branch);
    }
 
    @Override
    public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      List<T> artifactList = new LinkedList<T>();
       /**
        * Perform a query using the: relation defined in query.getRelated()(if it exists) attribute type id list defined
        * in query.getQueries() value list defined in query.getQueries()
@@ -289,11 +223,21 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (RelationTypeSide rel : followRelations) {
          executeQuery = executeQuery.follow(rel);
       }
-      for (ArtifactReadable artifact : executeQuery.asArtifacts()) {
+      return fetchCollection(executeQuery, branch);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), isExact, clazz);
+   }
+
+   private Collection<T> fetchCollection(QueryBuilder query, BranchId branch) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      List<T> artifactList = new LinkedList<T>();
+      for (ArtifactReadable artifact : query.asArtifacts()) {
          if (artifact.isValid()) {
-            T returnObj = clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-            if (hasSetApplic(clazz) && !executeQuery.areApplicabilityTokensIncluded()) {
-               getSetApplic(clazz).invoke(returnObj,
+            T returnObj = this.getType().getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+            if (hasSetApplic(this.getType()) && !query.areApplicabilityTokensIncluded()) {
+               getSetApplic(this.getType()).invoke(returnObj,
                   orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
             }
             artifactList.add(returnObj);
@@ -302,9 +246,32 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       return artifactList;
    }
 
+   private T fetchSingle(QueryBuilder query, BranchId branch) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      ArtifactReadable artifact = query.asArtifactOrSentinel();
+      if (artifact.isValid()) {
+         T returnObj = this.getType().getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
+         if (hasSetApplic(this.getType()) && !query.areApplicabilityTokensIncluded()) {
+            getSetApplic(this.getType()).invoke(returnObj,
+               orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
+         }
+         return returnObj;
+      }
+      return this.getType().getDeclaredConstructor().newInstance();
+   }
+
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), isExact, clazz);
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId, Collection<RelationTypeSide> relations) throws IllegalArgumentException, SecurityException {
+      List<ArtifactMatch> artifactList = new LinkedList<ArtifactMatch>();
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
+      for (RelationTypeSide relation : relations) {
+         query = query.andRelatedTo(relation, relatedId);
+      }
+      for (ArtifactReadable artifact : query.asArtifacts()) {
+         if (artifact.isValid()) {
+            artifactList.add(new ArtifactMatch(artifact));
+         }
+      }
+      return artifactList;
    }
 
 }

@@ -17,12 +17,13 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTypeToken> {
+public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTypeToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    ArtifactAccessor<PlatformTypeToken> getAccessor();
 

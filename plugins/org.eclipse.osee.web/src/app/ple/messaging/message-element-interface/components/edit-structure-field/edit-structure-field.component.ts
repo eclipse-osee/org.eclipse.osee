@@ -16,6 +16,7 @@ import { debounceTime, distinctUntilChanged, map, scan, share, switchMap, tap } 
 import { EnumsService } from '../../../shared/services/http/enums.service';
 import { CurrentStructureService } from '../../services/current-structure.service';
 import { structure } from '../../../shared/types/structure';
+import { WarningDialogService } from '../../../shared/services/ui/warning-dialog.service';
 
 @Component({
   selector: 'osee-messaging-edit-structure-field',
@@ -49,7 +50,8 @@ export class EditStructureFieldComponent<R extends keyof structure=any,T extends
     tap(() => {
       this._structure.id = this.structureId;
     }),
-    switchMap(val=>this.structureService.partialUpdateStructure(this._structure))
+    switchMap(()=>this.warningService.openStructureDialog(this._structure)),
+    switchMap(val=>this.structureService.partialUpdateStructure(val))
   )
   categories = this.enumService.categories;
   applics = this.structureService.applic;
@@ -57,10 +59,11 @@ export class EditStructureFieldComponent<R extends keyof structure=any,T extends
   private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
     scan((acc, curr) => { if (acc.type === curr[1]) { acc.count++ } else { acc.count = 0; acc.type = curr[1] } acc.value = curr[0];return acc; }, { count: 0, type: '',value:undefined } as { count: number, type: string | null,value:T|undefined }),
     switchMap((update) => iif(() => update.type === null, of(true).pipe(
-      switchMap(val=>this.structureService.partialUpdateStructure(this._structure))
+      switchMap(()=>this.warningService.openStructureDialog(this._structure)),
+      switchMap(val=>this.structureService.partialUpdateStructure(val))
     ), of(false))),
   )
-  constructor (private structureService: CurrentStructureService, private enumService: EnumsService) {
+  constructor (private structureService: CurrentStructureService, private enumService: EnumsService, private warningService: WarningDialogService) {
     this._updateValue.subscribe();
     this._immediateUpdateValue.subscribe();
    }

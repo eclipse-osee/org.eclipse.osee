@@ -29,6 +29,8 @@ import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsServic
 import { unitsMock } from 'src/app/ple/messaging/shared/mocks/unit.mock';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 import { SharedMessagingModule } from 'src/app/ple/messaging/shared/shared-messaging.module';
+import { warningDialogServiceMock } from '../../../../shared/mocks/warning-dialog.ui.service.mock';
+import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
 import { CurrentStructureService } from '../../../services/current-structure.service';
 import { EditElementFieldComponent } from './edit-element-field.component';
@@ -44,7 +46,8 @@ describe('EditElementFieldComponent', () => {
       imports: [NoopAnimationsModule,MatIconModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
       providers: [{ provide: CurrentStructureService, useValue: CurrentStateServiceMock },
         { provide: EnumsService, useValue:enumsServiceMock },
-        { provide: ActivatedRoute, useValue: {} }],
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: WarningDialogService, useValue: warningDialogServiceMock }],
       declarations: [ EditElementFieldComponent ]
     })
     .compileComponents();

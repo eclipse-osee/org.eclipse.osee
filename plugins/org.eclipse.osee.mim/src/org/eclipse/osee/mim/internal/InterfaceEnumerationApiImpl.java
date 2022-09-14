@@ -19,8 +19,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
+import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -31,13 +33,21 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
 
    private ArtifactAccessor<InterfaceEnumeration> accessor;
+   private final List<RelationTypeSide> affectedRelations;
    public InterfaceEnumerationApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceEnumerationAccessor(orcsApi));
+      this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
    @Override
    public ArtifactAccessor<InterfaceEnumeration> getAccessor() {
       return this.accessor;
+   }
+
+   private List<RelationTypeSide> createAffectedRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceEnumeration_EnumerationState);
+      return relations;
    }
 
    /**
@@ -77,6 +87,16 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceEnumeration>();
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
    }
 
 }

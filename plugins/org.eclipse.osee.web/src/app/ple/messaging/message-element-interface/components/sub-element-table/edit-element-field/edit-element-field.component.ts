@@ -10,20 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, scan, share, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, scan, share, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CurrentStructureService } from '../../../services/current-structure.service';
 import { element } from '../../../../shared/types/element';
 import { PlatformType } from '../../../../shared/types/platformType';
+import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
 
 @Component({
   selector: 'osee-messaging-edit-element-field',
   templateUrl: './edit-element-field.component.html',
   styleUrls: ['./edit-element-field.component.sass']
 })
-export class EditElementFieldComponent<T extends keyof element=any> implements OnInit {
+export class EditElementFieldComponent<T extends keyof element = any> implements OnInit, OnDestroy {
+  private _done = new Subject();
   availableTypes = this.structureService.types;
   @Input() structureId: string = '';
   @Input() elementId: string = '';
@@ -68,13 +70,15 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
     tap(() => {
       this._element.id = this.elementId;
     }),
-    switchMap(()=>this.structureService.partialUpdateElement(this._element,this.structureId))
+    switchMap(()=>this.warningService.openElementDialog(this._element)),
+    switchMap((value)=>this.structureService.partialUpdateElement(value,this.structureId))
   )
   private _focus = new Subject<string | null>();
   private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
     scan((acc, curr) => { if (acc.type === curr[1]) { acc.count++ } else { acc.count = 0; acc.type = curr[1] } acc.value = curr[0];return acc; }, { count: 0, type: '',value:undefined } as { count: number, type: string | null,value:T|undefined }),
     switchMap((update) => iif(() => update.type === null, of(true).pipe(
-      switchMap(()=>this.structureService.partialUpdateElement(this._element,this.structureId))
+      switchMap(()=>this.warningService.openElementDialog(this._element)),
+      switchMap((value)=>this.structureService.partialUpdateElement(value,this.structureId))
     ), of(false))),
   )
   filteredTypes = combineLatest([this._typeValue,this.availableTypes]).pipe(
@@ -82,6 +86,7 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
       filter((val: PlatformType) => val.name.toLowerCase().includes(this.isString(this.value)?this.value.toLowerCase():this.value as unknown as string)),
       scan((acc, curr) => [...acc, curr], [] as PlatformType[]),
     )),
+    takeUntil(this._done)
   )
   private _type: Subject<PlatformType> = new Subject();
   private _sendType = this._type.pipe(
@@ -97,12 +102,15 @@ export class EditElementFieldComponent<T extends keyof element=any> implements O
     x: '0',
     y:'0'
   }
-  constructor (private structureService: CurrentStructureService,private route: ActivatedRoute) {
+  constructor (private structureService: CurrentStructureService,private warningService: WarningDialogService) {
     this._updateValue.subscribe();
     this._immediateUpdateValue.subscribe();
     this._sendType.subscribe();
     this._updateUnits.subscribe();
    }
+  ngOnDestroy(): void {
+    this._done.next();
+  }
 
   ngOnInit(): void {
   }

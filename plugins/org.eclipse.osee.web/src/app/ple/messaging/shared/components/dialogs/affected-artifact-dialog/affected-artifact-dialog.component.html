@@ -1,0 +1,29 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Warning - Attribute affects multiple artifacts</h1>
+<mat-dialog-content>
+    The following {{data.affectedObjectType}}(s) will be affected by your change:
+    <br>
+    <ng-container *ngFor="let artifact of data.affectedArtifacts">
+        <mat-label>{{artifact.name}}</mat-label>
+        <br>
+    </ng-container>
+</mat-dialog-content>
+<br>
+Do you wish to proceed with your change?
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()" data-cy="cancel-btn">Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="data" color="primary" data-cy="submit-btn">
+        Ok
+    </button>
+</mat-dialog-actions>
