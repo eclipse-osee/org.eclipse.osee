@@ -31,6 +31,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../environments/environment';
 import { UserHeaderService } from './userdata/services/user-header.service';
 import { NavigationModule } from './navigation/navigation.module';
+import { UrlSerializer } from '@angular/router';
+import { OseeUrlSerializer } from './UrlSerializer';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,7 @@ import { NavigationModule } from './navigation/navigation.module';
     BrowserAnimationsModule,
     NavigationModule
   ],
-  providers: [httpInterceptorProviders,{ provide: UserHeaderService, useClass: environment.headerService }],
+  providers: [httpInterceptorProviders,{ provide: UserHeaderService, useClass: environment.headerService },{ provide: UrlSerializer, useClass: OseeUrlSerializer }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
