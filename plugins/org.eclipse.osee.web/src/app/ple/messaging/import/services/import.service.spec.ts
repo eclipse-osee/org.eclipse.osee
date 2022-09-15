@@ -56,12 +56,12 @@ describe('ImportService', () => {
       service.ImportFile = new File([], "");
       service.ImportInProgress = true;
       cold("-a").subscribe(() => service.toggleDone = true);
-      expectObservable(service.sendTransaction).toBe("a|", {a:transactionResultMock});
+      expectObservable(service.sendTransaction).toBe("(a|)", {a:transactionResultMock});
     })
   })
 
   it('should get import summary', () => {
-    scheduler.run(({ expectObservable,cold }) => {
+    scheduler.run(() => {
       // The summary request should not be sent until an import option and file are selected
       service.BranchId = '10';
       service.SelectedImportOption = importOptionsMock[0];

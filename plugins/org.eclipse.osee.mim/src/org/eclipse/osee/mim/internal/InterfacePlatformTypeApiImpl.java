@@ -85,6 +85,16 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
+   public List<PlatformTypeToken> getAll(BranchId branch) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, PlatformTypeToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         return new LinkedList<>();
+      }
+   }
+
+   @Override
    public PlatformTypeToken getWithElementRelations(BranchId branch, ArtifactId platformTypeId) {
       try {
          return this.getAccessor().get(branch, platformTypeId,
@@ -129,6 +139,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       try {
          return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, PlatformTypeToken.class);
       } catch (Exception ex) {
+         //
       }
       return new LinkedList<PlatformTypeToken>();
    }
@@ -139,6 +150,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
          return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
             PlatformTypeToken.class);
       } catch (Exception ex) {
+         //
       }
       return new LinkedList<PlatformTypeToken>();
    }
@@ -212,6 +224,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
          return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }

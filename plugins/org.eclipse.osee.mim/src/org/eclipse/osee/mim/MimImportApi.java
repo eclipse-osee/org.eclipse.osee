@@ -14,7 +14,7 @@ package org.eclipse.osee.mim;
 
 import org.eclipse.osee.mim.types.MimImportSummary;
 
-public interface ICDImportApi {
+public interface MimImportApi {
 
    MimImportSummary getSummary();
 

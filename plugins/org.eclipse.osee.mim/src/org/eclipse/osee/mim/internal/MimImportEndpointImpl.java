@@ -22,27 +22,27 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.mim.ICDImportApi;
+import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.MimImportApi;
 import org.eclipse.osee.mim.MimImportEndpoint;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.MimImportToken;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Ryan T. Baldwin
  */
 public class MimImportEndpointImpl implements MimImportEndpoint {
 
-   private final OrcsApi orcsApi;
+   private final MimApi mimApi;
 
-   public MimImportEndpointImpl(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+   public MimImportEndpointImpl(MimApi mimApi) {
+      this.mimApi = mimApi;
    }
 
    @Override
    public List<MimImportToken> getImportOptions() {
       List<MimImportToken> importOptions = new LinkedList<>();
-      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(BranchId.valueOf(570L)).andIsOfType(
+      for (ArtifactReadable art : mimApi.getOrcsApi().getQueryFactory().fromBranch(BranchId.valueOf(570L)).andIsOfType(
          CoreArtifactTypes.MimImport).asArtifacts()) {
          if (art.isValid()) {
             importOptions.add(new MimImportToken(art));
@@ -57,8 +57,24 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
          // Transfer to output stream to prevent the stream from closing mid-read
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          stream.transferTo(outputStream);
-         ICDImportApi importer =
-            new IcdImportApiImpl(branch, new ByteArrayInputStream(outputStream.toByteArray()), orcsApi);
+         MimImportApi importer =
+            new IcdImportApiImpl(branch, new ByteArrayInputStream(outputStream.toByteArray()), mimApi);
+         outputStream.close();
+         stream.close();
+         return importer.getSummary();
+      } catch (IOException ex) {
+         System.out.println(ex);
+         return new MimImportSummary();
+      }
+   }
+
+   @Override
+   public MimImportSummary getTypesImportSummary(InputStream stream) {
+      try {
+         // Transfer to output stream to prevent the stream from closing mid-read
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         stream.transferTo(outputStream);
+         MimImportApi importer = new PlatformTypeImportApiImpl(new ByteArrayInputStream(outputStream.toByteArray()));
          outputStream.close();
          stream.close();
          return importer.getSummary();

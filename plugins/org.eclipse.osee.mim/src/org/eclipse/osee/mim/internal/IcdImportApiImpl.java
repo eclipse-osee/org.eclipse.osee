@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
-import org.eclipse.osee.mim.ICDImportApi;
+import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.MimImportApi;
 import org.eclipse.osee.mim.types.InterfaceElementImportToken;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
@@ -37,23 +37,22 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.PlatformTypeImportToken;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Ryan T. Baldwin
  */
-public class IcdImportApiImpl implements ICDImportApi {
+public class IcdImportApiImpl implements MimImportApi {
 
    private final ExcelWorkbookReader reader;
-   private final OrcsApi orcsApi;
+   private final MimApi mimApi;
    private final BranchId branch;
    private MimImportSummary summary;
 
    private Long id = 1L;
 
-   public IcdImportApiImpl(BranchId branch, InputStream inputStream, OrcsApi orcsApi) {
+   public IcdImportApiImpl(BranchId branch, InputStream inputStream, MimApi mimApi) {
       this.reader = new ExcelWorkbookReader(inputStream, WorkbookFormat.XLSX);
-      this.orcsApi = orcsApi;
+      this.mimApi = mimApi;
       this.branch = branch;
    }
 
@@ -117,18 +116,16 @@ public class IcdImportApiImpl implements ICDImportApi {
          rowIndex++;
       }
 
-      List<PlatformTypeToken> existingPlatformTypes = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
-         CoreArtifactTypes.InterfacePlatformType).asArtifacts().stream().map(a -> new PlatformTypeToken(a)).collect(
-            Collectors.toList());
+      List<PlatformTypeToken> existingPlatformTypes = mimApi.getInterfacePlatformTypeApi().getAll(branch);
       Map<String, InterfaceElementImportToken> elements = new HashMap<>();
       Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
       List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
 
       for (PlatformTypeToken type : existingPlatformTypes) {
-         String typeName = type.getInterfaceLogicalType().equals("enumeration") ? type.getName() : getPlatformTypeName(
-            type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
-            type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeUnits(),
-            Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
+         String typeName = type.getInterfaceLogicalType().equals("enumeration") ? type.getName().replace(' ',
+            '_').toUpperCase() : getPlatformTypeName(type.getInterfaceLogicalType(),
+               type.getInterfacePlatformTypeMinval(), type.getInterfacePlatformTypeMaxval(),
+               type.getInterfacePlatformTypeUnits(), Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
          platformTypes.put(typeName, new PlatformTypeImportToken(type.getId(), type.getName()));
       }
 
@@ -332,6 +329,7 @@ public class IcdImportApiImpl implements ICDImportApi {
             enumName = enumName.contains("See Taskfile Type") ? "Taskfile Type" : enumName;
             enumName =
                enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches("^\\d+\\s*") ? name : enumName;
+            enumName = enumName.replace(' ', '_').toUpperCase();
             if (platformTypes.containsKey(enumName)) {
                pType = platformTypes.get(enumName);
             } else {

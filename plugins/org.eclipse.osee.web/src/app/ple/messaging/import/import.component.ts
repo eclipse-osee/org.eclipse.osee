@@ -14,7 +14,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { iif, of } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { RouteStateService } from '../connection-view/services/route-state-service.service';
 import { ImportService } from './services/import.service';
 
@@ -47,7 +47,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   selectedImportFileName = this.importService.importFile.pipe(
     switchMap(file => iif(() => file === undefined,
       of(''),
-      of(file!.name)
+      of(file?.name)
     ))
   )
 
@@ -56,8 +56,8 @@ export class ImportComponent implements OnInit, OnDestroy {
   )
 
   selectImportOption(event: MatSelectChange) {
+    this.importService.reset()
     this.importService.SelectedImportOption = event.value;
-    this.importService.ImportSuccess = undefined;
   }
 
   selectFile(event: Event) {
