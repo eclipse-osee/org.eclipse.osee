@@ -101,7 +101,7 @@ public class ExcelWorkbookReader {
    }
 
    public double getCellNumericValue(int rowIndex, int cellIndex) {
-      return (double) getCellValue(rowIndex, cellIndex);
+      return Double.parseDouble(getCellValue(rowIndex, cellIndex).toString());
    }
 
    public String getCellFormulaValue(int rowIndex, int cellIndex) {

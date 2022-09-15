@@ -41,6 +41,12 @@ public interface MimImportEndpoint {
    @Path("icd/{branchId}")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.MULTIPART_FORM_DATA)
-   public MimImportSummary getImportSummary(@PathParam("branchId") BranchId branch, @Multipart("file") InputStream file);
+   public MimImportSummary getImportSummary(@PathParam("branchId") BranchId branch, @Multipart("file") InputStream stream);
+
+   @POST
+   @Path("types")
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.MULTIPART_FORM_DATA)
+   public MimImportSummary getTypesImportSummary(@Multipart("file") InputStream stream);
 
 }

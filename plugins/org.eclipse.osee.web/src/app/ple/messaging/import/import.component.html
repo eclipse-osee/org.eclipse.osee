@@ -48,16 +48,20 @@
                                 <ng-container *ngIf="(importSummary|async) as _importSummary">
                                     <div class="import-summary">
                                         <h3>The following will be imported from {{selectedImportFileName|async}}</h3>
-                                        <p>Node: {{_importSummary.primaryNode.name}}</p>
-                                        <p>Node: {{_importSummary.secondaryNode.name}}</p>
-                                        <p>Connection: {{_importSummary.primaryNode.name}}_{{_importSummary.secondaryNode.name}}</p>
-                                        <p>Messages: {{_importSummary.messages.length}}</p>
-                                        <p>SubMessages: {{_importSummary.subMessages.length}}</p>
-                                        <p>Structures: {{_importSummary.structures.length}}</p>
-                                        <p>Elements: {{_importSummary.elements.length}}</p>
-                                        <p>Platform Types: {{_importSummary.platformTypes.length}}</p>
-                                        <p>Enum Sets: {{_importSummary.enumSets.length}}</p>
-                                        <p>Enums: {{_importSummary.enums.length}}</p>
+                                        <ul>
+                                        <ng-container *ngIf="_importSummary.primaryNode && _importSummary.secondaryNode">
+                                            <li>Node: {{_importSummary.primaryNode.name}}</li>
+                                            <li>Node: {{_importSummary.secondaryNode.name}}</li>
+                                            <li>Connection: {{_importSummary.primaryNode.name}}_{{_importSummary.secondaryNode.name}}</li>
+                                        </ng-container>
+                                        <li *ngIf="_importSummary.messages.length > 0">Messages: {{_importSummary.messages.length}}</li>
+                                        <li *ngIf="_importSummary.subMessages.length > 0">SubMessages: {{_importSummary.subMessages.length}}</li>
+                                        <li *ngIf="_importSummary.structures.length > 0">Structures: {{_importSummary.structures.length}}</li>
+                                        <li *ngIf="_importSummary.elements.length > 0">Elements: {{_importSummary.elements.length}}</li>
+                                        <li *ngIf="_importSummary.platformTypes.length > 0">Platform Types: {{_importSummary.platformTypes.length}}</li>
+                                        <li *ngIf="_importSummary.enumSets.length > 0">Enum Sets: {{_importSummary.enumSets.length}}</li>
+                                        <li *ngIf="_importSummary.enums.length > 0">Enums: {{_importSummary.enums.length}}</li>
+                                        </ul>
                                     </div>
                                     <button mat-raised-button color="primary" (click)="performImport()" [disabled]="!_importSummary">Import</button>
                                 </ng-container>

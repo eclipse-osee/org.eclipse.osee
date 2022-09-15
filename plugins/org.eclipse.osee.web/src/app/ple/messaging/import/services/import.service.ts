@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { filter, map, reduce, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, reduce, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, from, iif, of, OperatorFunction, Subject } from 'rxjs';
 import { ImportOption, ImportSummary } from '../../shared/types/Import';
 import { NodeService } from '../../connection-view/services/node.service';
@@ -56,7 +56,7 @@ export class ImportService {
       ), 
       of(undefined))
     ),
-    shareReplay({bufferSize:1,refCount:true}),
+    shareReplay({bufferSize:1,refCount:true})
   )
 
   private _importTx$ = this.branchId.pipe(
@@ -68,7 +68,7 @@ export class ImportService {
     switchMap(summary => iif (() => summary?.primaryNode !== null && summary?.secondaryNode != null,
       of([summary!.primaryNode, summary!.secondaryNode]), 
       of([] as nodeToken[]))
-    )
+    ),
   )
 
   private _messages$ = this._importSummary$.pipe(
@@ -137,24 +137,26 @@ export class ImportService {
   )
 
   private _nodesTx$ = combineLatest([this._importTx$, this._nodes$, this.branchId]).pipe(
-    switchMap(([tx, nodes, branchId]) => from(nodes).pipe(
-      switchMap((node, index) => of(node).pipe(
-        filter(n => n.name !== ""),
-        tap(node => this.nodeService.createNode(branchId, {name: node.name} as node, tx, node.id)),
-        switchMap(node => this.connectionService.createNodeRelation(node.id!, index%2===1, "connection").pipe(
-          switchMap(nodeRelation => this.connectionService.addRelation(branchId, nodeRelation, tx))
+    switchMap(([tx, nodes, branchId]) => of(nodes).pipe(
+      switchMap(nodes => from(nodes).pipe(
+        switchMap((node, index) => of(node).pipe(
+          filter(n => n.name !== ""),
+          tap(node => this.nodeService.createNode(branchId, {name: node.name} as node, tx, node.id)),
+          switchMap(node => this.connectionService.createNodeRelation(node.id!, index%2===1, "connection").pipe(
+            switchMap(nodeRelation => this.connectionService.addRelation(branchId, nodeRelation, tx))
+          ))
         ))
       )),
-      switchMap(_ => of(tx))
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
   private _connectionTx$ = combineLatest([this._importTx$, this._nodes$, this.branchId]).pipe(
     switchMap(([tx, nodes, branchId]) => of(nodes).pipe(
-      switchMap(nodes => iif(() => nodes.length===2 && nodes[0].name !== "" && nodes[1].name !== "", 
-        this.connectionService.createConnectionNoRelations(branchId, {name: nodes[0].name+"_"+nodes[1].name, transportType:transportType.HSDN} as connection, tx, "connection"), 
+      switchMap(nodes => nodes.length===2 && nodes[0].name !== "" && nodes[1].name !== "" ?
+        this.connectionService.createConnectionNoRelations(branchId, {name: nodes[0].name+"_"+nodes[1].name, transportType:transportType.HSDN} as connection, tx, "connection") :
         of(tx))
-      )
     ))
   )
 
@@ -172,7 +174,8 @@ export class ImportService {
           )),
         ))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -182,7 +185,8 @@ export class ImportService {
         map(s => ({id: s.id, name: s.name, description: s.description, interfaceSubMessageNumber: s.interfaceSubMessageNumber} as subMessage)),
         switchMap(subMessage => this.subMessageService.createSubMessage(branchId,subMessage,[],tx,subMessage.id))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -190,9 +194,10 @@ export class ImportService {
     switchMap(([tx, structures, branchId]) => of(structures).pipe(
       switchMap(structs => from(structs).pipe(
         map(s => ({id: s.id, name: s.name, description: s.description, interfaceMaxSimultaneity: s.interfaceMaxSimultaneity, interfaceMinSimultaneity: s.interfaceMinSimultaneity, interfaceTaskFileType: s.interfaceTaskFileType, interfaceStructureCategory: s.interfaceStructureCategory} as structure)),
-        switchMap(structure => this.structureService.createStructure(structure, branchId, [], tx, structure.id))
+        switchMap(structure => this.structureService.createStructure(structure, branchId, [], tx, structure.id)),
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -201,7 +206,8 @@ export class ImportService {
       switchMap(elements => from(elements).pipe(
         switchMap(element => this.elementService.createElement(element, branchId, [], tx, element.id))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
   
@@ -210,7 +216,8 @@ export class ImportService {
       switchMap(pTypes => from(pTypes).pipe(
         switchMap(pType => this.typesService.createPlatformType(branchId, pType, [], tx, pType.id))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -220,7 +227,8 @@ export class ImportService {
         map(e => ({id: e.id, name: e.name, applicability: e.applicability, description: e.description } as enumSet)),
         switchMap(enumSet => this.enumSetService.createEnumSet(branchId, enumSet, [], tx, enumSet.id))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -229,7 +237,8 @@ export class ImportService {
       switchMap(enums => from(enums).pipe(
         switchMap(enumeration => this.enumSetService.createEnum(branchId, enumeration, [], tx, enumeration.id))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -240,7 +249,8 @@ export class ImportService {
           switchMap(relation => this.subMessageService.addRelation(branchId, relation, tx))
         ))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -251,7 +261,8 @@ export class ImportService {
           switchMap(relation => this.structureService.addRelation(branchId, relation, tx))
         ))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -262,7 +273,8 @@ export class ImportService {
           switchMap(relation => this.elementService.addRelation(branchId, relation, tx))
         ))
       )),
-      reduce(() => tx, tx)
+      reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -274,6 +286,7 @@ export class ImportService {
         ))
       )),
       reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -285,6 +298,7 @@ export class ImportService {
         ))
       )),
       reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
 
@@ -296,8 +310,14 @@ export class ImportService {
         ))
       )),
       reduce(() => tx, tx),
+      startWith(tx)
     ))
   )
+
+  // combineLatest can only support up to 6 observables, so we need multiple combineLatest
+  private _combined1$ = combineLatest(([this._nodesTx$, this._connectionTx$, this._messagesTx$, this._subMessagesTx$, this._structuresTx$, this._elementsTx$]));
+  private _combined2$ = combineLatest([this._platformTypesTx$, this._enumSetTx$, this._enumsTx$, this._messageSubMessageRelationsTx$, this._subMessageStructureRelationsTx$]);
+  private _combined3$ = combineLatest([ this._structureElementRelationsTx$, this._elementPlatformTypeRelationsTx$, this._platformTypeEnumSetRelationsTx$, this._enumSetEnumRelationsTx$]);
 
   private _combineTxs(branchId:string, ...txs:transaction[]) {
     const importTx: transaction = {branch:branchId, txComment:"MIM Import", createArtifacts: [], addRelations: []};
@@ -308,18 +328,14 @@ export class ImportService {
     return of(importTx);
   }
 
-  // combineLatest only supports up to 6 stream inputs at a time, so need to combineLatest multiple times to get them all
-  private _sendTransaction$ = combineLatest(([this.branchId, this._nodesTx$, this._connectionTx$, this._messagesTx$, this._subMessagesTx$, this._structuresTx$])).pipe(
-    switchMap(([branchId, nodesTx, connectionTx, messagesTx, subMessagesTx, structuresTx]) => combineLatest([this._elementsTx$, this._platformTypesTx$, this._messageSubMessageRelationsTx$, this._subMessageStructureRelationsTx$, this._structureElementRelationsTx$, this._elementPlatformTypeRelationsTx$]).pipe(
-      switchMap(([elementsTx, platformTypesTx, messageSubMessageRelationsTx, subMessageStructureRelationsTx, structureElementRelationsTx, elementPlatformTypeRelationsTx]) => combineLatest([this._enumSetTx$, this._enumsTx$, this._platformTypeEnumSetRelationsTx$, this._enumSetEnumRelationsTx$]).pipe(
-        switchMap(([enumSetsTx, enumsTx, platformTypeEnumSetRelationsTx, enumSetEnumRelationsTx]) => this._combineTxs(branchId, nodesTx, connectionTx, messagesTx, subMessagesTx, structuresTx, elementsTx, platformTypesTx, enumSetsTx, enumsTx, messageSubMessageRelationsTx, subMessageStructureRelationsTx, structureElementRelationsTx, elementPlatformTypeRelationsTx, platformTypeEnumSetRelationsTx, enumSetEnumRelationsTx).pipe(
-          switchMap(importTx => this.transactionService.performMutation(importTx).pipe(
-            tap(res => {
-              this.ImportSuccess = res.results.success;
-              this.ImportInProgress = false;
-            })
-          ))
-        ))
+  private _sendTransaction$ = combineLatest(([this.branchId, this._combined1$, this._combined2$, this._combined3$])).pipe(
+    take(1),
+    switchMap(([branchId, combined1, combined2, combined3]) => this._combineTxs(branchId, ...combined1, ...combined2, ...combined3).pipe(
+      switchMap(importTx => this.transactionService.performMutation(importTx).pipe(
+        tap(res => {
+          this.ImportSuccess = res.results.success;
+          this.ImportInProgress = false;
+        })
       ))
     )),
     takeUntil(this._done$)
