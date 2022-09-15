@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,6 +38,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  * @author Andrew M. Finkbeiner
  * @author Ryan D. Brooks
  */
+
+@JsonSerialize(using = ArtifactReadableSerializer.class)
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
    ArtifactReadable SENTINEL = new ArtifactReadableImpl();
 
