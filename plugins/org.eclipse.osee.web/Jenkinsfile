@@ -6,49 +6,81 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
- containers:
- - name: node
-   image: timbru31/node-chrome:14-alpine
-   command:
-   - cat
-   tty: true
+  containers:
+  - name: node
+    image: timbru31/node-chrome:16-alpine
+    tty: true
+    command:
+    - cat
+    resources:
+      limits:
+        memory: 2Gi
+        cpu: 1
+      requests:
+        memory: 2Gi
+        cpu: 1
+    env:
+    - name: "HOME"
+      value: "/home/jenkins"
+    - name: "CHROME_BIN"
+      value: "/usr/bin/chromium-browser"
+    volumeMounts:
+    - mountPath: "/home/jenkins"
+      name: "jenkins-home"
+      readOnly: false
+  volumes:
+  - name: "jenkins-home"
+    emptyDir: {}
 """
     }
   }
-  options {
-    skipDefaultCheckout true
-  }
+  // options {
+  //   skipDefaultCheckout true
+  // }
+
   stages {
-
- stage('Checkout git'){
-   steps {
-        checkout([$class:'GitSCM',
-        branches:[[name: '*/dev']],
-        extensions:[[$class: 'CloneOption', timeout: 120]],
-        gitTool:'Default',
-        userRemoteConfigs:[[url: 'https://git.eclipse.org/r/osee/org.eclipse.osee.git']]
-        ])
-
-
-   }
-
-
- }
-
-    stage('Run node') {
-
-
-
+    // stage('Clone'){
+    //   steps {
+    //     checkout([$class:'GitSCM',
+    //       branches:[[name: "${GERRIT_REFSPEC}:change-${GERRIT_CHANGE_NUMBER}-${GERRIT_PATCHSET_NUMBER}"]],
+    //       extensions:[[$class: 'CloneOption', timeout: 120]],
+    //       gitTool:'Default',
+    //       userRemoteConfigs:[[url: 'https://git.eclipse.org/r/osee/org.eclipse.osee.git']]
+    //     ])
+    //   }
+    // }
+  
+    stage('Install dependencies') {
       steps {
-
         container('node') {
-
           sh 'node -v'
-
+          sh 'npm -v'
+          dir('plugins/org.eclipse.osee.web') {
+            sh 'npm config set timeout=100000'
+            sh 'npm ci'
+          }
         }
+      }
+    }
 
+    stage('Build Production') {
+      steps {
+        container('node') {
+          dir('plugins/org.eclipse.osee.web') {
+            sh 'npx -p @angular/cli ng build -c production'
+          }
+        }
+      }
+    }
+  
+    stage('Run tests') {
+      steps {
+        container('node') {
+          dir('plugins/org.eclipse.osee.web') {
+            sh 'npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false'
+          }
+        }
       }
     }
   }
 }
-
