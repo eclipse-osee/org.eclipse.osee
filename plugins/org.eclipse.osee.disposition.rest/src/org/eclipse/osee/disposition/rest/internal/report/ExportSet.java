@@ -190,12 +190,18 @@ public class ExportSet {
       this.dispoApi = dispoApi;
    }
 
-   public void runDispoReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream) {
+   public void runDispoReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream, String fileName) {
       List<DispoItem> items = dispoApi.getDispoItems(branch, setPrimary.getGuid(), true);
 
       try {
-         Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
-         ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);
+         ExcelXmlWriter sheetWriter;
+
+         if (fileName != "") {
+            sheetWriter = new ExcelXmlWriter(fileName, null);
+         } else {
+            Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
+            sheetWriter = new ExcelXmlWriter(writer);
+         }
 
          String[] headers = getHeadersDetailed();
          int columns = headers.length;
@@ -249,7 +255,7 @@ public class ExportSet {
 
    }
 
-   public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream) {
+   public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream, String fileName) {
       Map<String, String> resolutionsValueToText = new HashMap<>();
       Set<CoverageLevel> levelsInSet = new HashSet<>();
       List<CoverageLevel> levelsInList = new ArrayList<>();
@@ -286,8 +292,13 @@ public class ExportSet {
       }
 
       try {
-         Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
-         ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);
+         ExcelXmlWriter sheetWriter;
+         if (fileName != "") {
+            sheetWriter = new ExcelXmlWriter(fileName, null);
+         } else {
+            Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
+            sheetWriter = new ExcelXmlWriter(writer);
+         }
 
          String[] headers = getHeadersCoverage();
          int columns = headers.length;

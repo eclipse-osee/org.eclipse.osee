@@ -24,8 +24,10 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -99,9 +101,40 @@ public class DispoAdminResource {
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
             String dispoType = dispoSet.getDispoType();
             if (dispoType.equals("testScript")) {
-               writer.runDispoReport(branch, dispoSet, options, outputStream);
+               writer.runDispoReport(branch, dispoSet, options, outputStream, "");
             } else {
-               writer.runCoverageReport(branch, dispoSet, options, outputStream);
+               writer.runCoverageReport(branch, dispoSet, options, outputStream, "");
+            }
+            outputStream.flush();
+         }
+      };
+      String contentDisposition =
+         String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
+         "application/xml").build();
+   }
+
+   @Path("/{primarySet}/exportToFile")
+   @GET
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   public Response postDispoSetExportDirectory(@Encoded @PathParam("primarySet") String primarySet, @QueryParam("option") String option, @HeaderParam("expoFileName") String expoFileName) {
+      final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
+      final ExportSet writer = new ExportSet(dispoApi);
+      final String options = option;
+      Date date = new Date();
+      String newstring = new SimpleDateFormat("yyyy-MM-dd").format(date);
+      final String fileName = String.format("Coverage_%s", newstring);
+
+      StreamingOutput streamingOutput = new StreamingOutput() {
+
+         @Override
+         public void write(OutputStream outputStream) throws WebApplicationException, IOException {
+            String dispoType = dispoSet.getDispoType();
+            if (dispoType.equals("testScript")) {
+               writer.runDispoReport(branch, dispoSet, options, outputStream, expoFileName);
+            } else {
+               writer.runCoverageReport(branch, dispoSet, options, outputStream, expoFileName);
             }
             outputStream.flush();
          }
