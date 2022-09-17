@@ -134,6 +134,10 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       this(writer, null);
    }
 
+   public ExcelXmlWriter(String fileName, String style) throws IOException {
+      this(fileName, null, defaultEmptyStringXmlRep, DEFAULT_FONT_SIZE);
+   }
+
    /**
     * Calls original constructor with provided style.
     *
@@ -150,6 +154,26 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    public ExcelXmlWriter(Writer writer, String style, String emptyStringRepresentation, int defaultFontSize) throws IOException {
       out = new BufferedWriter(writer);
+      mStyleMap = new HashMap<>();
+      this.emptyStringRepresentation = emptyStringRepresentation;
+      out.write(XML_HEADER);
+
+      out.write("<Styles>\n");
+
+      out.write(String.format(DEFAULT_OSEE_STYLES, defaultFontSize));
+      if (Strings.isValid(style)) {
+         if (stylePattern.matcher(style).matches()) {
+            out.write(style);
+         } else {
+            throw new IllegalArgumentException("incomingStyle must match the pattern " + stylePattern);
+         }
+      }
+      out.write("</Styles>\n");
+   }
+
+   public ExcelXmlWriter(String filePath, String style, String emptyStringRepresentation, int defaultFontSize) throws IOException {
+      FileWriter file = new FileWriter(filePath);
+      out = new BufferedWriter(file);
       mStyleMap = new HashMap<>();
       this.emptyStringRepresentation = emptyStringRepresentation;
       out.write(XML_HEADER);
