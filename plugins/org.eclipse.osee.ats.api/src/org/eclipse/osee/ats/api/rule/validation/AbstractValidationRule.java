@@ -51,7 +51,7 @@ public abstract class AbstractValidationRule {
 
    public void logError(ArtifactToken artifact, String message, XResultData results) {
       String errStr = getHyperlink(artifact, message);
-      results.errorf(errStr);
+      results.errorf(errStr + " \n");
    }
 
    /**
