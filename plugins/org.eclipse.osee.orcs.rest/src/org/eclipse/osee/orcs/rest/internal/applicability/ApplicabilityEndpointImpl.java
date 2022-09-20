@@ -22,12 +22,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -414,4 +417,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return ApplicabilityToken.SENTINEL;
    }
 
+   @Override
+   public List<ApplicabilityUseResultToken> getApplicabilityUsage(String applic, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
+
+      return applicabilityQuery.getApplicabilityUsage(branch, applic, artTypes, attrTypes);
+
+   }
 }

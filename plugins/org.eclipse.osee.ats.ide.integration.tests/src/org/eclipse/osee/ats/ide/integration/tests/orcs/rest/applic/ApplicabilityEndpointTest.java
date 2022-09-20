@@ -30,16 +30,20 @@ import java.util.Map;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -170,6 +174,13 @@ public class ApplicabilityEndpointTest {
       appl.setApplicability(robotIncluded, Collections.singletonList(newArtifact));
       ApplicabilityToken testAppToken = appl.getApplicabilityToken(newArtifact);
       Assert.assertTrue(testAppToken.equals(robotIncluded));
+      List<ArtifactTypeToken> artTypes = new ArrayList<>();
+      List<AttributeTypeToken> attrTypes = new ArrayList<>();
+      artTypes.add(CoreArtifactTypes.MsWordTemplate);
+      attrTypes.add(CoreAttributeTypes.WordTemplateContent);
+      List<ApplicabilityUseResultToken> applicabilityUsage =
+         appl.getApplicabilityUsage("ROBOT_ARM_LIGHT = Included", artTypes, attrTypes);
+      Assert.assertFalse(applicabilityUsage.isEmpty());
       artifactEndpoint.deleteArtifact(DemoBranches.SAW_PL_Working_Branch, newArtifact);
    }
 

@@ -27,12 +27,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
@@ -302,4 +305,11 @@ public interface ApplicabilityEndpoint {
    @Path("applicabilityToken/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    ApplicabilityToken getApplicabilityTokenFromId(@PathParam("id") String id);
+
+   @GET
+   @Path("/artifacts/applic")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ApplicabilityUseResultToken> getApplicabilityUsage(@QueryParam("applic") String applic, @QueryParam("artTypes") List<ArtifactTypeToken> artTypes, @QueryParam("attrTypes") List<AttributeTypeToken> attrTypes);
+
 }

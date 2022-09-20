@@ -17,11 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -82,4 +85,7 @@ public interface ApplicabilityQuery {
    List<ArtifactToken> getConfigurationsForBranch(BranchId branch);
 
    List<String> initializeAllApplicabilityTuples(BranchId branch);
+
+   List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts, List<AttributeTypeToken> atts);
+
 }

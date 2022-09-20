@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -27,12 +28,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -44,6 +50,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
@@ -550,5 +557,77 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<String> appsNoDups = new ArrayList<>(new HashSet<>(apps));
       Collections.sort(appsNoDups);
       return appsNoDups;
+   }
+
+   @Override
+   public List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts, List<AttributeTypeToken> attrs) {
+      List<ApplicabilityUseResultToken> result = new ArrayList<>();
+      Collection<ApplicabilityToken> allApps = getApplicabilityTokens(branch).values();
+
+      if (applic.equals("all")) {
+         allApps.removeIf(a -> a.equals(ApplicabilityToken.BASE));
+         for (ApplicabilityToken appToken : allApps) {
+            searchApplicUsage(branch, result, arts, attrs, appToken);
+         }
+      } else {
+         //first validate that its a valid applicability
+         ApplicabilityToken appToken = allApps.stream().filter(a -> a.getName().equals(applic)).findFirst().get();
+
+         if (appToken.isValid()) {
+            searchApplicUsage(branch, result, arts, attrs, appToken);
+         }
+
+      }
+      return result;
+
+   }
+
+   private void searchApplicUsage(BranchId branch, List<ApplicabilityUseResultToken> result, List<ArtifactTypeToken> arts, List<AttributeTypeToken> attrs, ApplicabilityToken appToken) {
+      String applic = appToken.getName();
+      String featureName = "";
+      String configName = "";
+      List<String> searchStrings = new ArrayList<>();
+
+      /*
+       * Once word content is stored in db can use regex instead Referred to Feature Tagging Guidelines doc for search
+       * strings below
+       */
+      if (applic.startsWith("Config")) {
+         configName = applic.substring(applic.indexOf("=") + 1);
+         searchStrings.add("Configuration[" + configName + "]");
+         searchStrings.add("Configuration[" + configName + " |");
+         searchStrings.add("| " + configName + "]");
+         searchStrings.add("Configuration Not[" + configName + "]");
+         searchStrings.add("Configuration Not[" + configName + " |");
+      } else {
+
+         searchStrings.add("Feature[" + applic + "]");
+         if (!applic.contains("|")) {
+            searchStrings.add("Feature[" + applic + " |");
+            searchStrings.add("| " + applic + "]");
+            if (applic.contains("Included")) {
+               featureName = applic.substring(0, applic.indexOf("=") - 1);
+               searchStrings.add("Feature[" + featureName + "]");
+               searchStrings.add("Feature[" + featureName + " |");
+               searchStrings.add("| " + featureName + "]");
+            }
+
+         }
+
+      }
+      /*
+       * Find artifacts which use the applicability; using Set to prevent duplicates
+       */
+      Set<ArtifactToken> artSet = new HashSet<>();
+      //unfortunately the .and which takes List<AttributeTypeId> cannot accept a List<AttributeTypeToken>
+      List<AttributeTypeId> attrTypes = attrs.stream().map(a -> (AttributeTypeId) (a)).collect(Collectors.toList());
+      artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch, appToken).asArtifactTokens());
+      for (String str : searchStrings) {
+
+         artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(arts).and(attrTypes, str,
+            QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT,
+            QueryOption.TOKEN_MATCH_ORDER__MATCH).asArtifactTokens());
+      }
+      result.add(new ApplicabilityUseResultToken(appToken, artSet));
    }
 }
