@@ -375,7 +375,7 @@ public class LisFileParser implements DispoImporterApi {
 
       try {
          String fileName = sourceFileJoin.getDisplayName();
-         String fullPathToFile = vCastDir + File.separator + fileName.replaceAll(config.getFileExtRegex(), ".LIS");
+         String fullPathToFile = vCastDir + File.separator + lisFile.getLISFile();
          Date lastModified = DispoUtil.getTimestampOfFile(fullPathToFile);
          newItem.setLastUpdate(lastModified);
       } catch (Throwable ex) {
