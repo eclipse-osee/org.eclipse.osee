@@ -10,27 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.internal;
+package org.eclipse.osee.mim;
 
 import java.util.List;
-import org.eclipse.osee.mim.MimApi;
-import org.eclipse.osee.mim.MimReportsEndpoint;
+import org.eclipse.osee.mim.types.MimImportToken;
 import org.eclipse.osee.mim.types.MimReportToken;
 
 /**
- * @author Ryan Baldwin
+ * @author Ryan T. Baldwin
  */
-public class MimReportsEndpointImpl implements MimReportsEndpoint {
+public interface MimArtifactsApi {
 
-   private final MimApi mimApi;
+   List<MimReportToken> getMimReports();
 
-   public MimReportsEndpointImpl(MimApi mimApi) {
-      this.mimApi = mimApi;
-   }
-
-   @Override
-   public List<MimReportToken> getReports() {
-      return mimApi.getMimArtifactsApi().getMimReports();
-   }
+   List<MimImportToken> getMimImports();
 
 }
