@@ -26,6 +26,7 @@ import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.MimArtifactsApi;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeBoolean;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeCharacter;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeDouble;
@@ -76,6 +77,8 @@ public class MimApiImpl implements MimApi {
    private InterfaceEnumerationSetApi interfaceEnumerationSetApi;
 
    private InterfaceDifferenceReportApi interfaceDifferenceReportApi;
+
+   private MimArtifactsApi mimArtifactsApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -134,6 +137,7 @@ public class MimApiImpl implements MimApi {
       this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi, interfaceNodeViewApi,
          interfaceConnectionViewApi, interfaceMessageApi, interfaceSubMessageApi, interfaceStructureApi,
          interfaceElementApi, interfacePlatformApi, interfaceEnumerationSetApi, interfaceEnumerationApi);
+      this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
    }
 
    @Override
@@ -204,6 +208,11 @@ public class MimApiImpl implements MimApi {
    @Override
    public InterfaceDifferenceReportApi getInterfaceDifferenceReportApi() {
       return this.interfaceDifferenceReportApi;
+   }
+
+   @Override
+   public MimArtifactsApi getMimArtifactsApi() {
+      return this.mimArtifactsApi;
    }
 
 }

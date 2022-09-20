@@ -17,11 +17,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
 import org.eclipse.osee.mim.MimImportEndpoint;
@@ -41,14 +38,7 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
 
    @Override
    public List<MimImportToken> getImportOptions() {
-      List<MimImportToken> importOptions = new LinkedList<>();
-      for (ArtifactReadable art : mimApi.getOrcsApi().getQueryFactory().fromBranch(BranchId.valueOf(570L)).andIsOfType(
-         CoreArtifactTypes.MimImport).asArtifacts()) {
-         if (art.isValid()) {
-            importOptions.add(new MimImportToken(art));
-         }
-      }
-      return importOptions;
+      return mimApi.getMimArtifactsApi().getMimImports();
    }
 
    @Override
