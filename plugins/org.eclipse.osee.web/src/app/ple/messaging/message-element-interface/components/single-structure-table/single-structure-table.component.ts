@@ -34,40 +34,31 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
      }
 
   ngOnInit(): void {
-    of(this.route).pipe(
-      switchMap(route => {
-        while (route.parent && !route.snapshot.paramMap.has('structureId')) {
-          route = route.parent;
-        }
-        return of(route);
-      }),
-      filter(activatedRoute => activatedRoute.outlet === 'primary'),
-      switchMap((route) => combineLatest([route.paramMap, route.firstChild?.data || route.url]).pipe(
-        map(([paramMap, data]) => {
+    combineLatest([this.route.paramMap,this.route.data,iif(() => this.router.url.includes('diff'),
+    of(true),
+      of(false))]).pipe(takeUntil(this.structureService.done)).subscribe(([paramMap, data, mode]) => {
+        if (mode) {
           this.structureService.BranchType = paramMap.get('branchType') || '';
           this.structureService.branchId = paramMap.get('branchId') || '';
           this.structureService.messageId = paramMap.get('messageId') || '';
           this.structureService.subMessageId = paramMap.get('subMessageId') || '';
           this.structureService.connection = paramMap.get('connection') || '';
           this.structureService.singleStructureIdValue = paramMap.get('structureId') || '';
-          return data;
-        }),
-        switchMap((data) => iif(() => data.diff !== undefined, of(data).pipe(
-          map(data => {
-            this.structureService.difference = data.diff;
-            return data.diff;
-          })
-        ), of(data).pipe(
-          map(data => {
-            this.structureService.DiffMode = false;
-            this.structureService.difference = [];
-            return data;
-          })
-        )))
-      )),
-      takeUntil(this.structureService.done)
-    ).subscribe();
+          this.structureService.difference = data?.diff;
+          this.structureService.DiffMode = true;
+        } else {
+          this.structureService.BranchType = paramMap.get('branchType') || '';
+          this.structureService.branchId = paramMap.get('branchId') || '';
+          this.structureService.messageId = paramMap.get('messageId') || '';
+          this.structureService.subMessageId = paramMap.get('subMessageId') || '';
+          this.structureService.connection = paramMap.get('connection') || '';
+          this.structureService.singleStructureIdValue = paramMap.get('structureId') || '';
+          this.structureService.DiffMode = false;
+          this.structureService.difference = [];
+        }
+    })
     this.messageData = this.structureId.pipe(
+      filter(id=>id!==''),
       switchMap(structureId => this.structureService.getStructureRepeating(structureId).pipe(
         switchMap((data) => of(new MatTableDataSource<structure | structureWithChanges>([data]))),
         takeUntil(this.structureService.done)

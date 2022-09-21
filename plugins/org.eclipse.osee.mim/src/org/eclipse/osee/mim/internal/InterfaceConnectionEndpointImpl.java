@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,24 +34,12 @@ public class InterfaceConnectionEndpointImpl implements InterfaceConnectionEndpo
 
    @Override
    public Collection<InterfaceConnection> getAllConnections() {
-      try {
-         return interfaceConnectionApi.getAccessor().getAll(branch, InterfaceConnection.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return null;
+      return interfaceConnectionApi.getAll(branch);
    }
 
    @Override
    public InterfaceConnection getConnection(ArtifactId ConnectionId) {
-      try {
-         return interfaceConnectionApi.getAccessor().get(branch, ConnectionId, InterfaceConnection.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return null;
+      return interfaceConnectionApi.get(branch, ConnectionId);
    }
 
 }

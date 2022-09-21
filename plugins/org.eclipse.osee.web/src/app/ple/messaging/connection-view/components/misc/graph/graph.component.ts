@@ -10,24 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { connection, connectionWithChanges,OseeEdge} from '../../../../shared/types/connection';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../../../shared/types/node';
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'osee-connectionview-graph',
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.sass']
 })
-export class GraphComponent implements OnInit {
-
+export class GraphComponent implements OnInit, OnDestroy {
+  private _done = new Subject<void>();
   @Input() editMode: boolean = false;
-  data = this.graphService.nodes;
+  data = this.graphService.nodes.pipe(
+    takeUntil(this._done)
+  );
   update = this.graphService.updated;
   linkPosition = {
     x: "0",
@@ -47,6 +50,10 @@ export class GraphComponent implements OnInit {
 
   _messageRoute = this.graphService.messageRoute
   constructor (private graphService: CurrentGraphService, public dialog:MatDialog) {}
+  ngOnDestroy(): void {
+    this._done.next();
+    this._done.complete();
+  }
 
   ngOnInit(): void {
     this.graphService.update = true;

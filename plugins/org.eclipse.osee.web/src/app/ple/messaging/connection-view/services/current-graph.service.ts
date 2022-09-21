@@ -397,7 +397,7 @@ export class CurrentGraphService {
         //create new array, push prev onto array, set prev 
       }
     })
-    if (tempArray !== []) {
+    if (tempArray.length !==0) {
       returnValue.push(tempArray)
     }
     return returnValue;

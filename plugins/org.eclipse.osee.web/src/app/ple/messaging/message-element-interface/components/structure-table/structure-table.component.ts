@@ -304,7 +304,8 @@ export class StructureTableComponent implements OnInit {
       description: description,
       structure: structure,
       header: header,
-      diffMode:diff==='true'
+      diffMode: diff === 'true',
+      url:this.route.snapshot.pathFromRoot.map(r=>r.url).join().replace(/(diff)/g,'').replace(/,/g,'/').replace(/\/\//g,'')+"/"+id+(diff === 'true'?'/diff':'')
     }
     this.matMenuTrigger.openMenu();
   }

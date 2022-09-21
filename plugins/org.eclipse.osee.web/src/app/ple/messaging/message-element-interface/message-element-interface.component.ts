@@ -44,38 +44,29 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    of(this.route).pipe(
-      switchMap(route => {
-        while (route.firstChild && route.firstChild?.snapshot.paramMap.keys.length !== 0) {
-          route = route.firstChild;
-        }
-        return of(route);
-      }),
-      filter(activatedRoute => activatedRoute.outlet === 'primary'),
-      switchMap((route) => combineLatest([route.paramMap, route.firstChild?.data || route.url]).pipe(
-        map(([paramMap, data]) => {
+    combineLatest([this.route.paramMap,this.route.data,iif(() => this.router.url.includes('diff'),
+    of(true),
+      of(false))]).pipe(takeUntil(this.structureService.done)).subscribe(([paramMap, data, mode]) => {
+        if (mode) {
           this.structureService.BranchType = paramMap.get('branchType') || '';
           this.structureService.branchId = paramMap.get('branchId') || '';
           this.structureService.messageId = paramMap.get('messageId') || '';
           this.structureService.subMessageId = paramMap.get('subMessageId') || '';
           this.structureService.connection = paramMap.get('connection') || '';
           this.structureService.singleStructureIdValue = '';
-          return data;
-        }),
-        switchMap((data) => iif(() => data?.diff !== undefined, of(data).pipe(
-          map(data => {
-            this.structureService.difference = data?.diff;
-            return data?.diff;
-          })
-        ), of(data).pipe(
-          map(data => {
-            this.structureService.DiffMode = false;
-            this.structureService.difference = [];
-            return data;
-          })
-        )))
-      )),
-      takeUntil(this.structureService.done)
-    ).subscribe();
+          this.structureService.difference = data?.diff;
+          this.structureService.DiffMode = true;
+        } else {
+          this.structureService.BranchType = paramMap.get('branchType') || '';
+          this.structureService.branchId = paramMap.get('branchId') || '';
+          this.structureService.messageId = paramMap.get('messageId') || '';
+          this.structureService.subMessageId = paramMap.get('subMessageId') || '';
+          this.structureService.connection = paramMap.get('connection') || '';
+          this.structureService.BreadCrumb = paramMap.get('name') || '';
+          this.structureService.singleStructureIdValue = '';
+          this.structureService.DiffMode = false;
+          this.structureService.difference = [];
+        }
+    })
   }
 }

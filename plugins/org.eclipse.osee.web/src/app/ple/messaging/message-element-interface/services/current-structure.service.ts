@@ -52,11 +52,11 @@ export class CurrentStructureService {
     shareReplay({ bufferSize: 1, refCount: true }),
   )
 
-  private _structures = combineLatest(this.ui.isInDiff, this.differences, this._structuresNoDiff, combineLatest([this.BranchId, this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId])).pipe(
-    switchMap(([isInDiff, differences, structures, [branchId, parentBranch, messageId, subMessageId, connectionId]]) => iif(() => isInDiff && differences !== undefined && differences.length > 0,
-      this._parseDifferencesMulti(differences,structures,parentBranch,branchId,messageId,subMessageId,connectionId),
+  private _structures = combineLatest([this.ui.isInDiff, this.differences, this._structuresNoDiff, combineLatest([this.BranchId, this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId])]).pipe(
+    switchMap(([isInDiff, differences, structures, [branchId, parentBranch, messageId, subMessageId, connectionId]]) => isInDiff && differences !== undefined && differences.length > 0?
+      this._parseDifferencesMulti(differences,structures,parentBranch,branchId,messageId,subMessageId,connectionId):
       of(structures)
-    )),
+    ),
   )
 
   private _types = this.typeService.types;
@@ -472,12 +472,12 @@ export class CurrentStructureService {
     return combineLatest([this.BranchId,this.diffReportService.parentBranch, this.MessageId, this.SubMessageId, this.connectionId,this.ui.filter]).pipe(
       switchMap(([branch,parentBranch, message, submessage, connection,filter]) => combineLatest([this.structure.getStructure(branch, message, submessage, structureId, connection,filter),this.ui.isInDiff,this.differences]).pipe(
         repeatWhen(_ => this.ui.UpdateRequired),
-        switchMap(([structure, isInDiff, differences]) => iif(() => isInDiff && differences!==undefined && differences.length>0,
-          this._parseDifferences(differences,structure,parentBranch,branch,message,submessage,connection),
+        switchMap(([structure, isInDiff, differences]) =>  isInDiff && differences!==undefined && differences.length>0?
+          this._parseDifferences(differences,structure,parentBranch,branch,message,submessage,connection):
           //no differences
           of(structure)
         ))
-      )),
+      ),
     )
   }
 

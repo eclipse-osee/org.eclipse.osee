@@ -29,7 +29,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, convertToParamMap, Router, UrlTree } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, convertToParamMap, Router, UrlSegment, UrlTree } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {  of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -66,6 +66,8 @@ describe('StructureTableComponent', () => {
   let loader: HarnessLoader;
   let scheduler: TestScheduler;
   let dialog: MatDialog;
+  const urlFromRoot = 'ple/messaging/working/2780650236653788489/201282/messages/201297/201301/Test%20Message%203%20>%20test%20submessage%205/elements/diff';
+  const urlSegmentsFromRoot = urlFromRoot.split('/').map(fragment => new UrlSegment(fragment, {}));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -104,13 +106,16 @@ describe('StructureTableComponent', () => {
             events: of(),
             serializeUrl: () => { return '' },
             createUrlTree: () => { return new UrlTree() },
-            url:'ple/messaging/working/2780650236653788489/201282/messages/201297/201301/Test%20Message%203%20>%20test%20submessage%205/elements/diff' //random test url for elements page
+            url:urlFromRoot //random test url for elements page
           }
         },
         { provide: EditAuthService,useValue:editAuthServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {
+            snapshot: {
+              pathFromRoot: urlSegmentsFromRoot
+            },
             fragment:of<string|null>('a1'),
             paramMap: of(
               convertToParamMap({

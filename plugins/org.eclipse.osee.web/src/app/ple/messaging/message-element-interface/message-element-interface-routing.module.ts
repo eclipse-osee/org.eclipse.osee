@@ -26,24 +26,27 @@ const routes: Routes = [
         path: '',
         component: MessageElementInterfaceComponent,
         children: [
-          {
-            path: 'diff',
-            component: MessageElementInterfaceComponent,
-            resolve: { diff: DiffReportResolver }
-          },
         ]
       },
       {
-        path: ':structureId',
-        component: SingleStructureTableComponent,
-        children: [
-          {
-            path: 'diff',
-            component: SingleStructureTableComponent,
-            resolve: { diff: DiffReportResolver }
-          },    
-        ]
+        path: 'diff',
+        component: MessageElementInterfaceComponent,
+        resolve: { diff: DiffReportResolver }
       },
+    ]
+  },
+  {
+    path: ':structureId',
+    children: [
+      {
+        path: '',
+        component: SingleStructureTableComponent,
+      }, 
+      {
+        path: 'diff',
+        component: SingleStructureTableComponent,
+        resolve: { diff: DiffReportResolver }
+      },    
     ]
   },
   {
