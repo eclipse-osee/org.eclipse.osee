@@ -13,7 +13,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { transportType } from '../../types/connection';
 
 import { EnumsService } from './enums.service';
 
@@ -83,17 +82,5 @@ describe('EnumsService', () => {
   describe('Connection View', () => {
     //describe block just groups tests
     //it() describes a spec/test
-    it('should fetch connection types', () => {
-      let testData = [transportType.HSDN, transportType.Ethernet, transportType.MILSTD1553];
-      //sets up test data that the test angular http client will return
-      service.connectionTypes.subscribe();
-      //subscribe to the observable so the http request gets sent to the test angular http client(this mocks the real http client, but doesn't actually send the request)
-      const req = httpTestingController.expectOne(apiURL + "/mim/enums/" + 'ConnectionTypes');
-      //expect the request to be at this URL
-      expect(req.request.method).toEqual('GET');
-      //expect that it is a GET request
-      req.flush(testData);
-      //perform the (faked) request and then go to the afterEach() and verify that it was sent
-    })
   })
 });

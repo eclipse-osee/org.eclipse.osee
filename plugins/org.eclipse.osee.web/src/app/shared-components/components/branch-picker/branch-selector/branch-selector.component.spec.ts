@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatOptionLoadingModule } from '../../../mat-option-loading/mat-option-loading.module';
 
 import { BranchSelectorComponent } from './branch-selector.component';
 
@@ -26,7 +27,7 @@ describe('BranchSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[RouterTestingModule,HttpClientTestingModule, MatFormFieldModule,FormsModule,MatSelectModule,NoopAnimationsModule],
+      imports:[RouterTestingModule,HttpClientTestingModule, MatFormFieldModule,FormsModule,MatSelectModule,NoopAnimationsModule, MatOptionLoadingModule],
       declarations: [ BranchSelectorComponent ]
     })
     .compileComponents();

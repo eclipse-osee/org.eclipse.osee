@@ -12,7 +12,6 @@
  **********************************************************************/
 import { applic } from "src/app/types/applicability/applic";
 import { changeInstance } from "src/app/types/change-report/change-report";
-import { transportType } from "./connection"
 
 export interface DifferenceReport {
     changeItems: DifferenceReportItemMap,
@@ -52,7 +51,7 @@ export interface connectionDiffItem {
     secondaryNode: number,
     applicability: applic,
     description: string,
-    transportType: transportType,
+    transportType: string,
     diffInfo?: diffInfo
 }
 

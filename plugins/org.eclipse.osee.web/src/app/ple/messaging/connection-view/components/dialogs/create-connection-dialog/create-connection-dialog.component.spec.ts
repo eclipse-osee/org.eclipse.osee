@@ -26,6 +26,9 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
+import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
+import { CurrentTransportTypeServiceMock } from '../../../../shared/mocks/current-transport-type.ui.service.mock';
+import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { dialogRef } from '../../../mocks/dialogRef.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
@@ -39,12 +42,13 @@ describe('CreateConnectionDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatDialogModule,MatInputModule,MatFormFieldModule,MatSelectModule,MatButtonModule,NoopAnimationsModule,FormsModule],
+      imports:[MatDialogModule,MatInputModule,MatFormFieldModule,MatSelectModule,MatButtonModule,NoopAnimationsModule,FormsModule, MatOptionLoadingModule],
       declarations: [CreateConnectionDialogComponent],
       providers: [{ provide: MatDialogRef, useValue: dialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: CurrentGraphService, useValue: graphServiceMock },
-        {provide:EnumsService,useValue:enumsServiceMock}]
+        { provide:EnumsService,useValue:enumsServiceMock},
+        { provide: CurrentTransportTypeService,useValue:CurrentTransportTypeServiceMock}]
     })
     .compileComponents();
   });
@@ -73,9 +77,9 @@ describe('CreateConnectionDialogComponent', () => {
     let form = loader.getHarness(MatFormFieldHarness.with({ selector: '#connection-transport-type-selector' }));
     let select = (await (await form).getControl(MatSelectHarness));
     await select?.open();
-    expect((await select?.getOptions())?.length).toEqual(3);
-    await select?.clickOptions({ text: 'HSDN' });
-    expect(await select?.getValueText()).toEqual('HSDN')
+    expect((await select?.getOptions())?.length).toEqual(1);
+    await select?.clickOptions({ text: 'ETHERNET' });
+    expect(await select?.getValueText()).toEqual('ETHERNET')
   })
 
   it('should select a new node to connect to', async() => {

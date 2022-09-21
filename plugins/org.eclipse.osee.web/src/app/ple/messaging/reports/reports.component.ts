@@ -20,8 +20,9 @@ import { ConnectionService } from '../connection-view/services/connection.servic
 import { RouteStateService } from '../connection-view/services/route-state-service.service';
 import { ApplicabilityListService } from '../shared/services/http/applicability-list.service';
 import { ReportsService } from '../shared/services/ui/reports.service';
-import { connection, transportType } from '../shared/types/connection';
+import { connection } from '../shared/types/connection';
 import { MimReport } from '../shared/types/Reports';
+import { transportType } from '../shared/types/transportType';
 
 @Component({
   selector: 'app-reports',
@@ -52,7 +53,6 @@ export class ReportsComponent implements OnInit {
   )
   
   connections = this.branchId.pipe(
-    tap(_=>{this.reportsService.Connection={id: '-1', name: '', transportType: transportType.Ethernet}}),
     filter(v => v !== ''),
     switchMap(branchId => this.connectionService.getConnections(branchId))
   )
@@ -103,7 +103,7 @@ export class ReportsComponent implements OnInit {
   }
 
   get selectedConnection() {
-    return this.reportsService.connection.getValue();
+    return this.reportsService.connection.getValue() as connection;
   }
 
   set selectedConnection(connection: connection) {

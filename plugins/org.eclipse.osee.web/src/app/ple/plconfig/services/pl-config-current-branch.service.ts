@@ -29,7 +29,6 @@ import { ATTRIBUTETYPEID } from 'src/app/types/constants/AttributeTypeId.enum';
 import { extendedFeature, extendedFeatureWithChanges } from '../types/features/base';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { applic } from 'src/app/types/applicability/applic';
-import { transportType } from '../../messaging/shared/types/connection';
 import { transactionToken } from 'src/app/types/change-report/transaction-token';
 import { NameValuePair } from '../types/base-types/NameValuePair';
 
@@ -247,7 +246,7 @@ export class PlConfigCurrentBranchService {
     this.uiStateService.difference=value;
   }
 
-  set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic | transportType | boolean, previousValue?: string | number | applic | transportType | boolean, transaction?: transactionToken, user?: string, date?: string }) {
+  set sideNav(value: { opened: boolean, field: string, currentValue: string | number | applic | boolean, previousValue?: string | number | applic | boolean, transaction?: transactionToken, user?: string, date?: string }) {
     this.sideNavService.sideNav = value;
   }
   public get cfgGroups() {

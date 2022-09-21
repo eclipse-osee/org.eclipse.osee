@@ -38,9 +38,11 @@ import { NewAttributeFormFieldComponent } from './components/dialogs/new-attribu
 import { EnumSetFormComponent } from './components/dialogs/enum-set-form/enum-set-form.component';
 import { EnumFormComponent } from './components/dialogs/enum-form/enum-form.component';
 import { AffectedArtifactDialogComponent } from './components/dialogs/affected-artifact-dialog/affected-artifact-dialog.component';
+import { NewTransportTypeDialogComponent } from './components/dialogs/new-transport-type-dialog/new-transport-type-dialog.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent, AffectedArtifactDialogComponent],
+  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent, AffectedArtifactDialogComponent, NewTransportTypeDialogComponent],
   imports: [
     CommonModule,
     MatDialogModule,
@@ -53,6 +55,7 @@ import { AffectedArtifactDialogComponent } from './components/dialogs/affected-a
     MatSelectModule,
     MatStepperModule,
     MatInputModule,
+    MatSlideToggleModule,
     FormsModule,
     MatButtonModule,
     MatStepperModule,

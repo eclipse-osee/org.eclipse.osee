@@ -17,8 +17,9 @@ import { element } from '../../types/element';
 import { structure } from '../../types/structure';
 import { message } from '../../../message-interface/types/messages';
 import { subMessage } from '../../../message-interface/types/sub-messages';
-import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, diffReportSummaryHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail } from '../../types/headerDetail';
+import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, diffReportSummaryHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail, transportTypeSummaryHeaderDetail } from '../../types/headerDetail';
 import { branchSummary, connectionDiffItem, DiffHeaderType, diffReportSummaryItem, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport.d';
+import { transportType } from '../../types/transportType';
 
 @Injectable({
   providedIn: 'root'
@@ -159,7 +160,23 @@ export class HeaderService {
     { header: 'details', description: 'Change details', humanReadable: 'Details' },
   ]) 
 
+  private _allTransportTypes = new BehaviorSubject<transportTypeSummaryHeaderDetail[]>([
+    { header: 'name',description: 'Name of transport type', humanReadable: 'Name' },
+    { header: 'byteAlignValidation', description: 'Whether or not to use byte validation rules on a per-word basis.', humanReadable: 'Byte Align Validation' },
+    { header: 'byteAlignValidationSize', description: 'Number of bytes used to validate word sizing if Byte Align Validation is on', humanReadable: 'Byte Align Validation Size' },
+    { header: 'messageGeneration', description: 'Whether or not to generate message information for MIM artifacts', humanReadable: 'Message Generation' },
+    { header: 'messageGenerationPosition', description: "Location within a list for generation to use for MIM Artifacts if Message Generation is true. This is an array mapped to the related artifacts(NOTE: must be of the same artifact type). Position '0' is the first element in a list of elements. Position 'LAST' is the last element in a list of elements.", humanReadable: 'Message Generation Position' },
+    { header: 'messageGenerationType', description: 'Type of message information generation to use for MIM artifacts if Message Generation is true. Examples include Relational, Dynamic.', humanReadable: 'Message Generation Type' },
+  ])
 
+
+  private _allTransportTypeHeaders = this._allTransportTypes.pipe(
+    mergeMap((transports) => from(transports).pipe(
+      map((transport) => transport.header),
+      reduce((acc, curr) => [...acc, curr], [] as (Extract<keyof transportType,string>)[])
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  )
   private _allNodeDiffHeaders = this._allNodeDiffs.pipe(
     mergeMap((nodes) => from(nodes).pipe(
       map((node) => node.header),
@@ -353,7 +370,15 @@ export class HeaderService {
     return this._allSubMessageHeaders;
   }
 
-  getHeaderByName(value: keyof structure|keyof element|keyof message|keyof subMessage|keyof nodeDiffItem|string,type:string) {
+  get AllTransportTypes() {
+    return this._allTransportTypes;
+  }
+
+  get AllTransportTypeHeaders() {
+    return this._allTransportTypeHeaders;
+  }
+
+  getHeaderByName(value: keyof structure|keyof element|keyof message|keyof subMessage|keyof nodeDiffItem|keyof transportType|string,type:string) {
     return iif(() => type === 'message',
       this.AllMessages.pipe(
         mergeMap((messages) => from(messages).pipe(
@@ -424,10 +449,16 @@ export class HeaderService {
                             this.AllDiffReportSummary.pipe(
                               mergeMap((summary) => from(summary).pipe(
                                 filter((sum)=>sum.header===value)
-                              ))
-                            ), //diffReportSummary obs
+                              )),
+                            ), iif(() => type === 'transportType',
+                              this.AllTransportTypes.pipe(
+                                mergeMap((summary) => from(summary).pipe(
+                                  filter((sum) => sum.header === value)
+                                ))
+                            )) //transport type obs
                           )
                         )
+                        
                       )
                     )
                   )

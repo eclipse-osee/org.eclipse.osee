@@ -20,7 +20,7 @@ import { BranchUIService } from '../../../../ple-services/ui/branch/branch-ui.se
 import { TransactionService } from '../../../../transactions/transaction.service';
 import { ConnectionService } from '../../connection-view/services/connection.service';
 import { MessagesService } from '../../message-interface/services/messages.service'
-import { connection, transportType } from '../../shared/types/connection';
+import { connection } from '../../shared/types/connection';
 import { transaction } from 'src/app/transactions/transaction';
 import { message } from '../../message-interface/types/messages';
 import { structure } from '../../shared/types/structure'
@@ -32,6 +32,7 @@ import { TypesService } from '../../shared/services/http/types.service';
 import { enumSet } from '../../shared/types/enum';
 import { EnumerationSetService } from '../../shared/services/http/enumeration-set.service';
 import { ImportHttpService } from './import-http.service';
+import { transportType } from '../../shared/types/transportType';
 
 @Injectable({
   providedIn: 'root'
@@ -152,13 +153,21 @@ export class ImportService {
     ))
   )
 
-  private _connectionTx$ = combineLatest([this._importTx$, this._nodes$, this.branchId]).pipe(
-    switchMap(([tx, nodes, branchId]) => of(nodes).pipe(
-      switchMap(nodes => nodes.length===2 && nodes[0].name !== "" && nodes[1].name !== "" ?
-        this.connectionService.createConnectionNoRelations(branchId, {name: nodes[0].name+"_"+nodes[1].name, transportType:transportType.HSDN} as connection, tx, "connection") :
+  private _connectionTx$ = combineLatest([this._importTx$, this.selectedImportOption, this._nodes$, this.branchId]).pipe(
+    switchMap(([tx, option, nodes, branchId]) => of(nodes).pipe(
+      switchMap(nodes => nodes.length === 2 && nodes[0].name !== "" && nodes[1].name !== "" ?
+        this.connectionService.createConnectionNoRelations(branchId, { name: nodes[0].name + "_" + nodes[1].name, description: '' }, tx, "connection").pipe(
+          switchMap(connectionTx => iif(() => option?.transportType !== undefined && option.transportType !== '',
+            this.connectionService.createTransportTypeRelation(option?.transportType || '', "connection").pipe(
+              switchMap(rel => this.connectionService.addRelation(branchId, rel, connectionTx))
+            ),
+            of(tx))
+          )
+        ) :
         of(tx))
-    ))
-  )
+    )
+    )
+  );
 
   private _messagesTx$ = combineLatest([this._importTx$, this._messages$, this.branchId]).pipe(
     switchMap(([tx, messages, branchId]) => of(messages).pipe(

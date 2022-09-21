@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
 import { DialogService } from '../../../services/dialog.service';
@@ -35,8 +34,8 @@ export class ConfigGroupMenuComponent implements OnInit {
     this.dialogService.openConfigMenu(header, editable).subscribe();
   }
   viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic | transportType;
-    let prev = value.previousValue as string | number | applic | transportType;
+    let current = value.currentValue as string | number | applic;
+    let prev = value.previousValue as string | number | applic;
     if (prev === null) {
       prev = ''
     }

@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
-import { connection, connectionWithChanges, newConnection, OseeEdge, transportType } from 'src/app/ple/messaging/shared/types/connection';
+import { connection, connectionWithChanges, newConnection, OseeEdge, _newConnection } from 'src/app/ple/messaging/shared/types/connection';
 import { node, nodeData, nodeDataWithChanges } from 'src/app/ple/messaging/shared/types/node';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
@@ -89,6 +89,9 @@ export class GraphNodeMenuComponent implements OnInit {
       switchMap((results)=>this.graphService.deleteNodeAndUnrelate(results.id,[...sources,...targets])) //needs testing
     ).subscribe();
   }
+  private _newConnectionIsConnection(value: _newConnection | connection): value is connection {
+    return value?.transportType !== undefined;
+  }
 
   createConnectionToNode(value: nodeData|nodeDataWithChanges) {
     //todo open dialog to select node to connect to this node
@@ -101,12 +104,14 @@ export class GraphNodeMenuComponent implements OnInit {
       //filter out non-valid responses
       filter((dialogResponse: newConnection) => dialogResponse !== undefined && dialogResponse !== null),
       //HTTP Rest call to create connection(branch/nodes/nodeId/connections/type), then rest call to relate it to the associated nodes(branch/nodes/nodeId/connections/id/type)
-      switchMap((results)=>this.graphService.createNewConnection(results.connection,results.nodeId,value.id))
+      filter((val)=>this._newConnectionIsConnection(val.connection)),
+      switchMap((results) => this.graphService.createNewConnection(results.connection as connection //typescript bug relating to type narrowing not being inferred by filter
+        , results.nodeId, value.id))
     ).subscribe();
   }
   viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic | transportType;
-    let prev = value.previousValue as string | number | applic | transportType;
+    let current = value.currentValue as string | number | applic;
+    let prev = value.previousValue as string | number | applic;
     if (prev === null) {
       prev = ''
     }

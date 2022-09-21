@@ -10,9 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { connection, transportType } from '../types/connection';
+import { connection } from '../types/connection';
 
 export const connectionMock: connection = {
     name: 'connection1',
-    transportType: transportType.Ethernet
+    description:'',
+    transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}
 }

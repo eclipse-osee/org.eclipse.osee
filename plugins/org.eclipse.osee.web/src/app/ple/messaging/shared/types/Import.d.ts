@@ -43,5 +43,6 @@ export interface importRelationMap {
 export interface ImportOption {
     id: string,
     name: string,
-    url: string
+    url: string,
+    transportType:string,
 }

@@ -39,6 +39,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
+import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -59,6 +61,8 @@ import { BranchUndoButtonModule } from '../../../shared-components/components/br
     MatIconModule,
     ActionStateButtonModule,
     BranchUndoButtonModule,
+    MatOptionLoadingModule,
+    MatProgressSpinnerModule,
     NgxGraphModule
   ]
 })

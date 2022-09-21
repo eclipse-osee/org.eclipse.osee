@@ -14,7 +14,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
-import { connection, connectionWithChanges, transportType } from 'src/app/ple/messaging/shared/types/connection';
+import { connection, connectionWithChanges } from 'src/app/ple/messaging/shared/types/connection';
 import { node, nodeData, nodeDataWithChanges, OseeNode } from 'src/app/ple/messaging/shared/types/node';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { RemovalDialog } from '../../../types/ConfirmRemovalDialog';
@@ -22,6 +22,7 @@ import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dia
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
+import { transportType } from '../../../../shared/types/transportType';
 
 @Component({
   selector: 'app-graph-link-menu',
@@ -32,7 +33,9 @@ export class GraphLinkMenuComponent implements OnInit {
   @Input() editMode: boolean = false;
   @Input() data: connection | connectionWithChanges = {
     name: '',
-    transportType: transportType.Ethernet
+    dashed: false,
+    description: '',
+    transportType:{} as transportType
   };
 
   @Input()
@@ -65,7 +68,7 @@ export class GraphLinkMenuComponent implements OnInit {
       //transform array of properties into Partial<connection> using Object.fromEntries()(ES2019)
       switchMap((arrayOfProperties:[string, any][]) => of(Object.fromEntries(arrayOfProperties) as Partial<connection>).pipe(
         //HTTP PATCH call to update value
-        switchMap((changes)=>this.graphService.updateConnection(changes))
+        switchMap((changes)=>this.graphService.updateConnection(changes, value.transportType.id||''))
       ))
     ).subscribe();
   }
@@ -93,8 +96,8 @@ export class GraphLinkMenuComponent implements OnInit {
   }
 
   viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic | transportType;
-    let prev = value.previousValue as string | number | applic | transportType;
+    let current = value.currentValue as string | number | applic;
+    let prev = value.previousValue as string | number | applic;
     if (prev === null) {
       prev=''
     }

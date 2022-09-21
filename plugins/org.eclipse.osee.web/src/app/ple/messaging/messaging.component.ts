@@ -12,8 +12,9 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import navigationStructure from 'src/app/navigation/top-level-navigation/top-level-navigation-structure';
+import navigationStructure, { navigationElement } from 'src/app/navigation/top-level-navigation/top-level-navigation-structure';
 
+const _navItems = navigationStructure[0].children.filter(c => c.label === 'Messaging Configuration')[0].children;
 @Component({
   selector: 'app-messaging',
   templateUrl: './messaging.component.html',
@@ -21,12 +22,26 @@ import navigationStructure from 'src/app/navigation/top-level-navigation/top-lev
 })
 export class MessagingComponent implements OnInit {
 
-  constructor(private userService: UserDataAccountService) { }
+  constructor (private userService: UserDataAccountService) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+  
+  get allNavItems() {
+    return _navItems.slice(1);
   }
 
-  navItems = navigationStructure[0].children.filter(c => c.label === 'Messaging Configuration')[0].children;
+  get navItems() {
+    return this.allNavItems.filter(item=>item.isAdminRequired===false)
+  }
+
+  get adminNavItemsStartingPosition() {
+    return this.navItems.length;
+  }
+
+  get adminNavItems() {
+    return this.allNavItems.filter(item=>item.isAdminRequired===true)
+  }
+  
   userIsAdmin = this.userService.userIsAdmin;
 
 }

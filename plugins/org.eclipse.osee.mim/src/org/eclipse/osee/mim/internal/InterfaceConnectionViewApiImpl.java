@@ -35,10 +35,18 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
 
    private ArtifactAccessor<InterfaceConnection> accessor;
    private final List<RelationTypeSide> affectedRelations;
+   private final List<RelationTypeSide> relations;
 
    InterfaceConnectionViewApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceConnectionAccessor(orcsApi));
       this.affectedRelations = this.createAffectedRelationTypeSideList();
+      this.relations = createRelationTypeSideList();
+   }
+
+   private List<RelationTypeSide> createRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+      return relations;
    }
 
    @Override
@@ -76,7 +84,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    @Override
    public InterfaceConnection get(BranchId branch, ArtifactId connectionId) {
       try {
-         return this.getAccessor().get(branch, connectionId, InterfaceConnection.class);
+         return this.getAccessor().get(branch, connectionId, relations, InterfaceConnection.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
@@ -92,7 +100,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    @Override
    public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
       try {
-         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceConnection.class);
+         return this.getAccessor().getAllByQuery(branch, query, relations, isExact, InterfaceConnection.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -111,6 +119,16 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          | NoSuchMethodException | SecurityException ex) {
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<InterfaceConnection> getAll(BranchId branch) {
+      try {
+         return this.getAccessor().getAll(branch, relations, InterfaceConnection.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceConnection>();
    }
 
 }

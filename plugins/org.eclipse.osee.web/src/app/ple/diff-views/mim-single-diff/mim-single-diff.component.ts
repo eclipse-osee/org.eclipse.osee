@@ -19,7 +19,6 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
  import { transactionInfo } from 'src/app/types/change-report/transaction';
  import { transactionToken } from 'src/app/types/change-report/transaction-token';
  import { applic } from '../../../types/applicability/applic';
- import { transportType } from '../../messaging/shared/types/connection';
  
  @Component({
    selector: 'app-mim-single-diff',
@@ -55,7 +54,7 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
      return typeof value === 'object' && value?.name !== undefined;
    }
 
-   viewDiff(open:boolean,value:string|number|applic|transportType, header:string) {
+   viewDiff(open:boolean,value:string|number|applic, header:string) {
     this.sideNavService.sideNav = { opened: open,field:header, currentValue: value };
   }
  }

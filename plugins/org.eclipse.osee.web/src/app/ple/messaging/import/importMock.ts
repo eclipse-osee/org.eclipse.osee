@@ -141,6 +141,7 @@ export const importOptionsMock: ImportOption[] = [
     {
         id: "1",
         name: "Option 1",
-        url: ""
+        url: "",
+        transportType:'12345'
     }
 ]

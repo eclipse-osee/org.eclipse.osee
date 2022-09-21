@@ -24,19 +24,23 @@
     <br>
     <mat-form-field id='connection-transport-type-selector'>
         <mat-label>Select a Transport Type</mat-label>
-        <mat-select [(ngModel)]="newConnection.connection.transportType" required data-cy="field-transport-type">
-            <mat-option *ngFor="let option of (transportTypes | async)" [value]="option" [attr.data-cy]="'option-'+option">
-                {{option}}
-            </mat-option>
+        <mat-select [(ngModel)]="newConnection.connection.transportType" required data-cy="field-transport-type" [compareWith]="compareTransportTypes">
+            <osee-mat-option-loading [options]="transportTypes" [objectName]="'Transport Types'">
+                <mat-option *ngFor="let option of (transportTypes | async)" [value]="option" [attr.data-cy]="'option-'+option" [value]="option" [id]="option.id">
+                    {{option.name}}
+                </mat-option>
+            </osee-mat-option-loading>
         </mat-select>
     </mat-form-field>
     <br>
     <mat-form-field id='connection-node-selector'>
         <mat-label>Select a Node to Connect To</mat-label>
         <mat-select [(ngModel)]="newConnection.nodeId" data-cy="field-toNode">
-            <mat-option *ngFor="let option of (nodes |async)" [value]="option.id" [attr.data-cy]="'option-'+option.name">
-                {{option.name}}
-            </mat-option>
+            <osee-mat-option-loading [options]="transportTypes" [objectName]="'Nodes'">
+                <mat-option *ngFor="let option of (nodes |async)" [value]="option.id" [attr.data-cy]="'option-'+option.name">
+                    {{option.name}}
+                </mat-option>
+            </osee-mat-option-loading>
         </mat-select>
     </mat-form-field>
 </mat-dialog-content>

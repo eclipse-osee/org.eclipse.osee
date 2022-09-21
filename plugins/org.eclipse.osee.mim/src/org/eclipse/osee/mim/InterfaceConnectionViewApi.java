@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceConnection;
@@ -24,6 +25,8 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<InterfaceConnection>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
    ArtifactAccessor<InterfaceConnection> getAccessor();
+
+   Collection<InterfaceConnection> getAll(BranchId branch);
 
    InterfaceConnection get(BranchId branch, ArtifactId connectionId);
 

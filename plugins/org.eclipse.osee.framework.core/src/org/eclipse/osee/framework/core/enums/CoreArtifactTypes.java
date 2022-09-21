@@ -220,33 +220,34 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken CustomerRequirementMsWord = osee.add(osee.artifactType(809L, "Customer Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken DirectSoftwareRequirement = osee.add(osee.artifactType(22L, "Direct Software Requirement", true, AbstractSoftwareRequirement));
    ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
-   ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, Artifact)
+   ArtifactTypeToken InterfaceArtifact = osee.add(osee.artifactType(54733032508193943L, "Interface Artifact", true, Artifact));
+   ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, InterfaceArtifact)
       .zeroOrOne(InterfaceNodeAddress)
       .zeroOrOne(InterfaceNodeBackgroundColor));
-   ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, Artifact)
+   ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, InterfaceArtifact)
       .exactlyOne(InterfaceTransportType));
-   ArtifactTypeToken InterfaceMessage = osee.add(osee.artifactType(2455059983007225775L, "Interface Message", false, Artifact)
+   ArtifactTypeToken InterfaceMessage = osee.add(osee.artifactType(2455059983007225775L, "Interface Message", false, InterfaceArtifact)
       .exactlyOne(InterfaceMessageNumber)
       .exactlyOne(InterfaceMessagePeriodicity)
       .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceMessageWriteAccess)
       .exactlyOne(InterfaceMessageType));
-   ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, Artifact)
+   ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, InterfaceArtifact)
       .exactlyOne(InterfaceSubMessageNumber));
-   ArtifactTypeToken InterfaceStructure = osee.add(osee.artifactType(2455059983007225776L, "Interface Structure", false, Artifact)
+   ArtifactTypeToken InterfaceStructure = osee.add(osee.artifactType(2455059983007225776L, "Interface Structure", false, InterfaceArtifact)
       .zeroOrOne(InterfaceStructureCategory)
       .zeroOrOne(InterfaceMinSimultaneity)
       .zeroOrOne(InterfaceMaxSimultaneity)
       .zeroOrOne(InterfaceTaskFileType)
       .zeroOrOne(GeneralStringData));
-   ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, Artifact)
+   ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, InterfaceArtifact)
       .zeroOrOne(InterfaceElementAlterable)
       .zeroOrOne(Notes)
       .zeroOrOne(InterfaceElementEnumLiteral));
    ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement)
       .exactlyOne(InterfaceElementIndexStart)
       .exactlyOne(InterfaceElementIndexEnd));
-   ArtifactTypeToken InterfacePlatformType = osee.add(osee.artifactType(6360154518785980503L, "Interface Platform Type", false, Artifact)
+   ArtifactTypeToken InterfacePlatformType = osee.add(osee.artifactType(6360154518785980503L, "Interface Platform Type", false, InterfaceArtifact)
       .exactlyOne(InterfaceLogicalType)
       .exactlyOne(InterfacePlatformTypeBitSize)
       .exactlyOne(InterfacePlatformType2sComplement)
@@ -259,9 +260,15 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfacePlatformTypeCompRate)
       .zeroOrOne(InterfacePlatformTypeAnalogAccuracy)
       .zeroOrOne(InterfacePlatformTypeValidRangeDescription));
-   ArtifactTypeToken InterfaceEnum = osee.add(osee.artifactType(2455059983007225793L, "Interface Enumeration", false, Artifact)
+   ArtifactTypeToken InterfaceEnum = osee.add(osee.artifactType(2455059983007225793L, "Interface Enumeration", false, InterfaceArtifact)
       .exactlyOne(InterfaceEnumOrdinal));
-   ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, Artifact));
+   ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, InterfaceArtifact));
+   ArtifactTypeToken TransportType = osee.add(osee.artifactType(6663383168705248989L, "Transport Type", false, Artifact)
+      .exactlyOne(ByteAlignValidation)
+      .zeroOrOne(ByteAlignValidationSize)
+      .exactlyOne(MessageGeneration)
+      .zeroOrOne(MessageGenerationType)
+      .any(MessageGenerationPosition));
    ArtifactTypeToken IndirectSoftwareRequirementMsWord = osee.add(osee.artifactType(25L, "Indirect Software Requirement - MS Word", false, MsWordTemplate, AbstractSoftwareRequirement));
    ArtifactTypeToken InterfaceRequirementMsWord = osee.add(osee.artifactType(32L, "Interface Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement)
       .exactlyOne(CoreAttributeTypes.Component, CoreAttributeTypes.Component.Unspecified));
@@ -274,6 +281,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(CoreAttributeTypes.EndpointUrl));
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
    ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Artifact)
+      .zeroOrOne(ImportTransportType)
       .exactlyOne(CoreAttributeTypes.EndpointUrl));
    ArtifactTypeToken RootArtifact = osee.add(osee.artifactType(10L, "Root Artifact", false, Artifact));
    ArtifactTypeToken SafetyAssessment = osee.add(osee.artifactType(59L, "Safety Assessment", false, Artifact)
