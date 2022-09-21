@@ -207,10 +207,10 @@ describe('CurrentMessagesService', () => {
       })
     })
   
-    it('done should complete', () => {
+    it('done should emit', () => {
       scheduler.run(({ expectObservable,cold }) => {
         const expectedFilterValues = { a: true, b: undefined, c: false };
-        const expectedMarble = '-(a|)';
+        const expectedMarble = '-(a)';
         let delayMarble = '-a';
         cold(delayMarble).subscribe(() => service.toggleDone=true);
         expectObservable(service.done).toBe(expectedMarble,expectedFilterValues)

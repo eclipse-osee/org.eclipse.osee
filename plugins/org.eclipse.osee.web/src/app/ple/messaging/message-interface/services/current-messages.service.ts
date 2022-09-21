@@ -464,7 +464,6 @@ export class CurrentMessagesService {
 
   set toggleDone(value: unknown) {
     this._done.next(true);
-    this._done.complete();
   }
 
   get done() {
