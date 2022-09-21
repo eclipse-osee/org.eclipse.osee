@@ -13,14 +13,21 @@
 import { Edge } from "@swimlane/ngx-graph";
 import { difference } from "src/app/types/change-report/change-report";
 import { applic } from "../../../../types/applicability/applic";
+import { transportType } from './transportType';
 
-export interface connection {
+export interface connection extends connectionAttributes,connectionRelations {
     id?: string,
-    name: string,
-    dashed?:boolean,
-    description?: string,
-    transportType: transportType
+    dashed?: boolean,
     applicability?: applic
+}
+
+interface connectionAttributes {
+    name: string,
+    description: string,
+}
+ 
+interface connectionRelations{
+    transportType: transportType
 }
 export interface connectionWithChanges extends connection{
     deleted:boolean,
@@ -32,14 +39,11 @@ export interface connectionWithChanges extends connection{
     }
 }
 
-export enum transportType {
-    HSDN = "HSDN",
-    Ethernet = "ETHERNET",
-    MILSTD1553 ="MILSTD1553_B"
+export interface _newConnection extends connectionAttributes, Partial<connectionRelations>{
+    applicability?: applic
 }
-
 export interface newConnection {
-    connection: connection,
+    connection: _newConnection,
     nodeId:string
 }
 

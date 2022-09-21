@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { transportType } from "src/app/ple/messaging/shared/types/connection";
 import { DifferenceReport } from "src/app/ple/messaging/shared/types/DifferenceReport";
 import { changeTypeEnum, changeTypeNumber, ignoreType, ModificationType } from "src/app/types/change-report/change-report";
 import { RelationTypeId } from "src/app/types/constants/RelationTypeId.enum";
@@ -605,7 +604,7 @@ export const differenceReportMock: DifferenceReport = {
                   "name": "Base"
               },
               "description": "Added a description",
-              "transportType": transportType.HSDN
+              "transportType": "ETHERNET"
           },
           "changes": [
               {
@@ -10774,7 +10773,7 @@ export const differenceReportMock: DifferenceReport = {
                   "name": "Base"
               },
               "description": "Added this connection",
-              "transportType": transportType.HSDN
+              "transportType": "ETHERNET"
           },
           "changes": [
               {

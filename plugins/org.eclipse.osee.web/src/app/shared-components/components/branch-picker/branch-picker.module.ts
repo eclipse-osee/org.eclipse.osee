@@ -20,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BranchSelectorComponent } from './branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from './branch-type-selector/branch-type-selector.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatOptionLoadingModule } from '../../mat-option-loading/mat-option-loading.module';
 
 
 
@@ -29,6 +30,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     MatRadioModule,
     MatFormFieldModule,
+    MatOptionLoadingModule,
     FormsModule,
     MatProgressSpinnerModule,
     MatSelectModule,

@@ -13,11 +13,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
-import { map, shareReplay, switchMap, take } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { FilesService } from 'src/app/ple-services/http/files.service';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { apiURL } from 'src/environments/environment';
-import { connection, transportType } from '../../types/connection';
+import { connection } from '../../types/connection';
 import { MimReport } from '../../types/Reports';
 
 @Injectable({
@@ -27,7 +27,7 @@ export class ReportsService {
 
   constructor(private uiService: BranchUIService, private http: HttpClient, private fileService: FilesService) { }
 
-  private _connection: BehaviorSubject<connection> = new BehaviorSubject<connection>({name: '', transportType: transportType.Ethernet});
+  private _connection = new BehaviorSubject<Partial<connection>|Required<connection>>({id:'-1'});
   private _requestBody: BehaviorSubject<string> = new BehaviorSubject('');
   private _requestBodyFile: BehaviorSubject<File|undefined> = new BehaviorSubject<File|undefined>(undefined);
   private _includeDiff: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -41,6 +41,7 @@ export class ReportsService {
   downloadReport(report: MimReport|undefined, viewId: string) {
       return combineLatest([this.branchId, this._connection]).pipe(
         take(1),
+        filter((val):val is [string,Required<connection>]=>val[1].name!==undefined && val[1].transportType!==undefined),
         switchMap(([branchId, connection]) => iif(()=>report !== undefined, this.getReport(report as MimReport, branchId, viewId, connection).pipe(
           map(res => {
             if (res.size !== 0) {

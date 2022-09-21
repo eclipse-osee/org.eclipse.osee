@@ -29,9 +29,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
-import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { nodeDataWithChanges } from 'src/app/ple/messaging/shared/types/node';
 import { difference } from 'src/app/types/change-report/change-report';
+import { _newConnection } from '../../../../shared/types/connection';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 
@@ -86,8 +86,8 @@ describe('GraphNodeMenuComponent', () => {
           name: 'Base'
         },
       }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',transportType:transportType.Ethernet}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',transportType:transportType.Ethernet}}];;
+      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3', description:'', transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
+      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4', description:'', transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
       fixture.detectChanges();
       expect(component).toBeTruthy();
     })
@@ -113,8 +113,13 @@ describe('GraphNodeMenuComponent', () => {
       expect(spy).toHaveBeenCalledWith(component.data,[component.sources[0]],[component.targets[0]]);
     })
 
-    it('should open the create connection dialog', async() => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({data:component.data}), close: null });
+    it('should open the create connection dialog', async () => {
+      const conn: _newConnection = {
+        name: '',
+        description: '',
+        transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}
+      }
+      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(conn), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
       let spy = spyOn(component, 'createConnectionToNode').and.callThrough();
       await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Create Connection To ' + component.data.name) }))).click();
@@ -184,8 +189,8 @@ describe('GraphNodeMenuComponent', () => {
           }
         }
       }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',transportType:transportType.Ethernet}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',transportType:transportType.Ethernet}}];;
+      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
+      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
       fixture.detectChanges();
       expect(component).toBeTruthy();
     })
@@ -286,8 +291,8 @@ describe('GraphNodeMenuComponent', () => {
           name: 'Base'
         },
       }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',transportType:transportType.Ethernet}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',transportType:transportType.Ethernet}}];;
+      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
+      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
       fixture.detectChanges();
       expect(component).toBeTruthy();
     })
@@ -365,8 +370,8 @@ describe('GraphNodeMenuComponent', () => {
           }
         }
       }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',transportType:transportType.Ethernet}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',transportType:transportType.Ethernet}}];;
+      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
+      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
       fixture.detectChanges();
       expect(component).toBeTruthy();
     })

@@ -12,9 +12,14 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import navigationStructure from '../../../navigation/top-level-navigation/top-level-navigation-structure';
 import { MessagingHelpComponent } from './messaging-help.component';
 
-const routes: Routes = [{ path: '', component: MessagingHelpComponent }, { path: 'columnDescriptions', loadChildren: () => import('./column-descriptions-message-help/column-descriptions-message-help.module').then(m => m.ColumnDescriptionsMessageHelpModule) }];
+const columnDescriptions = navigationStructure[0].children.filter(c => c.label === 'Messaging Configuration')[0].children.find(page => page.label === 'Help')?.children.find(page => page.label === 'Column Descriptions');
+console.log(columnDescriptions?.pageTitle)
+const routes: Routes = [
+  { path: '', component: MessagingHelpComponent },
+  { path: 'columnDescriptions',title:columnDescriptions?.pageTitle||'OSEE - MIM - Help', loadChildren: () => import('./column-descriptions-message-help/column-descriptions-message-help.module').then(m => m.ColumnDescriptionsMessageHelpModule) }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

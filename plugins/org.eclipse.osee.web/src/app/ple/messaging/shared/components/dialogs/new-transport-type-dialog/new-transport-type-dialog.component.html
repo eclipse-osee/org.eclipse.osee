@@ -1,0 +1,54 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Create New Transport Type</h1>
+<mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput [(ngModel)]="transportType.name" required>
+    </mat-form-field>
+    <br>
+    <mat-slide-toggle [(ngModel)]="transportType.byteAlignValidation" color="primary"><mat-label>Byte Align Validation</mat-label></mat-slide-toggle>
+    <br>
+    <mat-form-field>
+        <mat-label>Byte Align Validation Size</mat-label>
+        <input matInput type="number" [(ngModel)]="transportType.byteAlignValidationSize" [required]="transportType.byteAlignValidation">
+    </mat-form-field>
+    <br>
+    <mat-slide-toggle [(ngModel)]="transportType.messageGeneration" color="primary"><mat-label>Message Generation</mat-label></mat-slide-toggle>
+    <br>
+    <mat-form-field>
+        <mat-label>Message Generation Type</mat-label>
+        <mat-select [(ngModel)]="transportType.messageGenerationType" [required]="transportType.messageGeneration">
+            <mat-option *ngFor="let type of generationTypes" [value]="type" [id]="type">
+                {{type}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Message Generation Position</mat-label>
+        <input matInput [(ngModel)]="transportType.messageGenerationPosition" [required]="transportType.messageGeneration">
+        <mat-hint align="end">Can be LAST, or 0..n</mat-hint>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button
+            mat-raised-button
+            [mat-dialog-close]="transportType"
+            color="primary"
+            [disabled]="transportType.name.length === 0 || !(transportType.byteAlignValidation ? transportType.byteAlignValidationSize!==0 : true) || !(transportType.messageGeneration ? transportType.messageGenerationType.length!==0 && transportType.messageGenerationPosition.length!==0 : true)"
+          >
+            Ok
+          </button>
+</mat-dialog-actions>

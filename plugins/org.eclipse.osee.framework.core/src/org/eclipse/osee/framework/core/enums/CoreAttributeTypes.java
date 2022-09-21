@@ -169,7 +169,13 @@ public interface CoreAttributeTypes {
    AttributeTypeString InterfacePlatformTypeBitsResolution = osee.createString(3899709087455064786L, "Interface Platform Type Bits Resolution", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeCompRate = osee.createString(3899709087455064787L, "Interface Platform Type Comp Rate", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeAnalogAccuracy = osee.createString(3899709087455064788L, "Interface Platform Type Analog Accuracy", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ImportTransportType = osee.createString(238254247108261698L, "Import Transport Types", MediaType.TEXT_PLAIN, "Transport Type of MIM Import");
    AttributeTypeString InterfaceTransportType = osee.createString(4522496963078776538L, "Interface Transport Type", MediaType.TEXT_PLAIN, "Transport Type of Interface Connection");
+   AttributeTypeBoolean ByteAlignValidation = osee.createBoolean(1682639796635579163L, "Byte Align Validation", MediaType.TEXT_PLAIN, "Whether or not to use byte validation rules on a per-word basis.");
+   AttributeTypeInteger ByteAlignValidationSize = osee.createInteger(6745328086388470469L, "Byte Align Validation Size", MediaType.TEXT_PLAIN, "Number of bytes used to validate word sizing if Byte Align Validation is on");
+   AttributeTypeBoolean MessageGeneration = osee.createBoolean(6696101226215576386L, "Message Generation", MediaType.TEXT_PLAIN, "Whether or not to generate message information for MIM artifacts");
+   AttributeTypeString MessageGenerationType = osee.createString(7121809480940961886L, "Message Generation Type", MediaType.TEXT_PLAIN, "Type of message information generation to use for MIM artifacts if Message Generation is true. Examples include Relational, Dynamic.");
+   AttributeTypeString MessageGenerationPosition = osee.createString(7004358807289801815L, "Message Generation Position", MediaType.TEXT_PLAIN, "Location within a list for generation to use for MIM Artifacts if Message Generation is true. This is an array mapped to the related artifacts(NOTE: must be of the same artifact type). Position '0' is the first element in a list of elements. Position 'LAST' is the last element in a list of elements.");
    AttributeTypeInputStream ImageContent = osee.createInputStreamNoTag(1152921504606847868L, "Image Content", AttributeTypeToken.IMAGE, "Binary Image content");
    AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java");
    LegacyDalAttributeType LegacyDal = osee.createEnum(new LegacyDalAttributeType());

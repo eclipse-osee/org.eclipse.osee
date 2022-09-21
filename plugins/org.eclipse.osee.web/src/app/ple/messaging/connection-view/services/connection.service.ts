@@ -17,7 +17,7 @@ import { relation, transaction } from '../../../../transactions/transaction';
 import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
-import { connection } from '../../shared/types/connection';
+import { connection, _newConnection } from '../../shared/types/connection';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../transactions/transaction.service';
 
@@ -55,11 +55,20 @@ export class ConnectionService {
     return of(relation)
   }
 
-  createConnection(branchId:string,connection:connection,relations:relation[]) {
-    return of(this.builder.createArtifact(connection, ARTIFACTTYPEID.CONNECTION, relations, undefined, branchId, "Create Connection and Relate to Node(s): " + relations[0].sideB + " , " + relations[1].sideB));
+  createTransportTypeRelation(transportTypeId: string, connectionId?: string) {
+    const rel: relation = {
+      typeName: 'Interface Connection Transport Type',
+      sideA: connectionId,
+      sideB: transportTypeId
+    }
+    return of(rel);
   }
 
-  createConnectionNoRelations(branchId:string,connection:connection,transaction?:transaction, key?:string) {
+  createConnection(branchId:string,connection:_newConnection,relations:relation[]) {
+    return of(this.builder.createArtifact(connection, ARTIFACTTYPEID.CONNECTION, relations, undefined, branchId, "Create Connection and Relate to Node(s): " + relations[1].sideB + " , " + relations[2].sideB+" and Relate to Transport Type: "+relations[0].sideB));
+  }
+
+  createConnectionNoRelations(branchId:string,connection:_newConnection,transaction?:transaction, key?:string) {
     return of(this.builder.createArtifact(connection, ARTIFACTTYPEID.CONNECTION, [], transaction, branchId, "Create Connection", key));
   }
 

@@ -23,7 +23,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { dialogRef } from '../../../mocks/dialogRef.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
-import { connection, transportType } from '../../../../shared/types/connection';
+import { connection } from '../../../../shared/types/connection';
 
 import { EditConnectionDialogComponent } from './edit-connection-dialog.component';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
@@ -31,6 +31,9 @@ import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.s
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
+import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
+import { CurrentTransportTypeServiceMock } from '../../../../shared/mocks/current-transport-type.ui.service.mock';
+import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
 
 describe('EditConnectionDialogComponent', () => {
   let component: EditConnectionDialogComponent;
@@ -38,18 +41,20 @@ describe('EditConnectionDialogComponent', () => {
   let loader: HarnessLoader;
   let dialogData: connection = {
     name: '',
-    transportType: transportType.Ethernet,
+    description:'',
+    transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''},
     applicability:{id:'1',name:'Base'}
   }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule,MatInputModule,MatSelectModule,MatButtonModule,NoopAnimationsModule,FormsModule],
+      imports: [MatDialogModule,MatInputModule,MatSelectModule,MatButtonModule,NoopAnimationsModule,FormsModule, MatOptionLoadingModule],
       declarations: [EditConnectionDialogComponent],
       providers: [{ provide: MatDialogRef, useValue: dialogRef },
         { provide: MAT_DIALOG_DATA, useValue: dialogData },
         { provide: CurrentGraphService, useValue: graphServiceMock },
-        {provide:EnumsService,useValue:enumsServiceMock}]
+        { provide: EnumsService, useValue: enumsServiceMock },
+        { provide: CurrentTransportTypeService,useValue:CurrentTransportTypeServiceMock}]
     })
     .compileComponents();
   });
@@ -59,7 +64,8 @@ describe('EditConnectionDialogComponent', () => {
     component = fixture.componentInstance;
     component.data = {
       name: 'Connection',
-      transportType: transportType.Ethernet,
+      description:'',
+      transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''},
       applicability: {
         id: '1',
         name:'Base'
@@ -86,9 +92,9 @@ describe('EditConnectionDialogComponent', () => {
     let form = loader.getHarness(MatFormFieldHarness.with({ selector: '#connection-transport-type-selector' }));
     let select = (await (await form).getControl(MatSelectHarness));
     await select?.open();
-    expect((await select?.getOptions())?.length).toEqual(3);
-    await select?.clickOptions({ text: 'HSDN' });
-    expect(await select?.getValueText()).toEqual('HSDN')
+    expect((await select?.getOptions())?.length).toEqual(1);
+    await select?.clickOptions({ text: 'ETHERNET' });
+    expect(await select?.getValueText()).toEqual('ETHERNET')
   })
 
   it('should select an applicability', async() => {

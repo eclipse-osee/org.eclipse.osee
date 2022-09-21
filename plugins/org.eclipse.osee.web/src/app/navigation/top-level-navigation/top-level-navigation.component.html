@@ -20,6 +20,7 @@
           <ng-container *ngIf="!element.isAdminRequired || _userIsAdmin.value">
             <!-- If dropdown -->
             <a mat-list-item *ngIf="element.isDropdown" (click)="element.isDropdownOpen = !element.isDropdownOpen" [ngClass]="{'highlight':element.isDropdownOpen, 'onpage':router.url.includes(element.routerLink)}">
+              <mat-icon *ngIf="element.icon !== ''" class="nav-icon">{{element.icon}}</mat-icon>
               {{element.label}}
               <mat-icon *ngIf="!element.isDropdownOpen">chevron_right</mat-icon>
               <mat-icon *ngIf="element.isDropdownOpen">expand_more</mat-icon>

@@ -25,6 +25,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GroupArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceConnection;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceDataElement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceEnum;
@@ -42,6 +43,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInform
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestPlanElementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedure;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestUnit;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TransportType;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalGroup;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
@@ -162,6 +164,13 @@ public interface CoreRelationTypes {
    RelationTypeSide InterfaceEnumeration_EnumerationSet = RelationTypeSide.create(InterfaceEnumeration, SIDE_A);
    RelationTypeSide InterfaceEnumeration_EnumerationState = RelationTypeSide.create(InterfaceEnumeration, SIDE_B);
 
+   RelationTypeToken TransportTypeHeader = osee.addNewRelationType(8734224778892840579L, "Transport Type Header", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, TransportType, "Transport Type", InterfaceArtifact, "Interface Artifact");
+   RelationTypeSide InterfaceTransportTypeHeader_TransportType = RelationTypeSide.create(TransportTypeHeader, SIDE_A);
+   RelationTypeSide InterfaceTransportTypeHeader_Artifact = RelationTypeSide.create(TransportTypeHeader, SIDE_B);
+
+   RelationTypeToken InterfaceConnectionTransportType = osee.addNewRelationType(1859749228181133209L, "Interface Connection Transport Type", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC,InterfaceConnection, "Interface Connection", TransportType, "Transport Type");
+   RelationTypeSide InterfaceConnectionTransportType_InterfaceConnection = RelationTypeSide.create(InterfaceConnectionTransportType, SIDE_A);
+   RelationTypeSide InterfaceConnectionTransportType_TransportType = RelationTypeSide.create(InterfaceConnectionTransportType, SIDE_B);
 
    RelationTypeToken PlConfigurationGroup = osee.add(674505523757332017L, "Product Line Configuration Group", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, GroupArtifact, "Group", BranchView, "BranchView");
    RelationTypeSide PlConfigurationGroup_Group = RelationTypeSide.create(PlConfigurationGroup, SIDE_A);

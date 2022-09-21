@@ -13,7 +13,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { transactionToken } from 'src/app/transactions/transaction';
 import { applic } from 'src/app/types/applicability/applic';
 
@@ -22,13 +21,13 @@ import { applic } from 'src/app/types/applicability/applic';
 })
 export class SideNavService {
 
-  private _sideNavContent = new ReplaySubject<{opened:boolean, field:string, currentValue:string|number|applic|transportType|boolean, previousValue?:string|number|applic|transportType|boolean,transaction?:transactionToken,user?:string,date?:string}>();
+  private _sideNavContent = new ReplaySubject<{opened:boolean, field:string, currentValue:string|number|applic|boolean, previousValue?:string|number|applic|boolean,transaction?:transactionToken,user?:string,date?:string}>();
   constructor () { }
   
   get sideNavContent() {
     return this._sideNavContent;
   }
-  set sideNav(value:{opened:boolean, field:string, currentValue:string|number|applic|transportType|boolean, previousValue?:string|number|applic|transportType|boolean,transaction?:transactionToken,user?:string,date?:string}) {
+  set sideNav(value:{opened:boolean, field:string, currentValue:string|number|applic|boolean, previousValue?:string|number|applic|boolean,transaction?:transactionToken,user?:string,date?:string}) {
     this._sideNavContent.next(value);
   }
 

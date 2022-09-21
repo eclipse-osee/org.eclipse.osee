@@ -29,7 +29,7 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    private String Description;
 
-   private String TransportType;
+   private TransportType TransportType;
 
    private Long primaryNode;
 
@@ -47,7 +47,9 @@ public class InterfaceConnection extends PLGenericDBObject {
          ArtifactReadable.SENTINEL).getId());
       this.setSecondaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getOneOrDefault(
          ArtifactReadable.SENTINEL).getId());
-      this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceTransportType, "ETHERNET"));
+      this.setTransportType(new TransportType(
+         art.getRelated(CoreRelationTypes.InterfaceConnectionTransportType_TransportType).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL)));
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
@@ -105,14 +107,14 @@ public class InterfaceConnection extends PLGenericDBObject {
    /**
     * @return the transportType
     */
-   public String getTransportType() {
+   public TransportType getTransportType() {
       return TransportType;
    }
 
    /**
     * @param transportType the transportType to set
     */
-   public void setTransportType(String transportType) {
+   public void setTransportType(TransportType transportType) {
       TransportType = transportType;
    }
 

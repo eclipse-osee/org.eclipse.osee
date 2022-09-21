@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from "@angular/core";
-import { connection, connectionWithChanges, transportType } from "../../../shared/types/connection";
+import { connection, connectionWithChanges } from "../../../shared/types/connection";
 import { OseeNode, node, nodeData, nodeDataWithChanges } from "../../../shared/types/node";
 
 @Component({
@@ -22,7 +22,8 @@ export class GraphLinkMenuDummy{
 @Input() editMode: boolean = false;
   @Input() data: connection | connectionWithChanges = {
     name: '',
-    transportType: transportType.Ethernet
+    description:'',
+    transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}
   };
 
   @Input()

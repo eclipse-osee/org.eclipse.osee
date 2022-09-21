@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { transportType } from '../ple/messaging/shared/types/connection';
 import { transaction } from './transaction';
 
 import { TransactionBuilderService } from './transaction-builder.service';
@@ -59,7 +58,7 @@ describe('TransactionBuilderService', () => {
         name: 'artifact123',
         applicabilityId: '25',
         randomProperty: 'random',
-        transportType: transportType.Ethernet,
+        transportType: "ETHERNET",
       };
     });
     it('should create a new transaction', () => {
@@ -185,7 +184,7 @@ describe('TransactionBuilderService', () => {
           name: 'applic',
         },
         randomProperty: 'random',
-        transportType: transportType.Ethernet,
+        transportType: "ETHERNET",
       };
     });
     it('should create a new modification to an artifact', () => {

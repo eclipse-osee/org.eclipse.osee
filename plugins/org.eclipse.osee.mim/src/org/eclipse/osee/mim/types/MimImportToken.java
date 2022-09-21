@@ -23,6 +23,7 @@ public class MimImportToken extends PLGenericDBObject {
    public static final MimImportToken SENTINEL = new MimImportToken();
 
    private String url;
+   private String transportType;
 
    public MimImportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -33,6 +34,7 @@ public class MimImportToken extends PLGenericDBObject {
       this.setId(art.getId());
       this.setName(art.getName());
       this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.EndpointUrl, ""));
+      this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.ImportTransportType, ""));
    }
 
    /**
@@ -53,6 +55,20 @@ public class MimImportToken extends PLGenericDBObject {
 
    public void setUrl(String url) {
       this.url = url;
+   }
+
+   /**
+    * @return the transportType
+    */
+   public String getTransportType() {
+      return transportType;
+   }
+
+   /**
+    * @param transportType the transportType to set
+    */
+   public void setTransportType(String transportType) {
+      this.transportType = transportType;
    }
 
 }

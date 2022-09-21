@@ -16,7 +16,6 @@ import { TestScheduler } from 'rxjs/testing';
 import { transaction } from 'src/app/transactions/transaction';
 import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { apiURL } from 'src/environments/environment';
-import { transportType } from '../../shared/types/connection';
 
 import { ConnectionService } from './connection.service';
 
@@ -76,19 +75,21 @@ describe('ConnectionService', () => {
         scheduler.run(() => {
           let extransaction: transaction = {
             branch: '10',
-            txComment: "Create Connection and Relate to Node(s): " +"Hello"+ " , "+"Hello",
+            txComment: "Create Connection and Relate to Node(s): " +"Hello"+ " , "+"Hello" + " and Relate to Transport Type: "+"Hello",
             createArtifacts: [{
               typeId: '126164394421696910',
               name: 'connection',
               applicabilityId: undefined,
-              attributes: [{typeName:"Interface Transport Type",value:transportType.Ethernet}],
-              relations:[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}],
+              attributes: [
+                { typeName: "Description", value: ""}
+              ],
+              relations:[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}, {typeName:'blah',sideB:'Hello'}],
               key:undefined
             }]
           }
           const expectedfilterValues = { a: extransaction };
           const expectedMarble = '(a|)'
-          scheduler.expectObservable(service.createConnection('10',{name:'connection',transportType:transportType.Ethernet},[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}])).toBe(expectedMarble, expectedfilterValues)
+          scheduler.expectObservable(service.createConnection('10',{name:'connection',description:''},[{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'},{typeName:'blah',sideB:'Hello'}])).toBe(expectedMarble, expectedfilterValues)
         })
       })
 
@@ -101,14 +102,17 @@ describe('ConnectionService', () => {
               typeId: '126164394421696910',
               name: 'connection',
               applicabilityId: undefined,
-              attributes: [{typeName:"Interface Transport Type",value:transportType.Ethernet}],
+              attributes: [
+                { typeName: 'Description', value: '' },
+                { typeName: "Interface Transport Type", value: { name: 'ETHERNET', byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' } }
+              ],
               relations:[],
               key:'10'
             }]
           }
           const expectedfilterValues = { a: extransaction };
           const expectedMarble = '(a|)'
-          scheduler.expectObservable(service.createConnectionNoRelations('10',{name:'connection',transportType:transportType.Ethernet}, undefined, '10')).toBe(expectedMarble, expectedfilterValues)
+          scheduler.expectObservable(service.createConnectionNoRelations('10',{name:'connection',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}, undefined, '10')).toBe(expectedMarble, expectedfilterValues)
         })
       })
 
@@ -120,12 +124,16 @@ describe('ConnectionService', () => {
             modifyArtifacts: [{
               id: '1',
               applicabilityId:undefined,
-              setAttributes:[{typeName:'Name',value:'connection'},{typeName:'Interface Transport Type',value:transportType.Ethernet}]
+              setAttributes: [
+                { typeName: 'Name', value: 'connection' },
+                { typeName:'Description', value:''},
+                { typeName: 'Interface Transport Type', value: { name: 'ETHERNET', byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' } }
+              ]
             }]
           }
           const expectedfilterValues = { a: extransaction };
           const expectedMarble = '(a|)'
-          scheduler.expectObservable(service.changeConnection('10',{id:'1',name:'connection',transportType:transportType.Ethernet})).toBe(expectedMarble, expectedfilterValues)
+          scheduler.expectObservable(service.changeConnection('10',{id:'1',name:'connection',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}})).toBe(expectedMarble, expectedfilterValues)
         })
       })
 

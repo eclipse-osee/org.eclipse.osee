@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { transportType } from "src/app/ple/messaging/shared/types/connection";
 import { connectionDiffItem } from "src/app/ple/messaging/shared/types/DifferenceReport";
 
 export const connectionDiffsMock: connectionDiffItem[] = [
@@ -24,7 +23,7 @@ export const connectionDiffsMock: connectionDiffItem[] = [
             "name": "Base"
         },
         "description": "Added this connection",
-        "transportType": transportType.HSDN,
+        "transportType": "ETHERNET",
         "diffInfo": {
             "added": true,
             "deleted": false,
@@ -45,7 +44,7 @@ export const connectionDiffsMock: connectionDiffItem[] = [
             "name": "Base"
         },
         "description": "Added a description",
-        "transportType": transportType.HSDN,
+        "transportType": "ETHERNET",
         "diffInfo": {
             "added": false,
             "deleted": false,

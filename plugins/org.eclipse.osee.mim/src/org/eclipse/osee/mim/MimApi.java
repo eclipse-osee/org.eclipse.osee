@@ -49,6 +49,8 @@ public interface MimApi {
    InterfaceDifferenceReportApi getInterfaceDifferenceReportApi();
 
    MimArtifactsApi getMimArtifactsApi();
+   
+   TransportTypeApi getTransportTypeApi();
 
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 }

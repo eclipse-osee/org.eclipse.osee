@@ -72,7 +72,7 @@
                   -->
                   <svg:text class="edge-label" text-anchor="middle">
                     <textPath class="text-path" [attr.href]="'#' + link.id" dominant-baseline="hanging" startOffset="50%" side="left">
-                      {{link.data.transportType}}
+                      {{link.data.transportType.name}}
                     </textPath>
                   </svg:text>
               </ng-template>

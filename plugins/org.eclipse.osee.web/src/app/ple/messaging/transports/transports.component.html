@@ -1,0 +1,35 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="transports-header">
+    <osee-branch-picker category="3"></osee-branch-picker>
+    <div class="transports-header actions">
+        <action-dropdown category="3" workType="MIM"></action-dropdown>
+    </div>
+</div>
+<table mat-table [dataSource]="(transports|async)||[]" class="width-100">
+    <ng-container [matColumnDef]="header" *ngFor="let header of (headers|async)||[]; let i = index; trackBy:valueTracker;">
+        <th mat-header-cell *matHeaderCellDef [attr.colspan]="((headers|async)||[])[i]" class="message-interface-table-view-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''">
+            <ng-container>
+                {{(getHeaderByName(header)|async)?.humanReadable}}
+            </ng-container>
+        </th>
+        <td mat-cell *matCellDef="let element; let i = dataIndex" [ngClass]="i%2===0? 'message-table-row-even':'message-table-row-odd'">
+            {{element[header]}}
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="(headers|async)||[]; sticky:true"></tr>
+
+    <tr mat-row *matRowDef= "let row; columns: (headers|async)||[];" [attr.data-cy]="'transport-type-table-row-'+row.name">
+</table>
+<button mat-fab class="add-button" color="primary" (click)="openAddDialog()"><mat-icon>add</mat-icon></button>

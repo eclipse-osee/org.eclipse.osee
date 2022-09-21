@@ -42,6 +42,7 @@ import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
 import org.eclipse.osee.mim.QueryMIMResourcesEndpoint;
+import org.eclipse.osee.mim.TransportTypeEndpoint;
 
 /**
  * @author Luciano T. Vaglienti
@@ -176,6 +177,12 @@ public class BranchAccessor {
          mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceStructureApi(),
          mimApi.getInterfaceElementApi(), mimApi.getInterfacePlatformTypeApi(), mimApi.getInterfaceEnumerationSetApi(),
          mimApi.getInterfaceEnumerationApi());
+   }
+
+   @Path("{branch}/transportTypes")
+   @Produces(MediaType.APPLICATION_JSON)
+   public TransportTypeEndpoint getTransportTypeEndpoint(@PathParam("branch") BranchId branch) {
+      return new TransportTypeEndpointImpl(branch, mimApi.getTransportTypeApi());
    }
 
    /**

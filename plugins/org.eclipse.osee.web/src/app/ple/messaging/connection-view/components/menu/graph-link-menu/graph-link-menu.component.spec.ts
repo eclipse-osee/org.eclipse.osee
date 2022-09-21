@@ -31,7 +31,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { of } from 'rxjs';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
-import { transportType, connectionWithChanges } from 'src/app/ple/messaging/shared/types/connection';
+import { connectionWithChanges } from 'src/app/ple/messaging/shared/types/connection';
 import { difference } from 'src/app/types/change-report/change-report';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
@@ -70,7 +70,7 @@ describe('GraphLinkMenuComponent', () => {
   describe('With Editing Enabled & no changes', () => {
     beforeEach(() => {
       component.editMode = true;
-      component.data = { id:'3',name: '3', transportType: transportType.Ethernet }
+      component.data = { id:'3',name: '3',description:'', transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''} }
       component.source = { id: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }
       component.target = { id: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: ''} }
       fixture.detectChanges();
@@ -91,7 +91,7 @@ describe('GraphLinkMenuComponent', () => {
         },
         dashed: false,
         description: '',
-        transportType: transportType.Ethernet
+        transportType: "ETHERNET"
       }     
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(component.data), close: null }); 
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy); 
@@ -110,7 +110,7 @@ describe('GraphLinkMenuComponent', () => {
         },
         dashed: false,
         description: '',
-        transportType:transportType.Ethernet
+        transportType:"ETHERNET"
         }
         let source = {
           id: "2",
@@ -155,7 +155,7 @@ describe('GraphLinkMenuComponent', () => {
     beforeEach(() => {
       component.editMode = true;
       component.data = {
-        id: '3', name: '3', description: '', applicability: { id: '1', name: "Base" }, transportType: transportType.Ethernet, changes: {
+        id: '3', name: '3', description: '', applicability: { id: '1', name: "Base" }, transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}, changes: {
           name: {
             previousValue: 'a',
             currentValue: '3',
@@ -181,8 +181,8 @@ describe('GraphLinkMenuComponent', () => {
             }
           },
           transportType: {
-            previousValue: transportType.MILSTD1553,
-            currentValue: transportType.Ethernet,
+            previousValue: "MILSTD1553_B",
+            currentValue: "ETHERNET",
             transactionToken: {
               id: "-1",
               branchId:"-1"
@@ -211,7 +211,7 @@ describe('GraphLinkMenuComponent', () => {
         },
         dashed: false,
         description: '',
-        transportType: transportType.Ethernet
+        transportType: "ETHERNET"
       }     
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(component.data), close: null }); 
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy); 
@@ -230,7 +230,7 @@ describe('GraphLinkMenuComponent', () => {
         },
         dashed: false,
         description: '',
-        transportType:transportType.Ethernet
+        transportType:"ETHERNET"
         }
         let source = {
           id: "2",
@@ -315,7 +315,7 @@ describe('GraphLinkMenuComponent', () => {
   describe('With Editing Disabled & no changes', () => {
     beforeEach(() => {
       component.editMode = false;
-      component.data = { id:'3',name: '3', transportType: transportType.Ethernet }
+      component.data = { id:'3',name: '3', description:'', transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''} }
       component.source = { id: '1', data: { id: '1', name: '1', interfaceNodeAddress: '', interfaceNodeBgColor: '' } }
       component.target = { id: '2', data: { id: '2', name: '2', interfaceNodeAddress: '', interfaceNodeBgColor: ''} }
       fixture.detectChanges();
@@ -332,7 +332,7 @@ describe('GraphLinkMenuComponent', () => {
     beforeEach(() => {
       component.editMode = false;
       component.data = {
-        id: '3', name: '3', description: '', applicability: { id: '1', name: "Base" }, transportType: transportType.Ethernet, changes: {
+        id: '3', name: '3', description: '', applicability: { id: '1', name: "Base" }, transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}, changes: {
           name: {
             previousValue: 'a',
             currentValue: '3',
@@ -358,8 +358,8 @@ describe('GraphLinkMenuComponent', () => {
             }
           },
           transportType: {
-            previousValue: transportType.MILSTD1553,
-            currentValue: transportType.Ethernet,
+            previousValue: "MILSTD1553_B",
+            currentValue: "ETHERNET",
             transactionToken: {
               id: "-1",
               branchId:"-1"

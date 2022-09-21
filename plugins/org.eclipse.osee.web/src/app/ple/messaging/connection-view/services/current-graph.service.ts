@@ -12,15 +12,15 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
-import { filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { concatMap, filter, map, reduce, repeatWhen, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ConnectionService } from './connection.service';
 import { GraphService } from './graph.service';
 import { NodeService } from './node.service';
 import { RouteStateService } from './route-state-service.service';
-import { connection, connectionWithChanges, OseeEdge, transportType } from '../../shared/types/connection'
+import { connection, connectionWithChanges, OseeEdge } from '../../shared/types/connection'
 import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node'
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
-import { transaction, transactionToken } from 'src/app/transactions/transaction';
+import { relation, transaction, transactionToken } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
@@ -30,6 +30,8 @@ import { changeInstance, changeTypeEnum, itemTypeIdRelation } from '../../../../
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
+import { transportType } from '../../shared/types/transportType';
+import { transactionResult } from '../../../../types/change-report/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -125,7 +127,7 @@ export class CurrentGraphService {
     return this._diff;
   }
 
-  set sideNav(value: {opened:boolean, field:string, currentValue:string|number|applic|transportType, previousValue?:string|number|applic|transportType,transaction?:transactionToken,user?:string,date?:string}) {
+  set sideNav(value: {opened:boolean, field:string, currentValue:string|number|applic, previousValue?:string|number|applic,transaction?:transactionToken,user?:string,date?:string}) {
     this.sideNavService.sideNav = value;
   }
 
@@ -133,18 +135,24 @@ export class CurrentGraphService {
     return this.routeStateService.isInDiff
   }
 
-  updateConnection(connection: Partial<connection>) {
+  updateConnection(connection: Partial<connection>, oldTransportTypeId:string) {
+    const { transportType, ...edited } = connection;
     return this.routeStateService.id.pipe(
       take(1),
-      switchMap(branchId => this.connectionService.changeConnection(branchId, connection).pipe(
-        take(1),
-        switchMap(transaction => this.connectionService.performMutation(transaction).pipe(
-          tap(() => {
-            this.update = true;
-          })
-        ))
+      switchMap(branchId => this.connectionService.changeConnection(branchId, edited)),
+      switchMap(connectionTransaction => transportType !==undefined ?this.connectionService.createTransportTypeRelation(oldTransportTypeId, edited.id || '').pipe(
+        switchMap(createRel => this.connectionService.deleteRelation(connectionTransaction.branch, createRel, connectionTransaction)),
+        switchMap(tx => this.connectionService.performMutation(tx)),
+        filter(val => val.results.txId!=='-1'),
+        switchMap(results => this.connectionService.createTransportTypeRelation(transportType?.id || '', edited.id || '')),
+        switchMap(createRel=>this.connectionService.addRelation(connectionTransaction.branch,createRel))
+      ):of(connectionTransaction)),
+      switchMap(transaction => this.connectionService.performMutation(transaction).pipe(
+        tap(() => {
+          this.update = true;
+        })
       ))
-    );
+    )
   }
 
   unrelateConnection(nodeId: string, id: string) {
@@ -200,39 +208,24 @@ export class CurrentGraphService {
   }
 
   createNewConnection(connection: connection, sourceId: string, targetId: string) {
-    return combineLatest([this.routeStateService.id,this.nodeOptions]).pipe(
+    const { transportType, ...restOfConnection } = connection;
+    const transportTypeRelations = this.connectionService.createTransportTypeRelation(transportType.id || '');
+    const nodeRelations = this.nodeOptions.pipe(
+      concatMap(nodes => from(nodes.sort((a, b) => ((a?.id || '-1') < (b?.id || '-1') ? -1 : (a?.id || '-1') === (b?.id || '-1') ? 0 : 1)))),
+      filter((val) => val.id === sourceId || val.id === targetId),
+      take(2), //if this returns more than 2, something is very very wrong
+      switchMap(node => this.connectionService.createNodeRelation(node.id || '', node?.id !== sourceId)),
+      reduce((acc, curr) => [...acc, curr], [] as relation[])
+    );
+    return combineLatest([this.routeStateService.id, transportTypeRelations, nodeRelations]).pipe(
       take(1),
-      switchMap(([branchId,nodes]) => from(nodes.sort((a, b) =>((a?.id || '-1') < (b?.id || '-1') ? -1 : (a?.id || '-1') === (b?.id || '-1')?0:1))).pipe( //sorts nodes array
-        filter((val) => val.id === sourceId || val.id === targetId),
-        reduce((acc, curr) => [...acc, curr], [] as node[]),
-        switchMap((nodeArray) => iif(() => nodeArray[0]?.id === sourceId && nodeArray[1]?.id === targetId,
-          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', false), this.connectionService.createNodeRelation(nodeArray[1].id||'', true)]).pipe(
-            take(1),
-            map(latest => [latest[0], latest[1]]),
-            switchMap((relations) => this.connectionService.createConnection(branchId, connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
-              take(1),
-              switchMap((newConnection) => this.connectionService.performMutation(newConnection).pipe(
-                tap(() => {
-                  this.update = true;
-                })
-              ))
-            ))
-          ),//else flip order of target/source
-          combineLatest([this.connectionService.createNodeRelation(nodeArray[0].id||'', true), this.connectionService.createNodeRelation(nodeArray[1].id||'', false)]).pipe(
-            take(1),
-            map(latest => [latest[0], latest[1]]),
-            switchMap((relations) => this.connectionService.createConnection(branchId, connection, [...relations,{typeId:RelationTypeId.DEFAULT_HIERARCHICAL,sideA:'8255184'}]).pipe(
-              take(1),
-              switchMap((newConnection) => this.connectionService.performMutation(newConnection).pipe(
-                tap(() => {
-                  this.update = true;
-                })
-              ))
-            ))
-          )
-        ))
+      switchMap(([id, transportRelation, nodesRel]) => this.connectionService.createConnection(id, restOfConnection, [transportRelation, ...nodesRel, { typeId: RelationTypeId.DEFAULT_HIERARCHICAL, sideA: '8255184' }])),
+      switchMap((tx) => this.connectionService.performMutation(tx).pipe(
+        tap(() => {
+          this.update = true;
+        })
       ))
-    )
+    );
   }
 
   createNewNode(node: node | nodeData) {
@@ -578,7 +571,8 @@ export class CurrentGraphService {
         dashed:false,
         changes: {},
         name: '',
-        transportType:transportType.Ethernet
+        description:'',
+        transportType: {} as transportType
       }
     }
     changes.forEach((value) => {
@@ -594,7 +588,8 @@ export class CurrentGraphService {
         dashed:false,
         changes: {},
         name: '',
-        transportType:transportType.Ethernet
+        description:'',
+        transportType: {} as transportType
       }
     }
     if (edge.data.changes === undefined) {
@@ -614,8 +609,9 @@ export class CurrentGraphService {
         edge.data.changes.description = changes;
         edge.data.description = change.currentVersion.value as string;
       } else if (change.itemTypeId === ATTRIBUTETYPEID.INTERFACETRANSPORTTYPE) {
-        edge.data.changes.transportType = changes;
-        edge.data.transportType = change.currentVersion.value as transportType;
+        //edge.data.changes.transportType = changes;
+        //edge.data.transportType = change.currentVersion.value as string;
+        //OBE remove @lvaglien this attribute is no longer in use
       }
     } else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
       if (change.currentVersion.transactionToken.id !== '-1') {

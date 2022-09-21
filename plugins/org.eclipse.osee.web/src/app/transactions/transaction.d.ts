@@ -44,7 +44,7 @@ export interface artifact {
 
 export interface attributeType {
   typeName: string;
-  value: string | number | boolean | any[];
+  value: string | number | boolean | any[] | unknown;
 }
 
 export interface relation extends relationValue {

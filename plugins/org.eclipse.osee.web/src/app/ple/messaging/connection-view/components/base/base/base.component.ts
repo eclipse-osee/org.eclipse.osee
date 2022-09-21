@@ -14,7 +14,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { map, share, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { transportType } from 'src/app/ple/messaging/shared/types/connection';
 import { applic } from 'src/app/types/applicability/applic';
 import { iif, of } from 'rxjs';
 
@@ -43,7 +42,7 @@ export class BaseComponent implements OnInit {
   
   ngOnInit(): void {}
 
-  viewDiff(open:boolean,value:string|number|applic|transportType, header:string) {
+  viewDiff(open:boolean,value:string|number|applic, header:string) {
     this.graphService.sideNav = { opened: open,field:header, currentValue: value };
   }
 

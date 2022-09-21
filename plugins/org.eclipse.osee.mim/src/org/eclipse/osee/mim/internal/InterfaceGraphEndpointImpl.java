@@ -50,8 +50,7 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
          graph.setEdges(new LinkedList<ConnectionView>());
          graph.setNodes(new LinkedList<NodeView>());
          Collection<InterfaceNode> nodes = interfaceNodeApi.getAccessor().getAll(branch, InterfaceNode.class);
-         Collection<InterfaceConnection> edges =
-            interfaceConnectionApi.getAccessor().getAll(branch, InterfaceConnection.class);
+         Collection<InterfaceConnection> edges = interfaceConnectionApi.getAll(branch);
          for (InterfaceNode node : nodes) {
             graph.addNode(new NodeView(node));
          }

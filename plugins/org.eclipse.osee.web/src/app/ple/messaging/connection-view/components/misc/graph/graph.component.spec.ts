@@ -40,7 +40,7 @@ import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-nod
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
 import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
 import { of } from 'rxjs';
-import { connection, connectionWithChanges, OseeEdge, transportType } from 'src/app/ple/messaging/shared/types/connection';
+import { connection, connectionWithChanges, OseeEdge } from 'src/app/ple/messaging/shared/types/connection';
 import { node } from 'src/app/ple/messaging/shared/types/node';
 import { GraphLinkMenuDummy } from '../../../testing/MockComponents/graph-link-menu.mock';
 import { GraphNodeMenuDummy } from '../../../testing/MockComponents/graph-node-menu.mock';
@@ -112,7 +112,7 @@ describe('GraphComponent', () => {
                 },
                 dashed: false,
                 description: '',
-                transportType:transportType.Ethernet
+                transportType:"ETHERNET"
               },
               source: {
                 id : "2",
@@ -154,11 +154,12 @@ describe('GraphComponent', () => {
               const testMenuData:connectionWithChanges={
                 id: "1",
                 name: "edge",
+                description:'',
                 applicability: {
                   id: "1",
                   name: "Base"
                 },
-                transportType: transportType.Ethernet,
+                transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''},
                 deleted:false,
                 changes: {
                   name: {
@@ -233,7 +234,7 @@ describe('GraphComponent', () => {
               description : ""
             }
           }
-          let connections: OseeEdge<connectionWithChanges>[] = [{ source: '2', target: '5', data: { name: '', transportType: transportType.Ethernet,deleted:false, changes: {}}},{target:'2',source:'7',data: { name: '', transportType: transportType.Ethernet,deleted:false, changes: {}}}]
+          let connections: OseeEdge<connectionWithChanges>[] = [{ source: '2', target: '5', data: { name: '',description:'', transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''},deleted:false, changes: {}}},{target:'2',source:'7',data: { name: '',description:'', transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''},deleted:false, changes: {}}}]
           beforeEach(async() => {
             menuNodeHarness = await loader.getHarness(MatMenuHarness.with({ triggerText: 'NodeMenu' }));
             component.nodeMenuTrigger.menuData = {
@@ -247,7 +248,7 @@ describe('GraphComponent', () => {
           })
           describe('Testing open function', () => {
             it('should open the menu with proper initialization and close/reset', async() => {
-              component.openNodeDialog(new MouseEvent("contextmenu", { clientX: 200, clientY: 200 }), {id:'1',data:{name:'first'}},[{id:'a3',source:'1',target:'2',data:{name:'a',transportType:transportType.Ethernet}},{id:'a4',source:'2',target:'1',data:{name:'b',transportType:transportType.Ethernet}}]);
+              component.openNodeDialog(new MouseEvent("contextmenu", { clientX: 200, clientY: 200 }), {id:'1',data:{name:'first'}},[{id:'a3',source:'1',target:'2',data:{name:'a',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}},{id:'a4',source:'2',target:'1',data:{name:'b',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}]);
               expect(await menuNodeHarness.isOpen()).toBeTrue();
               component.nodeMenuTrigger.menuData={
                 data: node.data,

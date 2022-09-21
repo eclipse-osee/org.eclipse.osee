@@ -20,7 +20,7 @@ import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
-import { connection, transportType } from '../../shared/types/connection';
+import { connection} from '../../shared/types/connection';
 import { node } from '../../shared/types/node';
 import { ConnectionService } from './connection.service';
 
@@ -52,8 +52,8 @@ describe('CurrentGraphService', () => {
             ],
           edges:
             [
-              { id: '1234', source: '1', target: '2', data: { name: 'abcd', transportType: transportType.Ethernet } },
-              {id:"201376",source:'201279',target:'1',data:{id:"201376",name:'foundEdge',transportType:transportType.Ethernet,}}
+              { id: '1234', source: '1', target: '2', data: { name: 'abcd',description:'', transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''} } },
+              {id:"201376",source:'201279',target:'1',data:{id:"201376",name:'foundEdge',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}
             ]
         })
     },
@@ -90,6 +90,13 @@ describe('CurrentGraphService', () => {
         typeName: 'Interface Connection Primary Node',
         sideB: nodeId
       }));
+    },
+    createTransportTypeRelation(transportTypeId, connectionId?: string){
+      return of({
+        typeName: 'Interface Connection Transport Type',
+        sideA:connectionId,
+        sideB: transportTypeId
+      })
     },
     changeConnection(branchId: string, connection: Partial<connection>) {
       return of(transactionMock);
@@ -134,7 +141,7 @@ describe('CurrentGraphService', () => {
       const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.updateConnection({})).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.updateConnection({},'')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -170,7 +177,7 @@ describe('CurrentGraphService', () => {
       const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.deleteNodeAndUnrelate('10', [{id:'20',source:'15',target:'10',data:{name:'abcd',transportType:transportType.Ethernet}},{id:'20',source:'10',target:'15',data:{name:'abcd',transportType:transportType.Ethernet}}])).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.deleteNodeAndUnrelate('10', [{id:'20',source:'15',target:'10',data:{name:'abcd',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}},{id:'20',source:'10',target:'15',data:{name:'abcd',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}])).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -180,7 +187,7 @@ describe('CurrentGraphService', () => {
       const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'1','2')).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.createNewConnection({name:'connection',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}},'1','2')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -190,7 +197,7 @@ describe('CurrentGraphService', () => {
       const expectedfilterValues = { a: transactionResultMock };
       const expectedMarble = '(a|)'
       routeState.branchId='10'
-      scheduler.expectObservable(service.createNewConnection({name:'connection',transportType:transportType.Ethernet},'2','1')).toBe(expectedMarble, expectedfilterValues);
+      scheduler.expectObservable(service.createNewConnection({name:'connection',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}},'2','1')).toBe(expectedMarble, expectedfilterValues);
     })
   })
 
@@ -215,8 +222,8 @@ describe('CurrentGraphService', () => {
           ],
         edges:
           [
-            { id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: transportType.Ethernet } },
-            {id:"a201376",source:'201279',target:'1',data:{id:"201376",name:'foundEdge',transportType:transportType.Ethernet,}}
+            { id: 'a1234', source: '1', target: '2', data: { name: 'abcd',description:'', transportType: { name: 'ETHERNET', byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' } } },
+            {id:"a201376",source:'201279',target:'1',data:{id:"201376",name:'foundEdge',description:'',transportType:{ name: 'ETHERNET', byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' },}}
           ]
       } };
       const expectedMarble = 'a'
@@ -363,10 +370,10 @@ describe('CurrentGraphService', () => {
                 }
               ],
               edges: [
-                { id: 'a1234', source: '1', target: '2', data: { name: 'abcd', transportType: 'ETHERNET' } },
-                { id: 'a201376', source: '201279', target: '1', data: {  id: '201376',name: 'foundEdge', transportType: 'ETHERNET', changes: { applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1234', branchId: '2780650236653788489' } },transportType: { previousValue: null, currentValue: 'ETHERNET', transactionToken: { id: '1234', branchId: '2780650236653788489' } }, name: { previousValue: null, currentValue: 'T8_TC', transactionToken: { id: '1234', branchId: '2780650236653788489' } } } } },
-                { id: 'a201282', source: '', target: '', data: { description: 'a description', deleted: true, dashed: false, changes: { description: { previousValue: null, currentValue: 'a description', transactionToken: { id: '1246', branchId: '2780650236653788489' }}, }, name: '', transportType: 'ETHERNET' }, },
-                { id: 'a201377', source: '201375', target: '201312', data: { deleted: true, dashed: false, changes: { applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1235', branchId: '2780650236653788489' } }, transportType: { previousValue: null, currentValue: 'ETHERNET', transactionToken: { id: '1235', branchId: '2780650236653788489' } }, name: { previousValue: null, currentValue: 'T7_TC', transactionToken: { id: '1235', branchId: '2780650236653788489' } } }, name: 'T7_TC', transportType: 'ETHERNET', applicability: { id: '1', name: 'Base' } }, label: 'T7_TC' }
+                { id: 'a1234', source: '1', target: '2', data: { name: 'abcd',description:'', transportType: { name: 'ETHERNET', byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' } } },
+                { id: 'a201376', source: '201279', target: '1', data: {  id: '201376',name: 'foundEdge',description:'', transportType: { name: 'ETHERNET', byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' }, changes: { applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1234', branchId: '2780650236653788489' } },transportType: { previousValue: null, currentValue: 'ETHERNET', transactionToken: { id: '1234', branchId: '2780650236653788489' } }, name: { previousValue: null, currentValue: 'T8_TC', transactionToken: { id: '1234', branchId: '2780650236653788489' } } } } },
+                { id: 'a201282', source: '', target: '', data: { description: 'a description', deleted: true, dashed: false, changes: { description: { previousValue: null, currentValue: 'a description', transactionToken: { id: '1246', branchId: '2780650236653788489' }}, }, name: '', transportType: ({}) }, },
+                { id: 'a201377', source: '201375', target: '201312', data: { deleted: true,description:'', dashed: false, changes: { applicability: { previousValue: null, currentValue: { id: '1', name: 'Base' }, transactionToken: { id: '1235', branchId: '2780650236653788489' } }, name: { previousValue: null, currentValue: 'T7_TC', transactionToken: { id: '1235', branchId: '2780650236653788489' } } }, name: 'T7_TC', transportType: ({}), applicability: { id: '1', name: 'Base' } }, label: 'T7_TC' }
               ]
             }
           };

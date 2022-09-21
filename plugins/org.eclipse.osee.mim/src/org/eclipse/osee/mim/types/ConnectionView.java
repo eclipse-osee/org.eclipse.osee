@@ -54,12 +54,12 @@ public class ConnectionView extends PLGenericDBObject {
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
-   public ConnectionView(Long id, String name, String description, String transportType) {
+   public ConnectionView(Long id, String name, String description, TransportType transportType) {
       this(id, name);
       this.setLabel(name);
       this.setData(new ConnectionViewData(id, name));
       this.setDescription(description);
-      this.setType(ConnectionViewType.valueOf(transportType));
+      this.setTransportType(transportType);
    }
 
    public ConnectionView(Long id, String name) {
@@ -156,7 +156,7 @@ public class ConnectionView extends PLGenericDBObject {
     * @return the type
     */
    @JsonIgnore
-   public ConnectionViewType getType() {
+   public TransportType getTransportType() {
       return data.getTransportType();
    }
 
@@ -164,7 +164,7 @@ public class ConnectionView extends PLGenericDBObject {
     * @param data the type to set
     */
    @JsonIgnore
-   public void setType(ConnectionViewType type) {
+   public void setTransportType(TransportType type) {
       this.data.setTransportType(type);
    }
 
