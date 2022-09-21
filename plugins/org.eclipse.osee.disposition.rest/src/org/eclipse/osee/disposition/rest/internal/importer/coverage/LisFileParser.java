@@ -75,7 +75,7 @@ public class LisFileParser implements DispoImporterApi {
    private static final String LOG = "\\s*(log).*";
    private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
    private static final String IF_ELSIF = "(.*\\b(IF|ELSIF)\\b\\s*[^:]*$)";
-   private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
+   private static final String WHEN_FOR_WHILE = "\\s*(\\( \\))+\\s*(WHEN|FOR|WHILE).*";
    private static final String WHEN_CASE = "(.*\\bWHEN\\b\\s*[^:]*$)";
    private static final String CASE_STATEMENT = "(.*(\\bCASE|case|default|\\s+.+[:].*))";
    private static final String WHILE_ONE = "(.*\\bWHILE|while\\s*\\(1\\).*)";
@@ -442,9 +442,9 @@ public class LisFileParser implements DispoImporterApi {
             location = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "T");
             String location2 = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "F");
 
-            if (!lineData.getFirst().matches(WHEN_FOR) && !lineData.getFirst().matches(
+            if (!lineData.getFirst().matches(WHEN_FOR_WHILE) && !lineData.getFirst().matches(
                CASE_STATEMENT) && !lineData.getFirst().matches(WHILE_ONE)) {
-               // Only add corresponding 'F' discrepancy if it's not a WHEN or WHILE (1) condition statement
+               // Only add corresponding 'F' discrepancy if it's not a FOR, WHEN or WHILE (1) condition statement
                text = statementCoverageItem.getFullCondition();
                addDiscrepancy(discrepancies, location, text);
                addDiscrepancy(discrepancies, location2, text);
@@ -461,6 +461,10 @@ public class LisFileParser implements DispoImporterApi {
                   String locationF = String.format("%s.%s", lineNumber, "F");
                   addDiscrepancy(discrepancies, location, text);
                   addDiscrepancy(discrepancies, locationF, text);
+               } else if (lineData.getFirst().matches(WHEN_FOR_WHILE) || lineData.getFirst().matches(
+                  WHILE_ONE) || lineData.getFirst().matches(EXIT_WHEN)) {
+                  location = String.format("%s.%s", lineNumber, "T");
+                  addDiscrepancy(discrepancies, location, text);
                } else {
                   location = String.valueOf(lineNumber);
                   addDiscrepancy(discrepancies, location, text);
