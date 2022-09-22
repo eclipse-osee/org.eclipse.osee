@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { MessagingRoutingModule } from './messaging-routing.module';
 import { MessagingComponent } from './messaging.component';
 import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-mater
     CommonModule,
     PleSharedMaterialModule,
     MessagingRoutingModule,
+    MatIconModule
   ]
 })
 export class MessagingModule { }

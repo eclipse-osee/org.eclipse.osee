@@ -26,6 +26,7 @@
             </a>
             <!-- If not a dropdown -->
             <a mat-list-item *ngIf="!element.isDropdown" routerLink={{element.routerLink}} [ngClass]="{'onpage':router.url===element.routerLink}">
+              <mat-icon *ngIf="element.icon !== ''" class="nav-icon">{{element.icon}}</mat-icon>
               {{element.label}}
             </a>
             <!-- If the element has children and dropdown is open -->
