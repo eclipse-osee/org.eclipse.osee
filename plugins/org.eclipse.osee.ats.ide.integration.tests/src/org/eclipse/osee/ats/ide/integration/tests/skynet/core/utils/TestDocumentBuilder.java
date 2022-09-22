@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
@@ -158,10 +157,19 @@ public class TestDocumentBuilder {
        */
 
       Stream<RelationshipSourceTargetTypeRecord> stream() {
-         return this.getTargetBuilderRecords().stream().map(
-            TestDocumentBuilder.this.builderRecordWrapperByIdMap::get).map(BuilderRecordWrapper::getArtifact).map(
-               (targetArtifact) -> new RelationshipSourceTargetTypeRecord(this.sourceArtifact, targetArtifact,
-                  this.getRelationTypeToken()));
+         //@formatter:off
+         return
+            this.getTargetBuilderRecords().stream()
+               .map( TestDocumentBuilder.this.builderRecordWrapperByIdMap::get )
+               .map( BuilderRecordWrapper::getArtifact )
+               .map( (targetArtifact) -> new RelationshipSourceTargetTypeRecord
+                                                (
+                                                   this.sourceArtifact,
+                                                   targetArtifact,
+                                                   this.getRelationTypeToken()
+                                                 )
+                   );
+         //@formatter:on
       }
 
       /*
@@ -214,11 +222,11 @@ public class TestDocumentBuilder {
       private ArtifactToken artifactToken;
 
       /**
-       * The test {@link Attribute} loaded from the database. Multi-value enumerations return an {@link Attribute} for
-       * each value of the enumeration that is "selected". Regular attributes will only have one element on the list.
+       * A {@link Map} of {@link Attribute} value {@link List}s by the associated attribute {@link AttributeTypeGeneric}
+       * classes.
        */
 
-      private List<Attribute<?>> attributeList;
+      private final Map<AttributeTypeGeneric<?>, List<Attribute<?>>> attributeValueListByAttributeTypeMap;
 
       /**
        * Wraps a {@link BuilderRecord} with additional members for the test document building process.
@@ -230,7 +238,7 @@ public class TestDocumentBuilder {
          this.builderRecord = builderRecord;
          this.artifact = null;
          this.artifactToken = null;
-         this.attributeList = null;
+         this.attributeValueListByAttributeTypeMap = new HashMap<>();
       }
 
       /**
@@ -277,8 +285,18 @@ public class TestDocumentBuilder {
        */
 
       @SuppressWarnings("unused")
-      List<Attribute<?>> getAttributeList() {
-         return this.attributeList;
+      Optional<List<Attribute<?>>> getAttributeValueList(AttributeTypeGeneric<?> attributeType) {
+
+         //@formatter:off
+         return
+            Optional.ofNullable
+               (
+                 this.attributeValueListByAttributeTypeMap.get
+                    (
+                       Objects.requireNonNull( attributeType )
+                    )
+               );
+         //@formatter:on
       }
 
       /**
@@ -325,8 +343,14 @@ public class TestDocumentBuilder {
        * @param attributeList the {@link List} of {@Attribute}} values for the test attribute type.
        */
 
-      void setAttributeList(List<Attribute<?>> attributeList) {
-         this.attributeList = attributeList;
+      void setAttributeValueList(AttributeTypeGeneric<?> attributeType, List<Attribute<?>> attributeList) {
+         //@formatter:off
+         this.attributeValueListByAttributeTypeMap.put
+            (
+               Objects.requireNonNull( attributeType ),
+               Objects.requireNonNull( attributeList )
+            );
+         //@formatter:on
       }
 
       /**
@@ -350,6 +374,15 @@ public class TestDocumentBuilder {
        */
 
       @Override
+      public ArtifactId getArtifactId() {
+         return this.builderRecord.getArtifactId();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
       public ArtifactTypeToken getArtifactTypeToken() {
          return this.builderRecord.getArtifactTypeToken();
       }
@@ -359,8 +392,8 @@ public class TestDocumentBuilder {
        */
 
       @Override
-      public BiConsumer<Attribute<?>, Object> getAttributeSetter() {
-         return this.builderRecord.getAttributeSetter();
+      public List<AttributeSpecificationRecord> getAttributeSpecifications() {
+         return this.builderRecord.getAttributeSpecifications();
       }
 
       /**
@@ -398,25 +431,6 @@ public class TestDocumentBuilder {
       public String getName() {
          return this.builderRecord.getName();
       }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public AttributeTypeGeneric<?> getTestAttributeType() {
-         return this.builderRecord.getTestAttributeType();
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public List<Object> getTestAttributeValues() {
-         return this.builderRecord.getTestAttributeValues();
-      }
-
    }
 
    /**
@@ -493,6 +507,7 @@ public class TestDocumentBuilder {
                artifactEndpoint,
                parentBranchId,
                hierarchicalParentArtifactIdMap.get( builderRecordWrapper.getHierarchicalParentIdentifier() ),
+               builderRecordWrapper.getArtifactId(),
                builderRecordWrapper.getArtifactTypeToken(),
                builderRecordWrapper.getName()
             );
@@ -516,15 +531,22 @@ public class TestDocumentBuilder {
    private void getOrCreateAttribute(BuilderRecordWrapper builderRecordWrapper) {
 
       //@formatter:off
-      builderRecordWrapper.setAttributeList
-         (
-           TestUtil.getOrCreateAttributes
-              (
-                builderRecordWrapper.getArtifact(),
-                builderRecordWrapper.getTestAttributeType(),
-                builderRecordWrapper.getTestAttributeValues().size()
-              )
-         );
+      builderRecordWrapper.getAttributeSpecifications()
+         .forEach
+            (
+               ( attributeSpecification ) ->
+
+                  builderRecordWrapper.setAttributeValueList
+                     (
+                       attributeSpecification.getAttributeType(),
+                       TestUtil.getOrCreateAttributes
+                          (
+                            builderRecordWrapper.getArtifact(),
+                            attributeSpecification.getAttributeType(),
+                            attributeSpecification.getAttributeValues().size()
+                          )
+                     )
+            );
       //@formatter:on
    }
 
@@ -536,27 +558,36 @@ public class TestDocumentBuilder {
 
    private void setAttributeValues(BuilderRecordWrapper builderRecordWrapper) {
 
-      //@formatter:off
-      if( this.setValues )
-      {
-         TestUtil.setAttributeValues
-            (
-               builderRecordWrapper.getArtifact(),
-               builderRecordWrapper.getTestAttributeType(),
-               new LinkedList<Object>( builderRecordWrapper.getTestAttributeValues() ),
-               builderRecordWrapper.getAttributeSetter()
-            );
-
-         builderRecordWrapper.setAttributeList
-            (
-              TestUtil.getAttributes
-                         (
-                           builderRecordWrapper.getArtifact(),
-                           builderRecordWrapper.getTestAttributeType()
-                         )
-                      .orElseThrow()
-            );
+      if (!this.setValues) {
+         return;
       }
+
+      //@formatter:off
+      builderRecordWrapper.getAttributeSpecifications()
+         .forEach
+            (
+               ( attributeSpecification ) ->
+               {
+                  TestUtil.setAttributeValues
+                     (
+                       builderRecordWrapper.getArtifact(),
+                       attributeSpecification.getAttributeType(),
+                       new LinkedList<Object>( attributeSpecification.getAttributeValues() ),
+                       attributeSpecification.getAttributeSetter()
+                     );
+
+                  builderRecordWrapper.setAttributeValueList
+                     (
+                       attributeSpecification.getAttributeType(),
+                       TestUtil.getAttributes
+                          (
+                            builderRecordWrapper.getArtifact(),
+                            attributeSpecification.getAttributeType()
+                          )
+                          .orElseThrow()
+                     );
+               }
+            );
       //@formatter:on
    }
 
@@ -602,16 +633,6 @@ public class TestDocumentBuilder {
             builderRecords.stream().map( BuilderRecord::getIdentifier ).collect( Collectors.toSet() ).size()
          );
 
-
-      var builderRecordWrappers = builderRecords.stream().map( BuilderRecordWrapper::new ).collect( Collectors.toList() );
-      this.builderRecordWrapperByIdMap = builderRecordWrappers.stream().collect
-                                            (
-                                               Collectors.toMap
-                                                  (
-                                                     ( builderRecordWrapper ) -> builderRecordWrapper.getIdentifier(),
-                                                     ( builderRecordWrapper ) -> builderRecordWrapper
-                                                  )
-                                            );
 
       /*
        * Get OSEE Client
@@ -680,6 +701,20 @@ public class TestDocumentBuilder {
       var builderRecordWrapperByArtifactIdMap = new HashMap<ArtifactId, BuilderRecordWrapper>();
 
       /*
+       * Wrap the BuilderRecords and index them by identifier
+       */
+
+      var builderRecordWrappers = builderRecords.stream().map( BuilderRecordWrapper::new ).collect( Collectors.toList() );
+      this.builderRecordWrapperByIdMap = builderRecordWrappers.stream().collect
+                                            (
+                                               Collectors.toMap
+                                                  (
+                                                     ( builderRecordWrapper ) -> builderRecordWrapper.getIdentifier(),
+                                                     ( builderRecordWrapper ) -> builderRecordWrapper
+                                                  )
+                                            );
+
+      /*
        * Load the artifacts and set the test attribute values
        */
 
@@ -727,7 +762,12 @@ public class TestDocumentBuilder {
             .flatMap( BuilderRecordWrapper::streamBuilderRelationshipRecordWrappers )
             .flatMap( BuilderRelationshipRecordWrapper::stream )
             .filter( RelationshipSourceTargetTypeRecord::isNotRelated )
-            .map( ( relationshipSourceTargetTypeRecord ) -> relationshipSourceTargetTypeRecord.create(relationEndpoint) )
+            .map( ( relationshipSourceTargetTypeRecord ) ->
+                  {
+                     return
+                        relationshipSourceTargetTypeRecord.create(relationEndpoint);
+                  }
+                )
             .allMatch( ( response ) -> response.getStatus() == 200 )
             ;
 

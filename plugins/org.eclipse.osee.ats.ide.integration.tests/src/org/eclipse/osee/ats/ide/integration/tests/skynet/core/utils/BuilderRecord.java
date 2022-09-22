@@ -15,16 +15,24 @@ package org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
  * Instances of this interface are used to define test artifacts and the hierarchical structure of a test document.
  */
 
 public interface BuilderRecord {
+
+   /**
+    * Gets the {@link ArtifactId} the artifact should be created with or {@link ArtifactId#SENTINEL}.
+    *
+    * @return an {@link ArtifactId}.
+    */
+
+   default ArtifactId getArtifactId() {
+      return ArtifactId.SENTINEL;
+   }
 
    /**
     * Gets the {@link ArtifactTypeToken} that specifies the test artifact's type.
@@ -35,13 +43,12 @@ public interface BuilderRecord {
    ArtifactTypeToken getArtifactTypeToken();
 
    /**
-    * Gets a {@link BiConsumer} used to assign the attribute value to the test attribute. The first parameter is the
-    * attribute as an {@link Attribute} and the second parameter is the value as an {@link Object}.
+    * Gets a list of {@link AttributeSpecificationRecord}s for the attributes to be set for the artifact.
     *
-    * @return {@link BiConsumer} for setting the test attribute value or values.
+    * @return a {@link List}, possibly empty, of {@link AttributeSpecificationRecords}.
     */
 
-   BiConsumer<Attribute<?>, Object> getAttributeSetter();
+   List<AttributeSpecificationRecord> getAttributeSpecifications();
 
    /**
     * Gets the {@link BuilderRecord} identifier of this {@link BuilderRecord}'s test artifact's hierarchical parent.
@@ -74,21 +81,6 @@ public interface BuilderRecord {
     */
 
    List<BuilderRelationshipRecord> getBuilderRelationshipRecords();
-
-   /**
-    * Gets the test attribute's definition.
-    *
-    * @return the {@link AttributeTypeGeneric} that defines the test attribute.
-    */
-
-   AttributeTypeGeneric<?> getTestAttributeType();
-
-   /**
-    * Gets the list of values for the test attribute. Most attribute types have a single value. Enumerated attribute
-    * types may have multiple values.
-    */
-
-   List<Object> getTestAttributeValues();
 
    /**
     * Predicate to determine if the {@link BuilderRecord} contains any {@link BuilderRelationshipRecord}s.

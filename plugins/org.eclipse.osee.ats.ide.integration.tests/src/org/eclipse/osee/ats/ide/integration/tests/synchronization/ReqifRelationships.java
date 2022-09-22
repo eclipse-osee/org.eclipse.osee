@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelationshipRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
@@ -152,10 +154,10 @@ public class ReqifRelationships {
       private final ArtifactTypeToken artifactTypeToken;
 
       /**
-       * A {@link BiConsumer} implementation used to assign the attribute value to the test attribute.
+       * A list of the attributes to be defined for the artifact.
        */
 
-      private final BiConsumer<Attribute<?>, Object> attributeSetter;
+      private final List<AttributeSpecificationRecord> attributeSpecifications;
 
       /**
        * A list of the relationships for the test artifact. The list may be empty but should never be <code>null</code>.
@@ -184,18 +186,6 @@ public class ReqifRelationships {
       private final String name;
 
       /**
-       * The {@link AttributeTypeGeneric} of the test attribute.
-       */
-
-      private final AttributeTypeGeneric<?> testAttributeType;
-
-      /**
-       * The values to be assigned to the test attributes.
-       */
-
-      private final List<Object> testAttributeValues;
-
-      /**
        * Constructs a new {@link ArtifactInfoRecord} with the specified parameters.
        *
        * @param identifier A unique identifier for the {@link ArtifactInfoRecord}. Uniqueness is not enforced. The value
@@ -216,14 +206,12 @@ public class ReqifRelationships {
       //@formatter:off
       ArtifactInfoRecord
          (
-            Integer                                identifier,
-            Integer                                hierarchicalParentIdentifier,
-            String                                 name,
-            ArtifactTypeToken                      typeToken,
-            AttributeTypeGeneric<?>                testAttributeType,
-            List<Object>                           testAttributeValues,
-            BiConsumer<Attribute<?>,Object>        attributeSetter,
-            List<BuilderRelationshipRecord>        builderRelationshipRecords
+            Integer                            identifier,
+            Integer                            hierarchicalParentIdentifier,
+            String                             name,
+            ArtifactTypeToken                  typeToken,
+            List<AttributeSpecificationRecord> attributeSpecifications,
+            List<BuilderRelationshipRecord>    builderRelationshipRecords
 
          )
       {
@@ -231,11 +219,7 @@ public class ReqifRelationships {
          this.hierarchicalParentIdentifier = Objects.requireNonNull(hierarchicalParentIdentifier);
          this.name                         = Objects.requireNonNull(name);
          this.artifactTypeToken            = Objects.requireNonNull(typeToken);
-
-         this.testAttributeType            = Objects.requireNonNull(testAttributeType);
-         this.testAttributeValues          = Objects.requireNonNull(testAttributeValues);
-
-         this.attributeSetter              = Objects.requireNonNull(attributeSetter);
+         this.attributeSpecifications      = Objects.requireNonNull(attributeSpecifications);
          this.builderRelationshipRecords   = Objects.requireNonNull(builderRelationshipRecords);
       }
       //@formatter:on
@@ -258,8 +242,8 @@ public class ReqifRelationships {
        */
 
       @Override
-      public BiConsumer<Attribute<?>, Object> getAttributeSetter() {
-         return this.attributeSetter;
+      public List<AttributeSpecificationRecord> getAttributeSpecifications() {
+         return this.attributeSpecifications;
       }
 
       /**
@@ -296,24 +280,6 @@ public class ReqifRelationships {
       @Override
       public String getName() {
          return this.name;
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public AttributeTypeGeneric<?> getTestAttributeType() {
-         return this.testAttributeType;
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public List<Object> getTestAttributeValues() {
-         return this.testAttributeValues;
       }
 
    }
@@ -377,6 +343,9 @@ public class ReqifRelationships {
 
    private static String testBranchCreationComment = "Branch for ReqIF Synchronizaion Artifact Testing";
 
+   private static BiConsumer<Attribute<?>, Object> stringAttributeSetter =
+      (attribute, value) -> ((StringAttribute) attribute).setValue((String) value);
+
    /**
     * List of {@link ArtifactInfoRecords} describing the test artifacts.
     * <p>
@@ -400,10 +369,16 @@ public class ReqifRelationships {
                       0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "ReqIF Relationship Test Document",                                               /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "ReqIF Relationship Test Document" ),                                    /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "ReqIF Relationship Test Document" ),                     /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                    ),
 
             new ArtifactInfoRecord
@@ -412,10 +387,16 @@ public class ReqifRelationships {
                       1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Requirements A Folder",                                                          /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "Requirements A Folder" ),                                               /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "Requirements A Folder" ),                                /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                    ),
 
             new ArtifactInfoRecord
@@ -424,10 +405,16 @@ public class ReqifRelationships {
                       2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Requirement A-A",                                                                /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.SoftwareRequirementPlainText,                                   /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "This is Requirement A-A" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "This is Requirement A-A" ),                              /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                          (
                          )
                    ),
@@ -438,10 +425,16 @@ public class ReqifRelationships {
                       1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Requirements B Folder",                                                          /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "Requirements B Folder" ),                                               /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "Requirements B Folder" ),                                /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                    ),
 
             new ArtifactInfoRecord
@@ -450,10 +443,16 @@ public class ReqifRelationships {
                       4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Requirement B-A",                                                                /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.SoftwareRequirementPlainText,                                   /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "This is Requirement B-A" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "This is Requirement B-A" ),                              /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                          (
                            new ArtifactRelationshipInfoRecord
                                   (
@@ -474,10 +473,16 @@ public class ReqifRelationships {
                       1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Requirements C Folder",                                                          /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "Requirements C Folder" ),                                               /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "Requirements C Folder" ),                                /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                    ),
 
             new ArtifactInfoRecord
@@ -486,9 +491,15 @@ public class ReqifRelationships {
                       6,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Requirement C-A",                                                                /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.SoftwareRequirementPlainText,                                   /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "This is Requirement C-A" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "This is Requirement C-A" ),                              /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
                       List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                          (
                             new ArtifactRelationshipInfoRecord
@@ -505,10 +516,16 @@ public class ReqifRelationships {
                       0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "ReqIF Relationship Test Document 2",                                             /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "ReqIF Relationship Test Document 2" ),                                  /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "ReqIF Relationship Test Document 2" ),                   /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                    ),
 
             new ArtifactInfoRecord
@@ -517,10 +534,16 @@ public class ReqifRelationships {
                       8,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Test Document 2 Requirements A Folder",                                          /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "Requirements A Folder" ),                                               /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "Requirements A Folder" ),                                /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                    ),
 
             new ArtifactInfoRecord
@@ -529,10 +552,16 @@ public class ReqifRelationships {
                       9,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                       "Test Document 2 Requirement A-A",                                                /* Artifact Name                          (String)                                */
                       CoreArtifactTypes.SoftwareRequirementPlainText,                                   /* Artifact Type                          (ArtifactTypeToken)                     */
-                      CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                      List.of( "This is Requirement A-A for Test Document 2" ),                         /* Test Attribute Values                  (List<Object>)                          */
-                      ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+                      List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                         (
+                            new BasicAttributeSpecification
+                                   (
+                                     CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                     List.of( "This is Requirement A-A for Test Document 2" ),          /* Test Attribute Values                  (List<Object>)                          */
+                                     ReqifRelationships.stringAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                   )
+                         ),
+                      List.of                                                                           /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                          (
                             new ArtifactRelationshipInfoRecord
                             (

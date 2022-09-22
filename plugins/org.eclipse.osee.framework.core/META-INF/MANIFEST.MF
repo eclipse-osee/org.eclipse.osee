@@ -35,6 +35,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.jdt.annotation,
+ org.eclipse.osee.framework.core.xml.publishing,
  org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.text,
  org.eclipse.osee.framework.jdk.core.text.change,
@@ -70,6 +71,7 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.sql,
  org.eclipse.osee.framework.core.threading,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.core.util.result
+ org.eclipse.osee.framework.core.util.result,
+ org.eclipse.osee.framework.core.xml.publishing
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation
