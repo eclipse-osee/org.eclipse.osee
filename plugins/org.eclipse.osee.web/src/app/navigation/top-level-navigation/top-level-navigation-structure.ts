@@ -23,6 +23,7 @@ export interface navigationElement {
   isDropdownOpen: boolean,
   isAdminRequired: boolean,
   routerLink: string,
+  icon: string,
   children: navigationElement[]
 }
 
@@ -34,6 +35,7 @@ const navigationStructure:navigationElement[] = [
     isDropdownOpen: false,
     isAdminRequired: false,
     routerLink: '/ple',
+    icon: '',
     children: [
       // Level-2
       {
@@ -42,6 +44,7 @@ const navigationStructure:navigationElement[] = [
         isDropdownOpen: false,
         isAdminRequired: false,
         routerLink: '/ple',
+        icon: '',
         children:[]
       },
       {
@@ -50,6 +53,7 @@ const navigationStructure:navigationElement[] = [
         isDropdownOpen: false,
         isAdminRequired: false,
         routerLink: '/ple/plconfig',
+        icon: '',
         children:[]
       },
       {
@@ -58,6 +62,7 @@ const navigationStructure:navigationElement[] = [
         isDropdownOpen: false,
         isAdminRequired: false,
         routerLink: '/ple/messaging',
+        icon: '',
         children:[
           // Level-3
           {
@@ -66,6 +71,7 @@ const navigationStructure:navigationElement[] = [
             isDropdownOpen: false,
             isAdminRequired: false,
             routerLink: '/ple/messaging',
+            icon: '',
             children:[]
           },
           {
@@ -74,6 +80,7 @@ const navigationStructure:navigationElement[] = [
             isDropdownOpen: false,
             isAdminRequired: false,
             routerLink: '/ple/messaging/connections',
+            icon: 'device_hub',
             children:[]
           },
           {
@@ -82,22 +89,16 @@ const navigationStructure:navigationElement[] = [
             isDropdownOpen: false,
             isAdminRequired: false,
             routerLink: '/ple/messaging/types',
+            icon: 'view_module',
             children:[]
           },
           {
-            label: 'Help Pages',
-            isDropdown: false,
-            isDropdownOpen: false,
-            isAdminRequired: false,
-            routerLink: '/ple/messaging/help',
-            children:[]
-          },
-          {
-            label: 'Structure Names Page',
+            label: 'Structure Names',
             isDropdown: false,
             isDropdownOpen: false,
             isAdminRequired: false,
             routerLink: '/ple/messaging/structureNames',
+            icon: 'line_style',
             children:[]
           },
           {
@@ -106,22 +107,34 @@ const navigationStructure:navigationElement[] = [
             isDropdownOpen: false,
             isAdminRequired: false,
             routerLink: '/ple/messaging/typeSearch',
+            icon: 'search',
             children:[]
           },
           {
-            label: 'Go to Reports',
+            label: 'Reports',
             isDropdown: false,
             isDropdownOpen: false,
             isAdminRequired: false,
             routerLink: '/ple/messaging/reports',
+            icon: 'insert_drive_file',
             children:[]
           },
           {
-            label: 'Go to Import Page',
+            label: 'Help',
+            isDropdown: false,
+            isDropdownOpen: false,
+            isAdminRequired: false,
+            routerLink: '/ple/messaging/help',
+            icon: 'help_outline',
+            children:[]
+          },
+          {
+            label: 'Import Page',
             isDropdown: false,
             isDropdownOpen: false,
             isAdminRequired: true,
             routerLink: '/ple/messaging/import',
+            icon: 'cloud_upload',
             children:[]
           }
         ]

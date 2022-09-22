@@ -14,14 +14,14 @@
     <div class ="mat-display-4 messaging-header">
         OSEE Messaging
     </div>
-    <a mat-raised-button color="primary" routerLink="connections" class="message-button-0" data-cy="connection-nav-button">Go to Connection View</a>
-    <a mat-raised-button color="primary" routerLink="types" class="message-button-1" data-cy="types-nav-button">Go to Type View</a>
-    <a mat-raised-button color="primary" routerLink="help" class="message-button-2" data-cy="help-nav-button">Go To Help Pages</a>
-    <a mat-raised-button color="primary" routerLink="structureNames" class="message-button-3" data-cy="structure-nav-button">Go To Structure Names Page</a>
-    <a mat-raised-button color="primary" routerLink="typeSearch" class="message-button-4" data-cy="typesearch-nav-button">Find elements by type</a>
-    <a mat-raised-button color="primary" routerLink="reports" class="message-button-5" data-cy="mimreport-nav-button">Go to Reports</a>
+    <a mat-raised-button color="primary" routerLink="connections" class="message-button-0" data-cy="connection-nav-button"><mat-icon>{{navItems[1].icon}}</mat-icon><span>{{navItems[1].label}}</span></a>
+    <a mat-raised-button color="primary" routerLink="types" class="message-button-1" data-cy="types-nav-button"><mat-icon>{{navItems[2].icon}}</mat-icon><span>{{navItems[2].label}}</span></a>
+    <a mat-raised-button color="primary" routerLink="structureNames" class="message-button-2" data-cy="structure-nav-button"><mat-icon>{{navItems[3].icon}}</mat-icon><span>{{navItems[3].label}}</span></a>
+    <a mat-raised-button color="primary" routerLink="typeSearch" class="message-button-3" data-cy="typesearch-nav-button"><mat-icon>{{navItems[4].icon}}</mat-icon><span>{{navItems[4].label}}</span></a>
+    <a mat-raised-button color="primary" routerLink="reports" class="message-button-4" data-cy="mimreport-nav-button"><mat-icon>{{navItems[5].icon}}</mat-icon><span>{{navItems[5].label}}</span></a>
+    <a mat-raised-button color="primary" routerLink="help" class="message-button-5" data-cy="help-nav-button"><mat-icon>{{navItems[6].icon}}</mat-icon><span>{{navItems[6].label}}</span></a>
     <ng-container *ngIf="userIsAdmin|async">
-        <a mat-raised-button color="primary" routerLink="import" class="message-button-6" data-cy="mimimport-nav-button">Go to Import Page</a>
+        <a mat-raised-button color="primary" routerLink="import" class="message-button-6" data-cy="mimimport-nav-button"><mat-icon>{{navItems[7].icon}}</mat-icon><span>{{navItems[7].label}}</span></a>
     </ng-container>
     <div class="messaging-bottom">
             

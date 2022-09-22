@@ -14,6 +14,7 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { userDataAccountServiceMock } from '../plconfig/testing/mockUserDataAccountService';
@@ -28,7 +29,9 @@ describe('MessagingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[RouterTestingModule.withRoutes([{path:'connections',component:MessagingMainMock},{path:'typeSearch',component:MessagingTypeSearchMock},{path:'help',component:MessagingHelpDummy}])],
+      imports:[
+        RouterTestingModule.withRoutes([{path:'connections',component:MessagingMainMock},{path:'typeSearch',component:MessagingTypeSearchMock},{path:'help',component:MessagingHelpDummy}]),
+        MatIconModule],
       providers:[
         {provide:UserDataAccountService, useValue:userDataAccountServiceMock}
       ],
