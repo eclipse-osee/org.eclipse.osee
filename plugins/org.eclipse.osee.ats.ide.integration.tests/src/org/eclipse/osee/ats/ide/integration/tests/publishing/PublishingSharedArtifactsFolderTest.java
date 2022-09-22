@@ -19,6 +19,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelationshipRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
@@ -96,10 +98,10 @@ public class PublishingSharedArtifactsFolderTest {
       private final ArtifactTypeToken artifactTypeToken;
 
       /**
-       * A {@link BiConsumer} implementation used to assign the attribute value to the test attribute.
+       * A list of the attributes to be defined for the artifact.
        */
 
-      private final BiConsumer<Attribute<?>, Object> attributeSetter;
+      private final List<AttributeSpecificationRecord> attributeSpecifications;
 
       /**
        * A list of the relationships for the test artifact. The list may be empty but should never be <code>null</code>.
@@ -128,18 +130,6 @@ public class PublishingSharedArtifactsFolderTest {
       private final String name;
 
       /**
-       * The {@link AttributeTypeGeneric} of the test attribute.
-       */
-
-      private final AttributeTypeGeneric<?> testAttributeType;
-
-      /**
-       * The values to be assigned to the test attributes.
-       */
-
-      private final List<Object> testAttributeValues;
-
-      /**
        * Constructs a new {@link ArtifactInfoRecord} with the specified parameters.
        *
        * @param identifier A unique identifier for the {@link ArtifactInfoRecord}. Uniqueness is not enforced. The value
@@ -157,16 +147,24 @@ public class PublishingSharedArtifactsFolderTest {
        * the test artifact does not have relationships instead of <code>null</code>.
        */
 
-      ArtifactInfoRecord(Integer identifier, Integer hierarchicalParentIdentifier, String name, ArtifactTypeToken typeToken, AttributeTypeGeneric<?> testAttributeType, List<Object> testAttributeValues, BiConsumer<Attribute<?>, Object> attributeSetter, List<BuilderRelationshipRecord> builderRelationshipRecords) {
+      //@formatter:off
+      ArtifactInfoRecord
+         (
+            Integer                            identifier,
+            Integer                            hierarchicalParentIdentifier,
+            String                             name,
+            ArtifactTypeToken                  typeToken,
+            List<AttributeSpecificationRecord> attributeSpecifications,
+            List<BuilderRelationshipRecord>    builderRelationshipRecords
+         ) {
          this.identifier = Objects.requireNonNull(identifier);
          this.hierarchicalParentIdentifier = Objects.requireNonNull(hierarchicalParentIdentifier);
          this.name = Objects.requireNonNull(name);
          this.artifactTypeToken = Objects.requireNonNull(typeToken);
-         this.testAttributeType = Objects.requireNonNull(testAttributeType);
-         this.testAttributeValues = Objects.requireNonNull(testAttributeValues);
-         this.attributeSetter = Objects.requireNonNull(attributeSetter);
+         this.attributeSpecifications = Objects.requireNonNull(attributeSpecifications);
          this.builderRelationshipRecords = Objects.requireNonNull(builderRelationshipRecords);
       }
+      //@formatter:on
 
       /*
        * BuildRecord Methods
@@ -186,8 +184,8 @@ public class PublishingSharedArtifactsFolderTest {
        */
 
       @Override
-      public BiConsumer<Attribute<?>, Object> getAttributeSetter() {
-         return this.attributeSetter;
+      public List<AttributeSpecificationRecord> getAttributeSpecifications() {
+         return this.attributeSpecifications;
       }
 
       /**
@@ -226,25 +224,10 @@ public class PublishingSharedArtifactsFolderTest {
          return this.name;
       }
 
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public AttributeTypeGeneric<?> getTestAttributeType() {
-         return this.testAttributeType;
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public List<Object> getTestAttributeValues() {
-         return this.testAttributeValues;
-      }
-
    }
+
+   private static BiConsumer<Attribute<?>, Object> stringAttributeSetter =
+      (attribute, value) -> ((StringAttribute) attribute).setValue((String) value);
 
    //@formatter:off
    private static List<ArtifactInfoRecord> artifactInfoRecords =
@@ -256,10 +239,16 @@ public class PublishingSharedArtifactsFolderTest {
                0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "Shared Folder",                                                                  /* Artifact Name                          (String)                                */
                CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "Publishing test shared folder." ),                                      /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "Publishing test shared folder." ),                       /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -268,10 +257,16 @@ public class PublishingSharedArtifactsFolderTest {
                1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "A",                                                                              /* Artifact Name                          (String)                                */
                CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "Sub-folder A" ),                                                        /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "Sub-folder A" ),                                         /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -280,10 +275,16 @@ public class PublishingSharedArtifactsFolderTest {
                1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "B",                                                                              /* Artifact Name                          (String)                                */
                CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "Sub-folder B" ),                                                        /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "Sub-folder B" ),                                         /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -292,10 +293,16 @@ public class PublishingSharedArtifactsFolderTest {
                2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "A-0",                                                                            /* Artifact Name                          (String)                                */
                CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "DOC-1234" ),                                                            /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -304,10 +311,16 @@ public class PublishingSharedArtifactsFolderTest {
                2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "A-1",                                                                            /* Artifact Name                          (String)                                */
                CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "DOC-1235" ),                                                            /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -316,10 +329,16 @@ public class PublishingSharedArtifactsFolderTest {
                2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "A-2",                                                                            /* Artifact Name                          (String)                                */
                CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "DOC-1234" ),                                                            /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -328,10 +347,16 @@ public class PublishingSharedArtifactsFolderTest {
                3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "B-0",                                                                            /* Artifact Name                          (String)                                */
                CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "DOC-1235" ),                                                            /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -340,10 +365,16 @@ public class PublishingSharedArtifactsFolderTest {
                3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "B-1",                                                                            /* Artifact Name                          (String)                                */
                CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "DOC-1234" ),                                                            /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             ),
 
             new ArtifactInfoRecord
@@ -352,10 +383,16 @@ public class PublishingSharedArtifactsFolderTest {
                3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
                "B-2",                                                                            /* Artifact Name                          (String)                                */
                CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
-               CoreAttributeTypes.Description,                                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-               List.of( "DOC-1235" ),                                                            /* Test Attribute Values                  (List<Object>)                          */
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ), /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)     */
+               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  (
+                     new BasicAttributeSpecification
+                            (
+                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                              List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                              PublishingSharedArtifactsFolderTest.stringAttributeSetter          /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                            )
+                  ),
+               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
             )
 
          );

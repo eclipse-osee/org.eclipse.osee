@@ -214,5 +214,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.osgi.framework,
  org.osgi.service.event
 Service-Component: OSGI-INF/*.xml
-Export-Package: org.eclipse.osee.ats.ide.integration.tests.ats.workdef
+Export-Package: org.eclipse.osee.ats.ide.integration.tests.ats.workdef,
+ org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils,
+ org.eclipse.osee.ats.ide.integration.tests.synchronization
 

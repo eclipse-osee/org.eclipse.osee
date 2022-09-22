@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -113,13 +114,35 @@ public final class TestUtil {
     * @param artifactEndpoint The REST API end point for artifact functions.
     * @param parentBranchId The branch to create the new artifact upon.
     * @param parentArtifactId The hierarchical parent of the artifact to be created.
+    * @param childArtifactId the identifier to create the child artifact with or {@link ArtifactId#SENTINEL}.
     * @param childArtifactTypeToken when creating a child artifact, the type of artifact to create.
     * @param childName the name of the child artifact.
     * @return The {@link ArtifactToken} (identifier) for the newly created artifact.
     */
 
-   private static ArtifactToken createChildArtifactToken(ArtifactEndpoint artifactEndpoint, BranchId parentBranchId, ArtifactId parentArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
-      return artifactEndpoint.createArtifact(parentBranchId, childArtifactTypeToken, parentArtifactId, childName);
+   private static ArtifactToken createChildArtifactToken(ArtifactEndpoint artifactEndpoint, BranchId parentBranchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+
+      if (ArtifactId.SENTINEL.equals(childArtifactId)) {
+         return artifactEndpoint.createArtifact(parentBranchId, childArtifactTypeToken, parentArtifactId, childName);
+      }
+
+      var transaction = TransactionManager.createTransaction(parentBranchId, childName);
+      var artifact = ArtifactTypeManager.addArtifact(childArtifactTypeToken, BranchToken.valueOf(parentBranchId),
+         childName, childArtifactId);
+
+      Artifact parentArtifact;
+
+      try {
+         parentArtifact = ArtifactQuery.getArtifactFromId(parentArtifactId, parentBranchId);
+      } catch (Exception e) {
+         parentArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(parentBranchId);
+      }
+
+      artifact.addRelation(CoreRelationTypes.DefaultHierarchical_Parent, parentArtifact);
+      transaction.addArtifact(artifact);
+      transaction.execute();
+
+      return artifact;
    }
 
    /**
@@ -277,15 +300,16 @@ public final class TestUtil {
     * @param artifactEndpoint The REST API end point used to create the child artifact when necessary.
     * @param branchId the branch to create the artifact on, when necessary.
     * @param parentArtifactId the hierarchical parent artifact identifier.
+    * @param childArtifactId the identifier to create the child artifact with or {@link ArtifactId#SENTINEL}.
     * @param childArtifactTypeToken when creating a child artifact, the type of artifact to create.
     * @param childName the name of the child artifact.
     * @return the {@link ArtifactToken} of the existing or newly created hierarchical child with the specified name.
     */
 
-   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, ArtifactEndpoint artifactEndpoint, BranchId branchId, ArtifactId parentArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, ArtifactEndpoint artifactEndpoint, BranchId branchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
       return TestUtil.getChildArtifactTokenByName(relationEndpoint, parentArtifactId, childName).orElseGet(
-         () -> TestUtil.createChildArtifactToken(artifactEndpoint, branchId, parentArtifactId, childArtifactTypeToken,
-            childName));
+         () -> TestUtil.createChildArtifactToken(artifactEndpoint, branchId, parentArtifactId, childArtifactId,
+            childArtifactTypeToken, childName));
    }
 
    private static int getTableRowCount(String tableName) {
