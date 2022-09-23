@@ -12,7 +12,7 @@
 # ConfigurationGroup[abGroup]
 /App/Interfaces/Robot/JHU_CONTROLLER
 /App/Interfaces/Robot/ROBOT_ARM_LIGHT
-# End Configuration
+# End ConfigurationGroup
 # END APP MODIFICATIONS 
 
 /Images/SawProductLine/Images.val
