@@ -333,7 +333,7 @@ public class BatStagingCreator {
          while (excludedIterator.hasNext()) {
             String excludedName = excludedIterator.next();
             if (excludedName.contains("*")) {
-               excludedName = excludedName.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*").replaceAll("\\!", "");
+               excludedName = excludedName.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
                Pattern excludePattern = Pattern.compile("^(" + excludedName + ")$");
                if (excludePattern.matcher(inFileName).matches()) {
                   return true;
