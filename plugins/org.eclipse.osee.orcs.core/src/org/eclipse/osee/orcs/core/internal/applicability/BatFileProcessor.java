@@ -94,9 +94,6 @@ public class BatFileProcessor {
          String endConfig = matcher.group(BlockApplicabilityOps.endConfigCommentMatcherGroup);
          String beginConfigGrp = matcher.group(BlockApplicabilityOps.beginConfigGrpCommentMatcherGroup);
          String endConfigGrp = matcher.group(BlockApplicabilityOps.endConfigGrpCommentMatcherGroup);
-         String featureElse = matcher.group(BlockApplicabilityOps.featureElseCommentMatcherGroup);
-         String configureElse = matcher.group(BlockApplicabilityOps.configureElseCommentMatcherGroup);
-         String configureGroupElse = matcher.group(BlockApplicabilityOps.configureGroupElseCommentMatcherGroup);
 
          if (beginFeature != null) {
             applicabilityType = ApplicabilityType.Feature;
@@ -105,52 +102,46 @@ public class BatFileProcessor {
          } else if (beginConfig != null) {
             applicabilityExpression = matcher.group(BlockApplicabilityOps.beginConfigTagMatcherGroup);
             applicabilityType = ApplicabilityType.Configuration;
-
             if (beginConfig.contains("Not")) {
                applicabilityType = ApplicabilityType.NotConfiguration;
             }
-            matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfig, applicabilityExpression);
+            matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfigGrp, applicabilityExpression);
          } else if (beginConfigGrp != null) {
             applicabilityExpression = matcher.group(BlockApplicabilityOps.beginConfigGrpTagMatcherGroup);
             applicabilityType = ApplicabilityType.ConfigurationGroup;
-
             if (beginConfigGrp.contains("Not")) {
                applicabilityType = ApplicabilityType.NotConfigurationGroup;
             }
             matcherIndex = startApplicabilityBlock(applicabilityType, matcher, beginConfigGrp, applicabilityExpression);
-         } else if (featureElse != null) {
-            checkForMismatchTags(inFile, endFeature, endConfig, endConfigGrp, featureElse, configureElse,
-               configureGroupElse);
-            matcherIndex = matcher.end();
-         } else if (configureElse != null) {
-            checkForMismatchTags(inFile, endFeature, endConfig, endConfigGrp, featureElse, configureElse,
-               configureGroupElse);
-            matcherIndex = matcher.end();
-         } else if (configureGroupElse != null) {
-            checkForMismatchTags(inFile, endFeature, endConfig, endConfigGrp, featureElse, configureElse,
-               configureGroupElse);
-            matcherIndex = matcher.end();
          } else if (endFeature != null || endConfig != null || endConfigGrp != null) {
-            checkForMismatchTags(inFile, endFeature, endConfig, endConfigGrp, featureElse, configureElse,
-               configureGroupElse);
+            if (applicBlocks.isEmpty()) {
+               OseeLog.log(getClass(), Level.INFO,
+                  "BatFileProcessor::applyApplicabilityContent => An Applicability End tag was found before a beginning tag for: " + inFile.getPath());
+               results.warningf("An Applicability End tag was found before a beginning tag for %s\n", inFile.getPath());
+               tagProcessed = false;
+               return fileContent;
+            }
             ApplicabilityBlock applicBlock = finishApplicabilityBlock(toReturn, matcher);
             String toReplace = toReturn.substring(applicBlock.getStartInsertIndex(), applicBlock.getEndInsertIndex());
             toReturn = toReturn.replace(toReplace, applicBlock.getInsideText());
             matcherIndex = applicBlock.getStartInsertIndex() + applicBlock.getInsideText().length();
             matcher = fileTypeApplicabilityData.getCommentedTagPattern().matcher(toReturn);
+
             tagProcessed = true;
          } else {
             OseeLog.log(getClass(), Level.INFO,
                "BatFileProcessor::applyApplicabilityContent => Did not find a start or end feature tag for: " + inFile.getPath());
-            throw new TagNotPlacedCorrectlyException("Tag was not placed correctly in file: " + inFile.getPath());
+            results.warningf("Did not find a start or end feature tag for %s but a similar tag was matched\n",
+               inFile.getPath());
+            tagProcessed = false;
+            return fileContent;
          }
       }
-
       if (!applicBlocks.isEmpty()) {
          throw new TagNotPlacedCorrectlyException("Tag was not placed correctly in file: " + inFile.getPath());
       }
-      OseeLog.log(getClass(), Level.INFO,
-         "BatFileProcessor::applyApplicabilityContent => Completed for file: " + inFile.getPath() + "and tagProcessed = " + tagProcessed);
+      results.logf("BatFileProcessor::applyApplicabilityContent => Completed for file %s and tagProcessed = %s\n",
+         inFile.getPath(), tagProcessed);
       return CharBuffer.wrap(toReturn.toCharArray());
    }
 
@@ -162,63 +153,6 @@ public class BatFileProcessor {
       applicStart.setBeginTag(beginTag);
       applicBlocks.add(applicStart);
       return matcher.end();
-   }
-
-   private void checkForMismatchTags(File inFile, String endFeature, String endConfig, String endConfigGrp, String featureElse, String configureElse, String configureGroupElse) throws TagNotPlacedCorrectlyException {
-      if (applicBlocks.isEmpty()) {
-         if (featureElse != null) {
-            OseeLog.log(getClass(), Level.INFO,
-               "BatFileProcessor::applyApplicabilityContent => Else Feature tag was not placed correctly in file: " + inFile.getPath());
-            throw new TagNotPlacedCorrectlyException(
-               "Else Feature tag was not placed correctly in file: " + inFile.getPath());
-
-         } else if (configureElse != null) {
-            OseeLog.log(getClass(), Level.INFO,
-               "BatFileProcessor::applyApplicabilityContent => Else Configure tag was not placed correctly in file: " + inFile.getPath());
-            throw new TagNotPlacedCorrectlyException(
-               "Else Configure tag was not placed correctly in file: " + inFile.getPath());
-
-         } else if (configureGroupElse != null) {
-            OseeLog.log(getClass(), Level.INFO,
-               "BatFileProcessor::applyApplicabilityContent => Else Configure Group tag was not placed correctly in file: " + inFile.getPath());
-            throw new TagNotPlacedCorrectlyException(
-               "Else Configure Group tag was not placed correctly in file: " + inFile.getPath());
-
-         } else {
-            OseeLog.log(getClass(), Level.INFO,
-               "BatFileProcessor::applyApplicabilityContent => Applicability tag was not placed correctly in file: " + inFile.getPath());
-            throw new TagNotPlacedCorrectlyException(
-               "Applicability tag was not placed correctly in file: " + inFile.getPath());
-         }
-      } else if ((endFeature != null) || (featureElse != null)) {
-         if (applicBlocks.peek().getType() != ApplicabilityType.Feature) {
-            throw new TagNotPlacedCorrectlyException(
-               "Feature or Feature Else  tag was not placed correctly in file: " + inFile.getPath());
-         }
-      } else if ((endConfig != null) || (configureElse != null)) {
-         if (applicBlocks.peek().getBeginTag().contains("Not")) {
-            if (applicBlocks.peek().getType() != ApplicabilityType.NotConfiguration) {
-               throw new TagNotPlacedCorrectlyException(
-                  "Config Not or Config Else tag was not placed correctly in file: " + inFile.getPath());
-            }
-
-         } else if (applicBlocks.peek().getType() != ApplicabilityType.Configuration) {
-            throw new TagNotPlacedCorrectlyException(
-               "Config or Config Else tag was not placed correctly in file: " + inFile.getPath());
-         }
-
-      } else if ((endConfigGrp != null) || (configureGroupElse != null)) {
-         if (applicBlocks.peek().getBeginTag().contains("Not")) {
-            if (applicBlocks.peek().getType() != ApplicabilityType.NotConfigurationGroup) {
-               throw new TagNotPlacedCorrectlyException(
-                  "Config Group Not or Config Group Else tag was not placed correctly in file: " + inFile.getPath());
-            }
-
-         } else if (applicBlocks.peek().getType() != ApplicabilityType.ConfigurationGroup) {
-            throw new TagNotPlacedCorrectlyException(
-               "Config Group or Config Group Else tag was not placed correctly in file: " + inFile.getPath());
-         }
-      }
    }
 
    private ApplicabilityBlock finishApplicabilityBlock(String toReturn, Matcher matcher) throws IOException {
