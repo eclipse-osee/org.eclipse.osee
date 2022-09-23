@@ -78,6 +78,9 @@ public class BlockApplicabilityOps {
    public static final String ENDCONFIG = " ?(End Configuration(?!Group) ?((\\[.*?\\]))?) ?";
    public static final String BEGINCONFIGGRP = " ?(ConfigurationGroup( Not)? ?(\\[(.*?)\\])) ?";
    public static final String ENDCONFIGGRP = " ?(End ConfigurationGroup ?((\\[.*?\\]))?) ?";
+   public static final String FEATURE_ELSE = " ?(Feature Else ?((\\[.*?\\]))?) ?";
+   public static final String CONFIGURE_ELSE = " ?(Configuration Else ?((\\[.*?\\]))?) ?";
+   public static final String CONFIGURE_GROUP_ELSE = " ?(ConfigurationGroup Else ?((\\[.*?\\]))?) ?";
    public static final String COMMENT_EXTRA_CHARS = INLINE_WHITESPACE + "(" + SINGLE_NEW_LINE + ")?";
 
    public static final String ELSE =
@@ -98,6 +101,15 @@ public class BlockApplicabilityOps {
    public static final int beginConfigGrpTagMatcherGroup = 23;
    public static final int endConfigGrpCommentMatcherGroup = 28;
    public static final int endConfigGrpTagMatcherGroup = 29;
+
+   public static final int featureElseCommentMatcherGroup = 33;
+   public static final int featureElseTagMatcherGroup = 34;
+
+   public static final int configureElseCommentMatcherGroup = 38;
+   public static final int configureElseTagMatcherGroup = 39;
+
+   public static final int configureGroupElseCommentMatcherGroup = 43;
+   public static final int configureGroupElseTagMatcherGroup = 44;
 
    private final OrcsApi orcsApi;
    private final Log logger;
@@ -689,8 +701,15 @@ public class BlockApplicabilityOps {
          "(" + INLINE_WHITESPACE + commentPrefix + BEGINCONFIGGRP + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
       String commentedConfigGrpEnd =
          "(" + INLINE_WHITESPACE + commentPrefix + ENDCONFIGGRP + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedFeatureElse =
+         "(" + INLINE_WHITESPACE + commentPrefix + FEATURE_ELSE + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedConfigureElse =
+         "(" + INLINE_WHITESPACE + commentPrefix + CONFIGURE_ELSE + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+      String commentedConfigureGroupElse =
+         "(" + INLINE_WHITESPACE + commentPrefix + CONFIGURE_GROUP_ELSE + INLINE_WHITESPACE + commentSuffix + COMMENT_EXTRA_CHARS + ")";
+
       String pattern =
-         commentedFeatureStart + "|" + commentedFeatureEnd + "|" + commentedConfigStart + "|" + commentedConfigEnd + "|" + commentedConfigGrpStart + "|" + commentedConfigGrpEnd;
+         commentedFeatureStart + "|" + commentedFeatureEnd + "|" + commentedConfigStart + "|" + commentedConfigEnd + "|" + commentedConfigGrpStart + "|" + commentedConfigGrpEnd + "|" + commentedFeatureElse + "|" + commentedConfigureElse + "|" + commentedConfigureGroupElse;
       return Pattern.compile(pattern, Pattern.DOTALL | Pattern.MULTILINE);
    }
 }

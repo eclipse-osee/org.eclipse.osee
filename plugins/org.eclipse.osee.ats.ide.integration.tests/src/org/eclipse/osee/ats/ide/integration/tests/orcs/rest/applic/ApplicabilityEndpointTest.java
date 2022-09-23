@@ -262,6 +262,10 @@ public class ApplicabilityEndpointTest {
       File resourcesFolder = new File(inputFolder, "Resources");
       assertTrue(resourcesFolder.exists());
 
+      // Testing LSTTestIncorrectTag.lst was excluded for incorrect tagging
+      File lstFileIncorrectTag = new File(resourcesFolder, "LSTTestIncorrectTag.lst");
+      assertFalse(lstFileIncorrectTag.exists());
+
       // Testing CMDTest.cmd against CMDTestComments.cmd
       File cmdFile = new File(resourcesFolder, "CMDTest.cmd");
       assertTrue(cmdFile.exists());
