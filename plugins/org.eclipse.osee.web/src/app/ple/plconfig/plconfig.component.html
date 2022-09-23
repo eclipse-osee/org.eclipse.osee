@@ -11,28 +11,19 @@
  *     Boeing - initial API and implementation
  -->
 <div class="pl-config">
-    <ng-container *ngIf="(isAllowedToDiff|async) as _diff">
-        <ng-container *ngIf="(branchType|async) as _type">
-            <ng-container *ngIf="(branchId|async) as _id">
-                <ng-container>
-                    <div>
-                        <button mat-raised-button style="float:right" [routerLink]="_diff==='true'?[{outlets:{primary:'diff', rightSideNav:null}}]:'../'"><mat-icon *ngIf="_diff==='false'">visibility_off</mat-icon><mat-icon *ngIf="_diff==='true'">change_history</mat-icon><span>{{_diff==='true'?'Show Deltas':'Hide Deltas'}}</span></button>
-                    </div>
+    <div class="pl-config-container">
+        <osee-branch-picker category="2" [actionSearch]=true></osee-branch-picker>
+        <plconfig-configuration-dropdown></plconfig-configuration-dropdown>
+        <plconfig-configuration-group-dropdown></plconfig-configuration-group-dropdown>
+        <plconfig-feature-dropdown></plconfig-feature-dropdown>
+        <div class="left-buttons">
+            <ng-container *ngIf="(isAllowedToDiff|async) as _diff">
+                <ng-container *ngIf="(branchType|async) && (branchId|async)">
+                    <button mat-raised-button [routerLink]="_diff==='true'?[{outlets:{primary:'diff', rightSideNav:null}}]:'../'"><mat-icon *ngIf="_diff==='false'">visibility_off</mat-icon><mat-icon *ngIf="_diff==='true'">change_history</mat-icon><span>{{_diff==='true'?'Show Deltas':'Hide Deltas'}}</span></button>
                 </ng-container>
             </ng-container>
-        </ng-container>
-    </ng-container>
-    <div style="display:flex; flex-direction:row; flex-grow:1; justify-content: space-between; align-items:center;">
-        <osee-branch-picker category="2" [actionSearch]=true>   
-        </osee-branch-picker>
-        <plconfig-configuration-dropdown>
-        </plconfig-configuration-dropdown>
-        <plconfig-configuration-group-dropdown>
-        </plconfig-configuration-group-dropdown>
-        <plconfig-feature-dropdown>
-        </plconfig-feature-dropdown>
-        <action-dropdown category="2" workType="ARB">
-        </action-dropdown>
+            <action-dropdown category="2" workType="ARB"></action-dropdown>
+        </div>
     </div>
     <plconfig-applicability-table>
         <!-- [updateRequired]="_updateRequired |async" -->
