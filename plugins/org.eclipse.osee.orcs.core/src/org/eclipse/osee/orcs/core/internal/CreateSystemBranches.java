@@ -207,6 +207,8 @@ public class CreateSystemBranches {
          OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.xml", getClass()));
       tx.createAttribute(templateArtParna, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
+      tx.createAttribute(templateArtParna, CoreAttributeTypes.TemplateMatchCriteria,
+         "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer PREVIEW_SERVER PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
    }
 
    private void createDataRights(TransactionBuilder tx, ArtifactId documentTemplateFolder) {
