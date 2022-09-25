@@ -82,4 +82,6 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andAccessContexts(AccessContextToken... contextIds);
 
+   IAtsConfigTxTeamDef andAtsIdPrefix(String atsIdPrefix, String seqName, String seqStart);
+
 }

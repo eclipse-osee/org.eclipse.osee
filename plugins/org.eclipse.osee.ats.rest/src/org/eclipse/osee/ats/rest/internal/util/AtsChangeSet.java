@@ -113,6 +113,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       //         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsApi);
       //         runner.run();
       //      }
+      if (tx.isValid()) {
+         executeAfterSuccess(atsApi);
+      }
       return tx;
    }
 

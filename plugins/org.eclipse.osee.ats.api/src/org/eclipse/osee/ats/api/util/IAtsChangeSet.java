@@ -192,4 +192,6 @@ public interface IAtsChangeSet {
 
    void addTag(IAtsObject atsObject, String tag);
 
+   void addAtsIdSequence(String seqName, String seqStart);
+
 }

@@ -193,4 +193,12 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
       return this;
    }
 
+   @Override
+   public IAtsConfigTxTeamDef andAtsIdPrefix(String atsIdPrefix, String seqName, String seqStart) {
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AtsIdPrefix, atsIdPrefix);
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AtsIdSequenceName, seqName);
+      changes.addAtsIdSequence(seqName, seqStart);
+      return this;
+   }
+
 }

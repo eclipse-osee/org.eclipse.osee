@@ -16,10 +16,14 @@ package org.eclipse.osee.ats.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -62,6 +66,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected boolean execptionIfEmpty = true;
    protected BranchToken branch;
    protected Set<ArtifactId> ids = new HashSet<>();
+   protected Map<String, String> seqNameToStartNum = new HashMap<>();
 
    public AbstractAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       this.comment = comment;
@@ -135,6 +140,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       deleteArtifacts.clear();
       deleteAtsObjects.clear();
       listeners.clear();
+      seqNameToStartNum.clear();
    }
 
    @Override
@@ -313,6 +319,22 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public void addTag(IAtsObject atsObject, String tag) {
       if (!atsObject.getTags().contains(tag)) {
          addAttribute(atsObject, CoreAttributeTypes.StaticId, tag);
+      }
+   }
+
+   @Override
+   public void addAtsIdSequence(String seqName, String seqStart) {
+      seqNameToStartNum.put(seqName, seqStart);
+   }
+
+   /**
+    * Perform any steps upon successful execute of transaction
+    */
+   public void executeAfterSuccess(AtsApi atsApi) {
+      for (Entry<String, String> entry : seqNameToStartNum.entrySet()) {
+         String query = String.format("INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (%s, '%s')",
+            entry.getValue(), entry.getKey());
+         atsApi.getQueryService().runUpdate(query);
       }
    }
 
