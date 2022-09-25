@@ -82,7 +82,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      TransactionToken transactionTok;
+      TransactionToken transactionTok = TransactionToken.SENTINEL;
       if (branch == null) {
          branch = AtsApiService.get().getAtsBranch();
       }
@@ -139,6 +139,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
 
+      if (transactionTok != null && transactionTok.isValid()) {
+         executeAfterSuccess(AtsApiService.get());
+      }
       return transactionTok;
    }
 

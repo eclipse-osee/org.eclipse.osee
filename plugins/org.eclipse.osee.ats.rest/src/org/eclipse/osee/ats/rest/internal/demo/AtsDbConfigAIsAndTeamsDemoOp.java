@@ -70,21 +70,6 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       cfgTx.execute();
 
       createSawPlCrTaskEstUserGroups();
-      createSawPlCrSequenceConfig();
-   }
-
-   private void createSawPlCrSequenceConfig() {
-      // Setup Blk3 Issues sequence number
-      IAtsTeamDefinition crTeamDef =
-         atsApi.getTeamDefinitionService().getTeamDefinitionById(DemoArtifactToken.SAW_PL_CR_TeamDef);
-      ArtifactToken teamDefArt = atsApi.getQueryService().getArtifact(crTeamDef);
-      IAtsChangeSet changes = atsApi.createChangeSet("createSawPlCrSequenceConfig");
-      changes.setSoleAttributeValue(teamDefArt, AtsAttributeTypes.AtsIdPrefix, "CR");
-      changes.setSoleAttributeValue(teamDefArt, AtsAttributeTypes.AtsIdSequenceName, "CR_SEQ");
-      changes.execute();
-      atsApi.getQueryService().runUpdate(
-         "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (1000, 'CR_SEQ')");
-
    }
 
    private void createSawPlCrTaskEstUserGroups() {
@@ -249,6 +234,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_CR_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.ChangeRequest) //
+         .andAtsIdPrefix("CR", "CR_SEQ", "1000") //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request) //
@@ -300,14 +286,14 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andMembers(DemoUsers.Joe_Smith) //
          .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine) //
          .andTeamWorkflowArtifactType(AtsArtifactTypes.TeamWorkflow);
-      
+
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_MIM_TeamDef) //
-      .andProgram(DemoArtifactToken.SAW_PL_Program) //
-      .andWorkType(WorkType.MIM) //
-      .andLeads(DemoUsers.Joe_Smith) //
-      .andMembers(DemoUsers.Joe_Smith) //
-      .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine) //
-      .andTeamWorkflowArtifactType(AtsArtifactTypes.TeamWorkflow);
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.MIM) //
+         .andLeads(DemoUsers.Joe_Smith) //
+         .andMembers(DemoUsers.Joe_Smith) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine) //
+         .andTeamWorkflowArtifactType(AtsArtifactTypes.TeamWorkflow);
 
       // SAW SW Actionable Items
       IAtsConfigTxActionableItem sawPlSwAI =
@@ -360,12 +346,12 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkType(WorkType.ARB) //
          .andTeamDef(DemoArtifactToken.SAW_PL_ARB_TeamDef) //
          .andActionable(true);
-      
+
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_MIM_AI) //
-      .andProgram(DemoArtifactToken.SAW_PL_Program) //
-      .andWorkType(WorkType.MIM) //
-      .andTeamDef(DemoArtifactToken.SAW_PL_MIM_TeamDef) //
-      .andActionable(true);
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.MIM) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_MIM_TeamDef) //
+         .andActionable(true);
 
       // SAW PL Program
       cfgTx.createProgram(DemoArtifactToken.SAW_PL_Program) //
