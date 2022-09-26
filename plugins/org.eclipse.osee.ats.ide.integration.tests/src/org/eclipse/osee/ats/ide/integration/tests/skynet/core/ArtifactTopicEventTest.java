@@ -511,7 +511,7 @@ public class ArtifactTopicEventTest {
       rootArt.addChild(newArt);
       rootArt.persist(getClass().getSimpleName());
 
-      Assert.assertEquals("No artifact events should be sent", 0, listener.getArtifacts().size());
+      Assert.assertEquals("One artifact event should be sent", 1, listener.getArtifacts().size());
       Assert.assertEquals(1, listener.getRelations().size());
       if (isRemoteTest()) {
          Assert.assertTrue(listener.getSender().isRemote());
@@ -585,7 +585,7 @@ public class ArtifactTopicEventTest {
 
       newArt.deleteAndPersist(getClass().getSimpleName());
 
-      Assert.assertEquals(2, listener.getArtifacts().size());
+      Assert.assertEquals(3, listener.getArtifacts().size());
       Assert.assertEquals(1, listener.getRelations().size());
       boolean deletedFound = false;
       boolean modifiedFound = false;
@@ -595,15 +595,18 @@ public class ArtifactTopicEventTest {
          } else {
             Assert.assertTrue(listener.getSender().isLocal());
          }
-         if (topicArt1.getEventModType() == EventModType.Deleted) {
+         if (topicArt1.getEventModType() == EventModType.Deleted && newArt.getId().equals(
+            topicArt1.getArtifactToken().getId())) {
             deletedFound = true;
+            Assert.assertEquals(newArt.getArtifactType().getId(), topicArt1.getArtifactTypeId().getId());
+            Assert.assertEquals(newArt.getBranch().getId(), topicArt1.getBranch().getId());
          }
-         if (topicArt1.getEventModType() == EventModType.Modified) {
+         if (topicArt1.getEventModType() == EventModType.Modified && newArt.getId().equals(
+            topicArt1.getArtifactToken().getId())) {
             modifiedFound = true;
+            Assert.assertEquals(newArt.getArtifactType().getId(), topicArt1.getArtifactTypeId().getId());
+            Assert.assertEquals(newArt.getBranch().getId(), topicArt1.getBranch().getId());
          }
-         Assert.assertEquals(newArt.getIdString(), topicArt1.getArtifactToken().getIdString());
-         Assert.assertEquals(newArt.getArtifactType().getId(), topicArt1.getArtifactTypeId().getId());
-         Assert.assertEquals(newArt.getBranch().getId(), topicArt1.getBranch().getId());
       }
       Assert.assertTrue(deletedFound);
       Assert.assertTrue(modifiedFound);
