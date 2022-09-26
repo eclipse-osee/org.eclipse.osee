@@ -76,11 +76,11 @@ public abstract class ArtifactFactory {
 
    public static Long getNextArtifactId(Long uuid) {
       if (ArtifactToken.USE_LONG_IDS) {
-         return Lib.generateUuid();
+         return uuid == null ? Lib.generateUuid() : uuid;
       } else {
          return uuid == null ? ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid;
       }
-      
+
    }
 
    public synchronized Artifact reflectExisitingArtifact(ArtifactId artId, String guid, ArtifactTypeToken artifactType, GammaId gammaId, BranchToken branch, ModificationType modificationType, ApplicabilityId applicabilityId) {
