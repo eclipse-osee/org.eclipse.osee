@@ -272,13 +272,12 @@ export class CurrentGraphService {
         tap(() => {
           this.update = true
         })
-      )
-      )
+      ))
     )
   }
 
   private createUserPreferenceBranchTransaction(editMode:boolean) {
-    return combineLatest(this.preferences, this.routeStateService.id, this.BranchPrefs).pipe(
+    return combineLatest([this.preferences, this.routeStateService.id, this.BranchPrefs]).pipe(
       take(1),
       switchMap(([prefs, branch, branchPrefs]) =>
         iif(

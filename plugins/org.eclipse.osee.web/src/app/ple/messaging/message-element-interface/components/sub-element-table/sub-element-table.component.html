@@ -13,12 +13,7 @@
 <table mat-table [dataSource]="dataSource" class="message-element-interface-table-view-element mat-elevation-z8 message-element-interface-table-view-width-100" data-cy="sub-element-table">
     <ng-container [matColumnDef]="header" *ngFor="let header of subMessageHeaders;let j=index;trackBy:valueTracker">
      <th mat-header-cell *matHeaderCellDef class="message-element-interface-table-view-sub-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''" [attr.data-cy]="'element-table-header-'+header">{{(getHeaderByName(header)|async)?.humanReadable||''}}</th>
-     <td mat-cell *matCellDef="let element" class="message-element-interface-table-center" [ngClass]="!element.added && !element.deleted &&element.changes!==undefined && element.changes[header]!==undefined?'message-element-table-element-attribute-changed':''" [ngStyle]="header==='description'||header==='EnumLiteralsDesc'||header==='notes'?{
-        'width':(layout|async)?.tableRecommendations?.width,
-        'white-space': 'nowrap',
-        'overflow': 'hidden',
-        'text-overflow': 'ellipsis'
-    }:{}" (contextmenu)="openGeneralMenu($event, element,header,element[header])">
+     <td mat-cell *matCellDef="let element" class="message-element-interface-table-center" [ngClass]="!element.added && !element.deleted &&element.changes!==undefined && element.changes[header]!==undefined?'message-element-table-element-attribute-changed':''" (contextmenu)="openGeneralMenu($event, element,header,element[header])">
         <app-sub-element-table-row [header]="header" [editMode]="editMode" [element]="element" [structure]="structure" (menu)="openGeneralMenu($event.event,element,header,element[header])"></app-sub-element-table-row>
      </td>
     </ng-container>
