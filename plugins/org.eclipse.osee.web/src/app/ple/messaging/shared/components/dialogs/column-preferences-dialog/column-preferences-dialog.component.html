@@ -12,19 +12,20 @@
  -->
 <h1 mat-dialog-title>Settings</h1>
 <mat-dialog-content>
-  <mat-checkbox
-    [(ngModel)]="data.editable"
-    [disabled]="!(editability | async) || false"
-    color="primary"
-    cdkFocusInitial>
-    <mat-label>
-      Edit Mode
-    </mat-label>  
-  </mat-checkbox>
-  <br>
-  <button mat-stroked-button (click)="resetToDefaultHeaders($event)" data-cy="reset-default-btn">Reset to Defaults</button>
+  <div class="checkboxes">
+    <mat-checkbox
+      [(ngModel)]="data.editable"
+      [disabled]="!(editability | async) || false"
+      color="primary"
+      cdkFocusInitial>
+      <mat-label>Edit Mode</mat-label>  
+    </mat-checkbox>
+  </div>
   <ng-container *ngIf="data.headersTableActive">
-    <h2>Column Preferences</h2>
+    <div class="column-preferences-header">
+      <h2>Column Preferences</h2>
+      <button mat-stroked-button (click)="resetToDefaultHeaders($event)" data-cy="reset-default-btn">Reset to Defaults</button>
+    </div>
     <table class="mat-table mat-elevation-z8">
       <tr class="mat-header-row">
         <th class="mat-header-cell">
