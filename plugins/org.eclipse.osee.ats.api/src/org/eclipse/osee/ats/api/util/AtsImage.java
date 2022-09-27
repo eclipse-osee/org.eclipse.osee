@@ -70,6 +70,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage NEW_NOTE = new AtsImage("newNote.gif");
    public static AtsImage NEW_TASK = new AtsImage("newTask.gif");
    public static AtsImage NEXT = new AtsImage("yellowN_8_8.gif");
+   public static AtsImage NOTE = new AtsImage("note.gif");
    public static AtsImage OPEN_BY_ID = new AtsImage("openId.gif");
    public static AtsImage OPEN_PARENT = new AtsImage("openParent.gif");
    public static AtsImage PEER_REVIEW = new AtsImage("peer_review.gif");

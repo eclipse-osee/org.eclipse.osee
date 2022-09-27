@@ -117,7 +117,7 @@ public class WfeStateNotesHeader extends Composite {
 
                };
                wid.setEditable(true);
-               wid.setToolTip("Select to View/Modify/Deletesd");
+               wid.setToolTip("Select to View/Modify/Delete");
                wid.createWidgets(editor.getWorkFlowTab().getManagedForm(), nComp, 1);
             }
          }

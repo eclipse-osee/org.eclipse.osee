@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2013 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddStateNoteAction;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddWorkflowNotesAction;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -23,12 +23,12 @@ import org.junit.Test;
 /**
  * @author Donald G. Dunne
  */
-public class AddStateNoteActionTest extends AbstractAtsActionTest {
+public class AddWorkflowNotesActionTest extends AbstractAtsActionTest {
 
    @Test
    public void testRun() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-      AddStateNoteAction action = (AddStateNoteAction) createAction();
+      AddWorkflowNotesAction action = (AddWorkflowNotesAction) createAction();
       action.setEmulateUi(true);
       action.runWithException();
       AtsTestUtil.getTeamWf().persist(getClass().getSimpleName());
@@ -38,7 +38,7 @@ public class AddStateNoteActionTest extends AbstractAtsActionTest {
    @Override
    public Action createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      return new AddStateNoteAction(AtsTestUtil.getTeamWf());
+      return new AddWorkflowNotesAction(AtsTestUtil.getTeamWf());
    }
 
 }

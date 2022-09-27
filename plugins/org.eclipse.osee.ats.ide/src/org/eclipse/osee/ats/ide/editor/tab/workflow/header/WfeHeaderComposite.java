@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -88,6 +87,7 @@ public class WfeHeaderComposite extends Composite {
    private WfeBlockedWorkflowHeader blockedWfHeader;
    private WfeHoldWorkflowHeader holdWfHeader;
    private WfeAttachmentsComposite attachmentsComposite;
+   private WfeWorkflowNotesHeader workflowNotesHeader;
 
    public WfeTransitionHeader getWfeTransitionHeader() {
       return transitionHeader;
@@ -128,6 +128,9 @@ public class WfeHeaderComposite extends Composite {
       }
       if (stateNotesHeader != null) {
          stateNotesHeader.refresh();
+      }
+      if (workflowNotesHeader != null) {
+         workflowNotesHeader.refresh();
       }
       if (relatedComposite != null) {
          relatedComposite.refresh();
@@ -263,12 +266,7 @@ public class WfeHeaderComposite extends Composite {
    }
 
    public void createWorkflowNotesHeader(Composite comp, XFormToolkit toolkit, int horizontalSpan) {
-      // Display Workflow Note
-      String note = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
-         AtsAttributeTypes.WorkflowNotes, "");
-      if (!note.equals("")) {
-         createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
-      }
+      workflowNotesHeader = new WfeWorkflowNotesHeader(comp, SWT.NONE, workItem, null, editor);
    }
 
    public void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan, String forStateName, WorkflowEditor editor) {
