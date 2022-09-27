@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Date;
 import java.util.Set;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDescription, NamedId {
    static final AttributeTypeGeneric<?> SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
    static final String APPLICATION_ZIP = "application/zip";
+   static final Date DEFAULT_DATE = new Date(0);
    static final String TEXT_CALENDAR = "text/calendar";
    static final String TEXT_URI_LIST = "text/uri-list";
    static final String APPLICATION_MSWORD = "application/msword";

@@ -51,24 +51,15 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this.artifactType = artifactType;
    }
 
-   /**
-    * 0..n values
-    */
    public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType, T defaultValue, String description) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue));
       return this;
    }
 
-   /**
-    * 0..n values
-    */
    public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType, T defaultValue) {
       return any(attributeType, defaultValue, "");
    }
 
-   /**
-    * 0..n values
-    */
    public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType) {
       return any(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
    }

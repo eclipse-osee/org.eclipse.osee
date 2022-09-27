@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import static org.eclipse.osee.framework.core.data.AttributeTypeToken.DEFAULT_DATE;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -392,5 +393,34 @@ public interface CoreArtifactTypes {
       .any(WorkTransition));
    ArtifactTypeToken XViewerGlobalCustomization = osee.add(osee.artifactType(55L, "XViewer Global Customization", false, Artifact)
       .any(XViewerCustomization));
+
+   ArtifactTypeToken Context = osee.add(osee.artifactType(3962411134691320126L, "Context", false, Artifact)
+      .zeroOrOne(Description, "", "A context hint that will be visible in the UI")
+      );
+   ArtifactTypeToken Command = osee.add(osee.artifactType(3605711044364389729L, "Command", false, Artifact)
+      .zeroOrOne(Description, "", "A description of the command")
+      .zeroOrOne(ContentUrl, "", "A Rest Call endpoint to call to execute templated with parameters")
+      .zeroOrOne(HttpMethod, HttpMethod.Get, "HTTP method for request")
+      );
+   ArtifactTypeToken ExecutedCommand = osee.add(osee.artifactType(3605721345366379123L, "ExecutedCommand", false, Artifact)
+      .exactlyOne(ExecutionFrequency, 0, "Frequency of parameterized command execution")
+      .exactlyOne(CommandTimestamp, DEFAULT_DATE,"The timestamp of the last execution of this command")
+      .exactlyOne(ParameterizedCommand, "", "The JSON representation of the command with its parameterized attributes/values")
+      .zeroOrOne(Favorite, false, "Is executed command a favorite")
+      .exactlyOne(IsValidated, true, "Flags if the executed command was valid or not")
+      );
+   ArtifactTypeToken ExecutedCommandHistory =  osee.add(osee.artifactType(3102324341367389724L, "ExecutedCommand History", false, Artifact)
+      );
+   ArtifactTypeToken Parameter = osee.add(osee.artifactType(5334063606392099440L, "Parameter", true, Artifact)
+      .zeroOrOne(DefaultValue)
+      .zeroOrOne(Description, "", "A description of valid parameter inputs")
+      .zeroOrOne(UseValidator, false, "Is a validator used for this parameter")
+      .any(ValidatorType, "", "Type of validator")
+      );
+   ArtifactTypeToken ParameterInteger = osee.add(osee.artifactType(3007766441141267760L, "ParameterInteger", false, Parameter));
+   ArtifactTypeToken ParameterBranch = osee.add(osee.artifactType(4683538775178036503L, "ParameterBranch", false, Parameter));
+   ArtifactTypeToken ParameterBoolean = osee.add(osee.artifactType(9092244262700990331L, "ParameterBoolean", false, Parameter));
+   ArtifactTypeToken ParameterString = osee.add(osee.artifactType(6057500041616318960L, "ParameterString", false, Parameter));
+
    // @formatter:on
 }

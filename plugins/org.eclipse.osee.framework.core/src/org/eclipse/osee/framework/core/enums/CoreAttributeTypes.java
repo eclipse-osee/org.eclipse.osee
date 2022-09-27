@@ -79,6 +79,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString Category = osee.createString(1152921504606847121L, "Category", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger CircuitBreakerId = osee.createIntegerNoTag(188458869981238L, "Circuit Breaker Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString City = osee.createString(1152921504606847068L, "City", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDate CommandTimestamp = osee.createDateNoTag(6908130616864675217L, "Command Timestamp",  MediaType.TEXT_PLAIN, "Timestamp of command execution");
    AttributeTypeString Company = osee.createString(1152921504606847066L, "Company", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CompanyTitle = osee.createString(1152921504606847067L, "Company Title", MediaType.TEXT_PLAIN, "");
    ComponentAttributeType Component = osee.createEnum(new ComponentAttributeType());
@@ -104,10 +105,12 @@ public interface CoreAttributeTypes {
    AttributeTypeString Email = osee.createString(1152921504606847082L, "Email", MediaType.TEXT_PLAIN, "");
    AttributeTypeString EndpointUrl = osee.createString(1103659738810857581L, "Endpoint URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExcludePath = osee.createString(1152921504606847708L, "Exclude Path", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger ExecutionFrequency = osee.createInteger(5494590235875265429L, "Execution Frequency", MediaType.TEXT_PLAIN, "Frequency of parameterized command execution");
    AttributeTypeString Extension = osee.createString(1152921504606847064L, "Extension", MediaType.TEXT_PLAIN, "");
    FACETechStandardVersionAttributeType FACEVersion = osee.createEnum(new FACETechStandardVersionAttributeType());
    FACEOSSProfileAttributeType FACEProfile = osee.createEnum(new FACEOSSProfileAttributeType());
    FACESegmentAttributeType FACESegment = osee.createEnum(new FACESegmentAttributeType());
+   AttributeTypeBoolean Favorite = osee.createBoolean(2516126323929150072L, "Favorite", MediaType.TEXT_PLAIN, "Favorite or not favorite");
    AttributeTypeString FavoriteBranch = osee.createStringNoTag(1152921504606847074L, "Favorite Branch", MediaType.TEXT_PLAIN, "");
    AttributeTypeString FaxPhone = osee.createString(1152921504606847081L, "Fax Phone", MediaType.TEXT_PLAIN, "");
    FdalAttributeType FDAL = osee.createEnum(new FdalAttributeType());
@@ -176,6 +179,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString MessageGenerationType = osee.createString(7121809480940961886L, "Message Generation Type", MediaType.TEXT_PLAIN, "Type of message information generation to use for MIM artifacts if Message Generation is true. Examples include Relational, Dynamic.");
    AttributeTypeString MessageGenerationPosition = osee.createString(7004358807289801815L, "Message Generation Position", MediaType.TEXT_PLAIN, "Location within a list for generation to use for MIM Artifacts if Message Generation is true. This is an array mapped to the related artifacts(NOTE: must be of the same artifact type). Position '0' is the first element in a list of elements. Position 'LAST' is the last element in a list of elements.");
    AttributeTypeInputStream ImageContent = osee.createInputStreamNoTag(1152921504606847868L, "Image Content", AttributeTypeToken.IMAGE, "Binary Image content");
+   AttributeTypeBoolean IsValidated = osee.createBoolean(729356860089871L, "Is Validated", MediaType.TEXT_PLAIN, "");
    AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java");
    LegacyDalAttributeType LegacyDal = osee.createEnum(new LegacyDalAttributeType());
    AttributeTypeString LegacyId = osee.createStringNoTag(1152921504606847107L, "Legacy Id", MediaType.TEXT_PLAIN, "unique identifier from an external system");
@@ -190,6 +194,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App");
    PageOrientationAttributeType PageOrientation = osee.createEnum(new PageOrientationAttributeType());
    AttributeTypeString ParagraphNumber = osee.createString(1152921504606847101L, "Paragraph Number", MediaType.TEXT_PLAIN, "This is the corresponding section number from the outline of document from which this artifact was imported");
+   AttributeTypeString ParameterizedCommand = osee.createString(8062747461195678171L, "Parameterized Command", MediaType.APPLICATION_JSON, "The JSON representation of the command with its parameterized values");
    PartitionAttributeType Partition = osee.createEnum(new PartitionAttributeType());
    AttributeTypeString Phone = osee.createString(1152921504606847079L, "Phone", MediaType.TEXT_PLAIN, "");
    AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
@@ -231,7 +236,9 @@ public interface CoreAttributeTypes {
    AttributeTypeArtifactId UserArtifactId = osee.createArtifactIdNoTag(1152921504606847701L, "User Artifact Id", MediaType.TEXT_PLAIN, "Artifact id of an artifact of type User");
    AttributeTypeString UserId = osee.createString(1152921504606847073L, "User Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString UserSettings = osee.createString(1152921504606847076L, "User Settings", MediaType.TEXT_PLAIN, "", "xml");
+   AttributeTypeBoolean UseValidator = osee.createBoolean(322346571838162L, "Is Validator Used", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Value = osee.createString(861995499338466438L, "Value", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ValidatorType = osee.createString(432553480318267424L, "Validator Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString VerificationAcceptanceCriteria = osee.createStringNoTag(1152921504606847117L, "Verification Acceptance Criteria", MediaType.TEXT_PLAIN, "");
    VerificationEventAttributeType VerificationEvent = osee.createEnum(new VerificationEventAttributeType());
    VerificationLevelAttributeType VerificationLevel = osee.createEnum(new VerificationLevelAttributeType());
