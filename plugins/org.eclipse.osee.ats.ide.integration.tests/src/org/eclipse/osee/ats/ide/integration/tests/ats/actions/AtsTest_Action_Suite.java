@@ -19,7 +19,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AccessControlActionTest.class,
-   AddStateNoteActionTest.class,
+   AddWorkflowNotesActionTest.class,
+   AddStateNotesActionTest.class,
    CopyActionDetailsActionTest.class,
    DeletePurgeAtsArtifactsActionTest.class,
    DirtyReportActionTest1.class,

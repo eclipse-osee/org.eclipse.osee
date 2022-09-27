@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.ide.actions.ShowWordChangeReportAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddStateNoteAction;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddWorkflowNotesAction;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -125,6 +126,7 @@ public abstract class WfeAbstractTab extends FormPage {
          toolBarMgr.add(new OpenParentAction(awa));
       }
       toolBarMgr.add(new EmailActionAction(editor));
+      toolBarMgr.add(new AddWorkflowNotesAction(awa));
       toolBarMgr.add(new AddStateNoteAction(awa));
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
       toolBarMgr.add(new OpenActionViewAction());
