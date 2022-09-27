@@ -19,7 +19,9 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Context;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DesignMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ExecutedCommandHistory;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Feature;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
@@ -46,6 +48,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TransportType;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalGroup;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UserGroup;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
@@ -54,6 +57,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_ONE;
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_ONE;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
@@ -74,6 +78,7 @@ public interface CoreRelationTypes {
    RelationTypeToken CodeRequirement = osee.add(2305843009213694296L, "Code-Requirement", MANY_TO_MANY, UNORDERED, CodeUnit, "code", Requirement, "requirement");
    RelationTypeSide CodeRequirement_CodeUnit = RelationTypeSide.create(CodeRequirement, SIDE_A);
    RelationTypeSide CodeRequirement_Requirement = RelationTypeSide.create(CodeRequirement, SIDE_B);
+
 
    RelationTypeToken ComponentRequirement = osee.add(2305843009213694297L, "Component-Requirement", ONE_TO_MANY, UNORDERED, Component, "component", Requirement, "requirement");
    RelationTypeSide ComponentRequirement_Component = RelationTypeSide.create(ComponentRequirement, SIDE_A);
@@ -211,6 +216,22 @@ public interface CoreRelationTypes {
    RelationTypeToken Users = osee.add(2305843009213694308L, "Users", MANY_TO_MANY, UNORDERED, Artifact, "Artifact", User, "User");
    RelationTypeSide Users_Artifact = RelationTypeSide.create(Users, SIDE_A);
    RelationTypeSide Users_User = RelationTypeSide.create(Users, SIDE_B);
+
+   RelationTypeToken UserToContext = osee.add(3588536741885708579L, "User to Context", MANY_TO_MANY, UNORDERED, User, "User", Context, "Context");
+   RelationTypeSide UserToContext_User = RelationTypeSide.create(UserToContext, SIDE_A);
+   RelationTypeSide UserToContext_Context = RelationTypeSide.create(UserToContext, SIDE_B);
+
+   RelationTypeToken UserGroupToContext = osee.add(6518538741815208374L, "User Group to Context", MANY_TO_MANY, UNORDERED, UserGroup, "User Group", Context, "Context");
+   RelationTypeSide UserGroupToContext_UserGroup = RelationTypeSide.create(UserGroupToContext, SIDE_A);
+   RelationTypeSide UserGroupToContext_Context = RelationTypeSide.create(UserGroupToContext, SIDE_B);
+
+   RelationTypeToken UserToHistory = osee.add(6360156234301395903L, "User to History", ONE_TO_ONE, UNORDERED, User, "User", ExecutedCommandHistory, "Executed Command History");
+   RelationTypeSide UserToHistory_User = RelationTypeSide.create(UserToHistory, SIDE_A);
+   RelationTypeSide UserToHistory_ExecutedCommandHistory = RelationTypeSide.create(UserToHistory, SIDE_B);
+
+   RelationTypeToken ContextToCommand = osee.add(3568736811283748971L, "Context to Command", MANY_TO_MANY, UNORDERED, Context, "Context", Artifact, "Context or Command");
+   RelationTypeSide ContextToCommand_Context = RelationTypeSide.create(ContextToCommand, SIDE_A);
+   RelationTypeSide ContextToCommand_Artifact = RelationTypeSide.create(ContextToCommand, SIDE_B);
 
    RelationTypeToken Uses = osee.add(2305843009213694327L, "Uses", MANY_TO_MANY, UNORDERED, Requirement, "requirement", TestUnit, "Test Unit");
    RelationTypeSide Uses_Requirement = RelationTypeSide.create(Uses, SIDE_A);
