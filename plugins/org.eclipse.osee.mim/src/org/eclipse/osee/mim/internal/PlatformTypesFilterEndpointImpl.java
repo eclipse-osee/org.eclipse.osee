@@ -64,10 +64,10 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes(String filter) {
+   public Collection<PlatformTypeToken> getPlatformTypes(String filter, long pageNum, long pageSize) {
       List<AttributeTypeId> attributes = this.createAttributeList();
       try {
-         return platformApi.getAccessor().getAllByFilter(branch, filter, attributes, PlatformTypeToken.class);
+         return platformApi.getAccessor().getAllByFilter(branch, filter, attributes, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -76,14 +76,8 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes() {
-      try {
-         return platformApi.getAccessor().getAll(branch, PlatformTypeToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return null;
-      }
+   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize) {
+      return platformApi.getAll(branch, pageNum, pageSize);
    }
 
 }

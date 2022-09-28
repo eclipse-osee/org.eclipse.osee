@@ -34,6 +34,10 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
 
    Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter);
 
+   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize);
+
+   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize);
+
    List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure);
 
    InterfaceSubMessageToken getWithAllParentRelations(BranchId branch, ArtifactId subMessageId);

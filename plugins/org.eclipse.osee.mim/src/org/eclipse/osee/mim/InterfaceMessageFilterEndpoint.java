@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 
@@ -33,7 +34,7 @@ public interface InterfaceMessageFilterEndpoint {
     *
     * @return list of platform Types
     */
-   Collection<InterfaceMessageToken> getMessages();
+   Collection<InterfaceMessageToken> getMessages(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
 
    @GET()
    @Path("{filter}")
@@ -42,6 +43,7 @@ public interface InterfaceMessageFilterEndpoint {
     * Gets List of filtered Platform Types
     *
     * @return List of platform types
+    * @todo figure out how to paginate nested sort
     */
-   Collection<InterfaceMessageToken> getMessages(@PathParam("filter") String filter);
+   Collection<InterfaceMessageToken> getMessages(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
 }

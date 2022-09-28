@@ -80,13 +80,7 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
 
    @Override
    public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceEnumeration.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceEnumeration>();
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
@@ -97,6 +91,27 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
          | NoSuchMethodException | SecurityException ex) {
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceEnumeration> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceEnumeration>();
    }
 
 }

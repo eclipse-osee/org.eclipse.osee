@@ -23,7 +23,6 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface messages
- * @todo
  */
 public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessageToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
@@ -34,6 +33,10 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
    Collection<InterfaceMessageToken> getAll(BranchId branch);
 
    Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId);
+
+   Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize);
+
+   Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize);
 
    InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId);
 

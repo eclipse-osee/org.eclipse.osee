@@ -44,13 +44,13 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElements() {
-      return this.elementApi.getAll(branch);
+   public Collection<InterfaceStructureElementToken> getElements(long pageNum, long pageSize) {
+      return this.elementApi.getAll(branch, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElements(String filter) {
-      return this.elementApi.getFiltered(branch, filter);
+   public Collection<InterfaceStructureElementToken> getElements(String filter, long pageNum, long pageSize) {
+      return this.elementApi.getFiltered(branch, filter, pageNum, pageSize);
    }
 
    @Override

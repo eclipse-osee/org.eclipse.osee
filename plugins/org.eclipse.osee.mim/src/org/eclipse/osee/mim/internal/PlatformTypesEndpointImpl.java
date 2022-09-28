@@ -50,8 +50,8 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes() {
-      return platformApi.getAllWithEnumSet(branch);
+   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize) {
+      return platformApi.getAllWithEnumSet(branch, pageNum, pageSize);
    }
 
    @Override

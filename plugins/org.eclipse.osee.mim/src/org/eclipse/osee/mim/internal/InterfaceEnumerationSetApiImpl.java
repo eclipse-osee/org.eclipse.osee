@@ -85,21 +85,7 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
 
    @Override
    public List<InterfaceEnumerationSet> getAll(BranchId branch) {
-      try {
-         List<InterfaceEnumerationSet> enumSet =
-            (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch, InterfaceEnumerationSet.class);
-         for (InterfaceEnumerationSet set : enumSet) {
-            set.setEnumerations(
-               (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
-                  CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId()),
-                  InterfaceEnumeration.class));
-         }
-         return enumSet;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<>();
+      return this.getAll(branch, 0L, 0L);
    }
 
    @Override
@@ -109,13 +95,7 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
 
    @Override
    public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceEnumerationSet.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceEnumerationSet>();
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
@@ -127,6 +107,45 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
          //
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceEnumerationSet>();
+   }
+
+   @Override
+   public List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize) {
+      try {
+         List<InterfaceEnumerationSet> enumSet =
+            (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch, pageNum, pageSize);
+         for (InterfaceEnumerationSet set : enumSet) {
+            set.setEnumerations(
+               (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
+                  CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId())));
+         }
+         return enumSet;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
    }
 
 }

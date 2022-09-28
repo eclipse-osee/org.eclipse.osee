@@ -31,6 +31,8 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    List<PlatformTypeToken> getAll(BranchId branch);
 
+   List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize);
+
    PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId, List<RelationTypeSide> relationTypes);
 
    List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes);
@@ -39,6 +41,12 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes);
 
+   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize);
+
+   List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize);
+
+   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize);
+
    PlatformTypeToken getWithAllParentRelations(BranchId branch, ArtifactId platformTypeId);
 
    PlatformTypeToken getWithElementRelations(BranchId branch, ArtifactId platformTypeId);
@@ -46,6 +54,10 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
    List<PlatformTypeToken> getAllWithElementRelations(BranchId branch);
 
    List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter);
+
+   List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize);
+
+   List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize);
 
    List<PlatformTypeToken> getAllFromEnumerationSet(InterfaceEnumerationSet enumSet);
 }

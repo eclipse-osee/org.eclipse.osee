@@ -77,33 +77,20 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
 
    @Override
    public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId) {
-      try {
-         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            messageId, InterfaceSubMessageToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceSubMessageToken>();
+      return this.getAllByRelation(branch, messageId, 0L, 0L);
    }
 
+   @Override
+   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter) {
+      return this.getAllByFilter(branch, filter, 0L, 0L);
+   }
+   
    @Override
    public Collection<InterfaceSubMessageToken> getAllByRelationAndFilter(BranchId branch, ArtifactId messageId, String filter) {
       try {
          return this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, filter, subMessageAttributes,
             InterfaceSubMessageToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceSubMessageToken>();
-   }
-
-   @Override
-   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter) {
-      try {
-         return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, InterfaceSubMessageToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -151,13 +138,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
 
    @Override
    public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceSubMessageToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceSubMessageToken>();
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
@@ -169,6 +150,50 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          //
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            messageId, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
    }
 
 }

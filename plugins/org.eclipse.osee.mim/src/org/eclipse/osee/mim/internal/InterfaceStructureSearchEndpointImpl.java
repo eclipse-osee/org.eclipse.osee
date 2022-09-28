@@ -35,13 +35,13 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getAllStructures() {
-      return this.interfaceStructureApi.getAll(branch);
+   public Collection<InterfaceStructureToken> getAllStructures(long pageNum, long pageSize) {
+      return this.interfaceStructureApi.getAll(branch, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getFilteredStructures(String filter) {
-      return this.interfaceStructureApi.getFiltered(branch, filter);
+   public Collection<InterfaceStructureToken> getFilteredStructures(String filter, long pageNum, long pageSize) {
+      return this.interfaceStructureApi.getFiltered(branch, filter, pageNum, pageSize);
    }
 
 }

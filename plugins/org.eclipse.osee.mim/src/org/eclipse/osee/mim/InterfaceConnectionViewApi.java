@@ -28,6 +28,8 @@ public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<Interface
 
    Collection<InterfaceConnection> getAll(BranchId branch);
 
+   Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize);
+
    InterfaceConnection get(BranchId branch, ArtifactId connectionId);
 
    InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message);

@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
@@ -34,7 +35,7 @@ public interface InterfaceMessageEndpoint {
     *
     * @return messages and submessages
     */
-   Collection<InterfaceMessageToken> getAllMessages();
+   Collection<InterfaceMessageToken> getAllMessages(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
 
    @GET()
    @Path("{id}")

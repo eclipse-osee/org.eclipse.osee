@@ -86,12 +86,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public List<PlatformTypeToken> getAll(BranchId branch) {
-      try {
-         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, PlatformTypeToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         return new LinkedList<>();
-      }
+      return this.getAll(branch, 0L, 0L);
    }
 
    @Override
@@ -136,41 +131,22 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes) {
-      try {
-         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, PlatformTypeToken.class);
-      } catch (Exception ex) {
-         //
-      }
-      return new LinkedList<PlatformTypeToken>();
+      return this.getAllWithRelations(branch, relationTypes, 0L, 0L);
    }
 
    @Override
    public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes) {
-      try {
-         return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
-            PlatformTypeToken.class);
-      } catch (Exception ex) {
-         //
-      }
-      return new LinkedList<PlatformTypeToken>();
+      return this.getFilteredWithRelations(branch, filter, relationTypes, 0L, 0L);
    }
 
    @Override
    public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch) {
-      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
-         CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-         CoreRelationTypes.InterfaceConnectionContent_Connection));
+      return this.getAllWithElementRelations(branch, 0L, 0L);
    }
 
    @Override
    public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter) {
-      return this.getFilteredWithRelations(branch, filter,
-         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
-            CoreRelationTypes.InterfaceStructureContent_Structure,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionContent_Connection));
+      return this.getFilteredWithElementRelations(branch, filter, 0L, 0L);
    }
 
    private List<AttributeTypeId> createAttributeList() {
@@ -200,22 +176,12 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query,
-            Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
-               CoreRelationTypes.InterfaceEnumeration_EnumerationState),
-            isExact, PlatformTypeToken.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<PlatformTypeToken>();
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
    public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch) {
-      return this.getAllWithRelations(branch,
-         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet));
+      return this.getAllWithEnumSet(branch, 0L, 0L);
    }
 
    @Override
@@ -227,6 +193,86 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
          //
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<PlatformTypeToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query,
+            Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+               CoreRelationTypes.InterfaceEnumeration_EnumerationState),
+            isExact, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, pageNum, pageSize);
+      } catch (Exception ex) {
+         //
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize) {
+      return this.getAllWithRelations(branch,
+         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet), pageNum, pageSize);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
+            pageNum, pageSize);
+      } catch (Exception ex) {
+         //
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize) {
+      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+         CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionContent_Connection), pageNum, pageSize);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize) {
+      return this.getFilteredWithRelations(branch, filter,
+         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+            CoreRelationTypes.InterfaceStructureContent_Structure,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionContent_Connection),
+         pageNum, pageSize);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         return new LinkedList<>();
+      }
    }
 
 }

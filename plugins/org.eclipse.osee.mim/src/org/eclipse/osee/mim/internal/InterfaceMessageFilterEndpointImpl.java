@@ -35,12 +35,14 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getMessages() {
-      return messageApi.getAllForConnection(branch, ConnectionId);
+   public Collection<InterfaceMessageToken> getMessages(long pageNum, long pageSize) {
+      Collection<InterfaceMessageToken> messageList =
+         messageApi.getAllForConnection(branch, ConnectionId, pageNum, pageSize);
+      return messageList;
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getMessages(String filter) {
+   public Collection<InterfaceMessageToken> getMessages(String filter, long pageNum, long pageSize) {
       return messageApi.getAllForConnectionAndFilter(branch, ConnectionId, filter);
    }
 
