@@ -9,15 +9,14 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
- com.fasterxml.jackson.databind.annotation;
  com.google.common.base,
  com.google.common.collect,
  com.google.common.net,
- jakarta.xml.bind,
  javax.ws.rs,
  javax.ws.rs.container,
  javax.ws.rs.core,
  javax.ws.rs.ext,
+ jakarta.xml.bind,
  org.apache.cxf.io,
  org.apache.cxf.jaxrs.ext.multipart,
  org.eclipse.core.runtime,
