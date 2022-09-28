@@ -35,8 +35,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactReadableSerializer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -156,7 +154,6 @@ public class JsonUtil {
       module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
       module.addDeserializer(UserToken.class, new UserTokenDeserializer());
 
-      module.addSerializer(ArtifactReadable.class, new ArtifactReadableSerializer());
       module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
       module.addSerializer(UserToken.class, new UserTokenSerializer());
       JsonSerializer<@NonNull Id> idSerializer = new IdSerializer();
