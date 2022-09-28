@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.api.query;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ public interface IAtsQueryService {
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
 
-   ArrayList<AtsSearchData> getSavedSearches(String namespace);
+   List<AtsSearchData> getSavedSearches(String namespace);
 
    /**
     * Persists the saved ATS searches for the current user
@@ -188,7 +187,7 @@ public interface IAtsQueryService {
     */
    Collection<ArtifactToken> getArtifactsByIdsOrAtsIds(String searchStr);
 
-   List<ArtifactToken> getArtifactListFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag);
+   List<ArtifactToken> getArtifactsFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag);
 
    /**
     * Query for the AtsConfigurations cache. Since this is pre-loaded, this is the best query for configuration
@@ -198,15 +197,15 @@ public interface IAtsQueryService {
 
    ArtifactToken getOrCreateArtifact(ArtifactToken parent, ArtifactToken artifact, IAtsChangeSet changes);
 
-   List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch);
+   List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch);
 
-   List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> attributeValues, BranchId branch);
+   List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> attributeValues, BranchId branch);
 
-   List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate);
+   List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate);
 
-   List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch);
+   List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch);
 
-   Collection<? extends ArtifactToken> getArtifactListFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType);
+   Collection<? extends ArtifactToken> getArtifactsFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType);
 
    Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifacts);
 
@@ -219,7 +218,7 @@ public interface IAtsQueryService {
    @NonNull
    ArtifactToken getArtifactFromAttribute(AttributeTypeToken attrType, String value, BranchId branch);
 
-   List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount);
+   List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount);
 
    Collection<ArtifactToken> getArtifactsFromObjects(Collection<? extends IAtsObject> atsObjects);
 

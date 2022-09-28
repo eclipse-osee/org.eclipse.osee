@@ -105,7 +105,7 @@ public class RealignActionableItemsBlam extends AbstractBlam {
 
    private void realignAiAndTdForActionsIfAllowed(Collection<ArtifactToken> actionableItemsFrom, IAtsActionableItem actionableItemTo, boolean isPersistAllowed) {
       IAtsChangeSet changes = atsApi.createChangeSet("Realign AI/TD References for actions");
-      List<ArtifactToken> teamWfs = atsApi.getQueryService().getArtifactListFromAttributeValues(
+      List<ArtifactToken> teamWfs = atsApi.getQueryService().getArtifactsFromAttributeValues(
          AtsAttributeTypes.ActionableItemReference, actionableItemsFrom, CoreBranches.COMMON);
 
       final XResultData resultData = new XResultData();

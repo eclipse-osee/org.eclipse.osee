@@ -330,7 +330,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag) {
+   public List<ArtifactToken> getArtifactsFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag) {
       return Collections.castAll(
          ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, branch, deletionFlag));
    }
@@ -343,31 +343,31 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
       return Collections.castAll(
          ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch));
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> ids, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> ids, BranchId branch) {
       return Collections.castAll(
          ArtifactQuery.getArtifactListFromAttributeValues(attributeType, Collections.castAll(ids), branch));
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) {
+   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromAttributeValues(attributeType, attributeValues,
          branch, artifactCountEstimate));
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, attributeType,
          Collections.castAll(ids), branch));
    }
 
    @Override
-   public Collection<? extends ArtifactToken> getArtifactListFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
+   public Collection<? extends ArtifactToken> getArtifactsFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromAttributeKeywords(branch, userId, isMatchWordOrder,
          deletionFlag, caseSensitive, attrType));
    }
@@ -383,7 +383,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount) {
+   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromAttributeValues(attributeType, values,
          atsApi.getAtsBranch(), estimatedCount));
    }
