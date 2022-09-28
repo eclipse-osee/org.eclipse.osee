@@ -238,4 +238,6 @@ public interface IAtsQueryService {
 
    Collection<IAtsWorkItem> getWorkItemsAtrTypeExists(AttributeTypeToken attrType);
 
+   List<ArtifactToken> getArtifactsFromIds(Collection<String> atsIds);
+
 }
