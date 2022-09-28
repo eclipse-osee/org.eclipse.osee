@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.osee.framework.skynet.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="ArtifactAnnotation" name="ArtifactAnnotation"/>
+         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="ArtifactAnnotationProvider" name="ArtifactAnnotationProvider"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="ArtifactAnnotation" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="ArtifactAnnotationProvider" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="ArtifactAnnotation">
+   <element name="ArtifactAnnotationProvider">
       <complexType>
          <attribute name="classname" type="string" use="required">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.ui.skynet.artifact.annotation.IArtifactAnnotation"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotationProvider"/>
                </appInfo>
             </annotation>
          </attribute>

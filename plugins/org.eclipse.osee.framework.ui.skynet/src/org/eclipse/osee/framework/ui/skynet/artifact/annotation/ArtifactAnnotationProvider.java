@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public interface IArtifactAnnotation {
+public interface ArtifactAnnotationProvider {
 
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations);
 

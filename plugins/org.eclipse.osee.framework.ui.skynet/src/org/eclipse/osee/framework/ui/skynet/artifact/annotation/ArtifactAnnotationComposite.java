@@ -18,10 +18,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -30,13 +32,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class AnnotationComposite extends Composite {
+public class ArtifactAnnotationComposite extends Composite {
 
-   public AnnotationComposite(Composite parent, int style, Artifact artifact) {
+   public ArtifactAnnotationComposite(Composite parent, int style, Artifact artifact) {
       this(null, parent, style, artifact);
    }
 
-   public AnnotationComposite(FormToolkit toolkit, Composite parent, int style, Artifact artifact) {
+   public ArtifactAnnotationComposite(FormToolkit toolkit, Composite parent, int style, Artifact artifact) {
       super(parent, style);
 
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -46,7 +48,7 @@ public class AnnotationComposite extends Composite {
 
       for (ArtifactAnnotation.Type type : ArtifactAnnotation.Type.getOrderedTypes()) {
          try {
-            for (ArtifactAnnotation notify : AttributeAnnotationManager.get(artifact).getAnnotations()) {
+            for (ArtifactAnnotation notify : ArtifactAnnotationManager.getAnnotations(artifact)) {
                if (notify.getType() != type) {
                   continue;
                }
@@ -56,7 +58,7 @@ public class AnnotationComposite extends Composite {
                   continue;
                }
                Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-               iconLabel.setImage(ArtifactImageManager.getAnnotationImage(notify.getType()));
+               iconLabel.setImage(getAnnotationImage(notify.getType()));
 
                Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
                alertLabel.setText(notify.getType().name() + ": " + notify.getContent());
@@ -69,4 +71,14 @@ public class AnnotationComposite extends Composite {
          toolkit.adapt(this);
       }
    }
+
+   public static Image getAnnotationImage(ArtifactAnnotation.Type annotationType) {
+      if (annotationType == ArtifactAnnotation.Type.Error) {
+         return ImageManager.getImage(FrameworkImage.ERROR);
+      } else if (annotationType == ArtifactAnnotation.Type.Warning) {
+         return ImageManager.getImage(FrameworkImage.WARNING);
+      }
+      return ImageManager.getImage(FrameworkImage.INFO_LG);
+   }
+
 }

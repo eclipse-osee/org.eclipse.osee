@@ -24,14 +24,16 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Donald G. Dunne
  */
-public class AttributeAnnotationHandler implements IArtifactAnnotation {
+public class AttributeAnnotationProvider implements ArtifactAnnotationProvider {
 
    @Override
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.Annotation)) {
-            AttributeAnnotationManager mgr = AttributeAnnotationManager.get(artifact);
-            annotations.addAll(mgr.getAnnotations());
+            for (String value : artifact.getAttributesToStringList(CoreAttributeTypes.Annotation)) {
+               ArtifactAnnotation annotation = new ArtifactAnnotation(value);
+               annotations.add(annotation);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

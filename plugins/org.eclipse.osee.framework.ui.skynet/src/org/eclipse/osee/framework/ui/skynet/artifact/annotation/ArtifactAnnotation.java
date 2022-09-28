@@ -83,23 +83,14 @@ public class ArtifactAnnotation {
       content = AXml.getTagData(xml, CONTENT_TAG);
    }
 
-   /**
-    * @return the type
-    */
    public Type getType() {
       return type;
    }
 
-   /**
-    * @return the content
-    */
    public String getContent() {
       return content;
    }
 
-   /**
-    * @return the NAMESPACE
-    */
    public String getNamespace() {
       return namespace;
    }

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -300,10 +301,14 @@ public class Pdd93CreateDemoAgile {
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Add items to backlog
-      Collection<IAtsWorkItem> items =
-         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).isOfType(
-            AtsDemoOseeTypes.DemoCodeTeamWorkflow, AtsDemoOseeTypes.DemoReqTeamWorkflow,
-            AtsDemoOseeTypes.DemoTestTeamWorkflow).getItems();
+      Collection<IAtsWorkItem> items = new ArrayList<>();
+      for (IAtsWorkItem workItem : AtsApiService.get().getQueryService().createQuery(
+         WorkItemType.TeamWorkflow).isOfType(AtsDemoOseeTypes.DemoCodeTeamWorkflow,
+            AtsDemoOseeTypes.DemoReqTeamWorkflow, AtsDemoOseeTypes.DemoTestTeamWorkflow).getItems()) {
+         if (!workItem.getName().equals(DemoArtifactToken.SAW_NotesAnnotations_Code_TeamWf.getName())) {
+            items.add(workItem);
+         }
+      }
       Assert.isTrue(items.size() > 0);
 
       JaxAgileItem item = new JaxAgileItem();

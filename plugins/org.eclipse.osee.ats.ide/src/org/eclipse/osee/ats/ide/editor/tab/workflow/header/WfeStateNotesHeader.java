@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -79,7 +78,7 @@ public class WfeStateNotesHeader extends Composite {
 
                Label iconLabel = editor.getToolkit().createLabel(nComp, "");
                if (AtsStateNoteType.Problem.name().equals(note.getType())) {
-                  iconLabel.setImage(ImageManager.getImage(AtsImage.PROBLEM));
+                  iconLabel.setImage(ImageManager.getImage(FrameworkImage.ERROR));
                } else if (AtsStateNoteType.Warning.name().equals(note.getType())) {
                   iconLabel.setImage(ImageManager.getImage(FrameworkImage.WARNING));
                } else {
