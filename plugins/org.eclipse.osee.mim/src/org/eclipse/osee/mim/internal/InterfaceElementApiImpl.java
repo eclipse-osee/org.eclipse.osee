@@ -95,33 +95,12 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
     * memory error.
     */
    public List<InterfaceStructureElementToken> getAll(BranchId branch) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch, this.getFollowRelationDetails(),
-               InterfaceStructureElementToken.class);
-         elements = this.parseElements(branch, elements);
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
+      return this.getAll(branch, 0L, 0L);
    }
 
    @Override
    public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceStructureContent_Structure, structureId, this.getFollowRelationDetails(),
-               InterfaceStructureElementToken.class);
-         elements = this.parseElements(branch, elements);
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
+      return this.getAllRelated(branch, structureId, 0L, 0L);
    }
 
    @Override
@@ -243,16 +222,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
    @Override
    public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByFilter(branch, filter,
-               this.elementAttributeList, relations, InterfaceStructureElementToken.class);
-         elements = this.parseElements(branch, elements);
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
+      return this.getFiltered(branch, filter, 0L, 0L);
    }
 
    @Override
@@ -292,18 +262,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
    @Override
    public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelationAndFilter(branch,
-               CoreRelationTypes.InterfaceStructureContent_Structure, structureId, filter, elementAttributeList,
-               this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
-         elements = this.parseElements(branch, elements);
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-         return new LinkedList<InterfaceStructureElementToken>();
-      }
+      return this.getAllRelatedAndFilter(branch, structureId, filter, 0L, 0L);
    }
 
    @Override
@@ -346,17 +305,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
    @Override
    public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      try {
-         List<InterfaceStructureElementToken> elements =
-            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByQuery(branch, query,
-               this.getFollowRelationDetails(), isExact, InterfaceStructureElementToken.class);
-         elements = this.parseElements(branch, elements);
-         return elements;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceStructureElementToken>();
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
@@ -367,6 +316,92 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          | NoSuchMethodException | SecurityException ex) {
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getAll(BranchId branch, long pageNum, long pageSize) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch, this.getFollowRelationDetails(),
+               pageNum, pageSize);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+         return new LinkedList<InterfaceStructureElementToken>();
+      }
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelation(branch,
+               CoreRelationTypes.InterfaceStructureContent_Structure, structureId, this.getFollowRelationDetails(),
+               pageNum, pageSize);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+         return new LinkedList<InterfaceStructureElementToken>();
+      }
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelationAndFilter(branch,
+               CoreRelationTypes.InterfaceStructureContent_Structure, structureId, filter, elementAttributeList,
+               this.getFollowRelationDetails(), pageNum, pageSize);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+         return new LinkedList<InterfaceStructureElementToken>();
+      }
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByFilter(branch, filter,
+               this.elementAttributeList, relations, pageNum, pageSize);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         return new LinkedList<InterfaceStructureElementToken>();
+      }
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().getAllByQuery(branch, query,
+               this.getFollowRelationDetails(), isExact, pageNum, pageSize);
+         elements = this.parseElements(branch, elements);
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceStructureElementToken>();
    }
 
 }

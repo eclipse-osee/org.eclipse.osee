@@ -28,4 +28,6 @@ public interface InterfaceEnumerationSetApi extends QueryCapableMIMAPI<Interface
    InterfaceEnumerationSet get(BranchId branch, ArtifactId enumSetId);
 
    List<InterfaceEnumerationSet> getAll(BranchId branch);
+
+   List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize);
 }

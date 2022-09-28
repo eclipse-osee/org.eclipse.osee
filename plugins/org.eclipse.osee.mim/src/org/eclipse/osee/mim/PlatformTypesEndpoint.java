@@ -18,6 +18,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
@@ -36,7 +37,7 @@ public interface PlatformTypesEndpoint {
     *
     * @return List of platform types
     */
-   Collection<PlatformTypeToken> getPlatformTypes();
+   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
 
    @GET()
    @Path("{type_id}")

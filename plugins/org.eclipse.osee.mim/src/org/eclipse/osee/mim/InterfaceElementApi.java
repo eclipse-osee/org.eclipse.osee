@@ -21,7 +21,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
- * @author Luciano T. V@todo
+ * @author Luciano T. V
  */
 public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructureElementToken>, AffectedArtifactMIMAPI<InterfaceStructureElementToken> {
 
@@ -29,11 +29,19 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId);
 
+   List<InterfaceStructureElementToken> getAll(BranchId branch, long pageNum, long pageSize);
+
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize);
+
    InterfaceStructureElementToken getWithAllParentRelations(BranchId branch, ArtifactId elementId);
 
    List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter);
 
    List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter);
+
+   List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize);
+
+   List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize);
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 

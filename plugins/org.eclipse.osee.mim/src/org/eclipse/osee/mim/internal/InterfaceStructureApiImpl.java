@@ -284,80 +284,27 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId) {
-      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
-      try {
-         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
-            InterfaceStructureToken.class);
-         for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure, structure.getElements());
-         }
-
-         return structureList;
-      } catch (Exception ex) {
-         System.out.println(ex);
-         return structureList;
-      }
+      return this.getAllRelated(branch, subMessageId, 0L, 0L);
    }
 
    @Override
    public List<InterfaceStructureToken> getAll(BranchId branch) {
-      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
-      try {
-         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
-            this.getFollowRelationDetails(), InterfaceStructureToken.class);
-         for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure);
-         }
-
-         return structureList;
-      } catch (Exception ex) {
-         System.out.println(ex);
-         return structureList;
-      }
+      return this.getAll(branch, 0L, 0L);
    }
 
    @Override
    public List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch) {
-      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
-      try {
-         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
-            this.getFollowRelationDetails(), InterfaceStructureToken.class);
-         return structureList;
-      } catch (Exception ex) {
-         System.out.println(ex);
-         return structureList;
-      }
+      return this.getAllWithoutRelations(branch, 0L, 0L);
    }
 
    @Override
    public List<InterfaceStructureToken> getFiltered(BranchId branch, String filter) {
-      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
-      try {
-         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
-            this.structureAttributeList, this.getFollowRelationDetails(), InterfaceStructureToken.class);
-         for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure);
-         }
-
-         return structureList;
-      } catch (Exception ex) {
-         System.out.println(ex);
-         return structureList;
-      }
+      return this.getFiltered(branch, filter, 0L, 0L);
    }
 
    @Override
    public List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter) {
-      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
-      try {
-         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
-            this.structureAttributeList, this.getFollowRelationDetails(), InterfaceStructureToken.class);
-         return structureList;
-      } catch (Exception ex) {
-         System.out.println(ex);
-         return structureList;
-      }
+      return this.getFilteredWithoutRelations(branch, filter, 0L, 0L);
    }
 
    @Override
@@ -552,10 +499,35 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+      return this.query(branch, query, isExact, 0L, 0L);
+   }
+
+   @Override
+   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+      try {
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceStructureToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
       try {
          List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByQuery(branch, query,
-            this.getFollowRelationDetails(), isExact, InterfaceStructureToken.class);
+            this.getFollowRelationDetails(), isExact, pageNum, pageSize);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -568,13 +540,90 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
+   public List<InterfaceStructureToken> getAll(BranchId branch, long pageNum, long pageSize) {
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
-         return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
+            this.getFollowRelationDetails(), pageNum, pageSize);
+         for (InterfaceStructureToken structure : structureList) {
+            structure = this.parseStructure(branch, structure);
+         }
+
+         return structureList;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return structureList;
       }
-      return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, long pageNum, long pageSize) {
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+      try {
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
+            this.getFollowRelationDetails(), pageNum, pageSize);
+         return structureList;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return structureList;
+      }
+   }
+
+   @Override
+   public List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize) {
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+      try {
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
+            this.structureAttributeList, this.getFollowRelationDetails(), pageNum, pageSize);
+         for (InterfaceStructureToken structure : structureList) {
+            structure = this.parseStructure(branch, structure);
+         }
+
+         return structureList;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return structureList;
+      }
+   }
+
+   @Override
+   public List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum, long pageSize) {
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+      try {
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
+            this.structureAttributeList, this.getFollowRelationDetails(), pageNum, pageSize);
+         return structureList;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return structureList;
+      }
+   }
+
+   @Override
+   public List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize) {
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+      try {
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            pageNum, pageSize);
+         for (InterfaceStructureToken structure : structureList) {
+            structure = this.parseStructure(branch, structure, structure.getElements());
+         }
+
+         return structureList;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return structureList;
+      }
+   }
+
+   /**
+    * potentially not valid, need to decide the appropriate approach for structure filter
+    */
+
+   @Override
+   public List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize) {
+      return null;
    }
 
 }

@@ -39,11 +39,11 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getAllStructures() {
+   public Collection<InterfaceStructureToken> getAllStructures(long pageNum, long pageSize) {
       if (subMessageId.getId() == 0) {
          return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
       }
-      return this.interfaceStructureApi.getAllRelated(branch, subMessageId);
+      return this.interfaceStructureApi.getAllRelated(branch, subMessageId, pageNum, pageSize);
    }
 
    @Override

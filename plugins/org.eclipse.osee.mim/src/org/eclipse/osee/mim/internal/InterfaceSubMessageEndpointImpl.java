@@ -36,10 +36,10 @@ public class InterfaceSubMessageEndpointImpl implements InterfaceSubMessageEndpo
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllSubMessages() {
+   public Collection<InterfaceSubMessageToken> getAllSubMessages(long pageNum, long pageSize) {
       try {
          return subMessageApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, InterfaceSubMessageToken.class);
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, pageNum, pageSize);
       } catch (Exception ex) {
          System.out.println(ex);
          return null;

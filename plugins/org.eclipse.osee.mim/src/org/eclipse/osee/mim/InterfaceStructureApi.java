@@ -40,6 +40,18 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter);
 
+   List<InterfaceStructureToken> getAll(BranchId branch, long pageNum, long pageSize);
+
+   List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, long pageNum, long pageSize);
+
+   List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize);
+
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum, long pageSize);
+
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize);
+
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize);
+
    InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
 
    InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter);

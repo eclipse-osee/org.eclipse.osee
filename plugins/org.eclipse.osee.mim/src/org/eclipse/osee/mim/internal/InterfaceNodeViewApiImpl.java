@@ -58,7 +58,7 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    public InterfaceNode getNodeForMessage(BranchId branch, ArtifactId message) {
       try {
          return this.getAccessor().getByRelationWithoutId(branch, CoreRelationTypes.InterfaceMessageSendingNode_Message,
-            ArtifactId.valueOf(message.getId()), InterfaceNode.class);
+            ArtifactId.valueOf(message.getId()));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
@@ -69,7 +69,7 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    @Override
    public InterfaceNode get(BranchId branch, ArtifactId nodeId) {
       try {
-         return this.getAccessor().get(branch, nodeId, InterfaceNode.class);
+         return this.getAccessor().get(branch, nodeId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
@@ -84,13 +84,7 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
 
    @Override
    public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      try {
-         return this.getAccessor().getAllByQuery(branch, query, isExact, InterfaceNode.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         //
-      }
-      return new LinkedList<InterfaceNode>();
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
@@ -102,6 +96,27 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
          | NoSuchMethodException | SecurityException ex) {
       }
       return new LinkedList<ArtifactMatch>();
+   }
+
+   @Override
+   public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceNode> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new LinkedList<InterfaceNode>();
    }
 
 }

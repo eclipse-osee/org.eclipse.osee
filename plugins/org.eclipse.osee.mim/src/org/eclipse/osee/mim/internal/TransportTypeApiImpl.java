@@ -41,17 +41,17 @@ public class TransportTypeApiImpl implements TransportTypeApi {
 
    @Override
    public Collection<TransportType> query(BranchId branch, MimAttributeQuery query) {
-      return null;
+      return this.query(branch, query, 0L, 0L);
    }
 
    @Override
    public Collection<TransportType> queryExact(BranchId branch, MimAttributeQuery query) {
-      return null;
+      return this.queryExact(branch, query, 0L, 0L);
    }
 
    @Override
    public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
-      return null;
+      return this.query(branch, query, isExact, 0L, 0L);
    }
 
    @Override
@@ -61,12 +61,7 @@ public class TransportTypeApiImpl implements TransportTypeApi {
 
    @Override
    public Collection<TransportType> getAll(BranchId branch) {
-      try {
-         return this.accessor.getAll(branch, TransportType.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-      }
-      return new LinkedList<TransportType>();
+      return this.getAll(branch, 0L, 0L);
    }
 
    @Override
@@ -77,6 +72,36 @@ public class TransportTypeApiImpl implements TransportTypeApi {
          | NoSuchMethodException | SecurityException ex) {
       }
       return new TransportType();
+   }
+
+   @Override
+   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, false, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<TransportType> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+      return this.query(branch, query, true, pageNum, pageSize);
+   }
+
+   @Override
+   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+      try {
+         return this.accessor.getAllByQuery(branch, query, isExact, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<TransportType>();
+   }
+
+   @Override
+   public Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize) {
+      try {
+         return this.accessor.getAll(branch, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<TransportType>();
    }
 
 }

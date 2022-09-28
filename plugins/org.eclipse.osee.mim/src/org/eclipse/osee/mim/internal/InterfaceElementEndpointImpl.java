@@ -41,8 +41,8 @@ public class InterfaceElementEndpointImpl implements InterfaceElementEndpoint {
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getAllElements() {
-      return this.elementApi.getAllRelated(branch, structureId);
+   public Collection<InterfaceStructureElementToken> getAllElements(long pageNum, long pageSize) {
+      return this.elementApi.getAllRelated(branch, structureId, pageNum, pageSize);
    }
 
    @Override

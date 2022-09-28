@@ -35,8 +35,8 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllMessages() {
-      return this.messageApi.getAllForConnection(branch, ConnectionId);
+   public Collection<InterfaceMessageToken> getAllMessages(long pageNum, long pageSize) {
+      return this.messageApi.getAllForConnection(branch, ConnectionId, pageNum, pageSize);
    }
 
    @Override

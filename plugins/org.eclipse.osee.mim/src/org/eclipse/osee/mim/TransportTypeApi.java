@@ -24,5 +24,7 @@ public interface TransportTypeApi extends QueryCapableMIMAPI<TransportType>, Aff
 
    Collection<TransportType> getAll(BranchId branch);
 
+   Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize);
+
    TransportType get(BranchId branch, ArtifactId artId);
 }
