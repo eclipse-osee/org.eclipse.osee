@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.ats.ide.search.navigate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -89,7 +89,7 @@ public class SavedActionSearchNavigateItem extends XNavigateItem {
          Set<Long> ids = new HashSet<Long>();
          for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
             for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
-               ArrayList<AtsSearchData> savedSearches = atsApi.getQueryService().getSavedSearches(item.getNamespace());
+               List<AtsSearchData> savedSearches = atsApi.getQueryService().getSavedSearches(item.getNamespace());
                for (AtsSearchData data : savedSearches) {
                   if (!ids.contains(data.getId())) {
                      AtsSearchWorkflowSearchItem searchItem = item.copy();

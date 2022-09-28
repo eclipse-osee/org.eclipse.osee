@@ -409,7 +409,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    @Override
    public Map<String, IAtsWorkItem> getWorkItemsByAtsId(Collection<String> atsIds) {
       Map<String, IAtsWorkItem> results = new HashMap<>();
-      for (ArtifactToken art : getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds, 200)) {
+      for (ArtifactToken art : getArtifactsFromAttributeValues(AtsAttributeTypes.AtsId, atsIds, 200)) {
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
          results.put(workItem.getAtsId(), workItem);
       }
@@ -417,7 +417,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public ArrayList<AtsSearchData> getSavedSearches(String namespace) {
+   public List<AtsSearchData> getSavedSearches(String namespace) {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
 
       List<String> json = atsApi.getAttributeResolver().getAttributesToStringList(atsApi.userService().getUser(),
@@ -453,7 +453,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       List<ArtifactToken> toReturn = new LinkedList<>();
       if (!atsIds.isEmpty()) {
          List<ArtifactToken> fromIds =
-            getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds, CoreBranches.COMMON, atsIds.size());
+            getArtifactsFromAttributeValues(AtsAttributeTypes.AtsId, atsIds, CoreBranches.COMMON, atsIds.size());
          toReturn.addAll(fromIds);
       }
       return toReturn;

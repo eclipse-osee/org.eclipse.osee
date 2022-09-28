@@ -152,7 +152,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
    private void checkActionableItems(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       Set<ArtifactToken> aiIds = getActionableItemIdsWithRecurse(new HashSet<>(), artifacts, atsApi, results);
       if (!aiIds.isEmpty()) {
-         List<ArtifactToken> teamWfsRelatedToAis = atsApi.getQueryService().getArtifactListFromTypeAndAttribute(
+         List<ArtifactToken> teamWfsRelatedToAis = atsApi.getQueryService().getArtifactsFromTypeAndAttribute(
             AtsArtifactTypes.TeamWorkflow, AtsAttributeTypes.ActionableItemReference, aiIds, atsApi.getAtsBranch());
          if (!teamWfsRelatedToAis.isEmpty()) {
             results.errorf(
@@ -189,7 +189,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
          }
       }
       if (!ids.isEmpty()) {
-         List<ArtifactToken> artifactListFromIds = atsApi.getQueryService().getArtifactListFromAttributeValues(
+         List<ArtifactToken> artifactListFromIds = atsApi.getQueryService().getArtifactsFromAttributeValues(
             AtsAttributeTypes.TeamDefinitionReference, ids, atsApi.getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             results.errorf(
@@ -210,7 +210,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
          }
       }
       if (!ids.isEmpty()) {
-         List<ArtifactToken> artifactListFromIds = atsApi.getQueryService().getArtifactListFromAttributeValues(
+         List<ArtifactToken> artifactListFromIds = atsApi.getQueryService().getArtifactsFromAttributeValues(
             AtsAttributeTypes.WorkPackageReference, ids, atsApi.getAtsBranch());
          if (artifactListFromIds.size() > 0) {
             results.errorf(
@@ -224,7 +224,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       for (ArtifactToken art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
             List<ArtifactToken> artifactListFromTypeAndAttribute =
-               atsApi.getQueryService().getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
+               atsApi.getQueryService().getArtifactsFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
                   AtsAttributeTypes.WorkflowDefinitionReference, art.getIdString(), atsApi.getAtsBranch());
             if (artifactListFromTypeAndAttribute.size() > 0) {
                results.errorf(

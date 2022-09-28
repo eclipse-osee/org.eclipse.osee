@@ -44,10 +44,10 @@ public class UserRelatedToAtsObjectSearch {
       List<ArtifactToken> arts = new ArrayList<>();
 
       if (activeObjectsOnly) {
-         arts.addAll(atsApi.getQueryService().getArtifactListFromAttributeKeywords(atsApi.getAtsBranch(),
+         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
             atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
       } else {
-         arts.addAll(atsApi.getQueryService().getArtifactListFromAttributeKeywords(atsApi.getAtsBranch(),
+         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
             atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
       }

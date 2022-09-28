@@ -195,7 +195,7 @@ public class SyncJiraOperation {
       results.logf("================================================================");
       results.log("Ignoring non OSEE Workflows (spot check): ");
       results.logf("");
-      for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactListFromAttributeValues(
+      for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactsFromAttributeValues(
          AtsAttributeTypes.AtsId, atsIds, 500)) {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
          if (teamWf != null && !skipJiraSync(teamWf)) {

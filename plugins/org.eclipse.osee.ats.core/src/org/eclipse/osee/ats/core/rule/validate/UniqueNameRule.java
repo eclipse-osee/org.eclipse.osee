@@ -82,7 +82,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    protected List<ArtifactToken> getArtifactsOfType(BranchId branch, ArtifactTypeToken artifact) {
       List<ArtifactToken> arts = artTypeToArtifacts.get(artifact);
       if (arts == null) {
-         arts = atsApi.getQueryService().getArtifactListFromTypeWithInheritence(artifactType, branch,
+         arts = atsApi.getQueryService().getArtifactsFromTypeWithInheritence(artifactType, branch,
             DeletionFlag.EXCLUDE_DELETED);
          artTypeToArtifacts.put(artifact, arts);
       }
