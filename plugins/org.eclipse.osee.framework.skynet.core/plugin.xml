@@ -6,7 +6,7 @@
    <extension-point id="HttpServerRequest" name="HttpServerRequest" schema="OSEE-INF/extensionPts/HttpServerRequest.exsd"/>
    <extension-point id="OseeTypes" name="OseeTypes" schema="OSEE-INF/extensionPts/OseeTypes.exsd"/>
    <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="OSEE-INF/extensionPts/DefaultInitialBranchProvider.exsd"/>
-   <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="OSEE-INF/extensionPts/ArtifactAnnotation.exsd"/>
+   <extension-point id="ArtifactAnnotationProvider" name="ArtifactAnnotationProvider" schema="OSEE-INF/extensionPts/ArtifactAnnotationProvider.exsd"/>
    <extension-point id="OseeDbSchema" name="OseeDbSchema" schema="OSEE-INF/extensionPts/OseeDbSchema.exsd"/>
    <extension-point id="WebPage" name="WebPage" schema="OSEE-INF/extensionPts/WebPage.exsd"/>
    <extension-point id="AttributeType" name="AttributeType" schema="OSEE-INF/extensionPts/AttributeType.exsd"/>

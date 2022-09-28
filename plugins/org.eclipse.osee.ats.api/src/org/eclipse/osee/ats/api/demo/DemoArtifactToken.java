@@ -174,6 +174,8 @@ public final class DemoArtifactToken {
    public static final ArtifactToken SAW_Access_Control_Code_TeamWf = ArtifactToken.valueOf(32483, "SAW Access Ctrl Test - Code", AtsDemoOseeTypes.DemoCodeTeamWorkflow);
    public static final ArtifactToken SAW_Access_Control_Test_TeamWf = ArtifactToken.valueOf(32484, "SAW Access Ctrl Test - Test", AtsDemoOseeTypes.DemoTestTeamWorkflow);
 
+   public static final ArtifactToken SAW_NotesAnnotations_Code_TeamWf = ArtifactToken.valueOf(45213456, "SAW Notes and Annotations", COMMON, AtsDemoOseeTypes.DemoCodeTeamWorkflow);
+
    //////////////////////////////////
    // RD Agile Configuration
    //////////////////////////////////

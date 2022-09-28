@@ -47,6 +47,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    Pdd10SetupAndImportReqsTest.class,
    //
+   Pdd15CreateNotesAndAnnotationsTest.class,
+   //
    Pdd20CreateCommittedActionTest.class,
    Pdd21CreateUnCommittedActionTest.class,
    Pdd22CreateUnCommittedConflictedActionTest.class,

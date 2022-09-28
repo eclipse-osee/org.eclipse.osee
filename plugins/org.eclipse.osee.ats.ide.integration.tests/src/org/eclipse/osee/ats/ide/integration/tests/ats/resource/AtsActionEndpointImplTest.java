@@ -98,7 +98,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Title", "SAW"//
       );
 
-      getFirstAndCount(target, 4);
+      getFirstAndCount(target, 5);
    }
 
    @Test
@@ -109,7 +109,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          AtsAttributeTypes.Priority.getIdString(), "3"//
       );
 
-      getAndCountWorkItems(target, 4);
+      getAndCountWorkItems(target, 5);
    }
 
    @Test
@@ -118,7 +118,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Team", codeWfId, //
          "StateType", StateType.Working.name()//
       );
-      getAndCountWorkItems(target, 5);
+      getAndCountWorkItems(target, 6);
    }
 
    @Test
@@ -127,7 +127,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Team", codeWfId, //
          "Assignee", "4444", //
          "Assignee", "3333");
-      getAndCountWorkItems(target, 5);
+      getAndCountWorkItems(target, 6);
    }
 
    @Test
@@ -136,13 +136,13 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Team", codeWfId, //
          "Originator", "3333" //
       );
-      getAndCountWorkItems(target, 5);
+      getAndCountWorkItems(target, 6);
    }
 
    @Test
    public void testQueryTeam() {
       WebTarget target = createWebTarget("Team", codeWfId);
-      getFirstAndCount(target, 5);
+      getFirstAndCount(target, 6);
    }
 
    @Test

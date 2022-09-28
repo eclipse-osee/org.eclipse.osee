@@ -105,12 +105,6 @@
       <Provider class="org.eclipse.osee.ats.ide.util.TeamBasedDefaultBranchProvider"/>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotation">
-      <ArtifactAnnotation
-            classname="org.eclipse.osee.ats.ide.util.AtsArtifactAnnotations">
-      </ArtifactAnnotation>
-   </extension>
-   <extension
          id="ImportTasksFromSpreadsheet"
          name="ImportTasksFromSpreadsheet"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">

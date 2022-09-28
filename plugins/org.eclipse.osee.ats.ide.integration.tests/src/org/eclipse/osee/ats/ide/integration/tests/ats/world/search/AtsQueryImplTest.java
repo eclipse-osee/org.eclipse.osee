@@ -60,7 +60,7 @@ public class AtsQueryImplTest {
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      assertEquals(32, query.getResults().size());
+      assertEquals(33, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.Task);
       assertEquals(55, query.getResults().size());
@@ -68,12 +68,12 @@ public class AtsQueryImplTest {
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(atsApi.getUserService().getUserByUserId("3333"));
-      assertEquals(12, query.getResults().size());
+      assertEquals(13, query.getResults().size());
 
       // team
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andTeam(Arrays.asList(30013695L));
-      assertEquals(5, query.getResults().size());
+      assertEquals(6, query.getResults().size());
 
       // ai
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -100,11 +100,11 @@ public class AtsQueryImplTest {
       // by state type
       query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(101, query.getResults().size());
+      assertEquals(102, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Working);
-      assertEquals(28, query.getResults().size());
+      assertEquals(29, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed);
@@ -112,7 +112,7 @@ public class AtsQueryImplTest {
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed, StateType.Working);
-      assertEquals(32, query.getResults().size());
+      assertEquals(33, query.getResults().size());
 
       // by version
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -123,12 +123,12 @@ public class AtsQueryImplTest {
       // by assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(joeSmith);
-      assertEquals(12, query.getResults().size());
+      assertEquals(13, query.getResults().size());
 
       // by originator
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andOriginator(joeSmith);
-      assertEquals(32, query.getResults().size());
+      assertEquals(33, query.getResults().size());
 
       // by favorite
       query = queryService.createQuery(WorkItemType.TeamWorkflow);

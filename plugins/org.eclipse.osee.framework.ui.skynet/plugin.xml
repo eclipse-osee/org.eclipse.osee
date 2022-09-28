@@ -189,9 +189,9 @@
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.util.OseeMainDictionary"/>
 	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotation">
-		<ArtifactAnnotation classname="org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationHandler">
-         </ArtifactAnnotation>
+	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotationProvider">
+		<ArtifactAnnotationProvider classname="org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationProvider">
+         </ArtifactAnnotationProvider>
 	</extension>
 	<extension
        point="org.eclipse.osee.framework.ui.skynet.TemplateProvider">
