@@ -26,6 +26,7 @@ app.controller('adminController', [
             $scope.types = [];
             $scope.isCoverage = $rootScope.type == 'codeCoverage';
             $scope.programs = Program.query();
+				$scope.checked = false;
             
             var isPrimary = function(importState) {
                 return row.entity.importState != "Warnings" && row.entity.importState != "Failed";
@@ -50,6 +51,18 @@ app.controller('adminController', [
                 });
             }
         }
+	
+		$scope.displayAllBranches = function displayAllBranches() {
+            var loadingModal = $scope.showLoadingModal();
+            $scope.loading = true;
+            $scope.items = {};
+            Program.query({
+					allBranches: $scope.checked 
+            }, function(data) {
+					$scope.programs = data;               
+					loadingModal.close();
+            });
+        };
         
         $scope.toggleAddNew = function() {
             if($scope.addNew) {
@@ -268,12 +281,12 @@ app.controller('adminController', [
                 loadingModal.close();
                 alert(data.statusText);
             });
-			            Config.get({
-                            programId: $scope.programSelection,
-                            type: $rootScope.type
-                        }, function(data) {
-                       	      $scope.types = data.validResolutions;
-                        }); 
+            Config.get({
+                programId: $scope.programSelection,
+                type: $rootScope.type
+            }, function(data) {
+           	      $scope.types = data.validResolutions;
+            }); 
         };
 
         $scope.editSet = function editSet(set) {

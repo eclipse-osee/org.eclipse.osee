@@ -477,11 +477,45 @@ public class OrcsStorageImpl implements Storage {
          getQuery().branchQuery().andIsOfType(BranchType.WORKING).andIsChildOf(dispoParent).getResultsAsId();
 
       for (BranchToken branch : dispoBranches) {
-         BranchToken newName = BranchToken.create(branch, branch.getName().replaceFirst("\\(DISPO\\)", ""));
+         ArtifactReadable progConfigArt =
+            getQuery().fromBranch(branch).andNameEquals("Program Config").asArtifactOrSentinel();
+         if (progConfigArt == ArtifactReadable.SENTINEL) {
+            continue;
+         }
 
-         dispoBranchesNormalized.add(newName);
+         boolean isActive = progConfigArt.getSoleAttributeValue(CoreAttributeTypes.Active, Boolean.TRUE);
+         if (isActive) {
+            BranchToken newName = BranchToken.create(branch, branch.getName().replaceFirst("\\(DISPO\\)", ""));
+            dispoBranchesNormalized.add(newName);
+         }
       }
+      return dispoBranchesNormalized;
+   }
 
+   @Override
+   public List<BranchToken> getDispoBranches(boolean allBranches) {
+      List<BranchToken> dispoBranchesNormalized = new ArrayList<>();
+
+      ResultSet<BranchToken> dispoBranches =
+         getQuery().branchQuery().andIsOfType(BranchType.WORKING).andIsChildOf(dispoParent).getResultsAsId();
+
+      for (BranchToken branch : dispoBranches) {
+         ArtifactReadable progConfigArt =
+            getQuery().fromBranch(branch).andNameEquals("Program Config").asArtifactOrSentinel();
+         if (progConfigArt == ArtifactReadable.SENTINEL) {
+            continue;
+         }
+
+         BranchToken newName = BranchToken.create(branch, branch.getName().replaceFirst("\\(DISPO\\)", ""));
+         if (allBranches) {
+            dispoBranchesNormalized.add(newName);
+         } else {
+            boolean isActive = progConfigArt.getSoleAttributeValue(CoreAttributeTypes.Active, Boolean.TRUE);
+            if (isActive) {
+               dispoBranchesNormalized.add(newName);
+            }
+         }
+      }
       return dispoBranchesNormalized;
    }
 

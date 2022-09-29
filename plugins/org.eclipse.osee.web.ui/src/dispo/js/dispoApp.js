@@ -141,7 +141,7 @@ app.directive('ngModelOnblur', function() {
 app.provider('Program', function() {
     this.$get = ['$resource',
         function($resource) {
-            var Program = $resource('/dispo/program/:programId', {}, {});
+            var Program = $resource('/dispo/program/:programId?allBranches=:allBranches', {}, {});
             return Program;
         }
     ];
