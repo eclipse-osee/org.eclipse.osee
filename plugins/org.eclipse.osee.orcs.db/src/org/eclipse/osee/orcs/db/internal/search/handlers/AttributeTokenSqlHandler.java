@@ -165,8 +165,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
       String jIdAlias = null;
       if (joinQuery != null) {
+         writer.writeCommaIfNotFirst();
          jIdAlias = writer.writeTable(OseeDb.OSEE_JOIN_ID_TABLE);
-         writer.write(", ");
       }
 
       writer.write("\n WHERE \n");
@@ -174,13 +174,12 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       if (!criteria.isIncludeAllTypes()) {
 
          if (joinQuery == null) {
-            writer.writeEqualsParameter("attr_type_id", criteria.getTypes().iterator().next());
+            writer.writeEqualsParameterAnd("attr_type_id", criteria.getTypes().iterator().next());
          } else {
             writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
-            writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
+            writer.writeEqualsParameterAnd(jIdAlias, "query_id", joinQuery.getQueryId());
          }
       }
-      writer.writeAnd();
       writer.writeEqualsAnd("att", "txs", "gamma_id");
       writer.writeTxBranchFilter("txs", true);
       if (criteria.getValues().size() == 1) {
