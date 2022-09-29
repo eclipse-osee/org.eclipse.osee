@@ -54,14 +54,20 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       "change.report.close.editors.on.shutdown";
    private static String USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT = "use.external.compare.editor.for.text";
    private static String EXTERNAL_COMPARE_EDITOR_FOR_TEXT = "external.compare.editor.for.text";
+   private static String USE_SERVER_LINKS = "use.server.links";
    private Button artifactEditorButton;
    private Button editButton;
    private Button useCompareEditorForTextCompares;
    private Button showTokenForChangeName;
+   private Button useServerLinks;
    private Text compareEditorTextBox;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() {
       return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
+   }
+
+   public static boolean isUseServerLinks() {
+      return UserManager.getBooleanSetting(USE_SERVER_LINKS);
    }
 
    public static boolean isUseExternalCompareEditorForText() {
@@ -100,6 +106,15 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      try {
+         useServerLinks = new Button(composite, SWT.CHECK);
+         useServerLinks.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+         useServerLinks.setText("Use server links on drag and drop");
+         boolean value = UserManager.getBooleanSetting(USE_SERVER_LINKS);
+         useServerLinks.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -257,6 +272,8 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
          boolean result = useCompareEditorForTextCompares.getSelection();
          UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
+         boolean resultServerLink = useServerLinks.getSelection();
+         UserManager.setSetting(USE_SERVER_LINKS, String.valueOf(resultServerLink));
 
          if (showTokenForChangeName != null) {
             boolean set = showTokenForChangeName.getSelection();
@@ -266,7 +283,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             result = useCompareEditorForTextCompares.getSelection();
             UserManager.setSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT, String.valueOf(result));
          }
-
          if (compareEditorTextBox != null) {
             String editor = compareEditorTextBox.getText();
             UserManager.setSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT, editor);

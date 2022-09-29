@@ -50,9 +50,7 @@ public final class CopyArtifactURLAction extends Action {
    public void run() {
       Clipboard clipboard = null;
       try {
-         String urlString = String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s",
-            new ArtifactUrlClient().getSelectedPermanentLinkUrl(), artifact.getBranch().getIdString(),
-            artifact.getIdString(), getAttributeTypeId().getIdString());
+         String urlString = generateLink();
          URL url = new URL(urlString);
          clipboard = new Clipboard(null);
          clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
@@ -75,6 +73,12 @@ public final class CopyArtifactURLAction extends Action {
    public static boolean isApplicable(Artifact artifact) {
       return artifact.isOfType(CoreArtifactTypes.NativeArtifact) || artifact.isOfType(
          CoreArtifactTypes.MsWordWholeDocument);
+   }
+
+   public String generateLink() {
+      return String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s",
+         new ArtifactUrlClient().getSelectedPermanentLinkUrl(), artifact.getBranch().getIdString(),
+         artifact.getIdString(), getAttributeTypeId().getIdString());
    }
 
 }
