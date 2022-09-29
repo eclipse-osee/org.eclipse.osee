@@ -40,6 +40,8 @@ public interface DispoApi {
    // Queries
    List<BranchToken> getDispoPrograms();
 
+   List<BranchToken> getDispoPrograms(boolean allBranches);
+
    BranchToken getDispoProgramIdByName(String branchName);
 
    List<DispoSet> getDispoSets(BranchId branch, String type);

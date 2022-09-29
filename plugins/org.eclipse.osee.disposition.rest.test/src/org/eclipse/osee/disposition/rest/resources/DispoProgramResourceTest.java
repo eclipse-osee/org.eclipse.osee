@@ -44,17 +44,17 @@ public class DispoProgramResourceTest {
    @Test
    public void testGetAll() throws Exception {
       // No Sets
-      when(dispoApi.getDispoPrograms()).thenReturn(Collections.emptyList());
+      when(dispoApi.getDispoPrograms(false)).thenReturn(Collections.emptyList());
 
-      try (Response noProgramsResponse = resource.getAllPrograms()) {
+      try (Response noProgramsResponse = resource.getAllPrograms(false)) {
          String messageActual = (String) noProgramsResponse.getEntity();
          assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
 
          assertEquals("[ ]", messageActual);
       }
-      when(dispoApi.getDispoPrograms()).thenReturn(Collections.singletonList(SYSTEM_ROOT));
+      when(dispoApi.getDispoPrograms(true)).thenReturn(Collections.singletonList(SYSTEM_ROOT));
 
-      try (Response oneSetResponse = resource.getAllPrograms()) {
+      try (Response oneSetResponse = resource.getAllPrograms(true)) {
          ObjectMapper OM = new ObjectMapper();
          String entityString = (String) oneSetResponse.getEntity();
          String noBrackets = entityString.substring(1, entityString.length() - 1);

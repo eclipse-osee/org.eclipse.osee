@@ -6,6 +6,7 @@
         <div class="col-md-2 col-md-offset-1">
             <div class="row">
                 <h5>Select ATS Version</h5>
+					 <div style="vertical-align: middle" ><input type="checkbox" ng-model="checked" ng-change="displayAllBranches()"> All Versions </div>
                 <select class="form-control" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
             	 <div>
                 	<u ng-click="toggleAddNew()">Add New</u> <div  ng-show="addNew"><input class="form-control" ng-model="newProgramName" type="text" name="newProgram"><button ng-click="createNewProgram()" class="form-control">Submit</button></div>
