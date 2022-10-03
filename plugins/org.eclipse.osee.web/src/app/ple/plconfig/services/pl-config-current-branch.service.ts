@@ -60,7 +60,8 @@ export class PlConfigCurrentBranchService {
    */
   private _branchListing = this.uiStateService.viewBranchType.pipe(
     switchMap(viewBranchType => iif(() => viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline',
-    this.branchService.getBranches(viewBranchType)
+    this.branchService.getBranches(viewBranchType),
+    of([]) // @todo replace with a false response
     )),
     share()
   )
@@ -300,7 +301,8 @@ export class PlConfigCurrentBranchService {
               this.synchronizeGroup(elem.id).pipe(
             ),
             )
-          )
+          ),
+          of() // @todo replace with a false response
         ),
       ),
       take(groups.length>0?groups.length:1),
@@ -348,7 +350,8 @@ export class PlConfigCurrentBranchService {
             this.uiStateService.error = response.results.toString()
         }
       })
-      )
+      ),
+      of() // @todo replace with a false response
       ))
     )
   }
@@ -388,7 +391,8 @@ export class PlConfigCurrentBranchService {
               this.uiStateService.error = response.results.toString()
           }
         })
-        )
+        ),
+        of() // @todo replace with a false response
       ))
     )
   }
@@ -445,7 +449,8 @@ export class PlConfigCurrentBranchService {
                 })
             ))
           ))
-      )
+      ),
+      of() // @todo replace with a false response
       ))
     )
   }

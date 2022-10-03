@@ -22,7 +22,11 @@ import { BranchTypeService } from './router/branch-type.service';
 })
 export class CurrentBranchTypeService {
   private _branches = this.typeService.BranchType.pipe(
-    switchMap((val)=>iif(()=>val!==''&& (val === 'baseline' || val === 'working'),this.branchService.getBranches(val),of<BranchListing[]>([])))
+    switchMap((val)=>
+    iif(()=>val!==''&& (val === 'baseline' || val === 'working'),
+      this.branchService.getBranches(val),
+      of<BranchListing[]>([])
+      ))
   )
   constructor (private branchService: BranchService, private typeService: BranchTypeService) { }
   

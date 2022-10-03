@@ -406,7 +406,7 @@ export class ImportService {
   }
 
   set toggleDone(done: unknown) {
-    this._done$.next();
+    this._done$.next(done);
     this._done$.complete();
   }
 

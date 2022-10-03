@@ -97,7 +97,9 @@ export class PlatformTypeCardComponent implements OnInit {
     }).afterClosed().pipe(
       filter(x => x !== undefined) as OperatorFunction<enumerationSet | undefined, enumerationSet>,
       take(1),
-      switchMap(({ enumerations,...changes })=>iif(()=>makeChanges,this.enumSetService.changeEnumSet(changes,enumerations)))
+      switchMap(({ enumerations,...changes })=>iif(()=>makeChanges,this.enumSetService.changeEnumSet(changes,enumerations), 
+      of() // @todo replace with a false response
+      ))
     ).subscribe();
   }
   

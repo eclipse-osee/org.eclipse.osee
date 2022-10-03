@@ -37,7 +37,7 @@ export class TransportsComponent implements OnInit, OnDestroy {
   );
   constructor (private transportTypesService: CurrentTransportTypeService, private headerService: HeaderService, private ui: UiService, private route:ActivatedRoute,public dialog: MatDialog) { }
   ngOnDestroy(): void {
-    this._done.next();
+    this._done.next(true);
   }
 
   valueTracker(index: any, item: any) {

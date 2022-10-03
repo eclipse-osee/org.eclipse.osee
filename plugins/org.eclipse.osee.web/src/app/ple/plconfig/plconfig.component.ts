@@ -41,7 +41,7 @@ export class PlconfigComponent implements OnInit,OnDestroy {
     })
    }
   ngOnDestroy(): void {
-    this._done.next();
+    this._done.next('');
     this._done.complete();
   }
 

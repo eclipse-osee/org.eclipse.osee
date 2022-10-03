@@ -156,7 +156,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -182,7 +182,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openNotesDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Notes") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -195,7 +195,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'openNotesDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateElement').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Notes") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -208,7 +208,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'removeElement').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'removeElementFromStructure').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'removeElementFromStructure').and.callThrough();
       await menu.clickItem({ text: new RegExp("Remove element from structure") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -221,7 +221,7 @@ describe('SubElementTableComponent', () => {
       let spy = spyOn(component, 'deleteElement').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'deleteElement').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'deleteElement').and.callThrough();
       await menu.clickItem({ text: new RegExp("Delete element globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();

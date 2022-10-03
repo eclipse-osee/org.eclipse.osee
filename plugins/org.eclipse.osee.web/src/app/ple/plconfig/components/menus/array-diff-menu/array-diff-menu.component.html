@@ -12,7 +12,7 @@
  -->
 <ng-container *ngFor="let element of array">
     <ng-container *ngIf="element.currentValue!==undefined && element.currentValue!==null; else previousValue">
-        <button mat-menu-item (click)="viewDiff(true,element,element.currentValue?.toString()||'')">{{element.currentValue}}</button>
+        <button mat-menu-item (click)="viewDiff(true,element,element.currentValue.toString()||'')">{{element.currentValue}}</button>
     </ng-container>
     <ng-template #previousValue>
         <button mat-menu-item (click)="viewDiff(true,element,element.previousValue?.toString()||'')">{{element.previousValue}}</button>

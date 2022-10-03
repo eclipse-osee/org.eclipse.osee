@@ -56,7 +56,7 @@ export class TypeGridComponent implements OnInit, OnChanges, OnDestroy {
     })
   }
   ngOnDestroy(): void {
-    this._done.next();
+    this._done.next('');
   }
   
   ngOnChanges(changes: SimpleChanges): void {

@@ -59,6 +59,7 @@ import { TwoLayerAddButtonHarness } from 'src/app/ple/generic-buttons/two-layer-
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { BranchUndoButtonTestingModule } from '../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
+import { transactionResultMock } from 'src/app/transactions/transaction.mock';
 
 let loader: HarnessLoader;
 
@@ -235,7 +236,7 @@ describe('MessageTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -248,7 +249,7 @@ describe('MessageTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -271,7 +272,7 @@ describe('MessageTableComponent', () => {
       let spy = spyOn(component, 'removeMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Remove message from connection") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -284,7 +285,7 @@ describe('MessageTableComponent', () => {
       let spy = spyOn(component, 'deleteMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Delete message globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();

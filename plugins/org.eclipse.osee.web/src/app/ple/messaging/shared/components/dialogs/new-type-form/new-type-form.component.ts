@@ -17,7 +17,7 @@ import { ATTRIBUTETYPEID } from '../../../../../../types/constants/AttributeType
 import { EnumsService } from '../../../services/http/enums.service';
 import { TypesService } from '../../../services/http/types.service';
 import { CurrentQueryService } from '../../../services/ui/current-query.service';
-import { logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../types/logicaltype';
+import { logicalTypeFieldInfo, logicalTypeFormDetail } from '../../../types/logicaltype.d';
 import { andQuery, MimQuery, PlatformTypeQuery } from '../../../types/MimQuery';
 import { logicalTypefieldValue } from '../../../types/newTypeDialogDialogData';
 import { PlatformType } from '../../../types/platformType';

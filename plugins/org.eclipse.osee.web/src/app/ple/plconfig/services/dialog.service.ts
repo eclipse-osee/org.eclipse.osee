@@ -54,7 +54,9 @@ export class DialogService {
             productApplicabilities: dialogResponse.productApplicabilities || []
           }).pipe(
             take(1)
-          )))
+          ),
+          of() // @todo replace with a false response
+          ))
         ),
         this.currentBranchService.findGroup(header).pipe(
           filter((group) => group !== undefined) as OperatorFunction<configGroup | undefined, configGroup>,
@@ -85,7 +87,9 @@ export class DialogService {
                   }
                   ).pipe(take(1)))
                 ))
-              )))
+              ),
+              of() // @todo replace with a false response
+              ))
             )
           ))
           )
@@ -108,7 +112,7 @@ export class DialogService {
       take(1),
       switchMap((dialogResponse) => iif(() => dialogResponse && dialogResponse.editable, this.currentBranchService.modifyFeature(dialogResponse.feature).pipe(
         take(1)
-      )))
+      ), of()))
     );
   }
 }

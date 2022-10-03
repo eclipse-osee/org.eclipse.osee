@@ -254,7 +254,7 @@ describe('CurrentStateService', () => {
   it('done should complete', () => {
     scheduler.run(({ expectObservable,cold }) => {
       const expectedFilterValues = { a: true, b: undefined, c: false };
-      const expectedMarble = '-(b|)';
+      const expectedMarble = '-(a|)';
       let delayMarble = '-a';
       cold(delayMarble).subscribe(() => service.toggleDone=true);
       expectObservable(service.done).toBe(expectedMarble,expectedFilterValues)

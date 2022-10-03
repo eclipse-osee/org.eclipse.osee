@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatRadioChange, MatRadioGroup, MatRadioModule } from '@angular/material/radio';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { BranchTypeSelectorComponent } from './branch-type-selector.component';
@@ -21,6 +22,7 @@ import { BranchTypeSelectorComponent } from './branch-type-selector.component';
 describe('BranchTypeSelectorComponent', () => {
   let component: BranchTypeSelectorComponent;
   let fixture: ComponentFixture<BranchTypeSelectorComponent>;
+  let router: Router;
 
   @Component({
     selector: 'dummy',
@@ -45,6 +47,7 @@ describe('BranchTypeSelectorComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BranchTypeSelectorComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -53,6 +56,7 @@ describe('BranchTypeSelectorComponent', () => {
   });
 
   it('should change the branch type to hello', () => {
+    const spy = spyOn(router,'navigate').and.returnValue(new Promise(()=>true))
     component.changeBranchType("hello");
     expect(component.branchType).toEqual("hello");
   });

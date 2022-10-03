@@ -1,6 +1,6 @@
-# ModernPle
+# OSEE
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 14.2.4.
 
 ## Development server
 
@@ -14,13 +14,16 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## Deploying to Jetty
+Run `ng build -c production` and copy the produced contents into /plugins/org.eclipse.osee.web.deploy/OSEE-INF/web/dist. Run your local server.
+
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Tests should be run with the --browsers=ChromeHeadless flag due to some third party dependencies not playing nice in test.
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Run `ng e2e` to execute the end-to-end tests via Cypress. It is recommended to leverage the --watch=false and --headless=true flags when running e2e tests. You may also specify a spec range such as 'cypress/integration/ple/plconfig/**/*'.
 
 ## Further help
 

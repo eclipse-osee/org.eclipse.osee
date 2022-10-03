@@ -91,6 +91,7 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     set singleStructureIdValue(value: string) {
         _singleStructureId.next(value)
     },
+    connectionsRoute:of(""),
     query: function <T = unknown>(query: MimQuery<T>): Observable<Required<T>[]> {
         return of<Required<T>[]>([{ name: 'abcd' } as unknown as Required<T>]);
     },

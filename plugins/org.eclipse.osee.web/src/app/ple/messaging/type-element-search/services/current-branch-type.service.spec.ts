@@ -12,20 +12,25 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { TestScheduler } from 'rxjs/testing';
+import { tap } from 'rxjs/operators';
 import { BranchListing } from '../../../../types/branches/BranchListing';
 
 import { CurrentBranchTypeService } from './current-branch-type.service';
 import { BranchService } from './http/branch.service';
+import { branchListingMock1, branchServiceMock } from './http/branch.service.mock';
 import { BranchTypeService } from './router/branch-type.service';
+import { BranchType } from '../../types-interface/types/BranchTypes.enum';
+import { branchType } from '../types/BranchTypes';
 
 describe('CurrentBranchTypeService', () => {
   let service: CurrentBranchTypeService;
   let typeService: BranchTypeService;
-  let branchSpy: jasmine.SpyObj<BranchService> = jasmine.createSpyObj('BranchService', ['getBranches']);
+  let scheduler: TestScheduler
   
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers:[{provide:BranchService, useValue:branchSpy}]
+      providers:[{provide:BranchService, useValue:branchServiceMock}]
     });
     service = TestBed.inject(CurrentBranchTypeService);
     typeService = TestBed.inject(BranchTypeService);
@@ -35,16 +40,21 @@ describe('CurrentBranchTypeService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call get branches with type working', () => {
-    service.branches.subscribe();
-    typeService.type = 'working';
-    expect(branchSpy.getBranches).toHaveBeenCalledWith('working');
-  });
+  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected);
+  }));
 
-  it('should call get branches with type baseline', () => {
-    service.branches.subscribe();
-    typeService.type = 'baseline';
-    expect(branchSpy.getBranches).toHaveBeenCalledWith('baseline');
+  it('should call get branches with type working and with type baseline', () => {
+    scheduler.run(({expectObservable,cold})=>{
+      const driverValues:{a:branchType,b:branchType} = { a: 'working', b:'baseline'}
+      const driverEmissions = '----a---b----aa-bb-ab--a';
+      const emissions ='b---a---a----aa-aa-aa--a'
+      const expectedValues = {a:[branchListingMock1],b:[]}
+      const driver = cold(driverEmissions,driverValues).pipe(
+        tap((t)=>typeService.type=t))
+        expectObservable(driver).toBe(driverEmissions,driverValues);
+        expectObservable(service.branches).toBe(emissions,expectedValues)
+    })
   });
 
 });

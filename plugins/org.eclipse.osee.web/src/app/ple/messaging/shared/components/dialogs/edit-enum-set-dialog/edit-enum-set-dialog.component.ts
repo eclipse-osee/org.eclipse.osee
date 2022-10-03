@@ -14,7 +14,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { enumerationSet, enumeration } from '../../../types/enum';
+import { enumerationSet, enumeration } from '../../../types/enum.d';
 import { EnumerationUIService } from '../../../services/ui/enumeration-ui.service';
 import { PreferencesUIService } from '../../../services/ui/preferences-ui.service';
 import { enumsetDialogData } from '../../../types/EnumSetDialogData';

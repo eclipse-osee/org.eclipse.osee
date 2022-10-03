@@ -67,7 +67,9 @@ export class CurrentBranchInfoService {
                   this._uiService.error = val.results.results[0];
                 }
               })
-            )
+            ),
+
+            of() // @todo replace with a false response
         )
       )
     );
