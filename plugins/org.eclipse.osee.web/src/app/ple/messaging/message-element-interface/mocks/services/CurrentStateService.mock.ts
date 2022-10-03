@@ -25,6 +25,7 @@ import { response } from "../../../connection-view/mocks/Response.mock";
 import { PlatformType } from "../../../shared/types/platformType";
 import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 import { MimQuery, PlatformTypeQuery } from '../../../shared/types/MimQuery';
+import { messagesMock } from '../../../message-interface/mocks/ReturnObjects/messages.mock';
 
 let sideNavContentPlaceholder = new ReplaySubject<{ opened: boolean; field: string; currentValue: string | number | boolean | applic; previousValue?: string | number | boolean | applic | undefined; transaction?: transactionToken | undefined; user?: string | undefined; date?: string | undefined; }>();
 let _singleStructureId = new BehaviorSubject<string>("10")
@@ -91,6 +92,7 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
     set singleStructureIdValue(value: string) {
         _singleStructureId.next(value)
     },
+    message:of(messagesMock[0]),
     connectionsRoute:of(""),
     query: function <T = unknown>(query: MimQuery<T>): Observable<Required<T>[]> {
         return of<Required<T>[]>([{ name: 'abcd' } as unknown as Required<T>]);

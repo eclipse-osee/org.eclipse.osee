@@ -59,7 +59,6 @@ export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
           this.structureService.messageId = paramMap.get('messageId') || '';
           this.structureService.subMessageId = paramMap.get('subMessageId') || '';
           this.structureService.connection = paramMap.get('connection') || '';
-          this.structureService.BreadCrumb = paramMap.get('name') || '';
           this.structureService.singleStructureIdValue = '';
           return data;
         }),

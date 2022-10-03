@@ -25,7 +25,7 @@ const connections = navigationStructure[0].children.filter(c => c.label === 'Mes
 const help=navigationStructure[0].children.filter(c => c.label === 'Messaging Configuration')[0].children.find(page => page.label === 'Help');
 const routes: Routes = [
   { path: '', component: MessagingComponent },
-  { path: ':branchType/:branchId/:connection/messages/:messageId/:subMessageId/:name/elements', title:connections?.pageTitle||'OSEE', loadChildren: () => import('./message-element-interface/message-element-interface.module').then(m => m.MessageElementInterfaceModule) },
+  { path: ':branchType/:branchId/:connection/messages/:messageId/:subMessageId/elements', title:connections?.pageTitle||'OSEE', loadChildren: () => import('./message-element-interface/message-element-interface.module').then(m => m.MessageElementInterfaceModule) },
   { path: ':branchType/:branchId/:connection/messages', title:connections?.pageTitle||'OSEE', loadChildren: () => import('./message-interface/message-interface.module').then(m => m.MessageInterfaceModule) },
   { path: 'types', title:types?.pageTitle||'OSEE', loadChildren: () => import('./types-interface/types-interface.module').then(m => m.TypesInterfaceModule) },
   { path: 'connections', title:connections?.pageTitle||'OSEE', loadChildren: () => import('./connection-view/connection-view.module').then(m => m.ConnectionViewModule) },

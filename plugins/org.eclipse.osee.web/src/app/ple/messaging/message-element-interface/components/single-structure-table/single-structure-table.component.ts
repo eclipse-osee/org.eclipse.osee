@@ -50,7 +50,6 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
           this.structureService.subMessageId = paramMap.get('subMessageId') || '';
           this.structureService.connection = paramMap.get('connection') || '';
           this.structureService.singleStructureIdValue = paramMap.get('structureId') || '';
-          this.structureService.BreadCrumb = paramMap.get('name') || '';
           return data;
         }),
         switchMap((data) => iif(() => data.diff !== undefined, of(data).pipe(

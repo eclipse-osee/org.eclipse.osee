@@ -75,9 +75,12 @@ export class CurrentStructureService {
   }
 
   get message() {
-    return combineLatest([this.BranchId, this.connectionId, this.MessageId]).pipe(
-      switchMap(([branch, connection, id]) => this.messages.getMessage(branch, connection, id).pipe(
+    return combineLatest([this.BranchId, this.connectionId, this.MessageId, this.SubMessageId]).pipe(
+      switchMap(([branch, connection, id, submessageId]) => this.messages.getMessage(branch, connection, id).pipe(
         repeatWhen(_ => this.ui.UpdateRequired),
+        tap((value) => {
+          this.BreadCrumb = value.name + " > " + value.subMessages.find(submessage=>submessage.id===submessageId)!.name;
+        }),
         share(),
       )),
       shareReplay({ bufferSize: 1, refCount: true }),
