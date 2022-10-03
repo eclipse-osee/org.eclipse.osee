@@ -10,6 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+<div class="hidden" *ngIf="_messageData|async">
+
+</div>
 <div class="message-element-interface">
     <div class="message-element-interface-header">
         <ng-container *ngIf="(_connectionsRoute | async) as connectionRoute">

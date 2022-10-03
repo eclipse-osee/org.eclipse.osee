@@ -136,8 +136,7 @@ export class StructureTableComponent implements OnInit {
     shareReplay(1),
   )
   _connectionsRoute = this.structureService.connectionsRoute;
-  _messageData = this.currentStructureHeaders.pipe(
-    switchMap((headers) => iif(() => headers.includes('txRate'), this.structureService.message, of())),
+  _messageData = this.structureService.message.pipe(
     takeUntil(this.structureService.done)
   )
   structureDialog = this.structureService.SubMessageId.pipe(

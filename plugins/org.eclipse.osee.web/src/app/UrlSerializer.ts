@@ -22,6 +22,6 @@ export class OseeUrlSerializer implements UrlSerializer {
         let defaultSerializer = new DefaultUrlSerializer(),
         path = defaultSerializer.serialize(tree);
         // use your regex to replace as per your requirement.
-        return path.replace(/-/g,'%2D');
+        return path.replace(/-/g,'%2D').replace(/%20%3E%20/g, '%3E');
       }
    }

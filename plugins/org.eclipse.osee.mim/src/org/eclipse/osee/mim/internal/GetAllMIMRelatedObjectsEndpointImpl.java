@@ -89,7 +89,7 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
                      branch, CoreRelationTypes.InterfaceConnectionContent_Message, ArtifactId.valueOf(message.getId()),
                      InterfaceConnection.class)) {
                      structure.addPath(new ResolvedStructurePath(message.getName() + " > " + submessage.getName(),
-                        "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/" + message.getName() + " > " + submessage.getName() + "/elements/" + structure.getIdString()));
+                        "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString()));
                   }
                }
             }

@@ -61,7 +61,7 @@ public class InterfaceStructureElementTokenWithPath extends InterfaceStructureEl
                                  message -> message.getArtifactReadable().getRelatedList(
                                     CoreRelationTypes.InterfaceConnectionContent_Connection).stream().map(
                                        connection -> new ConnectionView(connection)).map(
-                                          connection -> "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/" + message.getName() + " > " + submessage.getName() + "/elements/" + structure.getIdString())).flatMap(
+                                          connection -> "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString())).flatMap(
                                              result -> result)).flatMap(result -> result)).flatMap(
                                                 result -> result).distinct().collect(Collectors.toList());
 
