@@ -103,7 +103,7 @@ export class ElementUiService {
     this._differences.next(value);
   }
   set toggleDone(value: any) {
-    this._done.next();
+    this._done.next(value);
     this._done.complete();
   }
 

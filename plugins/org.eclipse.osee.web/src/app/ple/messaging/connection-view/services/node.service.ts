@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
+import { relation, transaction } from '../../../../transactions/transaction.d';
 import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';

@@ -58,12 +58,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { TestScheduler } from 'rxjs/testing';
 import { BranchUndoButtonTestingModule } from '../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
+import { transactionResultMock } from 'src/app/transactions/transaction.mock';
 
 describe('StructureTableComponent', () => {
   let component: StructureTableComponent;
   let fixture: ComponentFixture<StructureTableComponent>;
   let loader: HarnessLoader;
   let scheduler: TestScheduler;
+  let dialog: MatDialog;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -98,7 +100,7 @@ describe('StructureTableComponent', () => {
       providers: [
         {
           provide: Router, useValue: {
-            navigate: () => { },
+            navigate: () => {return new Promise(()=>false) },
             events: of(),
             serializeUrl: () => { return '' },
             createUrlTree: () => { return new UrlTree() },
@@ -123,6 +125,7 @@ describe('StructureTableComponent', () => {
       ],
     })
       .compileComponents();
+      dialog = TestBed.inject(MatDialog);
   });
 
   beforeEach(() => {
@@ -250,8 +253,8 @@ describe('StructureTableComponent', () => {
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateStructure').and.stub();
+      let dialogSpy = spyOn(dialog, 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateStructure').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -263,8 +266,8 @@ describe('StructureTableComponent', () => {
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateStructure').and.stub();
+      let dialogSpy = spyOn(dialog, 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'partialUpdateStructure').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -276,8 +279,8 @@ describe('StructureTableComponent', () => {
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'removeStructureDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'removeStructureFromSubmessage').and.stub();
+      let dialogSpy = spyOn(dialog, 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'removeStructureFromSubmessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Remove structure from submessage") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -288,8 +291,8 @@ describe('StructureTableComponent', () => {
       let menu = await loader.getHarness(MatMenuHarness);
       let spy = spyOn(component, 'deleteStructureDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'deleteStructure').and.stub();
+      let dialogSpy = spyOn(dialog, 'open').and.returnValue(dialogRefSpy);
+      let serviceSpy = spyOn(TestBed.inject(CurrentStructureService), 'deleteStructure').and.callThrough();
       await menu.clickItem({ text: new RegExp("Delete structure globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();

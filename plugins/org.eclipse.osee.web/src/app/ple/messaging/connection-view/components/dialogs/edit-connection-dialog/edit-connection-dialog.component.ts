@@ -37,7 +37,7 @@ export class EditConnectionDialogComponent implements OnInit, OnDestroy {
     this.title = data.name;
   }
   ngOnDestroy(): void {
-    this._done.next();
+    this._done.next(true);
   }
 
   ngOnInit(): void {

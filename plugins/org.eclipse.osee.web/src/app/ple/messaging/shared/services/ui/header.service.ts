@@ -11,13 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, iif } from 'rxjs';
+import { BehaviorSubject, from, iif, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
 import { element } from '../../types/element';
 import { structure } from '../../types/structure';
 import { message } from '../../../message-interface/types/messages';
 import { subMessage } from '../../../message-interface/types/sub-messages';
-import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, diffReportSummaryHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail, transportTypeSummaryHeaderDetail } from '../../types/headerDetail';
+import { branchSummaryHeaderDetail, connectionDiffHeaderDetail, diffReportSummaryHeaderDetail, elementDiffHeaderDetail, elementHeaderDetail, headerDetail, messageDiffHeaderDetail, messageHeaderDetail, nodeDiffHeaderDetail, structureDiffHeaderDetail, structureHeaderDetail, submessageDiffHeaderDetail, subMessageHeaderDetail, transportTypeSummaryHeaderDetail } from '../../types/headerDetail';
 import { branchSummary, connectionDiffItem, DiffHeaderType, diffReportSummaryItem, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from '../../types/DifferenceReport.d';
 import { transportType } from '../../types/transportType';
 
@@ -378,7 +378,7 @@ export class HeaderService {
     return this._allTransportTypeHeaders;
   }
 
-  getHeaderByName(value: keyof structure|keyof element|keyof message|keyof subMessage|keyof nodeDiffItem|keyof transportType|string,type:string) {
+  getHeaderByName<T>(value: keyof T,type:string) {
     return iif(() => type === 'message',
       this.AllMessages.pipe(
         mergeMap((messages) => from(messages).pipe(
@@ -455,7 +455,9 @@ export class HeaderService {
                                 mergeMap((summary) => from(summary).pipe(
                                   filter((sum) => sum.header === value)
                                 ))
-                            )) //transport type obs
+                            ),
+                            of<headerDetail<T>>()
+                            ) //transport type obs
                           )
                         )
                         

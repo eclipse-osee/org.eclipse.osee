@@ -24,7 +24,8 @@ export class BranchListService {
 
   private _branches = combineLatest([this.ui.type, this.categoryService.branchCategory, this.categoryService.actionSearch]).pipe(
     switchMap(([type, category, searchType]) => of(this.updateType(type)).pipe(
-      switchMap((viewBranchType)=> iif(()=>(viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline') && category !=='' && category !=='0',this.branchService.getBranches(viewBranchType,category, searchType)))
+      switchMap((viewBranchType)=> iif(
+        ()=>(viewBranchType === 'all' || viewBranchType === 'working' || viewBranchType === 'baseline') && category !=='' && category !=='0',this.branchService.getBranches(viewBranchType,category, searchType),of([])))
     )),
     share()
   )

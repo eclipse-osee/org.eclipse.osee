@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { element, elementWithPathsAndButtons } from '../../../shared/types/element';
+import { element, elementWithPathsAndButtons } from '../../../shared/types/element.d';
 import { PlatformType } from '../../../shared/types/platformType';
 
 @Injectable({

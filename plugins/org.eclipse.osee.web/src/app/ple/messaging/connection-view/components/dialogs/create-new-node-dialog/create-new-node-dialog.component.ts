@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { node, nodeData } from '../../../../shared/types/node';
+import { node, nodeData } from '../../../../shared/types/node.d';
 
 @Component({
   selector: 'app-create-new-node-dialog',

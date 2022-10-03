@@ -109,7 +109,7 @@ export class EditElementFieldComponent<T extends keyof element = any> implements
     this._updateUnits.subscribe();
    }
   ngOnDestroy(): void {
-    this._done.next();
+    this._done.next(true);
   }
 
   ngOnInit(): void {

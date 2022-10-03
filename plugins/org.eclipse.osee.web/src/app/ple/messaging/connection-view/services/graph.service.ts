@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from 'src/environments/environment';
 import { connection, connectionWithChanges, OseeEdge } from '../../shared/types/connection';
-import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node';
+import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node.d';
 
 @Injectable({
   providedIn: 'root'

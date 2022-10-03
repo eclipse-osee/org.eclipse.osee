@@ -103,7 +103,8 @@ export class LayoutNotifierService {
         iif(() => small, of(2),
           iif(() => medium, of(3),
             iif(() => large, of(4),
-              iif(() => xlarge, of(5))
+              iif(() => xlarge, of(5),
+              of(5))
             )
           )
         )
@@ -116,7 +117,8 @@ export class LayoutNotifierService {
         iif(() => small, of({ width: '120px', columns: 4 }),
           iif(() => medium, of({ width: '137px', columns: 7 }),
             iif(() => large, of({ width: '300px', columns: 9 }),
-              iif(() => xlarge, of({ width: '380px', columns: 12 }))
+              iif(() => xlarge, of({ width: '380px', columns: 12 }),
+              of({ width: '380px', columns: 12 }))
             )
           )
         )

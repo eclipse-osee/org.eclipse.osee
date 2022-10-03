@@ -133,7 +133,8 @@ export class ActionStateButtonService {
             iif(() => approval.errorCount > 0, of('false'), of('true'))
           ),
           shareReplay({ bufferSize: 1, refCount: true })
-        )
+        ),
+        of('false')
       )
     )
   );
@@ -197,7 +198,8 @@ export class ActionStateButtonService {
               this.uiService.updated = true;
             }
           })
-        )
+        ),
+        of() // @todo replace with a false response
       )
     )
   );
@@ -235,7 +237,8 @@ export class ActionStateButtonService {
                       this.uiService.updated = true;
                     }
                   })
-                )
+                ),
+                of() // @todo replace with a false response
             )
           )
         )
@@ -289,13 +292,16 @@ export class ActionStateButtonService {
                               this.uiService.updated = true;
                             }
                           })
-                        )
+                        ),
+                        of() // @todo replace with a false response
                     )
                   )
-                )
+                ),
+                of() // @todo replace with a false response
             )
           )
-        )
+        ),
+        of() // @todo replace with a false response
       )
     )
   );
@@ -375,7 +381,8 @@ export class ActionStateButtonService {
                 }),
               )
             )
-          )
+          ),
+          of() // @todo replace with a false response
         )
       )
     );

@@ -19,7 +19,7 @@ import { PlatformType } from '../../shared/types/platformType'
 import { transaction } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
-import { enumeration, enumerationSet } from '../../shared/types/enum';
+import { enumeration, enumerationSet } from '../../shared/types/enum.d';
 import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
 import { EnumerationUIService } from '../../shared/services/ui/enumeration-ui.service';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';

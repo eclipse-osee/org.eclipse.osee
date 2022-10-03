@@ -72,6 +72,6 @@ export class EnumSetFormComponent implements OnInit {
         this._enumSet.next(this.enumSet);
     }
     closeForm() {
-        this._closeForm.next();
+        this._closeForm.next(true);
     }
 }

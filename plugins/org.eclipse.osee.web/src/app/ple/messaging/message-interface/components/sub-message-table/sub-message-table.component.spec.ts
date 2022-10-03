@@ -133,7 +133,7 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -146,7 +146,7 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Open Description") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -159,7 +159,7 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'removeSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Remove submsg from message") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -172,7 +172,7 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'removeSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Remove submsg from message") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).not.toHaveBeenCalled();
@@ -185,7 +185,7 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Delete submsg globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).toHaveBeenCalled();
@@ -198,7 +198,7 @@ describe('SubMessageTableComponent', () => {
       let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
       let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
       let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.stub();
+      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.callThrough();
       await menu.clickItem({ text: new RegExp("Delete submsg globally") });
       expect(spy).toHaveBeenCalled();
       expect(serviceSpy).not.toHaveBeenCalled();
