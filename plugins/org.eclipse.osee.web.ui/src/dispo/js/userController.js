@@ -26,6 +26,7 @@ app.controller('userController', [
         $scope.isFirstSplit = false;
         $scope.isCoverage = $rootScope.type == 'codeCoverage';
 		  $scope.checked = false;
+        $scope.itemSelectedView = true;
         
         function split() {
             Split(['#itemsGridDiv', '#subGridDiv'], {
@@ -210,6 +211,14 @@ app.controller('userController', [
             $scope.subGridOptions.data = [];
         }
 
+		  $scope.closeItemDetails = function closeItemDetails() {
+            $scope.itemSelectedView = false;
+            $scope.gridApi.selection.clearSelectedRows();
+					            var blankAnnotation = new Annotation();
+            $scope.annotations.push(blankAnnotation);
+            $scope.subGridOptions.data = $scope.annotations;
+        }
+
         $scope.stealItem = function(item, row) {
             Item.get({
                 programId: $scope.programSelection,
@@ -381,7 +390,8 @@ app.controller('userController', [
         $scope.subGridOptions.columnDefs = ColumnFactory.getSubGridColumns($rootScope.type);
         
         $scope.getItemDetails = function(item, row) {
-            if (!$scope.isMultiEditView) {
+            $scope.itemSelectedView = true;
+				            if (!$scope.isMultiEditView) {
                 $scope.selectedItem = item;
                 Annotation.query({
                     programId: $scope.programSelection,
