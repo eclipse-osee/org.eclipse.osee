@@ -44,4 +44,6 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
    InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId);
 
    InterfaceSubMessageToken getMessageHeader(InterfaceMessageToken message);
+
+   Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter);
 }

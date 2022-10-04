@@ -88,6 +88,19 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
+   public Collection<InterfaceSubMessageToken> getAllByRelationAndFilter(BranchId branch, ArtifactId messageId, String filter) {
+      try {
+         return this.getAccessor().getAllByRelationAndFilter(branch,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, filter, subMessageAttributes,
+            InterfaceSubMessageToken.class);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
    public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter) {
       try {
          return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, InterfaceSubMessageToken.class);
@@ -153,6 +166,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }
