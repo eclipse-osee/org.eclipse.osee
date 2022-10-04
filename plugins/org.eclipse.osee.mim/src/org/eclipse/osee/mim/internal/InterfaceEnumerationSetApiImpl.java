@@ -124,6 +124,7 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
          return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }

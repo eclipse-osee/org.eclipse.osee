@@ -314,18 +314,24 @@ export class ImportService {
     ))
   )
 
+  // The last parameter of the below combineLatest is getting lost and not making it into the final combined tx. Having this placeholder as the last parameter causes just the placeholder to get lost instead.
+  private _placeholderTx$ = this._importTx$;
+
   // combineLatest can only support up to 6 observables, so we need multiple combineLatest
-  private _combined1$ = combineLatest(([this._nodesTx$, this._connectionTx$, this._messagesTx$, this._subMessagesTx$, this._structuresTx$, this._elementsTx$]));
+  private _combined1$ = combineLatest([this._nodesTx$, this._connectionTx$, this._messagesTx$, this._subMessagesTx$, this._structuresTx$, this._elementsTx$]);
   private _combined2$ = combineLatest([this._platformTypesTx$, this._enumSetTx$, this._enumsTx$, this._messageSubMessageRelationsTx$, this._subMessageStructureRelationsTx$]);
-  private _combined3$ = combineLatest([ this._structureElementRelationsTx$, this._elementPlatformTypeRelationsTx$, this._platformTypeEnumSetRelationsTx$, this._enumSetEnumRelationsTx$]);
+  private _combined3$ = combineLatest([this._structureElementRelationsTx$, this._elementPlatformTypeRelationsTx$, this._platformTypeEnumSetRelationsTx$, this._enumSetEnumRelationsTx$, this._placeholderTx$]);
 
   private _combineTxs(branchId:string, ...txs:transaction[]) {
     const importTx: transaction = {branch:branchId, txComment:"MIM Import", createArtifacts: [], addRelations: []};
-    txs.forEach(tx => {
-        importTx.createArtifacts?.push(...tx.createArtifacts!);
-        importTx.addRelations?.push(...tx.addRelations!);
-      });
-    return of(importTx);
+    return from(txs).pipe(
+      startWith(importTx),
+      reduce((curr, acc) => {
+        acc.addRelations?.push(...curr.addRelations!);
+        acc.createArtifacts?.push(...curr.createArtifacts!);
+        return acc;
+      }, importTx)
+    )
   }
 
   private _sendTransaction$ = combineLatest(([this.branchId, this._combined1$, this._combined2$, this._combined3$])).pipe(
