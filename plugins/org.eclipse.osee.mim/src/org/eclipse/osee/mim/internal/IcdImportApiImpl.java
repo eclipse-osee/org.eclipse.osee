@@ -122,10 +122,10 @@ public class IcdImportApiImpl implements MimImportApi {
       List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
 
       for (PlatformTypeToken type : existingPlatformTypes) {
-         String typeName = type.getInterfaceLogicalType().equals("enumeration") ? type.getName().replace(' ',
-            '_').toUpperCase() : getPlatformTypeName(type.getInterfaceLogicalType(),
-               type.getInterfacePlatformTypeMinval(), type.getInterfacePlatformTypeMaxval(),
-               type.getInterfacePlatformTypeUnits(), Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
+         String typeName = type.getInterfaceLogicalType().equals("enumeration") ? type.getName() : getPlatformTypeName(
+            type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
+            type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeUnits(),
+            Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
          platformTypes.put(typeName, new PlatformTypeImportToken(type.getId(), type.getName()));
       }
 
@@ -321,15 +321,21 @@ public class IcdImportApiImpl implements MimImportApi {
          String enumDesc = reader.getCellStringValue(rowIndex, 11);
          String notes = reader.getCellStringValue(rowIndex, 12);
 
+         // Instrumentation message elements don't have names which will cause issues, so we set a name here.
+         // The merged cells containing the instrumentation message text begin on the logicalType cell.
+         if (name.isEmpty() && numBytes == 0 && logicalType.toLowerCase().contains("instrumentation message")) {
+            name = structure.getName();
+         }
+
          PlatformTypeImportToken pType = PlatformTypeImportToken.SENTINEL;
          if (logicalType.equals("boolean")) {
             pType = platformTypes.get("boolean");
          } else if (logicalType.equals("enumeration")) {
             String enumName = enumDesc.split("\n")[0].split(":")[0].replaceAll("[()]", "").trim();
-            enumName = enumName.contains("See Taskfile Type") ? "Taskfile Type" : enumName;
-            enumName =
-               enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches("^\\d+\\s*") ? name : enumName;
-            enumName = enumName.replace(' ', '_').toUpperCase();
+            enumName = name.equals("Taskfile Type") ? structure.getDescription().toLowerCase().contains(
+               "command taskfile") ? "Command Taskfiles" : "Status Taskfiles" : enumName;
+            enumName = enumName.isEmpty() || (enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches(
+               "^\\d+\\s*")) ? name : enumName;
             if (platformTypes.containsKey(enumName)) {
                pType = platformTypes.get(enumName);
             } else {
