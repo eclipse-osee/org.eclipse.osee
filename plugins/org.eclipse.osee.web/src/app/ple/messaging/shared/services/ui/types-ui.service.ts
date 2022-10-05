@@ -72,38 +72,46 @@ export class TypesUIService {
 
   createType(body: PlatformType|Partial<PlatformType>,isNewEnumSet:boolean,enumSetData:{ enumSetId:string,enumSetName: string, enumSetDescription: string, enumSetApplicability: applic, enums: enumeration[] }) {
     delete body.id;
-    return iif(()=>body.interfaceLogicalType==='enumeration',iif(() => isNewEnumSet, this._typesService.createPlatformType(this._ui.id.getValue(), body, []).pipe(
-      take(1),
-      switchMap((platformTypeCreationTransaction) => this._enumSetService.createEnumSetToPlatformTypeRelation(body.name).pipe(
+    const enumInfo: enumerationSet = {
+      id: enumSetData.enumSetId,
+      name: enumSetData.enumSetName,
+      applicability: enumSetData.enumSetApplicability,
+      description: enumSetData.enumSetDescription,
+      enumerations: enumSetData.enums,
+      
+    }
+    return body.interfaceLogicalType==='enumeration' ? isNewEnumSet ?
+      combineLatest([this._ui.id, this.createEnumSet(enumInfo)]).pipe(
         take(1),
-        switchMap((relationPlatform) => this._enumSetService.createEnumSet(this._ui.id.getValue(), { name: enumSetData.enumSetName, description: enumSetData.enumSetDescription, applicability: enumSetData.enumSetApplicability, applicabilityId: enumSetData.enumSetApplicability.id }, [relationPlatform], platformTypeCreationTransaction).pipe(
-          take(1),
-          switchMap((enumSetTransaction) => of(enumSetTransaction).pipe(
-            mergeMap((temp) => from(enumSetData.enums).pipe(
-              mergeMap((enumValue) => this._enumSetService.createEnumToEnumSetRelation(enumSetData.enumSetName).pipe(
-                switchMap((relationEnum) => this.fixEnum(enumValue).pipe(
-                  switchMap((enumeration)=>this._enumSetService.createEnum(this._ui.id.getValue(),enumValue,[relationEnum]))
-                ))
-              ))
-            )),
-            reduce((acc, curr) => [...acc, curr], [] as transaction[]),
-            switchMap((enumTransactions) => this.mergeEnumArray(enumTransactions).pipe(
-              take(1),
-              switchMap((enumTransaction)=>this.mergeEnumTransactionWithPlatformType(enumSetTransaction,enumTransaction))
-            ))
-          ))
-        ))
-      ))
-    ), this._enumSetService.createPlatformTypeToEnumSetRelation(enumSetData.enumSetId).pipe(
-      take(1),
-      switchMap((relation)=>this._typesService.createPlatformType(this._ui.id.getValue(),body,[relation]))
-    )
-    ),this._typesService.createPlatformType(this._ui.id.getValue(),body,[]))
-    .pipe(
-      switchMap((transaction) => this._typesService.performMutation(transaction).pipe(
-        tap(_=>this._ui.updated=true)
+        filter(([id, enumerationSetResults]) => id !== '' && enumerationSetResults.results.success),
+        switchMap(([branchId, enumerationSetResults]) => this._enumSetService.createPlatformTypeToEnumSetRelation(enumerationSetResults.results.ids[0]).pipe(
+        switchMap(relation => this._typesService.createPlatformType(branchId, body, [relation])
+        )
       )),
-    )
+      take(1),
+      switchMap(transaction => this._typesService.performMutation(transaction).pipe(
+        tap(() => {
+          this._ui.updated = true;
+        })
+      ))
+    ) :
+    this._enumSetService.createPlatformTypeToEnumSetRelation(enumSetData.enumSetId).pipe(
+      take(1),
+      switchMap((relation) => this._typesService.createPlatformType(this._ui.id.getValue(), body, [relation])),
+      take(1),
+      switchMap(transaction => this._typesService.performMutation(transaction).pipe(
+        tap(() => {
+          this._ui.updated = true;
+        })
+      ))
+    ) :
+      this._ui.id.pipe(
+      take(1),
+      switchMap(id => this._typesService.createPlatformType(id, body, [])),
+      switchMap(tx => this._typesService.performMutation(tx)),
+      take(1),
+      tap(_=>this._ui.updated=true)
+    );
   }
   private fixEnum(enumeration:enumeration) {
     enumeration.applicabilityId = enumeration.applicability.id;
@@ -147,30 +155,27 @@ export class TypesUIService {
   copyType<T extends PlatformType | Partial<PlatformType>>(body: T) {
     this.removeId(body);
     delete body.enumSet;
-    return iif(()=>body.interfaceLogicalType==='enumeration' && 'enumerationSet' in body ,this.copyEnumeratedType(body as enumeratedPlatformType),this._typesService.createPlatformType(this._ui.id.getValue(), body, []).pipe(
+    return body.interfaceLogicalType==='enumeration' && 'enumerationSet' in body ?this.copyEnumeratedType(body as enumeratedPlatformType):this._typesService.createPlatformType(this._ui.id.getValue(), body, []).pipe(
         take(1),
         switchMap((transaction) => this._typesService.performMutation(transaction).pipe(
           tap(() => {
             this._ui.updated = true;
           })
         ))
-    ))
+    )
+    
   }
 
   copyEnumeratedType(body: enumeratedPlatformType) {
     const { enumerationSet, ...type } = body;
-    return this._ui.id.pipe(
+    return combineLatest([this._ui.id, this.createEnumSet(enumerationSet)]).pipe(
       take(1),
-      filter(id=>id!==''),
-      switchMap(branchId => this._enumSetService.createPlatformTypeToEnumSetRelation(body.enumerationSet.name).pipe(
-        take(1),
-        switchMap(relation => this._typesService.createPlatformType(branchId, type, [relation]).pipe(
-          take(1),
-          switchMap(platformTransaction => this.createEnumSet(enumerationSet).pipe(
-            map(_=>platformTransaction)
-          ))
-        ))
+      filter(([id, enumerationSetResults]) => id !== '' && enumerationSetResults.results.success),
+      switchMap(([branchId, enumerationSetResults]) => this._enumSetService.createPlatformTypeToEnumSetRelation(enumerationSetResults.results.ids[0]).pipe(
+        switchMap(relation => this._typesService.createPlatformType(branchId, type, [relation])
+        )
       )),
+      take(1),
       switchMap(transaction => this._typesService.performMutation(transaction).pipe(
         tap(() => {
           this._ui.updated = true;
@@ -178,15 +183,15 @@ export class TypesUIService {
       ))
     )
   }
-  createEnums(set: enumerationSet) {
+  createEnums(set: enumerationSet, id: string) {
     return this._ui.id.pipe(
-      filter(id=>id!==''),
-      switchMap(id => of(set).pipe(
+      filter(branchId=>branchId!==''),
+      switchMap(branchId => of(set).pipe(
         take(1),
         concatMap(enumSet => from(enumSet.enumerations || []).pipe(
           switchMap(enumeration => this.fixEnum(enumeration)),
-          switchMap(enumeration => this._enumSetService.createEnumToEnumSetRelation(set.name).pipe(
-            switchMap(relation=>this._enumSetService.createEnum(id,enumeration,[relation]))
+          switchMap(enumeration => this._enumSetService.createEnumToEnumSetRelation(id).pipe(
+            switchMap(relation=>this._enumSetService.createEnum(branchId,enumeration,[relation]))
           )),
         )),
         reduce((acc, curr) => [...acc, curr], [] as transaction[]),
@@ -197,15 +202,21 @@ export class TypesUIService {
 
   createEnumSet(set: enumerationSet) {
     const { enumerations, ...body } = set;
-    return this._ui.id.pipe(
-      filter(id=>id!==''),
-      switchMap(id => this._enumSetService.createEnumSet(id, body, []).pipe(
-        switchMap(enumSetTransaction => this.createEnums(set).pipe(
-          switchMap(enumTransaction=>this.mergeEnumArray([enumSetTransaction,enumTransaction]))
-        ))
-      )),
-      switchMap(enumTransaction=>this._typesService.performMutation(enumTransaction))
-    )
+    const enumSet = this._ui.id.pipe(
+      take(1),
+      filter(id => id !== ''),
+      switchMap(id => this._enumSetService.createEnumSet(id, body, [])),
+      switchMap(enumTransaction => this._typesService.performMutation(enumTransaction))
+    );
+      return combineLatest([this._ui.id, enumSet]).pipe(
+        take(1),
+        filter(([id, enumSetResults]) => id !== '' && enumSetResults.results.success),
+        switchMap(([id, enumSetResults]) => this.createEnums(set, enumSetResults.results.ids[0]).pipe(
+          switchMap(enumTransaction => this.mergeEnumArray([enumTransaction])),
+          switchMap(enumTransaction => this._typesService.performMutation(enumTransaction)),
+          map(_=>enumSetResults)
+        )),
+      )
   }
 
   /**
