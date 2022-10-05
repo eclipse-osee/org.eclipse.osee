@@ -19,8 +19,8 @@
             <mat-label>Edit Enumeration Set Name</mat-label>
             <input
               matInput
-              [ngModel]="enumerationSet.name"
-              (change)="setName($any($event.target).value)"
+              [(ngModel)]="enumerationSet.name"
+              (ngModelChange)="setName($event)"
             />
           </mat-form-field>
           <br />
@@ -29,16 +29,16 @@
             <input
               matInput
               placeholder="Edit Enumeration Set Description"
-              [ngModel]="enumerationSet.description"
-              (change)="setDescription($any($event.target).value)"
+              [(ngModel)]="enumerationSet.description"
+              (ngModelChange)="setDescription($event)"
             />
           </mat-form-field>
           <br />
           <mat-form-field *ngIf="enumerationSet.applicability !== undefined">
             <mat-label>Change Applicability</mat-label>
             <mat-select
-              [ngModel]="enumerationSet.applicability"
-              (selectionChange)="setApplicability($event.value)"
+              [(ngModel)]="enumerationSet.applicability"
+              (ngModelChange)="setApplicability($event)"
               [compareWith]="compareApplics"
             >
               <mat-option
