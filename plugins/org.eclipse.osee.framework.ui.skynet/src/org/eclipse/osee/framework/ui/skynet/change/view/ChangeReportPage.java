@@ -246,7 +246,7 @@ public class ChangeReportPage extends FormPage {
       public void done(IJobChangeEvent event) {
          super.done(event);
          String message = String.format("Change Report Load completed in [%s]", Lib.getElapseString(startTime));
-         OseeLog.log(Activator.class, Level.INFO, message);
+         OseeLog.log(Activator.class, Level.FINE, message);
 
          Job job = new UIJob("Refresh Change Report") {
 
