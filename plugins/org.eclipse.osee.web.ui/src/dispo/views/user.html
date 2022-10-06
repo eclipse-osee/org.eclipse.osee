@@ -6,17 +6,13 @@
    </head>
    <body>
       <div class="container-fluid" id="content">
-				      <div class="row">
-						<div class="col-md-1">
-		                  <input type="checkbox" ng-model="checked" ng-change="displayAllBranches()">All Versions                
-						</div>                  
-						<div id="refresh" class="col-md-1">
+         <div class="row">
+                <div id="refresh" class="col-md-1">
                    <button  ng-show="items.length>0" class="btn btn-primary active" ng-click="updateSet()">Refresh</button>
-                  </div>
-						                   
+                </div>   
                 <div class="col-md-2">
                   ATS Version:
-						<select class="form-control" ng-show="programs" ng-model="programSelection" ng-disabled="isSearchView" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
+                  <select class="form-control" ng-show="programs" ng-model="programSelection" ng-disabled="isSearchView" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
                </div>
                 <div ng-show="programSelection" class="col-md-2">
                   Set:

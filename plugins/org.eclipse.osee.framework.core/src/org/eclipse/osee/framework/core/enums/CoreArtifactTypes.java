@@ -82,8 +82,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder", false, Artifact));
    ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, Artifact)
       .any(GeneralStringData)
-      .zeroOrOne(PublishInline)
-      .zeroOrOne(Active, Boolean.TRUE));
+      .zeroOrOne(PublishInline));
    ArtifactTypeToken AccessControlModel = osee.add(osee.artifactType(2L, "Access Control Model", false, GeneralData));
    ArtifactTypeToken FeatureDefinition = osee.add(osee.artifactType(5849078290088170402L, "Feature Definition", false, GeneralData));
    ArtifactTypeToken GitCommit = osee.add(osee.artifactType(100L, "Git Commit", false, Artifact)

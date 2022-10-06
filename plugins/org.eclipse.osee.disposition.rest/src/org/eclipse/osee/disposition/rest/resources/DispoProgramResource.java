@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -115,8 +114,8 @@ public class DispoProgramResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllPrograms(@DefaultValue("true") @QueryParam("allBranches") Boolean allBranches) {
-      List<BranchToken> allPrograms = dispoApi.getDispoPrograms(allBranches);
+   public Response getAllPrograms() {
+      List<BranchToken> allPrograms = dispoApi.getDispoPrograms();
       Collections.sort(allPrograms, new Comparator<BranchToken>() {
          @Override
          public int compare(BranchToken o1, BranchToken o2) {

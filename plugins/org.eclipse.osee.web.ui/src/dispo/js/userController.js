@@ -25,7 +25,6 @@ app.controller('userController', [
         $scope.isMultiEditView = false;
         $scope.isFirstSplit = false;
         $scope.isCoverage = $rootScope.type == 'codeCoverage';
-		  $scope.checked = false;
         $scope.itemSelectedView = true;
         
         function split() {
@@ -59,18 +58,6 @@ app.controller('userController', [
                 $scope.programs = data;
             });
         }
-
-		  $scope.displayAllBranches = function displayAllBranches() {
-            var loadingModal = $scope.showLoadingModal();
-            $scope.loading = true;
-            $scope.items = {};
-            Program.query({
-					allBranches: $scope.checked 
-            }, function(data) {
-					$scope.programs = data;               
-					loadingModal.close();
-            });
-        };
 
         $scope.updateProgram = function updateProgram() {
             var loadingModal = $scope.showLoadingModal();
