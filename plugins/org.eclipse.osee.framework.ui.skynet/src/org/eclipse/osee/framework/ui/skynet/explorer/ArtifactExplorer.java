@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -27,6 +28,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -283,7 +285,17 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       }
 
       explorerRoot = artifact;
-      branch = artifact.getBranchToken();
+      if (BranchManager.getState(artifact.getBranch()).equals(
+         BranchState.COMMITTED) && BranchManager.getParentBranch(artifact.getBranch()).isValid()) {
+         if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Open on parent branch",
+            "Current branch committed, open on parent branch?")) {
+            branch = artifact.getBranchToken();
+         } else {
+            branch = BranchManager.getParentBranch(artifact.getBranch());
+         }
+      } else {
+         branch = artifact.getBranchToken();
+      }
 
       if (dragAndDropWorker != null) {
          dragAndDropWorker.updateBranch(branch);
