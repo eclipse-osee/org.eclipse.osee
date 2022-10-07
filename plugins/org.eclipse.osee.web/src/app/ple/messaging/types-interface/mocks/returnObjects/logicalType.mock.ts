@@ -18,5 +18,11 @@ export const logicalTypeMock: logicalType[] = [
         name: 'enumeration',
         idString: '0',
         idIntValue: 0
+    },
+    {
+        id: '1',
+        name: 'boolean',
+        idIntValue: 1,
+        idString:'1'
     }
 ]

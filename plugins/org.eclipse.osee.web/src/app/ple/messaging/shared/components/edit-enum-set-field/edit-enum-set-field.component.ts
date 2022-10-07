@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BehaviorSubject, combineLatest, iif, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, iif, Observable, of, Subject } from 'rxjs';
 import { map, scan, switchMap, tap } from 'rxjs/operators';
 import { applic } from '../../../../../types/applicability/applic';
 import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
@@ -29,10 +29,7 @@ import { PlatformTypeSentinel } from '../../types/PlatformTypeInstance';
 })
 export class EditEnumSetFieldComponent implements OnInit {
   applic = this.applicabilityService.applic;
-  private _addEnum = new BehaviorSubject<enumeration | undefined>(undefined);
-  private _addEnums = this._addEnum.pipe(
-    scan((acc, curr) => [...acc, curr], [] as (enumeration | undefined)[])
-  );
+  private _updateEnums = new BehaviorSubject<enumeration[]>([]);
   private _enumSetNameUpdate = new BehaviorSubject<string>('');
   private _enumSetDescriptionUpdate = new BehaviorSubject<string>('');
   private _enumSetApplicUpdate = new BehaviorSubject<applic>({
@@ -53,6 +50,8 @@ export class EditEnumSetFieldComponent implements OnInit {
   @Input() platformType: PlatformType | undefined;
 
   @Output() enumUpdated = new EventEmitter<enumerationSet | undefined>();
+
+  @Output('unique') _unique = new Subject<boolean>();
   constructor(
     private enumSetService: EnumerationUIService,
     private applicabilityService: ApplicabilityListUIService,
@@ -83,20 +82,16 @@ export class EditEnumSetFieldComponent implements OnInit {
       this._enumSetNameUpdate,
       this._enumSetDescriptionUpdate,
       this._enumSetApplicUpdate,
-      this._addEnums,
+      this._updateEnums,
     ]).pipe(
-      switchMap(([type, name, description, applic, AddEnums]) =>
+      switchMap(([type, name, description, applic, updateEnums]) =>
         this.enumSetService.getEnumSet(type?.id || '').pipe(
           switchMap((val) =>
             of(val).pipe(
               map((val) => {
-                const enums = AddEnums.filter(
-                  (val) => val !== undefined
-                ) as enumeration[];
-                val.enumerations = [
-                  ...(val?.enumerations ? val.enumerations : []),
-                  ...enums,
-                ];
+                if (updateEnums.length !== 0) {
+                  val.enumerations = updateEnums;
+                }
                 if (name !== '' && val.name !== name) {
                   val.name = name;
                 }
@@ -133,15 +128,15 @@ export class EditEnumSetFieldComponent implements OnInit {
     return o1?.id === o2?.id && o1?.name === o2?.name;
   }
 
-  addEnum(length: number) {
-    this._addEnum.next({
-      name: '',
-      ordinal: length,
-      applicability: { id: '1', name: 'Base' },
-    });
+  updateEnums(value: enumeration[]) {
+    this._updateEnums.next(value);
   }
 
   updateEnumSet(value: enumerationSet | undefined) {
     this.enumUpdated.emit(value);
+  }
+
+  updateUnique(value: boolean) {
+    this._unique.next(value);
   }
 }

@@ -38,7 +38,6 @@ export class NewTransportTypeDialogComponent implements OnInit {
   }
 
   onNoClick(): void {
-    console.log(this.validation)
     this.dialogRef.close();
   }
 }

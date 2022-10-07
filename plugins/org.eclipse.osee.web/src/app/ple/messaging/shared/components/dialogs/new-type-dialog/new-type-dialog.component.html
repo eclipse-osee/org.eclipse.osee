@@ -17,9 +17,11 @@
             <mat-form-field>
                 <mat-label>Logical Type</mat-label>
                 <mat-select [(ngModel)]="type" (selectionChange)="setType($event.value)" data-cy="logical-type-selector">
-                    <mat-option *ngFor="let logicaltype of (logicalTypes |async)" [value]="logicaltype.id" [attr.data-cy]="'logical-type-'+logicaltype.name">
-                        {{logicaltype.name |titlecase}}
-                    </mat-option>
+                    <osee-mat-option-loading [options]="logicalTypes" [objectName]="'Logical Types'">
+                        <mat-option *ngFor="let logicaltype of (logicalTypes |async)" [value]="logicaltype.id" [attr.data-cy]="'logical-type-'+logicaltype.name">
+                            {{logicaltype.name |titlecase}}
+                        </mat-option>
+                    </osee-mat-option-loading>
                 </mat-select>
             </mat-form-field>
         </mat-dialog-content>
@@ -37,11 +39,13 @@
                     <mat-form-field>
                         <mat-label>Select an Enumeration Set</mat-label>
                         <mat-select [(ngModel)]="enumSet" [compareWith]="compareEnumSet">
-                            <mat-option *ngFor="let enumset of (enumSets|async)" [value]="enumset">
-                                {{enumset.name}}
-                            </mat-option>
+                            <osee-mat-option-loading [options]="enumSets" [objectName]="'Enumeration Sets'">
+                                <mat-option *ngFor="let enumset of (enumSets|async)" [value]="enumset">
+                                    {{enumset.name}}
+                                </mat-option>
+                            </osee-mat-option-loading>
                         </mat-select>
-                        <button mat-icon-button matSuffix (click)="toggleEnumCreationState()"><mat-icon>{{(createNewEnum|async)!==true?'add':'remove'}}</mat-icon>
+                        <button mat-icon-button matSuffix (click)="toggleEnumCreationState($event)"><mat-icon>{{(createNewEnum|async)!==true?'add':'remove'}}</mat-icon>
                         </button>
                     </mat-form-field>
                 </ng-container>

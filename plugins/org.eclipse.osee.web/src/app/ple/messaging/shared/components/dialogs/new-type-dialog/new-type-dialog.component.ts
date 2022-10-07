@@ -39,7 +39,7 @@ import { EnumsService } from '../../../services/http/enums.service';
 import { validateEnumLengthIsBelowMax } from '../../../functions/validateEnumLength';
 
 @Component({
-  selector: 'app-new-type-dialog',
+  selector: 'osee-new-type-dialog',
   templateUrl: './new-type-dialog.component.html',
   styleUrls: ['./new-type-dialog.component.sass'],
   animations: [
@@ -168,7 +168,8 @@ export class NewTypeDialogComponent implements OnInit {
     return this._typeName;
   }
 
-  toggleEnumCreationState() {
+  toggleEnumCreationState(event?: Event) {
+    event?.stopPropagation();
     this.createNewEnum.next(!this.createNewEnum.getValue())
   }
 

@@ -40,9 +40,12 @@ import { EnumFormComponent } from './components/dialogs/enum-form/enum-form.comp
 import { AffectedArtifactDialogComponent } from './components/dialogs/affected-artifact-dialog/affected-artifact-dialog.component';
 import { NewTransportTypeDialogComponent } from './components/dialogs/new-transport-type-dialog/new-transport-type-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { UniquePlatformTypeNameDirective } from './directives/validators/unique-platform-type-name.directive';
+import { UniquePlatformTypeAttributesDirective } from './directives/validators/unique-platform-type-attributes.directive';
+import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 @NgModule({
-  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent, AffectedArtifactDialogComponent, NewTransportTypeDialogComponent],
+  declarations: [ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, EditViewFreeTextFieldDialogComponent, NewTypeDialogComponent, PlatformTypeCardComponent,EditTypeDialogComponent, MimHeaderComponent, EditEnumSetFieldComponent, NewTypeFormComponent, NewAttributeFormFieldComponent, EnumSetFormComponent, EnumFormComponent, AffectedArtifactDialogComponent, NewTransportTypeDialogComponent, UniquePlatformTypeNameDirective, UniquePlatformTypeAttributesDirective],
   imports: [
     CommonModule,
     MatDialogModule,
@@ -59,6 +62,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     FormsModule,
     MatButtonModule,
     MatStepperModule,
+    MatOptionLoadingModule,
     MatIconModule
   ],
   exports:[ColumnPreferencesDialogComponent,EditEnumSetDialogComponent, NewTypeDialogComponent,PlatformTypeCardComponent]

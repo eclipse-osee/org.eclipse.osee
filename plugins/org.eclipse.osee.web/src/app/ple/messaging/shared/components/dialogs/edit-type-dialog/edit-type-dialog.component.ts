@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { from } from 'rxjs';
-import { map, reduce, switchMap } from 'rxjs/operators';
+import { combineLatest, from, of, Subject } from 'rxjs';
+import { concatMap, filter, map, reduce, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { editPlatformTypeDialogData } from '../../../types/editPlatformTypeDialogData';
 import { logicalType } from '../../../types/logicaltype';
 import { EnumsService } from '../../../services/http/enums.service';
@@ -21,13 +21,15 @@ import { TypesService } from '../../../services/http/types.service';
 import { enumerationSet } from '../../../types/enum';
 import { enumeratedPlatformType } from '../../../types/enumeratedPlatformType';
 import { editPlatformTypeDialogDataMode } from '../../../types/EditPlatformTypeDialogDataMode.enum';
+import { ATTRIBUTETYPEID } from '../../../../../../types/constants/AttributeTypeId.enum';
+import { ParentErrorStateMatcher } from '../../../../../../shared-matchers/parent-error-state.matcher';
 
 @Component({
-  selector: 'app-edit-type-dialog',
+  selector: 'osee-edit-type-dialog',
   templateUrl: './edit-type-dialog.component.html',
   styleUrls: ['./edit-type-dialog.component.sass']
 })
-export class EditTypeDialogComponent implements OnInit {
+export class EditTypeDialogComponent implements AfterViewInit, OnDestroy {
 
   platform_type: string = "";
   logicalTypes = this.typesService.logicalTypes.pipe(
@@ -42,27 +44,107 @@ export class EditTypeDialogComponent implements OnInit {
     applicability: {id:'1',name:'Base'},
     description: ''
   }
+  parentMatcher = new ParentErrorStateMatcher();
+
+  enumUnique = new Subject<string>();
+  private _logicalType = new Subject<string>();
+
+  private _done = new Subject();
+  private _fieldInfo = combineLatest([this._logicalType, this.logicalTypes]).pipe(
+    filter(([selectedType, types]) => types.map(t => t.name).includes(selectedType)),
+    switchMap(([selectedType, types]) => of(types).pipe(
+      concatMap(types => from(types)),
+      filter(type=>type.name===selectedType),
+      take(1)   
+    )),      
+    switchMap(type => this.typesService.getLogicalTypeFormDetail(type.id)),
+    map(result => result.fields),  
+    concatMap(fields => from(fields)),
+    shareReplay({ bufferSize: 1, refCount: true }),     
+    takeUntil(this._done),
+  )
+
+  bitSizeRequired = this._fieldInfo.pipe(
+    filter(v => v.attributeTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEBITSIZE),
+    map(v => v.required),
+  )
+
+  bitResolutionRequired = this._fieldInfo.pipe(
+    filter(v => v.attributeTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEBITSRESOLUTION),
+    map(v => v.required),
+  )
+
+  compRateRequired = this._fieldInfo.pipe(
+    filter(v => v.attributeTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPECOMPRATE),
+    map(v => v.required),
+  )
+
+  analogAccRequired = this._fieldInfo.pipe(
+    filter(v => v.attributeTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEANALOGACCURACY),
+    map(v => v.required),
+  )
+
+  unitsRequired = this._fieldInfo.pipe(
+    filter(v => v.attributeTypeId === ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEUNITS),
+    map(v => v.required),
+  )
+
+  descriptionRequired = this._fieldInfo.pipe(
+    filter(v=>v.attributeTypeId===ATTRIBUTETYPEID.DESCRIPTION),
+    map(v=>v.required)
+  )
+
+  minValRequired = this._fieldInfo.pipe(
+    filter(v=>v.attributeTypeId===ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMINVAL),
+    map(v=>v.required)
+  )
+
+  maxValRequired = this._fieldInfo.pipe(
+    filter(v=>v.attributeTypeId===ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMAXVAL),
+    map(v=>v.required)
+  )
+
+  msbValRequired = this._fieldInfo.pipe(
+    filter(v=>v.attributeTypeId===ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMSBVAL),
+    map(v=>v.required)
+  )
+
+  defaultValRequired = this._fieldInfo.pipe(
+    filter(v=>v.attributeTypeId===ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEDEFAULTVAL),
+    map(v=>v.required)
+  )
+
+
   constructor(public dialogRef: MatDialogRef<EditTypeDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData, private typesService: TypesService, private enumService: EnumsService) {
     this.platform_type = this.data.type.name;
    }
-
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this._logicalType.next(this.data.type.interfaceLogicalType);
+  }
+  ngOnDestroy(): void {
+    this._done.next('');
   }
 
   /**
    * Calculates MSB value based on Bit Resolution, Byte Size and whether or not the type is signed/unsigned
-   * @returns @type {number} MSB Value
+   * @returns @type {string} MSB Value
    */
-  getMSBValue(): number{
-    return Number(this.data.type.interfacePlatformTypeBitsResolution)*(2^(((Number(this.data.type.interfacePlatformTypeBitSize)*8)-Number(this.data.type.interfacePlatform2sComplement))/2));
+  getMSBValue(){
+    if (this.data.type.interfacePlatformTypeBitsResolution === '' || this.data.type.interfacePlatformTypeBitSize === '') {
+      return ''
+    }
+    return (Number(this.data.type.interfacePlatformTypeBitsResolution)*(2^(((Number(this.data.type.interfacePlatformTypeBitSize)*8)-Number(this.data.type.interfacePlatform2sComplement))/2))).toString();
   }
 
   /**
    * Calculates Resolution based on MSB value, Byte Size and whether or not the type is signed/unsigned
-   * @returns @type {number} Resolution
+   * @returns @type {string} Resolution
    */
-  getResolution(): number{
-    return (Number(this.data.type.interfacePlatformTypeMsbValue) * 2) / (2 ^ ((Number(this.data.type.interfacePlatformTypeBitSize)*8) - Number(this.data.type.interfacePlatform2sComplement)));
+  getResolution(){
+    if (this.data.type.interfacePlatformTypeMsbValue === '' || this.data.type.interfacePlatformTypeBitSize === '') {
+      return '';
+    }
+    return ((Number(this.data.type.interfacePlatformTypeMsbValue) * 2) / (2 ^ ((Number(this.data.type.interfacePlatformTypeBitSize)*8) - Number(this.data.type.interfacePlatform2sComplement)))).toString();
   }
 
   /**
@@ -87,6 +169,7 @@ export class EditTypeDialogComponent implements OnInit {
   }
 
   compareLogicalTypes(o1: string, o2: string) {
+    if (o1 === null || o2 === null) return false;
     let val1 = o1.replace("nsigned ", "");
     if (val1 !== o1) {
       val1 = val1.charAt(0) + val1.charAt(1).toUpperCase() + val1.slice(2);
@@ -111,5 +194,12 @@ export class EditTypeDialogComponent implements OnInit {
         enumerationSet:this.enumSet
       }
     }
+  }
+  updateUnique(value: boolean) {
+    this.enumUnique.next(value.toString());
+  }
+
+  updateLogicalType(value: string) {
+    this._logicalType.next(value);
   }
 }

@@ -47,6 +47,7 @@ import { TypesService } from '../../../services/http/types.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MockNewTypeForm } from '../new-type-form/new-type-form.component.mock';
 import { MockEnumSetFormUnique } from '../enum-set-form/enum-set-form.component.mock';
+import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 describe('NewTypeDialogComponent', () => {
   let component: NewTypeDialogComponent;
@@ -55,7 +56,7 @@ describe('NewTypeDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatDialogModule, MatStepperModule,NoopAnimationsModule,MatSelectModule,FormsModule,MatFormFieldModule,MatInputModule,MatButtonModule,MatTableModule,MatIconModule],
+      imports:[MatDialogModule, MatStepperModule,NoopAnimationsModule,MatSelectModule,FormsModule,MatFormFieldModule,MatInputModule,MatButtonModule,MatTableModule,MatIconModule, MatOptionLoadingModule],
       declarations: [NewTypeDialogComponent, MockNewTypeForm,MockEnumSetFormUnique],
       providers: [{ provide: MatDialogRef, useValue: {} },
         { provide: TransactionBuilderService, useValue: transactionBuilderMock },

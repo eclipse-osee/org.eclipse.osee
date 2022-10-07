@@ -28,6 +28,7 @@ import { QueryService } from '../../../services/http/query.service';
 import { take } from 'rxjs/operators';
 
 import { EnumFormComponent } from './enum-form.component';
+import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 describe('EnumFormComponent', () => {
   let component: EnumFormComponent;
@@ -43,6 +44,7 @@ describe('EnumFormComponent', () => {
                 MatInputModule,
                 MatSelectModule,
                 NoopAnimationsModule,
+                MatOptionLoadingModule
             ],
             declarations: [EnumFormComponent],
             providers: [
