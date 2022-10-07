@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -23,13 +24,18 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +50,16 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
    @Before
    public void setup() {
       writer = AtsApiService.get().getOseeClient().getOrcsWriterEndpoint();
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(CoreBranches.COMMON, "Orcs Writer Import Folder");
+      List<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromName("Orcs Writer Import Folder", CoreBranches.COMMON);
+      ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, new XResultData(), artifacts);
+      transaction.execute();
    }
 
    @Test

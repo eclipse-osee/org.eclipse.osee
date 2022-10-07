@@ -213,6 +213,7 @@ public class RelationOrderingTest {
       String guid = GUID.create();
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());
       Artifact mainFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Main Folder - " + guid);
+      itemsToDelete.add(mainFolder);
       mainFolder.persist(transaction);
 
       mainFolder.setSingletonAttributeValue(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
