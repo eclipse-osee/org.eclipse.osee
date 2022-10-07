@@ -30,6 +30,7 @@ import { typesServiceMock } from '../../../mocks/types.service.mock';
 import { EnumsService } from '../../../services/http/enums.service';
 import { enumsServiceMock } from '../../../mocks/EnumsService.mock';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 let loader: HarnessLoader;
 
@@ -59,7 +60,7 @@ describe('EditTypeDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports:[MatDialogModule, MatFormFieldModule,MatInputModule,NoopAnimationsModule,FormsModule,MatSlideToggleModule,MatSelectModule, MatStepperModule],
+      imports:[MatDialogModule, MatFormFieldModule,MatInputModule,NoopAnimationsModule,FormsModule,MatSlideToggleModule,MatSelectModule, MatStepperModule, MatOptionLoadingModule],
       declarations: [EditTypeDialogComponent],
       providers: [
         { provide: MatDialogRef, useValue: {} },

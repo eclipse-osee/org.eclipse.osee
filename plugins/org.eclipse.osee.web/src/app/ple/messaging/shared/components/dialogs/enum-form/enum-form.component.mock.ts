@@ -23,6 +23,7 @@ export class MockEnumFormUnique implements Partial<EnumFormComponent> {
     private _unique = new Subject<boolean>();
     @Input() bitSize: string = '32';
     @Input() enumSetName: string = 'testenumset';
+    @Input() preload: enumeration[] = [];
     @Output() tableData: Subject<enumeration[]> = new Subject();
     @Output() enumSetString: Observable<string> = new Subject();
     @Output() unique: Observable<boolean> = this._unique;

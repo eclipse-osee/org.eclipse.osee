@@ -94,7 +94,8 @@ export class AddElementDialogComponent implements OnInit {
     this.data.element.id = this.storedId;
     this.moveToStep(3, stepper);
   }
-  openPlatformTypeDialog() {
+  openPlatformTypeDialog(event?: Event) {
+    event?.stopPropagation();
     this.typeDialogOpen = !this.typeDialogOpen;
     if (this.typeDialogOpen) {
       this.searchOpen = false;
@@ -104,7 +105,8 @@ export class AddElementDialogComponent implements OnInit {
     this.searchOpen = false;
     this.typeDialogOpen = false;
   }
-  openSearch() {
+  openSearch(event?: Event) {
+    event?.stopPropagation();
     this.searchOpen = !this.searchOpen;
     if (this.searchOpen) {
       this.typeDialogOpen = false;

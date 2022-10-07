@@ -51,6 +51,7 @@ export class EnumFormComponent implements OnInit, OnChanges {
 
     @Input() bitSize: string = '0';
     @Input() enumSetName: string = '';
+    @Input() preload: enumeration[] = [];
 
     @Output('enums') tableData = new Subject<enumeration[]>();
     private _name = new Subject<string>();
@@ -97,6 +98,10 @@ export class EnumFormComponent implements OnInit, OnChanges {
     ) {}
     ngOnChanges(changes: SimpleChanges): void {
         this._name.next(this.enumSetName);
+        if (this.dataSource.data.length === 0 && this.preload.length !== 0) {
+            this.dataSource.data = this.preload;
+            this.update();
+        }
     }
 
     ngOnInit(): void {}

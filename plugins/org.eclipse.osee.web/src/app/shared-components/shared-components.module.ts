@@ -14,6 +14,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BranchPickerModule } from './components/branch-picker/branch-picker.module';
 import { ActionStateButtonModule } from './components/action-state-button/action-state-button.module';
+import { MatOptionLoadingModule } from './mat-option-loading/mat-option-loading.module';
 
 
 
@@ -22,6 +23,7 @@ import { ActionStateButtonModule } from './components/action-state-button/action
   imports: [
     CommonModule,
     BranchPickerModule,
+    MatOptionLoadingModule,
     ActionStateButtonModule
   ]
 })

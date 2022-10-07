@@ -51,12 +51,15 @@
                     (ngModelChange)="update()"
                     required
                 >
+                <osee-mat-option-loading [options]="applics" [objectName]="'Applicabilities'">
                     <mat-option
                         *ngFor="let applic of applics | async"
                         [value]="applic"
                     >
                         {{ applic.name }}
                     </mat-option>
+
+                </osee-mat-option-loading>
                 </mat-select>
             </mat-form-field>
         </td>

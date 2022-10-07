@@ -16,7 +16,7 @@ import { NewTypeDialogComponent } from '../components/dialogs/new-type-dialog/ne
 import { PlatformType } from '../types/platformType';
 
  @Component({
-     selector: 'app-new-type-dialog',
+     selector: 'osee-new-type-dialog',
      template:'<p>Dummy</p>'
  })
  export class MockNewTypeDialog implements Partial<NewTypeDialogComponent>{

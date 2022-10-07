@@ -26,12 +26,14 @@
           <br />
           <mat-form-field *ngIf="enumerationSet.description !== undefined">
             <mat-label>Edit Enumeration Set Description</mat-label>
-            <input
+            <textarea
               matInput
               placeholder="Edit Enumeration Set Description"
+              disabled
+              cdkTextareaAutosize
               [(ngModel)]="enumerationSet.description"
               (ngModelChange)="setDescription($event)"
-            />
+            ></textarea>
           </mat-form-field>
           <br />
           <mat-form-field *ngIf="enumerationSet.applicability !== undefined">
@@ -41,93 +43,28 @@
               (ngModelChange)="setApplicability($event)"
               [compareWith]="compareApplics"
             >
-              <mat-option
-                *ngFor="let applicability of applic | async"
-                [value]="applicability"
-              >
-                {{ applicability.name }}
-              </mat-option>
+              <osee-mat-option-loading [options]="applic" [objectName]="'Applicabilities'">
+                <mat-option
+                  *ngFor="let applicability of applic | async"
+                  [value]="applicability"
+                >
+                  {{ applicability.name }}
+                </mat-option>
+              </osee-mat-option-loading>
             </mat-select>
+
           </mat-form-field>
           <br />
           Enums:
           <ng-container *ngIf="_type | async as typeData">
-            <table mat-table [dataSource]="enumerationSet.enumerations || []">
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Name</th>
-                <td mat-cell *matCellDef="let element">
-                  <input
-                    matInput
-                    type="text"
-                    [(ngModel)]="element.name"
-                    #input
-                    required
-                  />
-                </td>
-                <td mat-footer-cell *matFooterCellDef></td>
-              </ng-container>
-              <ng-container matColumnDef="ordinal">
-                <th mat-header-cell *matHeaderCellDef>Ordinal</th>
-                <td mat-cell *matCellDef="let element">
-                  <input
-                    matInput
-                    type="number"
-                    [(ngModel)]="element.ordinal"
-                    #input
-                    required
-                  />
-                </td>
-                <td mat-footer-cell *matFooterCellDef></td>
-              </ng-container>
-              <ng-container matColumnDef="applicability">
-                <th mat-header-cell *matHeaderCellDef>Applicability</th>
-                <td mat-cell *matCellDef="let element">
-                  <mat-select
-                    [(ngModel)]="element.applicability"
-                    [compareWith]="compareApplics"
-                  >
-                    <mat-option
-                      *ngFor="let applicability of applic | async"
-                      [value]="applicability"
-                    >
-                      {{ applicability.name }}
-                    </mat-option>
-                  </mat-select>
-                </td>
-                <td mat-footer-cell *matFooterCellDef>
-                  <button
-                    mat-icon-button
-                    (click)="
-                      addEnum((enumerationSet.enumerations || []).length)
-                    "
-                    [disabled]="
-                      (enumerationSet.enumerations || []).length >=
-                      +(
-                        typeData.interfacePlatformTypeBitSize != null &&
-                        typeData.interfacePlatformTypeBitSize
-                      )
-                    "
-                  >
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
-              <tr
-                mat-header-row
-                *matHeaderRowDef="['name', 'ordinal', 'applicability']"
-              ></tr>
-              <tr
-                mat-row
-                *matRowDef="
-                  let row;
-                  columns: ['name', 'ordinal', 'applicability']
-                "
-              ></tr>
-              <tr
-                mat-footer-row
-                *matFooterRowDef="['name', 'ordinal', 'applicability']"
-              ></tr>
-            </table>
+            <osee-enum-form
+            [bitSize]="typeData.interfacePlatformTypeBitSize"
+            [enumSetName]="enumerationSet.name"
+            [preload]="enumerationSet.enumerations||[]"
+            (enumSetString)="setDescription($event)"
+            (enums)="updateEnums($event)"
+            (unique)="updateUnique($event)"
+            ></osee-enum-form>
           </ng-container>
         </ng-container>
       </ng-container>

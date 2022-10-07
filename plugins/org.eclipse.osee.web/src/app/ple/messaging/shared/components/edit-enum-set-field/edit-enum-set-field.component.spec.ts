@@ -23,6 +23,7 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatTableModule } from '@angular/material/table';
 import { MatTableHarness } from '@angular/material/table/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatOptionLoadingModule } from '../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
 import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
 import { applicabilityListServiceMock } from '../../mocks/ApplicabilityListService.mock';
@@ -34,6 +35,7 @@ import { ApplicabilityListService } from '../../services/http/applicability-list
 import { EnumerationSetService } from '../../services/http/enumeration-set.service';
 import { MimPreferencesService } from '../../services/http/mim-preferences.service';
 import { TypesService } from '../../services/http/types.service';
+import { MockEnumFormUnique } from '../dialogs/enum-form/enum-form.component.mock';
 
 import { EditEnumSetFieldComponent } from './edit-enum-set-field.component';
 
@@ -44,7 +46,7 @@ describe('EditEnumSetFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditEnumSetFieldComponent],
+      declarations: [EditEnumSetFieldComponent,MockEnumFormUnique],
       imports: [
         MatIconModule,
         MatSelectModule,
@@ -53,6 +55,7 @@ describe('EditEnumSetFieldComponent', () => {
         FormsModule,
         MatTableModule,
         NoopAnimationsModule,
+        MatOptionLoadingModule
       ],
       providers: [
         { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
@@ -103,18 +106,5 @@ describe('EditEnumSetFieldComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should add an enum', async () => {
-      const spy = spyOn(component, 'addEnum').and.callThrough();
-      const table = await loader.getHarness(MatTableHarness);
-      expect(table).toBeDefined();
-      const button = await (
-        await (
-          await table.getFooterRows()
-        )[0].getCells({ columnName: 'applicability' })
-      )[0].getHarness(MatButtonHarness);
-      expect(button).toBeDefined();
-      await button.click();
-      expect(spy).toHaveBeenCalled();
-    });
   });
 });
