@@ -30,9 +30,16 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -40,6 +47,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -63,6 +71,15 @@ public class ArtifactEndpointTest {
       workingBranchArtifactEndpoint =
          ServiceUtil.getOseeClient().getArtifactEndpoint(DemoBranches.SAW_PL_Working_Branch);
       applicEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
+   }
+
+   @AfterClass
+   public static void testCleanup() {
+      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactEndpointTest");
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName("ArtifactEndpointTest", COMMON,
+         DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
+      ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, new XResultData(), artifacts);
+      transaction.execute();
    }
 
    @Test
@@ -190,7 +207,8 @@ public class ArtifactEndpointTest {
    @Test
    public void createArtifacts() {
       ArtifactId parentArtifact = DefaultHierarchyRoot;
-      List<String> names = Arrays.asList("TestArtifact1", "TestArtifact2", "TestArtifact3");
+      List<String> names = Arrays.asList(getClass().getSimpleName() + " 1", getClass().getSimpleName() + " 2",
+         getClass().getSimpleName() + " 3");
 
       List<ArtifactToken> newArtifacts =
          artifactEndpoint.createArtifacts(COMMON, CoreArtifactTypes.PlainText, parentArtifact, names);
@@ -200,7 +218,7 @@ public class ArtifactEndpointTest {
    @Test
    public void createArtifact() {
       ArtifactId parentArtifact = DefaultHierarchyRoot;
-      String name = "TestArtifactA";
+      String name = getClass().getSimpleName() + " A";
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);
       Assert.assertEquals(name, artifactToken.getName());
@@ -221,16 +239,17 @@ public class ArtifactEndpointTest {
    public void setSoleAttributeValue() {
       ArtifactToken artifact = createTestArtifact();
 
-      artifactEndpoint.setSoleAttributeValue(COMMON, artifact, CoreAttributeTypes.Name, "ResetNameAttribute");
+      artifactEndpoint.setSoleAttributeValue(COMMON, artifact, CoreAttributeTypes.Name,
+         getClass().getSimpleName() + " ResetNameAttribute");
 
       List<ArtifactId> artifacts = artifactEndpoint.getArtifactIdsByAttribute(CoreAttributeTypes.Name,
-         "ResetNameAttribute", true, CoreArtifactTypes.PlainText);
+         getClass().getSimpleName() + " ResetNameAttribute", true, CoreArtifactTypes.PlainText);
       Assert.assertFalse(artifacts.isEmpty());
    }
 
    private ArtifactToken createTestArtifact() {
       ArtifactId parentArtifact = DefaultHierarchyRoot;
-      String name = "TestArtifactB";
+      String name = getClass().getSimpleName() + " B";
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);
       return artifactToken;

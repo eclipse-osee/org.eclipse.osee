@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.skynet.core;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -31,7 +30,7 @@ import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,12 +61,12 @@ public class ArtifactLoaderTest {
    private static final int TOTAL_THREADS = 2;
    private static final int NUM_ARTIFACTS = 40;
    private static final String ATTRIBUTE_VALUE = "now is the time";
-   private static final BranchToken branch = CoreBranches.COMMON;
+   private static final BranchToken branch = DemoBranches.CIS_Bld_1;
 
    @After
    public void tearDown() throws Exception {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, testInfo.getQualifiedTestName());
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testInfo.getQualifiedTestName(), branch);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch);
       ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, new XResultData(), artifacts);
       transaction.execute();
    }
@@ -84,9 +83,9 @@ public class ArtifactLoaderTest {
    @Test(timeout = 40000)
    public void testThreadSafeLoading() throws Exception {
       // Create some software artifacts
-      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "ArtifactLoaderTest");
       Collection<Artifact> artifacts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences,
-         NUM_ARTIFACTS, "ArtifactLoaderTest", COMMON);
+         NUM_ARTIFACTS, "ArtifactLoaderTest", branch);
       for (Artifact artifact : artifacts) {
          artifact.setName("ArtifactLoaderTest");
          artifact.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
@@ -122,7 +121,7 @@ public class ArtifactLoaderTest {
       Assert.assertEquals(message, TOTAL_THREADS, completed);
 
       // Load and check artifacts
-      artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON);
+      artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", branch);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
       for (Artifact artifact : artifacts) {
          Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
@@ -133,9 +132,9 @@ public class ArtifactLoaderTest {
    @Test(timeout = 5000)
    public void testThreadSafeLoadingSameArtifact() throws Exception {
       // Create some software artifacts
-      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, "ArtifactLoaderTest");
       Artifact testArt =
-         TestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest", COMMON);
+         TestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest", branch);
       testArt.setName("ArtifactLoaderTest");
       testArt.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
       testArt.persist(transaction);
@@ -178,7 +177,7 @@ public class ArtifactLoaderTest {
 
       @Override
       public String call() throws Exception {
-         Artifact art = ArtifactQuery.getArtifactFromId(guid, CoreBranches.COMMON);
+         Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
          return art.getSoleAttributeValueAsString(CoreAttributeTypes.DefaultMailServer, "");
       }
 
@@ -188,7 +187,7 @@ public class ArtifactLoaderTest {
 
       @Override
       public List<Artifact> call() throws Exception {
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON);
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", branch);
          if (artifacts.size() != NUM_ARTIFACTS) {
             throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
          }
