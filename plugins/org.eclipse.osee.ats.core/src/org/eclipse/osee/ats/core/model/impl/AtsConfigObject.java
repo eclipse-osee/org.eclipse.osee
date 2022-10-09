@@ -81,6 +81,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public ArtifactToken loadStoreObject() {
+      if (artifact == null) {
+         throw new RuntimeException("artifact is null");
+      }
       ArtifactToken art = atsApi.getQueryService().getArtifact(artifact.getId());
       if (art.isValid()) {
          setStoreObject(art);

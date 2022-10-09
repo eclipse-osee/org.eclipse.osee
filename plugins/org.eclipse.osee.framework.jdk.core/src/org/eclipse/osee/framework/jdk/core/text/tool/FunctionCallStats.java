@@ -41,56 +41,56 @@ public class FunctionCallStats {
       ArrayList<String> patterns = new ArrayList<>();
       patterns.add("\\W(\\w+)\\s*\\([^;{]*?\\)\\s*;");
 
-      BufferedWriter out = new BufferedWriter(new FileWriter("results.csv"));
+      try (BufferedWriter out = new BufferedWriter(new FileWriter("results.csv"))) {
 
-      List files = Lib.recursivelyListFiles(new File(args[0]), Pattern.compile(args[1]));
-      System.out.println("Searching " + files.size() + " files...");
+         List files = Lib.recursivelyListFiles(new File(args[0]), Pattern.compile(args[1]));
+         System.out.println("Searching " + files.size() + " files...");
 
-      FindNonLocalFunctionCalls nonLocalFindApp =
-         new FindNonLocalFunctionCalls((File[]) files.toArray(new File[files.size()]));
-      nonLocalFindApp.searchFiles();
-      Set nonLocalFunctions = nonLocalFindApp.getResultSet();
+         FindNonLocalFunctionCalls nonLocalFindApp =
+            new FindNonLocalFunctionCalls((File[]) files.toArray(new File[files.size()]));
+         nonLocalFindApp.searchFiles();
+         Set nonLocalFunctions = nonLocalFindApp.getResultSet();
 
-      Find app = new Find(patterns, files, new StripBlockComments());
-      app.setRegionPadding(0, 0);
-      app.find(999999, true);
-      FindResults results = app.getResults();
+         Find app = new Find(patterns, files, new StripBlockComments());
+         app.setRegionPadding(0, 0);
+         app.find(999999, true);
+         FindResults results = app.getResults();
 
-      class Counter {
-         public int count = 0;
-      }
+         class Counter {
+            public int count = 0;
+         }
 
-      String lastFileName = null;
-      HashMap functions = new HashMap(1000);
-      for (FindResultsIterator i = results.iterator(); i.hasNext();) {
-         String currentFileName = i.currentFile.getName();
+         String lastFileName = null;
+         HashMap functions = new HashMap(1000);
+         for (FindResultsIterator i = results.iterator(); i.hasNext();) {
+            String currentFileName = i.currentFile.getName();
 
-         if (i.currentRegion != null) {
-            if (!currentFileName.equals(lastFileName)) {
-               for (Iterator functionsIterator = functions.entrySet().iterator(); functionsIterator.hasNext();) {
-                  Map.Entry entry = (Map.Entry) functionsIterator.next();
-                  String functionName = (String) entry.getKey();
-                  if (nonLocalFunctions.contains(functionName)) {
-                     out.write(lastFileName);
-                     out.write(',');
-                     out.write(functionName);
-                     out.write(',');
-                     out.write(String.valueOf(((Counter) entry.getValue()).count));
-                     out.write('\n');
+            if (i.currentRegion != null) {
+               if (!currentFileName.equals(lastFileName)) {
+                  for (Iterator functionsIterator = functions.entrySet().iterator(); functionsIterator.hasNext();) {
+                     Map.Entry entry = (Map.Entry) functionsIterator.next();
+                     String functionName = (String) entry.getKey();
+                     if (nonLocalFunctions.contains(functionName)) {
+                        out.write(lastFileName);
+                        out.write(',');
+                        out.write(functionName);
+                        out.write(',');
+                        out.write(String.valueOf(((Counter) entry.getValue()).count));
+                        out.write('\n');
+                     }
                   }
+                  lastFileName = currentFileName;
+                  functions.clear();
                }
-               lastFileName = currentFileName;
-               functions.clear();
-            }
 
-            Counter counter = (Counter) functions.get(i.currentRegion);
-            if (counter == null) {
-               counter = new Counter();
+               Counter counter = (Counter) functions.get(i.currentRegion);
+               if (counter == null) {
+                  counter = new Counter();
+               }
+               counter.count++;
+               functions.put(i.currentRegion, counter);
             }
-            counter.count++;
-            functions.put(i.currentRegion, counter);
          }
       }
-      out.close();
    }
 }

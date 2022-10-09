@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.workdef.defaults;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.AUTO_SAVE;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -44,17 +43,11 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
    }
 
    public void addCompositeHeader(WorkDefBuilder workDefBld) {
-      if (workDefToken.equals(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request)) {
-         workDefBld.andHeader() //
-            .andLayout(getChangeTypeComposite()) //
-            .isShowWorkPackageHeader(false) //
-            .isShowMetricsHeader(false); //
-      } else {
-         workDefBld.andHeader() //
-            .andLayout(getChangeTypeComposite()) //
-            .isShowWorkPackageHeader(false) //
-            .isShowMetricsHeader(false); //
-      }
+
+      workDefBld.andHeader() //
+         .andLayout(getChangeTypeComposite()) //
+         .isShowWorkPackageHeader(false) //
+         .isShowMetricsHeader(false); //
    }
 
    public CompositeLayoutItem getChangeTypeComposite() {

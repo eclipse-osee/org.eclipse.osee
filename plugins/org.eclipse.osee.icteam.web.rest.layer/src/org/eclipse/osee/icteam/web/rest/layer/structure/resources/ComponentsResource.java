@@ -169,38 +169,41 @@ public class ComponentsResource extends AbstractConfigResource {
          String side = AtsRelationTypes.TeamActionableItem_TeamDefinition.getSide().toString();
          String key = "RelationTypeSide - uuid=[" + uuid + "] type=[" + type1 + "] side=[" + side + "]";
          List<ITransferableArtifact> relatedArtifacts = artifact.getRelatedArtifacts(key);
-         for (ITransferableArtifact transferableArtifact : relatedArtifacts) {
-            ResultSet<ArtifactReadable> result = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
-               Long.valueOf(transferableArtifact.getUuid())).getResults();
-            ArtifactReadable team = null;
-            if ((result != null) && (result.size() == 1)) {
-               team = result.getOneOrNull();
-               team.getRelated(AtsRelationTypes.ProjectToTeamDefinition_Project).getOneOrNull();
-            }
-            childArtifact = tx.createArtifact(AtsArtifactTypes.ActionableItem, artifact.getName());
-            ResultSet<ArtifactReadable> results =
-               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andNameEquals("Actionable Items").getResults();
-            tx.addChild(results.getExactlyOne(), childArtifact);
-            Map<String, List<String>> attributes = artifact.getAttributes();
-            Set<Entry<String, List<String>>> entrySet = attributes.entrySet();
-            for (Entry<String, List<String>> entry : entrySet) {
-               String type = entry.getKey();
-               String[] split = type.split(";");
-               List<String> value = entry.getValue();
-               for (String string : value) {
-                  if ((split.length == 2) && split[1].equals("Date")) {
-                     Date date = CommonUtil.getDate(string);
-                     tx.setSoleAttributeValue(childArtifact,
-                        AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), date);
-                  } else {
-                     tx.setSoleAttributeFromString(childArtifact,
-                        AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), string);
+         if (relatedArtifacts != null) {
+            for (ITransferableArtifact transferableArtifact : relatedArtifacts) {
+               ResultSet<ArtifactReadable> result = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
+                  Long.valueOf(transferableArtifact.getUuid())).getResults();
+               ArtifactReadable team = null;
+               if ((result != null) && (result.size() == 1)) {
+                  team = result.getOneOrNull();
+                  team.getRelated(AtsRelationTypes.ProjectToTeamDefinition_Project).getOneOrNull();
+               }
+               childArtifact = tx.createArtifact(AtsArtifactTypes.ActionableItem, artifact.getName());
+               ResultSet<ArtifactReadable> results =
+                  orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andNameEquals(
+                     "Actionable Items").getResults();
+               tx.addChild(results.getExactlyOne(), childArtifact);
+               Map<String, List<String>> attributes = artifact.getAttributes();
+               Set<Entry<String, List<String>>> entrySet = attributes.entrySet();
+               for (Entry<String, List<String>> entry : entrySet) {
+                  String type = entry.getKey();
+                  String[] split = type.split(";");
+                  List<String> value = entry.getValue();
+                  for (String string : value) {
+                     if ((split.length == 2) && split[1].equals("Date")) {
+                        Date date = CommonUtil.getDate(string);
+                        tx.setSoleAttributeValue(childArtifact,
+                           AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), date);
+                     } else {
+                        tx.setSoleAttributeFromString(childArtifact,
+                           AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), string);
+                     }
                   }
                }
-            }
-            tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.Actionable, "true");
-            if (team != null) {
-               tx.relate(team, AtsRelationTypes.TeamActionableItem_ActionableItem, childArtifact);
+               tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.Actionable, "true");
+               if (team != null) {
+                  tx.relate(team, AtsRelationTypes.TeamActionableItem_ActionableItem, childArtifact);
+               }
             }
          }
          tx.commit();

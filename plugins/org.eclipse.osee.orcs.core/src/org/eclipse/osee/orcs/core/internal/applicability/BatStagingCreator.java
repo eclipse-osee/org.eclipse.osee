@@ -246,17 +246,16 @@ public class BatStagingCreator {
 
       boolean isFileNew = false;
 
-      BufferedReader stageReader = Files.newBufferedReader(stageFile.toPath());
-      BufferedReader outReader = Files.newBufferedReader(outFile.toPath());
-      String stageLine, outLine;
-      while (((stageLine = stageReader.readLine()) != null) && ((outLine = outReader.readLine()) != null)) {
-         if (!stageLine.equals(outLine)) {
-            isFileNew = true;
+      try (BufferedReader stageReader = Files.newBufferedReader(stageFile.toPath());
+         BufferedReader outReader = Files.newBufferedReader(outFile.toPath())) {
+         String stageLine, outLine;
+         while (((stageLine = stageReader.readLine()) != null) && ((outLine = outReader.readLine()) != null)) {
+            if (!stageLine.equals(outLine)) {
+               isFileNew = true;
+            }
          }
-      }
 
-      stageReader.close();
-      outReader.close();
+      }
       return isFileNew;
    }
 
@@ -268,7 +267,6 @@ public class BatStagingCreator {
     */
    private Set<String> processConfig(XResultData results, List<File> children, File stageFile) {
       Set<String> filesToExclude = new HashSet<>();
-      BufferedReader reader;
       String readLine;
       File configFile = null;
 
@@ -280,15 +278,13 @@ public class BatStagingCreator {
                fileTypeApplicabilityDataMap.get(Lib.getExtension(configFile.getName()).toLowerCase());
             Pattern tagPattern = fileTypeApplicabilityData.getCommentedTagPattern();
 
-            try {
+            try (FileReader file = new FileReader(configFile); BufferedReader reader = new BufferedReader(file)) {
                // Reading the original file for all names
-               reader = new BufferedReader(new FileReader(configFile));
                while ((readLine = reader.readLine()) != null) {
                   if (!tagPattern.matcher(readLine).matches() && !readLine.isEmpty()) {
                      filesToExclude.add(readLine);
                   }
                }
-               reader.close();
 
                // Using existing BlockApplicability logic to process the file
                File stagedConfig = new File(stageFile, configFile.getName());
@@ -299,13 +295,13 @@ public class BatStagingCreator {
                 * Reading the new staged config file, any names that are left are included in the publish and removed
                 * from the list
                 */
-               reader = new BufferedReader(new FileReader(stagedConfig));
-               while ((readLine = reader.readLine()) != null) {
-                  if (!tagPattern.matcher(readLine).matches() && !readLine.isEmpty()) {
-                     filesToExclude.remove(readLine);
+               try (BufferedReader reader2 = new BufferedReader(new FileReader(stagedConfig))) {
+                  while ((readLine = reader2.readLine()) != null) {
+                     if (!tagPattern.matcher(readLine).matches() && !readLine.isEmpty()) {
+                        filesToExclude.remove(readLine);
+                     }
                   }
                }
-               reader.close();
                stagedConfig.delete();
             } catch (Exception ex) {
                results.warningf("Exception %s with file %s\n", ex.toString(), configFile.getPath());

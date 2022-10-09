@@ -174,11 +174,9 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
             if (relationType.equals(CoreRelationTypes.Verification_Verifier) || relationType.equals(
                CoreRelationTypes.Uses_TestUnit)) {
                RelationTypeSide relTypeSide = null;
-               if (relationType.equals(CoreRelationTypes.Verification_Verifier)) {
-                  relTypeSide = CoreRelationTypes.Verification_Verifier;
-               } else {
-                  relTypeSide = CoreRelationTypes.Verification_Verifier;
-               }
+
+               relTypeSide = CoreRelationTypes.Verification_Verifier;
+
                ArtifactData artData = artTransfer.nativeToJava(event.currentDataType);
                List<Artifact> relatedArts = new ArrayList<Artifact>();
                for (Artifact relatedArt : artData.getArtifacts()) {
@@ -264,6 +262,9 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
    @Override
    public void performDrop(DropTargetEvent event) {
       TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
+      if (selected == null) {
+         return;
+      }
       final Object object = selected.getData();
       try {
          if (RelationsComposite.hasWriteRelationTypePermission(artifact, object)) {

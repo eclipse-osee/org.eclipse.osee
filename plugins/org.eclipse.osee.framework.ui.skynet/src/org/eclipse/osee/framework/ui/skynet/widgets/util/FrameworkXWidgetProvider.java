@@ -235,7 +235,7 @@ public final class FrameworkXWidgetProvider {
          }
       }
 
-      FrameworkXWidgetProvider.getInstance();
+
       @SuppressWarnings("unchecked")
       Class<XWidget> clazz = (Class<XWidget>) getNameToClass().get(xWidgetName);
       if (clazz != null) {

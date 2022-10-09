@@ -41,7 +41,13 @@ public class BranchIdDeserializer extends StdDeserializer<@NonNull BranchId> {
       if (readTree instanceof TextNode) {
          return BranchId.valueOf(readTree.asText());
       }
-      return BranchId.create(readTree.get("id").asLong(), ArtifactId.valueOf(readTree.get("viewId").asLong()));
+
+      if (readTree != null) {
+         return BranchId.create(readTree.get("id").asLong(), ArtifactId.valueOf(readTree.get("viewId").asLong()));
+      } else {
+         return null;
+      }
+
    }
 
 }

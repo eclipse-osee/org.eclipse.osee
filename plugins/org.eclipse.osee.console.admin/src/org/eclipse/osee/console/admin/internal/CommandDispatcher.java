@@ -79,7 +79,11 @@ public class CommandDispatcher {
          @Override
          protected Object innerCall() throws Exception {
             Callable<?> callable = command.createCallable(console, params);
-            return callAndCheckForCancel(callable);
+            if (callable != null) {
+               return callAndCheckForCancel(callable);
+            }
+
+            return null;
          }
 
       };

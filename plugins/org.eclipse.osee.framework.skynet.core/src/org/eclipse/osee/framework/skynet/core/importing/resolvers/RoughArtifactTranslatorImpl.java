@@ -39,33 +39,35 @@ public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
          AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
 
          Collection<String> values = attributeSet.getAttributeValueList(attributeType);
-         if (!values.isEmpty()) {
-            boolean setValues = false;
-            if (attributeType.isBoolean()) {
-               ArrayList<Boolean> booleanValues = new ArrayList<>();
-               for (String state : values) {
-                  Boolean value = Boolean.valueOf(state.equalsIgnoreCase("True"));
-                  booleanValues.add(value);
+         if (values != null) {
+            if (!values.isEmpty()) {
+               boolean setValues = false;
+               if (attributeType.isBoolean()) {
+                  ArrayList<Boolean> booleanValues = new ArrayList<>();
+                  for (String state : values) {
+                     Boolean value = Boolean.valueOf(state.equalsIgnoreCase("True"));
+                     booleanValues.add(value);
+                  }
+                  artifact.setAttributeFromValues(attributeType, booleanValues);
+                  setValues = true;
                }
-               artifact.setAttributeFromValues(attributeType, booleanValues);
-               setValues = true;
-            }
-            if (!setValues) {
-               artifact.setAttributeFromValues(attributeType, values);
-            }
-         } else {
-            Collection<RoughAttribute> roughAttributes = entry.getValue();
-            Collection<InputStream> streams = new LinkedList<>();
-            try {
-               for (RoughAttribute attribute : roughAttributes) {
-                  streams.add(attribute.getContent());
+               if (!setValues) {
+                  artifact.setAttributeFromValues(attributeType, values);
                }
-               artifact.setBinaryAttributeFromValues(attributeType, streams);
-            } catch (Exception ex) {
-               OseeCoreException.wrapAndThrow(ex);
-            } finally {
-               for (InputStream inputStream : streams) {
-                  Lib.close(inputStream);
+            } else {
+               Collection<RoughAttribute> roughAttributes = entry.getValue();
+               Collection<InputStream> streams = new LinkedList<>();
+               try {
+                  for (RoughAttribute attribute : roughAttributes) {
+                     streams.add(attribute.getContent());
+                  }
+                  artifact.setBinaryAttributeFromValues(attributeType, streams);
+               } catch (Exception ex) {
+                  OseeCoreException.wrapAndThrow(ex);
+               } finally {
+                  for (InputStream inputStream : streams) {
+                     Lib.close(inputStream);
+                  }
                }
             }
          }

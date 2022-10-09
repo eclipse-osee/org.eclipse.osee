@@ -94,6 +94,9 @@ public class KanbanOperations {
       for (IAgileItem aItem : atsApi.getAgileService().getItems(sprint)) {
 
          IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(aItem.getId());
+         if (workItem == null) {
+            throw new RuntimeException("workItem is null");
+         }
          ArtifactToken artifact = atsApi.getQueryService().getArtifact(workItem.getId());
 
          JaxKbTask task = createJaxKbTask(aItem, workItem, artifact, agileTeam, atsApi);

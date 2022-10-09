@@ -127,6 +127,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          if (newOutlineNumber) {
             setContent();
             String number = outlineNumber.toString();
+            if (logger == null) {
+               return;
+            }
             roughArtifact = setUpNewArtifact(collector, number, logger);
             if (roughArtifact == null) {
                return;

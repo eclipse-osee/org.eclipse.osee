@@ -43,26 +43,30 @@ public class UserTokenDeserializer extends StdDeserializer<@NonNull UserToken> {
       JsonNode readTree = jp.getCodec().readTree(jp);
       List<IUserGroupArtifactToken> userGroups = new ArrayList<IUserGroupArtifactToken>();
 
-      JsonNode rolesNode = readTree.get("roles");
-      if (rolesNode != null) {
-         for (JsonNode artToken : rolesNode) {
-            IUserGroupArtifactToken roleToken =
-               UserGroupArtifactToken.valueOf(artToken.get("id").asLong(), artToken.get("name").textValue());
-            userGroups.add(roleToken);
+      if (readTree != null) {
+         JsonNode rolesNode = readTree.get("roles");
+         if (rolesNode != null) {
+            for (JsonNode artToken : rolesNode) {
+               IUserGroupArtifactToken roleToken =
+                  UserGroupArtifactToken.valueOf(artToken.get("id").asLong(), artToken.get("name").textValue());
+               userGroups.add(roleToken);
+            }
          }
-      }
-      List<String> loginIds = new ArrayList<String>();
-      for (JsonNode loginId : readTree.get("loginIds")) {
-         loginIds.add(loginId.asText());
+         List<String> loginIds = new ArrayList<String>();
+         for (JsonNode loginId : readTree.get("loginIds")) {
+            loginIds.add(loginId.asText());
+         }
+
+         boolean active = true;
+         JsonNode activeNode = readTree.get("active");
+         if (activeNode != null) {
+            active = activeNode.asBoolean();
+         }
+
+         return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
+            readTree.get("email").textValue(), readTree.get("userId").textValue(), active, loginIds, userGroups);
       }
 
-      boolean active = true;
-      JsonNode activeNode = readTree.get("active");
-      if (activeNode != null) {
-         active = activeNode.asBoolean();
-      }
-
-      return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
-         readTree.get("email").textValue(), readTree.get("userId").textValue(), active, loginIds, userGroups);
+      return null;
    }
 }

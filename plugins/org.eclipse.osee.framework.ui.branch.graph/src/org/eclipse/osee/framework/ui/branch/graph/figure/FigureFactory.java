@@ -88,6 +88,9 @@ public class FigureFactory {
 
    public static IFigure createBranchNoteFigure(BranchModel branchModel) {
       BranchToken branch = BranchManager.getBranchToken(branchModel.getBranch());
+      if (branchModel.getFirstTx() == null) {
+         throw new RuntimeException("getFirstTx returns null");
+      }
       String title = String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
       TxData txData = branchModel.getFirstTx().getTxData();
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());

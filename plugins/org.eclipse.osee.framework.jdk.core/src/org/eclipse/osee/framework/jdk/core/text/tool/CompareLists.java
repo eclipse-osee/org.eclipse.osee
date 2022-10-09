@@ -51,30 +51,30 @@ public class CompareLists {
 
    @SuppressWarnings("unchecked")
    public static void writeDiff(Collection listA, Collection listB, File file, String listDescription1, String listDescription2) throws IOException {
-      BufferedWriter out = new BufferedWriter(new FileWriter(file));
-      //Enforce uniqueness
-      Set setA = Collections.toSet(listA);
-      Set setB = Collections.toSet(listB);
+      try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+         //Enforce uniqueness
+         Set setA = Collections.toSet(listA);
+         Set setB = Collections.toSet(listB);
 
-      out.write("Items only in list A (" + listDescription1 + ")\n\n");
-      List complement = Collections.setComplement(setA, setB);
-      for (int i = 0; i < complement.size(); i++) {
-         out.write(complement.get(i) + "\n");
-      }
+         out.write("Items only in list A (" + listDescription1 + ")\n\n");
+         List complement = Collections.setComplement(setA, setB);
+         for (int i = 0; i < complement.size(); i++) {
+            out.write(complement.get(i) + "\n");
+         }
 
-      out.write("\nItems only in list B (" + listDescription2 + ")\n\n");
-      complement = Collections.setComplement(setB, setA);
-      for (int i = 0; i < complement.size(); i++) {
-         out.write(complement.get(i) + "\n");
-      }
+         out.write("\nItems only in list B (" + listDescription2 + ")\n\n");
+         complement = Collections.setComplement(setB, setA);
+         for (int i = 0; i < complement.size(); i++) {
+            out.write(complement.get(i) + "\n");
+         }
 
-      //The intersection of two sets A and B is the set of elements common to A and B.
-      out.write("\nItems in both lists\n\n");
-      ArrayList intersection = Collections.setIntersection(setA, setB);
-      for (int i = 0; i < intersection.size(); i++) {
-         out.write(intersection.get(i) + "\n");
+         //The intersection of two sets A and B is the set of elements common to A and B.
+         out.write("\nItems in both lists\n\n");
+         ArrayList intersection = Collections.setIntersection(setA, setB);
+         for (int i = 0; i < intersection.size(); i++) {
+            out.write(intersection.get(i) + "\n");
+         }
       }
-      out.close();
       System.out.println("Finished processing.  Output is in file \"list_diff.txt\"");
    }
 }

@@ -133,7 +133,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       String userGuid = artifact.getUuid();
       List<String> filterList = artifact.getAttributes("filter");
 
-      if ((filterList == null) || (filterList.size() == 0)) {
+      if ((filterList != null) && (filterList.size() == 0)) {
          filterList.add("Working");
       }
 
@@ -142,102 +142,104 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       ArtifactReadable sprintArtifact =
          CommonUtil.getArtifactFromIdExcludingDeleted(sprintGuid, CoreBranches.COMMON, orcsApi);
       ResultSet<ArtifactReadable> tasks = null;
+      if (filterList != null) {
+         for (String filter : filterList) {
+            QueryBuilder query =
+               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(AtsArtifactTypes.TeamWorkflow).and(
+                  AtsAttributeTypes.CurrentStateType, filter, QueryOption.EXACT_MATCH_OPTIONS).andRelatedTo(
+                     AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, sprintArtifact);
 
-      for (String filter : filterList) {
-         QueryBuilder query =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(AtsArtifactTypes.TeamWorkflow).and(
-               AtsAttributeTypes.CurrentStateType, filter, QueryOption.EXACT_MATCH_OPTIONS).andRelatedTo(
-                  AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, sprintArtifact);
-
-         if (filter.equals("Working")) {
-            if ((userGuid != null) && (userGuid.length() > 0)) {
-               ArtifactReadable userArtifact =
-                  CommonUtil.getArtifactFromIdExcludingDeleted(userGuid, CoreBranches.COMMON, orcsApi);
-               query = query.and(AtsAttributeTypes.CurrentState,
-                  userArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId), QueryOption.TOKEN_DELIMITER__ANY);
-            }
-
-            try {
-               tasks = query.getResults();
-            } catch (OseeCoreException e) {
-               e.printStackTrace();
-            }
-         } else if (filter.equals("Completed") || filter.equals("Cancelled")) {
-            try {
-               List<ArtifactReadable> listCompCan = new ArrayList<ArtifactReadable>();
-               ResultSet<ArtifactReadable> tempList = query.getResults();
-
+            if (filter.equals("Working")) {
                if ((userGuid != null) && (userGuid.length() > 0)) {
                   ArtifactReadable userArtifact =
                      CommonUtil.getArtifactFromIdExcludingDeleted(userGuid, CoreBranches.COMMON, orcsApi);
-                  String userId = userArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId);
+                  query = query.and(AtsAttributeTypes.CurrentState,
+                     userArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId),
+                     QueryOption.TOKEN_DELIMITER__ANY);
+               }
 
-                  for (ArtifactReadable artifactReadable : tempList) {
-                     if (filter.equals("Completed")) {
-                        ResultSet<? extends AttributeReadable<Object>> attributes =
-                           artifactReadable.getAttributes(AtsAttributeTypes.CompletedBy);
+               try {
+                  tasks = query.getResults();
+               } catch (OseeCoreException e) {
+                  e.printStackTrace();
+               }
+            } else if (filter.equals("Completed") || filter.equals("Cancelled")) {
+               try {
+                  List<ArtifactReadable> listCompCan = new ArrayList<ArtifactReadable>();
+                  ResultSet<ArtifactReadable> tempList = query.getResults();
 
-                        if ((attributes != null) && (attributes.size() > 0)) {
-                           for (AttributeReadable<Object> attributeReadable : attributes) {
-                              String completedByUserID = (String) attributeReadable.getValue();
+                  if ((userGuid != null) && (userGuid.length() > 0)) {
+                     ArtifactReadable userArtifact =
+                        CommonUtil.getArtifactFromIdExcludingDeleted(userGuid, CoreBranches.COMMON, orcsApi);
+                     String userId = userArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId);
 
-                              if (completedByUserID.equals(userId)) {
-                                 listCompCan.add(artifactReadable);
+                     for (ArtifactReadable artifactReadable : tempList) {
+                        if (filter.equals("Completed")) {
+                           ResultSet<? extends AttributeReadable<Object>> attributes =
+                              artifactReadable.getAttributes(AtsAttributeTypes.CompletedBy);
+
+                           if ((attributes != null) && (attributes.size() > 0)) {
+                              for (AttributeReadable<Object> attributeReadable : attributes) {
+                                 String completedByUserID = (String) attributeReadable.getValue();
+
+                                 if (completedByUserID.equals(userId)) {
+                                    listCompCan.add(artifactReadable);
+                                 }
                               }
                            }
-                        }
-                     } else if (filter.equals("Cancelled")) {
-                        ResultSet<? extends AttributeReadable<Object>> attributes =
-                           artifactReadable.getAttributes(AtsAttributeTypes.CancelledBy);
+                        } else if (filter.equals("Cancelled")) {
+                           ResultSet<? extends AttributeReadable<Object>> attributes =
+                              artifactReadable.getAttributes(AtsAttributeTypes.CancelledBy);
 
-                        if ((attributes != null) && (attributes.size() > 0)) {
-                           for (AttributeReadable<Object> attributeReadable : attributes) {
-                              String completedByUserID = (String) attributeReadable.getValue();
+                           if ((attributes != null) && (attributes.size() > 0)) {
+                              for (AttributeReadable<Object> attributeReadable : attributes) {
+                                 String completedByUserID = (String) attributeReadable.getValue();
 
-                              if (completedByUserID.equals(userId)) {
-                                 listCompCan.add(artifactReadable);
+                                 if (completedByUserID.equals(userId)) {
+                                    listCompCan.add(artifactReadable);
+                                 }
                               }
                            }
                         }
                      }
+
+                     tasks = ResultSets.newResultSet(listCompCan);
+                  } else {
+                     tasks = tempList;
                   }
-
-                  tasks = ResultSets.newResultSet(listCompCan);
-               } else {
-                  tasks = tempList;
+               } catch (OseeCoreException e) {
+                  e.printStackTrace();
                }
-            } catch (OseeCoreException e) {
-               e.printStackTrace();
             }
-         }
 
-         ArtifactReadable mileStoneArtifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Child, sprintArtifact).getResults().getExactlyOne();
-         ArtifactReadable projectArtifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andRelatedTo(
-            AtsRelationTypes.ProjectToVersion_Version, mileStoneArtifact).getResults().getExactlyOne();
-         List<ITransferableArtifact> usersFromTeam = getTeamUsers(projectArtifact);
+            ArtifactReadable mileStoneArtifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Child, sprintArtifact).getResults().getExactlyOne();
+            ArtifactReadable projectArtifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andRelatedTo(
+               AtsRelationTypes.ProjectToVersion_Version, mileStoneArtifact).getResults().getExactlyOne();
+            List<ITransferableArtifact> usersFromTeam = getTeamUsers(projectArtifact);
 
-         if ((tasks != null) && (tasks.size() > 0)) {
-            for (ArtifactReadable task : tasks) {
-               IAtsWorkItem workItem = OseeCoreData.getAtsServer().getWorkItemService().getWorkItem(task);
-               List<String> states = Named.getNames(workItem.getStateDefinition().getToStates());
+            if ((tasks != null) && (tasks.size() > 0)) {
+               for (ArtifactReadable task : tasks) {
+                  IAtsWorkItem workItem = OseeCoreData.getAtsServer().getWorkItemService().getWorkItem(task);
+                  List<String> states = Named.getNames(workItem.getStateDefinition().getToStates());
 
-               String shortname =
-                  task.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project).getExactlyOne().getAttributes(
-                     AtsAttributeTypes.Shortname).getExactlyOne().toString();
-               String workPackage = task.getAttributes(AtsAttributeTypes.WorkPackage).getExactlyOne().toString();
-               String taskId = shortname + "-" + workPackage;
-               TransferableArtifact ar = new TransferableArtifact();
-               TranferableArtifactLoader.copyBasicTaskInfoToTransferableArtifact(task, ar);
-               ar.putAttributes("states", states);
-               /**
-                * The below method getUsersFromGroupWeb is commented because, Group concept is removed from ICTeam tool.
-                * But if we have to get groups into ICteam, then we have to use the method again to get the assignee for
-                * dropdowm
-                */
-               ar.putRelations("AssigneeForCombo", usersFromTeam);
-               ar.putAttributes("TaskId", Arrays.asList(taskId));
-               artifacts.add(ar);
+                  String shortname =
+                     task.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project).getExactlyOne().getAttributes(
+                        AtsAttributeTypes.Shortname).getExactlyOne().toString();
+                  String workPackage = task.getAttributes(AtsAttributeTypes.WorkPackage).getExactlyOne().toString();
+                  String taskId = shortname + "-" + workPackage;
+                  TransferableArtifact ar = new TransferableArtifact();
+                  TranferableArtifactLoader.copyBasicTaskInfoToTransferableArtifact(task, ar);
+                  ar.putAttributes("states", states);
+                  /**
+                   * The below method getUsersFromGroupWeb is commented because, Group concept is removed from ICTeam
+                   * tool. But if we have to get groups into ICteam, then we have to use the method again to get the
+                   * assignee for dropdowm
+                   */
+                  ar.putRelations("AssigneeForCombo", usersFromTeam);
+                  ar.putAttributes("TaskId", Arrays.asList(taskId));
+                  artifacts.add(ar);
+               }
             }
          }
       }

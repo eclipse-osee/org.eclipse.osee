@@ -434,7 +434,6 @@ public class ReportsDialog extends TitleAreaDialog {
    private void remoteFileToLocal(final OutputFormat outputFormat, final String urlRequest, final String fileName, final ITestRunReport report) {
       RemoteResourceRequestJob requestJob = new RemoteResourceRequestJob(urlRequest, fileName);
       requestJob.addJobChangeListener(new PreviewUpdateJobChangeListener(report, outputFormat));
-      requestJob.getDownloadedFile();
       requestJob.schedule();
    }
 

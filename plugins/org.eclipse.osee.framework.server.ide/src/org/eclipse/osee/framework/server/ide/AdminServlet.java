@@ -110,12 +110,14 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
       tracker.open(true);
       try {
          Object[] services = tracker.getServices();
-         for (Object service : services) {
-            CommandProvider commandProvider = (CommandProvider) service;
-            for (Method method : commandProvider.getClass().getMethods()) {
-               String methodName = method.getName();
-               if (methodName.startsWith("_")) {
-                  data.put(methodName, commandProvider);
+         if (services != null) {
+            for (Object service : services) {
+               CommandProvider commandProvider = (CommandProvider) service;
+               for (Method method : commandProvider.getClass().getMethods()) {
+                  String methodName = method.getName();
+                  if (methodName.startsWith("_")) {
+                     data.put(methodName, commandProvider);
+                  }
                }
             }
          }

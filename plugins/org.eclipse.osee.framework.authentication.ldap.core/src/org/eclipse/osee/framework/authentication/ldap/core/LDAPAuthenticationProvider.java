@@ -217,32 +217,34 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
       if (this.connector != null) {
          try {
             SearchResult ldapUser = this.connector.getLdapUser(this.sUserAbsoluteName);
-            Attributes attribs = ldapUser.getAttributes();
-            if (attribs.size() > 0) {
+            if (ldapUser != null) {
+               Attributes attribs = ldapUser.getAttributes();
+               if (attribs.size() > 0) {
 
-               Attribute attribute = attribs.get("displayname");
-               NamingEnumeration allMembers = attribute.getAll();
-               while ((allMembers != null) && allMembers.hasMoreElements()) {
-                  this.sDisplayName = (String) allMembers.next();
+                  Attribute attribute = attribs.get("displayname");
+                  NamingEnumeration allMembers = attribute.getAll();
+                  while ((allMembers != null) && allMembers.hasMoreElements()) {
+                     this.sDisplayName = (String) allMembers.next();
+
+                  }
+
+                  attribute = attribs.get("mail");
+                  allMembers = attribute.getAll();
+                  while ((allMembers != null) && allMembers.hasMoreElements()) {
+                     this.sMail = (String) allMembers.next();
+                  }
+
+                  attribute = attribs.get("sAMAccountName");
+                  allMembers = attribute.getAll();
+                  while ((allMembers != null) && allMembers.hasMoreElements()) {
+                     this.sUserID = (String) allMembers.next();
+                     /*
+                      * to avoid case sensitive user creation
+                      */
+                     this.sUserID = this.sUserID.toLowerCase();
+                  }
 
                }
-
-               attribute = attribs.get("mail");
-               allMembers = attribute.getAll();
-               while ((allMembers != null) && allMembers.hasMoreElements()) {
-                  this.sMail = (String) allMembers.next();
-               }
-
-               attribute = attribs.get("sAMAccountName");
-               allMembers = attribute.getAll();
-               while ((allMembers != null) && allMembers.hasMoreElements()) {
-                  this.sUserID = (String) allMembers.next();
-                  /*
-                   * to avoid case sensitive user creation
-                   */
-                  this.sUserID = this.sUserID.toLowerCase();
-               }
-
             }
 
          } catch (Exception e) {

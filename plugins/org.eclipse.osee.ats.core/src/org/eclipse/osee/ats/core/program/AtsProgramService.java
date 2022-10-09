@@ -191,10 +191,12 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgram(IAtsInsertion insertion) {
-      Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(insertion.getStoreObject(),
-         AtsRelationTypes.ProgramToInsertion_Program);
-      if (related.size() > 0) {
-         return atsApi.getProgramService().getProgramById(related.iterator().next());
+      if (insertion != null) {
+         Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(insertion.getStoreObject(),
+            AtsRelationTypes.ProgramToInsertion_Program);
+         if (related.size() > 0) {
+            return atsApi.getProgramService().getProgramById(related.iterator().next());
+         }
       }
       return null;
    }

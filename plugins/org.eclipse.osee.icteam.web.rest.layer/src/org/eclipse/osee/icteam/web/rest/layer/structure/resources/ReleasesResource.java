@@ -160,8 +160,10 @@ public class ReleasesResource extends AbstractConfigResource {
             String type1 = AtsRelationTypes.ProjectToVersion_Project.getRelationType().toString();
             String side = AtsRelationTypes.ProjectToVersion_Project.getSide().toString();
             String key = "RelationTypeSide - uuid=[" + uuid + "] type=[" + type1 + "] side=[" + side + "]";
-            ITransferableArtifact project = artifact.getRelatedArtifacts(key).get(0);
-
+            ITransferableArtifact project = null;
+            if (artifact.getRelatedArtifacts(key) != null) {
+               project = artifact.getRelatedArtifacts(key).get(0);
+            }
             if (project != null) {
                projectReadable = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
                   Long.valueOf(project.getUuid())).getResults();

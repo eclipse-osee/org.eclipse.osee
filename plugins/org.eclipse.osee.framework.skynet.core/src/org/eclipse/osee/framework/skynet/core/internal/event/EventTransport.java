@@ -203,7 +203,10 @@ public class EventTransport implements Transport, IFrameworkEventListener {
       if (preferences.isEnableRemoteEventLoopback()) {
          EventUtil.eventLog("IEM: Loopback enabled - Returning events as Remote event.");
          String newSessionId = GUID.create();
-         remoteEvent.getNetworkSender().setSessionId(newSessionId);
+         if (remoteEvent.getNetworkSender() != null) {
+            remoteEvent.getNetworkSender().setSessionId(newSessionId);
+         }
+
          onEvent(remoteEvent);
       }
    }
@@ -215,12 +218,14 @@ public class EventTransport implements Transport, IFrameworkEventListener {
          public void run() {
             try {
                if (remoteEvent != null) {
-                  Sender sender = Sender.createSender(remoteEvent.getNetworkSender());
+                  if (remoteEvent.getNetworkSender() != null) {
+                     Sender sender = Sender.createSender(remoteEvent.getNetworkSender());
 
-                  // If the sender's sessionId is the same as this client, then this event was
-                  // created in this client and returned by remote event manager; ignore and continue
-                  if (!sender.isLocal()) {
-                     handleEvent(sender, remoteEvent);
+                     // If the sender's sessionId is the same as this client, then this event was
+                     // created in this client and returned by remote event manager; ignore and continue
+                     if (!sender.isLocal()) {
+                        handleEvent(sender, remoteEvent);
+                     }
                   }
                }
             } catch (Throwable th) {

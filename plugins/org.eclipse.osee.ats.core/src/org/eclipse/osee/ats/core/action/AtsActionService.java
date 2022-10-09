@@ -181,10 +181,12 @@ public class AtsActionService implements IAtsActionService {
                   group = atsApi.getAgileService().getAgileFeatureGroup(ArtifactId.valueOf(featureGroup));
                } else {
                   IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamWf.getTeamDefinition());
-                  for (IAgileFeatureGroup grp : atsApi.getAgileService().getAgileFeatureGroups(aTeam)) {
-                     if (grp.getName().equals(featureGroup)) {
-                        group = grp;
-                        break;
+                  if (aTeam != null) {
+                     for (IAgileFeatureGroup grp : atsApi.getAgileService().getAgileFeatureGroups(aTeam)) {
+                        if (grp.getName().equals(featureGroup)) {
+                           group = grp;
+                           break;
+                        }
                      }
                   }
                }

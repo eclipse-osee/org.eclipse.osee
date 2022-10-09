@@ -131,7 +131,10 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsApiService.get().getColumnService().getColumn(column.getId()).getColumnText((IAtsObject) element);
+         if (AtsApiService.get().getColumnService().getColumn(column.getId()) != null) {
+            result =
+               AtsApiService.get().getColumnService().getColumn(column.getId()).getColumnText((IAtsObject) element);
+         }
       }
       return result;
    }

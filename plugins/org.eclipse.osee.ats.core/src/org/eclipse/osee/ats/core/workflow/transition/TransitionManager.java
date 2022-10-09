@@ -176,7 +176,9 @@ public class TransitionManager implements IExecuteListener {
       }
       for (IAtsWorkItem workItem : helper.getWorkItems()) {
          try {
-            helper.getChangeSet().add(workItem);
+            if (helper.getChangeSet() != null) {
+               helper.getChangeSet().add(workItem);
+            }
             // Validate toState valid
             StateDefinition fromStateDef = workItem.getStateDefinition();
             if (fromStateDef == null) {
@@ -300,7 +302,9 @@ public class TransitionManager implements IExecuteListener {
    public void handleTransition(TransitionResults results) {
       try {
          IAtsChangeSet changes = helper.getChangeSet();
-         changes.addExecuteListener(this);
+         if (changes != null) {
+            changes.addExecuteListener(this);
+         }
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             try {
 
@@ -372,7 +376,6 @@ public class TransitionManager implements IExecuteListener {
 
                   workItemFromStateMap.put(workItem, fromState.getName());
                }
-
             } catch (Exception ex) {
                results.addResult(workItem,
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
@@ -380,6 +383,7 @@ public class TransitionManager implements IExecuteListener {
             results.getWorkItemIds().add(
                ArtifactToken.valueOf(workItem.getId(), workItem.getName(), helper.getServices().getAtsBranch()));
          }
+
       } catch (Exception ex) {
          results.addResult(
             new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
@@ -644,8 +648,10 @@ public class TransitionManager implements IExecuteListener {
    public TransitionResults handleAllAndPersist() {
       TransitionResults result = handleAll();
       if (result.isEmpty()) {
-         TransactionId transactionId = helper.getChangeSet().execute();
-         result.setTransaction(transactionId);
+         if (helper.getChangeSet() != null) {
+            TransactionId transactionId = helper.getChangeSet().execute();
+            result.setTransaction(transactionId);
+         }
 
          if (helper.getServices().getEventService() != null) {
             helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,

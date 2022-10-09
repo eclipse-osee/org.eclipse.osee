@@ -179,6 +179,10 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       try {
          TreeItem dragOverTreeITem = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
 
+         if (dragOverTreeITem == null) {
+            return;
+         }
+
          // This should always be true as all items are Group Explorer Items
          if (dragOverTreeITem.getData() instanceof GroupExplorerItem) {
             final GroupExplorerItem dragOverExplorerItem = (GroupExplorerItem) dragOverTreeITem.getData();

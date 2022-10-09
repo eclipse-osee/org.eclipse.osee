@@ -107,9 +107,11 @@ public class ChangeSet implements CharSequence {
    }
 
    public void applyChanges(File outFile) throws IOException {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
-      applyChanges(writer);
-      writer.close();
+      try (FileOutputStream outputStream = new FileOutputStream(outFile);
+         OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+         BufferedWriter writer = new BufferedWriter(streamWriter)) {
+         applyChanges(writer);
+      }
    }
 
    public void insertBefore(int index, char[] newChars, int offset, int length, boolean copy) {

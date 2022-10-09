@@ -51,6 +51,9 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
 
          if (Strings.isValid(forwardedServer)) {
             URI location = response.getLocation();
+            if (location == null) {
+               throw new RuntimeException("location is null");
+            }
             String scheme = location.getScheme();
 
             URI finalUri = UriBuilder//
@@ -77,6 +80,9 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
 
          if (Strings.isValid(forwardedServer)) {
             URI location = response.getLocation();
+            if (location == null) {
+               throw new RuntimeException("location is null");
+            }
             String scheme = location.getScheme();
 
             URI finalUri = UriBuilder//

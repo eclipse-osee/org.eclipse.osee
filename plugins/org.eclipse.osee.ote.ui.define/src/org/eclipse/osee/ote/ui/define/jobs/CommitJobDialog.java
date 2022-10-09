@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ote.ui.define.jobs;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
@@ -168,8 +170,10 @@ class CommitJobDialog extends UIJob {
                         break;
                      case Outfile:
                         try {
-                           toReturn =
-                              new ArtifactTestRunOperator(artifact).getOutfileAttribute().getDisplayableString();
+                           Attribute<InputStream> attr = new ArtifactTestRunOperator(artifact).getOutfileAttribute();
+                           if (attr != null) {
+                              toReturn = attr.getDisplayableString();
+                           }
                         } catch (Exception ex) {
                            OseeLog.log(Activator.class, Level.SEVERE, "Error getting Outfile", ex);
                         }

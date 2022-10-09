@@ -86,7 +86,9 @@ public class ServerShutdownCommand implements ConsoleCommand {
             // Stop OSGI
             Bundle thisBundle = FrameworkUtil.getBundle(getClass());
             Bundle frameworkBundle = thisBundle.getBundleContext().getBundle(0);
-            frameworkBundle.stop();
+            if (frameworkBundle != null) {
+               frameworkBundle.stop();
+            }
          }
          return Boolean.TRUE;
       }

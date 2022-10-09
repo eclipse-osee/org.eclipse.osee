@@ -63,8 +63,10 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
             collector.addChildRoughArtifact(directoryArtifact);
             File[] subFiles = file.listFiles(extractor.getFileFilter());
             if (files.length > 0) {
-               double subPercentage = workPercentage / subFiles.length;
-               extractArtifacts(monitor, subPercentage, subFiles, collector, directoryArtifact);
+               if (subFiles != null) {
+                  double subPercentage = workPercentage / subFiles.length;
+                  extractArtifacts(monitor, subPercentage, subFiles, collector, directoryArtifact);
+               }
             }
          } else {
             throw new OseeStateException("Source location [%s] is not a valid file or directory", file);

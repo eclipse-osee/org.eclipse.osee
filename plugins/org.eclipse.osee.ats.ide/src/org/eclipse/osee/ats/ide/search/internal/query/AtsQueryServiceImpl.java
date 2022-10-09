@@ -133,8 +133,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          String jsonValue = (String) attr.getValue();
          try {
             AtsSearchData data = fromJson(jsonValue);
-            if (attrId.equals(data.getId())) {
-               return attr;
+            if (data != null) {
+               if (attrId.equals(data.getId())) {
+                  return attr;
+               }
             }
          } catch (Exception ex) {
             // do nothing

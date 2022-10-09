@@ -37,7 +37,7 @@ public class BranchViewImageHandler {
    private static int X_LOCATION = 0;
    private static int Y_LOCATION = 7;
 
-   public static Image getImage(Object element, int columnIndex) {
+   public static synchronized Image getImage(Object element, int columnIndex) {
       Image returnImage = null;
 
       //lazy loading of images

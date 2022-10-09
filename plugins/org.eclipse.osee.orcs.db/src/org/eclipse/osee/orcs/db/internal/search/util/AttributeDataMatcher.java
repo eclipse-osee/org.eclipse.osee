@@ -154,7 +154,9 @@ public class AttributeDataMatcher {
             } catch (OseeCoreException ex) {
                throw new IOException(ex);
             }
-            stream = new ByteArrayInputStream(valueAsBytes.array());
+            if (valueAsBytes != null) {
+               stream = new ByteArrayInputStream(valueAsBytes.array());
+            }
          } else {
             String value = null;
             if (dataProxy instanceof CharacterDataProxy) {

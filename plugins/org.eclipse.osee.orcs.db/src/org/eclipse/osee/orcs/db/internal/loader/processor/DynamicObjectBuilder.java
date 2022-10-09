@@ -220,11 +220,13 @@ public class DynamicObjectBuilder {
                Collection<ObjectMap> values = entries.getValue();
                if (values != null) {
                   ObjectMap object = Iterables.getFirst(values, null);
-                  ObjectType objectType = getObjectType(object.getDescriptor());
-                  if (ObjectType.ATTRIBUTE == objectType || ObjectType.RELATION == objectType) {
-                     data.put(key, groupByTypeName(objectType, values));
-                  } else {
-                     data.put(key, asSetMap(values));
+                  if (object != null) {
+                     ObjectType objectType = getObjectType(object.getDescriptor());
+                     if (ObjectType.ATTRIBUTE == objectType || ObjectType.RELATION == objectType) {
+                        data.put(key, groupByTypeName(objectType, values));
+                     } else {
+                        data.put(key, asSetMap(values));
+                     }
                   }
                }
             }

@@ -98,7 +98,7 @@ public class ScriptItem extends DataItem implements IXViewerItem {
 
    private String getFullLabel() {
       String repository = null;
-      String type = null;
+      String type = "";
       String path = null;
       urlMatcher.reset(scriptUrl);
       if (urlMatcher.find()) {

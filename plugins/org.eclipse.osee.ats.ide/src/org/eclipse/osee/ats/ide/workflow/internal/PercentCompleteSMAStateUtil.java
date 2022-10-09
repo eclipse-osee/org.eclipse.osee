@@ -39,8 +39,7 @@ public class PercentCompleteSMAStateUtil {
             int items = 0;
             for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
                if (!team.isCancelled()) {
-                  percent +=
-                     getPercentCompleteSMAState(AtsApiService.get().getQueryServiceIde().getArtifact(team));
+                  percent += getPercentCompleteSMAState(AtsApiService.get().getQueryServiceIde().getArtifact(team));
                   items++;
                }
             }
@@ -68,6 +67,9 @@ public class PercentCompleteSMAStateUtil {
    }
 
    private static IAtsStateManager getStateManager(Artifact artifact) {
+      if (cast(artifact) == null) {
+         return null;
+      }
       return cast(artifact).getStateMgr();
    }
 

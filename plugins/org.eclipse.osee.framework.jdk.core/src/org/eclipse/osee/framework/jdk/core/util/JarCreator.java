@@ -50,12 +50,12 @@ public class JarCreator {
       out.putNextEntry(new JarEntry(pathInJar.replace('\\', '/')));
 
       // Read the file and write it to the jar.
-      FileInputStream in = new FileInputStream(file);
-      int bytesRead;
-      while ((bytesRead = in.read(buffer)) != -1) {
-         out.write(buffer, 0, bytesRead);
+      try (FileInputStream in = new FileInputStream(file)) {
+         int bytesRead;
+         while ((bytesRead = in.read(buffer)) != -1) {
+            out.write(buffer, 0, bytesRead);
+         }
       }
-      in.close();
    }
 
    private void addRelativeToPosition(File path, int rootPathPos, FileFilter filenameFilter) throws IOException {

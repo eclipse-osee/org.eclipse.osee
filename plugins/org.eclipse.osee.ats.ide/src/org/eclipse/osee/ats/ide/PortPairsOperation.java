@@ -70,7 +70,7 @@ public final class PortPairsOperation extends AbstractOperation {
       }
       logf("Porting %d pairs of workflows.", portPairs.size());
 
-      double pairPercentage = 100 / portPairs.size();
+      double pairPercentage = (double) 100 / (double) portPairs.size();
       for (Pair<String, String> pair : portPairs) {
          portPair(pair);
          monitor.worked(calculateWork(pairPercentage));

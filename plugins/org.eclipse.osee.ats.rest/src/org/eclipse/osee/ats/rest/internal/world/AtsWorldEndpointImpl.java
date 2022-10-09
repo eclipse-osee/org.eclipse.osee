@@ -186,6 +186,9 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
 
+      if (customization == null) {
+         return "";
+      }
       String table = getCustomizedTable(atsApiServer,
          "Collector - " + collectorArt.getName() + " - Customization: " + customization.getName(), customization,
          collectorItems);

@@ -125,6 +125,10 @@ public class PercentCompleteTotalUtil {
     * @param services JavaTip
     */
    public static int getPercentCompleteSMAStateTotal(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
+      if (getStateMetricsData(atsObject, state, atsApi) == null) {
+         return 0;
+      }
+
       return getStateMetricsData(atsObject, state, atsApi).getResultingPercent();
    }
 

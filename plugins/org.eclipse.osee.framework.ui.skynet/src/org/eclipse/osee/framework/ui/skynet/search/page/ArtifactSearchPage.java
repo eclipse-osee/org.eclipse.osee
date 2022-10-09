@@ -113,15 +113,27 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
             return m1.getOffset() - m2.getOffset();
          }
 
-         String name1 = fLabelProvider.getText(e1);
-         String name2 = fLabelProvider.getText(e2);
-         if (name1 == null) {
-            name1 = "";//$NON-NLS-1$
+         synchronized (fLabelProvider) {
+            if (fLabelProvider.getText(e1) != null) {
+               final Object name1 = fLabelProvider.getText(e1);
+
+               if (fLabelProvider.getText(e2) != null) {
+                  final Object name2 = fLabelProvider.getText(e2);
+
+                  return getComparator().compare((String) name1, (String) name2);
+               } else {
+                  return getComparator().compare((String) name1, new String(""));
+
+               }
+            } else {
+               if (fLabelProvider.getText(e2) != null) {
+                  final Object name2 = fLabelProvider.getText(e2);
+                  return getComparator().compare(new String(""), (String) name2);
+               } else {
+                  return getComparator().compare(new String(""), new String(""));
+               }
+            }
          }
-         if (name2 == null) {
-            name2 = "";//$NON-NLS-1$
-         }
-         return getComparator().compare(name1, name2);
       }
    }
 
@@ -274,16 +286,18 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
          AbstractArtifactSearchResult result = getInput();
          if (result != null) {
-            int itemCount = ((IStructuredContentProvider) tv.getContentProvider()).getElements(getInput()).length;
-            if (showLineMatches()) {
-               int matchCount = getInput().getMatchCount();
-               if (itemCount < matchCount) {
-                  return String.format("%s (showing %s of %s matches)", label, itemCount, matchCount);
-               }
-            } else {
-               int fileCount = getInput().getElements().length;
-               if (itemCount < fileCount) {
-                  return String.format("%s (showing %s of %s files)", label, itemCount, fileCount);
+            if (((IStructuredContentProvider) tv.getContentProvider()).getElements(getInput()) != null) {
+               int itemCount = ((IStructuredContentProvider) tv.getContentProvider()).getElements(getInput()).length;
+               if (showLineMatches()) {
+                  int matchCount = getInput().getMatchCount();
+                  if (itemCount < matchCount) {
+                     return String.format("%s (showing %s of %s matches)", label, itemCount, matchCount);
+                  }
+               } else {
+                  int fileCount = getInput().getElements().length;
+                  if (itemCount < fileCount) {
+                     return String.format("%s (showing %s of %s files)", label, itemCount, fileCount);
+                  }
                }
             }
          }

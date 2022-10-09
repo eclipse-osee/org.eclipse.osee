@@ -352,7 +352,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, String... values) {
-      attributeType.equals(CoreAttributeTypes.LoginId);
       if (attributeType.getName().contains("Login Id")) {
          checkPermissionsForLoginId(attributeType);
       }
@@ -692,11 +691,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public boolean deleteBranchCategory(BranchId branch, BranchCategoryToken category) {
       validateBuilder();
       List<GammaId> categories = orcsApi.getQueryFactory().branchQuery().getBranchCategoryGammaId(branch, category);
-      if (categories.isEmpty()) {
-         return false;
-      }
-      for (GammaId gammaId : categories) {
-         txData.deleteBranchCategory(gammaId);
+
+      if (categories != null) {
+         if (categories.isEmpty()) {
+            return false;
+         }
+         for (GammaId gammaId : categories) {
+            txData.deleteBranchCategory(gammaId);
+         }
       }
       return true;
 

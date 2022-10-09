@@ -55,8 +55,10 @@ public class ExcelXmlArtifact implements RowProcessor {
          CoreAttributeTypes.StaticId, staticId, branch);
       if (artifact != null) {
          String xmlData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, null);
-         Reader reader = new StringReader(xmlData);
-         xmlReader.parse(new InputSource(reader));
+         if (xmlData != null) {
+            Reader reader = new StringReader(xmlData);
+            xmlReader.parse(new InputSource(reader));
+         }
       }
       initialized = true;
    }

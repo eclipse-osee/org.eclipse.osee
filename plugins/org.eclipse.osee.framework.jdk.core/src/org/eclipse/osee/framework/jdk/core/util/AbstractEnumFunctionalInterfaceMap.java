@@ -177,6 +177,9 @@ public class AbstractEnumFunctionalInterfaceMap<K extends Enum<K>, F> implements
     */
 
    protected AbstractEnumFunctionalInterfaceMap<K, F> ofEntriesLoader(Map.Entry<K, F>[] entries) {
+      if (entries == null) {
+         throw new NullPointerException("entries is null");
+      }
       for (var entry : entries) {
          var key = entry.getKey();
          if (this.enumMap.containsKey(key)) {

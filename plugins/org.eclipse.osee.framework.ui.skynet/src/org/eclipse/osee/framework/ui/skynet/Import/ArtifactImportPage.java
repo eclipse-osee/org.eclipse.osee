@@ -416,7 +416,9 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
          File file = getSourceFile();
          if (file != null) {
-            settings.put("source.file", getSourceFile().getAbsolutePath());
+            if (getSourceFile() != null) {
+               settings.put("source.file", getSourceFile().getAbsolutePath());
+            }
          }
 
          IArtifactExtractor parser = getArtifactParser();

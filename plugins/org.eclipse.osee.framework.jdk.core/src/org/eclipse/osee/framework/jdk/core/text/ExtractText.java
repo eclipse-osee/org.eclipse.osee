@@ -49,7 +49,9 @@ public class ExtractText {
                         pos = line.indexOf("*/");
                      }
                   }
-                  writeText();
+                  if (line != null) {
+                     writeText();
+                  }
                } else { // line contains a string
                   writeText();
                }

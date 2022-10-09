@@ -107,14 +107,19 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
          try {
             Map<String, Object> headers = new HashMap<>();
             Enumeration<?> propertyNames = message.getPropertyNames();
-            while (propertyNames.hasMoreElements()) {
-               String name = (String) propertyNames.nextElement();
-               Object element = message.getObjectProperty(name);
-               headers.put(name, element);
+            if (propertyNames != null) {
+               while (propertyNames.hasMoreElements()) {
+                  String name = (String) propertyNames.nextElement();
+                  Object element = message.getObjectProperty(name);
+                  headers.put(name, element);
+               }
             }
-            listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
-            OseeLog.log(Activator.class, Level.FINE,
-               String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
+
+            if (activeMqUtil.translateMessage(message, listener.getClazz()) != null) {
+               listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
+               OseeLog.log(Activator.class, Level.FINE, String.format("recieved message %s - %s",
+                  message.getJMSDestination().toString(), message.toString()));
+            }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Exception ", ex);
          }

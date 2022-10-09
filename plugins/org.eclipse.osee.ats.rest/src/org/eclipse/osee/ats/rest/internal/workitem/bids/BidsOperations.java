@@ -85,7 +85,9 @@ public class BidsOperations {
                   IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
                   IAtsTeamDefinition teamDef = atsApi.getVersionService().getTeamDefinition(version);
                   IAtsProgram program = atsApi.getProgramService().getProgram(teamDef);
-                  bid.setProgram(program.getArtifactToken());
+                  if (program != null) {
+                     bid.setProgram(program.getArtifactToken());
+                  }
                }
             }
 
@@ -149,8 +151,13 @@ public class BidsOperations {
       if (bids.getResults().isErrors()) {
          return bids;
       }
-      bids.setTeamWf(teamWf.getStoreObject());
+      if (teamWf != null) {
+         bids.setTeamWf(teamWf.getStoreObject());
+      }
 
+	  if (teamWf == null) {
+	  	throw new RuntimeException("teamWf is null");
+	  }
       IAtsProgram program = atsApi.getProgramService().getProgram(teamWf);
       if (program == null || program.isInvalid()) {
          bids.getResults().errorf("No Program found for workflow %s", teamWf.toStringWithAtsId());
@@ -187,7 +194,9 @@ public class BidsOperations {
             IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
             IAtsTeamDefinition teamDef = atsApi.getVersionService().getTeamDefinition(version);
             IAtsProgram prog = atsApi.getProgramService().getProgram(teamDef);
-            bid.setProgram(prog.getArtifactToken());
+            if (prog != null) {
+               bid.setProgram(prog.getArtifactToken());
+            }
          }
 
          // Populate related teamWf(s)

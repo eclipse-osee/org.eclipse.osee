@@ -65,28 +65,30 @@ public class AgileBacklogWriter {
          else {
             ArtifactToken updateBacklogArt = atsApi.getQueryService().getArtifact(updatedBacklog.getId());
             IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamId());
-            ArtifactToken updatedTeamArt = updatedTeam.getStoreObject();
-            if (!updateBacklogArt.isOfType(AtsArtifactTypes.Goal)) {
-               throw new OseeArgumentException("Backlog ID %d not valid type", updatedBacklog.getId());
-            } else if (atsApi.getRelationResolver().getRelatedCount(updateBacklogArt,
-               AtsRelationTypes.AgileTeamToBacklog_AgileTeam) > 0) {
-               ArtifactToken currentTeamArt = atsApi.getRelationResolver().getRelatedOrNull(updateBacklogArt,
-                  AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
-               if (updatedTeamArt.notEqual(currentTeamArt)) {
-                  changes.unrelate(currentTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
-                  changes.add(currentTeamArt);
+            if (updatedTeam != null) {
+               ArtifactToken updatedTeamArt = updatedTeam.getStoreObject();
+               if (!updateBacklogArt.isOfType(AtsArtifactTypes.Goal)) {
+                  throw new OseeArgumentException("Backlog ID %d not valid type", updatedBacklog.getId());
+               } else if (atsApi.getRelationResolver().getRelatedCount(updateBacklogArt,
+                  AtsRelationTypes.AgileTeamToBacklog_AgileTeam) > 0) {
+                  ArtifactToken currentTeamArt = atsApi.getRelationResolver().getRelatedOrNull(updateBacklogArt,
+                     AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
+                  if (updatedTeamArt.notEqual(currentTeamArt)) {
+                     changes.unrelate(currentTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
+                     changes.add(currentTeamArt);
+                  }
                }
-            }
-            changes.relate(updatedTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
-            if (!atsApi.getRelationResolver().areRelated(updatedTeamArt, CoreRelationTypes.DefaultHierarchical_Child,
-               updateBacklogArt)) {
-               if (atsApi.getRelationResolver().getParent(updateBacklogArt) != null) {
-                  changes.unrelate(atsApi.getRelationResolver().getParent(updateBacklogArt),
-                     CoreRelationTypes.DefaultHierarchical_Child, updateBacklogArt);
+               changes.relate(updatedTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
+               if (!atsApi.getRelationResolver().areRelated(updatedTeamArt, CoreRelationTypes.DefaultHierarchical_Child,
+                  updateBacklogArt)) {
+                  if (atsApi.getRelationResolver().getParent(updateBacklogArt) != null) {
+                     changes.unrelate(atsApi.getRelationResolver().getParent(updateBacklogArt),
+                        CoreRelationTypes.DefaultHierarchical_Child, updateBacklogArt);
+                  }
+                  changes.relate(updatedTeamArt, CoreRelationTypes.DefaultHierarchical_Child, updateBacklogArt);
                }
-               changes.relate(updatedTeamArt, CoreRelationTypes.DefaultHierarchical_Child, updateBacklogArt);
+               changes.add(updatedTeamArt);
             }
-            changes.add(updatedTeamArt);
          }
       }
       if (!changes.isEmpty()) {

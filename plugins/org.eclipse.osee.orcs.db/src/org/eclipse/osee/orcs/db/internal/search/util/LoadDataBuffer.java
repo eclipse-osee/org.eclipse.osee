@@ -42,8 +42,10 @@ public class LoadDataBuffer {
       relations = newLinkedHashListMultimap(initialSize);
    }
 
-   public synchronized void clear() {
-      artifacts.clear();
+   public void clear() {
+      synchronized (artifacts) {
+         artifacts.clear();
+      }
       attributes.clear();
       relations.clear();
    }

@@ -186,6 +186,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public ArtifactToken getStoreObject() {
+      super.getStoreObject();
       return atsApi.getQueryService().getArtifact(artifact);
    }
 

@@ -143,7 +143,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
                if (awa.getStateMgr() == null) {
                   rd.errorf("StateManager can not be null for %s", artifact.toStringWithId());
                }
-               awa.getStateMgr().isDirty();
 
                if (awa.getLog().isDirty()) {
                   rd.error("Log is dirty");

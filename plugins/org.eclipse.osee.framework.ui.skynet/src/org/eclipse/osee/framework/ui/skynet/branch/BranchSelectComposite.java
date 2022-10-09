@@ -136,6 +136,9 @@ public class BranchSelectComposite extends Composite {
 
    public void setSelected(BranchToken branch) {
       selectedBranch = branch;
+      if (branch == null) {
+         throw new RuntimeException("branch is null");
+      }
       if (branch.isInvalid()) {
          branchSelectTextWidget.setText(" -- Select A Branch -- ");
       } else {

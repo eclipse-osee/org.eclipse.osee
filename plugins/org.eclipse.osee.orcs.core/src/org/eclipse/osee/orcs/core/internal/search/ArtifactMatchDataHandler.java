@@ -145,9 +145,11 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       public Collection<AttributeReadable<?>> getElements() {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
          // look at all attributes since search already filters on deletion flag
-         for (AttributeReadable<?> attribute : item.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
-            if (attributeMatches.containsKey(attribute)) {
-               filtered.add(attribute);
+         if (item.getAttributes(DeletionFlag.INCLUDE_DELETED) != null) {
+            for (AttributeReadable<?> attribute : item.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
+               if (attributeMatches.containsKey(attribute)) {
+                  filtered.add(attribute);
+               }
             }
          }
          return filtered;

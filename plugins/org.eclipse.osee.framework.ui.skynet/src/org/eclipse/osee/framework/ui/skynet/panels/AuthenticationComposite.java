@@ -221,7 +221,9 @@ public class AuthenticationComposite extends Composite {
                      LabelEnum labelKey = (LabelEnum) field.getData(LABEL_KEY);
 
                      dataMap.put(labelKey, field.getText());
-                     updateFieldStatus(labelKey, field);
+                     if (labelKey != null) {
+                        updateFieldStatus(labelKey, field);
+                     }
                      updateDefaultButtonStatus();
                   }
                }

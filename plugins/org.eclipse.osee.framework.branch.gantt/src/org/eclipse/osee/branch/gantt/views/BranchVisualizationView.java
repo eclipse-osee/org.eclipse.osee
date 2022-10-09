@@ -198,7 +198,9 @@ public class BranchVisualizationView extends ViewPart {
       Calendar endDate = Calendar.getInstance();
       List<TransactionRecord> transactionsForBranch = TransactionManager.getTransactionsForBranch(branch);
       Date lastTransactionDate = getLastTransactionDate(transactionsForBranch);
-      endDate.setTime(lastTransactionDate);
+      if (lastTransactionDate != null) {
+         endDate.setTime(lastTransactionDate);
+      }
 
       // Create event and link to parent, if applicable
       GanttEvent gantEvent = new GanttEvent(ganttChart, branch.getName(), creationDateCal, endDate, 35);

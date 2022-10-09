@@ -136,8 +136,10 @@ public class ActionPage {
          results = atsApi.getQueryService().getArtifact(artId).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
-         if (teamWf.isValid() && teamWf.notEqual(action)) {
-            results = getTeamStr(atsApi, teamWf);
+         if (teamWf != null) {
+            if (teamWf.isValid() && teamWf.notEqual(action)) {
+               results = getTeamStr(atsApi, teamWf);
+            }
          }
       }
       return results;
@@ -160,11 +162,14 @@ public class ActionPage {
    private String getAIStr(ArtifactReadable action) {
       StringBuilder sb = new StringBuilder();
       ArtifactReadable teamWf = getParentTeamWf(action);
-      if (teamWf.isValid()) {
-         Collection<ArtifactId> artifactIds = teamWf.getAttributeValues(AtsAttributeTypes.ActionableItemReference);
-         for (ArtifactId artifactId : artifactIds) {
-            sb.append(atsApi.getQueryService().getArtifact(artifactId));
-            sb.append(", ");
+
+      if (teamWf != null) {
+         if (teamWf.isValid()) {
+            Collection<ArtifactId> artifactIds = teamWf.getAttributeValues(AtsAttributeTypes.ActionableItemReference);
+            for (ArtifactId artifactId : artifactIds) {
+               sb.append(atsApi.getQueryService().getArtifact(artifactId));
+               sb.append(", ");
+            }
          }
       }
       return sb.toString().replaceFirst(", $", "");

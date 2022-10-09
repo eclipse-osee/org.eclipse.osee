@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * This is a custom widget that allows for a user to enter an IP Address (or net mask).
- * 
+ *
  * @author Ken J. Aguilar
  */
 public class IPAddressBox extends Composite {
@@ -132,7 +132,7 @@ public class IPAddressBox extends Composite {
 
    /**
     * Creates a new IPAddressBox
-    * 
+    *
     * @param parent The parent to which this IPAddressBox will be a child of
     */
    public IPAddressBox(final Composite parent, boolean useDash) {
@@ -268,6 +268,7 @@ public class IPAddressBox extends Composite {
 
    @Override
    public void setEnabled(boolean enabled) {
+      super.setEnabled(enabled);
       box[0].setEnabled(enabled);
       box[1].setEnabled(enabled);
       box[2].setEnabled(enabled);

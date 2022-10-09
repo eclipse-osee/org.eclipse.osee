@@ -166,8 +166,10 @@ public class WfeReloadTab extends FormPage {
             @Override
             public void run() {
                if (Widgets.isAccessible(editor.getReloadButton())) {
-                  editor.getReloadButton().setText("Reloading...");
-                  editor.getReloadButton().getParent().layout(true);
+                  if (editor.getReloadButton() != null) {
+                     editor.getReloadButton().setText("Reloading...");
+                     editor.getReloadButton().getParent().layout(true);
+                  }
                }
                IManagedForm managedForm = getManagedForm();
                if (managedForm != null && Widgets.isAccessible(getManagedForm().getForm())) {

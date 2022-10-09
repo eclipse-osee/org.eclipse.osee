@@ -343,7 +343,10 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
 
    public void storeExpandedAndSelection() {
       // Store selected so can re-select after event re-draw
-      selected = getSelectedItems();
+      if (treeViewer != null) {
+         selected = getSelectedItems();
+      }
+
       if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
          expanded = treeViewer.getExpandedElements();
       }
