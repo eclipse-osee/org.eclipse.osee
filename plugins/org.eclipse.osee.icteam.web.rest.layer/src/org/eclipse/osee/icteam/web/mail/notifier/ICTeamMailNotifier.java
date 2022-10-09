@@ -526,8 +526,11 @@ public class ICTeamMailNotifier {
       } else if (types.contains(ICTeamNotifyType.PasswordChangeRequest)) {
          buffer = currentLoggedInUser;
       }
-
-      return buffer.toString();
+      if (buffer != null) {
+         return buffer.toString();
+      } else {
+         return "";
+      }
    }
 
    /**

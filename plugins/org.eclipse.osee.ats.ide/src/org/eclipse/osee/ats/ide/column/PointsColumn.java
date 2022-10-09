@@ -180,7 +180,9 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
                }
             }
          }
-         promptChangePoints(workItems, pointsAttrType, atsApi);
+         if (pointsAttrType != null) {
+            promptChangePoints(workItems, pointsAttrType, atsApi);
+         }
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

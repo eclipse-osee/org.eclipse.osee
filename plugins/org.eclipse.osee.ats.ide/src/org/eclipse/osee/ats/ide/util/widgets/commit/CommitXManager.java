@@ -81,7 +81,9 @@ public class CommitXManager extends XViewer {
                atsApi.getBranchService().getCommitOverrideOps().getCommitOverride(xCommitManager.getTeamArt(), branch);
          }
          if (override == null) {
-            mm.insertAfter(MENU_GROUP_PRE, new CommitOverrideAction(teamWf, branch, atsApi));
+            if (branch != null) {
+               mm.insertAfter(MENU_GROUP_PRE, new CommitOverrideAction(teamWf, branch, atsApi));
+            }
          } else if (branch != null) {
             mm.insertAfter(MENU_GROUP_PRE, new RemoveCommitOverrideAction(teamWf, branch, atsApi));
          }

@@ -39,7 +39,9 @@ class ActiveMqUtil {
          String text = ((TextMessage) message).getText();
          if (clazz != null) {
             try {
-               messageBody = JAXBUtil.unmarshal(text, clazz);
+               if (text != null) {
+                  messageBody = JAXBUtil.unmarshal(text, clazz);
+               }
             } catch (Exception ex) {
                throw new OseeCoreException(ex.getCause(), "Unmarshal exception for text [%s] and class [%s]", text,
                   clazz);

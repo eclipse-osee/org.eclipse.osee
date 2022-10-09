@@ -388,21 +388,25 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
 
    @Override
    public void onMessage(Message jmsMessage) {
-      try {
-         String correlationId = jmsMessage.getJMSCorrelationID();
-         if (correlationId != null) {
-            OseeMessagingListener listener = replyListeners.get(correlationId);
-            if (listener != null) {
-               listener.process(activeMqUtil.translateMessage(jmsMessage, listener.getClazz()),
-                  new HashMap<String, Object>(), new ReplyConnectionActiveMqImpl());
+      if (jmsMessage != null) {
+         try {
+            String correlationId = jmsMessage.getJMSCorrelationID();
+            if (correlationId != null) {
+               OseeMessagingListener listener = replyListeners.get(correlationId);
+               if (listener != null) {
+                  if (activeMqUtil.translateMessage(jmsMessage, listener.getClazz()) != null) {
+                     listener.process(activeMqUtil.translateMessage(jmsMessage, listener.getClazz()),
+                        new HashMap<String, Object>(), new ReplyConnectionActiveMqImpl());
+                  }
+               }
             }
+         } catch (JMSException ex) {
+            OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.SEVERE, ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.SEVERE, ex);
          }
-      } catch (JMSException ex) {
-         OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.SEVERE, ex);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.SEVERE, ex);
+         OseeLog.logf(Activator.class, Level.FINE, "recieved reply message %s", jmsMessage);
       }
-      OseeLog.logf(Activator.class, Level.FINE, "recieved reply message %s", jmsMessage);
    }
 
    @Override

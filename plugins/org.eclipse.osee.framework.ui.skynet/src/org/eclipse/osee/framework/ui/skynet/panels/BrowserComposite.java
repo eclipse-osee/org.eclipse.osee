@@ -60,6 +60,9 @@ public class BrowserComposite extends Composite {
    }
 
    public void setHtml(String html) throws SWTException, IllegalArgumentException {
+      if (previewBrowser == null) {
+         throw new RuntimeException("previewBrowser is null");
+      }
       previewBrowser.setText(html);
    }
 

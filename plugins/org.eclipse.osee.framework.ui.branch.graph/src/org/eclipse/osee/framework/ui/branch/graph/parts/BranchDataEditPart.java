@@ -76,8 +76,6 @@ public class BranchDataEditPart extends AbstractGraphicalEditPart {
          BranchId branch = (BranchId) getModel();
          GraphEditPart graphEditPart = (GraphEditPart) getParent().getParent();
          GraphCache graphCache = (GraphCache) graphEditPart.getModel();
-         //BranchModel model =
-         graphCache.getBranchModel(branch);
 
          // TODO: prune the tree
          //         List<BranchModel> children = model.getChildren();

@@ -59,6 +59,7 @@ public class ReplaceWithBaselineVersionDialog extends TitleAreaDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
+      super.createDialogArea(container);
       Composite composite = new Composite(container, SWT.NONE);
 
       Button attribute = new Button(composite, SWT.RADIO);

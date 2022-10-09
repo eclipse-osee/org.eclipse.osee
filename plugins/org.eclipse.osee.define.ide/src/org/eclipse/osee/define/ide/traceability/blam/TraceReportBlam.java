@@ -295,7 +295,9 @@ public class TraceReportBlam extends AbstractBlam {
          boolean excelValid = excelInputStream != null && excelInputStream.available() > 0;
 
          if (wasEmpty && !excelValid) {
-            resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "Nothing Reported"));
+            if (resultsTabs != null) {
+               resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "Nothing Reported"));
+            }
             createReport = false;
          }
 

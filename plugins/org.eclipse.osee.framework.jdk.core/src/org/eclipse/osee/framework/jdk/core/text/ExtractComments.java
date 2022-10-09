@@ -124,13 +124,13 @@ public class ExtractComments {
       Object[] text = app.extract(args[0]);
 
       try {
-         FileWriter out = new FileWriter("comments.txt");
-         for (int i = 0; i < text.length; i++) {
-            String str = (String) text[i];
-            out.write(str, 0, str.length());
-            out.write('\n');
+         try (FileWriter out = new FileWriter("comments.txt")) {
+            for (int i = 0; i < text.length; i++) {
+               String str = (String) text[i];
+               out.write(str, 0, str.length());
+               out.write('\n');
+            }
          }
-         out.close();
       } catch (IOException ex) {
          XConsoleLogger.err(Lib.exceptionToString(ex));
          return;

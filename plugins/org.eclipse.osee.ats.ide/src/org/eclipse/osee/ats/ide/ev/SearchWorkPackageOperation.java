@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -53,9 +52,6 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       super(operationName, Activator.PLUGIN_ID);
       this.includeChildrenTeamDefs = includeChildrenTeamDefs;
       this.includeChildrenAis = includeChildrenAis;
-      Conditions.notNull(teamDefs);
-      Conditions.notNull(ais);
-      Conditions.notNull(activeWorkPkgs);
       this.teamDefs = teamDefs;
       this.ais = ais;
       this.activeWorkPkgs = activeWorkPkgs;
@@ -72,7 +68,8 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       addAllAisIds(monitor, ais, includeChildrenAis, ids);
 
       for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFrom(ids, AtsApiService.get().getAtsBranch())) {
-         for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
+         for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(
+            AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
             boolean active = workPkgArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
             if (activeWorkPkgs == Active.Both || active && activeWorkPkgs == Active.Active || !active && activeWorkPkgs == Active.InActive) {
                results.add(workPkgArt);
@@ -112,8 +109,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
    public Set<IAtsWorkPackage> getResults() {
       Set<IAtsWorkPackage> resultWorkPgks = new HashSet<>();
       for (Artifact art : results) {
-         resultWorkPgks.add(
-            new WorkPackage(AtsApiService.get().getLogger(), AtsApiService.get(), art));
+         resultWorkPgks.add(new WorkPackage(AtsApiService.get().getLogger(), AtsApiService.get(), art));
       }
       return resultWorkPgks;
    }

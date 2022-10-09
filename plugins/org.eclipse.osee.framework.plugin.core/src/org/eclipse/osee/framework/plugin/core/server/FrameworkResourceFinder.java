@@ -25,10 +25,12 @@ public class FrameworkResourceFinder extends ResourceFinder {
 
    @Override
    public byte[] find(String path) throws IOException {
-      for (Bundle bundle : FrameworkUtil.getBundle(getClass()).getBundleContext().getBundles()) {
-         URL url = bundle.getResource(path);
-         if (url != null) {
-            return getBytes(url.openStream());
+      if (FrameworkUtil.getBundle(getClass()).getBundleContext().getBundles() != null) {
+         for (Bundle bundle : FrameworkUtil.getBundle(getClass()).getBundleContext().getBundles()) {
+            URL url = bundle.getResource(path);
+            if (url != null) {
+               return getBytes(url.openStream());
+            }
          }
       }
       return null;

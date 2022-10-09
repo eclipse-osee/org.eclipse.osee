@@ -136,6 +136,7 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
    @Override
    public boolean equals(Object obj) {
+      super.equals(obj);
       if (this == obj) {
          return true;
       }

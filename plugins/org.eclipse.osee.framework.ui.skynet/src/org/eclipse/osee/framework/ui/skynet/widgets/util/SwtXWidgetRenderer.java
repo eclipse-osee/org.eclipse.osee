@@ -355,14 +355,18 @@ public class SwtXWidgetRenderer {
          }
          try {
             if (xWidget instanceof AttributeWidget) {
-               ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+               if (attributeType != null) {
+                  ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
+               }
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          try {
             if (xWidget instanceof AttributeTypeWidget) {
-               ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
+               if (attributeType != null) {
+                  ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
+               }
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

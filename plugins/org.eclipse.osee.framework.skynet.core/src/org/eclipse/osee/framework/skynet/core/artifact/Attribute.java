@@ -130,6 +130,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    protected boolean setFromStringNoDirty(String value) {
       Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
+      if (convertStringToValue(value) == null) {
+         return false;
+      }
       return subClassSetValue(convertStringToValue(value));
    }
 

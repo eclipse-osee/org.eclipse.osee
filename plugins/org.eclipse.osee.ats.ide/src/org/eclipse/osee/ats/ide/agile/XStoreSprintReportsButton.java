@@ -76,11 +76,13 @@ public class XStoreSprintReportsButton extends XButton implements ArtifactWidget
          try {
             ArtifactToken teamArt = AtsApiService.get().getRelationResolver().getRelatedOrNull(sprint,
                AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-            XResultData results = AtsApiService.get().getServerEndpoints().getAgileEndpoint().storeSprintReports(
-               teamArt.getId(), this.sprint.getId());
-            if (results.isErrors()) {
-               AWorkbench.popup(getLabel() + " errors " + results.toString());
-               return;
+            if (teamArt != null) {
+               XResultData results = AtsApiService.get().getServerEndpoints().getAgileEndpoint().storeSprintReports(
+                  teamArt.getId(), this.sprint.getId());
+               if (results.isErrors()) {
+                  AWorkbench.popup(getLabel() + " errors " + results.toString());
+                  return;
+               }
             }
 
             AtsApiService.get().getQueryServiceIde().getArtifact(sprint).reloadAttributesAndRelations();

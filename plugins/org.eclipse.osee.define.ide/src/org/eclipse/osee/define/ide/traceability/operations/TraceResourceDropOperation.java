@@ -82,33 +82,36 @@ public class TraceResourceDropOperation extends AbstractOperation {
          if (persistChanges) {
             transaction = TransactionManager.createTransaction(branch, "TraceResourceDrop");
          }
-         HierarchyHandler handler = new HierarchyHandler(transaction);
 
-         Map<Artifact, String> nameUpdateRequired = new TreeMap<>();
+         if (transaction != null) {
+            HierarchyHandler handler = new HierarchyHandler(transaction);
 
-         for (URI resource : resources) {
-            File file = new File(resource);
-            if (!file.isDirectory()) {
-               processFile(file, handler, transaction, nameUpdateRequired);
-            }
-         }
+            Map<Artifact, String> nameUpdateRequired = new TreeMap<>();
 
-         boolean isOk = true;
-         if (!nameUpdateRequired.isEmpty()) {
-            if (confirmer != null) {
-               isOk = confirmer.acceptUpdate(nameUpdateRequired);
-            }
-
-            if (isOk) {
-               for (Entry<Artifact, String> entry : nameUpdateRequired.entrySet()) {
-                  entry.getKey().setName(entry.getValue());
+            for (URI resource : resources) {
+               File file = new File(resource);
+               if (!file.isDirectory()) {
+                  processFile(file, handler, transaction, nameUpdateRequired);
                }
             }
-         }
 
-         if (transaction != null && persistChanges && isOk) {
-            requirement.persist(transaction);
-            transaction.execute();
+            boolean isOk = true;
+            if (!nameUpdateRequired.isEmpty()) {
+               if (confirmer != null) {
+                  isOk = confirmer.acceptUpdate(nameUpdateRequired);
+               }
+
+               if (isOk) {
+                  for (Entry<Artifact, String> entry : nameUpdateRequired.entrySet()) {
+                     entry.getKey().setName(entry.getValue());
+                  }
+               }
+            }
+
+            if (persistChanges && isOk) {
+               requirement.persist(transaction);
+               transaction.execute();
+            }
          }
       }
    }

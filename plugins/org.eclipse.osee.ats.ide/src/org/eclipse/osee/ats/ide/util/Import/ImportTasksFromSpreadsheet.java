@@ -175,7 +175,9 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                   // re-open editor
                   WorkflowEditor.edit((TeamWorkFlowArtifact) artifact);
                   editor = WorkflowEditor.getWorkflowEditor((TeamWorkFlowArtifact) artifact);
-                  editor.setPage(1);
+                  if (editor != null) {
+                     editor.setPage(1);
+                  }
                } catch (Exception ex) {
                   log(ex);
                }

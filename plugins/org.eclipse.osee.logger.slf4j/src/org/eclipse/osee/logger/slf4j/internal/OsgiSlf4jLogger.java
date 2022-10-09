@@ -24,7 +24,7 @@ public class OsgiSlf4jLogger {
    private LogListener listener;
    private LogReaderService logService;
 
-   public void setLoggingService(LogReaderService logService) {
+   public synchronized void setLoggingService(LogReaderService logService) {
       this.logService = logService;
    }
 

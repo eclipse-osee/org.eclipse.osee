@@ -95,8 +95,10 @@ public class SkyWalkerShowAttributeTabItem {
          }
       }
       if (modList.contains(ModType.Artifact)) {
-         if (treeViewer.getInput() == null && options.getAllShowAttributes() != null && options.getAllShowAttributes().size() > 0) {
-            treeViewer.setInput(options.getAllShowAttributes());
+         if (treeViewer != null) {
+            if (treeViewer.getInput() == null && options.getAllShowAttributes() != null && options.getAllShowAttributes().size() > 0) {
+               treeViewer.setInput(options.getAllShowAttributes());
+            }
          }
       }
    }

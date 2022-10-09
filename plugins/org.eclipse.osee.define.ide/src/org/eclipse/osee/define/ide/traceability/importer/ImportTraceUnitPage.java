@@ -352,8 +352,10 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       List<URI> toReturn = null;
       if (isWidgetAccessible(directoryFileSelector)) {
          toReturn = new LinkedList<>();
-         for (File file : directoryFileSelector.getSelection()) {
-            toReturn.add(file.toURI());
+         if (directoryFileSelector.getSelection() != null) {
+            for (File file : directoryFileSelector.getSelection()) {
+               toReturn.add(file.toURI());
+            }
          }
       }
       return toReturn;

@@ -121,13 +121,18 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
             if (isRecursionAllowed) {
                files = Lib.recursivelyListFiles(new File(source.getPath()), Pattern.compile(".+\\.java"));
             } else {
-               files = Arrays.asList(sourceFile.listFiles(new FileFilter() {
+               File[] f = sourceFile.listFiles(new FileFilter() {
 
                   @Override
                   public boolean accept(File pathname) {
                      return pathname.getName().endsWith(".java");
                   }
-               }));
+               });
+
+               if (f == null) {
+                  throw new RuntimeException("listFiles() returns null");
+               }
+               files = Arrays.asList(f);
             }
          } else {
             files = Collections.singletonList(sourceFile);

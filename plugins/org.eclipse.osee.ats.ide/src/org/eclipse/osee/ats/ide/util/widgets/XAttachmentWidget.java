@@ -95,9 +95,11 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
       super.createControls(parent, horizontalSpan);
       this.parent = parent;
       editor = WorkflowEditor.getWorkflowEditor(workItem);
-      selectHyperlink = editor.getToolkit().createHyperlink(parent, SELECT, SWT.NONE);
-      selectHyperlink.setToolTipText("Select to add/replace attachment");
-      addListener(parent, editor);
+      if (editor != null) {
+         selectHyperlink = editor.getToolkit().createHyperlink(parent, SELECT, SWT.NONE);
+         selectHyperlink.setToolTipText("Select to add/replace attachment");
+         addListener(parent, editor);
+      }
       refresh();
    }
 
@@ -288,11 +290,13 @@ public abstract class XAttachmentWidget extends XLabelValue implements ArtifactW
             if (!Widgets.isAccessible(readHyperlink)) {
                setValueText(attachmentArt.toString());
                WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
-               readHyperlink = WfeAttachmentsComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
-                  attachmentArt, parent, editor, "Read");
-               editHyperlink = WfeAttachmentsComposite.createEditHyperlink(attachmentArt, parent, editor);
-               deleteHyperlink = WfeAttachmentsComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
-                  attachmentArt, entry.getSecond(), parent, editor);
+               if (editor != null) {
+                  readHyperlink = WfeAttachmentsComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem,
+                     attachmentArt, parent, editor, "Read");
+                  editHyperlink = WfeAttachmentsComposite.createEditHyperlink(attachmentArt, parent, editor);
+                  deleteHyperlink = WfeAttachmentsComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem,
+                     attachmentArt, entry.getSecond(), parent, editor);
+               }
             }
          } else {
             if (Widgets.isAccessible(readHyperlink)) {

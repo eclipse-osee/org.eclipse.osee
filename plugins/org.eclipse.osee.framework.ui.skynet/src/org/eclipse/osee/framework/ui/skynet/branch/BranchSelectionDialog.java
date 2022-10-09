@@ -81,6 +81,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
 
    @Override
    protected Control createDialogArea(Composite container) {
+      super.createDialogArea(container);
       branchWidget = new XBranchWidget(true, true, defaultSelected, this);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);

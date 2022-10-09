@@ -110,7 +110,9 @@ public class IndexerDataSourceImpl extends ByteSource implements IndexedResource
             options.put(StandardOptions.DecompressOnAquire.name(), true);
             IResourceLocator locator = resourceManager.getResourceLocator(getUri());
             IResource resource = resourceManager.acquire(locator, options);
-            toReturn = resource.getContent();
+            if (resource != null) {
+               toReturn = resource.getContent();
+            }
          } catch (OseeCoreException ex) {
             throw new IOException(ex);
          }

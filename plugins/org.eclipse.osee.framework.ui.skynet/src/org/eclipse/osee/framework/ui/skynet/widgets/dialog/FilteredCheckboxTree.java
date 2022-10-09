@@ -440,12 +440,14 @@ public class FilteredCheckboxTree extends FilteredTree {
       protected void internalRefresh(Object element, boolean updateLabels) {
          String text = FilteredCheckboxTree.this.getFilterString();
          boolean initial = initialText != null && initialText.equals(text);
-         boolean filtered = text.length() > 0 && !initial;
+         if (text != null) {
+            boolean filtered = text.length() > 0 && !initial;
 
-         // Notify anybody who is listening for the refresh
-         for (Iterator<PreRefreshNotifier> iterator = refreshingListeners.iterator(); iterator.hasNext();) {
-            PreRefreshNotifier notifier = iterator.next();
-            notifier.preRefresh(FilterableCheckboxTreeViewer.this, filtered);
+            // Notify anybody who is listening for the refresh
+            for (Iterator<PreRefreshNotifier> iterator = refreshingListeners.iterator(); iterator.hasNext();) {
+               PreRefreshNotifier notifier = iterator.next();
+               notifier.preRefresh(FilterableCheckboxTreeViewer.this, filtered);
+            }
          }
          saveCheckedState();
          super.internalRefresh(element, updateLabels);
@@ -577,7 +579,7 @@ public class FilteredCheckboxTree extends FilteredTree {
          int filterColor = enabled ? SWT.COLOR_LIST_BACKGROUND : SWT.COLOR_WIDGET_BACKGROUND;
          filterComposite.setBackground(getDisplay().getSystemColor(filterColor));
       }
-      filterText.setEnabled(enabled);
+      super.setEnabled(enabled);
       treeViewer.getTree().setEnabled(enabled);
 
    }

@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Schedules a task to be executed in the display thread.
- * 
+ *
  * @author Ken J. Aguilar
  * @see org.eclipse.swt.widgets.Display#timerExec(int, java.lang.Runnable)
  */
@@ -28,7 +28,7 @@ public abstract class PeriodicDisplayTask {
 
    /**
     * Inner class used mainly to hide the run method from being exposed as a public method.
-    * 
+    *
     * @author Ken J. Aguilar
     */
    private final class DisplayTask implements Runnable {
@@ -45,7 +45,7 @@ public abstract class PeriodicDisplayTask {
 
    /**
     * Creates a new PeriodicDisplayTask
-    * 
+    *
     * @param display The display containing the target of the update
     * @param period the period in milliseconds <B>between</B> updates
     */
@@ -81,7 +81,7 @@ public abstract class PeriodicDisplayTask {
     * from a subclass's implementation of the run method if the run method must occur again. If the timer has been
     * stopped then calling this method has no effect
     */
-   final protected void schedule() {
+   final protected synchronized void schedule() {
       if (task != null && !display.isDisposed()) {
          display.timerExec(period, task);
       }

@@ -192,10 +192,12 @@ public class CreateChangeReportTasksOperation {
 
             WorkType workType = WorkType.None;
             Collection<WorkType> workTypes = toTeamDef.getWorkTypes();
-            if (workTypes.contains(WorkType.Code) || toTeamDef.getName().contains("Code")) {
-               workType = WorkType.Code;
-            } else if (workTypes.contains(WorkType.Test) || toTeamDef.getName().contains("Test")) {
-               workType = WorkType.Test;
+            if (workTypes != null) {
+               if (workTypes.contains(WorkType.Code) || toTeamDef.getName().contains("Code")) {
+                  workType = WorkType.Code;
+               } else if (workTypes.contains(WorkType.Test) || toTeamDef.getName().contains("Test")) {
+                  workType = WorkType.Test;
+               }
             }
             if (workType == WorkType.None) {
                rd.errorf("\n\nCan't determine Work Type from Team Def or Name %s\n", toTeamDef.toStringWithId());

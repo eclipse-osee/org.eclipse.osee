@@ -38,9 +38,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
       super("Validate Artifact(s)", Activator.PLUGIN_ID);
       this.stopOnFirstError = stopOnFirstError;
       this.itemsToCheck = new ArrayList<>(itemsToCheck);
-      if (itemsToCheck != null) {
-         this.itemsToCheck.addAll(itemsToCheck);
-      }
+      this.itemsToCheck.addAll(itemsToCheck);
    }
 
    public boolean isStopOnFirstError() {
@@ -64,7 +62,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
       monitor.setTaskName(getName());
       if (!itemsToCheck.isEmpty()) {
          int totalArts = itemsToCheck.size();
-         double workAmountPercentage = 1 / itemsToCheck.size();
+         double workAmountPercentage = (double) 1 / (double) itemsToCheck.size();
          int workAmount = calculateWork(workAmountPercentage);
          for (int index = 0; index < totalArts; index++) {
             monitor.setTaskName(String.format("Validating Artifact(s): [%s of %s]", index + 1, totalArts));

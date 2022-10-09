@@ -81,6 +81,7 @@ public class TestRunXViewerFactory extends SkynetXViewerFactory {
 
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
+      super.getDefaultTableCustomizeData();
       CustomizeData custData = new CustomizeData();
       custData.getSortingData().setSortingNames("ote.test.run.view.Name");
       custData.getColumnData().setColumns(getColumns());

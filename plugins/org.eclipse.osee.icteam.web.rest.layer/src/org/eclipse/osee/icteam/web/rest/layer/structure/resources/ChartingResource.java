@@ -22,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -71,7 +72,7 @@ public class ChartingResource extends AbstractConfigResource {
 
    /**
     * Constructs and returns the effort burndown in JSON format.
-    * 
+    *
     * @param sprintGuid Guid of the sprint
     * @return Effort burndown data
     */
@@ -149,21 +150,30 @@ public class ChartingResource extends AbstractConfigResource {
 
       Map<Date, Float> updatedMap = new LinkedHashMap<>();
       try {
-         updatedMap = identifyAndFillEmptyDates(burnDownDataMap, startDate, endDate);
+         if (startDate != null) {
+            updatedMap = identifyAndFillEmptyDates(burnDownDataMap, startDate, endDate);
+         }
       } catch (ParseException e) {
          e.printStackTrace();
       }
 
       LinkedList<Date> linkedList = new LinkedList<>(updatedMap.keySet());
       Date currentDate = linkedList.getLast();
+
+      Map<Date, Float> updatedMap2 = new HashMap<>();
+
       for (Entry<Date, Float> entry : updatedMap.entrySet()) {
-         updatedMap.merge(entry.getKey(), totalTime, (timeSpent, total) -> total - timeSpent);
+         updatedMap2.merge(entry.getKey(), totalTime, (timeSpent, total) -> total - timeSpent);
       }
 
-      long totalNumberOfDays = getNoOfDays(startDate, endDate);
-
+      long totalNumberOfDays = 0;
+      if (endDate != null && startDate != null) {
+         totalNumberOfDays = getNoOfDays(startDate, endDate);
+      }
       try {
-         fillRemainingDates(updatedMap, currentDate, endDate);
+         if (endDate != null && currentDate != null) {
+            fillRemainingDates(updatedMap, currentDate, endDate);
+         }
       } catch (ParseException e) {
          e.printStackTrace();
       }
@@ -186,7 +196,7 @@ public class ChartingResource extends AbstractConfigResource {
 
    /**
     * Constructs and returns the story points burndown in JSON format.
-    * 
+    *
     * @param sprintGuid : Guid of a sprint
     * @return story points burndown data
     */
@@ -221,46 +231,47 @@ public class ChartingResource extends AbstractConfigResource {
             e1.printStackTrace();
          }
 
-         if (artifactReadable != null) {
-            ResultSet<ArtifactReadable> taskResultSet =
-               artifactReadable.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow);
-            List<ArtifactReadable> tasksList = taskResultSet.getList();
-            for (ArtifactReadable artReadable : tasksList) {
+         ResultSet<ArtifactReadable> taskResultSet =
+            artifactReadable.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow);
+         List<ArtifactReadable> tasksList = taskResultSet.getList();
+         for (ArtifactReadable artReadable : tasksList) {
 
-               String storyPoints = artReadable.getAttributeValuesAsString(AtsAttributeTypes.PointsAttributeType);
-               String taskState = artReadable.getAttributeValuesAsString(AtsAttributeTypes.CurrentStateType);
-               int currentStoryPoint = 0;
-               if (!storyPoints.isEmpty()) {
-                  currentStoryPoint = Integer.parseInt(storyPoints);
-               }
-               totalStoryPoints += currentStoryPoint;
-               burnDownDataMap.put(startDate, 0f);
-               if (taskState.equals(ChartingResource.COMPLETED)) {
-                  String completedDateString = artReadable.getAttributeValuesAsString(AtsAttributeTypes.CompletedDate);
-                  if (!completedDateString.isEmpty()) {
-                     Date completedDate = null;
-                     try {
-                        completedDate = simpleDateFormatReverse.parse(completedDateString);
-                     } catch (ParseException e) {
-                        e.printStackTrace();
-                     }
+            String storyPoints = artReadable.getAttributeValuesAsString(AtsAttributeTypes.PointsAttributeType);
+            String taskState = artReadable.getAttributeValuesAsString(AtsAttributeTypes.CurrentStateType);
+            int currentStoryPoint = 0;
+            if (!storyPoints.isEmpty()) {
+               currentStoryPoint = Integer.parseInt(storyPoints);
+            }
+            totalStoryPoints += currentStoryPoint;
+            burnDownDataMap.put(startDate, 0f);
+            if (taskState.equals(ChartingResource.COMPLETED)) {
+               String completedDateString = artReadable.getAttributeValuesAsString(AtsAttributeTypes.CompletedDate);
+               if (!completedDateString.isEmpty()) {
+                  Date completedDate = null;
+                  try {
+                     completedDate = simpleDateFormatReverse.parse(completedDateString);
+                  } catch (ParseException e) {
+                     e.printStackTrace();
+                  }
 
-                     if (!burnDownDataMap.containsKey(completedDate)) {
-                        burnDownDataMap.put(completedDate, (float) currentStoryPoint);
-                     } else {
-                        Float completedStoryPoints = burnDownDataMap.get(completedDate);
-                        completedStoryPoints += currentStoryPoint;
-                        burnDownDataMap.put(completedDate, (float) completedStoryPoints);
-                     }
+                  if (!burnDownDataMap.containsKey(completedDate)) {
+                     burnDownDataMap.put(completedDate, (float) currentStoryPoint);
+                  } else {
+                     Float completedStoryPoints = burnDownDataMap.get(completedDate);
+                     completedStoryPoints += currentStoryPoint;
+                     burnDownDataMap.put(completedDate, (float) completedStoryPoints);
                   }
                }
             }
          }
+
       }
 
       Map<Date, Float> updatedMap = new LinkedHashMap<>();
       try {
-         updatedMap = identifyAndFillEmptyDates(burnDownDataMap, startDate, endDate);
+         if (startDate != null && endDate != null) {
+            updatedMap = identifyAndFillEmptyDates(burnDownDataMap, startDate, endDate);
+         }
       } catch (ParseException e) {
          e.printStackTrace();
       }
@@ -275,18 +286,30 @@ public class ChartingResource extends AbstractConfigResource {
 
       LinkedList<Date> linkedList = new LinkedList<>(hashMap.keySet());
       Date currentDate = linkedList.getLast();
+      Map<Date, Float> hashMap2 = new HashMap<>();
+      //   hashMap2.putAll(hashMap);
+      //hashMap.putAll(m);
+      // Set<Entry<Date, Float>> es = hashMap2.entrySet();
+      // Iterator<Entry<Date, Float>> iter = es.iterator();
+      //  while (iter.hasNext()) {
+      //      Entry<Date, Float> entry = iter.next();
+      //      hashMap.merge(entry.getKey(), (float) totalStoryPoints, (oldValue, total) -> total - oldValue);
+      //   }
+
       for (Entry<Date, Float> entry : hashMap.entrySet()) {
-         hashMap.merge(entry.getKey(), (float) totalStoryPoints, (oldValue, total) -> total - oldValue);
+
+         hashMap2.merge(entry.getKey(), (float) totalStoryPoints, (oldValue, total) -> total - oldValue);
       }
+      long totalNumberOfDays = 0;
+      if (endDate != null && startDate != null) {
+         totalNumberOfDays = getNoOfDays(startDate, endDate);
 
-      long totalNumberOfDays = getNoOfDays(startDate, endDate);
-
-      try {
-         fillRemainingDates(hashMap, currentDate, endDate);
-      } catch (ParseException e) {
-         e.printStackTrace();
+         try {
+            fillRemainingDates(hashMap, currentDate, endDate);
+         } catch (ParseException e) {
+            e.printStackTrace();
+         }
       }
-
       Set<Date> datesSet = hashMap.keySet();
       List<String> datesString =
          datesSet.stream().map(date -> simpleDateFormat.format(date)).collect(Collectors.toList());
@@ -309,7 +332,7 @@ public class ChartingResource extends AbstractConfigResource {
 
    /**
     * Return the number of days between two dates.
-    * 
+    *
     * @param startDate Start date
     * @param endDate End date
     * @return No of days
@@ -320,7 +343,7 @@ public class ChartingResource extends AbstractConfigResource {
 
    /**
     * The remaining days till the end of the sprint will be filled with null values.
-    * 
+    *
     * @param burnDownDataMap : burndown map of the sprint
     * @param currentDate Specified date
     * @param endDate End date
@@ -341,7 +364,7 @@ public class ChartingResource extends AbstractConfigResource {
    /**
     * The empty days between two consecutive entries in the Map would be filled by incrementing the date by one as key
     * and storing the previous remainingHours/Points as Value.
-    * 
+    *
     * @param burnDownDataMap Burndown map of the sprint
     * @param startDate : Start date of the sprint
     * @param endDate End date of the sprint
@@ -388,7 +411,7 @@ public class ChartingResource extends AbstractConfigResource {
 
    /**
     * Increments the date by one day and returns the incremented date.
-    * 
+    *
     * @param date Current date
     * @return date incremented by one day
     * @throws ParseException

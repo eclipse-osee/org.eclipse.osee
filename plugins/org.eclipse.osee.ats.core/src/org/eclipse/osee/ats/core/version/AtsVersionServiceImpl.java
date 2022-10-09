@@ -376,11 +376,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType) {
-      IAtsTeamDefinition teamDefHoldVer = getTeamDefinitionHoldingVersions(teamDef);
       if (teamDef == null) {
          return new ArrayList<>();
+      } else {
+         IAtsTeamDefinition teamDefHoldVer = getTeamDefinitionHoldingVersions(teamDef);
+         return getVersions(teamDefHoldVer, releaseType, lockedType);
       }
-      return getVersions(teamDefHoldVer, releaseType, lockedType);
    }
 
    @Override

@@ -126,30 +126,35 @@ public class HtmlActiveTable {
 
    public String generate() throws IOException {
       URL url = getTemplate();
-      String template = Lib.inputStreamToString(url.openStream());
 
-      try {
-         template = template.replace(ELEMENT_NAME_TAG, elementName);
-         String widthEntry = "autoWidth: true";
-         if (Strings.isValid(tableWidth)) {
-            widthEntry = "width: " + tableWidth;
+      if (url != null) {
+         String template = Lib.inputStreamToString(url.openStream());
+
+         try {
+            template = template.replace(ELEMENT_NAME_TAG, elementName);
+            String widthEntry = "autoWidth: true";
+            if (Strings.isValid(tableWidth)) {
+               widthEntry = "width: " + tableWidth;
+            }
+            template = template.replace(TABLE_WIDTH, widthEntry);
+            String heightEntry = "autoHeight: true";
+            if (Strings.isValid(tableHeight)) {
+               heightEntry = "height: " + tableHeight;
+            }
+            template = template.replace(TABLE_HEIGHT, heightEntry);
+            template = template.replace(TABLE_TITLE, tableTitle);
+            template = template.replace(COLUMN_METADATA_TAG, getColumnDataStoreInfo());
+            template = template.replace(TABLE_DATA_TAG, generateTableData());
+            template = template.replace(CUSTOM_FUNCTIONS_TAG, getCustomFunction());
+            template = template.replace(COLUMN_CUSTOMIZATIONS_TAG, getColumnCustomizations());
+            template = template.replace(AUTO_EXPAND_ON_COLUMN, getAutoExpandColumn());
+         } catch (Exception ex) {
+            ex.printStackTrace();
          }
-         template = template.replace(TABLE_WIDTH, widthEntry);
-         String heightEntry = "autoHeight: true";
-         if (Strings.isValid(tableHeight)) {
-            heightEntry = "height: " + tableHeight;
-         }
-         template = template.replace(TABLE_HEIGHT, heightEntry);
-         template = template.replace(TABLE_TITLE, tableTitle);
-         template = template.replace(COLUMN_METADATA_TAG, getColumnDataStoreInfo());
-         template = template.replace(TABLE_DATA_TAG, generateTableData());
-         template = template.replace(CUSTOM_FUNCTIONS_TAG, getCustomFunction());
-         template = template.replace(COLUMN_CUSTOMIZATIONS_TAG, getColumnCustomizations());
-         template = template.replace(AUTO_EXPAND_ON_COLUMN, getAutoExpandColumn());
-      } catch (Exception ex) {
-         ex.printStackTrace();
+         return template;
       }
-      return template;
+
+      return null;
    }
 
    private String getAutoExpandColumn() {

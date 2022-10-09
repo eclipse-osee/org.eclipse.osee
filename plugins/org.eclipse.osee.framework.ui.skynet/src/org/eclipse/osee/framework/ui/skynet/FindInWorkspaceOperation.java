@@ -105,10 +105,12 @@ public class FindInWorkspaceOperation extends AbstractOperation {
    }
 
    private String getGuid(String source) {
-      Matcher matcher = objectIdPattern.matcher(source);
-      if (matcher.find()) {
-         String uuid = matcher.group(1);
-         return uuid;
+      if (source != null) {
+         Matcher matcher = objectIdPattern.matcher(source);
+         if (matcher.find()) {
+            String uuid = matcher.group(1);
+            return uuid;
+         }
       }
       return Strings.EMPTY_STRING;
    }
@@ -139,7 +141,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
                unit = (ICompilationUnit) jElement;
             }
 
-            String uuid = getGuid(unit == null ? null : unit.getSource());
+            String uuid = getGuid(unit == null ? "" : unit.getSource());
             if (guids.containsKey(uuid)) {
                monitor.worked(1);
                collector.onResource(unit == null ? null : unit.getResource());

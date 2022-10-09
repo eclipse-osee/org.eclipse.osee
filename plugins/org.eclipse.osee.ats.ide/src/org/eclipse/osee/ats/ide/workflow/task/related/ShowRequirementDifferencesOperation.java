@@ -146,6 +146,9 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          if (!changes.isEmpty()) {
             if (tasks.size() == 1) {
                Change change = selectChangeToDiff(monitor, changes);
+               if (change == null) {
+                  throw new RuntimeException("change is null");
+               }
                artifactDeltas.add(change.getDelta());
             } else {
                for (Change change : changes) {

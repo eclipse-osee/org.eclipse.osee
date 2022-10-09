@@ -151,8 +151,11 @@ public abstract class Conflict implements Adaptable {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       TransactionId baseTx = BranchManager.getBaseTransaction(mergeBranch);
-      status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch, objectID,
-         getConflictType().getValue(), passedStatus, baseTx);
+
+      if (getConflictType() != null) {
+         status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch, objectID,
+            getConflictType().getValue(), passedStatus, baseTx);
+      }
       return status;
    }
 

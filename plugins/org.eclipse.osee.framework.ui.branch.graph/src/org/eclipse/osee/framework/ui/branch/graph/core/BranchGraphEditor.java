@@ -261,6 +261,8 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    }
 
    public void setOutlineContent(GraphCache graph) {
-      getOverviewOutlinePage().setTreeContent(graph);
+      if (getOverviewOutlinePage() != null) {
+         getOverviewOutlinePage().setTreeContent(graph);
+      }
    }
 }

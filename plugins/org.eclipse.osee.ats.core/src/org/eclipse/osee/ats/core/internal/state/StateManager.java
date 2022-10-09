@@ -273,7 +273,9 @@ public class StateManager implements IAtsStateManager {
          notifyNewAssignees.removeAll(currAssignees);
 
          //Update assignees for state
-         nextState.setAssignees(nextAssignees);
+         if (nextState != null) {
+            nextState.setAssignees(nextAssignees);
+         }
       }
 
       // Remove UnAssigned if part of assignees

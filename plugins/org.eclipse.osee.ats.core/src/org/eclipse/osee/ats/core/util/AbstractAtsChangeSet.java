@@ -317,8 +317,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addTag(IAtsObject atsObject, String tag) {
-      if (!atsObject.getTags().contains(tag)) {
-         addAttribute(atsObject, CoreAttributeTypes.StaticId, tag);
+      if (atsObject.getTags() != null) {
+         if (!atsObject.getTags().contains(tag)) {
+            addAttribute(atsObject, CoreAttributeTypes.StaticId, tag);
+         }
       }
    }
 

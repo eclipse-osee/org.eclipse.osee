@@ -57,7 +57,11 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
 
    @Override
    public Collection<? extends PLGenericDBObject> get(MimAttributeQuery query) {
-      return getApi(query.getType()).query(branch, query);
+      if (getApi(query.getType()) != null) {
+         return getApi(query.getType()).query(branch, query);
+      }
+
+      return null;
    }
 
    private QueryCapableMIMAPI<? extends PLGenericDBObject> getApi(ArtifactTypeId type) {
@@ -89,7 +93,11 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
 
    @Override
    public Collection<? extends PLGenericDBObject> getExact(MimAttributeQuery query) {
-      return getApi(query.getType()).queryExact(branch, query);
+      if (getApi(query.getType()) != null) {
+         return getApi(query.getType()).queryExact(branch, query);
+      } else {
+         throw new RuntimeException("getApi() returns null, which gets dereferenced");
+      }
    }
 
 }

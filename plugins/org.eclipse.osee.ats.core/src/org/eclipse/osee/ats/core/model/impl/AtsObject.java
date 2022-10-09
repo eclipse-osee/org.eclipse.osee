@@ -78,7 +78,10 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
 
    @Override
    public boolean isWorkType(WorkType workType) {
-      return getWorkTypes().contains(workType);
+      if (getWorkTypes() != null) {
+         return getWorkTypes().contains(workType);
+      }
+      return false;
    }
 
    @Override

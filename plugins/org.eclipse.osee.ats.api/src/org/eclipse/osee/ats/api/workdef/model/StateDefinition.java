@@ -112,6 +112,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    @Override
    public boolean equals(Object obj) {
+      super.equals(obj);
       boolean equals = false;
       if (this == obj) {
          equals = true;

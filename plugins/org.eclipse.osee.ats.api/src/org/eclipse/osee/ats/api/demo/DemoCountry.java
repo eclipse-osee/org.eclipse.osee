@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.demo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.country.JaxCountry;
@@ -36,9 +37,15 @@ public class DemoCountry extends JaxCountry {
       setDescription(description);
       setActive(true);
       this.programs = new ArrayList<>();
-      for (DemoProgram prog : programs) {
-         this.programs.add(prog);
+
+      List<DemoProgram> demoPrograms = programs;
+      Iterator<DemoProgram> iter = programs.iterator();
+      while (iter.hasNext()) {
+         DemoProgram next = iter.next();
+         demoPrograms.add(next);
+
       }
+
       if (countries == null) {
          countries = new LinkedList<>();
       }

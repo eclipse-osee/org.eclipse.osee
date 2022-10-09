@@ -70,7 +70,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    }
 
    @Override
-   public Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) {
+   public synchronized Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) {
       ensureTemplateCachePopulated();
 
       Artifact template = getArtifactFromOptionName(option);

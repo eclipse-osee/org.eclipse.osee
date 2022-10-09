@@ -154,7 +154,9 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
                      IXViewerValueColumn valueColumn = (IXViewerValueColumn) this;
                      value = valueColumn.getColumnText(element, this, columnIndex);
                   } else {
-                     value = getStyledText(element, this, 0).getString();
+                     if (getStyledText(element, this, 0) != null) {
+                        value = getStyledText(element, this, 0).getString();
+                     }
                   }
                   if (Strings.isValid(value)) {
                      if (background) {

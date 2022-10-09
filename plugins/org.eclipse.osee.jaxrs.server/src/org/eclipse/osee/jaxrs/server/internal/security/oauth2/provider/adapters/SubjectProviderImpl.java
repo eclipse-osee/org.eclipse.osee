@@ -116,12 +116,15 @@ public class SubjectProviderImpl implements SubjectProvider {
          sessionAuthenticityToken = sessionDelegate.createAuthenticitySessionToken(subjectId);
       } else {
          HttpSession session = mc.getHttpServletRequest().getSession();
-         sessionAuthenticityToken = (String) session.getAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
-         if (!Strings.isValid(sessionAuthenticityToken)) {
-            sessionAuthenticityToken = UUID.randomUUID().toString();
-            session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionAuthenticityToken);
+         synchronized (session) {
+            sessionAuthenticityToken = (String) session.getAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
+            if (!Strings.isValid(sessionAuthenticityToken)) {
+               sessionAuthenticityToken = UUID.randomUUID().toString();
+               session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionAuthenticityToken);
+            }
          }
       }
+
       return sessionAuthenticityToken;
    }
 
@@ -164,7 +167,9 @@ public class SubjectProviderImpl implements SubjectProvider {
       UserSubject subject = mc.getContent(UserSubject.class);
       if (subject == null) {
          SecurityContext securityContext = getSecurityContext(mc);
-         subject = OAuthUtil.newSubject(securityContext);
+         if (securityContext != null) {
+            subject = OAuthUtil.newSubject(securityContext);
+         }
       }
       return subject;
    }
@@ -234,19 +239,22 @@ public class SubjectProviderImpl implements SubjectProvider {
       SessionData toReturn = new SessionData(session.getId());
 
       UserSubject subject = new UserSubject();
-      subject.setLogin(principal.getLogin());
-      subject.setProperties(principal.getProperties());
-      List<String> roles = new ArrayList<>();
-      roles.addAll(principal.getRoles());
-      subject.setRoles(roles);
-      toReturn.setSubject(subject);
 
-      toReturn.setAccountActive(principal.isActive());
-      toReturn.setAccountDisplayName(principal.getDisplayName());
-      toReturn.setAccountEmail(principal.getEmailAddress());
-      toReturn.setAccountId(principal.getGuid());
-      toReturn.setAccountName(principal.getName());
-      toReturn.setAccountUsername(principal.getUserName());
+      if (principal != null) {
+         subject.setLogin(principal.getLogin());
+         subject.setProperties(principal.getProperties());
+         List<String> roles = new ArrayList<>();
+         roles.addAll(principal.getRoles());
+         subject.setRoles(roles);
+         toReturn.setSubject(subject);
+
+         toReturn.setAccountActive(principal.isActive());
+         toReturn.setAccountDisplayName(principal.getDisplayName());
+         toReturn.setAccountEmail(principal.getEmailAddress());
+         toReturn.setAccountId(principal.getGuid());
+         toReturn.setAccountName(principal.getName());
+         toReturn.setAccountUsername(principal.getUserName());
+      }
 
       toReturn.setIssuedAt(OAuthUtils.getIssuedAt());
       toReturn.setExpiresIn(getSessionTokenExpiration());
@@ -258,7 +266,10 @@ public class SubjectProviderImpl implements SubjectProvider {
 
    public UserSubject createSubject(String username, String password) {
       OseePrincipal principal = authenticate(OAuthConstants.BASIC_SCHEME, username, password);
-      return OAuthUtil.newUserSubject(principal);
+      if (principal != null) {
+         return OAuthUtil.newUserSubject(principal);
+      }
+      return null;
    }
 
    private OseePrincipal authenticate(String scheme, String username, String password) {
@@ -301,10 +312,12 @@ public class SubjectProviderImpl implements SubjectProvider {
          sessionAuthenticityToken = sessionDelegate.createAuthenticitySessionToken(subjectId);
       } else {
          HttpSession session = mc.getHttpServletRequest().getSession();
-         sessionAuthenticityToken = (String) session.getAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
-         if (!Strings.isValid(sessionAuthenticityToken)) {
-            sessionAuthenticityToken = UUID.randomUUID().toString();
-            session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionAuthenticityToken);
+         synchronized (session) {
+            sessionAuthenticityToken = (String) session.getAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
+            if (!Strings.isValid(sessionAuthenticityToken)) {
+               sessionAuthenticityToken = UUID.randomUUID().toString();
+               session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionAuthenticityToken);
+            }
          }
       }
       return sessionAuthenticityToken;
@@ -320,6 +333,9 @@ public class SubjectProviderImpl implements SubjectProvider {
       UserSubject subject = mc.getContent(UserSubject.class);
       if (subject == null) {
          SecurityContext securityContext = getSecurityContext(mc);
+         if (securityContext == null) {
+            throw new RuntimeException("securityContext is null");
+         }
          subject = OAuthUtil.newSubject(securityContext);
       }
       return subject;
@@ -328,6 +344,9 @@ public class SubjectProviderImpl implements SubjectProvider {
    @Override
    public UserSubject createSubject(Client client, String username, String password) {
       OseePrincipal principal = authenticate(OAuthConstants.BASIC_SCHEME, username, password);
-      return OAuthUtil.newUserSubject(principal);
+      if (principal != null) {
+         return OAuthUtil.newUserSubject(principal);
+      }
+      return null;
    }
 }

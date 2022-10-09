@@ -54,7 +54,7 @@ public class ServerScheduleCommand implements ConsoleCommand {
 
       @Override
       public Boolean call() throws Exception {
-         long delayMiliseconds = params.getInt("delay") * 1000;
+         long delayMiliseconds = (long) params.getInt("delay") * 1000;
          int iterations = params.getInt("iterate");
 
          String command = params.get("cmd");

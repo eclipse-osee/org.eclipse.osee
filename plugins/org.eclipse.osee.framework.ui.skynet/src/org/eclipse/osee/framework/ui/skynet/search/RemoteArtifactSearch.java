@@ -178,8 +178,10 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          if (attrContent.containsKey(attrId)) {
             content = attrContent.get(attrId);
          } else {
-            content = getContentFromAttribute(artifact.getAttributeById(attrId, false));
-            attrContent.put(attrId, content);
+            if (artifact.getAttributeById(attrId, false) != null) {
+               content = getContentFromAttribute(artifact.getAttributeById(attrId, false));
+               attrContent.put(attrId, content);
+            }
          }
          if (!fCachedMatches.isEmpty()) {
             AttributeMatch last = (AttributeMatch) fCachedMatches.get(fCachedMatches.size() - 1);
@@ -197,25 +199,32 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          }
 
          int newLineStart = offset;
-         int contentLength = content.length();
+         int contentLength = 0;
+         if (content != null) {
+            contentLength = content.length();
+         }
          int charCount = 0;
          int i = offset - 1;
          boolean markLineStart = true;
          while (i >= lineStart) {
-            char ch = content.charAt(i--);
-            if (ch == '\r') {
-               continue;
-            }
-            charCount++;
-            if (ch == '\n') {
-               lineNumber++;
-            }
-            if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch) || ch == '\n') {
-               if (markLineStart) {
-                  newLineStart = i + 1;
-                  markLineStart = false;
-                  if (ch == '\n') {
-                     charCount = 0;
+            if (content != null) {
+               char ch = content.charAt(i--);
+
+               if (ch == '\r') {
+                  continue;
+               }
+               charCount++;
+               if (ch == '\n') {
+                  lineNumber++;
+               }
+
+               if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch) || ch == '\n') {
+                  if (markLineStart) {
+                     newLineStart = i + 1;
+                     markLineStart = false;
+                     if (ch == '\n') {
+                        charCount = 0;
+                     }
                   }
                }
             }
@@ -228,18 +237,23 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          i = matchEnd;
          charCount = 0;
          while (i < contentLength) {
-            char ch = content.charAt(i++);
-            charCount++;
-            if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch)) {
-               ch = '\n';
-               charCount = 0;
-            }
-            if (ch == '\n' || ch == '\r') {
-               break;
+            if (content != null) {
+               char ch = content.charAt(i++);
+               charCount++;
+               if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch)) {
+                  ch = '\n';
+                  charCount = 0;
+               }
+               if (ch == '\n' || ch == '\r') {
+                  break;
+               }
             }
          }
          if (offset < i) {
-            String lineContent = getContents(content, newLineStart, i);
+            String lineContent = "";
+            if (content != null) {
+               lineContent = getContents(content, newLineStart, i);
+            }
             return new AttributeLineElement(artifact, attrId, lineNumber, newLineStart, lineContent);
          }
          return null; // offset outside of range

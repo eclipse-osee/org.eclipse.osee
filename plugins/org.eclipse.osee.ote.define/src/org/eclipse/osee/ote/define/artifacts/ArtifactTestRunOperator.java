@@ -123,9 +123,11 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    public void setLocalOutfileURI(String uri) {
-      IAttributeDataProvider provider = getOutfileAttribute().getAttributeDataProvider();
-      if (provider instanceof MappedAttributeDataProvider) {
-         ((MappedAttributeDataProvider) provider).setLocalUri(uri);
+      if (getOutfileAttribute() != null) {
+         IAttributeDataProvider provider = getOutfileAttribute().getAttributeDataProvider();
+         if (provider instanceof MappedAttributeDataProvider) {
+            ((MappedAttributeDataProvider) provider).setLocalUri(uri);
+         }
       }
    }
 

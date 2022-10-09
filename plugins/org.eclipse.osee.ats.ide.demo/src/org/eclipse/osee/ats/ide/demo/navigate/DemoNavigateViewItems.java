@@ -133,27 +133,30 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
             String teamCatName = getTeamCategoryName(team);
             XNavItemCat teamCat = new XNavItemCat(teamCatName);
 
-            items.add(new SearchNavigateItem(new OpenWorkflowsByTeamDefSearchItem("Show Open " + teamDef + " Workflows",
-               new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))), teamCat));
+            if (teamDef != null) {
+               items.add(
+                  new SearchNavigateItem(new OpenWorkflowsByTeamDefSearchItem("Show Open " + teamDef + " Workflows",
+                     new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))), teamCat));
 
-            if (AtsApiService.get().getVersionService().isTeamUsesVersions(teamDef)) {
-               if (team.getName().contains("SAW")) {
-                  items.add(
-                     new XNavigateUrlItem("Open SAW Website", "http://www.cisst.org/cisst/saw/", false, teamCat));
-               } else if (team.getName().contains("CIS")) {
-                  items.add(
-                     new XNavigateUrlItem("Open CIS Website", "http://www.cisst.org/cisst/cis/", false, teamCat));
+               if (AtsApiService.get().getVersionService().isTeamUsesVersions(teamDef)) {
+                  if (team.getName().contains("SAW")) {
+                     items.add(
+                        new XNavigateUrlItem("Open SAW Website", "http://www.cisst.org/cisst/saw/", false, teamCat));
+                  } else if (team.getName().contains("CIS")) {
+                     items.add(
+                        new XNavigateUrlItem("Open CIS Website", "http://www.cisst.org/cisst/cis/", false, teamCat));
+                  }
+
+                  items.add(new SearchNavigateItem(new NextVersionSearchItem(teamDef, LoadView.WorldEditor), teamCat));
+                  items.add(new SearchNavigateItem(
+                     new VersionTargetedForTeamSearchItem(teamDef, null, false, LoadView.WorldEditor), teamCat));
+                  items.add(new SearchNavigateItem(
+                     new OpenWorkflowsByTeamDefSearchItem("Show Un-Released Team Workflows",
+                        new SimpleTeamDefinitionProvider(Arrays.asList(teamDef)), true, ReleasedOption.UnReleased),
+                     teamCat));
+                  items.add(new ReleaseVersionItem(teamDef, teamCat));
+                  items.add(new CreateNewVersionItem(teamDef, teamCat));
                }
-
-               items.add(new SearchNavigateItem(new NextVersionSearchItem(teamDef, LoadView.WorldEditor), teamCat));
-               items.add(new SearchNavigateItem(
-                  new VersionTargetedForTeamSearchItem(teamDef, null, false, LoadView.WorldEditor), teamCat));
-               items.add(new SearchNavigateItem(
-                  new OpenWorkflowsByTeamDefSearchItem("Show Un-Released Team Workflows",
-                     new SimpleTeamDefinitionProvider(Arrays.asList(teamDef)), true, ReleasedOption.UnReleased),
-                  teamCat));
-               items.add(new ReleaseVersionItem(teamDef, teamCat));
-               items.add(new CreateNewVersionItem(teamDef, teamCat));
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -178,14 +181,17 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
                   new SearchNavigateItem(new OpenWorkflowsByTeamDefSearchItem("Show Open " + teamDef + " Workflows",
                      new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))), teamCat));
 
-               if (AtsApiService.get().getVersionService().isTeamUsesVersions(teamDef)) {
-                  items.add(new SearchNavigateItem(
-                     new OpenWorkflowsByTeamDefSearchItem("Show Un-Released Team Workflows",
-                        new SimpleTeamDefinitionProvider(Arrays.asList(teamDef)), true, ReleasedOption.UnReleased),
-                     teamCat));
-                  items.add(new SearchNavigateItem(new NextVersionSearchItem(teamDef, LoadView.WorldEditor), teamCat));
-                  items.add(new SearchNavigateItem(
-                     new VersionTargetedForTeamSearchItem(teamDef, null, false, LoadView.WorldEditor), teamCat));
+               if (teamDef != null) {
+                  if (AtsApiService.get().getVersionService().isTeamUsesVersions(teamDef)) {
+                     items.add(new SearchNavigateItem(
+                        new OpenWorkflowsByTeamDefSearchItem("Show Un-Released Team Workflows",
+                           new SimpleTeamDefinitionProvider(Arrays.asList(teamDef)), true, ReleasedOption.UnReleased),
+                        teamCat));
+                     items.add(
+                        new SearchNavigateItem(new NextVersionSearchItem(teamDef, LoadView.WorldEditor), teamCat));
+                     items.add(new SearchNavigateItem(
+                        new VersionTargetedForTeamSearchItem(teamDef, null, false, LoadView.WorldEditor), teamCat));
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -96,15 +96,20 @@ public class TaskInfoXWidget extends XLabelValueBase {
             setValueText("No Tasks Created");
          }
          if (areTasksComplete(teamWf, forState).isFalse()) {
-            IMessageManager messageManager = managedForm.getMessageManager();
-            if (messageManager != null) {
-               messageManager.addMessage("validation.error",
-                  "State \"" + forState.getName() + "\" has uncompleted Tasks", null, IMessageProvider.ERROR,
-                  labelWidget);
+
+            if (managedForm != null) {
+               IMessageManager messageManager = managedForm.getMessageManager();
+               if (messageManager != null) {
+                  messageManager.addMessage("validation.error",
+                     "State \"" + forState.getName() + "\" has uncompleted Tasks", null, IMessageProvider.ERROR,
+                     labelWidget);
+               }
             }
          } else {
             if (Widgets.isAccessible(managedForm.getForm())) {
-               managedForm.getMessageManager().removeMessage("validation.error", labelWidget);
+               if (labelWidget != null) {
+                  managedForm.getMessageManager().removeMessage("validation.error", labelWidget);
+               }
             }
          }
       } catch (OseeCoreException ex) {
@@ -189,10 +194,10 @@ public class TaskInfoXWidget extends XLabelValueBase {
                                  taskArt.getStateMgr().setAssignee(
                                     AtsApiService.get().getUserService().getCurrentUser());
                               }
-                              TransitionHelper helper = new TransitionHelper("Transition to Completed",
-                                 Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, null,
-                                 AtsApiService.get(), TransitionOption.OverrideTransitionValidityCheck,
-                                 TransitionOption.None);
+                              TransitionHelper helper =
+                                 new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
+                                    TaskStates.Completed.getName(), null, null, null, AtsApiService.get(),
+                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                               TransitionResults results =
                                  AtsApiService.get().getWorkItemServiceIde().transition(helper);
                               if (!results.isEmpty()) {

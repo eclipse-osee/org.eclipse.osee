@@ -347,9 +347,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    public Result isXWidgetSavable() {
       Result result = null;
-      if (Widgets.isAccessible(headerComp)) {
-         result = headerComp.isXWidgetSavable();
-      }
       for (WfeWorkflowSection section : stateSections) {
          result = section.isXWidgetSavable();
          if (result.isFalse()) {

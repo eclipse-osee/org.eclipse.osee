@@ -58,15 +58,30 @@ public class LdapUtil {
       searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
       try {
          // connector.init();
-         NamingEnumeration<SearchResult> results = null;
-         InitialLdapContext ctxInstance = LDAPConnector.getCtxInstance();
-         String getsearchBaseFromDb = LDAPConnector.getsearchBaseFromDb();
-         if (ctxInstance != null) {
-            results = ctxInstance.search(getsearchBaseFromDb, searchFilter, searchControls);
-            ctxInstance.close();
-            LDAPConnector.setCtxInstance(null);
-         }
 
+         NamingEnumeration<SearchResult> results = null;
+         InitialLdapContext ctxInstance = null;
+         try {
+            ctxInstance = LDAPConnector.getCtxInstance();
+            String getsearchBaseFromDb = LDAPConnector.getsearchBaseFromDb();
+            if (ctxInstance != null) {
+               if (getsearchBaseFromDb != null) {
+                  results = ctxInstance.search(getsearchBaseFromDb, searchFilter, searchControls);
+                  ctxInstance.close();
+                  LDAPConnector.setCtxInstance(null);
+               } else {
+                  ctxInstance.close();
+
+               }
+               //ctxInstance.close();
+            }
+         } finally {
+            try {
+               ctxInstance.close();
+            } catch (Exception e) {
+               //
+            }
+         }
          if (results != null) {
 
             Attributes attribs = null;

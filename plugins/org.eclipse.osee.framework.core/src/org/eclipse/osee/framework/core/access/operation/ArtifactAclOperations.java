@@ -107,18 +107,7 @@ public class ArtifactAclOperations {
          return PermissionEnum.FULLACCESS;
       }
 
-      BranchId branch = artifact.getBranch();
-
       accessObject = ArtifactAccessObject.valueOf(artifact);
-
-      if (cache.artifactLockCache.containsKey(branch, artifact)) {
-
-         ArtifactId lockOwnerId = cache.artifactLockCache.get(branch, artifact);
-         // this object is locked under a different branch
-         if (subject.notEqual(lockOwnerId)) {
-            userPermission = PermissionEnum.USER_LOCK;
-         }
-      }
 
       if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;

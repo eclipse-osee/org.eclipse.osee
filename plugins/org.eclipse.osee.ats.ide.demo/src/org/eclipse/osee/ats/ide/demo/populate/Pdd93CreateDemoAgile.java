@@ -123,88 +123,94 @@ public class Pdd93CreateDemoAgile {
       IAgileProgramBacklog programBacklog =
          AtsApiService.get().getAgileService().createAgileProgramBacklog(aProgram, jaxProgramBacklog);
 
-      JaxAgileProgramBacklogItem backlogItem1 =
-         JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_1);
-      IAgileProgramBacklogItem item =
-         AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, backlogItem1);
+      if (programBacklog != null) {
+         JaxAgileProgramBacklogItem backlogItem1 =
+            JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_1);
+         IAgileProgramBacklogItem item =
+            AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, backlogItem1);
 
-      JaxAgileProgramBacklogItem item2 =
-         JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_2);
-      AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item2);
-      JaxAgileProgramBacklogItem item3 =
-         JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_3);
-      AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item3);
+         JaxAgileProgramBacklogItem item2 =
+            JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_2);
+         AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item2);
+         JaxAgileProgramBacklogItem item3 =
+            JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_3);
+         AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item3);
 
-      JaxAgileProgramFeature jaxFeature =
-         JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
-      IAgileProgramFeature feature = AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+         JaxAgileProgramFeature jaxFeature =
+            JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
+         IAgileProgramFeature feature =
+            AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
 
-      JaxAgileStory jaxStory1 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_1);
-      IAgileStory story1 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory1);
+         //    if (feature != null) {
+         JaxAgileStory jaxStory1 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_1);
+         IAgileStory story1 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory1);
 
-      JaxAgileStory jaxStory2 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_2);
-      IAgileStory story2 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory2);
+         JaxAgileStory jaxStory2 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_2);
+         IAgileStory story2 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory2);
 
-      JaxAgileStory jaxStory3 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_3);
-      IAgileStory story3 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory3);
+         JaxAgileStory jaxStory3 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_3);
+         IAgileStory story3 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory3);
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Add Agile Items to Stories");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Add Agile Items to Stories");
 
-      IAtsTeamWorkflow codeWf =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Code_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(codeWf, story1, changes);
-      IAtsTeamWorkflow testWf =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Test_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(testWf, story1, changes);
-      IAtsTeamWorkflow reqWf =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Req_TeamWf);
+         IAtsTeamWorkflow codeWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Code_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(codeWf, story1, changes);
+         IAtsTeamWorkflow testWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Test_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(testWf, story1, changes);
+         IAtsTeamWorkflow reqWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Req_TeamWf);
 
-      // relate story to agile team and sprint
-      ArtifactToken story1Art = AtsApiService.get().getQueryService().getArtifact(story1);
-      ArtifactToken agileTeamArt = AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
-      changes.relate(story1Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
-      ArtifactToken sprint2Art = AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
-      changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
+         // relate story to agile team and sprint
+         ArtifactToken story1Art = AtsApiService.get().getQueryService().getArtifact(story1);
+         ArtifactToken agileTeamArt =
+            AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+         changes.relate(story1Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
+         ArtifactToken sprint2Art = AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
+         changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
-      ArtifactToken story2Art = AtsApiService.get().getQueryService().getArtifact(story2);
-      changes.relate(story2Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
-      changes.relate(story2Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
+         ArtifactToken story2Art = AtsApiService.get().getQueryService().getArtifact(story2);
+         changes.relate(story2Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
+         changes.relate(story2Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
-      ArtifactToken story3Art = AtsApiService.get().getQueryService().getArtifact(story3);
-      changes.relate(story3Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
-      changes.relate(story3Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
+         ArtifactToken story3Art = AtsApiService.get().getQueryService().getArtifact(story3);
+         changes.relate(story3Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
+         changes.relate(story3Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
-      AtsApiService.get().getAgileService().setAgileStory(reqWf, story1, changes);
-      changes.relate(story1Art, AtsRelationTypes.AgileStoryToItem_TeamWorkflow, reqWf);
+         AtsApiService.get().getAgileService().setAgileStory(reqWf, story1, changes);
+         changes.relate(story1Art, AtsRelationTypes.AgileStoryToItem_TeamWorkflow, reqWf);
 
-      IAtsTeamWorkflow codeWf2 =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(codeWf2, story2, changes);
-      IAtsTeamWorkflow testWf2 =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(testWf2, story2, changes);
-      IAtsTeamWorkflow reqWf2 =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
+         IAtsTeamWorkflow codeWf2 =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(codeWf2, story2, changes);
+         IAtsTeamWorkflow testWf2 =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(testWf2, story2, changes);
+         IAtsTeamWorkflow reqWf2 =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
 
-      IAtsTeamWorkflow codeWf3 =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(codeWf3, story3, changes);
-      IAtsTeamWorkflow testWf3 =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(testWf3, story3, changes);
-      IAtsTeamWorkflow reqWf3 =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
-      AtsApiService.get().getAgileService().setAgileStory(reqWf3, story3, changes);
-      changes.execute();
+         IAtsTeamWorkflow codeWf3 =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(codeWf3, story3, changes);
+         IAtsTeamWorkflow testWf3 =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(testWf3, story3, changes);
+         IAtsTeamWorkflow reqWf3 =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
+         AtsApiService.get().getAgileService().setAgileStory(reqWf3, story3, changes);
+         changes.execute();
+         //  }
 
-      Artifact progArt = AtsApiService.get().getQueryServiceIde().getArtifact(aProgram);
-      RelationManager.setRelationOrder(progArt, CoreRelationTypes.DefaultHierarchical_Child, RelationSide.SIDE_B,
-         RelationSorter.UNORDERED, progArt.getChildren());
-      progArt.persist("Set Relation Order");
+         Artifact progArt = AtsApiService.get().getQueryServiceIde().getArtifact(aProgram);
+         RelationManager.setRelationOrder(progArt, CoreRelationTypes.DefaultHierarchical_Child, RelationSide.SIDE_B,
+            RelationSorter.UNORDERED, progArt.getChildren());
+         progArt.persist("Set Relation Order");
 
-      jaxFeature = JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
-      AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+         jaxFeature = JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
+         AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+      }
    }
 
    private void createAgileStandAloneTeam() {
@@ -476,6 +482,9 @@ public class Pdd93CreateDemoAgile {
       int x = 1;
       for (JaxAtsObject jaxWorkItem : agileEp.getSprintItemsAsJax(teamId, sprint.getId()).getAtsObjects()) {
          SprintItemData data = getSprintData(datas, x++, jaxWorkItem);
+         if (data == null) {
+            throw new RuntimeException("data is null");
+         }
          String featureGroupName = data.getFeature();
          if (Strings.isValid(featureGroupName)) {
             Response res = agileEp.addFeatureGroup(jaxWorkItem.getId(), featureGroupName);

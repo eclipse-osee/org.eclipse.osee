@@ -144,7 +144,9 @@ public class BranchLoadComposite extends Composite {
          @Override
          public void mouseUp(MouseEvent e) {
             BranchQueryData showQueryData = branchView.getShowQueryData();
-            ResultsEditor.open("Branch Query Data", "Branch Query Data", showQueryData.getHtml());
+            if (showQueryData != null) {
+               ResultsEditor.open("Branch Query Data", "Branch Query Data", showQueryData.getHtml());
+            }
          }
       });
 

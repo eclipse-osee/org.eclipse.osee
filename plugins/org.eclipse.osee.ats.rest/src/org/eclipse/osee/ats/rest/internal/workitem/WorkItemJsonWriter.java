@@ -244,7 +244,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       if (teamWf != null) {
          ResultSet<IRelationLink> relations =
             action.getRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-         if (!relations.isEmpty()) {
+         if (relations != null && !relations.isEmpty()) {
             writer.writeObjectFieldStart("TargetedVersion");
             String versionStr = atsApi.getWorkItemService().getTargetedVersionStr(teamWf);
             writer.writeObjectField("value", versionStr);

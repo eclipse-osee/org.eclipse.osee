@@ -81,8 +81,10 @@ public interface IAtsEarnedValueService {
    default boolean isUseTextWorkPackages(Collection<IAtsTeamWorkflow> teamWfs) {
       boolean useTextWorkPackages = false;
       if (!teamWfs.isEmpty()) {
-         useTextWorkPackages =
-            teamWfs.iterator().next().getTeamDefinition().getTags().contains(WorkPackageUtil.USE_TEXT_WORK_PACKAGES);
+         if (teamWfs.iterator().next().getTeamDefinition().getTags() != null) {
+            useTextWorkPackages =
+               teamWfs.iterator().next().getTeamDefinition().getTags().contains(WorkPackageUtil.USE_TEXT_WORK_PACKAGES);
+         }
       }
       return useTextWorkPackages;
    }

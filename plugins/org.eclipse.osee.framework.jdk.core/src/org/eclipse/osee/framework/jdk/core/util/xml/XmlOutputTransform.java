@@ -48,15 +48,8 @@ public final class XmlOutputTransform {
    }
 
    private static void xmlToHtml(InputStream inputXML, InputStream inputXslt, Writer result) throws Exception {
-      boolean isNetworked = false;
-
-      if (true != isNetworked) {
-         // Perform Transform Directly
-         xmlToHtml(inputXML, inputXslt, new StreamResult(result));
-      } else {
-         // Perform Transform as a Separate process by launching an XmlTransformServer.
-         XmlTransformAsProcess.getHtmlFromXml(inputXML, inputXslt, result);
-      }
+      // Perform Transform Directly
+      xmlToHtml(inputXML, inputXslt, new StreamResult(result));
    }
 
    public static String xmlToHtmlString(String sourceFile, File transformToApply) {

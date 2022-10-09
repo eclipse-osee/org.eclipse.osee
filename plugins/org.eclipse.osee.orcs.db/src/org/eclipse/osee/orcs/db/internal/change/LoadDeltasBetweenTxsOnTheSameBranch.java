@@ -187,8 +187,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
    private List<ChangeItem> loadItemsByItemId(DoubleKeyHashMap<Integer, Long, ChangeItem> changeData) {
       try (ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery()) {
          for (Integer i : changeData.getKeySetOne()) {
-            for (ChangeItem item : changeData.get(i)) {
-               idJoin.add(i, item.getItemId());
+            if (changeData.get(i) != null) {
+               for (ChangeItem item : changeData.get(i)) {
+                  idJoin.add(i, item.getItemId());
+               }
             }
          }
          idJoin.store();

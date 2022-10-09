@@ -34,10 +34,13 @@ public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
       WorkDefBuilder bld = getWorkDefBuilder();
 
       StateDefBuilder stateBld = bld.getStateDefBuilder(StateToken.Prepare);
-      stateBld.insertLayoutAfter(AtsAttributeTypes.Description, //
-         new CompositeLayoutItem(5, //
-            new WidgetDefinition("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
-      );
+
+      if (stateBld != null) {
+         stateBld.insertLayoutAfter(AtsAttributeTypes.Description, //
+            new CompositeLayoutItem(5, //
+               new WidgetDefinition("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
+         );
+      }
 
       return bld.getWorkDefinition();
    }

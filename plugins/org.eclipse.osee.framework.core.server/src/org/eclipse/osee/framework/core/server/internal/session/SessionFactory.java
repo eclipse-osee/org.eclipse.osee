@@ -65,8 +65,10 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setDbLogin(config.getDbUsername());
       sessionGrant.setDbUrl(config.getDbUri());
       sessionGrant.setDbConnectionProperties(config.getDbProps());
-      sessionGrant.setDbDatabaseName(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "");
-      sessionGrant.setDbDatabasePath(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "");
+      if (jdbcService.getServerConfig() != null) {
+         sessionGrant.setDbDatabaseName(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "");
+         sessionGrant.setDbDatabasePath(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "");
+      }
 
       Properties properties = OseeSql.getSqlProperties(jdbcService.getClient().getDbType().areHintsSupported());
       sessionGrant.setSqlProperties(properties);

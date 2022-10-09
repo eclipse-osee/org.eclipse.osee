@@ -191,11 +191,13 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                String value = row[colCount];
                if (Strings.isValid(value)) {
                   ArtifactToken token = factory.getOrCreateToken(value);
-                  if (token.getId() > 0L) {
-                     artifact.setId(token.getId());
-                  } else {
-                     throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[id]", value,
-                        OrcsWriterUtil.getRowColumnStr(colCount, colCount, getSheetName()));
+                  if (token != null) {
+                     if (token.getId() > 0L) {
+                        artifact.setId(token.getId());
+                     } else {
+                        throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[id]", value,
+                           OrcsWriterUtil.getRowColumnStr(colCount, colCount, getSheetName()));
+                     }
                   }
                }
             }

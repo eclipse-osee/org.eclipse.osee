@@ -396,7 +396,9 @@ public class TransferableArtifactFactory {
           */
          @Override
          public void removeFromRelated(final String key, final ITransferableArtifact element) {
-            getRelatedArtifacts(key).remove(element);
+            if (getRelatedArtifacts(key) != null) {
+               getRelatedArtifacts(key).remove(element);
+            }
          }
 
          /**

@@ -85,18 +85,20 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
             AWorkbench.popup("No valid parent Team Workflow found");
          }
 
-         BranchId branch = AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamWorkflow);
-         ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
-         Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
+         if (teamWorkflow != null) {
+            BranchId branch = AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamWorkflow);
+            ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
+            Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
 
-         ViewApplicabilityTokenFilterTreeDialog dialog =
-            new ViewApplicabilityTokenFilterTreeDialog("Select View Applicability", "Select View Applicability");
-         dialog.setInput(applicabilityTokens);
-         dialog.setMultiSelect(true);
-         int result = dialog.open();
-         if (result == Window.OK) {
-            selectedAppls = Collections.castAll(dialog.getSelected());
-            return true;
+            ViewApplicabilityTokenFilterTreeDialog dialog =
+               new ViewApplicabilityTokenFilterTreeDialog("Select View Applicability", "Select View Applicability");
+            dialog.setInput(applicabilityTokens);
+            dialog.setMultiSelect(true);
+            int result = dialog.open();
+            if (result == Window.OK) {
+               selectedAppls = Collections.castAll(dialog.getSelected());
+               return true;
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

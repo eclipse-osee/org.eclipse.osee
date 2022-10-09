@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.db.internal.exchange.export;
 
 import java.io.Writer;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
@@ -35,17 +34,25 @@ public abstract class AbstractXmlExportItem extends AbstractExportItem {
       Writer writer = null;
       try {
          writer = ExchangeUtil.createXmlWriter(getWriteLocation(), getFileName(), getBufferSize());
-         ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
-
-         try {
-            checkForCancelled();
-            doWork(writer);
-         } finally {
-            ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
+         if (writer != null) {
+            ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
+            try {
+               checkForCancelled();
+               doWork(writer);
+            } finally {
+               ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
+               writer.close();
+            }
+            writer.close();
          }
-      } finally {
-         Lib.close(writer);
+
+      } catch (Exception e) {
+
+         if (writer != null) {
+            writer.close();
+         }
       }
+
    }
 
    protected abstract void doWork(Appendable appendable) throws Exception;

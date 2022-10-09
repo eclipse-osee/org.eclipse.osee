@@ -401,7 +401,9 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       }
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
-      toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      if (getWorldXViewer() != null) {
+         toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      }
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new ViewTableReportAction(worldComposite.getXViewer()));
       toolBarMgr.add(new Separator());

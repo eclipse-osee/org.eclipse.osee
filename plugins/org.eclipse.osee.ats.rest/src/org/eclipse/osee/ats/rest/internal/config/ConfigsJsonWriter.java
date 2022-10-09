@@ -102,9 +102,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
                matches(IdentityView.class, annotations));
          }
          writer.writeEndArray();
-         if (writer != null) {
-            writer.flush();
-         }
+         writer.flush();
       }
    }
 }

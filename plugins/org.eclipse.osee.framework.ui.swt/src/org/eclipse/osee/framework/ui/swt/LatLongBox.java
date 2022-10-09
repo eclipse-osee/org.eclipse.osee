@@ -26,9 +26,10 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * This is a custom widget that handles latitude and longitude data entries in the form of degrees, minutes, and seconds
- * 
+ *
  * @author Ken J. Aguilar
  */
+
 public class LatLongBox extends Composite {
 
    private final Text degreesTxt;
@@ -206,6 +207,7 @@ public class LatLongBox extends Composite {
                         degreesTxt.setFocus();
                      }
                      boxTabFlag[1] = false;
+                     break;
                   case SWT.TRAVERSE_TAB_NEXT:
                      boxTabFlag[1] = false;
                      break;
@@ -291,6 +293,7 @@ public class LatLongBox extends Composite {
                      boxTabFlag[2] = false;
                      minutesTxt.setFocus();
                   }
+                  break;
                case SWT.TRAVERSE_TAB_NEXT:
                   boxTabFlag[2] = true;
                   break;

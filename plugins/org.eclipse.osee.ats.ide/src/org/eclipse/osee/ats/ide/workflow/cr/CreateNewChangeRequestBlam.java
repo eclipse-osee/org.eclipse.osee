@@ -295,8 +295,10 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    public IAtsTeamDefinition getSelectedProgramTeamDefOrSentinel() {
       IAtsTeamDefinition progTeamDef = IAtsTeamDefinition.SENTINEL;
       IAtsActionableItem progAi = getSelectedProgramAiOrSentinel();
-      if (progAi.isValid()) {
-         progTeamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(progAi);
+      if (progAi != null) {
+         if (progAi.isValid()) {
+            progTeamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(progAi);
+         }
       }
       return progTeamDef;
    }

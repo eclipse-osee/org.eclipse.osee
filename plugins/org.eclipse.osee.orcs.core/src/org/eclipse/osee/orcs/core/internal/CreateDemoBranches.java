@@ -165,7 +165,6 @@ public class CreateDemoBranches {
       ArtifactToken def4Tok = orcsApi.getApplicabilityOps().createFeatureDefinition(def4, tx, results);
       configureApplicabilityValues(tx, def4Tok, DemoFeatures.ROBOT_SPEAKER.name(), def4Values);
 
-      orcsApi.getApplicabilityOps();
       Conditions.assertFalse(results.isErrors(), results.toString());
    }
 

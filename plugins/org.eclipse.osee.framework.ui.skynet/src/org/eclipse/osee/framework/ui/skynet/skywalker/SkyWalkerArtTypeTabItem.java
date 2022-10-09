@@ -137,10 +137,12 @@ public class SkyWalkerArtTypeTabItem {
          }
       }
       if (modList.contains(ModType.Artifact)) {
-         if (treeViewer.getInput() == null && options.getAllArtTypes() != null && options.getAllArtTypes().size() > 0) {
-            treeViewer.setInput(options.getAllArtTypes());
-            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
-            //            treeViewer.setAllChecked(true);
+         if (treeViewer != null) {
+            if (treeViewer.getInput() == null && options.getAllArtTypes() != null && options.getAllArtTypes().size() > 0) {
+               treeViewer.setInput(options.getAllArtTypes());
+               treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
+               //            treeViewer.setAllChecked(true);
+            }
          }
       }
    }

@@ -68,10 +68,11 @@ public class BatFileProcessor {
          if (tagProcessed) {
             results.logf("Applicability was applied to %s\n", inFile.getName());
             if (fileContent != null) {
-               BufferedWriter writer =
-                  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
-               writer.write(fileContent.array());
-               writer.close();
+               try (FileOutputStream outputStream = new FileOutputStream(outFile);
+                  OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+                  BufferedWriter writer = new BufferedWriter(streamWriter)) {
+                  writer.write(fileContent.array());
+               }
             }
          }
       }

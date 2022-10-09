@@ -255,33 +255,35 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          if (branchModel.areTxsVisible()) {
             for (TxModel txModel : branchModel.getTxs()) {
                TxFigure txFigure = getTxFigure(txModel);
-               boolean connectToBranchLabel = branchModel.getFirstTx().equals(txModel);
-               String msg = null;
-               if (txModel.getParentTx() != null) {
-                  TxModel parentTxModel = txModel.getParentTx();
-                  TxFigure parent = getTxFigure(parentTxModel);
-                  if (parent != null) {
-                     msg = getConnectionLabel(parentTxModel, txModel);
-                     connect(ConnectionType.BRANCH_INTERNAL, getFigure(), parent, txFigure, msg, false,
+               if (branchModel.getFirstTx() != null) {
+                  boolean connectToBranchLabel = branchModel.getFirstTx().equals(txModel);
+                  String msg = null;
+                  if (txModel.getParentTx() != null) {
+                     TxModel parentTxModel = txModel.getParentTx();
+                     TxFigure parent = getTxFigure(parentTxModel);
+                     if (parent != null) {
+                        msg = getConnectionLabel(parentTxModel, txModel);
+                        connect(ConnectionType.BRANCH_INTERNAL, getFigure(), parent, txFigure, msg, false,
+                           ColorConstants.black);
+                     }
+                  } else if (txModel.getSourceTx() != null) {
+                     TxModel sourceTx = txModel.getSourceTx();
+                     TxFigure source = getTxFigure(sourceTx);
+                     if (source != null) {
+                        msg = getConnectionLabel(sourceTx, txModel);
+                        connect(ConnectionType.PARENT_CHILD, getFigure(), source, txFigure, msg, true,
+                           ColorConstants.blue);
+                     }
+                  } else {
+                     connectToBranchLabel = true;
+                  }
+
+                  if (connectToBranchLabel) {
+                     BranchFigure branchFigure = branchFigureMap.get(branchModel.getBranch());
+                     msg = getConnectionLabel(branchModel.getFirstTx(), txModel);
+                     connect(ConnectionType.BRANCH_INTERNAL, getFigure(), branchFigure, txFigure, msg, false,
                         ColorConstants.black);
                   }
-               } else if (txModel.getSourceTx() != null) {
-                  TxModel sourceTx = txModel.getSourceTx();
-                  TxFigure source = getTxFigure(sourceTx);
-                  if (source != null) {
-                     msg = getConnectionLabel(sourceTx, txModel);
-                     connect(ConnectionType.PARENT_CHILD, getFigure(), source, txFigure, msg, true,
-                        ColorConstants.blue);
-                  }
-               } else {
-                  connectToBranchLabel = true;
-               }
-
-               if (connectToBranchLabel) {
-                  BranchFigure branchFigure = branchFigureMap.get(branchModel.getBranch());
-                  msg = getConnectionLabel(branchModel.getFirstTx(), txModel);
-                  connect(ConnectionType.BRANCH_INTERNAL, getFigure(), branchFigure, txFigure, msg, false,
-                     ColorConstants.black);
                }
             }
          } else {

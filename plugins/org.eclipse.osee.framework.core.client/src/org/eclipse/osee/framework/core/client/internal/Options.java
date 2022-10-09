@@ -67,6 +67,11 @@ public class Options implements Cloneable {
 
    @Override
    public Options clone() {
+      try {
+         super.clone();
+      } catch (CloneNotSupportedException ex) {
+         //
+      }
       Options clone = new Options();
       clone.includeDeleted = this.includeDeleted;
       clone.transactionId = this.transactionId;

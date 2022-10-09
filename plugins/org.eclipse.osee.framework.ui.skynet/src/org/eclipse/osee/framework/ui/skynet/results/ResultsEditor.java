@@ -121,7 +121,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
    List<IResultsEditorTab> getTabs() {
       if (tabs == null) {
          tabs = getResultsEditorProvider().getResultsEditorTabs();
-         if (tabs == null || tabs.isEmpty()) {
+         if (tabs.isEmpty()) {
             tabs.add(new ResultsEditorHtmlTab("Error", "Error", AHTML.simplePage(
                "Error: No tabs were defined for \"" + getResultsEditorProvider().getEditorName() + "\"")));
          }

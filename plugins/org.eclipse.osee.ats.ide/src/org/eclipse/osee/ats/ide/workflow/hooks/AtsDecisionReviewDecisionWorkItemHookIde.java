@@ -81,6 +81,9 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
             if (editor.getWorkFlowTab().getHeader().getWfeTransitionHeader().isSelected()) {
                return null;
             }
+            if (editor.getWorkFlowTab().getCurrentStateSection() == null) {
+               return null;
+            }
             XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
                AtsAttributeTypes.Decision.getUnqualifiedName()).getXWidget();
             XComboDam decisionComboDam = (XComboDam) xWidget;

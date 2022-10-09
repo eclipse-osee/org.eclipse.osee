@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * the substitutions are shared so only reuse with multiple threads that can share the substitutions<br />
  * http://www.w3.org/2007/07/xhtml-basic-ref.html <br />
  * http://validator.w3.org/check <br />
- * 
+ *
  * @author Ryan D. Brooks
  */
 public final class PageCreator {
@@ -50,8 +50,7 @@ public final class PageCreator {
    private static final int NumOfCharsInTypicalSmallPage = 7000;
 
    private final IResourceRegistry registry;
-   private final ConcurrentHashMap<String, AppendableRule<?>> substitutions =
-      new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, AppendableRule<?>> substitutions = new ConcurrentHashMap<>();
 
    public PageCreator(IResourceRegistry registry) {
       this.registry = registry;
@@ -347,7 +346,6 @@ public final class PageCreator {
          if (!key.equalsIgnoreCase("name")) {
             attributes.put(key, value);
          }
-         key = "";
          value = null;
          working.delete(iSpace, working.length());
          iSpace = working.lastIndexOf(" ");

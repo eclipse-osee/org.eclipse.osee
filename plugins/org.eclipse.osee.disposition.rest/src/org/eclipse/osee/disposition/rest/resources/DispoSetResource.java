@@ -15,6 +15,7 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import java.util.Collection;
 import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,6 +30,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -155,6 +157,9 @@ public class DispoSetResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getCheckedReruns(@QueryParam("name") String setName) {
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
+      if (setId == null) {
+         return null;
+      }
       List<String> reruns = dispoApi.getCheckedReruns(branch, setId);
       return reruns;
    }

@@ -89,6 +89,7 @@ public abstract class AbstractExportItem extends CancellableCallable<Boolean> {
 
    @Override
    public void setCancel(boolean cancel) {
+      super.setCancel(cancel);
       this.cancel = cancel;
    }
 
