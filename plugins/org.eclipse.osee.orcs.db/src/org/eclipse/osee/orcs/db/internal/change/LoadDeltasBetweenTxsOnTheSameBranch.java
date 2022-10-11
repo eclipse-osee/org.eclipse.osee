@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.change;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -31,14 +30,13 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -77,32 +75,28 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
    private final TransactionToken sourceTx;
    private final TransactionToken destinationTx;
    private final MissingChangeItemFactory missingChangeItemFactory;
-   private final QueryFactory queryFactory;
+   private final OrcsApi orcsApi;
    private final SqlJoinFactory joinFactory;
-   private final HashMap<Long, ApplicabilityToken> applicTokens;
    private final JdbcClient jdbcClient;
    private final BranchId mergeBranch;
    private final boolean isArchived;
 
-   public LoadDeltasBetweenTxsOnTheSameBranch(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+   public LoadDeltasBetweenTxsOnTheSameBranch(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, OrcsApi orcsApi, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.tokenService = tokenService;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
-      this.applicTokens = queryFactory.applicabilityQuery().getApplicabilityTokens(sourceTx.getBranch());
       this.missingChangeItemFactory = missingChangeItemFactory;
-      this.queryFactory = queryFactory;
       this.mergeBranch = mergeBranch;
-      isArchived = queryFactory.branchQuery().isArchived(destinationTx.getBranch());
+      this.orcsApi = orcsApi;
+      isArchived = orcsApi.getQueryFactory().branchQuery().isArchived(destinationTx.getBranch());
    }
 
    private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {
-      ApplicabilityToken toReturn = applicTokens.get(appId.getId());
-      if (toReturn != null) {
-         return toReturn;
-      }
-      throw new OseeCoreException("Applicability Token with app id %s not available", appId);
+      String byKey = orcsApi.getKeyValueOps().getByKey(appId.getId());
+      ApplicabilityToken toReturn = ApplicabilityToken.valueOf(appId.getId(), byKey);
+      return toReturn;
    }
 
    public List<ChangeItem> loadDeltasBetweenTxsOnTheSameBranch() {
@@ -263,11 +257,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
       if (sourceTx.isOnSameBranch(destinationTx)) {
          changes = loadDeltasBetweenTxsOnTheSameBranch();
          changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destinationTx,
-            queryFactory.applicabilityQuery()));
+            orcsApi.getQueryFactory().applicabilityQuery()));
       } else {
          changes = new LoadDeltasBetweenBranches(jdbcClient, joinFactory, tokenService, sourceTx.getBranch(),
-            destinationTx.getBranch(), sourceTx, destinationTx, mergeBranch, queryFactory,
-            missingChangeItemFactory).call();
+            destinationTx.getBranch(), sourceTx, destinationTx, mergeBranch, orcsApi, missingChangeItemFactory).call();
       }
 
       // Calculate and set the mod types

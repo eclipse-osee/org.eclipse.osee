@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -47,9 +47,9 @@ public interface BranchDataStore {
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
-   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory);
+   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, OrcsApi orcsApi);
 
-   List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
+   List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, OrcsApi orcsApi);
 
    Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches, PropertyStore options, String exportName);
 

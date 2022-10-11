@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.SystemProperties;
@@ -60,7 +61,6 @@ import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.BranchQuery;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -121,13 +121,12 @@ public class BranchModule {
          }
 
          @Override
-         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, QueryFactory queryFactory) {
-            BranchId mergeBranch = getMergeBranchId(queryFactory.branchQuery(), source, destination);
+         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, OrcsApi orcsApi) {
+            BranchId mergeBranch = getMergeBranchId(orcsApi.getQueryFactory().branchQuery(), source, destination);
 
             try {
                return new CommitBranchDatabaseTxCallable(idManager, committer, jdbcClient, joinFactory, tokenService,
-                  source, destination, sourceTx, destinationTx, mergeBranch, queryFactory,
-                  missingChangeItemFactory).call();
+                  source, destination, sourceTx, destinationTx, mergeBranch, orcsApi, missingChangeItemFactory).call();
             } catch (Exception ex) {
                throw OseeCoreException.wrap(ex);
             }
@@ -139,11 +138,11 @@ public class BranchModule {
          }
 
          @Override
-         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
-            BranchId mergeBranch =
-               getMergeBranchId(queryFactory.branchQuery(), sourceTx.getBranch(), destinationTx.getBranch());
+         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, OrcsApi orcsApi) {
+            BranchId mergeBranch = getMergeBranchId(orcsApi.getQueryFactory().branchQuery(), sourceTx.getBranch(),
+               destinationTx.getBranch());
             return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, tokenService, sourceTx,
-               destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).compareTransactions();
+               destinationTx, mergeBranch, orcsApi, missingChangeItemFactory).compareTransactions();
          }
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {

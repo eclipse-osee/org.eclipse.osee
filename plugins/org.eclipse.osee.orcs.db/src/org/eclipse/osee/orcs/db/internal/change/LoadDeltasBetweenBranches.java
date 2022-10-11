@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -37,11 +36,11 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.SqlTable;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -114,11 +113,10 @@ public class LoadDeltasBetweenBranches {
    private final BranchId mergeBranch;
    private final ApplicabilityQuery applicabilityQuery;
    private final MissingChangeItemFactory missingChangeItemFactory;
-   private final QueryFactory queryFactory;
-   private final HashMap<Long, ApplicabilityToken> applicTokens;
+   private final OrcsApi orcsApi;
    private final TransactionId mergeTxId;
 
-   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, OrcsApi orcsApi, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.tokenService = tokenService;
@@ -127,24 +125,21 @@ public class LoadDeltasBetweenBranches {
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
       this.mergeBranch = mergeBranch;
-      this.applicabilityQuery = queryFactory.applicabilityQuery();
+      this.applicabilityQuery = orcsApi.getQueryFactory().applicabilityQuery();
       this.missingChangeItemFactory = missingChangeItemFactory;
-      this.queryFactory = queryFactory;
-      this.applicTokens = applicabilityQuery.getApplicabilityTokens(sourceBranch, destinationBranch);
+      this.orcsApi = orcsApi;
 
       if (mergeBranch.isValid()) {
-         mergeTxId = queryFactory.transactionQuery().andIsHead(mergeBranch).getResults().getExactlyOne();
+         mergeTxId = orcsApi.getQueryFactory().transactionQuery().andIsHead(mergeBranch).getResults().getExactlyOne();
       } else {
          mergeTxId = TransactionId.SENTINEL;
       }
    }
 
    private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {
-      ApplicabilityToken toReturn = applicTokens.get(appId.getId());
-      if (toReturn != null) {
-         return toReturn;
-      }
-      return ApplicabilityToken.BASE;
+      String byKey = orcsApi.getKeyValueOps().getByKey(appId.getId());
+      ApplicabilityToken toReturn = ApplicabilityToken.valueOf(appId.getId(), byKey);
+      return toReturn;
    }
 
    private boolean hasMergeBranch() {
@@ -259,10 +254,10 @@ public class LoadDeltasBetweenBranches {
 
          }
       };
-      SqlTable txsTable = OseeDb.getTxsTable(queryFactory.branchQuery().isArchived(sourceBranch));
+      SqlTable txsTable = OseeDb.getTxsTable(orcsApi.getQueryFactory().branchQuery().isArchived(sourceBranch));
       String sql = String.format(SELECT_ALL_SOURCE_ADDRESSING, txsTable, txsTable);
 
-      if (!queryFactory.branchQuery().getBranchCategoryGammaId(destinationBranch,
+      if (!orcsApi.getQueryFactory().branchQuery().getBranchCategoryGammaId(destinationBranch,
          CoreBranchCategoryTokens.MIM).isEmpty()) {
          sql = String.format(SELECT_ALL_SOURCE_ADDRESSING2, txsTable, txsTable);
       }
@@ -336,9 +331,10 @@ public class LoadDeltasBetweenBranches {
             " osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
             " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
-      List<BranchCategoryToken> branchCategories = queryFactory.branchQuery().getBranchCategories(txBranchId);
-      if (branchCategories.isEmpty() || !queryFactory.branchQuery().getBranchCategories(txBranchId).contains(
-         CoreBranchCategoryTokens.MIM)) {
+      List<BranchCategoryToken> branchCategories =
+         orcsApi.getQueryFactory().branchQuery().getBranchCategories(txBranchId);
+      if (branchCategories.isEmpty() || !orcsApi.getQueryFactory().branchQuery().getBranchCategories(
+         txBranchId).contains(CoreBranchCategoryTokens.MIM)) {
          jdbcClient.runQueryWithMaxFetchSize(consumer, query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId,
             txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(),
             TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
@@ -400,9 +396,10 @@ public class LoadDeltasBetweenBranches {
                "osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 6 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
                ") t order by t.id2, t.transaction_id asc";
-         List<BranchCategoryToken> branchCategories = queryFactory.branchQuery().getBranchCategories(sourceBranch);
-         if (branchCategories.isEmpty() || !queryFactory.branchQuery().getBranchCategories(sourceBranch).contains(
-            CoreBranchCategoryTokens.MIM)) {
+         List<BranchCategoryToken> branchCategories =
+            orcsApi.getQueryFactory().branchQuery().getBranchCategories(sourceBranch);
+         if (branchCategories.isEmpty() || !orcsApi.getQueryFactory().branchQuery().getBranchCategories(
+            sourceBranch).contains(CoreBranchCategoryTokens.MIM)) {
             chStmt.runPreparedQueryWithMaxFetchSize(query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
                idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
                sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
