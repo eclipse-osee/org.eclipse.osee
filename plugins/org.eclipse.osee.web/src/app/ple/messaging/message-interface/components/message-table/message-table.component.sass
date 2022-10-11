@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use "../../../../../../sass-utils/mat-table-utils" as utils
+  
 table 
   width: 100%
 .message-interface-table-view-width-100
@@ -25,12 +27,10 @@ tr.message-expanded-detail-row
   display: flex
   flex-direction: column
 .message-interface-table-filter-padding
-  padding:
-    left: 1%
-    bottom: 1%
+  padding: 0 0 1em 1em
 .message-interface-table-view-message-header
   font-weight: bold
-.flex-row
+.flex-cell
   display: flex
   align-items: center
   width: 95%
@@ -39,22 +39,20 @@ tr.message-expanded-detail-row
   position: fixed
   bottom: 3%
   right: 2%
-.mat-column-name
-  flex: 1 1 10%
-  max-width: 10%
-.mat-column-description
-  flex: 3 1 content
-mat-drawer
-  min-width: 300px
-  max-width: 500px
-  margin: 10px
-.message-element-interface-button-header
-  margin: 1% 0 0 1%
+
+@include utils.table-column-width('name', 200px)
+@include utils.table-column-width('interfaceMessageNumber', 50px)
+@include utils.table-column-width('interfaceMessagePeriodicity', 120px)
+@include utils.table-column-width('interfaceMessageRate', 50px)
+@include utils.table-column-width('interfaceMessageWriteAccess ', 90px)
+@include utils.table-column-width('interfaceMessageType', 120px)
+@include utils.table-column-width('initiatingNode', 100px)
+
+.mat-column-interfaceMessageNumber .mat-column-interfaceMessageRate
+  padding-right: 1em
 
 .connections-button
-  margin: 1% 0 0 1%
-.action-button
-  margin: 1% 0 0 1%
+  margin: 1em 0 0 1em
 
 .message-interface-header
   display: flex
@@ -64,6 +62,5 @@ mat-drawer
     display: flex
     flex-direction: row
     align-items: center
-
-.edit-message-field
-  width: 100%
+    margin-top: 1em
+    gap: 5px

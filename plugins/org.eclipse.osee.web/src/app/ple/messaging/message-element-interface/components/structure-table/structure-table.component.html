@@ -67,7 +67,7 @@
                                         </ng-container>
                                     </ng-container>
                                     <ng-container *ngIf="editableStructureHeaders.includes(header); else no_edit">
-                                        <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]" [attr.data-cy]="'structure-table-'+header+'-'+element.name+'-'+element[header]" class="edit-structure-field"></osee-messaging-edit-structure-field>
+                                        <osee-messaging-edit-structure-field [structureId]="element['id']" [header]="header" [value]="element[header]" [attr.data-cy]="'structure-table-'+header+'-'+element.name+'-'+element[header]"></osee-messaging-edit-structure-field>
                                     </ng-container>
                                 </ng-container>
                                 <ng-template #no_edit>
