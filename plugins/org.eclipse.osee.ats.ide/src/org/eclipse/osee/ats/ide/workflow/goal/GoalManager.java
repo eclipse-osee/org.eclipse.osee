@@ -13,23 +13,18 @@
 
 package org.eclipse.osee.ats.ide.workflow.goal;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactDialog;
@@ -66,33 +61,12 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    }
 
    public static GoalArtifact createGoal(String title, IAtsChangeSet changes) {
-      WorkDefinition workDef =
-         AtsApiService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
-      return createGoal(title, AtsArtifactTypes.Goal, workDef,
-         AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(), changes, null);
+      return (GoalArtifact) AtsApiService.get().getActionService().createGoal(title, changes);
    }
 
    public static GoalArtifact createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
-      GoalArtifact goalArt =
-         (GoalArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), title);
-
-      IAtsTeamDefinition useTeamDef = teamDef;
-      Conditions.assertNotNull(useTeamDef, "Team Definition can not be null for %s", goalArt.toStringWithId());
-      AtsApiService.get().getActionService().setAtsId(goalArt, useTeamDef, workItemListener, changes);
-
-      WorkDefinition useWorkDefinition = workDefinition;
-      if (useWorkDefinition == null) {
-         useWorkDefinition =
-            AtsApiService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
-      }
-      Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goalArt.toStringWithId());
-      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(goalArt, workDefinition, changes);
-
-      AtsApiService.get().getActionService().initializeNewStateMachine(goalArt,
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), workDefinition, changes);
-
-      changes.add(goalArt);
+      GoalArtifact goalArt = (GoalArtifact) AtsApiService.get().getActionService().createGoal(title, artifactType,
+         workDefinition, teamDef, changes, workItemListener);
       return goalArt;
    }
 

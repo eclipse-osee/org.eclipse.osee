@@ -65,4 +65,8 @@ public interface IAtsActionService {
     */
    IAtsAction createAction(String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes);
 
+   IAtsGoal createGoal(String title, IAtsChangeSet changes);
+
+   IAtsGoal createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener);
+
 }
