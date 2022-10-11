@@ -10,19 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use "../../../../../../sass-utils/mat-table-utils" as utils
+  
 table 
   width: 100%
-
 
 tr.message-expanded-detail-row 
   height: 0
   flex-wrap: nowrap
 
-
 .message-detail-row td 
   border-bottom-width: 0
   flex-wrap: nowrap
-
 
 .sub-message-detail 
   overflow: hidden
@@ -35,22 +34,10 @@ tr.message-expanded-detail-row
 .message-element-interface-table-view-row-display
   display: flex
   flex-direction: row
-  // justify-content: space-between
 
 .message-element-interface-table-view-message-header
   font:
     weight: bold
-
-.message-element-interface-table-view-element
-  // min-width: 4%
-  // width: 10%
-  // max-width: 8%
-  // vertical-align: middle
-  // display: flex
-  // flex-direction: column
-  // justify:
-  //   content: space-around
-  // border-bottom: 1px solid
 
 .message-element-interface-table-sub-message-element
   display: flex
@@ -74,7 +61,6 @@ tr.message-expanded-detail-row
 .message-element-interface-table-view-sub-message-header
   font:
     weight: 500
-    // size: 12px
   text:
     align: center
 
@@ -131,10 +117,6 @@ td th
   margin: 1% 0 0 1%
 .action-button
   margin: 1% 0 0 1%
-mat-drawer
-  min-width: 300px
-  max-width: 500px
-  margin: 10px
 .message-element-interface-header
   display: flex
   flex-direction: row
@@ -144,8 +126,10 @@ mat-drawer
     flex-direction: row
     align-items: center
 
-.edit-structure-field
-  width: 100%
-
-.hidden
-  display: none
+@include utils.table-column-width('name ', 200px)
+@include utils.table-column-width('interfaceMinSimultaneity ', 100px)
+@include utils.table-column-width('interfaceMaxSimultaneity ', 100px)
+@include utils.table-column-width('interfaceTaskFileType', 100px)
+@include utils.table-column-width('interfaceStructureCategory', 120px)
+@include utils.table-column-width('numElements', 100px)
+@include utils.table-column-width('sizeInBytes', 100px)
