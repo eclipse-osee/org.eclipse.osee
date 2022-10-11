@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -32,13 +33,15 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
    private final BranchId destination;
    private final QueryFactory queryFactory;
    private final OrcsTokenService tokenService;
+   private final OrcsApi orcsApi;
 
-   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactId committer, BranchId source, BranchId destination, OrcsTokenService tokenService) {
+   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, OrcsApi orcsApi, ArtifactId committer, BranchId source, BranchId destination, OrcsTokenService tokenService) {
       super(logger, session, branchStore);
       this.committer = committer;
       this.source = source;
       this.destination = destination;
-      this.queryFactory = queryFactory;
+      this.orcsApi = orcsApi;
+      this.queryFactory = orcsApi.getQueryFactory();
       this.tokenService = tokenService;
    }
 
@@ -57,7 +60,7 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
       TransactionId newTx = getBranchStore().commitBranch(getSession(), committer, tokenService, sourceBranch,
-         sourceHead, destinationBranch, destinationHead, queryFactory);
+         sourceHead, destinationBranch, destinationHead, orcsApi);
       return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }
 }

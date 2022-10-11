@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
@@ -72,9 +73,10 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private final TransactionToken sourceTx;
    private final TransactionToken destinationTx;
    private final QueryFactory queryFactory;
+   private final OrcsApi orcsApi;
    private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public CommitBranchDatabaseTxCallable(IdentityManager idManager, ArtifactId committer, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, Branch sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+   public CommitBranchDatabaseTxCallable(IdentityManager idManager, ArtifactId committer, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, Branch sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, OrcsApi orcsApi, MissingChangeItemFactory missingChangeItemFactory) {
       super(null, null, jdbcClient);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
@@ -85,14 +87,15 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
       this.mergeBranch = mergeBranch;
-      this.queryFactory = queryFactory;
+      this.orcsApi = orcsApi;
+      this.queryFactory = orcsApi.getQueryFactory();
       this.missingChangeItemFactory = missingChangeItemFactory;
    }
 
    @Override
    protected TransactionId handleTxWork(JdbcConnection connection) {
       List<ChangeItem> changes = new LoadDeltasBetweenBranches(getJdbcClient(), joinFactory, tokenService, sourceBranch,
-         destinationBranch, sourceTx, destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).call();
+         destinationBranch, sourceTx, destinationTx, mergeBranch, orcsApi, missingChangeItemFactory).call();
 
       changes = ChangeItemUtil.computeNetChangesAndFilter(changes);
 

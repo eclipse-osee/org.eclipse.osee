@@ -109,8 +109,9 @@ public class OrcsBranchImpl implements OrcsBranch {
          branchStore.createBranch(branchData, userService);
       }
       if (branchData.getCategories() != null) {
-      for (BranchCategoryToken bc : branchData.getCategories()) {
-         orcsApi.getBranchOps().setBranchCategory(branchData.getBranch(), bc);}
+         for (BranchCategoryToken bc : branchData.getCategories()) {
+            orcsApi.getBranchOps().setBranchCategory(branchData.getBranch(), bc);
+         }
       }
       return queryFactory.branchQuery().andId(branchData.getBranch()).getResults().getExactlyOne();
    }
@@ -157,13 +158,13 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<TransactionToken> commitBranch(ArtifactId committer, BranchId source, BranchId destination) {
-      return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination,
+      return new CommitBranchCallable(logger, session, branchStore, orcsApi, committer, source, destination,
          tokenService);
    }
 
    @Override
    public List<ChangeItem> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx) {
-      return branchStore.compareBranch(session, tokenService, sourceTx, destinationTx, queryFactory);
+      return branchStore.compareBranch(session, tokenService, sourceTx, destinationTx, orcsApi);
    }
 
    @Override
@@ -172,7 +173,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getBaselineTx();
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
       TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
-      return branchStore.compareBranch(session, tokenService, fromTx, toTx, queryFactory);
+      return branchStore.compareBranch(session, tokenService, fromTx, toTx, orcsApi);
    }
 
    @Override
