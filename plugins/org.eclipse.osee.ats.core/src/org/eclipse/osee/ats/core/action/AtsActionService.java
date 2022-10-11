@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -54,7 +55,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
@@ -338,7 +338,7 @@ public class AtsActionService implements IAtsActionService {
          List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
          for (IAtsTeamDefinition teamDef : teamDefs) {
             List<AtsUser> leads =
-               new LinkedList<>(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef, actionableItems));
+               new LinkedList<>(atsApi.getTeamDefinitionService().getLeads(teamDef, actionableItems));
             if (leads.isEmpty()) {
                leads.add(AtsCoreUsers.UNASSIGNED_USER);
             }
@@ -377,7 +377,7 @@ public class AtsActionService implements IAtsActionService {
 
    private IAtsTeamDefinition getTopTeamDef() {
       if (topTeamDefinition == null) {
-         topTeamDefinition = AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition();
+         topTeamDefinition = atsApi.getTeamDefinitionService().getTopTeamDefinition();
       }
       return topTeamDefinition;
    }
@@ -718,5 +718,34 @@ public class AtsActionService implements IAtsActionService {
 
    public void addActionListener(INewActionListener listener) {
       actionListeners.add(listener);
+   }
+
+   @Override
+   public IAtsGoal createGoal(String title, IAtsChangeSet changes) {
+      WorkDefinition workDef =
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+      return createGoal(title, AtsArtifactTypes.Goal, workDef, atsApi.getTeamDefinitionService().getTopTeamDefinition(),
+         changes, null);
+   }
+
+   @Override
+   public IAtsGoal createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
+      ArtifactToken art = changes.createArtifact(artifactType, title);
+      IAtsGoal goal = atsApi.getWorkItemService().getGoal(art);
+
+      Conditions.assertNotNull(teamDef, "Team Definition can not be null for %s", goal.toStringWithId());
+      atsApi.getActionService().setAtsId(goal, teamDef, workItemListener, changes);
+
+      WorkDefinition useWorkDefinition = workDefinition;
+      if (useWorkDefinition == null) {
+         useWorkDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+      }
+      Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goal.toStringWithId());
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(goal, workDefinition, changes);
+
+      atsApi.getActionService().initializeNewStateMachine(goal, Arrays.asList(atsApi.getUserService().getCurrentUser()),
+         new Date(), atsApi.getUserService().getCurrentUser(), workDefinition, changes);
+
+      return goal;
    }
 }
