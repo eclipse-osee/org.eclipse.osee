@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 
@@ -35,7 +36,7 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
    public CreateNewActionAtLocactionBlam(IMemberProvider memberProvider, List<IAtsActionableItem> aias, Artifact dropTarget) {
       super("Create New Action At This Location",
          BLAM_DESCRIPTION + " and add to [" + memberProvider.getArtifact().getName() + //
-            "] before item " + dropTarget.toStringWithId());
+            "] " + (dropTarget == null ? "to the end" : "before item " + dropTarget.toStringWithId()));
       this.memberProvider = memberProvider;
       this.aias = aias;
       this.dropTarget = dropTarget;
@@ -45,6 +46,9 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
    public void inputSectionCreated(XWidgetPage widgetPage) {
       XHyperlabelActionableItemSelection aiWidget =
          (XHyperlabelActionableItemSelection) widgetPage.getLayoutData("Actionable Item(s)").getXWidget();
+      if (aias.isEmpty()) {
+         aias.addAll(AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
+      }
       aiWidget.setAis(aias);
    }
 
