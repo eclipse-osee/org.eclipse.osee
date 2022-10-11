@@ -59,6 +59,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
@@ -109,6 +110,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       criterias.add(new ArrayList<>());
       this.tokenService = tokenService;
       this.appId = appId;
+      this.setOrderMechanism("RELATION");
    }
 
    public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchToken branch, ArtifactId view) {
@@ -791,5 +793,32 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder isOnPage(long pageNum, long pageSize) {
       return addAndCheck(new CriteriaPagination(pageNum, pageSize));
+   }
+
+   @Override
+   public QueryBuilder setOrderByAttribute(AttributeTypeId attributeTypeId) {
+      if (orderMechanism().equals("RELATION")) {
+         setOrderMechanism("RELATION AND ATTRIBUTE");
+      } else {
+         setOrderMechanism("ATTRIBUTE");
+      }
+      OptionsUtil.setOrderByAttribute(getOptions(), attributeTypeId);
+      return addAndCheck(new CriteriaAttributeSort(attributeTypeId));
+   }
+
+   @Override
+   public AttributeTypeId orderByAttribute() {
+      return AttributeTypeId.valueOf(OptionsUtil.getOrderByAttribute(getOptions()));
+   }
+
+   @Override
+   public QueryBuilder setOrderMechanism(String orderMechanism) {
+      OptionsUtil.setOrderByMechanism(getOptions(), orderMechanism);
+      return this;
+   }
+
+   @Override
+   public String orderMechanism() {
+      return OptionsUtil.getOrderByMechanism(getOptions());
    }
 }

@@ -145,4 +145,11 @@ public class JdbcDbType extends BaseId {
       }
       return String.format("call %s", function);
    }
+
+   public boolean isPaginationOrderingSupported() {
+      if (matches(hsql)) {
+         return false;
+      }
+      return true;
+   }
 }

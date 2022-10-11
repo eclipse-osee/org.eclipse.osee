@@ -12,6 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import org.eclipse.osee.orcs.OseeDb;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -45,7 +47,35 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
       //do nothing
-      writer.write(",\n row_number() over () rn"); //note: need to leverage writer.getJdbcClient().getDbType() to be able to control attribute sorting vs relation sorting since HSQL in Oracle mode doesn't support row_number() over (ORDER BY x)
+      writer.write(",\n row_number() over (");
+      if (writer.getJdbcClient().getDbType().isPaginationOrderingSupported()) {
+         //note: need to leverage writer.getJdbcClient().getDbType() to be able to control attribute sorting vs relation sorting since HSQL doesn't support row_number() over (ORDER BY x)
+
+         if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains(
+            "ATTRIBUTE") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+            writer.write("ORDER BY ");
+         }
+         if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("ATTRIBUTE")) {
+            writer.write(writer.getFirstAlias(OseeDb.ATTRIBUTE_TABLE));
+            writer.write(".value");
+            if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+               writer.write(", ");
+               String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
+               writer.write(relTable);
+               writer.write(".rel_type, ");
+               writer.write(relTable);
+               writer.write(".rel_order ");
+            }
+         } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+            writer.write(", ");
+            String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
+            writer.write(relTable);
+            writer.write(".rel_type, ");
+            writer.write(relTable);
+            writer.write(".rel_order ");
+         }
+      }
+      writer.write(") rn");
    }
 
    @Override

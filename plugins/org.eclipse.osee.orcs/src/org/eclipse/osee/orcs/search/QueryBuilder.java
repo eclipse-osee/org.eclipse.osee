@@ -116,6 +116,18 @@ public interface QueryBuilder extends Query {
 
    boolean areApplicabilityTokensIncluded();
 
+   QueryBuilder setOrderByAttribute(AttributeTypeId attributeTypeId);
+
+   AttributeTypeId orderByAttribute();
+
+   /**
+    * Used to set the order mechanism i.e. RELATION, ATTRIBUTE, or RELATION AND ATTRIBUTE It is advisable instead to use
+    * orderByAttribute() as the default OrderMechanism should be RELATION
+    */
+   QueryBuilder setOrderMechanism(String orderMechanism);
+
+   String orderMechanism();
+
    QueryBuilder fromTransaction(TransactionId transaction);
 
    TransactionId getFromTransaction();
