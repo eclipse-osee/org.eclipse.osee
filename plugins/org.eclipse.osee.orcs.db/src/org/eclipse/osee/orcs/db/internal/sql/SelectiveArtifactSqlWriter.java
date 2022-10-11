@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
@@ -211,10 +212,26 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
          write(" ORDER BY art_id");
       } else if (this.rels2Alias != null) {
-         if (this.output.toString().contains("top_rel_type")) {
-            write(" ORDER BY top desc,top_rel_type, top_rel_order, rel_order");
-         } else {
-            write(" ORDER BY top desc, rel_order");
+         write(" ORDER BY ");
+         write("top desc");
+         if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
+            "RELATION AND ATTRIBUTE")) {
+            write(", CASE WHEN fields1.type_id = ");
+            write(this.rootQueryData.orderByAttribute().getIdString());
+            write(" THEN fields1.VALUE ELSE \n");
+            write("'");
+            write(new String(new char[4000]).replace('\0', 'Z'));
+            write("'");
+            write("\n" + "END ASC");
+         }
+         if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
+            "RELATION AND ATTRIBUTE")) {
+            if (this.output.toString().contains("top_rel_type")) {
+               write(", top_rel_type, top_rel_order, rel_order");
+            } else {
+               write(", rel_order");
+            }
+
          }
       }
    }
@@ -357,10 +374,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
-         if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
-            CriteriaPagination.class)) {
-            write(", 0 as rn");
-         }
       } else if (relsAlias != null) {
          writeSelectFields(relsAlias, "*", artAlias, "art_type_id");
          write(" AS other_art_type_id");
@@ -385,6 +398,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          for (SqlHandler<?> handler : handlers) {
             handler.writeSelectFields(this);
          }
+      }
+      if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
+         CriteriaAttributeSort.class)) {
+         write(", '' AS order_value");
+      }
+      if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
+         CriteriaPagination.class)) {
+         write(", 0 as rn");
       }
    }
 

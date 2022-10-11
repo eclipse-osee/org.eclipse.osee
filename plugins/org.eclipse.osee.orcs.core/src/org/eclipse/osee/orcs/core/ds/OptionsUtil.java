@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -34,6 +35,8 @@ public final class OptionsUtil {
    private static final String SHOW_HIDDEN_FIELDS = "show.hidden.fields";
    private static final String BRANCH_VIEW = "from.branch.view";
    private static final String INCLUDE_APPLICABILITY_TOKENS = "include.applicability.tokens";
+   private static final String ORDER_BY_MECHANISM = "order.by.mechanism";
+   private static final String ORDER_BY_ATTRIBUTE = "order.by.attribute";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -182,5 +185,28 @@ public final class OptionsUtil {
 
    public static boolean getIncludeApplicabilityTokens(Options options) {
       return options.getBoolean(INCLUDE_APPLICABILITY_TOKENS);
+   }
+
+   /**
+    * @param mechanism This should be "RELATION", "ATTRIBUTE", or "RELATION AND ATTRIBUTE"
+    */
+   public static void setOrderByMechanism(Options options, String mechanism) {
+      options.put(ORDER_BY_MECHANISM, mechanism);
+   }
+
+   public static String getOrderByMechanism(Options options) {
+      return options.get(ORDER_BY_MECHANISM);
+   }
+
+   /**
+    * @param attributeType the attribute type to query by, however the ORDER_BY_MECHANISM must be "ATTRIBUTE" or
+    * "RELATION AND ATTRIBUTE"
+    */
+   public static void setOrderByAttribute(Options options, AttributeTypeId attributeType) {
+      options.put(ORDER_BY_ATTRIBUTE, attributeType.getId());
+   }
+
+   public static Long getOrderByAttribute(Options options) {
+      return options.getLong(ORDER_BY_ATTRIBUTE);
    }
 }

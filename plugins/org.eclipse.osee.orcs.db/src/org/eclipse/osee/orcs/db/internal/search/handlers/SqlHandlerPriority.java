@@ -59,6 +59,7 @@ public enum SqlHandlerPriority {
    FOLLOW_RELATION_TYPES,
    RELATION_DATA_XTRA,
    RELATION_TX_DATA_XTRA,
+   ATTRIBUTE_SORT,
    PAGINATION,
    LAST;
 }
