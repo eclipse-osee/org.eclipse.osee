@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.links;
 import java.net.URL;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -129,11 +130,15 @@ public class LinksXNavigateMenuItem implements IXNavigateMenuItem {
       Link link = (Link) urlItem.getData();
       if (link != null) {
          EditLinkDialog dialog = new EditLinkDialog(link);
+         if (link.getTeam().equals(LinkUtil.ANONYMOUS)) {
+            dialog.setChecked(true);
+         }
          if (dialog.open() == Window.OK) {
             try {
                LinkUtil.upateLinkFromDialog(dialog, link);
             } catch (Exception ex) {
-               OseeLog.log(LinksNavigateViewItems.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(LinksNavigateViewItems.class, OseeLevel.SEVERE_POPUP,
+                  "Database was not updated or no changes were made." + Lib.exceptionToString(ex));
             }
          }
       }

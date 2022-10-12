@@ -45,6 +45,8 @@ import org.eclipse.osee.framework.ui.skynet.util.FrameworkEvents;
  */
 public class LinkUtil {
 
+   public static final String ANONYMOUS = "Anonymous";
+
    private LinkUtil() {
       // Utility class
    }
@@ -191,7 +193,7 @@ public class LinkUtil {
          link.setId(GUID.create());
       }
       if (global) {
-         link.setTeam("Anonymous");
+         link.setTeam(LinkUtil.ANONYMOUS);
       } else {
          User user = UserManager.getUser();
          link.setTeam(user.getName());
