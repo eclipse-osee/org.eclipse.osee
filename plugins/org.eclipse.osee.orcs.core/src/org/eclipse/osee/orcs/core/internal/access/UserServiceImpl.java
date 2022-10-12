@@ -278,6 +278,7 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setBeforeUserCreation(boolean beforeUserCreation) {
+      // do nothing
    }
 
    @Override

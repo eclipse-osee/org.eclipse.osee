@@ -129,10 +129,13 @@ public class CreateSystemBranches {
       userService.clearCaches();
       Set<UserToken> users = new HashSet<>(SystemUser.values());
       users.remove(userWithRoles); // Replace existing entry, if any
-      users.add(userWithRoles);
       Set<UserToken> bootsrapUsers = getBoostrapUsers();
       Conditions.assertFalse(bootsrapUsers.isEmpty(), "Bootstrap Users should NOT be empty.");
       users.addAll(bootsrapUsers);
+      // Use token if possible, else add user passed in
+      if (!users.contains(userWithRoles)) {
+         users.add(userWithRoles);
+      }
       OseeProperties.setIsInTest(true);
       userService.setUserForCurrentThread(UserId.valueOf(userWithRoles));
       TransactionId txId = userService.createUsers(users, "Create System Users");
