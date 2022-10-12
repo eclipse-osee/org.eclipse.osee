@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -92,6 +93,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             }
          }
          if (element instanceof IAtsWorkItem) {
+            if (((Artifact) ((IAtsWorkItem) element).getStoreObject()).isDeleted()) {
+               return null;
+            }
             if (xCol.getId().equals(AtsColumnTokens.StateColumn.getId())) {
                StateDefinition state = ((AbstractWorkflowArtifact) element).getStateDefinition();
                if (state == null) {

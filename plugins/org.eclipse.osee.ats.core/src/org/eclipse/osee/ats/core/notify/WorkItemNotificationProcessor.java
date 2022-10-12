@@ -84,7 +84,7 @@ public class WorkItemNotificationProcessor {
          if (types.contains(AtsNotifyType.Originator)) {
             try {
                AtsUser originator = workItem.getCreatedBy();
-               if (originator.isActive()) {
+               if (originator != null && originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (fromUser.notEqual(originator)) {
@@ -208,9 +208,9 @@ public class WorkItemNotificationProcessor {
             }
          }
          if (types.contains(AtsNotifyType.SubscribedTeamOrAi)) {
-            if (workItem.isTeamWorkflow()) {
-               IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-               try {
+            try {
+               if (workItem.isTeamWorkflow()) {
+                  IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
                   Collection<AtsUser> subscribedUsers = new HashSet<>();
                   // Handle Team Definitions
                   IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
@@ -232,10 +232,10 @@ public class WorkItemNotificationProcessor {
                            "You have subscribed for email notification for Actionable Item \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
                      }
                   }
-               } catch (OseeCoreException ex) {
-                  logger.error(ex, "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]",
-                     workItem.toStringWithId(), event.toString());
                }
+            } catch (OseeCoreException ex) {
+               logger.error(ex, "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]",
+                  workItem.toStringWithId(), event.toString());
             }
          }
       }
