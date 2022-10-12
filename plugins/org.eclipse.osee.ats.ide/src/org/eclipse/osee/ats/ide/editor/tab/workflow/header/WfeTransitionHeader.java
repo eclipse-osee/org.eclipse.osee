@@ -123,6 +123,7 @@ public class WfeTransitionHeader extends Composite {
                StateDefinition selState = handleChangeTransitionToState(workItem, isEditable, getToState());
                if (selState != null) {
                   userSelectedTransitionToState = selState;
+                  transitionLabelLink.setEnabled(false);
                   handleTransitionButtonSelection();
                }
             } catch (Exception ex) {
