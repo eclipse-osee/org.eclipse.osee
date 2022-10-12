@@ -77,7 +77,7 @@ public class DispoSetResource {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(branch, name);
          if (isUniqueSetName) {
             ArtifactId createdSetId = dispoApi.createDispoSet(branch, descriptor, userName);
-            DispoSet createdSet = dispoApi.getDispoSetById(branch, String.valueOf(createdSetId));
+            DispoSet createdSet = dispoApi.getDispoSetById(branch, ArtifactId.valueOf(createdSetId).getIdString());
             status = Status.CREATED;
             response = Response.status(status).entity(createdSet).build();
          } else {

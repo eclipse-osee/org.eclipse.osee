@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -55,7 +56,7 @@ public interface DatastoreEndpoint {
    @GET
    @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
-   UserToken getUserInfo(@HeaderParam("osee.user.id") String userId);
+   UserToken getUserInfo(@DefaultValue("-1") @HeaderParam("osee.user.id") String userId);
 
    /**
     * Clears the OSEE server's {@link UserToken} cache.
