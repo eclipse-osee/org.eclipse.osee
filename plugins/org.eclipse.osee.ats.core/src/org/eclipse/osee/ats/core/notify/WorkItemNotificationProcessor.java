@@ -78,8 +78,8 @@ public class WorkItemNotificationProcessor {
       for (String userId : event.getUserIds()) {
          notifyUsers.add(userService.getUserByUserId(userId));
       }
-      for (String atsId : event.getAtsIds()) {
-         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
+      for (Long id : event.getIds()) {
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
 
          if (types.contains(AtsNotifyType.Originator)) {
             try {
