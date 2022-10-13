@@ -109,6 +109,7 @@ public class WorkItemNotificationProcessorTest {
       when(teamWf.getAtsId()).thenReturn(atsId);
       when(atsApiServer.getWorkItemService()).thenReturn(workItemService);
       when(workItemService.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
+      when(workItemService.getWorkItem(98L)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
 
       when(atsApiServer.getUserService()).thenReturn(userService);
