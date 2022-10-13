@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.mim.types.ElementPosition;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
@@ -38,7 +39,7 @@ public interface InterfaceElementSearchEndpoint {
     *
     * @return list of elements
     */
-   Collection<InterfaceStructureElementToken> getElements(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+   Collection<InterfaceStructureElementToken> getElements(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("filter/{filter}")
@@ -48,7 +49,7 @@ public interface InterfaceElementSearchEndpoint {
     *
     * @return List of elements
     */
-   Collection<InterfaceStructureElementToken> getElements(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+   Collection<InterfaceStructureElementToken> getElements(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    /**
     * Gets list of elements utilizing platform type

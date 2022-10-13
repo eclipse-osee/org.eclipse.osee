@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceElementApi;
@@ -41,8 +42,8 @@ public class InterfaceElementEndpointImpl implements InterfaceElementEndpoint {
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getAllElements(long pageNum, long pageSize) {
-      return this.elementApi.getAllRelated(branch, structureId, pageNum, pageSize);
+   public Collection<InterfaceStructureElementToken> getAllElements(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return this.elementApi.getAllRelated(branch, structureId, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override

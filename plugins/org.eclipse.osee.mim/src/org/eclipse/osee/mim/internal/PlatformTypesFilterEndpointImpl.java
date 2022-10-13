@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -64,10 +65,11 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes(String filter, long pageNum, long pageSize) {
+   public Collection<PlatformTypeToken> getPlatformTypes(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       List<AttributeTypeId> attributes = this.createAttributeList();
       try {
-         return platformApi.getAccessor().getAllByFilter(branch, filter, attributes, pageNum, pageSize);
+         return platformApi.getAccessor().getAllByFilter(branch, filter, attributes, pageNum, pageSize,
+            orderByAttributeTypeId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -76,8 +78,8 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize) {
-      return platformApi.getAll(branch, pageNum, pageSize);
+   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+      return platformApi.getAll(branch, pageNum, pageSize, orderByAttributeTypeId);
    }
 
 }

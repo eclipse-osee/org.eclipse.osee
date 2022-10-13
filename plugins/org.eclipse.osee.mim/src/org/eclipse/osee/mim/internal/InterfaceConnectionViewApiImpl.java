@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -122,12 +123,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
 
    @Override
    public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize) {
-      try {
-         return this.getAccessor().getAll(branch, relations, pageNum, pageSize);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-      }
-      return new LinkedList<InterfaceConnection>();
+      return this.getAll(branch, 0L, 0L, AttributeTypeId.SENTINEL);
    }
 
    @Override
@@ -147,6 +143,21 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
+      }
+      return new LinkedList<InterfaceConnection>();
+   }
+
+   @Override
+   public Collection<InterfaceConnection> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
       }
       return new LinkedList<InterfaceConnection>();
    }

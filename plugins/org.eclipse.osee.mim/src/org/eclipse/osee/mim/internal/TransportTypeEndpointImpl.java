@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.TransportTypeApi;
 import org.eclipse.osee.mim.TransportTypeEndpoint;
@@ -30,8 +31,8 @@ public class TransportTypeEndpointImpl implements TransportTypeEndpoint {
    }
 
    @Override
-   public Collection<TransportType> getAll() {
-      return this.transportTypeApi.getAll(branch);
+   public Collection<TransportType> getAll(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+      return this.transportTypeApi.getAll(branch, pageNum, pageSize, orderByAttributeTypeId);
    }
 
    @Override

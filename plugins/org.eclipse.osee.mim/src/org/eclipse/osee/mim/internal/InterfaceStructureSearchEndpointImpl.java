@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceStructureApi;
@@ -35,13 +36,13 @@ public class InterfaceStructureSearchEndpointImpl implements InterfaceStructureS
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getAllStructures(long pageNum, long pageSize) {
-      return this.interfaceStructureApi.getAll(branch, pageNum, pageSize);
+   public Collection<InterfaceStructureToken> getAllStructures(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+      return this.interfaceStructureApi.getAll(branch, pageNum, pageSize, orderByAttributeTypeId);
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getFilteredStructures(String filter, long pageNum, long pageSize) {
-      return this.interfaceStructureApi.getFiltered(branch, filter, pageNum, pageSize);
+   public Collection<InterfaceStructureToken> getFilteredStructures(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+      return this.interfaceStructureApi.getFiltered(branch, filter, pageNum, pageSize, orderByAttributeTypeId);
    }
 
 }

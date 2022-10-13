@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceElementApi;
@@ -44,13 +45,13 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElements(long pageNum, long pageSize) {
-      return this.elementApi.getAll(branch, pageNum, pageSize);
+   public Collection<InterfaceStructureElementToken> getElements(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return this.elementApi.getAll(branch, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElements(String filter, long pageNum, long pageSize) {
-      return this.elementApi.getFiltered(branch, filter, pageNum, pageSize);
+   public Collection<InterfaceStructureElementToken> getElements(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return this.elementApi.getFiltered(branch, filter, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override

@@ -15,6 +15,7 @@ package org.eclipse.osee.mim;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
@@ -40,6 +41,18 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter);
 
+   List<InterfaceStructureToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, AttributeTypeId orderByAttribute);
+
    List<InterfaceStructureToken> getAll(BranchId branch, long pageNum, long pageSize);
 
    List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, long pageNum, long pageSize);
@@ -51,6 +64,18 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize);
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize);
+
+   List<InterfaceStructureToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
 

@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
@@ -36,10 +37,11 @@ public class InterfaceSubMessageEndpointImpl implements InterfaceSubMessageEndpo
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllSubMessages(long pageNum, long pageSize) {
+   public Collection<InterfaceSubMessageToken> getAllSubMessages(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       try {
          return subMessageApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, pageNum, pageSize);
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, pageNum, pageSize,
+            orderByAttributeTypeId);
       } catch (Exception ex) {
          System.out.println(ex);
          return null;

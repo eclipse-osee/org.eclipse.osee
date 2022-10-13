@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.internal;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
@@ -38,15 +39,15 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getStructures(long pageNum, long pageSize) {
+   public Collection<InterfaceStructureToken> getStructures(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       if (subMessageId.getId() == 0) {
          return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
       }
-      return this.interfaceStructureApi.getAllRelated(branch, subMessageId, pageNum, pageSize);
+      return this.interfaceStructureApi.getAllRelated(branch, subMessageId, pageNum, pageSize, orderByAttributeTypeId);
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getStructures(String filter) {
+   public Collection<InterfaceStructureToken> getStructures(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       if (subMessageId.getId() == 0) {
          return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
       }

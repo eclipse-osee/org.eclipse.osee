@@ -14,6 +14,7 @@ package org.eclipse.osee.mim;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.TransportType;
 
@@ -24,7 +25,11 @@ public interface TransportTypeApi extends QueryCapableMIMAPI<TransportType>, Aff
 
    Collection<TransportType> getAll(BranchId branch);
 
+   Collection<TransportType> getAll(BranchId branch, AttributeTypeId orderByAttribute);
+
    Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize);
+
+   Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    TransportType get(BranchId branch, ArtifactId artId);
 }

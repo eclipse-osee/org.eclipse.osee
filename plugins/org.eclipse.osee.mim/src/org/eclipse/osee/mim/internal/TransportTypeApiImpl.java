@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.TransportTypeApi;
@@ -96,6 +97,16 @@ public class TransportTypeApiImpl implements TransportTypeApi {
 
    @Override
    public Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize) {
+      return this.getAll(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<TransportType> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return this.accessor.getAll(branch, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
