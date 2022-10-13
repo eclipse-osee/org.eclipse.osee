@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -48,7 +47,7 @@ public class NewGoal extends AbstractAtsAction {
       }
       if (Strings.isValid(title)) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-         GoalArtifact goalArt = GoalManager.createGoal(title, changes);
+         GoalArtifact goalArt = (GoalArtifact) AtsApiService.get().getActionService().createGoal(title, changes);
          changes.execute();
          WorkflowEditor.editArtifact(goalArt);
       }

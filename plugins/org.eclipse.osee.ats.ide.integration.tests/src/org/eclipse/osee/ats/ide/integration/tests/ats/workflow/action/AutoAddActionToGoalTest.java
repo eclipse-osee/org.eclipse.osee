@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -61,7 +60,9 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AutoAddActionToGoalTest - NoAdd", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - NoActionAddedGoal", changes);
+      GoalArtifact goalArt =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal("AutoAddActionToGoalTest - NoActionAddedGoal",
+            changes);
       changes.execute();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have no memebers", 0, memArt.size());
@@ -75,7 +76,8 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAI", changes);
+      GoalArtifact goalArt = (GoalArtifact) AtsApiService.get().getActionService().createGoal(
+         "AutoAddActionToGoalTest - AddActionToGoalFromAI", changes);
       changes.execute();
 
       changes.clear();
@@ -109,7 +111,8 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithTeamDef", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
+      GoalArtifact goalArt = (GoalArtifact) AtsApiService.get().getActionService().createGoal(
+         "AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : AtsApiService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));
@@ -145,8 +148,8 @@ public class AutoAddActionToGoalTest {
       Artifact testAI2Art = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestAi2());
       Artifact teamDefArtifact = AtsApiService.get().getQueryServiceIde().getArtifact(AtsTestUtil.getTestTeamDef());
 
-      GoalArtifact goalArt =
-         GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAIorTeamDef", changes);
+      GoalArtifact goalArt = (GoalArtifact) AtsApiService.get().getActionService().createGoal(
+         "AutoAddActionToGoalTest - AddActionToGoalFromAIorTeamDef", changes);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, testAI2Art);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_AtsConfigObject, teamDefArtifact);
       changes.execute();
@@ -174,8 +177,12 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned", true);
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddTwoActions", changes);
-      GoalArtifact goalArt2 = GoalManager.createGoal("AutoAddActionToGoalTest - SecondGoal", changes);
+      GoalArtifact goalArt =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal("AutoAddActionToGoalTest - AddTwoActions",
+            changes);
+      GoalArtifact goalArt2 =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal("AutoAddActionToGoalTest - SecondGoal",
+            changes);
 
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : AtsApiService.get().getVersionService().getVersions(teamDef)) {

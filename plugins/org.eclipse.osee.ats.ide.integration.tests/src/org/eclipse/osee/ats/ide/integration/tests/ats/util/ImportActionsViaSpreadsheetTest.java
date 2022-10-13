@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -144,7 +143,8 @@ public class ImportActionsViaSpreadsheetTest {
    @org.junit.Test
    public void testImport_withGoal() throws Exception {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      GoalArtifact goal = GoalManager.createGoal(getClass().getSimpleName(), changes);
+      GoalArtifact goal =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal(getClass().getSimpleName(), changes);
       changes.execute();
 
       ImportActionsViaSpreadsheetBlam blam = new ImportActionsViaSpreadsheetBlam();

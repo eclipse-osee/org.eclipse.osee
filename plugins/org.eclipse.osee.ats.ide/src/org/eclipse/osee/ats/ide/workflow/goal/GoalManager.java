@@ -17,10 +17,6 @@ import java.util.Collection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -58,16 +54,6 @@ public class GoalManager extends MembersManager<GoalArtifact> {
          }
       }
       return promptChangeMemberOrder(goal, artifact);
-   }
-
-   public static GoalArtifact createGoal(String title, IAtsChangeSet changes) {
-      return (GoalArtifact) AtsApiService.get().getActionService().createGoal(title, changes);
-   }
-
-   public static GoalArtifact createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
-      GoalArtifact goalArt = (GoalArtifact) AtsApiService.get().getActionService().createGoal(title, artifactType,
-         workDefinition, teamDef, changes, workItemListener);
-      return goalArt;
    }
 
    @Override
