@@ -14,13 +14,17 @@
 package org.eclipse.osee.ats.ide.search.quick;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
-import org.eclipse.osee.ats.ide.world.WorldEditorOperationProvider;
+import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -172,6 +176,17 @@ public class AtsQuickSearchComposite extends Composite {
       }
       AtsQuickSearchData data =
          new AtsQuickSearchData("ATS Quick Search", searchArea.getText(), completeCancelledCheck.isChecked());
-      WorldEditor.open(new WorldEditorOperationProvider(new AtsQuickSearchOperation(data)));
+
+      AtsQuickSearchOperation operation = new AtsQuickSearchOperation(data);
+      Collection<Artifact> artifacts = operation.performSearch();
+      if (artifacts.isEmpty()) {
+         AWorkbench.popup(data.toString(), data.toString() + "\n\nNo Results Found");
+      } else {
+         if (artifacts.size() == 1 && artifacts.iterator().next().isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            WorkflowEditor.editArtifact(artifacts.iterator().next());
+         } else {
+            WorldEditor.open(new WorldEditorSimpleProvider(data.toString(), artifacts));
+         }
+      }
    }
 }
