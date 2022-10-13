@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
@@ -64,11 +63,14 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       createdDate = new Date();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
       createdBy = AtsApiService.get().getUserService().getCurrentUser();
-      GoalArtifact sawCodeGoal = GoalManager.createGoal("SAW Code", changes);
-      GoalArtifact sawTestGoal = GoalManager.createGoal("SAW Test", changes);
-      GoalArtifact toolsTeamGoal = GoalManager.createGoal("Tools Team", changes);
-      GoalArtifact facilitiesGoal = GoalManager.createGoal("Facilities Team", changes);
-      GoalArtifact cisReqGoal = GoalManager.createGoal("CIS Requirements", changes);
+      GoalArtifact sawCodeGoal = (GoalArtifact) AtsApiService.get().getActionService().createGoal("SAW Code", changes);
+      GoalArtifact sawTestGoal = (GoalArtifact) AtsApiService.get().getActionService().createGoal("SAW Test", changes);
+      GoalArtifact toolsTeamGoal =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal("Tools Team", changes);
+      GoalArtifact facilitiesGoal =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal("Facilities Team", changes);
+      GoalArtifact cisReqGoal =
+         (GoalArtifact) AtsApiService.get().getActionService().createGoal("CIS Requirements", changes);
 
       IAtsTeamWorkflow teamArt = createAction1(changes, sawCodeGoal);
       createAction2(changes, sawCodeGoal, cisReqGoal);
