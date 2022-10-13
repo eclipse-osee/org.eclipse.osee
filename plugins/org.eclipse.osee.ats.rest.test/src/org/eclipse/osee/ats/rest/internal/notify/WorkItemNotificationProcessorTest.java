@@ -144,6 +144,7 @@ public class WorkItemNotificationProcessorTest {
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Originator);
       event.getAtsIds().add(teamWf.getAtsId());
+      event.getIds().add(teamWf.getId());
       when(teamWf.getCreatedBy()).thenReturn(kay_ValidEmail);
 
       processor.run(notifications, event);
@@ -172,6 +173,7 @@ public class WorkItemNotificationProcessorTest {
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Assigned);
       event.getAtsIds().add(teamWf.getAtsId());
+      event.getIds().add(teamWf.getId());
       event.getUserIds().add(kay_ValidEmail.getUserId());
 
       processor.run(notifications, event);
@@ -229,6 +231,7 @@ public class WorkItemNotificationProcessorTest {
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Subscribed);
       event.getAtsIds().add(teamWf.getAtsId());
+      event.getIds().add(teamWf.getId());
 
       WorkItemNotificationProcessor processor = new WorkItemNotificationProcessor(atsApiServer);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
@@ -254,6 +257,7 @@ public class WorkItemNotificationProcessorTest {
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Completed);
       event.getAtsIds().add(teamWf.getAtsId());
+      event.getIds().add(teamWf.getId());
       when(teamWf.isTask()).thenReturn(false);
       when(stateDef.getStateType()).thenReturn(StateType.Completed);
       when(teamWf.getCreatedBy()).thenReturn(inactiveSteve);
@@ -288,6 +292,7 @@ public class WorkItemNotificationProcessorTest {
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Cancelled);
       event.getAtsIds().add(teamWf.getAtsId());
+      event.getIds().add(teamWf.getId());
       when(teamWf.isTask()).thenReturn(false);
       when(stateDef.getStateType()).thenReturn(StateType.Cancelled);
       when(teamWf.getCreatedBy()).thenReturn(inactiveSteve);
@@ -325,6 +330,7 @@ public class WorkItemNotificationProcessorTest {
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.SubscribedTeamOrAi);
       event.getAtsIds().add(teamWf.getAtsId());
+      event.getIds().add(teamWf.getId());
       when(teamWf.isTeamWorkflow()).thenReturn(true);
       when(stateDef.getStateType()).thenReturn(StateType.Working);
       when(stateMgr.getCurrentStateName()).thenReturn(StateType.Working.name());
