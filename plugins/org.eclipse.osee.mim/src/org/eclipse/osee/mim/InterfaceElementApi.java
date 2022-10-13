@@ -14,6 +14,7 @@ package org.eclipse.osee.mim;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
@@ -27,11 +28,19 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getAll(BranchId branch);
 
+   List<InterfaceStructureElementToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
+
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId);
+
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureElementToken> getAll(BranchId branch, long pageNum, long pageSize);
 
+   List<InterfaceStructureElementToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize);
+
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    InterfaceStructureElementToken getWithAllParentRelations(BranchId branch, ArtifactId elementId);
 
@@ -39,9 +48,17 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter);
 
+   List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, AttributeTypeId orderByAttribute);
+
    List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize);
 
+   List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+
    List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize);
+
+   List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 

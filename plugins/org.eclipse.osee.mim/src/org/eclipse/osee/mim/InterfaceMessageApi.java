@@ -15,6 +15,7 @@ package org.eclipse.osee.mim;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
@@ -34,9 +35,17 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
 
    Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId);
 
+   Collection<InterfaceMessageToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
+
+   Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, AttributeTypeId orderByAttribute);
+
    Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize);
 
    Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize);
+
+   Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId);
 

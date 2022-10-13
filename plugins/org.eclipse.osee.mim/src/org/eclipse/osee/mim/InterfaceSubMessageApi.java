@@ -15,6 +15,7 @@ package org.eclipse.osee.mim;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
@@ -34,9 +35,17 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
 
    Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter);
 
+   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, AttributeTypeId orderByAttribute);
+
+   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+
    Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize);
 
    Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize);
+
+   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure);
 

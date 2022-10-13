@@ -248,8 +248,31 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAll(BranchId branch, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAll(branch, followRelations, pageCount, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAll(BranchId branch, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAll(BranchId branch, Collection<RelationTypeSide> followRelations, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAll(branch, followRelations, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAll(BranchId branch, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAll(branch, new LinkedList<RelationTypeSide>(), pageCount, pageSize, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAll(BranchId branch, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orderByAttribute);
+      }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
       }
@@ -276,10 +299,35 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, attributes, followRelations, pageCount, pageSize,
+         AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, attributes, new LinkedList<RelationTypeSide>(), orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, attributes, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, attributes, new LinkedList<RelationTypeSide>(), pageCount, pageSize,
+         orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).and(
             attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
             QueryOption.TOKEN_MATCH_ORDER__ANY);
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orderByAttribute);
+      }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
       }
@@ -338,8 +386,33 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, followRelations, pageCount, pageSize,
+         AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, Collection<RelationTypeSide> followRelations, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, followRelations, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), pageCount, pageSize,
+         orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(
          artifactType).andRelatedTo(relation, relatedId);
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orderByAttribute);
+      }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
       }
@@ -368,10 +441,37 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
+         pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes,
+         new LinkedList<RelationTypeSide>(), orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, 0L, 0L,
+         orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes,
+         new LinkedList<RelationTypeSide>(), 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
             relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
                QueryOption.TOKEN_MATCH_ORDER__ANY);
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orderByAttribute);
+      }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
       }
@@ -408,6 +508,38 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, boolean isExact, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, followRelations, isExact, pageCount, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, false, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, isExact, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, boolean isExact, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), isExact, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), false, pageCount, pageSize,
+         orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), isExact, pageCount, pageSize,
+         orderByAttribute);
+   }
+
+   @Override
+   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<RelationTypeSide> followRelations, boolean isExact, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       /**
        * Perform a query using the: relation defined in query.getRelated()(if it exists) attribute type id list defined
        * in query.getQueries() value list defined in query.getQueries()
@@ -421,6 +553,9 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       }
       for (MimAttributeQueryElement q : query.getQueries()) {
          executeQuery = executeQuery.and(q.getAttributeId(), q.getValue(), queryOptions);
+      }
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         executeQuery = executeQuery.setOrderByAttribute(orderByAttribute);
       }
       if (pageCount != 0L && pageSize != 0L) {
          executeQuery = executeQuery.isOnPage(pageCount, pageSize);

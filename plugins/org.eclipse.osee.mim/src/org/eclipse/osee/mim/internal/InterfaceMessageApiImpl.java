@@ -190,27 +190,12 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize) {
-      try {
-         return this.getAccessor().getAll(branch, this.getFollowRelationDetails(), pageNum, pageSize).stream().map(
-            m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceMessageToken>();
+      return this.getAll(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize) {
-      try {
-         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
-            connectionId, this.getFollowRelationDetails(), pageNum, pageSize).stream().map(
-               m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return new LinkedList<InterfaceMessageToken>();
+      return this.getAllForConnection(branch, connectionId, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
@@ -234,6 +219,42 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       }
       return new LinkedList<InterfaceMessageToken>();
    }
+
+   @Override
+   public Collection<InterfaceMessageToken> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, AttributeTypeId orderByAttribute) {
+      return this.getAllForConnection(branch, connectionId, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return this.getAccessor().getAll(branch, this.getFollowRelationDetails(), pageNum, pageSize,
+            orderByAttribute).stream().map(m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceMessageToken>();
+   }
+
+   @Override
+   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
+            connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute).stream().map(
+               m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceMessageToken>();
+   }
+   
    @Override
    public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter) {
       List<AttributeTypeId> messageAttributes = createMessageAttributes();

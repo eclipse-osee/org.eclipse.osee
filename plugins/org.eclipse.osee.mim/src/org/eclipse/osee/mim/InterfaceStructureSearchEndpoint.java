@@ -19,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 
 /**
@@ -30,10 +31,10 @@ public interface InterfaceStructureSearchEndpoint {
    @GET()
    @Path("filter")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<InterfaceStructureToken> getAllStructures(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+   Collection<InterfaceStructureToken> getAllStructures(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("filter/{filter}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<InterfaceStructureToken> getFilteredStructures(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+   Collection<InterfaceStructureToken> getFilteredStructures(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 }

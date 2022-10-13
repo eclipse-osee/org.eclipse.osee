@@ -14,6 +14,7 @@ package org.eclipse.osee.mim;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
@@ -29,5 +30,9 @@ public interface InterfaceEnumerationSetApi extends QueryCapableMIMAPI<Interface
 
    List<InterfaceEnumerationSet> getAll(BranchId branch);
 
+   List<InterfaceEnumerationSet> getAll(BranchId branch, AttributeTypeId orderByAttribute);
+
    List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize);
+
+   List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 }

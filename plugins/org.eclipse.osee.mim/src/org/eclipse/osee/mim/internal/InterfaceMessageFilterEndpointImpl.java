@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
@@ -35,14 +36,14 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getMessages(long pageNum, long pageSize) {
+   public Collection<InterfaceMessageToken> getMessages(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
       Collection<InterfaceMessageToken> messageList =
-         messageApi.getAllForConnection(branch, ConnectionId, pageNum, pageSize);
+         messageApi.getAllForConnection(branch, ConnectionId, pageNum, pageSize, orderByAttributeType);
       return messageList;
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getMessages(String filter, long pageNum, long pageSize) {
+   public Collection<InterfaceMessageToken> getMessages(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttribute) {
       return messageApi.getAllForConnectionAndFilter(branch, ConnectionId, filter);
    }
 

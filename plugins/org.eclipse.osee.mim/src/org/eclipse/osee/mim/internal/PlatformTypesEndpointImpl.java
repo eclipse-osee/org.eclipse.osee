@@ -16,6 +16,7 @@ package org.eclipse.osee.mim.internal;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -50,8 +51,8 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize) {
-      return platformApi.getAllWithEnumSet(branch, pageNum, pageSize);
+   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+      return platformApi.getAllWithEnumSet(branch, pageNum, pageSize, orderByAttributeTypeId);
    }
 
    @Override

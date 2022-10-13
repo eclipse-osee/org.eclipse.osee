@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -132,9 +133,19 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
 
    @Override
    public List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize) {
+      return this.getAll(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public List<InterfaceEnumerationSet> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceEnumerationSet> enumSet =
-            (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch, pageNum, pageSize);
+            (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttribute);
          for (InterfaceEnumerationSet set : enumSet) {
             set.setEnumerations(
                (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
@@ -143,7 +154,6 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
          return enumSet;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
       }
       return new LinkedList<>();
    }

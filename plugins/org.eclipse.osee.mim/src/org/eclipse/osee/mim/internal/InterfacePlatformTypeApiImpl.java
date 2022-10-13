@@ -221,58 +221,120 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
-      try {
-         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, pageNum, pageSize);
-      } catch (Exception ex) {
-         //
-      }
-      return new LinkedList<PlatformTypeToken>();
+      return this.getAllWithRelations(branch, relationTypes, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize) {
-      return this.getAllWithRelations(branch,
-         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet), pageNum, pageSize);
+      return this.getAllWithEnumSet(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
-      try {
-         return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
-            pageNum, pageSize);
-      } catch (Exception ex) {
-         //
-      }
-      return new LinkedList<PlatformTypeToken>();
+      return this.getFilteredWithRelations(branch, filter, relationTypes, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize) {
-      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
-         CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-         CoreRelationTypes.InterfaceConnectionContent_Connection), pageNum, pageSize);
+      return this.getAllWithElementRelations(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize) {
-      return this.getFilteredWithRelations(branch, filter,
-         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
-            CoreRelationTypes.InterfaceStructureContent_Structure,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionContent_Connection),
-         pageNum, pageSize);
+      return this.getFilteredWithElementRelations(branch, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize) {
+      return this.getAll(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          return new LinkedList<>();
       }
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute) {
+      return this.getAllWithRelations(branch, relationTypes, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, pageNum, pageSize,
+            orderByAttribute);
+      } catch (Exception ex) {
+         //
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAllWithEnumSet(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAllWithRelations(branch,
+         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet), pageNum, pageSize,
+         orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute) {
+      return this.getFilteredWithRelations(branch, filter, relationTypes, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
+            pageNum, pageSize, orderByAttribute);
+      } catch (Exception ex) {
+         //
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAllWithElementRelations(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, AttributeTypeId orderByAttribute) {
+      return this.getFilteredWithElementRelations(branch, filter, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+         CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionContent_Connection), pageNum, pageSize, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getFilteredWithRelations(branch, filter,
+         Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
+            CoreRelationTypes.InterfaceStructureContent_Structure,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionContent_Connection),
+         pageNum, pageSize, orderByAttribute);
    }
 
 }
