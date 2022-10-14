@@ -437,6 +437,8 @@ public final class BranchManager {
       }
 
       boolean skipCommitChecksAndEvents = OseeClientProperties.isSkipCommitChecksAndEvents();
+      // also skip commit checks if performing update from parent
+      skipCommitChecksAndEvents = checkIfUpdateFromParent(conflictManager);
       if (!skipCommitChecksAndEvents) {
          runCommitExtPointActions(conflictManager);
       }
@@ -447,6 +449,17 @@ public final class BranchManager {
       Operations.executeWork(operation, monitor);
       TransactionResult transactionResult = operation.getTransactionResult();
       return transactionResult;
+   }
+
+   private static boolean checkIfUpdateFromParent(ConflictManagerExternal conflictManager) {
+      BranchToken sourceBranch = conflictManager.getSourceBranch();
+      if (sourceBranch.isValid()) {
+         BranchState state = BranchManager.getState(sourceBranch);
+         if (state.isRebaselineInProgress()) {
+            return true;
+         }
+      }
+      return false;
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) {
