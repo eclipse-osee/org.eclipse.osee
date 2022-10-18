@@ -23,7 +23,8 @@ public class WorkDefOption extends OseeEnum {
    private static final Long ENUM_ID = 3185790353298798L;
 
    public static WorkDefOption RequireTargetedVersion = new WorkDefOption(111L, "RequireTargetedVersion");
-   public static WorkDefOption None = new WorkDefOption(222L, "None");
+   public static WorkDefOption RequireAssignees = new WorkDefOption(222L, "RequireAssignees");
+   public static WorkDefOption None = new WorkDefOption(333L, "None");
 
    public WorkDefOption(long id, String name) {
       super(ENUM_ID, id, name);

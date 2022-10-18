@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -30,6 +32,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -42,16 +46,19 @@ public class WfeAssigneesHeader extends Composite {
    private final static String LABEL = "Assignee(s):";
    Label valueLabel;
    private final IAtsWorkItem workItem;
+   private final WorkflowEditor editor;
+   private Hyperlink link;
 
    public WfeAssigneesHeader(Composite parent, int style, final IAtsWorkItem workItem, final boolean isEditable, final WorkflowEditor editor) {
       super(parent, style);
       this.workItem = workItem;
+      this.editor = editor;
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
       if (!workItem.isCancelled() && !workItem.isCompleted()) {
-         Hyperlink link = editor.getToolkit().createHyperlink(this, LABEL, SWT.NONE);
+         link = editor.getToolkit().createHyperlink(this, LABEL, SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -111,6 +118,19 @@ public class WfeAssigneesHeader extends Composite {
             valueLabel.setToolTipText(value);
          }
          valueLabel.setText(Strings.truncate(value, 150, true));
+
+         if (workItem.getWorkDefinition().hasOption(WorkDefOption.RequireAssignees)) {
+            IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
+            if (managedForm != null && !managedForm.getForm().isDisposed()) {
+               IMessageManager messageManager = managedForm.getMessageManager();
+               if (workItem.isCompletedOrCancelled()) {
+                  messageManager.removeMessages(link);
+               } else if (value.contains(AtsCoreUsers.UNASSIGNED_USER.getName())) {
+                  messageManager.addMessage(link, "Must Select Assignee", null, IMessageProvider.ERROR, link);
+               }
+            }
+         }
+
          valueLabel.getParent().layout(true);
          valueLabel.getParent().getParent().layout(true);
       }
