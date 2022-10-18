@@ -894,13 +894,6 @@
 		</modules>
 	</profile>
 
-  <profile>
-		<id>OrcAccAdmTest</id>
-		
-		<modules>
-			<module> ../org.eclipse.osee.orcs.account.admin.test</module>
-		</modules>
-	</profile>
 	</profiles>
 
 </project>
