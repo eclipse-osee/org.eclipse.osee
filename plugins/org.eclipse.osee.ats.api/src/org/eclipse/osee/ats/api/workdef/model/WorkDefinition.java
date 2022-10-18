@@ -205,4 +205,5 @@ public class WorkDefinition extends AbstractWorkDefItem {
    public List<Priorities> getPriorities() {
       return priorities;
    }
+
 }
