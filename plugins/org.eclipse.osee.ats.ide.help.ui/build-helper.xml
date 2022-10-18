@@ -9,7 +9,7 @@
 		Generate Eclipse help content for the OSEE ATS user guide
 	</description>
 
-	<property name="osee.help.doc.url.base" value="http://wiki.eclipse.org" />
+	<property name="osee.help.doc.url.base" value="https://wiki.eclipse.org" />
 
 	<target name="all"
 		description="Generate Eclipse help content for the OSEE ATS user guide">
