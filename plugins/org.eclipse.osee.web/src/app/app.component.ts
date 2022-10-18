@@ -31,6 +31,11 @@ export class AppComponent {
     this.topLevelNavIcon = this.topLevelNavIconOpen ? 'close' : 'menu';
   }
 
+  closeTopLevelNavIcon() {
+    this.topLevelNavIconOpen = false;
+    this.topLevelNavIcon= 'menu'
+  }
+
   constructor (private sideNavService: SideNavService, private loadingService: HttpLoadingService) {}
   title = 'OSEE';
 }
