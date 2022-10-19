@@ -88,6 +88,9 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
             new CheckBoxStateFilteredTreeDialog<IAtsActionableItem>("Select Actionable Item(s)",
                "Select Actionable Item(s)", new ActionableItemTreeContentProvider(Active.Both), labelProvider,
                new ToStringViewerSorter());
+         if (isSingleSelect()) {
+            dialog.setSingleSelect(true);
+         }
          labelProvider.setTreeViewer(dialog.getTreeViewer());
          if (ais == null) {
             dialog.setInput(AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));

@@ -50,6 +50,7 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
    private boolean expandChecked = false;
    private PatternFilter patternFilter;
    private Collection<T> selectables;
+   private boolean singleSelect = false;
 
    public CheckBoxStateFilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, CheckBoxStateTreeLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -133,6 +134,7 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
          new CheckBoxStateFilteredTreeViewer<>(comp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
+      treeViewer.setSingleSelect(singleSelect);
       treeViewer.getViewer().getTree().setLayoutData(gd);
       treeViewer.getViewer().setContentProvider(contentProvider);
       labelProvider.setTreeViewer(treeViewer);
@@ -259,6 +261,14 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
 
    public CheckBoxStateFilteredTreeViewer<T> getTreeViewer() {
       return treeViewer;
+   }
+
+   public boolean isSingleSelect() {
+      return singleSelect;
+   }
+
+   public void setSingleSelect(boolean singleSelect) {
+      this.singleSelect = singleSelect;
    }
 
 }

@@ -24,4 +24,6 @@ public interface ICheckBoxStateTreeViewer {
 
    void setEnabled(Object object, boolean enabled);
 
+   void deSelectAll();
+
 }

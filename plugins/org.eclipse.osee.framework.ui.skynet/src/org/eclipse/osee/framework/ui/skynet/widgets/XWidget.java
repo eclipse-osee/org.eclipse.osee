@@ -63,6 +63,8 @@ public abstract class XWidget {
    protected boolean fillVertically = false;
    protected boolean fillHorizontally = false;
    private boolean noSelect = false;
+   private boolean multiSelect = false;
+   private boolean singleSelect = false;
    private boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<>();
    private MouseListener mouseLabelListener;
@@ -510,6 +512,22 @@ public abstract class XWidget {
 
    public void setConditions(List<ConditionalRule> conditions) {
       this.conditions = conditions;
+   }
+
+   public boolean isMultiSelect() {
+      return multiSelect;
+   }
+
+   public void setMultiSelect(boolean multiSelect) {
+      this.multiSelect = multiSelect;
+   }
+
+   public boolean isSingleSelect() {
+      return singleSelect;
+   }
+
+   public void setSingleSelect(boolean singleSelect) {
+      this.singleSelect = singleSelect;
    }
 
 }

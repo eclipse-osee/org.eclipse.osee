@@ -60,6 +60,7 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andWidget(String displayName, String widgetType) {
       newXWidget();
+      currItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
       currItem.setName(displayName);
       currItem.setXWidgetName(widgetType);
       return this;
@@ -219,6 +220,14 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andXHyperlinkActionableItemActive() {
       newXWidget();
+      currItem.setName("Actionable Item(s)");
+      currItem.setXWidgetName("XHyperlabelActionableItemSelection");
+      return this;
+   }
+
+   public XWidgetBuilder andXHyperlinkActionableItemActive(boolean singleSelect) {
+      newXWidget();
+      currItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
       currItem.setName("Actionable Item(s)");
       currItem.setXWidgetName("XHyperlabelActionableItemSelection");
       return this;

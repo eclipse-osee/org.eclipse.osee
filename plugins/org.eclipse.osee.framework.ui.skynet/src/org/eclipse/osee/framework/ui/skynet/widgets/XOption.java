@@ -34,6 +34,7 @@ public enum XOption {
    EDITABLE("editable", "true"),
    NOT_EDITABLE("editable", "false"),
    MULTI_SELECT("multiSelect", "true"),
+   SINGLE_SELECT("multiSelect", "false"),
    NO_SELECT("noSelect", "false"),
    HORIZONTAL_LABEL("horizontalLabel", "true"),
    VERTICAL_LABEL("horizontalLabel", "false"),

@@ -32,6 +32,7 @@ public class XOptionHandler {
       switch (xOption) {
          case NO_SELECT:
             xOptions.remove(XOption.MULTI_SELECT);
+            xOptions.remove(XOption.SINGLE_SELECT);
             break;
          case ALIGN_CENTER:
          case ALIGN_LEFT:

@@ -187,6 +187,11 @@ public class WidgetPageUtil {
          data.setArtifact(sma);
          data.setName(widgetDef.getName());
          data.setObject(widgetDef);
+         if (widgetDef.is(WidgetOption.MULTI_SELECT)) {
+            data.getXOptionHandler().add(XOption.MULTI_SELECT);
+         } else if (widgetDef.is(WidgetOption.SINGLE_SELECT)) {
+            data.getXOptionHandler().add(XOption.SINGLE_SELECT);
+         }
          if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
             data.getXOptionHandler().add(XOption.REQUIRED);
          } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {

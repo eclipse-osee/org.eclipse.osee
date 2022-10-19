@@ -135,6 +135,8 @@ public class SwtXWidgetRenderer {
       xWidget.setRequiredEntry(xWidgetRenderItem.isRequired());
       xWidget.setEditable(xWidgetRenderItem.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
       xWidget.setNoSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.NO_SELECT));
+      xWidget.setSingleSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.SINGLE_SELECT));
+      xWidget.setMultiSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.MULTI_SELECT));
       xWidget.setAutoSave(xWidgetRenderItem.getXOptionHandler().contains(XOption.AUTO_SAVE));
       xWidget.setFillHorizontally(xWidgetRenderItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
       xWidget.setValidateDate(xWidgetRenderItem.getXOptionHandler().contains(XOption.VALIDATE_DATE));
