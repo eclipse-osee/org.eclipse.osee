@@ -76,7 +76,7 @@ public abstract class XHyperlabelVersionSelectionWithPersist extends XHyperlinkL
       if (related.isValid()) {
          return related.getName();
       }
-      return "Not Set";
+      return Widgets.NOT_SET;
    }
 
    public boolean handleClear() {

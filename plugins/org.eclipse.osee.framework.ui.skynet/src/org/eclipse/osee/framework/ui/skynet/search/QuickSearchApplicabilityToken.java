@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityTokenFilterTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -109,7 +110,7 @@ public class QuickSearchApplicabilityToken {
    }
 
    private String getApplicabilityText() {
-      String applicability = "Not Set";
+      String applicability = Widgets.NOT_SET;
       if (quickSearch != null) {
          BranchId branch = quickSearch.getBranch();
          if (branch.isValid()) {

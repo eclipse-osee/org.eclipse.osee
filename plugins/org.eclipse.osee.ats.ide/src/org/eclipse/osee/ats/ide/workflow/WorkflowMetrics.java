@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -148,7 +149,7 @@ public class WorkflowMetrics {
          hrsRemainFromEstimates, hrsSpent, points, pointsNumeric,
          manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : "",
          version != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ", version.getName(),
-            estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
+            estimatedReleaseDate == null ? Widgets.NOT_SET : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
    }
 
    public HashCollectionSet<AtsUser, Artifact> getUserToCompletedSmas() {

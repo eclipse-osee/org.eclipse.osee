@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewBranchViewFilterTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -90,7 +91,7 @@ public class ArtifactExplorerViewApplicability {
    }
 
    private String getArtifactViewApplicabiltyText() {
-      String viewName = "Not Set";
+      String viewName = Widgets.NOT_SET;
       if (explorer != null) {
          BranchId branch = explorer.getBranch();
          if (branch.isValid()) {

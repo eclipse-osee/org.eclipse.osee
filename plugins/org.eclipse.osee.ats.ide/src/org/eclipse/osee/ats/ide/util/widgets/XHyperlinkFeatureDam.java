@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.ui.progress.UIJob;
 
@@ -60,7 +61,7 @@ public class XHyperlinkFeatureDam extends XHyperlinkLabelValueSelection implemen
    private IAtsTeamWorkflow teamWf;
    private AttributeTypeToken attributeTypeToken;
    private final AtsApi atsApi;
-   private String value = "Not Set";
+   private String value = Widgets.NOT_SET;
    private Collection<Object> values;
 
    public XHyperlinkFeatureDam() {
@@ -154,7 +155,7 @@ public class XHyperlinkFeatureDam extends XHyperlinkLabelValueSelection implemen
    public void refresh() {
       values = atsApi.getAttributeResolver().getAttributeValues(teamWf, attributeTypeToken);
       if (values.isEmpty()) {
-         value = "Not Set";
+         value = Widgets.NOT_SET;
          super.refresh();
       } else {
          List<IOperation> ops = new ArrayList<>();

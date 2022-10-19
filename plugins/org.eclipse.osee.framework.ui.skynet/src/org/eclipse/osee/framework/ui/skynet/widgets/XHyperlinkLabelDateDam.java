@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -47,7 +48,7 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
    public String getCurrentValue() {
       dateValue = artifact.getSoleAttributeValue(attributeTypeToken, null);
       if (dateValue == null) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       return DateUtil.getMMDDYY(dateValue);
    }

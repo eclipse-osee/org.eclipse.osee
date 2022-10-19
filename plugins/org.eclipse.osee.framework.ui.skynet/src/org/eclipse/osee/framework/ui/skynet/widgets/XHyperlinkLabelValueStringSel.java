@@ -18,6 +18,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +47,7 @@ public class XHyperlinkLabelValueStringSel extends XHyperlinkLabelValueSelection
 
    @Override
    public String getCurrentValue() {
-      return Strings.isValid(value) ? value : "Not Set";
+      return Strings.isValid(value) ? value : Widgets.NOT_SET;
    }
 
    public String getValue() {
@@ -60,7 +61,7 @@ public class XHyperlinkLabelValueStringSel extends XHyperlinkLabelValueSelection
 
    @Override
    public boolean isEmpty() {
-      return Strings.isInValid(value) || "Not Set".equals(value);
+      return Strings.isInValid(value) || Widgets.NOT_SET.equals(value);
    }
 
    @Override

@@ -100,7 +100,7 @@ public class WfeWorkPackage extends Composite {
          valueLabel = new Text(this, SWT.NO_TRIM);
          valueLabel.setLayoutData(new GridData());
          editor.getToolkit().adapt(valueLabel, true, true);
-         valueLabel.setText("Not Set");
+         valueLabel.setText(Widgets.NOT_SET);
          refresh();
       } catch (OseeCoreException ex) {
          Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
@@ -112,7 +112,7 @@ public class WfeWorkPackage extends Composite {
 
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
-         String value = "Not Set";
+         String value = Widgets.NOT_SET;
          if (atsApi.getEarnedValueService().isUseTextWorkPackages(Collections.singleton(teamWf))) {
             value = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackage, "");
          } else {

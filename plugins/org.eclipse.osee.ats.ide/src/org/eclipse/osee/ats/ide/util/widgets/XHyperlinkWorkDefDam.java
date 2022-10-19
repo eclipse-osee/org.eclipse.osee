@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +41,7 @@ public class XHyperlinkWorkDefDam extends XHyperlinkLabelValueSelection implemen
 
    private AttributeTypeToken attributeTypeToken;
    private final AtsApi atsApi;
-   private String value = "Not Set";
+   private String value = Widgets.NOT_SET;
    private Artifact artifact;
 
    public XHyperlinkWorkDefDam() {
@@ -55,12 +56,12 @@ public class XHyperlinkWorkDefDam extends XHyperlinkLabelValueSelection implemen
    @Override
    public String getCurrentValue() {
       if (artifact == null) {
-         value = "Not Set";
+         value = Widgets.NOT_SET;
       } else {
          ArtifactId workDefId =
             atsApi.getAttributeResolver().getSoleAttributeValue(artifact, attributeTypeToken, ArtifactId.SENTINEL);
          if (workDefId.isInvalid()) {
-            value = "Not Set";
+            value = Widgets.NOT_SET;
          } else {
             WorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
             value = workDefinition.getName();

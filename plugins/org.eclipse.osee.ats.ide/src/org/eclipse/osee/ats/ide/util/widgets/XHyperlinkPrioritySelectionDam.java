@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * XWidget where label is hyperlink and value is label.
@@ -39,7 +40,7 @@ public class XHyperlinkPrioritySelectionDam extends XHyperlinkPrioritySelection 
 
    protected Artifact artifact;
 
-   public static String NOT_SET = "Not Set";
+   public static String NOT_SET = Widgets.NOT_SET;
 
    public XHyperlinkPrioritySelectionDam() {
       this("");

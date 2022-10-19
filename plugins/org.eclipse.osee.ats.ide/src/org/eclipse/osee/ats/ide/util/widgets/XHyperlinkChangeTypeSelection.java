@@ -72,7 +72,7 @@ public class XHyperlinkChangeTypeSelection extends GenericXWidget {
     */
    public String getCurrentValue() {
       if (selected == null || selected.equals(ChangeTypes.None)) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       return selected.name();
    }

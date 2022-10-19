@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -97,9 +98,9 @@ public class XHyperlinkWfdForRelatedStateDam extends XHyperlinkWfdForRelatedStat
    @Override
    public String getCurrentValue() {
       if (artifact == null) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
-      return artifact.getSoleAttributeValueAsString(attributeTypeToken, "Not Set");
+      return artifact.getSoleAttributeValueAsString(attributeTypeToken, Widgets.NOT_SET);
    }
 
 }
