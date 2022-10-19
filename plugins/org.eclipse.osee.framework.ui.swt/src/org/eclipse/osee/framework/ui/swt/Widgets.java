@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class Widgets {
    private static Composite targetContainer;
+   public static String NOT_SET = "Not Set";
 
    public static abstract class IntegerTextEntryHandler implements FocusListener, VerifyListener, TraverseListener {
       private static final Pattern NEGATIVE_PATTERN = Pattern.compile("\\-?|\\-?\\d+");
