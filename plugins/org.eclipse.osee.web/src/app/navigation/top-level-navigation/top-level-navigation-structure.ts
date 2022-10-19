@@ -194,6 +194,17 @@ const navigationStructure:navigationElement[] = [
                 routerLink: '/ple/messaging/help/columnDescriptions',
                 icon: 'view_column',
                 children:[]
+              },
+              {
+                label: 'Overview',
+                cypressLabel: 'overview',
+                pageTitle: 'OSEE - MIM - Help - Overview',
+                isDropdown: false,
+                isDropdownOpen: false,
+                isAdminRequired: false,
+                routerLink: '/ple/messaging/help/overview',
+                icon: 'view_column',
+                children:[]
               }
             ]
           },

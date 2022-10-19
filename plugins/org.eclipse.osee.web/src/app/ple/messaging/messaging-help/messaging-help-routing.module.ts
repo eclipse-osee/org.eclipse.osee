@@ -18,7 +18,8 @@ import { MessagingHelpComponent } from './messaging-help.component';
 const columnDescriptions = navigationStructure[0].children.filter(c => c.label === 'Messaging Configuration')[0].children.find(page => page.label === 'Help')?.children.find(page => page.label === 'Column Descriptions');
 const routes: Routes = [
   { path: '', component: MessagingHelpComponent },
-  { path: 'columnDescriptions',title:columnDescriptions?.pageTitle||'OSEE - MIM - Help', loadChildren: () => import('./column-descriptions-message-help/column-descriptions-message-help.module').then(m => m.ColumnDescriptionsMessageHelpModule) }];
+  { path: 'columnDescriptions',title:columnDescriptions?.pageTitle||'OSEE - MIM - Help', loadChildren: () => import('./column-descriptions-message-help/column-descriptions-message-help.module').then(m => m.ColumnDescriptionsMessageHelpModule) },
+  { path: 'overview', loadChildren: () => import('./overview/overview.module').then(m => m.OverviewModule) }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
