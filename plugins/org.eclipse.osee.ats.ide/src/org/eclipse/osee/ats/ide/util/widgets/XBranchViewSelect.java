@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -117,7 +118,7 @@ public class XBranchViewSelect extends GenericXWidget {
             ArtifactId versionConfig = applEndpoint.getVersionConfig(artifact);
             String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
             if (versionConfig.isInvalid() || BranchId.valueOf(baselineBranch).isInvalid()) {
-               result = "Not Set";
+               result = Widgets.NOT_SET;
             } else {
                result = ArtifactQuery.getArtifactTokenFromId(BranchId.valueOf(baselineBranch), versionConfig).getName();
             }

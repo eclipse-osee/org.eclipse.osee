@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +40,7 @@ public class XHyperlinkLabelDate extends XHyperlinkLabelValueSelection {
    @Override
    public String getCurrentValue() {
       if (dateValue == null) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       return DateUtil.getMMDDYY(dateValue);
    }

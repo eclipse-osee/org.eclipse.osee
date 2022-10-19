@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * Select configuration from PL Config. Uses TeamWorkflowToFoundInVersion_Version to get build to retrieve config, so
@@ -94,7 +95,7 @@ public class XHyperlinkWfdForConfigurationDam extends XHyperlinkWfdForConfigurat
    @Override
    public String getCurrentValue() {
       if (artifact == null) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       ArtifactId build = artifact.getRelatedArtifactOrNull(AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
       if (build == null || build.isInvalid()) {
@@ -102,7 +103,7 @@ public class XHyperlinkWfdForConfigurationDam extends XHyperlinkWfdForConfigurat
       }
       ArtifactId config = artifact.getSoleAttributeValue(attributeTypeToken, ArtifactId.SENTINEL);
       if (config.isInvalid()) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       AtsApi atsApi = AtsApiService.get();
       IAtsVersion version = atsApi.getVersionService().getVersionById(build);

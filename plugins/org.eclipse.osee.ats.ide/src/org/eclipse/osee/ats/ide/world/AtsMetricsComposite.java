@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphLine;
 import org.eclipse.osee.framework.ui.skynet.widgets.xbargraph.XBarGraphTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -226,15 +227,15 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
       try {
          lines.add(new XBarGraphLine("Targeted Version", 0,
-            iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getName()));
+            iAtsMetricsProvider.getMetricsVersion() == null ? Widgets.NOT_SET : iAtsMetricsProvider.getMetricsVersion().getName()));
          String estimatedReleaseDateStr =
             iAtsMetricsProvider.getMetricsVersion() == null || AtsApiService.get().getVersionService().getEstimatedReleaseDate(
-               iAtsMetricsProvider.getMetricsVersion()) == null ? "Not Set" : AtsApiService.get().getVersionService().getEstimatedReleaseDate(
+               iAtsMetricsProvider.getMetricsVersion()) == null ? Widgets.NOT_SET : AtsApiService.get().getVersionService().getEstimatedReleaseDate(
                   iAtsMetricsProvider.getMetricsVersion()).toString();
          lines.add(new XBarGraphLine("Targeted Version - Estimated Release Date", 0,
-            iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : estimatedReleaseDateStr));
+            iAtsMetricsProvider.getMetricsVersion() == null ? Widgets.NOT_SET : estimatedReleaseDateStr));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
-            getEstimatedReleaseDate() == null ? "Not Set" : getEstimatedReleaseDate().toString()));
+            getEstimatedReleaseDate() == null ? Widgets.NOT_SET : getEstimatedReleaseDate().toString()));
          lines.add(new XBarGraphLine("Work-Days Till Release", 0,
             getEstimatedReleaseDate() == null ? "Estimated Release Date Not Set" : sMet.getDaysTillRelStr()));
          double hoursTillRelease = sMet.getHoursTillRel();

@@ -95,7 +95,7 @@ public class WfeAssigneesHeader extends Composite {
          Label origLabel = editor.getToolkit().createLabel(this, LABEL);
          origLabel.setLayoutData(new GridData());
       }
-      valueLabel = editor.getToolkit().createLabel(this, "Not Set");
+      valueLabel = editor.getToolkit().createLabel(this, Widgets.NOT_SET);
       valueLabel.setLayoutData(new GridData());
       refresh();
    }

@@ -72,7 +72,7 @@ public class XHyperlinkPrioritySelection extends GenericXWidget {
     */
    public String getCurrentValue() {
       if (selected == null || selected.equals(Priorities.None)) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       return selected.name();
    }

@@ -61,7 +61,7 @@ public class XHyperlabelVersionSelection extends XHyperlinkLabelValueSelection {
    @Override
    public String getCurrentValue() {
       if (selectedVersion == null) {
-         return "Not Set";
+         return Widgets.NOT_SET;
       }
       return selectedVersion.getName();
    }

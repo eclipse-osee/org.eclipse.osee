@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -40,7 +41,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelValueSelection {
 
-   public final String NOT_SET = "Not Set";
+   public final String NOT_SET = Widgets.NOT_SET;
    protected T selected = null;
 
    public XHyperlinkWithFilteredDialog(String label) {

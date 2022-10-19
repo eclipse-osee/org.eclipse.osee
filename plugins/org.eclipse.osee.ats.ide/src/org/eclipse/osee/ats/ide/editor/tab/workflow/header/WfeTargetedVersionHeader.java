@@ -86,7 +86,7 @@ public class WfeTargetedVersionHeader extends Composite {
             }
          });
 
-         valueLabel = editor.getToolkit().createLabel(this, "Not Set");
+         valueLabel = editor.getToolkit().createLabel(this, Widgets.NOT_SET);
          valueLabel.setLayoutData(new GridData());
          refresh();
       } catch (OseeCoreException ex) {
@@ -132,7 +132,7 @@ public class WfeTargetedVersionHeader extends Composite {
 
    public void refresh() {
       if (Widgets.isAccessible(link)) {
-         String value = "Not Set";
+         String value = Widgets.NOT_SET;
          if (AtsApiService.get().getVersionService().hasTargetedVersion(teamWf)) {
             value = AtsApiService.get().getVersionService().getTargetedVersion(teamWf).getName();
          }
@@ -143,7 +143,7 @@ public class WfeTargetedVersionHeader extends Composite {
             IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
             if (managedForm != null && !managedForm.getForm().isDisposed()) {
                IMessageManager messageManager = managedForm.getMessageManager();
-               if ("Not Set".equals(value)) {
+               if (Widgets.NOT_SET.equals(value)) {
                   messageManager.addMessage(link, "Must Select Targeted Version", null, IMessageProvider.ERROR, link);
                } else {
                   messageManager.removeMessages(link);
