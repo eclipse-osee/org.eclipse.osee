@@ -485,6 +485,197 @@ public class ExportSet {
 
    }
 
+   public void runCoverageSummaryReport(BranchId branch, DispoSet setPrimary, HashMap<String, Object> jsonObject) {
+      Map<String, String> resolutionsValueToText = new HashMap<>();
+      Set<CoverageLevel> levelsInSet = new HashSet<>();
+      List<CoverageLevel> levelsInList = new ArrayList<>();
+      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> leveltoUnitToCovered = new HashMap<>();
+      for (CoverageLevel level : CoverageLevel.values()) {
+         leveltoUnitToCovered.put(level, new HashMap<>());
+         levelToTotalCount.put(level, new WrapInt(0));
+         levelToCoveredTotalCount.put(level, new WrapInt(0));
+      }
+
+      List<DispoItem> items = dispoApi.getDispoItems(branch, setPrimary.getGuid(), true);
+
+      Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionTypesToCount = new HashMap<>();
+      DispoConfig config = dispoApi.getDispoConfig(branch);
+      config.getValidResolutions();
+      for (CoverageLevel level : CoverageLevel.values()) {
+         Map<String, WrapInt> innerMap = new HashMap<>();
+         for (ResolutionMethod resolutionType : config.getValidResolutions()) {
+            innerMap.put(resolutionType.getText(), new WrapInt(0));
+            resolutionsValueToText.put(resolutionType.getValue(), resolutionType.getText());
+         }
+
+         innerMap.put("MIXED", new WrapInt(0));
+         innerMap.put("Defensive_Programming/Test_Script", new WrapInt(0));
+         innerMap.put("Exception_Handling/Test_Script", new WrapInt(0));
+         innerMap.put("Analysis/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_EXT_ATE_PRESENT/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_IN_AIR_OR_ENG_ON/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_J4_Connector/Test_Script", new WrapInt(0));
+         innerMap.put("Deactivated_Compile_Time/Test_Script", new WrapInt(0));
+         levelToResolutionTypesToCount.put(level, innerMap);
+      }
+
+      try {
+         for (DispoItem item : items) {
+            Map<String, MCDCCoverageData> mcdcToCoverageData = new HashMap<>();
+            List<DispoAnnotationData> annotations = sortAnnotations(item.getAnnotationsList());
+            for (DispoAnnotationData annotation : annotations) {
+               writeRowAnnotationSummary(item, annotation, setPrimary.getName(), levelToResolutionTypesToCount,
+                  leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
+            }
+         }
+
+         levelsInList.addAll(levelsInSet);
+         Collections.sort(levelsInList);
+         String[] row = new String[CoverageLevel.values().length + 1];
+         String[] uncoveredRow = new String[CoverageLevel.values().length + 1];
+
+         row[0] = "Total_Count";
+         int index = 1;
+         // send correct numbers according to level for second param
+         Iterator<CoverageLevel> iterator = levelsInList.iterator();
+         while (iterator.hasNext()) {
+            CoverageLevel lvl = iterator.next();
+            Integer totalCount = levelToTotalCount.get(lvl).getValue();
+            row[index++] = totalCount.toString();
+         }
+         addToJsonObject(levelsInList, row, jsonObject);
+
+         row[0] = "All_Coverage_Methods";
+         uncoveredRow[0] = "Uncovered";
+
+         index = 1;
+         // send correct numbers according to level for second param
+         iterator = levelsInList.iterator();
+         while (iterator.hasNext()) {
+            CoverageLevel lvl = iterator.next();
+            Integer coveredCount = levelToCoveredTotalCount.get(lvl).getValue();
+            row[index] = coveredCount.toString();
+            Integer uncoveredCount =
+               levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue();
+            uncoveredRow[index++] = uncoveredCount.toString();
+         }
+         addToJsonObject(levelsInList, row, jsonObject);
+         addToJsonObject(levelsInList, uncoveredRow, jsonObject);
+
+         // Try to get Resolution from Level A if available, otherwise get from C
+         Set<String> resolutionTypes;
+         if (levelsInList.contains(CoverageLevel.A)) {
+            resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.A).keySet();
+         } else if (levelsInList.contains(CoverageLevel.B)) {
+            resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.B).keySet();
+         } else {
+            resolutionTypes = levelToResolutionTypesToCount.get(CoverageLevel.C).keySet();
+         }
+
+         List<String> orderedResolutionTypes = organizeResolutions(resolutionTypes);
+         for (String resolution : orderedResolutionTypes) {
+            int index1 = 0;
+
+            row[index1++] =
+               resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(resolution) : resolution;
+
+            Iterator<CoverageLevel> it = levelsInList.iterator();
+            while (it.hasNext()) {
+               CoverageLevel lvl = it.next();
+               if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
+                  row[index1++] = "ERROR";
+                  continue;
+               }
+               Integer resolutionCount = levelToResolutionTypesToCount.get(lvl).get(resolution).getValue();
+               row[index1++] = resolutionCount.toString();
+            }
+            addToJsonObject(levelsInList, row, jsonObject);
+         }
+
+         if (!defaultCases.isEmpty()) {
+            Map<CoverageLevel, Integer> levelToMixed = new HashMap<>();
+            int index1 = 0;
+            row[index1++] = "MIXED - Expanded Below";
+            Iterator<CoverageLevel> it = levelsInList.iterator();
+            while (it.hasNext()) {
+               CoverageLevel lvl = it.next();
+
+               if (levelToResolutionTypesToCount.get(lvl).get("MIXED") == null) {
+                  row[index1++] = "ERROR";
+                  continue;
+               }
+               Integer resolutionCount = levelToResolutionTypesToCount.get(lvl).get("MIXED").getValue();
+               row[index1++] = resolutionCount.toString();
+               levelToMixed.put(lvl, levelToResolutionTypesToCount.get(lvl).get("MIXED").getValue());
+            }
+            addToJsonObject(levelsInList, row, jsonObject);
+
+            for (Entry<String, Integer> entry : defaultCases.entrySet()) {
+               int index2 = 0;
+               row[index2++] = entry.getKey();
+
+               Iterator<CoverageLevel> it2 = levelsInList.iterator();
+               while (it.hasNext()) {
+                  CoverageLevel lvl = it2.next();
+                  row[index2++] = entry.getValue().toString();
+               }
+               addToJsonObject(levelsInList, row, jsonObject);
+            }
+         }
+         mergeEmptyAndUncovered(levelsInList, jsonObject);
+      } catch (Exception ex)
+
+      {
+         throw new OseeCoreException(ex);
+      }
+
+   }
+
+   private void mergeEmptyAndUncovered(List levelsInList, HashMap<String, Object> jsonObject) {
+      HashMap<String, String> emptyEntry = (HashMap<String, String>) jsonObject.get(" ");
+      HashMap<String, String> uncoveredEntry = (HashMap<String, String>) jsonObject.get("Uncovered");
+      Iterator<CoverageLevel> iterator = levelsInList.iterator();
+      Integer value;
+      while (iterator.hasNext()) {
+         CoverageLevel lvl = iterator.next();
+         if (lvl.name().equals("A")) {
+            value = Integer.parseInt(emptyEntry.get("MCDC")) + Integer.parseInt(uncoveredEntry.get("MCDC"));
+            uncoveredEntry.put("MCDC", value.toString());
+         } else if (lvl.name().equals("B")) {
+            value = Integer.parseInt(emptyEntry.get("Branch")) + Integer.parseInt(uncoveredEntry.get("Branch"));
+            uncoveredEntry.put("Branch", value.toString());
+         } else if (lvl.name().equals("C")) {
+            value = Integer.parseInt(emptyEntry.get("Statement")) + Integer.parseInt(uncoveredEntry.get("Statement"));
+            uncoveredEntry.put("Statement", value.toString());
+         }
+      }
+      jsonObject.remove(" ");
+   }
+
+   private void addToJsonObject(List<CoverageLevel> levelsInList, String[] row, HashMap<String, Object> jsonObject) {
+      HashMap<String, String> coverageEntry = new HashMap<String, String>();
+      coverageEntry = createJsonObject(levelsInList, row);
+      jsonObject.put(row[0], coverageEntry);
+   }
+
+   private HashMap createJsonObject(List levelsInList, String[] value) {
+      HashMap<String, String> jsonObject = new HashMap<String, String>();
+      Iterator<CoverageLevel> iterator = levelsInList.iterator();
+      int index = 1;
+      while (iterator.hasNext()) {
+         CoverageLevel lvl = iterator.next();
+         if (lvl.name().equals("A")) {
+            jsonObject.put("MCDC", value[index++]);
+         } else if (lvl.name().equals("B")) {
+            jsonObject.put("Branch", value[index++]);
+         } else if (lvl.name().equals("C")) {
+            jsonObject.put("Statement", value[index++]);
+         }
+      }
+
+      return jsonObject;
+   }
+
    private List<DispoAnnotationData> sortAnnotations(List<DispoAnnotationData> annotationData) {
       TreeMap<Double, DispoAnnotationData> annotationMap = new TreeMap<>();
       for (DispoAnnotationData annotation : annotationData) {
@@ -571,6 +762,13 @@ public class ExportSet {
       sheetWriter.writeRow((Object[]) row);
 
       // location ex. 24, 24.T, 24.A.RESULT
+      calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType, mcdcToCoverageData,
+         annotation.getLocationRefs(), levelsInSet);
+   }
+
+   private void writeRowAnnotationSummary(DispoItem item, DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
+      String unit = getNormalizedName(item.getName());
+      String resolutionType = annotation.getResolutionType();
       calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType, mcdcToCoverageData,
          annotation.getLocationRefs(), levelsInSet);
    }
