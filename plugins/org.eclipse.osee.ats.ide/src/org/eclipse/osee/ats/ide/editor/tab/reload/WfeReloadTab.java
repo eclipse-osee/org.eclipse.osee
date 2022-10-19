@@ -140,7 +140,7 @@ public class WfeReloadTab extends FormPage {
       }
    }
 
-   private void reloadEditor() {
+   public void reloadEditor() {
       LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
       Jobs.startJob(loadAndRefresh, true);
    }
