@@ -28,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
@@ -157,4 +158,8 @@ public interface ArtifactEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    List<ArtifactToken> findArtifactTokens(ArtifactSearchOptions searchOptions);
 
+   @GET
+   @Path("{artifact}/related/maps")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactReadable> getRelatedArtifactsTree(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 }

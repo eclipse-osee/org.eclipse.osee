@@ -337,4 +337,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return getArtifactXByAttribute(query, attributeType, value, exists, artifactType, query::asArtifactsTable);
    }
 
+   /**
+    * returns a tree of parent/child relationships downward.
+    */
+   @Override
+   public List<ArtifactReadable> getRelatedArtifactsTree(BranchId branch, ArtifactId artifact) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
+      return query.andId(artifact).followAll().asArtifacts();
+   }
 }

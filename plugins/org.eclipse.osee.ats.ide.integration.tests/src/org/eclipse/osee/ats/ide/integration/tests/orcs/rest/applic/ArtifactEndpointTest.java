@@ -15,14 +15,22 @@ package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable.ArtifactReadableImpl;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -57,6 +65,8 @@ import org.junit.Test;
  * @author Ryan D. Brooks
  */
 public class ArtifactEndpointTest {
+
+   private final JaxRsApi jaxRsApi = AtsApiService.get().jaxRsApi();
 
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
@@ -260,5 +270,23 @@ public class ArtifactEndpointTest {
       List<ArtifactToken> changedArtifactTokens =
          artifactEndpoint.getChangedArtifactTokens(Artifact.SENTINEL, CoreAttributeTypes.NameWord, ".*[a-z].*");
       Assert.assertFalse(changedArtifactTokens.isEmpty());
+   }
+
+   @Test
+   public void testArtifactReadable() throws IOException {
+      ArtifactToken newArtifact = workingBranchArtifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.Folder, CoreArtifactTokens.DefaultHierarchyRoot, "TestFolder2");
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String artId = newArtifact.getIdString();
+
+      String json = jaxRsApi.newTarget("orcs/branch/" + branchId + "/artifact/" + artId + "/related/maps").request(
+         MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
+
+      ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      List<ArtifactReadableImpl> readables = mapper.readValue(json, new TypeReference<List<ArtifactReadableImpl>>() {
+         //
+      });
+      Assert.assertEquals(readables.get(0).getName(), "TestFolder2");
+      Assert.assertEquals(readables.get(0).getId().toString(), artId);
    }
 }
