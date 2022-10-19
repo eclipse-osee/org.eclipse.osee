@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +21,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
@@ -43,6 +46,7 @@ import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -112,6 +116,33 @@ public class DispoAdminResource {
          String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
       return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
          "application/xml").build();
+   }
+
+   @Path("/exportSummaryCoverage")
+   @GET
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   public Response postDispoSetExportSummary(@Encoded @QueryParam("primarySet") String primarySet) {
+      final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
+      final ExportSet exportSet = new ExportSet(dispoApi);
+      HashMap<String, Object> summaryCoverage = new HashMap<String, Object>();
+      HashMap<String, Object> jsonResponse = new HashMap<String, Object>();
+      exportSet.runCoverageSummaryReport(branch, dispoSet, summaryCoverage);
+      Set<String> keys = summaryCoverage.keySet();
+      String keyInString = String.join(",", keys);
+      jsonResponse.put("Keys", keyInString);
+      jsonResponse.put("Primary_Set", primarySet);
+      jsonResponse.put("Summary_Of_Coverage", summaryCoverage);
+      ObjectMapper mapper = new ObjectMapper();
+      String response = "";
+      try {
+         response = mapper.writeValueAsString(jsonResponse);
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+         return Response.serverError().entity(ex.getMessage()).build();
+      }
+
+      return Response.ok(response).build();
    }
 
    @Path("/{primarySet}/exportToFile")
