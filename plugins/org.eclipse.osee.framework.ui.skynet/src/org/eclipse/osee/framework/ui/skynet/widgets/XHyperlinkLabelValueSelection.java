@@ -13,8 +13,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -190,4 +193,13 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
          valueLabel.dispose();
       }
    }
+
+   @Override
+   public IStatus isValid() {
+      if (isRequiredEntry() && isEmpty()) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      }
+      return Status.OK_STATUS;
+   }
+
 }

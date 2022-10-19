@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelValueSelection {
 
-   private final String NOT_SET = "Not Set";
+   public final String NOT_SET = "Not Set";
    protected T selected = null;
 
    public XHyperlinkWithFilteredDialog(String label) {
