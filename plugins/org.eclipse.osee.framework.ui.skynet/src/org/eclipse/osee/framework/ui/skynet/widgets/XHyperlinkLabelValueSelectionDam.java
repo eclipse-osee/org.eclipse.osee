@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * XWidget where label is hyperlink and value is label.
@@ -36,8 +37,6 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
 
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;
-
-   public static String NOT_SET = "Not Set";
 
    public XHyperlinkLabelValueSelectionDam() {
       super("");
@@ -64,11 +63,11 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
          if (date != null) {
             return DateUtil.getMMDDYY(date);
          }
-         return NOT_SET;
+         return Widgets.NOT_SET;
       }
       String value = artifact.getAttributesToString(attributeType);
       if (Strings.isInValid(value)) {
-         value = NOT_SET;
+         value = Widgets.NOT_SET;
       }
       return value;
    }
@@ -114,7 +113,7 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
          try {
             if (getArtifact() != null && getAttributeType() != null) {
                String currValue = getCurrentValue();
-               if (NOT_SET.equals(currValue)) {
+               if (Widgets.NOT_SET.equals(currValue)) {
                   currValue = "";
                }
                if (isRequiredEntry() && Strings.isInValid(currValue)) {
