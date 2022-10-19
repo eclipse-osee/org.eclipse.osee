@@ -1,0 +1,27 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h2 class="mat-title">Message Interface Modeler (MIM) Overview</h2>
+<p class="mat-body-2">The purpose of the tool is to manage the software interfaces between subsystems for a Product Line. MIM models the messages moving across the network in detail, including their source, destination and composition.  MIM allows users to mark data artifacts with an applicability which is the vessel by which Product Line is implemented.</p>
+<p class="mat-body-2"> The MIM tool can be used to export data in various formats.  For example, an ICD can be exported in an Excel Workbook format, or the data can be exported into a zip of text files to be used in downstream tools.  The <a href="../../reports/">Reports Page</a> will list available reports for your installation.</p>
+<br>
+<p class="mat-body-2">Below is sequence of screenshots of the tool to show the data flows:</p>
+<br>
+<mat-grid-list cols="10" rowHeight="100px">
+    <mat-grid-tile 
+        *ngFor="let tile of tiles"
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows">
+        <div><ng-container *ngIf="tile.imgSrc"><img style="border:1px solid grey" [src]="tile.imgSrc"/></ng-container>
+        <ng-container *ngIf="tile.descriptions"><li *ngFor="let description of tile.descriptions">{{description}}</li></ng-container></div>
+    </mat-grid-tile>
+  </mat-grid-list>
