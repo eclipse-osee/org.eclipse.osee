@@ -315,6 +315,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return false;
    }
 
+   /**
+    * Use the ArtifactReadableImpl implementation of getRelated instead, as this may cause a stack overflow error
+    * depending on usage.
+    */
+   @Deprecated
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide) {
       return getRelatedResultSet(typeAndSide, EXCLUDE_DELETED);

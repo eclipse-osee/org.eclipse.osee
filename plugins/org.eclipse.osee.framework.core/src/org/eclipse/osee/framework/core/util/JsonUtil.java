@@ -35,6 +35,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactReadableSerializer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -162,6 +164,7 @@ public class JsonUtil {
       module.addSerializer(BranchState.class, idSerializer);
       module.addSerializer(ApplicabilityId.class, idSerializer);
       module.addSerializer(java.util.Date.class, DateSerializer.instance);
+      module.addSerializer(ArtifactReadable.class, new ArtifactReadableSerializer());
 
       return module;
    }
