@@ -42,6 +42,7 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
    private final Set<T> disabled = new HashSet<>();
    private IsEnabled enabledChecker = null;
    protected boolean treeExpandCollapseEvent;
+   private boolean singleSelect = false;
 
    public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {
       super(parent, style, new PatternFilter(), true);
@@ -58,6 +59,13 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
             if (treeExpandCollapseEvent) {
                treeExpandCollapseEvent = false;
                return;
+            }
+            if (singleSelect) {
+               for (Object check : checked) {
+                  setChecked((T) check, false);
+                  treeViewer.refresh(check);
+               }
+               treeViewer.getTree().deselectAll();
             }
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             Object selected = selection.getFirstElement();
@@ -124,6 +132,7 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
       listeners.add(listener);
    }
 
+   @Override
    public void deSelectAll() {
       this.checked.clear();
       for (ICheckBoxStateTreeListener listener : listeners) {
@@ -185,4 +194,13 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
    public void clearChecked() {
       this.checked.clear();
    }
+
+   public boolean isSingleSelect() {
+      return singleSelect;
+   }
+
+   public void setSingleSelect(boolean singleSelect) {
+      this.singleSelect = singleSelect;
+   }
+
 }

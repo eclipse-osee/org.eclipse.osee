@@ -40,6 +40,7 @@ public enum WidgetOption {
    NOT_FUTURE_DATE_REQUIRED,
 
    MULTI_SELECT,
+   SINGLE_SELECT,
    //if you want read-only widget with no selection
    NO_SELECT,
 

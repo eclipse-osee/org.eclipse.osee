@@ -151,6 +151,9 @@ public class XWidgetParser {
          } else if (nodeName.equals("multiSelect")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.MULTI_SELECT : XOption.NONE);
+         } else if (nodeName.equals("singleSelect")) {
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.SINGLE_SELECT : XOption.NONE);
          } else if (nodeName.equals("fill")) {
             String value = node.getNodeValue();
             if (value.equalsIgnoreCase("Horizontally")) {
