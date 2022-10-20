@@ -106,7 +106,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId) {
-      return this.getAll(branch, 0L, 0L);
+      return this.getAllForConnection(branch, connectionId, 0L, 0L);
    }
 
    @Override
@@ -245,16 +245,23 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    @Override
    public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
-         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
-            connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute).stream().map(
-               m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
+         List<InterfaceMessageToken> messages =
+            this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
+               connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute).stream().map(
+                  m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
+         messages.stream().forEach(m -> {
+            if (m.getInterfaceMessageType().equals("Operational")) {
+               ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m));
+            }
+         });
+         return messages;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceMessageToken>();
    }
-   
+
    @Override
    public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter) {
       List<AttributeTypeId> messageAttributes = createMessageAttributes();
@@ -267,6 +274,9 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
             message.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAllByRelation(branch,
                ArtifactId.valueOf(message.getId())));
             message.setInitiatingNode(nodeApi.getNodeForMessage(branch, ArtifactId.valueOf(message.getId())));
+            if (message.getInterfaceMessageType().equals("Operational")) {
+               ((List<InterfaceSubMessageToken>) message.getSubMessages()).add(0, getMessageHeader(message));
+            }
          }
 
          List<InterfaceMessageToken> unfilteredMessageList =
