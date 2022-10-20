@@ -34,17 +34,20 @@ import org.eclipse.ui.PlatformUI;
 public class ReplaceWithBaselineVersionDialog extends TitleAreaDialog {
 
    private static final String TITLE = "Replace with Baseline version";
+   private boolean artifactsSelected;
    private boolean attributesSelected;
    private final boolean attrEnabled;
    private final boolean artEnabled;
+   private final boolean relEnabled;
 
-   public ReplaceWithBaselineVersionDialog(boolean artEnabled, boolean attrEnabled) {
+   public ReplaceWithBaselineVersionDialog(boolean artEnabled, boolean attrEnabled, boolean relEnabled) {
       super(Displays.getActiveShell());
       setDialogHelpAvailable(true);
       setShellStyle(SWT.SHELL_TRIM);
       setTitle(TITLE);
       this.attrEnabled = attrEnabled;
       this.artEnabled = artEnabled;
+      this.relEnabled = relEnabled;
    }
 
    @Override
@@ -67,14 +70,26 @@ public class ReplaceWithBaselineVersionDialog extends TitleAreaDialog {
       artifact.setText("Replace Artifact");
       artifact.setEnabled(attrEnabled || artEnabled);
 
+      Button relation = new Button(composite, SWT.RADIO);
+      relation.setText("Replace Relation");
+      relation.setEnabled(relEnabled);
+
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       return composite.getShell();
    }
 
+   public boolean isArtifactSelected() {
+      return artifactsSelected;
+   }
+
    public boolean isAttributeSelected() {
       return attributesSelected;
+   }
+
+   public boolean isRelationSelected() {
+      return relEnabled;
    }
 
    private final SelectionAdapter attributeListener = new SelectionAdapter() {

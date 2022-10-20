@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceAttributeWithBaselineOperation;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceRelationWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -147,14 +148,22 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
       try {
          boolean attrEnabled = enableButtons(structuredSelection, ChangeType.Attribute);
          boolean artEnabled = enableButtons(structuredSelection, ChangeType.Artifact);
+         boolean relEnabled = enableButtons(structuredSelection, ChangeType.Relation);
 
-         ReplaceWithBaselineVersionDialog dialog = new ReplaceWithBaselineVersionDialog(artEnabled, attrEnabled);
+         ReplaceWithBaselineVersionDialog dialog =
+            new ReplaceWithBaselineVersionDialog(artEnabled, attrEnabled, relEnabled);
          if (dialog.open() == Window.OK) {
             OperationBuilder builder = Operations.createBuilder("Replace with Baseline Version");
-            IOperation op = dialog.isAttributeSelected() ? new ReplaceAttributeWithBaselineOperation(
-               Handlers.getArtifactChangesFromStructuredSelection(
-                  structuredSelection)) : new ReplaceArtifactWithBaselineOperation(changes,
-                     Handlers.getArtifactsFromStructuredSelection(structuredSelection));
+            IOperation op = null;
+            if (dialog.isAttributeSelected()) {
+               op = new ReplaceAttributeWithBaselineOperation(
+                  Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+            } else if (dialog.isRelationSelected()) {
+               op = new ReplaceRelationWithBaselineOperation(changes);
+            } else {
+               op = new ReplaceArtifactWithBaselineOperation(changes,
+                  Handlers.getArtifactsFromStructuredSelection(structuredSelection));
+            }
             builder.addOp(op);
 
             IOperation finishDialog = new ReplaceBaselineFinishDialog();

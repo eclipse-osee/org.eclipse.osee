@@ -548,7 +548,7 @@ public class RelationManagerImpl implements RelationManager {
 
    private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, RelationData id) {
       for (Relation rel : adjacencies.getAll()) {
-         if (id.equals(rel.getOrcsData())) {
+         if (id.getLocalId().equals(rel.getOrcsData().getLocalId())) {
             return rel;
          }
       }

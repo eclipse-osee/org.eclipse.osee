@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -152,6 +153,7 @@ public class RelationManagerTest {
       when(relation1.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation1.getRationale()).thenReturn("rationale on relation1");
       when(relation1.getOrcsData()).thenReturn(data1);
+      when(relation1.getOrcsData().getLocalId()).thenReturn(Id.valueOf(10L));
       when(relation1.getOrcsData().getId()).thenReturn(10L);
       when(relation1.getModificationType()).thenReturn(ModificationType.NEW);
 
@@ -160,6 +162,7 @@ public class RelationManagerTest {
       when(relation2.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation2.getRationale()).thenReturn("rationale on relation2");
       when(relation2.getOrcsData()).thenReturn(data2);
+      when(relation2.getOrcsData().getLocalId()).thenReturn(Id.valueOf(11L));
       when(relation2.getOrcsData().getId()).thenReturn(11L);
 
       when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId44);
@@ -167,6 +170,7 @@ public class RelationManagerTest {
       when(relation3.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation3.getRationale()).thenReturn("rationale on relation3");
       when(relation3.getOrcsData()).thenReturn(data3);
+      when(relation3.getOrcsData().getLocalId()).thenReturn(Id.valueOf(12L));
       when(relation3.getOrcsData().getId()).thenReturn(12L);
       when(relation3.getModificationType()).thenReturn(ModificationType.NEW);
 
@@ -175,6 +179,7 @@ public class RelationManagerTest {
       when(relation4.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation4.getRationale()).thenReturn("rationale on relation4");
       when(relation4.getOrcsData()).thenReturn(data4);
+      when(relation4.getOrcsData().getLocalId()).thenReturn(Id.valueOf(13L));
       when(relation4.getOrcsData().getId()).thenReturn(13L);
       when(relation4.getModificationType()).thenReturn(ModificationType.NEW);
 
