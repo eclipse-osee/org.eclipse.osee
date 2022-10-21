@@ -16,7 +16,7 @@ import { Observable, of } from "rxjs";
 import { structure } from "../../../shared/types/structure";
 
  @Component({
-     selector: 'app-structure-table',
+     selector: 'osee-structure-table',
      template:'<p>Dummy</p>'
  })
  export class StructureTableComponentMock{
