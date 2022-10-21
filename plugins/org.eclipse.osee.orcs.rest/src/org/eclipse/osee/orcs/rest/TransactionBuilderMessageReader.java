@@ -149,7 +149,9 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
             RelationTypeToken relationType = getRelationType(relation);
             ArtifactId artA = ArtifactId.valueOf(relation.get("aArtId").asLong());
             ArtifactId artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
-            tx.unrelate(artA, relationType, artB);
+            if (artA.isValid() && artB.isValid()) {
+               tx.unrelate(artA, relationType, artB);
+            }
          }
       }
    }

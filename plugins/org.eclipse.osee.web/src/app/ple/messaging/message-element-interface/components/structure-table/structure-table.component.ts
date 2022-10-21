@@ -39,7 +39,7 @@ import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { defaultEditElementProfile, defaultEditStructureProfile, defaultViewElementProfile, defaultViewStructureProfile } from '../../../shared/constants/defaultProfiles';
 
 @Component({
-  selector: 'app-structure-table',
+  selector: 'osee-structure-table',
   templateUrl: './structure-table.component.html',
   styleUrls: ['./structure-table.component.sass'],
   animations: [

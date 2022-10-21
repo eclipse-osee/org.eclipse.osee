@@ -31,6 +31,7 @@ import { BranchPickerModule } from '../../../shared-components/components/branch
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatRadioModule,
     MatButtonModule,
     MatMenuModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatTableModule,

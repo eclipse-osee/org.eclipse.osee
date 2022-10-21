@@ -353,6 +353,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          List<InterfaceStructureToken> structureList = totalStructureList;
 
          for (InterfaceStructureToken struct : structureList) {
+            double sizeInBytes = struct.getSizeInBytes();
+            int numElements = struct.getNumElements();
             List<InterfaceStructureElementToken> elementList = new LinkedList<InterfaceStructureElementToken>();
             for (InterfaceStructureElementToken element : struct.getElements()) {
                ArtifactReadable art = element.getArtifactReadable();
@@ -364,6 +366,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                }
             }
             struct.setElements(elementList);
+            struct.setSizeInBytes(sizeInBytes); // Set the size back to the unfiltered size
+            struct.setNumElements(numElements);
          }
          return structureList;
       } catch (Exception ex) {

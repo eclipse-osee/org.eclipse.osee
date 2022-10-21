@@ -13,6 +13,6 @@
 <mat-form-field class="ple-messaging-element-search-filter">
     <mat-label>Filter Types</mat-label>
     <input matInput type="text" (keyup)="applyFilter($event)" #input [value]="searchTerm">
-    <mat-hint>Enter text to filter Types.
-    </mat-hint>
+    <mat-icon matPrefix>filter_list</mat-icon>
+    <mat-hint>Enter text to filter Types</mat-hint>
 </mat-form-field>
