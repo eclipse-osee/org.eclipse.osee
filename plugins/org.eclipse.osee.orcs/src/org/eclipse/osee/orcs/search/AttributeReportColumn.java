@@ -44,4 +44,9 @@ public class AttributeReportColumn extends ReportColumn {
       return type;
    }
 
+   @Override
+   public String toString() {
+      return type.toString();
+   }
+
 }

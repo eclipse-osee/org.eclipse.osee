@@ -72,6 +72,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
+import org.eclipse.osee.orcs.search.ArtifactTable;
+import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -84,6 +86,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final List<List<Criteria>> criterias;
    private final SelectData selectData;
    private final Options options;
+   private ArtifactTableOptions tableoptions;
    private final BranchToken branch;
    private final ArtifactId view;
    private final QueryData parentQueryData;
@@ -333,6 +336,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, value, options));
+   }
+   
+   public void setTableOptions(ArtifactTableOptions tableOptions) {
+      this.tableoptions = tableOptions;
    }
 
    public AttributeTypeId getAttributeType() {
@@ -649,6 +656,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public ArtifactTable asArtifactsTable() {
+      setQueryType(QueryType.ATTRIBUTES_ONLY);
+      return queryEngine.asArtifactsTable(this, queryFactory);
+   }
+
+   @Override
    public Map<ArtifactId, ArtifactReadable> asArtifactMap() {
       setQueryType(QueryType.SELECT);
       return queryEngine.asArtifactMap(this, queryFactory);
@@ -833,5 +846,13 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public String orderMechanism() {
       return OptionsUtil.getOrderByMechanism(getOptions());
+   }
+   
+   public ArtifactTableOptions getTableoptions() {
+      return tableoptions;
+   }
+
+   public void setTableoptions(ArtifactTableOptions tableoptions) {
+      this.tableoptions = tableoptions;
    }
 }

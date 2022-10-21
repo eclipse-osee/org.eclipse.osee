@@ -24,6 +24,10 @@ public class ArtifactTypeReportColumn extends ReportColumn {
       super(name);
    }
 
+   public ArtifactTypeReportColumn() {
+      this("Artifact Type");
+   }
+
    @Override
    public String getReportData(ArtifactReadable artifact) {
       if (artifact == null) {

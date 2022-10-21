@@ -60,6 +60,8 @@ public interface QueryBuilder extends Query {
 
    List<Map<String, Object>> asArtifactMaps();
 
+   ArtifactTable asArtifactsTable();
+
    /**
     * @return a single ArtifactId if exactly one found. Return ArtifactId.SENTINEL is none found, else throw exception
     * for finding more than one
@@ -127,6 +129,8 @@ public interface QueryBuilder extends Query {
    QueryBuilder setOrderMechanism(String orderMechanism);
 
    String orderMechanism();
+
+   void setTableOptions(ArtifactTableOptions tableOptions);
 
    QueryBuilder fromTransaction(TransactionId transaction);
 

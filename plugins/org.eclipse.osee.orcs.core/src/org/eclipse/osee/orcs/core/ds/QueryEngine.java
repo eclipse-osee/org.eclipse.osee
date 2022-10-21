@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.ArtifactTable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -68,4 +69,6 @@ public interface QueryEngine {
    void getBranchCategoryGammaIds(Consumer<GammaId> consumer, BranchId branchId, BranchCategoryToken category);
 
    void getBranchCategories(Consumer<BranchCategoryToken> consumer, BranchId branchId);
+
+   ArtifactTable asArtifactsTable(QueryData queryData, QueryFactory queryFactory);
 }
