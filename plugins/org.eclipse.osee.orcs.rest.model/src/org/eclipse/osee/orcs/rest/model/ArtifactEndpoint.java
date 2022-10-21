@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
+import org.eclipse.osee.orcs.search.ArtifactTable;
 
 /**
  * @author Ryan D. Brooks
@@ -81,6 +82,11 @@ public interface ArtifactEndpoint {
    @Path("map")
    @Produces(MediaType.APPLICATION_JSON)
    List<Map<String, Object>> getArtifactMaps(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeToken attributeType, @QueryParam("representation") String representation, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+
+   @GET
+   @Path("table")
+   @Produces(MediaType.APPLICATION_JSON)
+   ArtifactTable getArtifactTable(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeToken attributeType, @QueryParam("attributeColumns") List<AttributeTypeToken> attributeColumns, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("type/{artifactType}/token")

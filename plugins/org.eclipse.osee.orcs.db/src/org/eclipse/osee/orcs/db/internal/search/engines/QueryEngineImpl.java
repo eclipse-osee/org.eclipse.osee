@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,8 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SelectiveArtifactSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.ArtifactTable;
+import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -385,5 +388,40 @@ public class QueryEngineImpl implements QueryEngine {
    public void getBranchCategories(Consumer<BranchCategoryToken> consumer, BranchId branchId) {
       jdbcClient.runQuery(stmt -> consumer.accept(BranchCategoryToken.valueOf(stmt.getLong("category"))),
          OseeSql.GET_CURRENT_BRANCH_CATEGORIES.getSql(), branchId);
+   }
+
+   @Override
+   public ArtifactTable asArtifactsTable(QueryData queryData, QueryFactory queryFactory) {
+      List<ArtifactReadable> artifacts = new ArrayList<>(DefaultArtifactNum);
+      loadArtifactsInto(queryData, queryFactory, a -> artifacts.add(a), DefaultArtifactNum);
+      int fixedColumnNum = 3;
+
+      ArtifactTableOptions tableOptions = queryData.getTableoptions();
+      List<AttributeTypeToken> attributeColumns = tableOptions.getAttributeColumns();
+      String[][] data = new String[artifacts.size()][attributeColumns.size() + fixedColumnNum];
+
+      if (attributeColumns.isEmpty()) {
+         HashSet<AttributeTypeToken> columnMap = new HashSet<AttributeTypeToken>();
+         for (ArtifactReadable artifact : artifacts) {
+
+            columnMap.addAll(artifact.getArtifactType().getValidAttributeTypes());
+         }
+         attributeColumns.addAll(columnMap);
+         Collections.sort(attributeColumns);
+      }
+
+      for (int i = 0; i < artifacts.size(); i++) {
+         ArtifactReadable artifact = artifacts.get(i);
+         data[i][0] = artifact.getIdString();
+         data[i][1] = artifact.getArtifactType().getName();
+         data[i][2] = artifact.getApplicability().getIdString();
+
+         for (int j = fixedColumnNum; j < data[i].length; j++) {
+            data[i][j] = artifact.getAttributeValuesAsString(attributeColumns.get(j - fixedColumnNum));
+         }
+
+      }
+
+      return new ArtifactTable(tableOptions, data);
    }
 }

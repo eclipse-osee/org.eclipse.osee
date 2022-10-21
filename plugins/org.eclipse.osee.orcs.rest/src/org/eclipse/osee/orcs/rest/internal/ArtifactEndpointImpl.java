@@ -50,6 +50,8 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
+import org.eclipse.osee.orcs.search.ArtifactTable;
+import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -326,6 +328,13 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public List<ArtifactToken> findArtifactTokens(ArtifactSearchOptions searchOptions) {
       return getQueryBuilder(searchOptions).asArtifactTokens();
+   }
+
+   @Override
+   public ArtifactTable getArtifactTable(AttributeTypeToken attributeType, List<AttributeTypeToken> attributeColumns, String value, boolean exists, ArtifactTypeToken artifactType, ArtifactId view) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, view);
+      query.setTableOptions(new ArtifactTableOptions(attributeColumns));
+      return getArtifactXByAttribute(query, attributeType, value, exists, artifactType, query::asArtifactsTable);
    }
 
 }

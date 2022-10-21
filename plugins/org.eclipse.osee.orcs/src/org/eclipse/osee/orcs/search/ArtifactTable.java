@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2020 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,26 +13,19 @@
 
 package org.eclipse.osee.orcs.search;
 
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
-
 /**
- * @author David W. Miller
+ * @author Christopher Rebuck
  */
-public class ArtifactIdReportColumn extends ReportColumn {
 
-   public ArtifactIdReportColumn(String name) {
-      super(name);
+public final class ArtifactTable {
+
+   public final ArtifactTableOptions tableOptions;
+   public final String[][] data;
+
+   public ArtifactTable(ArtifactTableOptions tableOptions, String[][] data) {
+      this.tableOptions = tableOptions;
+      this.data = data;
+
    }
 
-   public ArtifactIdReportColumn() {
-      this("Artifact Id");
-   }
-
-   @Override
-   public String getReportData(ArtifactReadable artifact) {
-      if (artifact == null) {
-         return "";
-      }
-      return artifact.getIdString();
-   }
 }
