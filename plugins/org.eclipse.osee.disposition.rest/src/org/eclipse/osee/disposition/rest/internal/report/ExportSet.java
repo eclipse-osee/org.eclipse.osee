@@ -335,8 +335,8 @@ public class ExportSet {
 
          Object[] coverSheetHeaders = coverSheetHeadersList.toArray();
          sheetWriter.writeRow(coverSheetHeaders);
-         Object[] row = new String[CoverageLevel.values().length + 1];
-         Object[] uncoveredRow = new String[CoverageLevel.values().length + 1];
+         String[] row = new String[CoverageLevel.values().length + 1];
+         String[] uncoveredRow = new String[CoverageLevel.values().length + 1];
 
          row[0] = "All Coverage Methods";
          uncoveredRow[0] = "Uncovered";
@@ -348,9 +348,8 @@ public class ExportSet {
             CoverageLevel lvl = iterator.next();
             row[index] =
                getPercent(levelToCoveredTotalCount.get(lvl).getValue(), levelToTotalCount.get(lvl).getValue(), false);
-            uncoveredRow[index++] =
-               getPercent((levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue()),
-                  levelToTotalCount.get(lvl).getValue(), false);
+            Integer uncovered = levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue();
+            uncoveredRow[index++] = uncovered.toString();
          }
          sheetWriter.writeRow(row);
 
@@ -371,17 +370,33 @@ public class ExportSet {
             row[index1++] =
                resolutionsValueToText.containsKey(resolution) ? resolutionsValueToText.get(resolution) : resolution;
 
-            Iterator<CoverageLevel> it = levelsInList.iterator();
-            while (it.hasNext()) {
-               CoverageLevel lvl = it.next();
-               if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
-                  row[index1++] = "ERROR";
-                  continue;
+            if (!row[0].equals(" ")) {
+               Iterator<CoverageLevel> it = levelsInList.iterator();
+               while (it.hasNext()) {
+                  CoverageLevel lvl = it.next();
+                  if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
+                     row[index1++] = "ERROR";
+                     continue;
+                  }
+                  row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
+                     levelToTotalCount.get(lvl).getValue(), false);
                }
-               row[index1++] = getPercent(levelToResolutionTypesToCount.get(lvl).get(resolution).getValue(),
-                  levelToTotalCount.get(lvl).getValue(), false);
+
+               sheetWriter.writeRow(row);
+            } else {
+               Iterator<CoverageLevel> it = levelsInList.iterator();
+               while (it.hasNext()) {
+                  CoverageLevel lvl = it.next();
+                  if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
+                     row[index1++] = "ERROR";
+                     continue;
+                  }
+                  int completed = levelToResolutionTypesToCount.get(lvl).get(resolution).getValue();
+                  int uncoveredCompleted = Integer.parseInt(uncoveredRow[index1]);
+                  int totalCount = levelToTotalCount.get(lvl).getValue();
+                  uncoveredRow[index1++] = getPercent(completed + uncoveredCompleted, totalCount, false);
+               }
             }
-            sheetWriter.writeRow(row);
          }
 
          if (!defaultCases.isEmpty()) {
