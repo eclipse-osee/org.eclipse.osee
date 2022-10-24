@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.synchronization;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
@@ -141,7 +142,9 @@ public class Permissions {
             synchronizationArtifactType);
          Assert.assertNotNull(reqIF);
       } catch (Exception e) {
-         Assert.assertTrue(e.getMessage(), false);
+         var cause = e.getCause();
+         var message = Objects.nonNull(cause) ? cause.getMessage() : e.getMessage();
+         Assert.assertTrue(message, false);
       }
    }
 

@@ -43,10 +43,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.define.api.publishing.LinkType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
-import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -172,7 +172,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       rendererOptionsMap.put(PUBLISH_EMPTY_HEADERS, false);
       rendererOptionsMap.put(OVERRIDE_DATA_RIGHTS, classification);
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer(rendererOptionsMap);
+      MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
 
       Boolean isDiff = (Boolean) rendererOptionsMap.get(PUBLISH_DIFF);
 

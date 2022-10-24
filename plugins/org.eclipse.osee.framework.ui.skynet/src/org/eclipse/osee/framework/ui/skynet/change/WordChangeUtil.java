@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuis;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 
 /**
@@ -75,7 +75,7 @@ public final class WordChangeUtil {
             }
             if (ArtifactGuis.checkDeletedOnParent(artifacts)) {
                String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
-               WordTemplateRenderer preferredRenderer = new WordTemplateRenderer();
+               MSWordTemplateClientRenderer preferredRenderer = new MSWordTemplateClientRenderer();
                preferredRenderer.updateOption(RendererOption.VIEW, Handlers.getViewId());
                RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer,
                   presentationType);

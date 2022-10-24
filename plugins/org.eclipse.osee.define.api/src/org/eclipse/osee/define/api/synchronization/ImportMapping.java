@@ -14,7 +14,7 @@
 package org.eclipse.osee.define.api.synchronization;
 
 import java.util.Objects;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -75,9 +75,9 @@ public class ImportMapping implements ToMessage {
       if (Objects.isNull(this.root)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportMapping::getRoot, the member \"root\" has not been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportMapping::getRoot, the member \"root\" has not been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(0, message);
@@ -98,9 +98,9 @@ public class ImportMapping implements ToMessage {
       if (Objects.isNull(this.specification)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportMapping::getSpecification, the member \"specification\" has not been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportMapping::getSpecification, the member \"specification\" has not been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(0, message);
@@ -139,9 +139,9 @@ public class ImportMapping implements ToMessage {
       if (Objects.nonNull(this.root)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportMapping::setRoot, the member \"root\" has alreday been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportMapping::setRoot, the member \"root\" has alreday been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(0, message);
@@ -164,12 +164,12 @@ public class ImportMapping implements ToMessage {
       if (Objects.nonNull(this.specification)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportMapping::setSpecification, the member \"specification\" has already been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportMapping::setSpecification, the member \"specification\" has already been set." )
+                   .blank()
                    ;
          //@formatter:on
-         this.toMessage(0, message);
+         this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
       }
       this.specification =
@@ -181,27 +181,18 @@ public class ImportMapping implements ToMessage {
     */
 
    @Override
-   public StringBuilder toMessage(int indent, StringBuilder message) {
-      var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
-      var indent0 = IndentedString.indentString(indent + 0);
-      var indent1 = IndentedString.indentString(indent + 1);
+   public Message toMessage(int indent, Message message) {
+
+      var outMessage = Objects.nonNull(message) ? message : new Message();
 
       //@formatter:off
       outMessage
-         .append( indent0 ).append( "ImportMapping:" ).append( "\n" )
-         .append( indent1 ).append( "specification: " ).append( Objects.nonNull( this.specification ) ? this.specification : "(null)" ).append( "\n" )
+         .indent( indent )
+         .title( "ImportMapping" )
+         .segment( "specification", this.specification )
+         .toMessage( this.root )
          ;
       //@formatter:on
-
-      if (Objects.nonNull(this.root)) {
-         this.root.toMessage(2, outMessage);
-      } else {
-         //@formatter:off
-         outMessage
-            .append( indent1 ).append( "root:          ").append( "(null)" ).append( "\n" )
-            ;
-         //@formatter:on
-      }
 
       return outMessage;
    }

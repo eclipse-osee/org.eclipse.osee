@@ -3,7 +3,7 @@
     <setAttribute key="additional_plugins">
         <setEntry value="com.google.guava:27.1.0.v20190517-1946:default:false:default:default"/>
         <setEntry value="org.eclipse.osee.icteam.reqif:1.0.0.qualifier:default:true:default:default"/>
-        <setEntry value="org.eclipse.osgi.services:3.9.0.v20200511-1725:default:false:default:default"/>
+        <setEntry value="org.eclipse.osgi.services:3.8.0.v20190206-2147:default:false:default:default"/>
         <setEntry value="org.eclipse.ui.views.log:1.2.1100.v20200513-0930:default:true:default:default"/>
         <setEntry value="org.eclipse.ui.workbench:3.119.0.v20200521-1247:default:true:default:default"/>
     </setAttribute>

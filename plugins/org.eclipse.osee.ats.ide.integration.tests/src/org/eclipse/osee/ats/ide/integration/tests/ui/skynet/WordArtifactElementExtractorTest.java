@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordExtractorData;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordImageArtifactElementExtractor;
 import org.junit.Assert;
@@ -96,7 +96,7 @@ public class WordArtifactElementExtractorTest {
       Assert.assertTrue(artElements.size() == 1);
 
       String actual = WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertEquals("Middle change", actual);
    }
 
@@ -109,7 +109,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
       String value = WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertTrue("I am change".equals(value));
    }
 
@@ -122,7 +122,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
       Assert.assertTrue("End change".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
+         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @Test
@@ -146,7 +146,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       Assert.assertTrue("This is a test-x".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
+         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @Test
@@ -158,7 +158,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       String artContent = WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertTrue("Got*" + artContent, "this This is a test that".equals(artContent));
    }
 
@@ -199,7 +199,7 @@ public class WordArtifactElementExtractorTest {
    private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected) throws IOException, XMLStreamException {
       for (int i = 0; i < actuals.size(); i++) {
          String artContent = WordUtil.textOnly(Lib.inputStreamToString(
-            new ByteArrayInputStream(WordTemplateRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
+            new ByteArrayInputStream(MSWordTemplateClientRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
          Assert.assertTrue("expected:*" + expected.get(i) + "* got:*" + artContent + "*",
             expected.get(i).equals(artContent));
       }

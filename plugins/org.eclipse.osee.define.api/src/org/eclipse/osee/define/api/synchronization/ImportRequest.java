@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -123,9 +123,9 @@ public class ImportRequest implements ToMessage {
       if (Objects.isNull(this.importMappings)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportRequest::getImportMappings, the member \"importMappings\" has not been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportRequest::getImportMappings, the member \"importMappings\" has not been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(1, message);
@@ -146,9 +146,9 @@ public class ImportRequest implements ToMessage {
       if (Objects.isNull(this.synchronizationArtifactType)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportRequest::getSynchronizationArtifactType, the member \"synchronizationArtifactType\" has not been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportRequest::getSynchronizationArtifactType, the member \"synchronizationArtifactType\" has not been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(1, message);
@@ -187,9 +187,9 @@ public class ImportRequest implements ToMessage {
       if (Objects.nonNull(this.importMappings)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportRequest::setImportMappings, the member \"importMappings\" has already been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportRequest::setImportMappings, the member \"importMappings\" has already been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(1, message);
@@ -212,9 +212,9 @@ public class ImportRequest implements ToMessage {
       if (Objects.nonNull(this.synchronizationArtifactType)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "ImportRequest::setSynchronizationArtifactType, the member \"synchronizationArtifactType\" has already been set." ).append( "\n" )
-                   .append( "\n" )
+            new Message()
+                   .title( "ImportRequest::setSynchronizationArtifactType, the member \"synchronizationArtifactType\" has already been set." )
+                   .blank()
                    ;
          //@formatter:on
          this.toMessage(1, message);
@@ -229,25 +229,21 @@ public class ImportRequest implements ToMessage {
     */
 
    @Override
-   public StringBuilder toMessage(int indent, StringBuilder message) {
-      var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
-      var indent0 = IndentedString.indentString(indent + 0);
-      var indent1 = IndentedString.indentString(indent + 1);
+   public Message toMessage(int indent, Message message) {
+
+      var outMessage = Objects.nonNull(message) ? message : new Message();
 
       //@formatter:off
       outMessage
-         .append( indent0 ).append( "ImportRequest:" ).append( "\n" )
-         .append( indent1 ).append( "synchronizationArtifactType: " ).append( Objects.nonNull( this.synchronizationArtifactType ) ? this.synchronizationArtifactType : "(null)" ).append( "\n" )
-         .append( indent1 ).append( "importMappings:              " )
+         .indent( indent )
+         .title( "ImportRequest" )
+         .indentInc()
+         .segment( "synchronizationArtifactType", this.synchronizationArtifactType )
+         .segmentIndexedArray( "importMappings", this.importMappings )
+         .indentDec()
          ;
       //@formatter:on
 
-      if (Objects.nonNull(this.importMappings)) {
-         outMessage.append("\n");
-         Arrays.stream(this.importMappings).forEach((importMapping) -> importMapping.toMessage(2, outMessage));
-      } else {
-         outMessage.append("(null)").append("\n");
-      }
       return outMessage;
    }
 

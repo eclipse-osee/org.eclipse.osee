@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -71,7 +71,7 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer(new HashMap<RendererOption, Object>());
+      MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer(new HashMap<RendererOption, Object>());
       renderer.open(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
    }
 
@@ -148,7 +148,7 @@ public class PreviewAndMultiPreviewTest {
       Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, addPrefix("1x"));
       multiArt3.persist(getClass().getSimpleName());
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer();
+      MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer();
       List<Artifact> newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
       renderer.open(newMultiArts, PresentationType.PREVIEW);
    }

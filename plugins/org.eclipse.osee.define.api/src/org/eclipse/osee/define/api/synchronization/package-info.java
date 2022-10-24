@@ -13,7 +13,8 @@
 
 /**
  * This is the publicly exported package of the <code>org.eclipse.osee.define.api</code> OSGi bundle which defines the
- * interface for the JAX-RS resource used to process REST API HTTP requests for the "synchronization" end point.
+ * interface for the Define Synchronization Operations services and the JAX-RS resource used to process REST API HTTP
+ * requests for the "synchronization" end point.
  *
  * @author Loren K. Ashley
  */

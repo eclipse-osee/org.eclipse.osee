@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,21 +128,21 @@ public class RendererManagerTest {
 
       addTest(data, Folder, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, Folder, SPECIALIZED_EDIT, DefaultArtifactRenderer.class, Both);
-      addTest(data, Folder, DIFF, WordTemplateRenderer.class, Both);
-      addTest(data, Folder, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, Folder, DIFF, MSWordTemplateClientRenderer.class, Both);
+      addTest(data, Folder, PREVIEW, MSWordTemplateClientRenderer.class, Both);
       addTest(data, Folder, MERGE, null, Both);
       addTest(data, Folder, DEFAULT_OPEN, DefaultArtifactRenderer.class, Off);
       addTest(data, Folder, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, Folder, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
       addTest(data, SoftwareRequirementMsWord, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
-      addTest(data, SoftwareRequirementMsWord, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
-      addTest(data, SoftwareRequirementMsWord, DIFF, WordTemplateRenderer.class, Both);
-      addTest(data, SoftwareRequirementMsWord, PREVIEW, WordTemplateRenderer.class, Both);
-      addTest(data, SoftwareRequirementMsWord, MERGE, WordTemplateRenderer.class, Both);
-      addTest(data, SoftwareRequirementMsWord, DEFAULT_OPEN, WordTemplateRenderer.class, Off);
+      addTest(data, SoftwareRequirementMsWord, SPECIALIZED_EDIT, MSWordTemplateClientRenderer.class, Both);
+      addTest(data, SoftwareRequirementMsWord, DIFF, MSWordTemplateClientRenderer.class, Both);
+      addTest(data, SoftwareRequirementMsWord, PREVIEW, MSWordTemplateClientRenderer.class, Both);
+      addTest(data, SoftwareRequirementMsWord, MERGE, MSWordTemplateClientRenderer.class, Both);
+      addTest(data, SoftwareRequirementMsWord, DEFAULT_OPEN, MSWordTemplateClientRenderer.class, Off);
       addTest(data, SoftwareRequirementMsWord, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
-      addTest(data, SoftwareRequirementMsWord, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirementMsWord, PRODUCE_ATTRIBUTE, MSWordTemplateClientRenderer.class, Both);
 
       addTest(data, Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, Action, SPECIALIZED_EDIT, AtsWfeRenderer.class, Both);
@@ -164,7 +164,7 @@ public class RendererManagerTest {
 
       addTest(data, GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both);
-      addTest(data, GeneralDocument, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, GeneralDocument, DIFF, MSWordTemplateClientRenderer.class, Both);
       addTest(data, GeneralDocument, PREVIEW, NativeRenderer.class, Both);
       addTest(data, GeneralDocument, MERGE, null, Both);
       addTest(data, GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off);
@@ -173,8 +173,8 @@ public class RendererManagerTest {
 
       addTest(data, TestCase, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, TestCase, SPECIALIZED_EDIT, JavaRenderer.class, Both);
-      addTest(data, TestCase, DIFF, WordTemplateRenderer.class, Off);
-      addTest(data, TestCase, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, TestCase, DIFF, MSWordTemplateClientRenderer.class, Off);
+      addTest(data, TestCase, PREVIEW, MSWordTemplateClientRenderer.class, Both);
       addTest(data, TestCase, MERGE, null, Both);
       addTest(data, TestCase, DEFAULT_OPEN, JavaRenderer.class, Off);
       addTest(data, TestCase, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);

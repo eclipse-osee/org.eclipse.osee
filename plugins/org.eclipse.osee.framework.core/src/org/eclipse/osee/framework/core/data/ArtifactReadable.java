@@ -128,6 +128,12 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL));
    }
 
+   /**
+    * Generates a {@link List} of all artifacts that are hierarchically subordinate to the {@link ArtifactReadable}.
+    *
+    * @return {@link List} of all artifacts that are hierarchically subordinate to this artifact.
+    */
+
    List<ArtifactReadable> getDescendants();
 
    void getDescendants(List<ArtifactReadable> descendants);
@@ -141,6 +147,13 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
       return ancestors;
    }
+
+   /**
+    * Generates a {@link List} of all artifacts that are immediate children of the {@link ArtifactReadable}.
+    * Grandchildren and further descendants are not included in the list.
+    *
+    * @return {@link List} of the artifact's immediate children only.
+    */
 
    List<ArtifactReadable> getChildren();
 
@@ -344,6 +357,13 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          return null;
       }
 
+      /**
+       * {@inheritDoc}
+       *
+       * @implNote The Sentinel artifact does not have children.
+       * @return <code>null</code>.
+       */
+
       @Override
       public List<ArtifactReadable> getDescendants() {
          return null;
@@ -358,6 +378,13 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       public boolean isDescendantOf(ArtifactToken parent) {
          return false;
       }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @implNote The Sentinel artifact does not have children.
+       * @return <code>null</code>.
+       */
 
       @Override
       public List<ArtifactReadable> getChildren() {

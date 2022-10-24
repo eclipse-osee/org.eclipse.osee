@@ -25,7 +25,8 @@ import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
-import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
@@ -118,6 +119,26 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    }
 
+   private <T> T getOrcsBranchEndpoint(Class<T> clazz, BranchId branch) {
+      return jaxRsApi().newProxy("orcs/branch/" + branch.getIdString(), clazz);
+   }
+
+   /**
+    * Creates a new endpoint proxy with the first url path segment of &quot;define&quot;.
+    *
+    * @param <T> the interface class of the endpoint to create a proxy for.
+    * @param clazz the {@link Class} of the interface to create a proxy for.
+    * @return a proxy for the specified interface.
+    */
+
+   private <T> T getDefineEndpoint(Class<T> clazz) {
+      return jaxRsApi().newProxy("define", clazz);
+   }
+
+   private <T> T getOrcsEndpoint(Class<T> clazz) {
+      return jaxRsApi().newProxy("orcs", clazz);
+   }
+
    @Override
    public BranchEndpoint getBranchEndpoint() {
       return getOrcsEndpoint(BranchEndpoint.class);
@@ -159,21 +180,6 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
-   public RenderEndpoint getRenderEndpoint() {
-      return getDefineEndpoint(RenderEndpoint.class);
-   }
-
-   @Override
-   public DataRightsEndpoint getDataRightsEndpoint() {
-      return getDefineEndpoint(DataRightsEndpoint.class);
-   }
-
-   @Override
-   public ImportEndpoint getImportEndpoint() {
-      return getDefineEndpoint(ImportEndpoint.class);
-   }
-
-   @Override
    public OrcsWriterEndpoint getOrcsWriterEndpoint() {
       return getOrcsEndpoint(OrcsWriterEndpoint.class);
    }
@@ -199,30 +205,57 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
-   public DefineBranchEndpointApi getDefineBranchEndpoint() {
-      return getDefineEndpoint(DefineBranchEndpointApi.class);
-   }
-
-   private <T> T getOrcsBranchEndpoint(Class<T> clazz, BranchId branch) {
-      return jaxRsApi().newProxy("orcs/branch/" + branch.getIdString(), clazz);
-   }
-
-   private <T> T getDefineEndpoint(Class<T> clazz) {
-      return jaxRsApi().newProxy("define", clazz);
-   }
-
-   private <T> T getOrcsEndpoint(Class<T> clazz) {
-      return jaxRsApi().newProxy("orcs", clazz);
-   }
-
-   @Override
    public SessionEndpoint getSessionEndpoint() {
       return jaxRsApi().newProxy("ide", SessionEndpoint.class);
    }
 
+   /*
+    * Setup Define Endpoints
+    */
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public DefineBranchEndpointApi getDefineBranchEndpoint() {
+      return this.getDefineEndpoint(DefineBranchEndpointApi.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public DataRightsEndpoint getDataRightsEndpoint() {
+      return this.getDefineEndpoint(DataRightsEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public GitEndpoint getGitEndpoint() {
-      return getDefineEndpoint(GitEndpoint.class);
+      return this.getDefineEndpoint(GitEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public ImportEndpoint getImportEndpoint() {
+      return this.getDefineEndpoint(ImportEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public PublishingEndpoint getPublishingEndpoint() {
+      return this.getDefineEndpoint(PublishingEndpoint.class);
    }
 
    /**
@@ -231,7 +264,16 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    @Override
    public SynchronizationEndpoint getSynchronizationEndpoint() {
-      return jaxRsApi().newProxy("define", SynchronizationEndpoint.class);
+      return this.getDefineEndpoint(SynchronizationEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public TemplateManagerEndpoint getTemplateManagerEndpoint() {
+      return this.getDefineEndpoint(TemplateManagerEndpoint.class);
    }
 
    @Override

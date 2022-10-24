@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -293,6 +294,34 @@ public class PublishingXmlUtils {
       this.startOperation();
 
       try (var inputStream = gzipInputStream) {
+
+         var documentBuilderFactory = DocumentBuilderFactory.newInstance();
+         var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+         var document = documentBuilder.parse(inputStream);
+
+         return Optional.of(document);
+
+      } catch (Exception e) {
+
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   /**
+    * Reads a Word ML document from a {@link String} and parses it into a {@link org.w3c.dom.Document} XML DOM.
+    *
+    * @param xmlString a string containing the Word ML document
+    * @return when the {@link String} is successfully parsed, an {@link Optional} containing the
+    * {@link org.w3c.dom.Document}; otherwise, an empty {@link Optional}.
+    */
+
+   public Optional<Document> parse(String xmlString) {
+
+      this.startOperation();
+
+      try (var inputStream = new ByteArrayInputStream(xmlString.getBytes())) {
 
          var documentBuilderFactory = DocumentBuilderFactory.newInstance();
          var documentBuilder = documentBuilderFactory.newDocumentBuilder();

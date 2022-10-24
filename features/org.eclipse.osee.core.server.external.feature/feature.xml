@@ -1186,7 +1186,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.define.rest"
+         id="org.eclipse.osee.define"
          download-size="0"
          install-size="0"
          version="0.0.0"

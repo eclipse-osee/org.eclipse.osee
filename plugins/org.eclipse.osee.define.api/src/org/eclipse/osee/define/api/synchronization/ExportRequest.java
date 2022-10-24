@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -104,9 +104,10 @@ public class ExportRequest implements ToMessage {
       if (Objects.isNull(this.roots)) {
          //@formatter:off
          var message =
-            new StringBuilder(1024)
-                   .append( "ExportRequest::getRoots, the member \"roots\" has not been set." ).append( "\n" )
-                   .append( "\n" );
+            new Message()
+                   .title( "ExportRequest::getRoots, the member \"roots\" has not been set." )
+                   .blank()
+                   ;
          //@formatter:on
          this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
@@ -126,9 +127,10 @@ public class ExportRequest implements ToMessage {
       if (Objects.isNull(this.synchronizationArtifactType)) {
          //@formatter:off
          var message =
-            new StringBuilder(1024)
-                   .append( "ExportRequest::getSynchronizationArtifactType, the member \"synchronizationArtifactType\" has not been set." ).append( "\n" )
-                   .append( "\n" );
+            new Message()
+                   .title( "ExportRequest::getSynchronizationArtifactType, the member \"synchronizationArtifactType\" has not been set." )
+                   .blank()
+                   ;
          //@formatter:on
          this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
@@ -166,9 +168,10 @@ public class ExportRequest implements ToMessage {
       if (Objects.nonNull(this.roots)) {
          //@formatter:off
          var message =
-            new StringBuilder(1024)
-                   .append( "ExportRequest::setRoots, the member \"roots\" has already been set." ).append( "\n" )
-                   .append( "\n" );
+            new Message()
+                   .title( "ExportRequest::setRoots, the member \"roots\" has already been set." )
+                   .blank()
+                   ;
          //@formatter:on
          this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
@@ -186,16 +189,19 @@ public class ExportRequest implements ToMessage {
     */
 
    public void setSynchronizationArtifactType(String synchronizationArtifactType) {
+
       if (Objects.nonNull(this.synchronizationArtifactType)) {
          //@formatter:off
          var message =
-            new StringBuilder(1024)
-                   .append( "ExportRequest::getSynchronizationArtifactType, the member \"synchronizationArtifactType\" has already been set." ).append( "\n" )
-                   .append( "\n" );
+            new Message()
+                   .title( "ExportRequest::getSynchronizationArtifactType, the member \"synchronizationArtifactType\" has already been set." )
+                   .blank()
+                   ;
          //@formatter:on
          this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
       }
+
       this.synchronizationArtifactType = Objects.requireNonNull(synchronizationArtifactType,
          "ExportRequest::new, the parameter \"synchronizationArtifactType\" is null.");
    }
@@ -205,25 +211,20 @@ public class ExportRequest implements ToMessage {
     */
 
    @Override
-   public StringBuilder toMessage(int indent, StringBuilder message) {
-      var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
-      var indent0 = IndentedString.indentString(indent + 0);
-      var indent1 = IndentedString.indentString(indent + 1);
+   public Message toMessage(int indent, Message message) {
+
+      var outMessage = Objects.nonNull(message) ? message : new Message();
 
       //@formatter:off
       outMessage
-         .append( indent0 ).append( "ExportRequest:" ).append( "\n" )
-         .append( indent1 ).append( "synchronizationArtifactType: " ).append( Objects.nonNull( this.synchronizationArtifactType ) ? this.synchronizationArtifactType : "(null)" ).append( "\n" )
-         .append( indent1 ).append( "roots:                       " )
+         .indent( indent )
+         .title( "ExportRequest" )
+         .indentInc()
+         .segment( "synchronizationArtifactType", this.synchronizationArtifactType )
+         .segmentIndexedArray( "roots", this.roots )
+         .indentDec()
          ;
       //@formatter:on
-
-      if (Objects.nonNull(this.roots)) {
-         outMessage.append("\n");
-         Arrays.stream(this.roots).forEach((root) -> root.toMessage(2, outMessage));
-      } else {
-         outMessage.append("(null)").append("\n");
-      }
 
       return outMessage;
    }

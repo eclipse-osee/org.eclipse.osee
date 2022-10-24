@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.util;
 
+import java.util.Map;
+
 /**
  * @author Morgan E. Cook
  */
@@ -62,22 +64,86 @@ public enum RendererOption {
    TRANSACTION_OPTION("Transaction Option", OptionType.Transaction),
 
    // String
+   ID("Id", OptionType.String),
+   NAME("Name", OptionType.String),
    OVERRIDE_DATA_RIGHTS("Override Data Rights", OptionType.String),
    ATTRIBUTE_NAME("Attribute Name", OptionType.String),
    PARAGRAPH_NUMBER("Paragraph Number", OptionType.String),
    OUTLINE_TYPE("Outline Type", OptionType.String),
    RESULT_PATH_RETURN("resultPath", OptionType.String),
-   OPEN_OPTION("open.option", OptionType.String),
    EXECUTE_VB_SCRIPT("execute.vb.script", OptionType.String),
+
+   /*
+    * Open Option and Values
+    */
+
+   /**
+    * A key used in a {@link Map} of {@link RendererOption} key value pairs to specify how a rendered document is to be
+    * opened for display.
+    */
+
+   OPEN_OPTION("open.option", OptionType.String),
+
+   /**
+    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key.
+    */
+
+   OPEN_IN_MS_WORD_VALUE("MS Word", OptionType.String),
+
+   /*
+    * Template Option and Values
+    */
+
+   /**
+    * A key used in a {@link Map} of {@link RendererOption} key value pairs to specify the Publishing Template selection
+    * option.
+    */
+
    TEMPLATE_OPTION("Template", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_ALL_VALUE("PreviewAll", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
    PREVIEW_ALL_NO_ATTRIBUTES_VALUE("PREVIEW_ALL_NO_ATTRIBUTES", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
    PREVIEW_WITH_RECURSE_VALUE("PREVIEW_WITH_RECURSE", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_ALL_RECURSE_VALUE("PREVIEW_ALL_RECURSE", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
    PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE("PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", OptionType.String),
+
    DIFF_VALUE("DIFF", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
    DIFF_NO_ATTRIBUTES_VALUE("DIFF_NO_ATTRIBUTES", OptionType.String),
-   THREE_WAY_MERGE("THREE_WAY_MERGE", OptionType.String),
-   ID("Id", OptionType.String),
-   NAME("Name", OptionType.String);
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   THREE_WAY_MERGE("THREE_WAY_MERGE", OptionType.String);
 
    private final String key;
    private final OptionType type;

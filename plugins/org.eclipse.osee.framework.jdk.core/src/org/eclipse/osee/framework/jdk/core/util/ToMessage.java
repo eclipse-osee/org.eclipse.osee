@@ -13,18 +13,24 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+/**
+ * Objects implementing this interface provide a method for producing a formatted string representation for debugging.
+ *
+ * @author Loren K. Ashley
+ */
+
 public interface ToMessage {
 
    /**
-    * Adds a message to a {@link StringBuilder} representing the contents of the object.
+    * Adds a message to a {@link Message} representing the contents of the object.
     *
     * @param indent the indent level for the message.
-    * @param message when not <code>null</code> the message is appended to this {@link StringBuilder}.
-    * @return the provided {@link StringBuilder} when not <code>null</code>; otherwise, a new {@link StringBuilder}.
+    * @param message when not <code>null</code> the message is appended to the {@link Message} provided by the
+    * <code>message</code> parameter.
+    * @return the provided {@link Message} when not <code>null</code>; otherwise, a new {@link Message}.
     */
 
-   StringBuilder toMessage(int indent, StringBuilder message);
-
+   Message toMessage(int indent, Message message);
 }
 
 /* EOF */

@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.HashMap;
+import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -28,101 +30,134 @@ public class MenuCmdDef {
    private static final String GENERALIZED_CMD_ID = "org.eclipse.osee.framework.ui.skynet.renderer.command";
 
    private final CommandGroup commandGroup;
-   private final PresentationType presentationType;
-   private final String label;
-   private final ImageDescriptor icon;
-   private final String optionKey;
-   private final String optionValue;
    private final String commandId;
-   private Map<String, String> commandParamMap;
-
-   public MenuCmdDef(CommandGroup commandGroup, String commandId, ImageDescriptor icon) {
-      this(commandGroup, commandId, null, null, icon, null, null);
-   }
-
-   public MenuCmdDef(CommandGroup commandGroup, String commandId, KeyedImage imageEnum) {
-      this(commandGroup, commandId, null, null, imageEnum, null, null);
-   }
-
-   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, KeyedImage imageEnum) {
-      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, imageEnum, null, null);
-   }
-
-   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, KeyedImage imageEnum) {
-      this(commandGroup, commandId, presentationType, label, imageEnum, null, null);
-   }
-
-   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
-      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, imageEnum, optionKey, optionValue);
-   }
+   private final Map<String, String> commandParamMap;
+   private final ImageDescriptor icon;
+   private final String label;
 
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon) {
-      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, null, null);
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, (String) null, (String) null,
+         (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, String label, ImageDescriptor icon, Map<String, String> commandParamMap) {
+      this(commandGroup, GENERALIZED_CMD_ID, commandGroup.getPresentationType(), label, icon, (String) null,
+         (String) null, commandParamMap);
    }
 
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon, Map<String, String> commandParamMap) {
-      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, null, null, commandParamMap);
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, (String) null, (String) null,
+         commandParamMap);
    }
 
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue) {
-      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, optionKey, optionValue);
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, optionKey, optionValue,
+         (Map<String, String>) null);
    }
 
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue, Map<String, String> commandParamMap) {
       this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, icon, optionKey, optionValue, commandParamMap);
    }
 
-   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
-      this(commandGroup, commandId, presentationType, label, ImageManager.getImageDescriptor(imageEnum), optionKey,
-         optionValue);
+   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, KeyedImage imageEnum) {
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, ImageManager.getImageDescriptor(imageEnum),
+         (String) null, (String) null, (Map<String, String>) null);
    }
 
-   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue, Map<String, String> commandParamMap) {
-      this(commandGroup, commandId, presentationType, label, icon, optionKey, optionValue);
-      this.commandParamMap = commandParamMap;
+   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, ImageManager.getImageDescriptor(imageEnum),
+         optionKey, optionValue, (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, String commandId, ImageDescriptor icon) {
+      this(commandGroup, commandId, (PresentationType) null, (String) null, icon, (String) null, (String) null,
+         (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, String commandId, KeyedImage imageEnum) {
+      this(commandGroup, commandId, (PresentationType) null, (String) null, ImageManager.getImageDescriptor(imageEnum),
+         (String) null, (String) null, (Map<String, String>) null);
    }
 
    public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, ImageDescriptor icon, String optionKey, String optionValue) {
+      this(commandGroup, commandId, presentationType, label, icon, optionKey, optionValue, (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, KeyedImage imageEnum) {
+      this(commandGroup, commandId, presentationType, label, ImageManager.getImageDescriptor(imageEnum), (String) null,
+         (String) null, (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
+      this(commandGroup, commandId, presentationType, label, ImageManager.getImageDescriptor(imageEnum), optionKey,
+         optionValue, (Map<String, String>) null);
+   }
+
+   /*
+    * Primary constructor. All other constructors should invoke this one.
+    */
+
+   //@formatter:off
+   public
+      MenuCmdDef
+         (
+            CommandGroup       commandGroup,
+            String             commandId,
+            PresentationType   presentationType,
+            String             label,
+            ImageDescriptor    icon,
+            String             optionKey,
+            String             optionValue,
+            Map<String,String> commandParamMap
+         ) {
+
       this.commandGroup = commandGroup;
       this.commandId = commandId;
-      this.presentationType = presentationType;
-      this.label = label;
       this.icon = icon;
-      this.optionKey = optionKey;
-      this.optionValue = optionValue;
+      this.label = label;
+
+      var entrySet =
+         Objects.nonNull( commandParamMap )
+            ? new HashSet<Map.Entry<String,String>>( commandParamMap.entrySet() )
+            : new HashSet<Map.Entry<String,String>>();
+
+      if (Objects.nonNull(presentationType )) {
+         entrySet.add( new AbstractMap.SimpleImmutableEntry<String,String>(PresentationType.class.getSimpleName(), presentationType.toString()) );
+      }
+
+      if (Objects.nonNull(optionKey) && Objects.nonNull(optionValue)) {
+         entrySet.add( new AbstractMap.SimpleImmutableEntry<String,String>(optionKey, optionValue) );
+      }
+
+      @SuppressWarnings("unchecked")
+      Map.Entry<String,String>[] entryArray = entrySet.toArray(new Map.Entry[0]);
+
+      this.commandParamMap = Map.ofEntries( entryArray);
    }
+   //@formatter:on
 
    public CommandGroup getcommandGroup() {
-      return commandGroup;
-   }
-
-   public Map<String, String> getCommandParamMap() {
-      if (commandParamMap == null) {
-         commandParamMap = new HashMap<>();
-      }
-      if (presentationType != null) {
-         commandParamMap.put(PresentationType.class.getSimpleName(), presentationType.toString());
-      }
-      if (optionKey != null) {
-         commandParamMap.put(optionKey, optionValue);
-      }
-      return commandParamMap;
-   }
-
-   public String getLabel() {
-      return label;
-   }
-
-   public ImageDescriptor getIcon() {
-      return icon;
+      return this.commandGroup;
    }
 
    public String getCommandId() {
-      return commandId;
+      return this.commandId;
+   }
+
+   public Map<String, String> getCommandParamMap() {
+      return this.commandParamMap;
+   }
+
+   public ImageDescriptor getIcon() {
+      return this.icon;
+   }
+
+   public String getLabel() {
+      return this.label;
    }
 
    @Override
    public String toString() {
-      return label;
+      return this.label;
    }
 }

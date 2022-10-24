@@ -360,6 +360,12 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return rels;
    }
 
+   /**
+    * {@inheritDoc}
+    *
+    * @implNote Performs a database query to obtain all hierarchically subordinate artifacts.
+    */
+
    @Override
    public List<ArtifactReadable> getDescendants() {
       return queryFactory.fromBranch(branch, view).andRelatedRecursive(CoreRelationTypes.DefaultHierarchical_Child,
@@ -375,6 +381,12 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    public boolean isDescendantOf(ArtifactToken parent) {
       throw new UnsupportedOperationException();
    }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @implNote Uses the artifact's relationships to obtain the immediate children of the artifact.
+    */
 
    @Override
    public List<ArtifactReadable> getChildren() {
