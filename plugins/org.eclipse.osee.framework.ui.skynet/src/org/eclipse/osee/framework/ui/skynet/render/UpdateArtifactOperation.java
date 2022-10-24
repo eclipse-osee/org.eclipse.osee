@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
-import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -86,7 +86,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       wud.setMultiEdit(UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
       wud.setUserArtId(UserManager.getUser());
 
-      WordUpdateChange change = HttpWordUpdateRequest.updateWordArtifacts(wud);
+      WordUpdateChange change = PublishingRequestHandler.updateWordArtifacts(wud);
       postProcessChange(change);
       WordMlChangesDialog changes = new WordMlChangesDialog(change);
       changes.doWork(null);

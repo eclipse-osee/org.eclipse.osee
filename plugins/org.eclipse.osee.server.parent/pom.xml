@@ -79,7 +79,7 @@
 					../../plugins/org.eclipse.osee.define.api
 				</module>
 				<module>
-					../../plugins/org.eclipse.osee.define.rest
+					../../plugins/org.eclipse.osee.define
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.define.rest.test

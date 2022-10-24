@@ -18,7 +18,18 @@ package org.eclipse.osee.framework.core.enums;
  */
 public enum CommandGroup {
 
+   /**
+    * Group for commands that generate a preview using a client side generator.
+    */
+
    PREVIEW(PresentationType.PREVIEW),
+
+   /**
+    * Group for commands that generate a preview using a server side generator.
+    */
+
+   PREVIEW_SERVER(PresentationType.PREVIEW_SERVER),
+
    EDIT(PresentationType.SPECIALIZED_EDIT),
    SHOW(PresentationType.SPECIALIZED_EDIT);
 
@@ -41,7 +52,11 @@ public enum CommandGroup {
    }
 
    public boolean isPreview() {
-      return CommandGroup.PREVIEW == this;
+      //@formatter:off
+      return
+            ( CommandGroup.PREVIEW        == this )
+         || ( CommandGroup.PREVIEW_SERVER == this );
+      //@formatter:on
    }
 
    public boolean isShowIn() {

@@ -14,16 +14,11 @@
 package org.eclipse.osee.ats.ide.integration.tests.define;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.GZIPInputStream;
-import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -33,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -55,7 +49,7 @@ public class RendererEndpointTest {
    private static final String beginWordString = "<w:p><w:r><w:t>";
    private static final String endWordString = "</w:t></w:r></w:p>";
 
-   private static RenderEndpoint renderEndpoint;
+   private static PublishingEndpoint publishingEndpoint;
    private static final BranchToken branch = DemoBranches.SAW_PL_Working_Branch;
    private static final Artifact parent =
       ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SoftwareRequirementsFolder, branch);
@@ -67,22 +61,17 @@ public class RendererEndpointTest {
    @BeforeClass
    public static void testSetup() {
       OseeClient oseeclient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
-      renderEndpoint = oseeclient.getRenderEndpoint();
+      publishingEndpoint = oseeclient.getPublishingEndpoint();
       setUpSWReq(parent, branch);
       parent.persist("Setup for importing software requirements");
    }
 
    @Test
    public void testImport() throws IOException {
-      try (Response response = renderEndpoint.msWordTemplatePublish(branch, template, parent, ArtifactId.SENTINEL)) {
-         Object attachment = response.getEntity();
 
-         File wordPublish = folder.newFile("wordPublish.xml");
-         if (attachment instanceof GZIPInputStream) {
-            GZIPInputStream gzi = (GZIPInputStream) attachment;
-            saveAttachement(gzi, wordPublish);
-         }
-         String fileContents = Lib.fileToString(wordPublish);
+      try (var inputStream = publishingEndpoint.msWordTemplatePublish(branch, template, parent, ArtifactId.SENTINEL)) {
+
+         var fileContents = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
          Assert.assertTrue(fileContents.contains("Communication Subsystem Crew Interface"));
       }
@@ -117,15 +106,5 @@ public class RendererEndpointTest {
          beginWordString + "This is the list of Aircraft Management crew station requirements." + endWordString);
       ventReq.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "This is the Ventilation crew station requirements." + endWordString);
-   }
-
-   private static void saveAttachement(GZIPInputStream given, File output) throws IOException {
-      OutputStream outputStream = null;
-      try {
-         outputStream = new BufferedOutputStream(new FileOutputStream(output));
-         Lib.inputStreamToOutputStream(given, outputStream);
-      } finally {
-         Lib.close(outputStream);
-      }
    }
 }

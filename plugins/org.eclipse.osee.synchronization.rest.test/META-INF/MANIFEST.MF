@@ -9,4 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.eclipse.osee.synchronization.rest.test
 Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.jdk.core.util
-Fragment-Host: org.eclipse.osee.define.rest
+Fragment-Host: org.eclipse.osee.define

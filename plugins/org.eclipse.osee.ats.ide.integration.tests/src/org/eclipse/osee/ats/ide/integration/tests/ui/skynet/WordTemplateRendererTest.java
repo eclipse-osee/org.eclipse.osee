@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.define.api.publishing.LinkType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -62,7 +62,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,7 +72,7 @@ import org.junit.Test;
 
 /**
  * @author Mark Joy
- * @link: WordTemplateRenderer
+ * @link: MSWordTemplateClientRenderer
  */
 
 public class WordTemplateRendererTest {
@@ -133,7 +133,7 @@ public class WordTemplateRendererTest {
    private Artifact masterTemplate_idAndName;
    private Artifact slaveTemplate;
 
-   private WordTemplateRenderer renderer;
+   private MSWordTemplateClientRenderer renderer;
 
    @BeforeClass
    public static void loadTemplateInfo() throws Exception {
@@ -166,7 +166,7 @@ public class WordTemplateRendererTest {
       rendererOptionsMap.put(NO_DISPLAY, true);
       rendererOptionsMap.put(RendererOption.PUBLISH_EMPTY_HEADERS, true);
 
-      renderer = new WordTemplateRenderer(rendererOptionsMap);
+      renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
@@ -647,7 +647,7 @@ public class WordTemplateRendererTest {
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
-         "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
+         "org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
       recurseTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
       singleTemplate =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single Template");

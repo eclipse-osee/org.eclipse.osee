@@ -116,7 +116,8 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
       Boolean isNoTags = Boolean.valueOf(OseeInfo.getValue("osee.publish.no.tags"));
 
-      String rendererId = renderer.getClass().getCanonicalName();
+      String rendererId = renderer.getIdentifier();
+
       if (artifact != null && option != null) {
          list.add(
             rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option + (isNoTags ? " " + "NO TAGS" : ""));

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
->
+<plugin>
 	<extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="OSEE-INF/extensionPts/ArtifactRenderer.exsd"/>
 	<extension-point id="BlamOperation" name="BlamOperation" schema="OSEE-INF/extensionPts/BlamOperation.exsd"/>
 	<extension-point id="WordMlProducer" name="WordMlProducer" schema="OSEE-INF/extensionPts/WordMlProducer.exsd"/>
@@ -9,12 +8,12 @@
 	<extension-point id="OseeDictionary" name="OseeDictionary" schema="OSEE-INF/extensionPts/OseeDictionary.exsd"/>
 	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="OSEE-INF/extensionPts/XWidgetProvider.exsd"/>
 	<extension-point id="TemplateProvider" name="TemplateProvider" schema="OSEE-INF/extensionPts/TemplateProvider.exsd"/>
- <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd"/>
- <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="OSEE-INF/extensionPts/WorkDefinitionProvider.exsd"/>
- <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="OSEE-INF/extensionPts/DatabaseHealthOperation.exsd"/>
-  <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="OSEE-INF/extensionPts/ArtifactImageProvider.exsd"/>
-  <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="OSEE-INF/extensionPts/UserNavigateItem.exsd"/>
-  <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="OSEE-INF/extensionPts/ArtifactEditorProvider.exsd"/>
+   <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd"/>
+   <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="OSEE-INF/extensionPts/WorkDefinitionProvider.exsd"/>
+   <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="OSEE-INF/extensionPts/DatabaseHealthOperation.exsd"/>
+   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="OSEE-INF/extensionPts/ArtifactImageProvider.exsd"/>
+   <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="OSEE-INF/extensionPts/UserNavigateItem.exsd"/>
+   <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="OSEE-INF/extensionPts/ArtifactEditorProvider.exsd"/>
 
  	<extension point="org.eclipse.ui.importWizards">
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="OSEE-INF/images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
@@ -160,12 +159,24 @@
 	<extension id="html" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.HTMLRenderer"/>
 	</extension>
-	<extension id="word" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
+	
+	<extension 
+	   id    = "word" 
+	   point = "org.eclipse.osee.framework.ui.skynet.ArtifactRenderer" >
+	   
+		<Renderer 
+		   classname = "org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer"/>
+		   
 	</extension>
-	<extension id="word_server" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer"/>
+	
+	<extension
+	   id    = "word_server"
+	   point = "org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+	   
+		<Renderer 
+		   classname = "org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateServerRenderer"/>
 	</extension>
+	
 	<extension id="url" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.UrlRenderer"/>
 	</extension>

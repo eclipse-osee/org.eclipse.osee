@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -39,8 +40,8 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.osee.define.api.AttributeElement;
-import org.eclipse.osee.define.api.MetadataElement;
+import org.eclipse.osee.define.api.publishing.AttributeOptions;
+import org.eclipse.osee.define.api.publishing.MetadataOptions;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -77,9 +78,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -134,6 +135,7 @@ public class WordTemplateProcessor {
    //Attribute Options
    private String attributeLabel;
    private String attributeType;
+   private String format;
    private String formatPre;
    private String formatPost;
 
@@ -150,11 +152,11 @@ public class WordTemplateProcessor {
    private String value;
    private int nestedCount;
 
-   private final List<AttributeElement> attributeElements = new LinkedList<>();
-   private final List<MetadataElement> metadataElements = new LinkedList<>();
+   private final List<AttributeOptions> attributeOptionsList = new LinkedList<>();
+   private final List<MetadataOptions> metadataOptionsList = new LinkedList<>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<>();
    private final Set<Artifact> processedArtifacts = new HashSet<>();
-   private final WordTemplateRenderer renderer;
+   private final MSWordTemplateClientRenderer renderer;
    private boolean isDiff;
    private boolean excludeFolders;
    private CharSequence paragraphNumber = null;
@@ -163,7 +165,7 @@ public class WordTemplateProcessor {
    private HashMap<ArtifactId, ArtifactId> artifactsToExclude;
    private final Set<ArtifactId> emptyFolders = new HashSet<>();
 
-   public WordTemplateProcessor(WordTemplateRenderer renderer) {
+   public WordTemplateProcessor(MSWordTemplateClientRenderer renderer) {
       this.renderer = renderer;
       artifactsToExclude = new HashMap<>();
    }
@@ -202,8 +204,8 @@ public class WordTemplateProcessor {
       }
 
       try {
-         attributeElements.clear();
-         metadataElements.clear();
+         attributeOptionsList.clear();
+         metadataOptionsList.clear();
          //JSONObject jsonObject = new JSONObject(masterTemplateOptions);
          ObjectMapper objMap = new ObjectMapper();
          JsonNode node = objMap.readTree(masterTemplateOptions);
@@ -219,8 +221,8 @@ public class WordTemplateProcessor {
       // Need to check if all attributes will be published.  If so set the AllAttributes option.
       // Assumes that all (*) will not be used when other attributes are specified
       renderer.updateOption(RendererOption.ALL_ATTRIBUTES, false);
-      if (attributeElements.size() == 1) {
-         String attributeName = attributeElements.get(0).getAttributeName();
+      if (attributeOptionsList.size() == 1) {
+         String attributeName = attributeOptionsList.get(0).getAttributeName();
          if (attributeName.equals("*")) {
             renderer.updateOption(RendererOption.ALL_ATTRIBUTES, true);
          }
@@ -490,9 +492,21 @@ public class WordTemplateProcessor {
       return artifacts;
    }
 
+   private String findValue(JsonNode options, String key) {
+      if (Objects.isNull(options)) {
+         return "";
+      }
+      var textNode = options.findValue(key);
+      if (Objects.isNull(textNode)) {
+         return "";
+      }
+      var text = textNode.asText();
+      return (Objects.nonNull(text)) ? text : "";
+   }
+
    private void parseAttributeOptions(String templateOptions) {
       try {
-         attributeElements.clear();
+         this.attributeOptionsList.clear();
 
          ObjectMapper objMapper = new ObjectMapper();
          JsonNode jsonObject = objMapper.readTree(templateOptions);
@@ -502,15 +516,15 @@ public class WordTemplateProcessor {
          for (int i = 0; i < attributeOptions.size(); i++) {
             options = attributeOptions.get(i);
 
-            attributeType = options.findValue("AttrType").asText();
-            attributeLabel = options.findValue("Label").asText();
-            formatPre = options.findValue("FormatPre").asText();
-            formatPost = options.findValue("FormatPost").asText();
+            attributeType = this.findValue(options, "AttrType");
+            attributeLabel = this.findValue(options, "Label");
+            format = this.findValue(options, "Format");
+            formatPre = this.findValue(options, "FormatPre");
+            formatPost = this.findValue(options, "FormatPost");
 
-            AttributeElement attrElement = new AttributeElement();
             if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
-               attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
-               attributeElements.add(attrElement);
+               this.attributeOptionsList.add(
+                  new AttributeOptions(attributeType, attributeLabel, format, formatPre, formatPost));
             }
          }
       } catch (IOException ex) {
@@ -581,10 +595,7 @@ public class WordTemplateProcessor {
             metadataFormat = options.findValue("Format").asText();
             metadataLabel = options.findValue("Label").asText();
 
-            MetadataElement metadataElement = new MetadataElement();
-
-            metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
-            metadataElements.add(metadataElement);
+            this.metadataOptionsList.add(new MetadataOptions(metadataType, metadataFormat, metadataLabel));
          }
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -630,11 +641,11 @@ public class WordTemplateProcessor {
       }
 
       // Don't extract the settings from the template if already done.
-      if (attributeElements.isEmpty()) {
+      if (attributeOptionsList.isEmpty()) {
          parseAttributeOptions(templateOptions);
       }
 
-      if (metadataElements.isEmpty()) {
+      if (metadataOptionsList.isEmpty()) {
          parseMetadataOptions(templateOptions);
       }
 
@@ -809,33 +820,33 @@ public class WordTemplateProcessor {
    }
 
    private void processMetadata(Artifact artifact, WordMLProducer wordMl) {
-      for (MetadataElement metadataElement : metadataElements) {
-         processMetadata(artifact, wordMl, metadataElement);
+      for (MetadataOptions metadataOptions : metadataOptionsList) {
+         processMetadata(artifact, wordMl, metadataOptions);
       }
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) {
-      for (AttributeElement attributeElement : attributeElements) {
-         String attributeName = attributeElement.getAttributeName();
+      for (AttributeOptions attributeOptions : attributeOptionsList) {
+         String attributeName = attributeOptions.getAttributeName();
 
          if ((boolean) renderer.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES) || attributeName.equals("*")) {
             for (AttributeTypeToken attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || attributeType.notEqual(headingAttributeType)) {
-                  processAttribute(artifact, wordMl, attributeElement, attributeType, true, presentationType,
+                  processAttribute(artifact, wordMl, attributeOptions, attributeType, true, presentationType,
                      publishInLine, footer);
                }
             }
          } else {
             AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
-               processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,
+               processAttribute(artifact, wordMl, attributeOptions, attributeType, false, presentationType,
                   publishInLine, footer);
             }
          }
       }
    }
 
-   private void processMetadata(Artifact artifact, WordMLProducer wordMl, MetadataElement element) {
+   private void processMetadata(Artifact artifact, WordMLProducer wordMl, MetadataOptions element) {
       wordMl.startParagraph();
       String name = element.getType();
       String format = element.getFormat();
@@ -869,7 +880,7 @@ public class WordTemplateProcessor {
       wordMl.endParagraph();
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) {
       renderer.updateOption(RendererOption.ALL_ATTRIBUTES, allAttrs);
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && attributeType.matches(Partition, SeverityCategory)) {
@@ -907,11 +918,11 @@ public class WordTemplateProcessor {
          if (!(publishInLine && artifact.isAttributeTypeValid(WordTemplateContent)) || attributeType.equals(
             WordTemplateContent)) {
             RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl,
-               attributeElement.getFormat(), attributeElement.getLabel(), footer, renderer.getRendererOptions());
+               attributeOptions.getFormat(), attributeOptions.getLabel(), footer, renderer.getRendererOptions());
          }
       } else if (attributeType.equals(WordTemplateContent)) {
          RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl,
-            attributeElement.getFormat(), attributeElement.getLabel(), footer, renderer.getRendererOptions());
+            attributeOptions.getFormat(), attributeOptions.getLabel(), footer, renderer.getRendererOptions());
       }
    }
 

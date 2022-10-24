@@ -19,7 +19,8 @@ import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
-import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -65,8 +66,6 @@ public interface OseeClient extends OseeApi {
 
    DatastoreEndpoint getDatastoreEndpoint();
 
-   RenderEndpoint getRenderEndpoint();
-
    DataRightsEndpoint getDataRightsEndpoint();
 
    OrcsWriterEndpoint getOrcsWriterEndpoint();
@@ -88,13 +87,31 @@ public interface OseeClient extends OseeApi {
    GitEndpoint getGitEndpoint();
 
    /**
+    * Obtains an object that implements the {@link PublishingEndpoint} to process REST API requests for publishing
+    * artifacts.
+    *
+    * @return an implementation of the {@link PublishingEndpoint} interface.
+    */
+
+   PublishingEndpoint getPublishingEndpoint();
+
+   /**
     * Obtains an object that implements the {@link SynchronizationEndpoint} to process REST API requests for
     * synchronization artifacts.
     *
-    * @return an object implementing the interface {@link SynchronizationEndpoint}.
+    * @return an implementation of the {@link SynchronizationEndpoint} interface.
     */
 
    SynchronizationEndpoint getSynchronizationEndpoint();
+
+   /**
+    * Obtains an object that implements the {@link TemplateManagerEndpoint} to process REST API requests for publishing
+    * templates.
+    *
+    * @return an implementation of the {@link TemplateManagerEndpoint} interface.
+    */
+
+   TemplateManagerEndpoint getTemplateManagerEndpoint();
 
    @Deprecated
    String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact);

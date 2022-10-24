@@ -102,8 +102,14 @@ public class DefaultArtifactRenderer implements IRenderer {
       this.rendererOptions = rendererOptions;
    }
 
+   @Override
    public void updateOption(RendererOption key, Object value) {
       rendererOptions.put(key, value);
+   }
+
+   @Override
+   public String getIdentifier() {
+      return this.getClass().getCanonicalName();
    }
 
    @Override

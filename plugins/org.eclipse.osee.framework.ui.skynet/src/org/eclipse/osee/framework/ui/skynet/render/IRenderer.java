@@ -31,38 +31,65 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
  */
 public interface IRenderer {
 
-   public static final int SPECIALIZED_KEY_MATCH = 70;
-   public static final int SPECIALIZED_MATCH = 60;
-   public static final int PRESENTATION_TYPE_OPTION_MATCH = 55;
+   public static final int ARTIFACT_TYPE_MATCH = 20;
+   public static final int BASE_MATCH = 5;
+   public static final int GENERAL_MATCH = 10;
+   public static final int NO_MATCH = -1;
    public static final int PRESENTATION_SUBTYPE_MATCH = 50;
    public static final int PRESENTATION_TYPE = 40;
+   public static final int PRESENTATION_TYPE_OPTION_MATCH = 55;
+   public static final int SPECIALIZED_KEY_MATCH = 70;
+   public static final int SPECIALIZED_MATCH = 60;
    public static final int SUBTYPE_TYPE_MATCH = 30;
-   public static final int ARTIFACT_TYPE_MATCH = 20;
-   public static final int GENERAL_MATCH = 10;
-   public static final int BASE_MATCH = 5;
-   public static final int NO_MATCH = -1;
 
-   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
+   void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
 
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer);
+   int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions);
 
-   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue);
+   IComparator getComparator();
 
-   public int minimumRanking();
+   /**
+    * Gets the renderer's identifier used for publishing template selection.
+    *
+    * @return the renderer's unique identifier.
+    */
 
-   public void open(List<Artifact> artifacts, PresentationType presentationType);
+   String getIdentifier();
 
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions);
+   /**
+    * Gets the renderer's name.
+    *
+    * @return a {@link String} with the renderer's name.
+    */
 
-   public String getName();
+   String getName();
 
-   public IRenderer newInstance(Map<RendererOption, Object> rendererOptions);
+   List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes);
 
-   public IRenderer newInstance();
+   int minimumRanking();
 
-   public boolean supportsCompare();
+   IRenderer newInstance();
 
-   public IComparator getComparator();
+   IRenderer newInstance(Map<RendererOption, Object> rendererOptions);
 
-   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes);
+   void open(List<Artifact> artifacts, PresentationType presentationType);
+
+   void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer);
+
+   String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue);
+
+   boolean supportsCompare();
+
+   /**
+    * Updates the value of a renderer option.
+    *
+    * @param key the {@link RendererOption} to be updated.
+    * @param value the new value.
+    * @throws NullPointerException when either of the parameters <code>key</code> or <code>value</code> are
+    * <code>null</code>.
+    */
+
+   void updateOption(RendererOption key, Object value);
 }
+
+/* EOF */

@@ -148,7 +148,7 @@ public final class RenderingUtil {
       return getRenderFile(renderer, subFolder, fileName, presentationType);
    }
 
-   private static String getNameFromArtifacts(List<Artifact> artifacts, PresentationType presentationType) {
+   static String getNameFromArtifacts(List<Artifact> artifacts, PresentationType presentationType) {
       StringBuilder name = new StringBuilder(128);
       Artifact artifact = null;
       if (!artifacts.isEmpty()) {
@@ -170,7 +170,7 @@ public final class RenderingUtil {
       return name.toString();
    }
 
-   private static IFile getRenderFile(IRenderer renderer, String subFolder, String fileName, PresentationType presentationType) {
+   static IFile getRenderFile(IRenderer renderer, String subFolder, String fileName, PresentationType presentationType) {
       try {
          IFolder baseFolder = ensureRenderFolderExists(presentationType);
          IFolder renderFolder = baseFolder.getFolder(subFolder);
@@ -178,15 +178,14 @@ public final class RenderingUtil {
             renderFolder.create(true, true, null);
          }
          IFile file = renderFolder.getFile(fileName);
-         ((DefaultArtifactRenderer) renderer).updateOption(RendererOption.RESULT_PATH_RETURN,
-            file.getLocation().toOSString());
+         renderer.updateOption(RendererOption.RESULT_PATH_RETURN, file.getLocation().toOSString());
          return file;
       } catch (CoreException ex) {
          throw OseeCoreException.wrap(ex);
       }
    }
 
-   private static String constructFilename(String mainName, String fileNamePrefix, String extension) {
+   static String constructFilename(String mainName, String fileNamePrefix, String extension) {
       StringBuilder name = new StringBuilder(128);
       if (Strings.isValid(fileNamePrefix)) {
          name.append(fileNamePrefix);

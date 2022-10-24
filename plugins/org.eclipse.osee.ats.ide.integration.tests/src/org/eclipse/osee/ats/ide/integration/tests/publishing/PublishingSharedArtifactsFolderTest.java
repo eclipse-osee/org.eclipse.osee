@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocument
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -398,7 +398,7 @@ public class PublishingSharedArtifactsFolderTest {
          );
    //@formatter:on
 
-   private static RenderEndpoint renderEndpoint;
+   private static PublishingEndpoint publishingEndpoint;
 
    /**
     * Saves the {@link ArtifactId} of the root artifact of the test document.
@@ -466,13 +466,13 @@ public class PublishingSharedArtifactsFolderTest {
 
       var oseeClient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
 
-      PublishingSharedArtifactsFolderTest.renderEndpoint = oseeClient.getRenderEndpoint();
+      PublishingSharedArtifactsFolderTest.publishingEndpoint = oseeClient.getPublishingEndpoint();
    }
 
    @Test
    public void testSharedFoldersA() {
 
-      var sharedFolders = PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts(
+      var sharedFolders = PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts(
          PublishingSharedArtifactsFolderTest.rootBranchId, ArtifactId.SENTINEL,
          PublishingSharedArtifactsFolderTest.rootArtifactId, ArtifactTypeToken.SENTINEL, CoreAttributeTypes.Description,
          "DOC-1234");
@@ -490,7 +490,7 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersACoreArtifactTypesArtifact() {
 
-      var sharedFolders = PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts(
+      var sharedFolders = PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts(
          PublishingSharedArtifactsFolderTest.rootBranchId, ArtifactId.SENTINEL,
          PublishingSharedArtifactsFolderTest.rootArtifactId, CoreArtifactTypes.SoftwareRequirementMsWord,
          CoreAttributeTypes.Description, "DOC-1234");
@@ -507,7 +507,7 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersACoreArtifactTypesMsWordWholeDocument() {
 
-      var sharedFolders = PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts(
+      var sharedFolders = PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts(
          PublishingSharedArtifactsFolderTest.rootBranchId, ArtifactId.SENTINEL,
          PublishingSharedArtifactsFolderTest.rootArtifactId, CoreArtifactTypes.SoftwareRequirementHtml,
          CoreAttributeTypes.Description, "DOC-1234");
@@ -523,7 +523,7 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersB() {
 
-      var sharedFolders = PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts(
+      var sharedFolders = PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts(
          PublishingSharedArtifactsFolderTest.rootBranchId, ArtifactId.SENTINEL,
          PublishingSharedArtifactsFolderTest.rootArtifactId, ArtifactTypeToken.SENTINEL, CoreAttributeTypes.Description,
          "DOC-1235");
@@ -541,7 +541,7 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersBCoreArtifactTypesArtifact() {
 
-      var sharedFolders = PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts(
+      var sharedFolders = PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts(
          PublishingSharedArtifactsFolderTest.rootBranchId, ArtifactId.SENTINEL,
          PublishingSharedArtifactsFolderTest.rootArtifactId, CoreArtifactTypes.SoftwareRequirementMsWord,
          CoreAttributeTypes.Description, "DOC-1235");
@@ -558,7 +558,7 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersBCoreArtifactTypesMsWordWholeDocument() {
 
-      var sharedFolders = PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts(
+      var sharedFolders = PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts(
          PublishingSharedArtifactsFolderTest.rootBranchId, ArtifactId.SENTINEL,
          PublishingSharedArtifactsFolderTest.rootArtifactId, CoreArtifactTypes.SoftwareRequirementHtml,
          CoreAttributeTypes.Description, "DOC-1235");
@@ -574,13 +574,13 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersAUnknownBranch() {
 
-      var expectedMessagePattern = Pattern.compile("Error:[ \\t]*Unable to locate the shared folder\\.");
+      var expectedMessagePattern = Pattern.compile("Error:\\s*Unable to locate the shared folder\\.");
 
       //@formatter:off
       try {
          @SuppressWarnings("unused")
          var sharedFolders =
-            PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts
+            PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
                (
                  BranchId.valueOf( 0x1234L ),
                  ArtifactId.SENTINEL,
@@ -633,13 +633,13 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersAUnknownArtifact() {
 
-      var expectedMessagePattern = Pattern.compile("Error:[ \\t]*Unable to locate the shared folder\\.");
+      var expectedMessagePattern = Pattern.compile("Error:\\s*Unable to locate the shared folder\\.");
 
       //@formatter:off
       try {
          @SuppressWarnings("unused")
          var sharedFolders =
-            PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts
+            PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
                (
                  PublishingSharedArtifactsFolderTest.rootBranchId,
                  ArtifactId.SENTINEL,
@@ -692,13 +692,13 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersAUnknownAttribute() {
 
-      var expectedMessagePattern = Pattern.compile("Error:[ \\t]*Child Attribute Type Identifier is SENTINEL\\.");
+      var expectedMessagePattern = Pattern.compile("Error:\\s*Child Attribute Type Identifier is SENTINEL\\.");
 
       //@formatter:off
       try {
          @SuppressWarnings("unused")
          var sharedFolders =
-            PublishingSharedArtifactsFolderTest.renderEndpoint.getSharedPublishingArtifacts
+            PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
                (
                  PublishingSharedArtifactsFolderTest.rootBranchId,
                  ArtifactId.SENTINEL,

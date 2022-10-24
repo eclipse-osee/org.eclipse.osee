@@ -239,7 +239,7 @@ public final class RendererManager {
    }
 
    public static void diff(CompareDataCollector collector, Collection<ArtifactDelta> artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
-      IRenderer renderer = new WordTemplateRenderer(rendererOptions);
+      IRenderer renderer = new MSWordTemplateClientRenderer(rendererOptions);
       DiffUsingRenderer operation =
          new DiffUsingRenderer(collector, artifactDelta, pathPrefix, renderer, rendererOptions, PresentationType.DIFF);
       Operations.executeWork(operation);

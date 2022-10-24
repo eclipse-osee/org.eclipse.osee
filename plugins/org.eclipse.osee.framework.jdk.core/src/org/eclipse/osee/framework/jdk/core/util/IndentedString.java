@@ -21,6 +21,7 @@ import java.util.List;
  *
  * @author Loren K. Ashley
  */
+
 public class IndentedString {
 
    /**
@@ -128,6 +129,16 @@ public class IndentedString {
 
    public static String indentString(int indent) {
       return IndentedString.indentedString.createIndentString(indent);
+   }
+
+   /**
+    * Gets the number of spaces for each level of indent.
+    *
+    * @return the number of spaces in an indent level.
+    */
+
+   public static int indentSize() {
+      return IndentedString.indentAmount;
    }
 }
 

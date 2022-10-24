@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.DirtyArtifactCacheTest;
-import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.define.api.WordArtifactChange;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
@@ -36,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -123,7 +122,7 @@ public class WordUpdateEndpointImplTest {
       wud.setMultiEdit(false);
       wud.setUserArtId(UserManager.getUser());
 
-      return HttpWordUpdateRequest.updateWordArtifacts(wud);
+      return PublishingRequestHandler.updateWordArtifacts(wud);
    }
 
    private BranchId getWorkingBranch() {

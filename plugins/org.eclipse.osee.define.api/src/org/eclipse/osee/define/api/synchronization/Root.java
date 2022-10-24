@@ -16,7 +16,7 @@ package org.eclipse.osee.define.api.synchronization;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -77,9 +77,9 @@ public class Root implements ToMessage {
       if (Objects.isNull(this.artifactId)) {
          //@formatter:off
          var message =
-               new StringBuilder(1024)
-                  .append( "Root::getArtifactId, the member \"artifactId\" has not been set." ).append( "\n" )
-                  .append( "\n" );
+               new Message()
+                  .title( "Root::getArtifactId, the member \"artifactId\" has not been set." )
+                  .blank();
          //@formatter:on
          this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
@@ -99,9 +99,9 @@ public class Root implements ToMessage {
       if (Objects.isNull(this.branchId)) {
          //@formatter:off
          var message =
-               new StringBuilder(1024)
-                  .append( "Root::getBranchId, the member \"branchId\" has not been set." ).append( "\n" )
-                  .append( "\n" );
+               new Message()
+                  .title( "Root::getBranchId, the member \"branchId\" has not been set." )
+                  .blank();
          //@formatter:on
          this.toMessage(1, message);
          throw new IllegalStateException(message.toString());
@@ -139,9 +139,10 @@ public class Root implements ToMessage {
       if (Objects.nonNull(this.artifactId)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "Root::setArtifactId, the member \"artifactId\" has alreday been set." ).append( "\n" )
-                   .append( "\n" );
+            new Message()
+                   .title( "Root::setArtifactId, the member \"artifactId\" has alreday been set." )
+                   .blank()
+                   ;
          //@formatter:off
          this.toMessage(1, message);
          throw new IllegalStateException( message.toString() );
@@ -164,9 +165,10 @@ public class Root implements ToMessage {
       if (Objects.nonNull(this.branchId)) {
          //@formatter:off
          var message =
-            new StringBuilder( 1024 )
-                   .append( "Root::setBranchId, the member \"branchId\" has alreday been set." ).append( "\n" )
-                   .append( "\n" );
+            new Message()
+                   .title( "Root::setBranchId, the member \"branchId\" has alreday been set." )
+                   .blank()
+                   ;
          //@formatter:off
          this.toMessage(1, message);
          throw new IllegalStateException( message.toString() );
@@ -203,16 +205,17 @@ public class Root implements ToMessage {
     */
 
    @Override
-   public StringBuilder toMessage(int indent, StringBuilder message) {
-      var outMessage = (message != null) ? message : new StringBuilder(1 * 1024);
-      var indent0 = IndentedString.indentString(indent + 0);
-      var indent1 = IndentedString.indentString(indent + 1);
+   public Message toMessage(int indent, Message message) {
+      var outMessage = (message != null) ? message : new Message();
 
       //@formatter:off
       outMessage
-         .append( indent0 ).append( "Root:" ).append( "\n" )
-         .append( indent1 ).append( "Branch Identifier:   ").append( Objects.nonNull( this.branchId   ) ? this.branchId   : "(null)" ).append( "\n" )
-         .append( indent1 ).append( "Artifact Identifier: ").append( Objects.nonNull( this.artifactId ) ? this.artifactId : "(null)" ).append( "\n" )
+         .indent( indent )
+         .title( "Root" )
+         .indentInc()
+         .segment( "Branch Identifier",   this.branchId   )
+         .segment( "Artifact Identifier", this.artifactId )
+         .indentDec()
          ;
       //@formatter:on
 
