@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -104,6 +105,13 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
 
    public void setChgRptOptions(ChangeReportOptions chgRptOptions) {
       createTasksDef.setChgRptOptions(chgRptOptions);
+   }
+
+   public CreateTasksDefinitionBuilder andCopyAttributes(AttributeTypeToken... copyAttrTypes) {
+      for (AttributeTypeToken copyAttrType : copyAttrTypes) {
+         createTasksDef.getChgRptOptions().getCopyAttrTypes().add(copyAttrType);
+      }
+      return this;
    }
 
 }

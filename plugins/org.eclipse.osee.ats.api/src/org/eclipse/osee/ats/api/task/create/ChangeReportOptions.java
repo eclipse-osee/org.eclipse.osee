@@ -31,6 +31,8 @@ public class ChangeReportOptions {
    ArtifactToken fromSiblingTeamDef;
    WorkType fromSiblingTeamDefWorkType;
    List<ChangeReportOptionsToTeam> toSiblingTeamDatas = new ArrayList<>();
+
+   // These are to identify what to generate a task against
    Collection<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    Collection<ArtifactTypeToken> notArtifactTypes = new ArrayList<>();
    Collection<AttributeTypeToken> attributeTypes = new ArrayList<>();
@@ -38,6 +40,9 @@ public class ChangeReportOptions {
    Collection<RelationTypeToken> relationTypes = new ArrayList<>();
    Collection<RelationTypeToken> notRelationTypes = new ArrayList<>();
    Collection<CreateTasksOption> createOptions = new ArrayList<>();
+
+   // This is to copy over these values if set
+   Collection<AttributeTypeToken> copyAttrTypes = new ArrayList<>();
 
    public ChangeReportOptions() {
       // for jax-rs
@@ -170,6 +175,14 @@ public class ChangeReportOptions {
 
    public void setFromSiblingTeamDefWorkType(WorkType fromSiblingTeamDefWorkType) {
       this.fromSiblingTeamDefWorkType = fromSiblingTeamDefWorkType;
+   }
+
+   public Collection<AttributeTypeToken> getCopyAttrTypes() {
+      return copyAttrTypes;
+   }
+
+   public void setCopyAttrTypes(Collection<AttributeTypeToken> copyAttrTypes) {
+      this.copyAttrTypes = copyAttrTypes;
    }
 
 }
