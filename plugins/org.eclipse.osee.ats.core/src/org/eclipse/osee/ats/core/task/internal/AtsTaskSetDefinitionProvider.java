@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.task.internal;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.task.create.CreateChangeReportTasksDefinitionBuilder;
@@ -62,6 +63,7 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
             .andAttribute(CoreAttributeTypes.WordTemplateContent, CoreAttributeTypes.Name) //
             .andNotAttribute(CoreAttributeTypes.ParagraphNumber, CoreAttributeTypes.RelationOrder) //
             .andStaticTask("My Manual Task", "desc", null, AtsCoreUsers.UNASSIGNED_USER.getId()) //
+            .andCopyAttributes(AtsAttributeTypes.ProposedResolution) //
       );
 
       return taskSets;

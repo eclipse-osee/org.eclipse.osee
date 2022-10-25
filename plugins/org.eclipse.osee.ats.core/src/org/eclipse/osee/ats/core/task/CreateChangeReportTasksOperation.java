@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
@@ -272,6 +273,20 @@ public class CreateChangeReportTasksOperation {
                crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
                crtd.getDestTeamWfs().add(ArtifactToken.valueOf(destTeamWf.getStoreObject().getId(),
                   destTeamWf.getName(), atsApi.getAtsBranch()));
+            }
+
+            // Add any additional attributes to copy from main workflow
+            for (AttributeTypeToken attrType : crtd.getSetDef().getChgRptOptions().getCopyAttrTypes()) {
+               List<String> sourceValues =
+                  atsApi.getAttributeResolver().getAttributesToStringList(chgRptTeamWf, attrType);
+               List<String> destValues = atsApi.getAttributeResolver().getAttributesToStringList(destTeamWf, attrType);
+
+               if (!Collections.isEqual(sourceValues, destValues)) {
+                  crtd.getResults().success("Addition additional attr [%s]", attrType.toStringWithId() + "\n");
+                  if (changes != null) {
+                     changes.setAttributeValuesAsStrings(destTeamWf, attrType, sourceValues);
+                  }
+               }
             }
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
