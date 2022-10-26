@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -133,8 +134,10 @@ public class UserServiceImpl implements UserService {
          userGroupArt = (Artifact) userGroup;
       }
       if (userGroupArt == null) {
-         userGroupArt = ArtifactQuery.getArtifactFromId(userGroup, CoreBranches.COMMON);
-         return new UserGroupImpl(userGroupArt);
+         userGroupArt = ArtifactQuery.getArtifactOrNull(userGroup, CoreBranches.COMMON, DeletionFlag.EXCLUDE_DELETED);
+         if (userGroupArt != null) {
+            return new UserGroupImpl(userGroupArt);
+         }
       }
       return null;
    }

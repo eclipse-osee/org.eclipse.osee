@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.DisplayHint;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -98,8 +99,9 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
          }
       }
       if (persist) {
-         transaction.execute();
+         TransactionToken tok = transaction.execute();
+         return tok != null && tok.isValid();
       }
-      return true;
+      return false;
    }
 }

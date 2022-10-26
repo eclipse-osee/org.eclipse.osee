@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState
  */
 public class XHyperlinkTriStateBooleanDam extends XHyperlinkTriStateBoolean implements AttributeWidget {
 
-   private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
-   private Artifact artifact;
+   protected AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+   protected Artifact artifact;
 
    @Override
    public Collection<String> getSelectable() {
