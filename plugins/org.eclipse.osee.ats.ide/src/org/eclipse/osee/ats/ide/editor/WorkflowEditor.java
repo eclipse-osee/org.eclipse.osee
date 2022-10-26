@@ -559,8 +559,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
                WorkflowEditor editor = (WorkflowEditor) page.openEditor(new WfeInput(workflow), EDITOR_ID);
-               editor.reloadTab.reloadEditor();
-               RecentlyVisitedNavigateItems.addVisited(workflow);
+               if (editor.reloadTab != null) {
+                  editor.reloadTab.reloadEditor();
+                  RecentlyVisitedNavigateItems.addVisited(workflow);
+               }
             } catch (PartInitException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
