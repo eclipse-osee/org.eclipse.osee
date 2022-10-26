@@ -64,7 +64,8 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
          // Transfer to output stream to prevent the stream from closing mid-read
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          stream.transferTo(outputStream);
-         MimImportApi importer = new PlatformTypeImportApiImpl(new ByteArrayInputStream(outputStream.toByteArray()));
+         MimImportApi importer =
+            new PlatformTypeImportApiImpl(new ByteArrayInputStream(outputStream.toByteArray()), mimApi);
          outputStream.close();
          stream.close();
          return importer.getSummary();

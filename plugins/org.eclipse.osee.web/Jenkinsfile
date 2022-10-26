@@ -34,9 +34,10 @@ spec:
 """
     }
   }
-  // options {
-  //   skipDefaultCheckout true
-  // }
+  options {
+    timestamps()
+    // skipDefaultCheckout true
+  }
 
   stages {
     // stage('Clone'){

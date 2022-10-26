@@ -85,4 +85,6 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
    List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    List<PlatformTypeToken> getAllFromEnumerationSet(InterfaceEnumerationSet enumSet);
+
+   String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units, int bytes);
 }

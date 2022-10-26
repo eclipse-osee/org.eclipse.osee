@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.MimApi;
@@ -116,17 +117,31 @@ public class IcdImportApiImpl implements MimImportApi {
          rowIndex++;
       }
 
-      List<PlatformTypeToken> existingPlatformTypes = mimApi.getInterfacePlatformTypeApi().getAll(branch);
+      List<PlatformTypeToken> existingPlatformTypes = mimApi.getInterfacePlatformTypeApi().getAllWithRelations(branch,
+         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+            CoreRelationTypes.InterfaceEnumeration_EnumerationState));
       Map<String, InterfaceElementImportToken> elements = new HashMap<>();
       Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
       List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
 
       for (PlatformTypeToken type : existingPlatformTypes) {
-         String typeName = type.getInterfaceLogicalType().equals("enumeration") ? type.getName() : getPlatformTypeName(
-            type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
-            type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeUnits(),
-            Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
-         platformTypes.put(typeName, new PlatformTypeImportToken(type.getId(), type.getName()));
+         String typeKey = "";
+         if (type.getInterfaceLogicalType().equals("enumeration")) {
+            InterfaceEnumerationSet enumSet = type.getEnumSet();
+            if (enumSet != null && enumSet.getEnumerations().size() > 0) {
+               for (InterfaceEnumeration en : enumSet.getEnumerations()) {
+                  typeKey += en.getOrdinal() + "=" + en.getName() + ";";
+               }
+            } else {
+               typeKey = type.getName();
+            }
+         } else {
+            typeKey = mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(type.getInterfaceLogicalType(),
+               type.getInterfacePlatformTypeMinval(), type.getInterfacePlatformTypeMaxval(),
+               type.getInterfacePlatformTypeValidRangeDescription(), type.getInterfacePlatformTypeUnits(),
+               Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
+         }
+         platformTypes.put(typeKey, new PlatformTypeImportToken(type.getId(), type.getName()));
       }
 
       // Create a boolean type to avoid extra processing for booleans
@@ -336,8 +351,21 @@ public class IcdImportApiImpl implements MimImportApi {
                "command taskfile") ? "Command Taskfiles" : "Status Taskfiles" : enumName;
             enumName = enumName.isEmpty() || (enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches(
                "^\\d+\\s*")) ? name : enumName;
-            if (platformTypes.containsKey(enumName)) {
-               pType = platformTypes.get(enumName);
+
+            String[] enumDescLines = enumDesc.split("\n");
+            String key = "";
+            for (String line : enumDescLines) {
+               if (line.trim().matches("^\\s*\\d+\\s*[-=].*")) {
+                  String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
+                  int ordinal = Integer.parseInt(splitLine[0]);
+                  String enumerationName = splitLine[1].trim();
+                  key += ordinal + "=" + enumerationName + ";";
+               }
+            }
+            key = key.isEmpty() ? enumName : key;
+
+            if (platformTypes.containsKey(key)) {
+               pType = platformTypes.get(key);
             } else {
                pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", "", "", "",
                   validRange);
@@ -353,7 +381,6 @@ public class IcdImportApiImpl implements MimImportApi {
                summary.getPlatformTypeEnumSetRelations().put(pType.getIdString(),
                   new LinkedList<>(Arrays.asList(enumSet.getIdString())));
 
-               String[] enumDescLines = enumDesc.split("\n");
                for (String line : enumDescLines) {
                   if (line.trim().matches("^\\s*\\d+\\s*[-=].*")) {
                      String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
@@ -373,6 +400,7 @@ public class IcdImportApiImpl implements MimImportApi {
          } else {
             // Transform data
             units = units.contains("n/a") ? "" : units;
+            validRange = validRange.contains("n/a") ? "" : validRange;
             String minVal = "";
             String maxVal = "";
             String[] range = validRange.split(" to ");
@@ -386,7 +414,8 @@ public class IcdImportApiImpl implements MimImportApi {
                validRange = range[0] + " to " + range[1];
             }
 
-            String pTypeName = getPlatformTypeName(logicalType, minVal, maxVal, units, numBytes);
+            String pTypeName = mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(logicalType, minVal, maxVal,
+               validRange, units, numBytes);
             if (platformTypes.containsKey(pTypeName)) {
                pType = platformTypes.get(pTypeName);
             } else {
@@ -472,52 +501,6 @@ public class IcdImportApiImpl implements MimImportApi {
 
    private String getSubMessageMapKey(String messageNum, String subMessageNum, String nodeName) {
       return nodeName + messageNum + subMessageNum;
-   }
-
-   private String getPlatformTypeName(String logicalType, String min, String max, String units, int bytes) {
-      if (logicalType.equals("boolean")) {
-         return "boolean";
-      }
-      String name = "";
-      switch (logicalType) {
-         case "character":
-            name += "Char";
-            break;
-         case "double":
-            name += "Double";
-            break;
-         case "float":
-            name += "Float";
-            break;
-         case "sInteger":
-            name += "SInt";
-            break;
-         case "sShort":
-            name += "SShort";
-            break;
-         case "uInteger":
-            name += "UInt";
-            break;
-         case "uLong":
-            name += "ULong";
-            break;
-         case "uShort":
-            name += "UShort";
-            break;
-      }
-
-      if (!units.isEmpty()) {
-         name += "_" + units;
-      }
-      if (!min.isEmpty()) {
-         name += "_" + min;
-      }
-      if (!max.isEmpty()) {
-         name += "_" + max;
-      }
-      name += "_" + bytes;
-
-      return name;
    }
 
    private String getElementKey(String name, boolean alterable, String description, String notes, Long pTypeId) {
