@@ -337,4 +337,57 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
          pageNum, pageSize, orderByAttribute);
    }
 
+   @Override
+   public String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units, int bytes) {
+      if (logicalType.equals("boolean")) {
+         return "boolean";
+      }
+      String identifier = "";
+      switch (logicalType) {
+         case "character":
+            identifier += "Char";
+            break;
+         case "double":
+            identifier += "Double";
+            break;
+         case "float":
+            identifier += "Float";
+            break;
+         case "sInteger":
+            identifier += "SInt";
+            break;
+         case "sShort":
+            identifier += "SShort";
+            break;
+         case "uInteger":
+            identifier += "UInt";
+            break;
+         case "uLong":
+            identifier += "ULong";
+            break;
+         case "uShort":
+            identifier += "UShort";
+            break;
+         default:
+            identifier += "Unknown";
+            break;
+      }
+
+      if (!units.isEmpty()) {
+         identifier += "_" + units;
+      }
+      if (!min.isEmpty()) {
+         identifier += "_" + min;
+      }
+      if (!max.isEmpty()) {
+         identifier += "_" + max;
+      }
+      if (!validRange.isEmpty()) {
+         identifier += "_" + validRange;
+      }
+      identifier += "_" + bytes;
+
+      return identifier;
+   }
+
 }

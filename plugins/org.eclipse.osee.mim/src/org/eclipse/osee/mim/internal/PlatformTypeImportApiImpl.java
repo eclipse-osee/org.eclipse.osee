@@ -14,11 +14,14 @@ package org.eclipse.osee.mim.internal;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
+import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
@@ -31,12 +34,14 @@ import org.eclipse.osee.mim.types.PlatformTypeImportToken;
 public class PlatformTypeImportApiImpl implements MimImportApi {
 
    private final ExcelWorkbookReader reader;
+   private final MimApi mimApi;
    private MimImportSummary summary;
 
    private Long id = 1L;
 
-   public PlatformTypeImportApiImpl(InputStream inputStream) {
+   public PlatformTypeImportApiImpl(InputStream inputStream, MimApi mimApi) {
       this.reader = new ExcelWorkbookReader(inputStream, WorkbookFormat.XLSX);
+      this.mimApi = mimApi;
    }
 
    @Override
@@ -45,7 +50,8 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
 
       reader.setActiveSheet(0);
 
-      List<PlatformTypeImportToken> platformTypes = new LinkedList<>();
+      Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
+      List<String> usedNames = new LinkedList<>();
 
       int rowIndex = 1;
       while (reader.rowExists(rowIndex)) {
@@ -58,13 +64,16 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
          String units = reader.getCellStringValue(rowIndex, 7);
          String validRange = reader.getCellStringValue(rowIndex, 14);
          String description = reader.getCellStringValue(rowIndex, 15);
+         String suggestedName = reader.getCellStringValue(rowIndex, 16);
 
-         PlatformTypeImportToken pType = new PlatformTypeImportToken(id, name, logicalType, bitSize + "", minVal,
-            maxVal, units, description, defaultVal, validRange);
-         incrementId();
-         summary.getPlatformTypes().add(pType);
+         if (logicalType.equals("boolean")) {
+            // Skip booleans. If one does not exist it should be created manually, or one will be created during an ICD import if needed.
+         } else if (logicalType.equals("enumeration")) {
+            PlatformTypeImportToken pType = new PlatformTypeImportToken(id, name, logicalType, bitSize + "", minVal,
+               maxVal, units, description, defaultVal, validRange);
+            incrementId();
+            summary.getPlatformTypes().add(pType);
 
-         if (logicalType.equals("enumeration")) {
             InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(id, name);
             enumSet.setDescription(description);
             enumSet.setApplicability(ApplicabilityToken.BASE);
@@ -89,13 +98,34 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
                rels.add(enumToken.getIdString());
                summary.getEnumSetEnumRelations().put(enumSet.getIdString(), rels);
             }
+         } else {
+            String[] range = validRange.replace("---", "").replace("--", "").split(" - ");
+            if (range.length == 1) {
+               range = range[0].split(" to ");
+            }
+            if (range.length == 2) {
+               validRange = range[0] + " to " + range[1];
+            } else {
+               validRange = range[0].trim();
+            }
 
+            String ident = mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(logicalType, minVal, maxVal,
+               validRange, units, bitSize);
+            if (!suggestedName.isEmpty() && !platformTypes.containsKey(ident)) {
+               if (usedNames.contains(suggestedName)) {
+                  suggestedName += "_" + id;
+               }
+               PlatformTypeImportToken pType = new PlatformTypeImportToken(id, suggestedName, logicalType, bitSize + "",
+                  minVal, maxVal, units, description, defaultVal, validRange);
+               incrementId();
+               summary.getPlatformTypes().add(pType);
+               platformTypes.put(ident, pType);
+               usedNames.add(suggestedName);
+            }
          }
 
          rowIndex++;
       }
-
-      summary.getPlatformTypes().addAll(platformTypes);
 
       return summary;
    }
