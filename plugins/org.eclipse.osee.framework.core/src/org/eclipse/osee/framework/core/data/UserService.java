@@ -230,6 +230,14 @@ public interface UserService {
 
    void setUserLoading(boolean loading);
 
+   default IUserGroup getUserGroupOrSentinel(IUserGroupArtifactToken userGroup) {
+      IUserGroup userGroupOrNull = getUserGroupOrNull(userGroup);
+      if (userGroupOrNull == null) {
+         return IUserGroup.SENTINEL;
+      }
+      return userGroupOrNull;
+   }
+
 }
 
 /* EOF */
