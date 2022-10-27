@@ -162,7 +162,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             createTaskTab();
             createJournalTab();
             createDefectsTab();
-            createMetricsTab();
             createDetailsTab();
          }
          updatePartName();
@@ -443,18 +442,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       try {
          detailsTab = new WfeDetailsTab(this, workItem);
          addPage(detailsTab);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
-   }
-
-   private void createMetricsTab() {
-      try {
-         if (AtsApiService.get().getUserService().isAtsAdmin()) {
-            metricsTab = new WfeMetricsTab(this, this, workItem);
-            addPage(metricsTab);
-         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
