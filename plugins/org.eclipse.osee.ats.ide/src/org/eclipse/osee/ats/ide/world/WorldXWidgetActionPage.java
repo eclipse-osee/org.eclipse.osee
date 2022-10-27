@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -733,7 +734,10 @@ public class WorldXWidgetActionPage extends FormPage {
             try {
                final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
-                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                  if (art.isOfType(AtsArtifactTypes.Goal)) {
+                     arts.addAll(Collections.castAll(AtsObjects.getArtifacts(
+                        AtsApiService.get().getGoalMembersCache().getMembers((GoalArtifact) art))));
+                  } else if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.addAll(Collections.castAll(
                         AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(art))));
                   } else if (art instanceof AbstractWorkflowArtifact) {
