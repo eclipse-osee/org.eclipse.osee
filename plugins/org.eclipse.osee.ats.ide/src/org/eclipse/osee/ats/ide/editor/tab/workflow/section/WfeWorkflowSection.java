@@ -289,8 +289,9 @@ public class WfeWorkflowSection extends SectionPart {
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(
-            new ReviewInfoXWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1));
+         reviewInfoXWidget =
+            new ReviewInfoXWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1);
+         allXWidgets.add(reviewInfoXWidget);
       }
    }
 
@@ -300,7 +301,8 @@ public class WfeWorkflowSection extends SectionPart {
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), (TeamWorkFlowArtifact) sma, state, comp, 2));
+         taskInfoXWidget = new TaskInfoXWidget(getManagedForm(), (TeamWorkFlowArtifact) sma, state, comp, 2);
+         allXWidgets.add(taskInfoXWidget);
       }
    }
 
@@ -445,6 +447,8 @@ public class WfeWorkflowSection extends SectionPart {
          }
       }
    };
+   private ReviewInfoXWidget reviewInfoXWidget;
+   private TaskInfoXWidget taskInfoXWidget;
 
    @Override
    public void refresh() {
@@ -463,6 +467,9 @@ public class WfeWorkflowSection extends SectionPart {
             } else {
                xWidget.refresh();
             }
+         }
+         if (reviewInfoXWidget != null) {
+            reviewInfoXWidget.reDisplay();
          }
          refreshStateTitle();
       } catch (OseeCoreException ex) {

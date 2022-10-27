@@ -23,17 +23,17 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class NewDecisionReviewJob extends Job {
-   private final TeamWorkFlowArtifact teamParent;
+   private final IAtsTeamWorkflow teamWf;
    private final ReviewBlockType reviewBlockType;
    private final String reviewTitle;
    private final String againstState;
@@ -43,9 +43,9 @@ public class NewDecisionReviewJob extends Job {
    private final Date createdDate;
    private final AtsUser createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy) {
+   public NewDecisionReviewJob(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy) {
       super("Creating New Decision Review");
-      this.teamParent = teamParent;
+      this.teamWf = teamWf;
       this.reviewTitle = reviewTitle;
       this.againstState = againstState;
       this.reviewBlockType = reviewBlockType;
@@ -61,7 +61,7 @@ public class NewDecisionReviewJob extends Job {
       try {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
          DecisionReviewArtifact decArt =
-            (DecisionReviewArtifact) AtsApiService.get().getReviewService().createNewDecisionReview(teamParent,
+            (DecisionReviewArtifact) AtsApiService.get().getReviewService().createNewDecisionReview(teamWf,
                reviewBlockType, reviewTitle, againstState, description, options, assignees, createdDate, createdBy,
                changes).getStoreObject();
          changes.execute();
