@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.widget;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
@@ -35,10 +34,8 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.Overview;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.NewDecisionReviewJob;
 import org.eclipse.osee.ats.ide.workflow.review.NewPeerReviewDialog;
 import org.eclipse.osee.ats.ide.workflow.review.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -112,49 +109,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             setValueText("No Reviews Created");
          }
 
-         Hyperlink link = toolkit.createHyperlink(destroyableComposite, "[Add Decision Review]", SWT.NONE);
-         link.addHyperlinkListener(new IHyperlinkListener() {
-
-            @Override
-            public void linkEntered(HyperlinkEvent e) {
-               // do nothing
-            }
-
-            @Override
-            public void linkExited(HyperlinkEvent e) {
-               // do nothing
-            }
-
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  if (workflowSection.getEditor().isDirty()) {
-                     workflowSection.getEditor().doSave(null);
-                  }
-                  StateListAndTitleDialog dialog = new StateListAndTitleDialog("Create Decision Review",
-                     "Select state to that review will be associated with.",
-                     AtsApiService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()));
-                  dialog.setInitialSelections(new Object[] {forState.getName()});
-                  if (dialog.open() == Window.OK) {
-                     if (!Strings.isValid(dialog.getReviewTitle())) {
-                        AWorkbench.popup("ERROR", "Must enter review title");
-                        return;
-                     }
-                     NewDecisionReviewJob job =
-                        new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
-                           null, AtsApiService.get().getReviewService().getDefaultDecisionReviewOptions(), null,
-                           new Date(), AtsApiService.get().getUserService().getCurrentUser());
-                     job.setUser(true);
-                     job.setPriority(Job.LONG);
-                     job.schedule();
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         });
-
-         link = toolkit.createHyperlink(destroyableComposite, "[Add Peer to Peer Review]", SWT.NONE);
+         Hyperlink link = toolkit.createHyperlink(destroyableComposite, "[Add Peer to Peer Review]", SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override

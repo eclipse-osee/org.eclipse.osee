@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.operation.CreateDecisionReviewAction;
 import org.eclipse.osee.ats.ide.operation.MoveTeamWorkflowsAction;
 import org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -174,6 +175,7 @@ public class WfeOperationsSection extends SectionPart {
          new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new WfeReloadAction(editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new CreateDecisionReviewAction(editor)).createWidgets(sectionBody, 2);
       }
 
       for (IWfeOperationsSection operation : operationsSectionProviders) {
