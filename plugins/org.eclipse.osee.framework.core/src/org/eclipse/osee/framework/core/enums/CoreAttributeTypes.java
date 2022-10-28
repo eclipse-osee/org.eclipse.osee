@@ -194,6 +194,7 @@ public interface CoreAttributeTypes {
    PartitionAttributeType Partition = osee.createEnum(new PartitionAttributeType());
    AttributeTypeString Phone = osee.createString(1152921504606847079L, "Phone", MediaType.TEXT_PLAIN, "");
    AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
+   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", DisplayHint.MultiLine);
    AttributeTypeBoolean PotentialSecurityImpact = osee.createBoolean(1152921504606847109L, "Potential Security Impact", MediaType.TEXT_PLAIN, "");
    ProducesMediaTypeAttributeType ProducesMediaType = osee.createEnum(new ProducesMediaTypeAttributeType());
    AttributeTypeString ProductLinePreferences = osee.createStringNoTag(582562585958993670L, "Product Line Preferences", MediaType.TEXT_PLAIN, "");
