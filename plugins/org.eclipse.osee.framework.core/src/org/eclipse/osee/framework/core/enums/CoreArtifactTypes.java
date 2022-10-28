@@ -219,6 +219,13 @@ public interface CoreArtifactTypes {
       .zeroOrOne(VerificationLevel, VerificationLevel.Unspecified));
    ArtifactTypeToken CustomerRequirementMsWord = osee.add(osee.artifactType(809L, "Customer Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken DirectSoftwareRequirement = osee.add(osee.artifactType(22L, "Direct Software Requirement", true, AbstractSoftwareRequirement));
+   ArtifactTypeToken SoftwareRequirement = osee.add(osee.artifactType(22000000000L, "Software Requirement", false, DirectSoftwareRequirement)
+      .exactlyOne(IDAL, IDAL.Unspecified)
+      .zeroOrOne(IaPlan)
+      .zeroOrOne(IdalRationale)
+      .zeroOrOne(SoftwareControlCategory, SoftwareControlCategory.Unspecified)
+      .zeroOrOne(SoftwareControlCategoryRationale)
+      .zeroOrOne(MarkdownContent));
    ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken InterfaceArtifact = osee.add(osee.artifactType(54733032508193943L, "Interface Artifact", true, Artifact));
    ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, InterfaceArtifact)
@@ -288,12 +295,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(SFHA));
    ArtifactTypeToken SoftwareDesignMsWord = osee.add(osee.artifactType(45L, "Software Design - MS Word", false, DesignMsWord));
-   ArtifactTypeToken SoftwareRequirementMsWord = osee.add(osee.artifactType(24L, "Software Requirement - MS Word", false, MsWordTemplate, DirectSoftwareRequirement)
-      .exactlyOne(IDAL, IDAL.Unspecified)
-      .zeroOrOne(IaPlan)
-      .zeroOrOne(IdalRationale)
-      .zeroOrOne(SoftwareControlCategory, SoftwareControlCategory.Unspecified)
-      .zeroOrOne(SoftwareControlCategoryRationale));
+   ArtifactTypeToken SoftwareRequirementMsWord = osee.add(osee.artifactType(24L, "Software Requirement - MS Word", false, MsWordTemplate, SoftwareRequirement));
    ArtifactTypeToken SoftwareRequirementDataDefinitionMsWord = osee.add(osee.artifactType(793L, "Software Requirement Data Definition - MS Word", false, IndirectSoftwareRequirementMsWord));
    ArtifactTypeToken SoftwareRequirementDrawingMsWord = osee.add(osee.artifactType(29L, "Software Requirement Drawing - MS Word", false, IndirectSoftwareRequirementMsWord));
    ArtifactTypeToken SoftwareRequirementFunctionMsWord = osee.add(osee.artifactType(28L, "Software Requirement Function - MS Word", false, IndirectSoftwareRequirementMsWord));

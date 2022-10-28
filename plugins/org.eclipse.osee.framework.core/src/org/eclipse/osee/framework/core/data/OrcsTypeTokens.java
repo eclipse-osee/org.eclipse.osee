@@ -383,6 +383,8 @@ public class OrcsTypeTokens {
          case MediaType.APPLICATION_OCTET_STREAM:
          case AttributeTypeToken.IMAGE:
             return "bin";
+         case "text/markdown":
+            return "md";
          default:
             return "";
       }
