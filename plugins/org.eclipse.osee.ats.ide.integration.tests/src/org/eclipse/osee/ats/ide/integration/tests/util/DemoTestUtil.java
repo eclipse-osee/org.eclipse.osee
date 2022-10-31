@@ -107,6 +107,10 @@ public class DemoTestUtil {
             teamArt = team;
          }
       }
+
+      if (teamArt == null) {
+         throw new RuntimeException("teamAt is null");
+      }
       return teamArt;
    }
 

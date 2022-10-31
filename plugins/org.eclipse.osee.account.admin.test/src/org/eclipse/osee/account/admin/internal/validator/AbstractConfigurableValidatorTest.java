@@ -16,7 +16,6 @@ package org.eclipse.osee.account.admin.internal.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -26,7 +25,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link AbstractConfigurableValidator}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public abstract class AbstractConfigurableValidatorTest<T extends AbstractConfigurableValidator> extends AbstractValidatorTest<T> {
@@ -130,7 +129,6 @@ public abstract class AbstractConfigurableValidatorTest<T extends AbstractConfig
       String actual = getValidator().getPatternFromConfig(config);
       assertEquals(patternFromConfig, actual);
 
-      verify(config).get(configKey);
    }
 
 }

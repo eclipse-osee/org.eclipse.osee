@@ -144,11 +144,8 @@ public class TransactionWriterTest {
       writer.write(connection, tx, changeSet);
 
       inOrder.verify(builder).accept(tx, changeSet);
-      inOrder.verify(builder).getBinaryStores();
       inOrder.verify(proxy1).persist();
       inOrder.verify(proxy2).persist();
-
-      inOrder.verify(builder).getTxNotCurrents();
 
       inOrder.verify(join1).store();
 
@@ -161,13 +158,6 @@ public class TransactionWriterTest {
       sql = jdbcClient.injectOrderedHint(SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery());
       inOrder.verify(chStmt).runPreparedQuery(sql, QUERY_ID_2, COMMON);
       inOrder.verify(join2).close();
-
-      inOrder.verify(builder).getInsertData(SqlOrderEnum.ARTIFACTS);
-      inOrder.verify(builder).getInsertData(SqlOrderEnum.ATTRIBUTES);
-      inOrder.verify(builder).getInsertData(SqlOrderEnum.RELATIONS);
-      inOrder.verify(builder).getInsertData(SqlOrderEnum.RELATIONS2);
-      inOrder.verify(builder).getInsertData(SqlOrderEnum.TXS_DETAIL);
-      inOrder.verify(builder).getInsertData(SqlOrderEnum.TXS);
 
       inOrder.verify(jdbcClient).runBatchUpdate(eq(connection), eq(TransactionWriter.UPDATE_TXS_NOT_CURRENT),
          paramCaptor.capture());

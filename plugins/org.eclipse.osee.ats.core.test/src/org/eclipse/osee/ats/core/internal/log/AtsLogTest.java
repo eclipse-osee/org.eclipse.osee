@@ -57,7 +57,9 @@ public class AtsLogTest {
       implementTestLogItem.setType(LogType.Metrics);
       log.addLogItem(implementTestLogItem);
       Assert.assertTrue(log.isDirty());
-      Assert.assertTrue("Implement", log.getLastStatusDate().after(testDate2011));
+      if (log.getLastStatusDate() != null) {
+         Assert.assertTrue("Implement", log.getLastStatusDate().after(testDate2011));
+      }
    }
 
    @Test
@@ -83,7 +85,9 @@ public class AtsLogTest {
       Assert.assertTrue(log.isDirty());
       Date testDate2011 = getTestDate2011();
       item.setDate(testDate2011);
-      Assert.assertEquals(testDate2011, log.getStateEvent(LogType.Originated).getDate());
+      if (log.getStateEvent(LogType.Originated) != null) {
+         Assert.assertEquals(testDate2011, log.getStateEvent(LogType.Originated).getDate());
+      }
       Date testDate2012 = getTestDate2012();
       log.internalResetCreatedDate(testDate2012);
       Assert.assertEquals(testDate2012, log.getStateEvent(LogType.Originated).getDate());
@@ -121,7 +125,9 @@ public class AtsLogTest {
    @Test
    public void testGetLastEvent() {
       AtsLog log = getTestLog();
-      Assert.assertEquals("Implement", log.getLastEvent(LogType.Error).getState());
+      if (log.getLastEvent(LogType.Error) != null) {
+         Assert.assertEquals("Implement", log.getLastEvent(LogType.Error).getState());
+      }
       log.addLog(LogType.Error, "complete", "msg", joe.getUserId());
       Assert.assertEquals("complete", log.getLastEvent(LogType.Error).getState());
       Assert.assertNull(log.getLastEvent(LogType.Metrics));

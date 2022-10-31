@@ -411,6 +411,10 @@ public class ConflictTestManager {
                if (value.destValue == null) {
                   expected = value.sourceValue;
                }
+               if (expected == null) {
+                  results.error("excepted is null");
+                  return results;
+               }
                if (value.sourceDeleted) {
                   if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeType, "Deleted").equals(
                      "Deleted")) {

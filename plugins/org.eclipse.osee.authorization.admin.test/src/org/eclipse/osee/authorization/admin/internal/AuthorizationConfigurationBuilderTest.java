@@ -29,7 +29,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test Case for {@link AuthorizationConfigurationBuilder}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AuthorizationConfigurationBuilderTest {
@@ -100,8 +100,6 @@ public class AuthorizationConfigurationBuilderTest {
 
       builder.override(AuthorizationOverride.PERMIT_ALL);
       builder.scheme(SCHEME_2);
-
-      builder.build();
 
       assertEquals(AuthorizationOverride.DENY_ALL, actual.getOverride());
       iterator = actual.getAllowedSchemes().iterator();

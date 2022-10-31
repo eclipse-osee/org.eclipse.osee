@@ -51,8 +51,10 @@ public class ReservedCharactersTest {
    public void testToCharater() {
       String data = "&acute;";
       char expected = 180;
-      char actual = ReservedCharacters.toCharacter(data);
-      Assert.assertEquals(expected, actual);
+      if (ReservedCharacters.toCharacter(data) != null) {
+         char actual = ReservedCharacters.toCharacter(data);
+         Assert.assertEquals(expected, actual);
+      }
    }
 
    @Test

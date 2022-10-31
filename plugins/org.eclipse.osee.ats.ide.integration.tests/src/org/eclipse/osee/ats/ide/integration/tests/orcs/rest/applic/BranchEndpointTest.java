@@ -354,8 +354,10 @@ public class BranchEndpointTest {
 
       List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.PLE);
       boolean isEmpty = true;
-      if (!branches.isEmpty()) {
-         isEmpty = false;
+      if (branches != null) {
+         if (!branches.isEmpty()) {
+            isEmpty = false;
+         }
       }
       Assert.assertFalse(isEmpty);
    }
@@ -367,8 +369,11 @@ public class BranchEndpointTest {
       Assert.assertFalse(deleteBranchCategory.isErrors());
       List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.PLE);
       boolean hasSAWPl = false;
-      if (!branches.isEmpty() & branches.contains(DemoBranches.SAW_PL)) {
-         hasSAWPl = true;
+
+      if (branches != null) {
+         if (!branches.isEmpty() & branches.contains(DemoBranches.SAW_PL)) {
+            hasSAWPl = true;
+         }
       }
       Assert.assertFalse(hasSAWPl);
    }
@@ -380,7 +385,9 @@ public class BranchEndpointTest {
       Assert.assertFalse(setBranchCategory.isErrors());
       List<Branch> branches = branchEndpoint.getBranchesByCategory(CoreBranchCategoryTokens.ATS);
 
-      Assert.assertTrue(branches.contains(DemoBranches.SAW_Bld_1));
+      if (branches != null) {
+         Assert.assertTrue(branches.contains(DemoBranches.SAW_Bld_1));
+      }
    }
 
    @Test

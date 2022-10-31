@@ -70,11 +70,14 @@ public class CommitOverrideOperationsImplTest {
    public void testGetCommitOverrideAndUser() {
       CommitOverrideOperationsImpl ops = new CommitOverrideOperationsImpl(atsApi);
       CommitOverride commitOverride = ops.getCommitOverride(teamWf, branch);
-      Assert.assertEquals(commitOverride.getBranchId(), branch.getIdString());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getIdString(), commitOverride.getUser().getIdString());
 
-      commitOverride = ops.getCommitOverride(teamWf, BranchId.valueOf(222L));
-      Assert.assertNull(commitOverride);
+      if (commitOverride != null) {
+         Assert.assertEquals(commitOverride.getBranchId(), branch.getIdString());
+         Assert.assertEquals(DemoUsers.Joe_Smith.getIdString(), commitOverride.getUser().getIdString());
+
+         commitOverride = ops.getCommitOverride(teamWf, BranchId.valueOf(222L));
+         Assert.assertNull(commitOverride);
+      }
    }
 
    private static String Commit_Override_1 = "{\"user\":\"61106791\",\"branchId\":\"345\",\"reason\":\"asdfads\"}";

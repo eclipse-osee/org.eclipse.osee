@@ -68,7 +68,7 @@ public class UnitTestValidator {
             //            System.out.println("Searching SUITE " + suiteFile.getName());
             for (File testClass : testClassFiles) {
                String testClassName = testClass.getName();
-               if (suiteFileText.contains(testClassName.replaceFirst(".java", ".class"))) {
+               if (suiteFileText.contains(testClassName.replaceFirst("\\.java", ".class"))) {
                   Collection<String> collection = testClassToSuites.get(testClassName);
                   if (collection == null) {
                      collection = new ArrayList<>();

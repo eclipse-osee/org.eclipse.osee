@@ -173,7 +173,6 @@ public class RelationTypeValidityTest {
    public void testCheckRelationTypeMultiplicityNoException() {
       when(node.getExceptionString()).thenReturn("node message");
 
-      ExpectedException.none();
       validity.checkRelationTypeMultiplicity(CoreRelationTypes.Allocation_Requirement, node, SIDE_A, 0);
    }
 
@@ -205,7 +204,6 @@ public class RelationTypeValidityTest {
    @Test
    public void testCheckRelationTypeValidNoException() {
       when(node.getArtifactType()).thenReturn(CoreArtifactTypes.Component);
-      ExpectedException.none();
       validity.checkRelationTypeValid(CoreRelationTypes.Allocation_Requirement, node, SIDE_B);
    }
 

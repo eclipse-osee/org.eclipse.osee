@@ -90,7 +90,6 @@ public class RelationNodeLoaderImplTest {
       verify(loader).withLoadLevel(LoadLevel.ALL);
       verify(loader).fromTransaction(TRANSACTION_ID);
       verify(loader).load(null, builder);
-      verify(builder).getArtifacts();
 
       assertEquals(artifacts, actual);
    }

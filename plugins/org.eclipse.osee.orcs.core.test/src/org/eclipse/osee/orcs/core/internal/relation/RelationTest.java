@@ -70,7 +70,6 @@ public class RelationTest {
 
       String rationale = relation.getRationale();
 
-      verify(data).getRationale();
       assertEquals("rationale", rationale);
       assertFalse(relation.isDirty());
 
@@ -84,7 +83,6 @@ public class RelationTest {
    @Test
    public void testGetModificationType() {
       relation.getModificationType();
-      verify(data).getModType();
    }
 
    @Test

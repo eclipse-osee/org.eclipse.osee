@@ -80,7 +80,7 @@ public class TestEmbeddedBrokerSendReceive {
 
          synchronized (subscribeCallback) {
             connection.subscribe(JMS_TOPIC, messageListener, subscribeCallback);
-            if (index + 1 > TOTAL_SUBSCRIBERS) {
+            if (index + 2 > TOTAL_SUBSCRIBERS) {
                subscribeCallback.wait(500);
             }
          }
@@ -122,7 +122,7 @@ public class TestEmbeddedBrokerSendReceive {
 
          synchronized (subscribeCallback) {
             connection.subscribe(JMS_TOPIC, messageListener, String.format("id = %d", index), subscribeCallback);
-            if (index + 1 > TOTAL_SUBSCRIBERS) {
+            if (index + 2 > TOTAL_SUBSCRIBERS) {
                subscribeCallback.wait(500);
             }
          }

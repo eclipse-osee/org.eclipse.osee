@@ -65,6 +65,9 @@ public class LoadDeletedRelationTest {
       RelationManager.addRelation(type, left, right, "");
       left.persist(getClass().getSimpleName());
       RelationLink loaded = RelationManager.getLoadedRelation(type, left, right, SAW_Bld_2);
+      // if (loaded == null) {
+      //    return;
+      //}
       GammaId oldGammaId = loaded.getGammaId();
       RelationManager.deleteRelation(type, left, right);
       left.persist(getClass().getSimpleName());

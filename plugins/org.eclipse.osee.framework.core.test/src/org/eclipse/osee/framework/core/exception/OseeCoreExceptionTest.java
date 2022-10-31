@@ -26,7 +26,7 @@ public class OseeCoreExceptionTest {
 
    @Test
    public void testNullMessage() {
-      Exception ex = new OseeCoreException((String) null);
+      Exception ex = new OseeCoreException((String)null);
       Assert.assertEquals(
          "Exception message could not be formatted: [null] with the following arguments [].  Cause [java.lang.NullPointerException]",
          ex.getMessage());

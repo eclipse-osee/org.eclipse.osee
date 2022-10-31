@@ -274,11 +274,13 @@ public class ArtifactQueryTest {
          if (match.getArtifact().getName().equals("Read-Write Minimum Rate")) {
             HashCollection<AttributeId, MatchLocation> matchData = match.getMatchData();
             for (AttributeId attr : matchData.keySet()) {
-
-               if (match.getArtifact().getAttributeById(attr, false).isOfType(CoreAttributeTypes.WordTemplateContent)) {
-                  found = true;
-                  Assert.assertEquals(2, matchData.getValues(attr).size());
-                  break;
+               if (match.getArtifact().getAttributeById(attr, false) != null) {
+                  if (match.getArtifact().getAttributeById(attr, false).isOfType(
+                     CoreAttributeTypes.WordTemplateContent)) {
+                     found = true;
+                     Assert.assertEquals(2, matchData.getValues(attr).size());
+                     break;
+                  }
                }
             }
          }

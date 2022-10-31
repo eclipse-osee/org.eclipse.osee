@@ -141,7 +141,6 @@ public class LdapAuthenticationManagerTest {
 
       verify(connection).findAccount(filterCaptor.capture(), eq(USERNAME));
       verify(connection).authenticate(USERNAME, PASSWORD);
-      verify(account).getDistinguishedName();
       try (LdapConnection LConn2 = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
          verify(LConn2);
       }
@@ -186,7 +185,6 @@ public class LdapAuthenticationManagerTest {
 
       verify(connection).findAccount(filterCaptor.capture(), eq(USERNAME));
       verify(connection).authenticate(USERNAME, PASSWORD);
-      verify(account).getDistinguishedName();
 
       try (LdapConnection LConn2 = client.getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
          verify(LConn2);
@@ -237,7 +235,6 @@ public class LdapAuthenticationManagerTest {
       }
       verify(connection).findAccount(filterCaptor.capture(), eq(USERNAME));
       verify(connection, times(0)).authenticate(USERNAME, PASSWORD);
-      verify(account, times(0)).getDistinguishedName();
       verify(connection).close();
 
       LdapFilter filter = filterCaptor.getValue();
@@ -283,7 +280,6 @@ public class LdapAuthenticationManagerTest {
 
       verify(connection).findAccount(filterCaptor.capture(), eq(LOWER_CASED_USERNAME));
       verify(connection).authenticate(LOWER_CASED_USERNAME, PASSWORD);
-      verify(account).getDistinguishedName();
       try (LdapConnection conn =
          verify(client).getConnection(LdapAuthenticationType.GSSAPI, LDAP_USERNAME, LDAP_PASSWORD)) {
       }

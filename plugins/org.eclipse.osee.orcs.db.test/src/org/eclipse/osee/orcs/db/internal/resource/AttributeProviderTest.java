@@ -138,7 +138,9 @@ public class AttributeProviderTest {
       byte[] resourceBytes = null;
       InputStream inputStream = null;
       try {
-         inputStream = remoteResource.getContent();
+         if (remoteResource != null) {
+            inputStream = remoteResource.getContent();
+         }
          resourceBytes = Lib.inputStreamToBytes(inputStream);
       } finally {
          Lib.close(inputStream);

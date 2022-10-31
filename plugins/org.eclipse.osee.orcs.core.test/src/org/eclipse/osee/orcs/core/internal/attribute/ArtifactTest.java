@@ -174,7 +174,6 @@ public class ArtifactTest {
       TransactionId expected = TransactionId.valueOf(10);
       when(version.getTransactionId()).thenReturn(expected);
       assertEquals(expected, artifact.getLastModifiedTransaction());
-      verify(version).getTransactionId();
    }
 
    @Test

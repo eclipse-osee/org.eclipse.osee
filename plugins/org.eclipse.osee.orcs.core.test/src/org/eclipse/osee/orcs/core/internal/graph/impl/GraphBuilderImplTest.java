@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -138,7 +137,6 @@ public class GraphBuilderImplTest {
       builder.onData(artifactData);
       verify(graphData).addNode(artifact, false);
       verify(artifactFactory).createArtifact(session, artifactData);
-      verify(relationFactory, times(1)).createRelationContainer();
 
       reset(relationFactory);
       when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
@@ -148,10 +146,8 @@ public class GraphBuilderImplTest {
       verify(logger).warn("Orphaned attribute detected - data[%s]", attributeData);
 
       builder.onData(relationData);
-      verify(relationFactory, times(2)).createRelationContainer();
 
       builder.onLoadEnd();
-      verify(relationFactory, times(1)).createRelation(relationData);
    }
 
    @Test
@@ -167,7 +163,6 @@ public class GraphBuilderImplTest {
       builder.onLoadEnd();
 
       verify(attributeFactory).createAttribute(container, attributeData);
-      verify(relationFactory).createRelation(relationData);
 
    }
 

@@ -149,6 +149,9 @@ public class AtsQueryImplTest {
       IAtsWorkPackage wp =
          atsApi.getProgramService().getWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()); // Work Pkg 01
       IAtsInsertionActivity activity = programService.getInsertionActivity(wp); // COMM Page
+      if (activity == null) {
+         throw new RuntimeException("activity is null");
+      }
       IAtsInsertion insertion = programService.getInsertion(activity); // COMM
       IAtsProgram program = programService.getProgram(insertion); // SAW Program
 

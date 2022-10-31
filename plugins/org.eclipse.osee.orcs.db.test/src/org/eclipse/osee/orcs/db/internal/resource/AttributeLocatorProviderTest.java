@@ -22,7 +22,7 @@ import org.junit.Assert;
 
 /**
  * Test Cases for {@link AttributeLocatorProvider}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeLocatorProviderTest {
@@ -38,7 +38,7 @@ public class AttributeLocatorProviderTest {
       String[] data = new String[] {"a", "", null, "attr://", "attr"};
       boolean[] expected = new boolean[] {false, false, false, false, true};
 
-      for (int index = 0; index < 0; index++) {
+      for (int index = 0; index < 5; index++) {
          boolean result = provider.isValid(data[index]);
          Assert.assertEquals(expected[index], result);
       }

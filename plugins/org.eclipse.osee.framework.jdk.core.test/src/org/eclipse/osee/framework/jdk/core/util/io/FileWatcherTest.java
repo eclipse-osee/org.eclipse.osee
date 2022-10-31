@@ -68,6 +68,9 @@ public class FileWatcherTest {
    private static void checkEvent(MockFileWatcherListener listener, File expectedFile, FileChangeType expectedType) {
       Assert.assertEquals("File modified event was not received", 1, listener.getFileModifiedCallCount());
       Collection<FileChangeEvent> items = listener.getFileChangeEvents();
+      if (items == null) {
+         throw new RuntimeException("items is null");
+      }
       Assert.assertEquals(1, items.size());
       FileChangeEvent event = items.iterator().next();
       Assert.assertNotNull(event);

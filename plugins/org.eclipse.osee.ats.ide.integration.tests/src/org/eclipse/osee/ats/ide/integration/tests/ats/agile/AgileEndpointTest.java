@@ -180,10 +180,12 @@ public class AgileEndpointTest {
       }
       // Test Get
       JaxAgileBacklog newBacklog = agile.getBacklog(teamId);
-      Assert.assertEquals("My Backlog", newBacklog.getName());
-      Assert.assertEquals(teamId, newBacklog.getTeamId());
-      Assert.assertTrue(newBacklog.isActive());
-      Assert.assertEquals(id.longValue(), newBacklog.getId().longValue());
+      if (newBacklog != null) {
+         Assert.assertEquals("My Backlog", newBacklog.getName());
+         Assert.assertEquals(teamId, newBacklog.getTeamId());
+         Assert.assertTrue(newBacklog.isActive());
+         Assert.assertEquals(id.longValue(), newBacklog.getId().longValue());
+      }
    }
 
    @Test
