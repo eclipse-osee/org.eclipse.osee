@@ -128,7 +128,6 @@ public class WfeJournalTab extends WfeAbstractTab {
       text.setVerticalLabel(true);
       text.setFillHorizontally(true);
       text.setFillVertically(true);
-
       text.createWidgets(composite, 1);
       GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
       gd.heightHint = 100;
@@ -200,7 +199,7 @@ public class WfeJournalTab extends WfeAbstractTab {
             @Override
             public void run() {
                if (Widgets.isAccessible(browser)) {
-                  text.set("");
+
                   journalComp.refresh();
                   browser.setText(AHTML.textToHtml(fMsgStr));
                   getManagedForm().reflow(true);
