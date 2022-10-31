@@ -359,9 +359,12 @@ public class TestDocumentBuilder {
        */
 
       Stream<BuilderRelationshipRecordWrapper> streamBuilderRelationshipRecordWrappers() {
-         return this.getBuilderRelationshipRecords().stream().map(
-            (builderRelationshipRecord) -> new BuilderRelationshipRecordWrapper(this.getArtifact(),
-               builderRelationshipRecord));
+         if (this.getBuilderRelationshipRecords() != null) {
+            return this.getBuilderRelationshipRecords().stream().map(
+               (builderRelationshipRecord) -> new BuilderRelationshipRecordWrapper(this.getArtifact(),
+                  builderRelationshipRecord));
+         }
+         return null;
       }
 
       /*

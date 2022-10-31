@@ -232,25 +232,27 @@ public class JAXPTest {
       Assert.assertEquals("A", nl.item(0).getNodeName());
 
       Element em = Jaxp.findElement(doc, "A/C/D");
-      Assert.assertEquals("D", em.getTagName());
-      Assert.assertEquals("likes to be C's child", Jaxp.getElementCharacterData(em));
+      if (em != null) {
+         Assert.assertEquals("D", em.getTagName());
+         Assert.assertEquals("likes to be C's child", Jaxp.getElementCharacterData(em));
 
-      List<Element> list = Jaxp.findElements(doc.getDocumentElement(), "C/D");
-      Assert.assertEquals(2, list.size());
+         List<Element> list = Jaxp.findElements(doc.getDocumentElement(), "C/D");
+         Assert.assertEquals(2, list.size());
 
-      Iterator<Element> iterator = list.iterator();
-      Element e1 = iterator.next();
-      Assert.assertEquals("D", e1.getTagName());
-      Assert.assertEquals("likes to be C's child", Jaxp.getElementCharacterData(e1));
+         Iterator<Element> iterator = list.iterator();
+         Element e1 = iterator.next();
+         Assert.assertEquals("D", e1.getTagName());
+         Assert.assertEquals("likes to be C's child", Jaxp.getElementCharacterData(e1));
 
-      Element e2 = iterator.next();
-      Assert.assertEquals("D", e2.getTagName());
-      Assert.assertEquals("2nd round", Jaxp.getElementCharacterData(e2));
+         Element e2 = iterator.next();
+         Assert.assertEquals("D", e2.getTagName());
+         Assert.assertEquals("2nd round", Jaxp.getElementCharacterData(e2));
 
-      Element joe = Jaxp.createElement(doc, "f", "This is F's Data");
-      em.appendChild(joe);
+         Element joe = Jaxp.createElement(doc, "f", "This is F's Data");
+         em.appendChild(joe);
 
-      Assert.assertEquals("This is F's Data", Jaxp.getElementCharacterData(joe));
+         Assert.assertEquals("This is F's Data", Jaxp.getElementCharacterData(joe));
+      }
 
       StringWriter writer = new StringWriter();
       writeToAppendable(writer, doc.getDocumentElement(), true);

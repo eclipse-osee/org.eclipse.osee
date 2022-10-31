@@ -93,10 +93,14 @@ public class StateResourceTest extends AbstractRestTest {
       Response response = post(form);
 
       Assert.assertEquals(Status.SEE_OTHER.getStatusCode(), response.getStatus());
-      String urlStr = response.getLocation().toString();
-      URL url = new URL(urlStr);
-      String path = url.getPath();
-      Assert.assertTrue(String.format("Invalid url [%s]", url), path.endsWith("/ats/ui/action/" + teamWf.getAtsId()));
+
+      if (response.getLocation() != null) {
+         String urlStr = response.getLocation().toString();
+         URL url = new URL(urlStr);
+         String path = url.getPath();
+         Assert.assertTrue(String.format("Invalid url [%s]", url),
+            path.endsWith("/ats/ui/action/" + teamWf.getAtsId()));
+      }
 
       teamWf.reloadAttributesAndRelations();
       Assert.assertEquals("Analyze", teamWf.getCurrentStateName());

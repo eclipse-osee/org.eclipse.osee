@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.core.internal.relation.impl;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
@@ -166,8 +165,6 @@ public class RelationResolverTest {
       when(resultSet.iterator()).thenReturn(loaded.iterator());
 
       List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
-
-      verify(graphData, times(2)).getNode(artifactId11);
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 

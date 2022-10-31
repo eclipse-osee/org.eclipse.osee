@@ -25,7 +25,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test Case for {@link ConfigManagerConfigurationBuilder}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ConfigManagerConfigurationBuilderTest {
@@ -113,8 +113,6 @@ public class ConfigManagerConfigurationBuilderTest {
 
       builder.configUri("adsfasdfafadffsfsa");
       builder.pollTime(35L, TimeUnit.HOURS);
-
-      builder.build();
 
       assertEquals(CONFIG_URI, actual.getConfigUri());
       assertEquals(POLL_TIME, actual.getPollTime());

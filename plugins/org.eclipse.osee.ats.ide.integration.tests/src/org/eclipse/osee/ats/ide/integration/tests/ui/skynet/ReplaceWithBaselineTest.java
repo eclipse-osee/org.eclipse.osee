@@ -352,7 +352,6 @@ public final class ReplaceWithBaselineTest {
                switch (testData.changeItem) {
                   case NEW:
                      artifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
-                     attribute = artifact.getAttributeById(testData.getAttrId(), true);
                      artifact.persist(testName);
                      break;
                   case DELETED:

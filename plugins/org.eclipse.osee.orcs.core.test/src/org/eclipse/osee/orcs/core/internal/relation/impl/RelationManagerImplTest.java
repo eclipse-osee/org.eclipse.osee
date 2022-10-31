@@ -79,8 +79,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -397,7 +397,6 @@ public class RelationManagerImplTest {
       assertEquals("Hello rationale", value);
 
       verify(container1).getRelation(node1, CoreRelationTypes.Allocation_Requirement, node2, EXCLUDE_DELETED);
-      verify(relation1).getRationale();
    }
 
    @Test
@@ -635,8 +634,9 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2),
-         Matchers.anyString())).thenReturn(relation1);
+      when(
+         relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2), Matchers.anyString())).thenReturn(
+            relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
@@ -724,8 +724,6 @@ public class RelationManagerImplTest {
 
       manager.unrelateFromAll(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
-      verify(relation1).getIdForSide(SIDE_B);
-      verify(graph).getNode(artifactId22);
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
       verify(resolver).resolve(session, graph, relations1, SIDE_B);
       verify(relation1).delete();
@@ -758,7 +756,6 @@ public class RelationManagerImplTest {
       verify(resolver).resolve(session, graph, allRelations, SIDE_A, SIDE_B);
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
 
-      verify(relation1).getIdForSide(SIDE_A);
       verify(relation1).delete();
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD);
       verify(resolver).resolve(session, graph, asAChild, SIDE_B);

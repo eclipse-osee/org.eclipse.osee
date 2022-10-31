@@ -123,7 +123,6 @@ public class TransactionBuilderImplTest {
       when(factory.getComment()).thenReturn("This is a comment");
       String comment = factory.getComment();
       assertEquals(comment, "This is a comment");
-      verify(txData).getComment();
    }
 
    public void testSetAuthor() {

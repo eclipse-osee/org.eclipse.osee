@@ -600,11 +600,9 @@ public class RenamePackage {
 
    protected static void renamePom(File path, String oldPackageName, String newPackageName) {
       renameOtherFiles(path, oldPackageName, newPackageName, "pom");
-      FileReader fr;
-      try {
+      try (FileReader fr = new FileReader(path + "\\" + oldPackageName + "\\pom.xml");
+         BufferedReader br = new BufferedReader(fr)) {
 
-         fr = new FileReader(path + "\\" + oldPackageName + "\\pom.xml");
-         BufferedReader br = new BufferedReader(fr);
          String line = br.readLine();
          while (line != null) {
             if (line.contains("<relativePath>")) {

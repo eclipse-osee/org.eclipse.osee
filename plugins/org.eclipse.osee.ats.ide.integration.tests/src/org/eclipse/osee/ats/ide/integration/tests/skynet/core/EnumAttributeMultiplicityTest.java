@@ -68,50 +68,53 @@ public class EnumAttributeMultiplicityTest {
       EnumSelectionDialog enumSelection;
       for (Attribute<?> attr : artifact.getAttributes()) {
          // core test logic
-         AttributeTypeGeneric<?> attributeTypeGen =
-            AttributeTypeManager.getAttributeType(attr.getAttributeType().getId());
-         if (!attributeTypeGen.isEnumerated()) {
-            continue;
-         }
-         AttributeTypeEnum<?> attributeType = attributeTypeGen.toEnum();
-         assertTrue("attrIdToken is null", attr != null);
-         enumSelection = new EnumSelectionDialog(attributeType.toEnum(), artifacts);
-         HashMap<AttributeMultiplicitySelectionOption, Boolean> optionMap =
-            AttributeMultiplicitySelectionOption.getOptionMap();
-         int minVal = artifact.getArtifactType().getMin(attributeType);
-         int maxVal = artifact.getArtifactType().getMax(attributeType);
-         boolean isSingelton = EnumSelectionDialog.isSingletonAttribute(attributeType, artifacts);
-         boolean isRemovalAllowed = enumSelection.isRemovalAllowed();
-
-         if (minVal == 0 && maxVal == 1) { // 0 ... 1 :: Singelton, Removable
-            assertTrue(isRemovalAllowed == true);
-            optionMap.put(AttributeMultiplicitySelectionOption.AddSelection, true);
-         } else if (minVal == 0 && maxVal == Integer.MAX_VALUE) { // 0 ... inf :: Non-Singelton, Removable
-            assertTrue(isRemovalAllowed == true);
-            for (AttributeMultiplicitySelectionOption key : optionMap.keySet()) {
-               optionMap.put(key, true);
+         if (attr != null) {
+            AttributeTypeGeneric<?> attributeTypeGen =
+               AttributeTypeManager.getAttributeType(attr.getAttributeType().getId());
+            if (!attributeTypeGen.isEnumerated()) {
+               continue;
             }
-         } else if (minVal == 1 && maxVal == 1) { // 1 ... 1 :: Singelton, Not-Removable
-            assertTrue(isRemovalAllowed == false);
-            optionMap.put(AttributeMultiplicitySelectionOption.ReplaceAll, true);
-         } else if (minVal == 1 && maxVal == Integer.MAX_VALUE) { // 1 ... inf :: Not-Singelton, Not-Removable
-            assertTrue(isRemovalAllowed == false);
-            optionMap.put(AttributeMultiplicitySelectionOption.AddSelection, true);
-            optionMap.put(AttributeMultiplicitySelectionOption.ReplaceAll, true);
-         }
+            AttributeTypeEnum<?> attributeType = attributeTypeGen.toEnum();
+            assertTrue("attrIdToken is null", attr != null);
 
-         Set<AttributeMultiplicitySelectionOption> selOptions = enumSelection.getSelectionOptions();
-         if (!isSingelton && optionMap.get(AttributeMultiplicitySelectionOption.AddSelection).equals(true)) {
-            assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.AddSelection));
-         }
-         if (!isSingelton && optionMap.get(AttributeMultiplicitySelectionOption.DeleteSelected).equals(true)) {
-            assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.DeleteSelected));
-         }
-         if (optionMap.get(AttributeMultiplicitySelectionOption.ReplaceAll).equals(true)) {
-            assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.ReplaceAll));
-         }
-         if (isRemovalAllowed && optionMap.get(AttributeMultiplicitySelectionOption.RemoveAll).equals(true)) {
-            assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.RemoveAll));
+            enumSelection = new EnumSelectionDialog(attributeType.toEnum(), artifacts);
+            HashMap<AttributeMultiplicitySelectionOption, Boolean> optionMap =
+               AttributeMultiplicitySelectionOption.getOptionMap();
+            int minVal = artifact.getArtifactType().getMin(attributeType);
+            int maxVal = artifact.getArtifactType().getMax(attributeType);
+            boolean isSingelton = EnumSelectionDialog.isSingletonAttribute(attributeType, artifacts);
+            boolean isRemovalAllowed = enumSelection.isRemovalAllowed();
+
+            if (minVal == 0 && maxVal == 1) { // 0 ... 1 :: Singelton, Removable
+               assertTrue(isRemovalAllowed == true);
+               optionMap.put(AttributeMultiplicitySelectionOption.AddSelection, true);
+            } else if (minVal == 0 && maxVal == Integer.MAX_VALUE) { // 0 ... inf :: Non-Singelton, Removable
+               assertTrue(isRemovalAllowed == true);
+               for (AttributeMultiplicitySelectionOption key : optionMap.keySet()) {
+                  optionMap.put(key, true);
+               }
+            } else if (minVal == 1 && maxVal == 1) { // 1 ... 1 :: Singelton, Not-Removable
+               assertTrue(isRemovalAllowed == false);
+               optionMap.put(AttributeMultiplicitySelectionOption.ReplaceAll, true);
+            } else if (minVal == 1 && maxVal == Integer.MAX_VALUE) { // 1 ... inf :: Not-Singelton, Not-Removable
+               assertTrue(isRemovalAllowed == false);
+               optionMap.put(AttributeMultiplicitySelectionOption.AddSelection, true);
+               optionMap.put(AttributeMultiplicitySelectionOption.ReplaceAll, true);
+            }
+
+            Set<AttributeMultiplicitySelectionOption> selOptions = enumSelection.getSelectionOptions();
+            if (!isSingelton && optionMap.get(AttributeMultiplicitySelectionOption.AddSelection).equals(true)) {
+               assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.AddSelection));
+            }
+            if (!isSingelton && optionMap.get(AttributeMultiplicitySelectionOption.DeleteSelected).equals(true)) {
+               assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.DeleteSelected));
+            }
+            if (optionMap.get(AttributeMultiplicitySelectionOption.ReplaceAll).equals(true)) {
+               assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.ReplaceAll));
+            }
+            if (isRemovalAllowed && optionMap.get(AttributeMultiplicitySelectionOption.RemoveAll).equals(true)) {
+               assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.RemoveAll));
+            }
          }
       }
    }

@@ -16,6 +16,7 @@ package org.eclipse.osee.jdbc;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,6 +59,7 @@ public class JdbcRunFunctionTest {
       server.start();
 
       client = JdbcClientBuilder.hsql(dbName, dbPort).build();
+      System.out.println("AAAAAAAAAAAAHHHHHHHHHHHHH");
    }
 
    @After
@@ -67,12 +69,17 @@ public class JdbcRunFunctionTest {
 
    @Test
    public void testRandom() {
+	      System.out.println("RAAAAAANDOOOOOOM");
+
       double actual = client.runFunction(0.0d, "rand()");
       Assert.assertTrue(actual > 0.0d);
    }
 
    @Test
    public void testRound() {
+	   
+	      System.out.println("IN ROUNNNND");
+
       int actual = client.runFunction(-1, "round(?)", 123.9);
       Assert.assertEquals(124, actual);
    }

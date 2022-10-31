@@ -1056,8 +1056,12 @@ public class RankMapTest {
 
          for (int i = 0; i < keys.length; i++) {
             var memberHash = keys[i].hashCode() * 107;
-            memberHash = (memberHash << i) | (memberHash >> (Integer.SIZE - i));
+            int shift = i % Integer.SIZE;
+            if (shift > 0) {
+               memberHash = (memberHash << shift) | (memberHash >> (Integer.SIZE - shift));
+            }
             hashCode = hashCode ^ memberHash;
+
          }
 
          return hashCode;

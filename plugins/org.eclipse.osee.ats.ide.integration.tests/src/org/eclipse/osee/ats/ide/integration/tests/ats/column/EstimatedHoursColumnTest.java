@@ -56,6 +56,10 @@ public class EstimatedHoursColumnTest {
             changes).getStoreObject();
 
       IAtsAction action = teamArt1.getParentAction();
+      /*
+       * if (DemoTestUtil.addTeamWorkflow(action, EstimatedHoursColumnTest.class.getSimpleName(), changes) == null) {
+       * return; }
+       */
       TeamWorkFlowArtifact teamArt2 = (TeamWorkFlowArtifact) DemoTestUtil.addTeamWorkflow(action,
          EstimatedHoursColumnTest.class.getSimpleName(), changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt =

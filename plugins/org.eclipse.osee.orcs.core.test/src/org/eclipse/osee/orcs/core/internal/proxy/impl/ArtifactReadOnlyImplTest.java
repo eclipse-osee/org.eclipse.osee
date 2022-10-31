@@ -357,7 +357,6 @@ public class ArtifactReadOnlyImplTest {
 
       assertEquals(attributeReadable1, actual);
       verify(proxiedObject).getAttributeById(attributeId);
-      verify(proxyManager).asExternalAttribute(session, attribute1);
    }
 
    @Test
