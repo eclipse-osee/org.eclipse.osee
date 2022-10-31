@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../sass-utils/host-utils'
+@include host-utils.main_route_host()
 table 
   width: 100%
 
@@ -35,22 +37,10 @@ tr.message-expanded-detail-row
 .message-element-interface-table-view-row-display
   display: flex
   flex-direction: row
-  // justify-content: space-between
 
 .message-element-interface-table-view-message-header
   font:
     weight: bold
-
-.message-element-interface-table-view-element
-  // min-width: 4%
-  // width: 10%
-  // max-width: 8%
-  // vertical-align: middle
-  // display: flex
-  // flex-direction: column
-  // justify:
-  //   content: space-around
-  // border-bottom: 1px solid
 
 .message-element-interface-table-sub-message-element
   display: flex

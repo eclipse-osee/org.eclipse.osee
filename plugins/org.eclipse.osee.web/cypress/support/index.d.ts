@@ -20,6 +20,7 @@ declare namespace Cypress {
     createBranch(
       fromBranch: string,
       actionableItem: string,
+      changeType:string,
       targetedVersion: string,
       title: string,
       description: string
@@ -51,6 +52,7 @@ declare namespace Cypress {
     ): Chainable<JQuery<HTMLElement>>;
     deleteConnection(name: string): Chainable<JQuery<HTMLElement>>;
     navigateToConnectionPage(): Chainable<JQuery<HTMLElement>>;
+    navigateToTransportTypesPage(): Chainable<JQuery<HTMLElement>>;
     /**
      * Assumes user is already on connection page
      * @param connectionName
@@ -431,8 +433,10 @@ declare namespace Cypress {
       arg?: any,
       options?: Partial<Loggable & Timeoutable>
     ): Chainable<T>;
+    createTransportType(name:string, byteAlignValidation:boolean,validationSize:number,messageGeneration:boolean,messageGenerationType:string,messageGenerationPosition:string): Chainable<JQuery<HTMLElement>>;
   }
   interface NameResult {
     name: string;
   }
+
 }

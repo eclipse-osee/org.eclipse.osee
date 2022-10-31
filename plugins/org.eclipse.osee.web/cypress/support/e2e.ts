@@ -39,6 +39,7 @@ import './freetext.commands';
 import './messaging/structure.commands';
 import './messaging/element.commands';
 import './messaging/value.commands';
+import './messaging/transport.types.commands';
 import './nested-add-button.commands';
 import './plconfig/feature.commands';
 import './plconfig/config.commands';

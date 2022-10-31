@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
+import { filter, repeatWhen, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { TransactionService } from '../../../../../transactions/transaction.service';
@@ -30,10 +30,22 @@ export class CurrentTransportTypeService {
     switchMap(id => this.transportTypeService.getAll(id)),
     shareReplay({bufferSize:1,refCount:true})
   );
+
+  private _transportTypes = this.ui.id.pipe(
+    filter(val => val !== '' && val !=='0'),
+    switchMap(id => this.transportTypeService.getAll(id).pipe(
+      repeatWhen(_=>this.ui.update)
+    )),
+    shareReplay({bufferSize:1,refCount:true})
+  );
   constructor (private ui: UiService, private transportTypeService: TransportTypeService, private transactionService: TransactionService, private transactionBuilder: TransactionBuilderService) { }
   
   get types() {
     return this._types;
+  }
+
+  get transportTypes() {
+    return this._transportTypes;
   }
 
   getType(artId: string) {
@@ -48,7 +60,11 @@ export class CurrentTransportTypeService {
       take(1),
       filter(val => val !== '' && val !== '0'),
       switchMap(id => of(this.transactionBuilder.createArtifact(type, ARTIFACTTYPEID.TRANSPORTTYPE, [], undefined, id, 'Creating Transport Type', undefined))),
-      switchMap(transaction=>this.transactionService.performMutation(transaction))
+      switchMap(transaction => this.transactionService.performMutation(transaction).pipe(
+        tap((result) => {
+            this.ui.updated = true;
+        })
+      ))
     )
   }
 }

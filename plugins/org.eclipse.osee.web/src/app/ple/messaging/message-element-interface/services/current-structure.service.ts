@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, iif, Observable, of, OperatorFunction } from 'rxjs';
+import { BehaviorSubject, combineLatest, concat, from, iif, Observable, of, OperatorFunction } from 'rxjs';
 import { concatMap, count, debounceTime, distinct, distinctUntilChanged, filter, map, mergeMap, reduce, repeatWhen, scan, share, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
@@ -34,6 +34,7 @@ import { StructuresService } from '../../shared/services/http/structures.service
 import { ElementUiService } from './ui.service';
 import { MimQuery, PlatformTypeQuery } from '../../shared/types/MimQuery';
 import { QueryService } from '../../shared/services/http/query.service';
+import { transactionResult } from '../../../../types/change-report/transaction';
 
 @Injectable({
   providedIn: 'root'
@@ -389,18 +390,122 @@ export class CurrentStructureService {
   }
 
   updatePreferences(preferences: settingsDialogData) {
-    return this.createColumnPreferences(preferences).pipe(
+    return concat(this._deleteColumnPrefs(), this._deleteBranchPrefs(), this._setBranchPrefs(preferences.editable), this._setColumnPrefs(preferences)).pipe(
+      take(4),
+      reduce((acc, curr) => [...acc, curr], [] as transactionResult[]),
+      tap(() => {
+        this.ui.updateMessages = true;
+      })
+    );
+  }
+
+  private _deleteBranchPrefs() {
+    return this.preferences.pipe(
       take(1),
-      switchMap(([columns,allColumns]) => this.createUserPreferenceBranchTransaction(columns,allColumns, preferences.editable).pipe(
-        take(1),
-        switchMap((transaction) => this.createUserPreferenceColumnTransaction(columns, allColumns, preferences.editable).pipe(
-          take(1),
-          switchMap((transaction2) => iif(() => transaction2 !== undefined, combineLatest([this.structure.performMutation(transaction), this.structure.performMutation(transaction2!)]), this.structure.performMutation(transaction))),
-          tap(() => {
-            this.ui.updateMessages = true;
-          })
-        ))
-      ))
+      switchMap(prefs => iif(() => prefs.hasBranchPref,
+      of<transaction>({
+        branch: "570",
+        txComment: 'Updating MIM User Preferences',
+        modifyArtifacts:
+          [
+            {
+              id: prefs.id,
+              deleteAttributes:[{typeName:"MIM Branch Preferences"}]
+            }
+          ]
+        }),
+        of(undefined)
+      )),
+      switchMap(transaction => iif(() => transaction !== undefined,
+      this.structure.performMutation(transaction!),
+        of()))
+    )
+  }
+
+  private _deleteColumnPrefs() {
+    return this.preferences.pipe(
+      take(1),
+      switchMap(prefs => iif(() => prefs.columnPreferences.length !== 0,
+        of<transaction>({
+          branch: "570",
+          txComment: 'Updating MIM User Preferences',
+          modifyArtifacts:
+            [
+              {
+                id: prefs.id,
+                deleteAttributes:[{typeName:"MIM Column Preferences"}]
+              }
+            ]
+          }),
+        of(undefined)
+      )),
+      switchMap(transaction => iif(() => transaction !== undefined,
+      this.structure.performMutation(transaction!),
+        of()))
+    )
+  }
+
+  private _setBranchPrefs(editMode:boolean) {
+    return combineLatest([this.preferences, this.BranchId, this.BranchPrefs]).pipe(
+      take(1),
+      switchMap(([prefs, branch, branchPrefs]) => iif(() => prefs.hasBranchPref,
+      of<transaction>(
+        {
+          branch: "570",
+          txComment: 'Updating MIM User Preferences',
+          modifyArtifacts:
+            [
+              {
+                id: prefs.id,
+                addAttributes:
+                  [
+                    { typeName: "MIM Branch Preferences", value: [...branchPrefs, `${branch}:${editMode}`] }
+                  ],
+              }
+            ]
+        }
+      ),
+      of<transaction>(    
+        {
+      branch: "570",
+      txComment: "Updating MIM User Preferences",
+      modifyArtifacts:
+        [
+          {
+            id: prefs.id,
+            addAttributes:
+              [
+                { typeName: "MIM Branch Preferences", value: `${branch}:${editMode}` },
+              ],
+          }
+        ]
+        }
+      )
+      )),
+      switchMap(transaction=>this.structure.performMutation(transaction))
+    )
+  }
+
+  private _setColumnPrefs(newPreferences: settingsDialogData) {
+    return combineLatest([this.preferences,this.createColumnPreferences(newPreferences)]).pipe(
+      take(1),
+      switchMap(([prefs, [columns, allColumns]]) => of<transaction>(
+        {
+      branch: "570",
+      txComment: "Updating MIM User Preferences",
+      modifyArtifacts:
+        [
+          {
+            id: prefs.id,
+            addAttributes:
+              [
+                { typeName: "MIM Column Preferences", value: allColumns },
+              ]
+          }
+        ]
+        }
+      )),
+      switchMap(transaction=>this.structure.performMutation(transaction))
     )
   }
   private createColumnPreferences(preferences: settingsDialogData) {
@@ -479,110 +584,6 @@ export class CurrentStructureService {
         ))
       ),
     )
-  }
-
-  private createUserPreferenceBranchTransaction(columnPrefs:string[], allColumns:string[],editMode:boolean) {
-    return combineLatest(this.preferences, this.BranchId, this.BranchPrefs).pipe(
-      take(1),
-      switchMap(([prefs, branch, branchPrefs]) => iif(() => prefs.hasBranchPref,
-        iif(() => prefs.columnPreferences.length === 0,
-          of<transaction>(
-            {
-              branch: "570",
-              txComment: 'Updating MIM User Preferences',
-              modifyArtifacts:
-                [
-                  {
-                    id: prefs.id,
-                    setAttributes:
-                      [
-                        { typeName: "MIM Branch Preferences", value: [...branchPrefs, `${branch}:${editMode}`] }
-                      ],
-                    addAttributes:
-                      [
-                        { typeName: "MIM Column Preferences", value: allColumns }
-                      ]
-                  }
-                ]
-            }
-          ),
-          of<transaction>( 
-            {
-              branch: "570",
-              txComment: 'Updating MIM User Preferences',
-              modifyArtifacts:
-                [
-                  {
-                    id: prefs.id,
-                    setAttributes:
-                      [
-                        { typeName: "MIM Branch Preferences", value: [...branchPrefs, `${branch}:${editMode}`] },
-                      ],
-                    deleteAttributes:[{typeName:"MIM Column Preferences"}]
-                  }
-                ]
-              }
-          )
-        ),
-        iif(() => prefs.columnPreferences.length === 0,
-          of<transaction>(
-            {
-          branch: "570",
-          txComment: "Updating MIM User Preferences",
-          modifyArtifacts:
-            [
-              {
-                id: prefs.id,
-                addAttributes:
-                  [
-                    { typeName: "MIM Column Preferences", value: allColumns },
-                    { typeName: "MIM Branch Preferences", value: `${branch}:${editMode}` }
-                  ]
-              }
-            ]
-            }
-          ),
-          of<transaction>(
-            {
-          branch: "570",
-          txComment: "Updating MIM User Preferences",
-          modifyArtifacts:
-            [
-              {
-                id: prefs.id,
-                deleteAttributes: [{ typeName: "MIM Column Preferences" }],
-                addAttributes:
-                  [
-                    { typeName: "MIM Branch Preferences", value: `${branch}:${editMode}` },
-                  ],
-              }
-            ]
-        
-            }
-          )
-        )
-      )))
-  }
-
-  private createUserPreferenceColumnTransaction(columnPrefs:string[], allColumns:string[],editMode:boolean) {
-    return combineLatest(this.preferences, this.BranchId).pipe(
-      switchMap(([prefs, branch]) => iif(() => prefs.columnPreferences.length === 0, of(undefined), of<transaction>(
-        {
-          branch: "570",
-          txComment: 'Updating MIM User Preferences',
-          modifyArtifacts:
-            [
-              {
-                id: prefs.id,
-                addAttributes:
-                  [
-                    { typeName: "MIM Column Preferences", value: allColumns }
-                  ]
-              }
-            ]
-        }
-      )))
-    );
   }
   private _parseDifferences(differences: changeInstance[] | undefined, _oldStructure: Required<structure>,parentBranch:string,branch:string,message:string,submessage:string,connection:string) {
     let structure = JSON.parse(JSON.stringify(_oldStructure)) as Required<structure>;

@@ -11,46 +11,53 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 Cypress.Commands.add('openMIMUserDialog', () => {
+  cy.intercept('GET','/orcs/applicui/branch/*').as('applicui');
   return cy
     .get('[data-cy="user-overflow-btn"]')
     .click()
     .get('[data-cy="mim-settings"]')
     .click()
-    .get('mat-progress-bar', { timeout: 10000 })
+    .wait('@applicui')
+    .get('mat-progress-bar', { timeout: 20000 })
     .should('not.exist');
 });
 
 Cypress.Commands.add('closeMIMUserDialog', () => {
-  cy.intercept('/orcs/txs').as('txs');
+  cy.intercept('POST','/orcs/txs').as('txs');
   cy.intercept('/mim/user/*').as('user');
   return cy
     .get('[data-cy="submit-btn"]')
     .click({ force: true })
     .get('app-column-preferences-dialog')
     .should('not.exist')
-    .wait('@txs')
     .wait('@user')
+    .wait('@txs')
     .get('mat-progress-bar')
     .should('exist');
 });
 
 Cypress.Commands.add('waitForMIMUserDialog', () => {
-  cy.intercept('/orcs/txs').as('txs');
-  cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-  cy.intercept('/ats/ple/action/*/approval').as('approval');
-  cy.intercept('/orcs/applicui/branch/*').as('applicui');
-  cy.intercept('/ats/teamwf/**/*').as('teamwf');
+  cy.intercept('POST', '/orcs/txs').as('txs');
+  cy.intercept('GET','/orcs/branches/*').as('branches')
+  cy.intercept('GET','/ats/config/teamdef/*/leads').as('leads');
+  cy.intercept('GET','/ats/**/*').as('action')
+  cy.intercept('GET','/ats/ple/**/*').as('approval');
+  cy.intercept('GET','/orcs/applicui/branch/*').as('applicui');
+  cy.intercept('GET', '/ats/teamwf/**/*').as('teamwf');
+  cy.intercept('GET','/mim/user/*').as('user');
   return (
     cy
+      .wait('@user')
+      // .wait('@action')
+      //.wait('@approval')
       .wait('@leads')
-      // .wait('@teamwf')
-      // .wait('@approval')
-      .get('app-column-preferences-dialog')
+      .get('app-column-preferences-dialog',{timeout:20000})
       .should('not.exist')
   );
 });
 
 Cypress.Commands.add('resetColumnPrefsToDefault', () => {
+  cy.intercept('POST','/orcs/txs').as('txs');
   return cy
     .openMIMUserDialog()
     .get('mat-progress-bar', { timeout: 10000 })
@@ -87,11 +94,11 @@ Cypress.Commands.add('disableMIMEditing', () => {
 Cypress.Commands.add(
   'setUserMIMColumnPreferences',
   (...preferences: string[]) => {
-    cy.intercept('/orcs/txs').as('txs');
-    cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-    cy.intercept('/ats/ple/action/*/approval').as('approval');
-    cy.intercept('/orcs/applicui/branch/*').as('applicui');
-    cy.intercept('/ats/teamwf/**/*').as('teamwf');
+    cy.intercept('POST','/orcs/txs').as('txs');
+    cy.intercept('GET','/ats/config/teamdef/*/leads').as('leads');
+    cy.intercept('GET','/ats/ple/action/*/approval').as('approval');
+    cy.intercept('GET','/orcs/applicui/branch/*').as('applicui');
+    cy.intercept('GET','/ats/teamwf/**/*').as('teamwf');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept(
       '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'

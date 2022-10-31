@@ -64,7 +64,7 @@
         <mat-dialog-actions align="end">
             <button mat-button matStepperPrevious>Back</button>
             <ng-container *ngIf="(isStep2Complete|async)">
-                <button mat-raised-button matStepperNext [disabled]="(isStep2Complete|async)===false || (isUnique|async)===false" [color]="(isStep2Complete|async)===true ? 'primary': ''" data-cy="stepper-next-2">Next</button>
+                <button mat-raised-button matStepperNext [disabled]="(isStep2Complete|async)===false || (isUnique|async)===false" [color]="(isStep2Complete|async)===true ? 'primary': ''" [attr.data-cy]="(isStep2Complete|async)===false || (isUnique|async)===false?'stepper-next-2-disabled':'stepper-next-2'">Next</button>
             </ng-container>
         </mat-dialog-actions>
     </mat-step>

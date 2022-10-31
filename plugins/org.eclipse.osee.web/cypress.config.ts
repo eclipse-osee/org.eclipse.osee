@@ -22,6 +22,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.ts')(on, config)
     },
+    requestTimeout:10000,
+    responseTimeout:90000,
     waitForAnimations: true,
     baseUrl: 'http://localhost:4200',
   },

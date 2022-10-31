@@ -29,7 +29,7 @@ import { transportType } from '../shared/types/transportType';
 export class TransportsComponent implements OnInit, OnDestroy {
 
   private _done = new Subject();
-  transports = this.transportTypesService.types.pipe(
+  transports = this.transportTypesService.transportTypes.pipe(
     takeUntil(this._done)
   );
   headers = this.headerService.AllTransportTypeHeaders.pipe(

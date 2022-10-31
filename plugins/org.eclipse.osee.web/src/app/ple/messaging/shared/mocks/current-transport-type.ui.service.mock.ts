@@ -26,5 +26,6 @@ export const CurrentTransportTypeServiceMock: Partial<CurrentTransportTypeServic
     createType: function (type: transportType): Observable<transactionResult> {
         return of(transactionResultMock)
     },
+    transportTypes: of(transportTypes),
     types: of(transportTypes)
 }

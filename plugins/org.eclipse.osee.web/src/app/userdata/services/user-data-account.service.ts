@@ -46,7 +46,12 @@ export class UserDataAccountService {
     idString: '',
     idIntValue: 0,
     uuid: 0,
-    roles: []
+    roles: [
+      {
+        id : "52247",
+        name : "Osee Admin"
+      }
+    ]
   })
 
   private _user = iif(

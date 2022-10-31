@@ -29,6 +29,7 @@ import { transportType } from '../../../../shared/types/transportType';
 export class CreateConnectionDialogComponent implements OnInit, OnDestroy {
   private _done = new Subject();
   nodes = this.graphService.nodeOptions.pipe(
+    take(1),
     switchMap(nodes => of(nodes).pipe(
       concatMap((nodeList) => from(nodeList).pipe(
         filter((node)=>node.id!==this.data.id)

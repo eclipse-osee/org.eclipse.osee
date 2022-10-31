@@ -13,7 +13,7 @@
 Cypress.Commands.add(
   'createNode',
   (name: string, description: string, color: string, address: string) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('/mim/branch/*/graph').as('graph');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
@@ -50,7 +50,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('deleteNode', (name: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept('/mim/branch/*/graph').as('graph');
   cy.intercept('GET', '/ats/action/**/*').as('action');
   cy.intercept('/ats/teamwf/**/*').as('teamwf');

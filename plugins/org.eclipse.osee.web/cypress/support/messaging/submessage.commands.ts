@@ -13,7 +13,7 @@
 Cypress.Commands.add(
   'subMessageDialogNew',
   (name: string, description: string, subMessageNumber: string) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');
@@ -55,7 +55,7 @@ Cypress.Commands.add(
     subMessageNumber,
     isMessageFirst
   ) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');
@@ -92,7 +92,7 @@ Cypress.Commands.add(
     description: string,
     isMessageFirst: boolean
   ) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('/mim/branch/*/connections/*/messages/filter/').as('messages');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
@@ -193,7 +193,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'deleteSubMessage',
   (associatedMessage: string, submessage: string, isMessageFirst: boolean) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');
@@ -220,7 +220,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'removeSubMessage',
   (associatedMessage: string, submessage: string, isMessageFirst: boolean) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');

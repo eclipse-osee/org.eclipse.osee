@@ -23,13 +23,15 @@ Cypress.Commands.add(
   ) => {
     cy.intercept('/mim/enums/*').as('enums');
     cy.intercept('/mim/branch/*/nodes/connection/*').as('nodes');
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');
     cy.intercept('/ats/ple/action/*/approval').as('approval');
     if (nodeIsFirst) {
       return cy
+        .get('mat-progress-bar')
+        .should('not.exist')
         .get('#addButton')
         .click()
         .get('[data-cy="base-add-button"]')
@@ -78,6 +80,8 @@ Cypress.Commands.add(
         .click();
     } else {
       return cy
+        .get('mat-progress-bar')
+        .should('not.exist')
         .get('#addButton')
         .click()
         .get('[data-cy="base-add-button"]')
@@ -194,7 +198,7 @@ Cypress.Commands.add('closeMessage', (name: string, isMessageFirst) => {
 Cypress.Commands.add(
   'editMessageDescription',
   (name: string, description: string, isMessageFirst: boolean) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     if (isMessageFirst) {
       return cy
         .get(`[data-cy="message-table-row-${name}"]`)
