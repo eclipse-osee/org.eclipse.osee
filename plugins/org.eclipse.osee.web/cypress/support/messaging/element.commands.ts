@@ -23,11 +23,12 @@ Cypress.Commands.add(
     alterable: boolean,
     type: string
   ) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept(
       '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
     ).as('structures');
     cy.intercept('/mim/branch/*/types').as('types');
+    cy.intercept('/mim/enums/Units').as('units')
     cy.get(`[data-cy="create-new-btn"]`).click();
     cy.get(`[data-cy="field-name"]`).as('name');
     cy.get(`[data-cy="field-description"]`).as('description');
@@ -43,12 +44,14 @@ Cypress.Commands.add(
     cy.get(`@start`).focus().type(startIndex);
     cy.get(`@end`).focus().type(endIndex);
     cy.get(`[data-cy="search-type-menu"]`)
-      .click({ force: true })
-      .get('mat-dialog-content')
-      .first()
       .click({force:true})
+      // .get('mat-dialog-content')
+      // .first()
+      // .click({force:true})
       .get(`[data-cy="field-logical-type"]`)
-      .click({force:true})
+      .scrollIntoView()
+      .click()
+      .wait(5000)
       .get(`[data-cy="option-${type}"]`)
       .click()
       .get('mat-dialog-content')
@@ -106,7 +109,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'editElementDescription',
   (name: string, description: string) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept(
       '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
     ).as('structures');
@@ -130,7 +133,7 @@ Cypress.Commands.add(
   }
 );
 Cypress.Commands.add('editElementNotes', (name: string, notes: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept(
     '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
   ).as('structures');
@@ -193,7 +196,7 @@ Cypress.Commands.add('removeElement', (associatedElement: string) => {
   cy.intercept('/ats/teamwf/**/*').as('teamwf');
   cy.intercept('/ats/config/teamdef/*/leads').as('leads');
   cy.intercept('/ats/ple/action/*/approval').as('approval');
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   return cy
     .get('@btn')
     .click()
@@ -212,7 +215,7 @@ Cypress.Commands.add('deleteElement', (associatedElement: string) => {
   cy.intercept('/ats/teamwf/**/*').as('teamwf');
   cy.intercept('/ats/config/teamdef/*/leads').as('leads');
   cy.intercept('/ats/ple/action/*/approval').as('approval');
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   return cy
     .get('@btn')
     .click()

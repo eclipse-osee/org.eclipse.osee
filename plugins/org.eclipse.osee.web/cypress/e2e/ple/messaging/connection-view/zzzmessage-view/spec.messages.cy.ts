@@ -19,10 +19,10 @@ links.forEach((link) => {
     });
     it('should enable MIM Editing', () => {
       cy.intercept('GET', '/ats/action/**/*').as('action');
-      cy.intercept('/ats/teamwf/**/*').as('teamwf');
-      cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-      cy.intercept('/ats/ple/action/*/approval').as('approval');
-      cy.enableMIMEditing().wait('@leads').wait('@approval');
+      cy.intercept('GET','/ats/teamwf/**/*').as('teamwf');
+      cy.intercept('GET','/ats/config/teamdef/*/leads').as('leads');
+      cy.intercept('GET','/ats/ple/action/*/approval').as('approval');
+      cy.enableMIMEditing().wait('@leads').wait('@approval').wait('@action').get('mat-progress-bar').should('not.exist');
     });
   });
   link.messages?.forEach((message) => {
@@ -46,7 +46,7 @@ links.forEach((link) => {
         );
       });
       it('should undo the edit', () => {
-        cy.undo();
+        cy.undo().wait(5000);
       });
       it('should validate everything is present', () => {
         cy.validateMIMValue(

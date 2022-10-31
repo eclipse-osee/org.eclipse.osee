@@ -24,7 +24,7 @@ Cypress.Commands.add('navigateToConnectionPage', () => {
       .task<Cypress.NameResult>('getLatestBranchName')
       .then((branchname) => {
         const branch: string = branchname.name;
-        return cy.selectBranch(branch, 'working').wait('@graph').wait('@action').wait('@teamwf').wait('@approval');
+        return cy.selectBranch(branch, 'working').wait('@graph').wait('@action').wait('@teamwf').wait('@approval').wait('@leads');
       });
   return cy.get('mat-progress-bar').should('not.exist');
 })
@@ -37,17 +37,19 @@ Cypress.Commands.add(
     description: string,
     transportType: string
   ) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('/mim/branch/*/graph').as('graph');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');
     cy.intercept('/ats/ple/action/*/approval').as('approval');
+    cy.intercept('GET', '/mim/branch/*/transportTypes').as('transports');
     return cy
       .get(`[data-cy="node-${fromNode}"`)
       .rightclick()
       .get('[data-cy="create-connection-btn"]')
       .click()
+      .wait('@transports')
       .get('[data-cy=field-name]')
       .focus()
       .type(name)
@@ -56,10 +58,14 @@ Cypress.Commands.add(
       .type(description)
       .get('[data-cy=field-transport-type]')
       .click()
+      .get('[data-cy=mat-option-loading-spinner]')
+      .should('not.exist')
       .get(`[data-cy=option-${transportType}]`)
       .click()
       .get('[data-cy=field-toNode]')
       .click()
+      .get('[data-cy=mat-option-loading-spinner]')
+      .should('not.exist')
       .get(`[data-cy=option-${toNode}]`)
       .click()
       .get('[data-cy=submit-btn]')
@@ -75,7 +81,7 @@ Cypress.Commands.add(
   }
 );
 Cypress.Commands.add('deleteConnection', (name: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept('/mim/branch/*/graph').as('graph');
   return cy
     .get(`[data-cy=link-${name}]`)

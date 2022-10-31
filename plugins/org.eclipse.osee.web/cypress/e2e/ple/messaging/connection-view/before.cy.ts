@@ -26,6 +26,7 @@ describe('branch creation', () => {
     cy.createBranch(
       'SAW Product Line',
       'SAW PL MIM',
+      'Improvement',
       'SAW Product Line',
       'Cypress Test',
       'Cypress Action Description'
@@ -57,13 +58,16 @@ describe('Enabling edit mode', () => {
     });
   });
   it('should set user settings to edit', () => {
-    cy.enableMIMEditing();
+    cy.intercept('/ats/config/teamdef/*/leads').as('leads');
+    cy.intercept('/ats/ple/action/*/approval').as('approval');
+    cy.intercept('/ats/teamwf/**/*').as('teamwf');
+    cy.enableMIMEditing().get('mat-progress-bar').should('not.exist')
   });
 });
 types.forEach((type) => {
   describe(`Creating type ${type}`, () => {
     beforeEach(() => {
-      cy.intercept('/orcs/txs').as('txs');
+      cy.intercept('POST','/orcs/txs').as('txs');
       cy.intercept('mim/branch/**/*/types/filter').as('filter');
     });
     before('navigate to types page', () => {
@@ -110,6 +114,14 @@ describe('Disabling edit mode', () => {
     cy.disableMIMEditing();
   });
 });
+describe('Create Transport Types', () => {
+  before('navigate to transport types page', () => {
+    cy.navigateToTransportTypesPage();
+  })
+  it('should create ethernet type', () => {
+    cy.createTransportType('ETHERNET', false, 8, true, 'Dynamic', '1');
+  })
+})
 // describe('Type Creation', () => {
 //     beforeEach(() => {
 //         cy.intercept('/orcs/txs').as('txs');

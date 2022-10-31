@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../sass-utils/host-utils'
+@include host-utils.main_route_host()
 .branch-controls
     display: flex
     flex-direction: row
@@ -38,3 +40,7 @@
 
 #file-upload
     display: none
+:host
+    display: inline-block
+    height: 94vh
+    width: 100%

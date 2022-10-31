@@ -11,13 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use 'sass:math'
+@use '../../../sass-utils/host-utils'
+@include host-utils.host($height:94vh ,$width: 100%, $display:inline-block)
 body
     height: 100%
     width: 100%
-:host
-    display: inline-block
-    height: 100%
-    width: 100%
+
+    // :host
+//     display: inline-block
+//     height: 94vh
+//     width: 100%
 .messaging-grid
     display : grid
     grid-template-rows : 3fr 3fr 1fr 1fr 1fr 2fr

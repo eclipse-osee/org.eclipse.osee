@@ -63,7 +63,7 @@ describe('Enabling edit mode', () => {
 types.forEach((type) => {
   describe(`Creating type ${type}`, () => {
     beforeEach(() => {
-      cy.intercept('/orcs/txs').as('txs');
+      cy.intercept('POST','/orcs/txs').as('txs');
       cy.intercept('mim/branch/**/*/types/filter').as('filter');
     });
     before('navigate to types page', () => {

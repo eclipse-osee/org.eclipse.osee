@@ -47,7 +47,7 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
         return of(transactionResultMock)
     },
     updatePreferences(preferences: settingsDialogData) {
-        return of(transactionResultMock)
+        return of([transactionResultMock,transactionResultMock,transactionResultMock,transactionResultMock])
     },
     removeStructureFromSubmessage(structureId: string, submessageId: string) {
         return of(transactionResultMock);

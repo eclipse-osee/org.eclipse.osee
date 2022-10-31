@@ -1,4 +1,3 @@
-
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -11,23 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../sass-utils/host-utils'
-@include host-utils.main-route-host()
-body
-    height: 90vh
-    width: 100%
-.width-100
-    width: 100%
-
-.add-button
-    position: absolute
-    bottom: 2%
-    right: 2%
-
-.transports-header
-    display: flex
-    flex-direction: row 
-    justify-content: space-between
-    align-items: center
-    .actions
-        gap:5px
+@mixin host($height:false,$width:false,$display:false)
+    :host
+        @if $display
+            display: $display
+        @if $height
+            min-height: calc($height - 10%)
+            height: $height
+            max-height: $height
+        @if $width
+            min-width: calc($width - 10%)
+            width: $width
+            max-width: $width
+@mixin main-route-host()
+    @include host($height:94vh,$width:100vw,$display:inline-block)
+            

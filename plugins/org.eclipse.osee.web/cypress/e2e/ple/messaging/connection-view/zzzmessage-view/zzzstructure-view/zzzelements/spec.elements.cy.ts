@@ -28,7 +28,7 @@ links.forEach((link) => {
             );
           });
           it('should enable MIM Editing', () => {
-            cy.intercept(
+            cy.intercept('GET',
               '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
             ).as('structures');
             cy.intercept('/ats/teamwf/**/*').as('teamwf');
@@ -494,7 +494,7 @@ links.forEach((link) => {
               });
 
               it('should have default view column prefs after resetting', () => {
-                cy.intercept(
+                cy.intercept('GET',
                   '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
                 ).as('structures');
                 cy.disableMIMEditing()
@@ -580,7 +580,7 @@ links.forEach((link) => {
                   );
               });
               it('should have default edit column prefs after resetting', () => {
-                cy.intercept(
+                cy.intercept('GET',
                   '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
                 ).as('structures');
                 cy.enableMIMEditing()

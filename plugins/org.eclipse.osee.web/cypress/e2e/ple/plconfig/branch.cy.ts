@@ -20,6 +20,7 @@ describe('PLConfig - Create Branch', () => {
       cy.createBranch(
         'SAW Product Line',
         'SAW PL ARB',
+        'Improvement',
         'SAW Product Line',
         'Cypress Test',
         'Cypress Action Description'

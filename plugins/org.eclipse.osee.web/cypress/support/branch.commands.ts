@@ -34,6 +34,7 @@ Cypress.Commands.add(
     cy.selectBranchType(type)
       .get('[data-cy="branch-select"]')
       .click()
+      .get('[data-cy=mat-option-loading-spinner]').should('not.exist')
       .get(`[data-cy="option-${name}"]`, { timeout: 10000 })
       .click();
   }
@@ -43,6 +44,7 @@ Cypress.Commands.add(
   (
     fromBranch: string,
     actionableItem: string,
+    changeType:string,
     targetedVersion: string,
     title: string,
     description: string
@@ -55,6 +57,7 @@ Cypress.Commands.add(
     cy.intercept('/ats/ple/action/*/approval').as('approval');
     cy.intercept('/ats/ai/worktype/*').as('workType');
     cy.intercept('/ats/teamwf/*/version?sort=true').as('version');
+    cy.intercept('/ats/teamwf/*/changeTypes?sort=true').as('changeTypes')
     const actionNum = Math.floor(Math.random() * (1000000 - 0 + 1) + 0);
     return cy
       .selectBranch(fromBranch, 'baseline')
@@ -69,6 +72,12 @@ Cypress.Commands.add(
       .click()
       .wait('@version')
       .wait('@teamwf')
+      .wait('@changeTypes')
+      .get('[data-cy=select-change-type]')
+      .focus()
+      .click()
+      .get(`[data-cy=option-${changeType}]`)
+      .click()
       .get('[data-cy="select-targeted-version"]')
       .focus()
       .click({ timeout: 10000 })

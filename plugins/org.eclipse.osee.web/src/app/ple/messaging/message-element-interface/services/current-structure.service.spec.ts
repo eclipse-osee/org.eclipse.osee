@@ -194,7 +194,7 @@ describe('CurrentStateService', () => {
   it('should update user preferences', () => {
     scheduler.run(() => {
       service.branchId='10'
-      let expectedObservable = { a: [transactionResultMock,transactionResultMock] };
+      let expectedObservable = { a: [transactionResultMock,transactionResultMock,transactionResultMock,transactionResultMock] };
       let expectedMarble = '(a|)';
       scheduler.expectObservable(service.updatePreferences({branchId:'10',allowedHeaders1:['name','description',],allowedHeaders2:['name','description',],allHeaders1:['name','description','applicability'],allHeaders2:['name','description','applicability'],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false})).toBe(expectedMarble, expectedObservable);
     })

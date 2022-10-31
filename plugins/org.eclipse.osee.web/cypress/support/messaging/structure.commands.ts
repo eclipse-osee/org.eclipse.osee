@@ -45,7 +45,7 @@ Cypress.Commands.add(
     taskFileType: string,
     category: string
   ) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept('GET', '/ats/action/**/*').as('action');
     cy.intercept('/ats/teamwf/**/*').as('teamwf');
     cy.intercept('/ats/config/teamdef/*/leads').as('leads');
@@ -86,6 +86,9 @@ Cypress.Commands.add(
       .wait('@teamwf')
       .wait('@action')
       .wait('@leads')
+      .get('[data-cy="submit-btn"]')
+      .should('not.exist')
+      .wait(5000)
       .get('mat-progress-bar')
       .should('not.exist');
   }
@@ -100,6 +103,8 @@ Cypress.Commands.add(
     taskFileType: string,
     category: string
   ) => {
+    cy.intercept('/mim/user/*').as('mimUser');
+    cy.intercept('/orcs/branches/*').as('branches');
     return cy
       .get('#addButton')
       .click()
@@ -112,7 +117,10 @@ Cypress.Commands.add(
         minSimultaneity,
         taskFileType,
         category
-      )
+    )
+      .wait('@mimUser')
+      .wait('@branches')
+      .wait(5000)
       .get('#addButton')
       .click();
   }
@@ -120,7 +128,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'editStructureDescription',
   (name: string, description: string) => {
-    cy.intercept('orcs/txs').as('txs');
+    cy.intercept('POST','orcs/txs').as('txs');
     cy.intercept(
       '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
     ).as('structures');
@@ -131,13 +139,14 @@ Cypress.Commands.add(
       .editFreeText(description)
       .wait('@txs')
       .wait('@structures')
+      .wait(5000)
       .get('mat-progress-bar')
       .should('not.exist');
   }
 );
 
 Cypress.Commands.add('insertStructureBottom', (associatedStructure: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept(
     '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
   ).as('structures');
@@ -155,7 +164,7 @@ Cypress.Commands.add('insertStructureBottom', (associatedStructure: string) => {
     );
 });
 Cypress.Commands.add('insertStructureTop', (associatedStructure: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept(
     '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
   ).as('structures');
@@ -173,7 +182,7 @@ Cypress.Commands.add('insertStructureTop', (associatedStructure: string) => {
     );
 });
 Cypress.Commands.add('removeStructure', (associatedStructure: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept(
     '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
   ).as('structures');
@@ -195,11 +204,12 @@ Cypress.Commands.add('removeStructure', (associatedStructure: string) => {
     .wait('@approval')
     .wait('@leads')
     .wait('@applic')
+    .wait(5000)
     .get('mat-progress-bar')
     .should('not.exist');
 });
 Cypress.Commands.add('deleteStructure', (associatedStructure: string) => {
-  cy.intercept('orcs/txs').as('txs');
+  cy.intercept('POST','orcs/txs').as('txs');
   cy.intercept(
     '/mim/branch/*/connections/*/messages/*/submessages/*/structures/**/*'
   ).as('structures');
@@ -221,12 +231,16 @@ Cypress.Commands.add('deleteStructure', (associatedStructure: string) => {
     .wait('@approval')
     .wait('@leads')
     .wait('@applic')
+    .wait(5000)
     .get('mat-progress-bar')
     .should('not.exist');
 });
 Cypress.Commands.add('openStructure', (structure: string) => {
   cy.get(`[data-cy="expand-structure-btn-${structure}"]`).as('btn');
+  // cy.get('mat-progress-bar').as('progress')
   return cy
+    .get('mat-progress-bar')
+    .should('not.exist')
     .get('@btn')
     .scrollIntoView()
     .should('be.visible')
@@ -235,7 +249,10 @@ Cypress.Commands.add('openStructure', (structure: string) => {
 });
 Cypress.Commands.add('closeStructure', (structure: string) => {
   cy.get(`[data-cy="close-structure-btn-${structure}"]`).as('btn');
+  cy.get('mat-progress-bar').as('progress')
   return cy
+    .get('@progress')
+    .should('not.exist')
     .get('@btn')
     .scrollIntoView()
     .should('be.visible')

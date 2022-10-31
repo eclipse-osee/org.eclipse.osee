@@ -1,3 +1,5 @@
+import { amountOfMessagePages } from '../../../support/messaging/navigation';
+
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -19,7 +21,7 @@ describe('Visit messages page', () => {
     cy.get('.mat-display-4').should('contain.text', 'OSEE Messaging');
   });
 
-  it('should have 6 buttons', () => {
-    cy.get('.messaging-grid').find('button').its('length').should('eq', 6);
+  it(`should have ${amountOfMessagePages-1} buttons`, () => {
+    cy.get('.messaging-grid').find('a').its('length').should('eq', amountOfMessagePages-1);
   });
 });
