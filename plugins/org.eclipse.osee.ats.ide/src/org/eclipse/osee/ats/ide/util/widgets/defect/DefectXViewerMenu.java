@@ -281,7 +281,7 @@ public class DefectXViewerMenu {
    }
 
    private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) {
-      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active, true);
       int result = dialog.open();
       if (result == 0) {
          modified = setUser(defectItems, dialog.getSelection());

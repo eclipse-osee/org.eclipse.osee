@@ -113,7 +113,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedUser != null) {
          return;
       }
-      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", active);
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", active, true);
       int result = dialog.open();
       if (result == 0) {
          selectedUser = dialog.getSelection();

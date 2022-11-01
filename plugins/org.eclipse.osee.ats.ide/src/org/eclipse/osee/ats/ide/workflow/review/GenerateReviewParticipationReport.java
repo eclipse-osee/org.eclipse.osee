@@ -71,7 +71,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       AtsUser useUser = null;
 
       IAtsUserService userService = AtsApiService.get().getUserService();
-      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", Active.Active);
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", Active.Active, true);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == 0) {
