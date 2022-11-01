@@ -235,7 +235,8 @@ public class UserRoleXViewer extends XViewer {
          } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             modified = setCompleted(userRoles);
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog diaglog = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
+            UserListDialog diaglog =
+               new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active, true);
             int result = diaglog.open();
             if (result == 0) {
                modified = setUser(userRoles, diaglog.getSelection());

@@ -37,7 +37,7 @@ public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection
 
    @Override
    public boolean handleSelection() {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select Originator", Active.Active);
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select Originator", Active.Active, false);
       int result = ld.open();
       if (result == 0) {
          originator = ld.getSelection();

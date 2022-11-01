@@ -35,12 +35,8 @@ public class UserListDialog extends FilteredTreeAtsUserDialog {
 
    AtsApi atsApi;
 
-   public UserListDialog(Shell parent, Active active) {
-      this(parent, "Select User", active);
-   }
-
-   public UserListDialog(Shell parent, String title, Active active) {
-      this(parent, title, getDefaultUsers(active, AtsApiService.get()));
+   public UserListDialog(Shell parent, String title, Active active, boolean includeUnAssigned) {
+      this(parent, title, getDefaultUsers(active, AtsApiService.get(), includeUnAssigned));
    }
 
    public UserListDialog(Shell parent, String title, Collection<AtsUser> users) {
@@ -49,7 +45,7 @@ public class UserListDialog extends FilteredTreeAtsUserDialog {
       atsApi = AtsApiService.get();
    }
 
-   private static Collection<AtsUser> getDefaultUsers(Active active, AtsApi atsApi) {
+   private static Collection<AtsUser> getDefaultUsers(Active active, AtsApi atsApi, boolean includeUnAssigned) {
       List<AtsUser> users = new ArrayList<>();
       if (active == Active.Both) {
          users.addAll(atsApi.getConfigService().getConfigurations().getIdToUser().values());
@@ -68,6 +64,9 @@ public class UserListDialog extends FilteredTreeAtsUserDialog {
             }
          }
          Collections.sort(users, new AtsUserNameComparator());
+      }
+      if (!includeUnAssigned) {
+         users.removeIf(user -> user.getName().equals("UnAssigned"));
       }
       return users;
    }
