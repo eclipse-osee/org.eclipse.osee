@@ -3,20 +3,38 @@
 #
 # For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
 
-image: $DOCKER_REGISTRY/python:latest
-
-before_script:
-  - python --version
-  - git --version
-
 stages:
+  - prepare
   - validate
 
-validate-job:
-  stage: validate
+variables:
+  VARIABLES_FILE: ./variables.txt
+
+Get file list:
+  stage: prepare
+  image: $DOCKER_IMAGE_GIT
   script:
-    - FILES=$(git diff-tree --no-commit-id --name-only -r $CI_COMMIT_SHORT_SHA)
+    - git --version
+    - git fetch
+    - FILES=$(git diff --name-only origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
+    - echo $FILES > $VARIABLES_FILE
     - echo "Files to validate:"
-    - echo $FILES
+    - echo $FILES | tr " " "\n"
+  artifacts:
+    paths:
+      - $VARIABLES_FILE
+  only:
+    - merge_requests
+
+Validate files:
+  stage: validate
+  image: $DOCKER_IMAGE_PYTHON
+  script:
+    - python --version
+    - FILES=$(cat $VARIABLES_FILE)
+    - echo $FILES | tr " " "\n"
     - python validateFiles.py $EXCLUDED_KEYWORDS $FILES
+  only:
+    - merge_requests
+
 
