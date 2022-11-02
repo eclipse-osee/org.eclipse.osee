@@ -14,17 +14,15 @@ import { Component, OnInit } from '@angular/core';
 import { CurrentBranchTransactionService } from '../../../../ple-services/httpui/current-branch-transaction.service';
 
 @Component({
-  selector: 'osee-undo-button-branch',
-  templateUrl: './undo-button-branch.component.html',
-  styleUrls: ['./undo-button-branch.component.sass']
+	selector: 'osee-undo-button-branch',
+	templateUrl: './undo-button-branch.component.html',
+	styleUrls: ['./undo-button-branch.component.sass'],
 })
-export class UndoButtonBranchComponent implements OnInit {
-  private _undoLatest = this._undoService.undoLatest;
-  constructor(private _undoService: CurrentBranchTransactionService) { }
+export class UndoButtonBranchComponent {
+	private _undoLatest = this._undoService.undoLatest;
+	constructor(private _undoService: CurrentBranchTransactionService) {}
 
-  ngOnInit(): void {
-  }
-  undo() {
-    return this._undoLatest.subscribe();
-  }
+	undo() {
+		return this._undoLatest.subscribe();
+	}
 }

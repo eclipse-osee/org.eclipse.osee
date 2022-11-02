@@ -22,30 +22,49 @@ import { SubElementTableNoEditFieldNameComponent } from '../sub-element-table-no
 import { SubElementTableNoEditFieldComponent } from './sub-element-table-no-edit-field.component';
 
 describe('SubElementTableNoEditFieldComponent', () => {
-  let component: SubElementTableNoEditFieldComponent;
-  let fixture: ComponentFixture<SubElementTableNoEditFieldComponent>;
-  let router: any;
+	let component: SubElementTableNoEditFieldComponent;
+	let fixture: ComponentFixture<SubElementTableNoEditFieldComponent>;
+	let router: any;
 
-  beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
-    await TestBed.configureTestingModule({
-      imports:[RouterTestingModule],
-      declarations: [SubElementTableNoEditFieldComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldNameComponent, HighlightFilteredTextDirective],
-      providers: [{ provide: Router, useValue: router }, {
-        provide: ActivatedRoute, useValue: {
-          paramMap: of(convertToParamMap({ branchId: "10",branchType:"working" }))
-      }}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		router = jasmine.createSpyObj(
+			'Router',
+			['navigate', 'createUrlTree', 'serializeUrl'],
+			['paramMap']
+		);
+		await TestBed.configureTestingModule({
+			imports: [RouterTestingModule],
+			declarations: [
+				SubElementTableNoEditFieldComponent,
+				SubElementTableNoEditFieldDynamicWidthComponent,
+				SubElementTableNoEditFieldFilteredComponent,
+				SubElementTableNoEditFieldNameComponent,
+				HighlightFilteredTextDirective,
+			],
+			providers: [
+				{ provide: Router, useValue: router },
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						paramMap: of(
+							convertToParamMap({
+								branchId: '10',
+								branchType: 'working',
+							})
+						),
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubElementTableNoEditFieldComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SubElementTableNoEditFieldComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

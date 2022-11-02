@@ -16,18 +16,19 @@ import { enumeration } from '../../../types/enum';
 import { EnumFormComponent } from './enum-form.component';
 
 @Component({
-    selector: 'osee-enum-form',
-    template: '<p>Dummy</p>',
+	selector: 'osee-enum-form',
+	template: '<p>Dummy</p>',
 })
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class MockEnumFormUnique implements Partial<EnumFormComponent> {
-    private _unique = new Subject<boolean>();
-    @Input() bitSize: string = '32';
-    @Input() enumSetName: string = 'testenumset';
-    @Input() preload: enumeration[] = [];
-    @Output() tableData: Subject<enumeration[]> = new Subject();
-    @Output() enumSetString: Observable<string> = new Subject();
-    @Output() unique: Observable<boolean> = this._unique;
-    constructor() {
-        this._unique.next(true);
-    }
+	private _unique = new Subject<boolean>();
+	@Input() bitSize: string = '32';
+	@Input() enumSetName: string = 'testenumset';
+	@Input() preload: enumeration[] = [];
+	@Output() tableData: Subject<enumeration[]> = new Subject();
+	@Output() enumSetString: Observable<string> = new Subject();
+	@Output() unique: Observable<boolean> = this._unique;
+	constructor() {
+		this._unique.next(true);
+	}
 }

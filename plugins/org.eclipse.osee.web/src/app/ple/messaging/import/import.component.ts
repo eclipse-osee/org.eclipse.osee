@@ -19,60 +19,67 @@ import { RouteStateService } from '../connection-view/services/route-state-servi
 import { ImportService } from './services/import.service';
 
 @Component({
-  selector: 'osee-import',
-  templateUrl: './import.component.html',
-  styleUrls: ['./import.component.sass']
+	selector: 'osee-import',
+	templateUrl: './import.component.html',
+	styleUrls: ['./import.component.sass'],
 })
 export class ImportComponent implements OnInit, OnDestroy {
+	constructor(
+		private route: ActivatedRoute,
+		private routerState: RouteStateService,
+		private importService: ImportService
+	) {}
 
-  constructor(private route: ActivatedRoute, private routerState: RouteStateService, private importService: ImportService) { }
+	ngOnInit(): void {
+		this.route.paramMap.subscribe((params) => {
+			this.routerState.branchId = params.get('branchId') || '';
+			this.routerState.branchType = params.get('branchType') || '';
+		});
+	}
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.routerState.branchId = params.get('branchId') || '';
-      this.routerState.branchType = params.get('branchType') || '';
-    })
-  }
+	ngOnDestroy(): void {
+		this.importService.reset();
+	}
 
-  ngOnDestroy(): void {
-    this.importService.reset();
-  }
+	importOptionSelection = this.importService.selectedImportOption;
+	branchId = this.importService.branchId;
+	branchType = this.importService.branchType;
+	importSummary = this.importService.importSummary;
+	importOptions = this.importService.importOptions;
+	importSuccess = this.importService.importSuccess;
+	selectedImportFileName = this.importService.importFile.pipe(
+		switchMap((file) =>
+			iif(() => file === undefined, of(''), of(file?.name))
+		)
+	);
 
-  importOptionSelection = this.importService.selectedImportOption;
-  branchId = this.importService.branchId;
-  branchType = this.importService.branchType;
-  importSummary = this.importService.importSummary;
-  importOptions = this.importService.importOptions;
-  importSuccess = this.importService.importSuccess;
-  selectedImportFileName = this.importService.importFile.pipe(
-    switchMap(file => iif(() => file === undefined,
-      of(''),
-      of(file?.name)
-    ))
-  )
+	importOptionSelectionText = this.importOptions.pipe(
+		switchMap((options) =>
+			iif(
+				() => options.length > 0,
+				of('Select an import type'),
+				of('No import types available')
+			)
+		)
+	);
 
-  importOptionSelectionText = this.importOptions.pipe(
-    switchMap(options => iif(() => options.length > 0, of("Select an import type"), of("No import types available")))
-  )
+	selectImportOption(event: MatSelectChange) {
+		this.importService.reset();
+		this.importService.SelectedImportOption = event.value;
+	}
 
-  selectImportOption(event: MatSelectChange) {
-    this.importService.reset()
-    this.importService.SelectedImportOption = event.value;
-  }
+	selectFile(event: Event) {
+		const target = event.target as HTMLInputElement;
+		if (target.files && target.files.length > 0) {
+			const file: File = target.files[0];
+			this.importService.ImportFile = file;
+			this.importService.ImportSuccess = undefined;
+			this.importService.ImportInProgress = true;
+			target.value = '';
+		}
+	}
 
-  selectFile(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      const file: File = target.files[0];
-      this.importService.ImportFile = file;
-      this.importService.ImportSuccess = undefined;
-      this.importService.ImportInProgress = true;
-      target.value = '';
-    }
-  }
-
-  performImport() {
-    this.importService.performImport();
-  }
-
+	performImport() {
+		this.importService.performImport();
+	}
 }

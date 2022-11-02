@@ -27,42 +27,80 @@ import { CurrentTransportTypeService } from '../shared/services/ui/current-trans
 import { TransportsComponent } from './transports.component';
 
 describe('TransportsComponent', () => {
-  let component: TransportsComponent;
-  let fixture: ComponentFixture<TransportsComponent>;
+	let component: TransportsComponent;
+	let fixture: ComponentFixture<TransportsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatTableModule,MatButtonModule,MatDialogModule,MatTooltipModule,MatIconModule,NoopAnimationsModule],
-      providers: [
-        { provide: CurrentTransportTypeService, useValue: CurrentTransportTypeServiceMock },
-        { provide: ActivatedRoute, useValue: { paramMap: of(
-          convertToParamMap({
-            branchType: 'working',
-            branchId: '10'
-          })
-        ), } },
-        {
-          provide: MatDialog, useValue: {
-            open() {
-              return {
-                afterClosed() { return of({ name: "ETHERNET", byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' }) },
-                close: null
-              }
-            }
-          }
-        }
-      ],
-      declarations: [ TransportsComponent, ActionDropdownStub, BranchPickerStub ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatTableModule,
+				MatButtonModule,
+				MatDialogModule,
+				MatTooltipModule,
+				MatIconModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{
+					provide: CurrentTransportTypeService,
+					useValue: CurrentTransportTypeServiceMock,
+				},
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						paramMap: of(
+							convertToParamMap({
+								branchType: 'working',
+								branchId: '10',
+							})
+						),
+					},
+				},
+				{
+					provide: MatDialog,
+					useValue: {
+						open() {
+							return {
+								afterClosed() {
+									return of({
+										name: 'ETHERNET',
+										byteAlignValidation: false,
+										byteAlignValidationSize: 0,
+										messageGeneration: false,
+										messageGenerationPosition: '',
+										messageGenerationType: '',
+									});
+								},
+								close: null,
+							};
+						},
+					},
+				},
+			],
+			declarations: [
+				TransportsComponent,
+				ActionDropdownStub,
+				BranchPickerStub,
+			],
+		}).compileComponents();
 
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}), close: null });
-    fixture = TestBed.createComponent(TransportsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		let dialogRefSpy = jasmine.createSpyObj({
+			afterClosed: of({
+				name: 'ETHERNET',
+				byteAlignValidation: false,
+				byteAlignValidationSize: 0,
+				messageGeneration: false,
+				messageGenerationPosition: '',
+				messageGenerationType: '',
+			}),
+			close: null,
+		});
+		fixture = TestBed.createComponent(TransportsComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -10,14 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'osee-messaging-edit-structure-field',
-    template:'<p>Dummy</p>'
+	selector: 'osee-messaging-edit-structure-field',
+	template: '<p>Dummy</p>',
 })
-export class EditStructureFieldComponentMock{
-    @Input() structureId!: string ;
-    @Input() header!: string;
-    @Input() value!: string;
-  }
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class EditStructureFieldComponentMock {
+	@Input() structureId!: string;
+	@Input() header!: string;
+	@Input() value!: string;
+}

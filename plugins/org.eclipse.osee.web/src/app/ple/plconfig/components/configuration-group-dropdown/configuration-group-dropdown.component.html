@@ -10,14 +10,44 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-configuration-group-dropdown-dd-button" data-cy="change-config-group-dropdown-btn">Change Configuration Groups</button>
+<button
+	mat-stroked-button
+	[matMenuTriggerFor]="mainMenu"
+	*ngIf="(editable | async) === true"
+	class="pl-config-configuration-group-dropdown-dd-button"
+	data-cy="change-config-group-dropdown-btn">
+	Change Configuration Groups
+</button>
 <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item (click)="addConfigurationGroup()" data-cy="add-config-group-btn"><mat-icon color="success">create</mat-icon>Add Configuration Group</button>
-    <div *ngIf="(cfgGroups|async) as groups">
-        <button mat-menu-item (click)="synchronizeGroups(groups)" data-cy="sync-config-group-btn"><mat-icon color="primary">sync</mat-icon>Synchronize Groups</button>
-    </div>
-    <button mat-menu-item [matMenuTriggerFor]="deleteConfigGroupMenu" *ngIf="(editable|async)===true" data-cy="delete-config-group-btn"><mat-icon color="warn">delete_forever</mat-icon>Delete Configuration Group</button>
+	<button
+		mat-menu-item
+		(click)="addConfigurationGroup()"
+		data-cy="add-config-group-btn">
+		<mat-icon color="success">create</mat-icon>Add Configuration Group
+	</button>
+	<div *ngIf="cfgGroups | async as groups">
+		<button
+			mat-menu-item
+			(click)="synchronizeGroups(groups)"
+			data-cy="sync-config-group-btn">
+			<mat-icon color="primary">sync</mat-icon>Synchronize Groups
+		</button>
+	</div>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="deleteConfigGroupMenu"
+		*ngIf="(editable | async) === true"
+		data-cy="delete-config-group-btn">
+		<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
+		Group
+	</button>
 </mat-menu>
 <mat-menu #deleteConfigGroupMenu="matMenu">
-    <button *ngFor="let group of (cfgGroups | async)" mat-menu-item (click)="deleteGroup(group.id)" [attr.data-cy]="'delete-config-group-'+group.name+'-btn'">{{group.name}}</button>
+	<button
+		*ngFor="let group of cfgGroups | async"
+		mat-menu-item
+		(click)="deleteGroup(group.id)"
+		[attr.data-cy]="'delete-config-group-' + group.name + '-btn'">
+		{{ group.name }}
+	</button>
 </mat-menu>

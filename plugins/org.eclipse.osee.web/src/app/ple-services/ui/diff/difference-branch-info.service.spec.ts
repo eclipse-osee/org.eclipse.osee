@@ -23,43 +23,55 @@ import { UiService } from '../ui.service';
 import { DifferenceBranchInfoService } from './difference-branch-info.service';
 
 describe('DifferenceService', () => {
-  let service: DifferenceBranchInfoService;
-  let scheduler: TestScheduler;
-  let uiService: UiService;
+	let service: DifferenceBranchInfoService;
+	let scheduler: TestScheduler;
+	let uiService: UiService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: BranchInfoService, useValue: BranchInfoServiceMock },
-        { provide: DifferenceReportService,useValue:DifferenceReportServiceMock}
-      ]
-    });
-    service = TestBed.inject(DifferenceBranchInfoService);
-    uiService = TestBed.inject(UiService);
-    uiService.idValue = '10';
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
+				{
+					provide: DifferenceReportService,
+					useValue: DifferenceReportServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(DifferenceBranchInfoService);
+		uiService = TestBed.inject(UiService);
+		uiService.idValue = '10';
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should get differences', () => {
-    scheduler.run(({ expectObservable }) => {
-      const expectedValues={a:changeReportMock}
-      const expectedMarble='(a|)'
-      expectObservable(service.differences('10')).toBe(expectedMarble, expectedValues);
-    })
-  })
+	it('should get differences', () => {
+		scheduler.run(({ expectObservable }) => {
+			const expectedValues = { a: changeReportMock };
+			const expectedMarble = '(a|)';
+			expectObservable(service.differences('10')).toBe(
+				expectedMarble,
+				expectedValues
+			);
+		});
+	});
 
-  it('should get difference report', () => {
-    scheduler.run(({ expectObservable }) => {
-      const expectedValues={a:differenceReportMock}
-      const expectedMarble='(a|)'
-      expectObservable(service.differenceReport('10')).toBe(expectedMarble, expectedValues);
-    })
-  })
+	it('should get difference report', () => {
+		scheduler.run(({ expectObservable }) => {
+			const expectedValues = { a: differenceReportMock };
+			const expectedMarble = '(a|)';
+			expectObservable(service.differenceReport('10')).toBe(
+				expectedMarble,
+				expectedValues
+			);
+		});
+	});
 });

@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const enum FileExtensions {
-    XML = "xml",
-    ZIP = "zip",
-    CSV = "csv",
-    JSON = "json"
+	XML = 'xml',
+	ZIP = 'zip',
+	CSV = 'csv',
+	JSON = 'json',
 }
 
 export const enum ProducesMediaType {
-    JSON = "application/json",
-    XML = "application/xml",
-    ZIP = "application/zip"
+	JSON = 'application/json',
+	XML = 'application/xml',
+	ZIP = 'application/zip',
 }

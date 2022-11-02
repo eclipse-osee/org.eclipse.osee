@@ -52,45 +52,62 @@ import { SubElementTableComponent } from './components/sub-element-table/sub-ele
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
 import { MessageElementInterfaceRoutingModule } from './message-element-interface-routing.module';
 import { MessageElementInterfaceComponent } from './message-element-interface.component';
-import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module'
+import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module';
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { PlatformTypeQueryComponent } from './components/platform-type-query/platform-type-query.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 
-
-
-
 @NgModule({
-  declarations: [MessageElementInterfaceComponent, SubElementTableComponent, EditStructureFieldComponent, AddStructureDialogComponent, AddElementDialogComponent, EditElementFieldComponent, RemoveStructureDialogComponent, RemoveElementDialogComponent, DeleteElementDialogComponent, DeleteStructureDialogComponent, StructureTableComponent, SingleStructureTableComponent, SubElementTableRowComponent, SubElementTableNoEditFieldNameComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldComponent, UsermenuComponent, PlatformTypeQueryComponent],
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatStepperModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatListModule,
-    MatSlideToggleModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatDividerModule,
-    MatIconModule,
-    FormsModule,
-    DiffViewsModule,
-    MatAutocompleteModule,
-    A11yModule,
-    PleSharedMaterialModule,
-    OseeStringUtilsPipesModule,
-    OseeStringUtilsDirectivesModule,
-    GenericButtonsModule,
-    MessageElementInterfaceRoutingModule,
-    ActionStateButtonModule,
-    BranchUndoButtonModule,
-    SharedMessagingModule
-  ]
+	declarations: [
+		MessageElementInterfaceComponent,
+		SubElementTableComponent,
+		EditStructureFieldComponent,
+		AddStructureDialogComponent,
+		AddElementDialogComponent,
+		EditElementFieldComponent,
+		RemoveStructureDialogComponent,
+		RemoveElementDialogComponent,
+		DeleteElementDialogComponent,
+		DeleteStructureDialogComponent,
+		StructureTableComponent,
+		SingleStructureTableComponent,
+		SubElementTableRowComponent,
+		SubElementTableNoEditFieldNameComponent,
+		SubElementTableNoEditFieldDynamicWidthComponent,
+		SubElementTableNoEditFieldFilteredComponent,
+		SubElementTableNoEditFieldComponent,
+		UsermenuComponent,
+		PlatformTypeQueryComponent,
+	],
+	imports: [
+		CommonModule,
+		MatTableModule,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatInputModule,
+		MatTooltipModule,
+		MatStepperModule,
+		MatDialogModule,
+		MatMenuModule,
+		MatListModule,
+		MatSlideToggleModule,
+		MatSidenavModule,
+		MatSliderModule,
+		MatDividerModule,
+		MatIconModule,
+		FormsModule,
+		DiffViewsModule,
+		MatAutocompleteModule,
+		A11yModule,
+		PleSharedMaterialModule,
+		OseeStringUtilsPipesModule,
+		OseeStringUtilsDirectivesModule,
+		GenericButtonsModule,
+		MessageElementInterfaceRoutingModule,
+		ActionStateButtonModule,
+		BranchUndoButtonModule,
+		SharedMessagingModule,
+	],
 })
-export class MessageElementInterfaceModule { }
+export class MessageElementInterfaceModule {}

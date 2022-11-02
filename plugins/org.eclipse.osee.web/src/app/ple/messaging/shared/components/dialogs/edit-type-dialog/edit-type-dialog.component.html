@@ -11,327 +11,454 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="!data.mode">
-  <h1 mat-dialog-title>Editing {{ platform_type }}</h1>
+	<h1 mat-dialog-title>Editing {{ platform_type }}</h1>
 </ng-container>
 <ng-container *ngIf="data.mode">
-  <h1 mat-dialog-title>Creating New Type from {{ platform_type }}</h1>
+	<h1 mat-dialog-title>Creating New Type from {{ platform_type }}</h1>
 </ng-container>
 <mat-stepper #stepper>
-  <mat-step label="Platform Type">
-    <mat-dialog-content>
-      <mat-form-field class="width-100">
-        <mat-label for="platformTypeName">Platform Type</mat-label>
-        <input
-          matInput
-          type="text"
-          [(ngModel)]="data.type.name"
-          [ngModelOptions]="{updateOn: 'blur'}"
-          oseeUniquePlatformTypeName
-          #input
-          required
-          id="platformTypeName"
-          name="platformTypeName"
-          #platformTypeName="ngModel"
-        />
-        <mat-hint align="end">Name of Platform Type</mat-hint>
-        <mat-error id="platformTypeName" *ngIf="platformTypeName.errors?.['notUnique']">Name must be unique.</mat-error>
-      </mat-form-field>
-      <form oseeUniquePlatformTypeAttributes #platformTypeForm="ngForm">
-          <mat-form-field class="width-100">
-            <mat-label for="interfaceLogicalType">Logical Type</mat-label>
-            <mat-select
-              [(ngModel)]="data.type.interfaceLogicalType"
-              (ngModelChange)="updateLogicalType($event)"
-              required
-              [errorStateMatcher]="parentMatcher"
-              [compareWith]="compareLogicalTypes"
-              id="interfaceLogicalType"
-              name="interfaceLogicalType"
-              #interfaceLogicalType="ngModel"
-            >
-            <osee-mat-option-loading [options]="logicalTypes" [objectName]="'Logical Types'">
-              <mat-option
-                *ngFor="let logicaltype of logicalTypes | async"
-                [value]="logicaltype.name"
-              >
-                {{ logicaltype.name }}
-              </mat-option>
-
-            </osee-mat-option-loading>
-            </mat-select>
-            <mat-hint align="end"
-              >Corresponding Logical (Primitive) Type</mat-hint
-            >
-            <mat-error id="interfaceLogicalType" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-        <br />
-        <div class="full-width">
-          <mat-form-field appearance="fill">
-            <mat-label>Description</mat-label>
-            <textarea
-              cdkTextareaAutosize
-              matInput
-              [errorStateMatcher]="parentMatcher"
-              [(ngModel)]="data.type.description"
-              [required]="(descriptionRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="description"
-              name="description"
-              #description="ngModel"
-            ></textarea>
-            <mat-hint>Description of Platform Type</mat-hint>
-            <mat-error id="description" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-        </div>
-        <br />
-        <div class="full-width">
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeMinval">Minimum Value</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeMinval"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(minValRequired|async)||false"
-              [max]="data.type.interfacePlatformTypeMaxval"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeMinval"
-              name="interfacePlatformTypeMinval"
-              #interfacePlatformTypeMinval="ngModel"
-            />
-            <mat-hint align="end"
-              >Minimum Value Platform Type can Achieve</mat-hint
-            >
-            <mat-error id="interfacePlatformTypeMinval" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeMaxval">Maximum Value</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeMaxval"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(maxValRequired|async)||false"
-              [min]="data.type.interfacePlatformTypeMinval"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeMaxval"
-              name="interfacePlatformTypeMaxval"
-              #interfacePlatformTypeMaxval="ngModel"
-            />
-            <mat-hint align="end"
-              >Maximum Value Platform Type can Achieve</mat-hint
-            >
-            <mat-error id="interfacePlatformTypeMaxval" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeDefaultValue">Default Value</mat-label>
-            <input
-              matInput
-              type="text"
-              [(ngModel)]="data.type.interfacePlatformTypeDefaultValue"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(defaultValRequired|async)||false"
-              [max]="data.type.interfacePlatformTypeMaxval"
-              [min]="data.type.interfacePlatformTypeMinval"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeDefaultValue"
-              name="interfacePlatformTypeDefaultValue"
-              #interfacePlatformTypeDefaultValue="ngModel"
-            />
-            <mat-hint align="end">Default Value for Platform Type</mat-hint>
-            <mat-error id="interfacePlatformTypeDefaultValue" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeMsbValue">MSB Value</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeMsbValue"
-              [ngModel]="getMSBValue()"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(msbValRequired|async)||false"
-              [max]="data.type.interfacePlatformTypeMaxval"
-              [min]="data.type.interfacePlatformTypeMinval"
-              id="interfacePlatformTypeMsbValue"
-              name="interfacePlatformTypeMsbValue"
-              #interfacePlatformTypeMsbValue="ngModel"
-            />
-            <mat-hint align="end">Most Significant Byte</mat-hint>
-            <mat-error id="interfacePlatformTypeMsbValue" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-        </div>
-        <br />
-        <div class="full-width">
-          <mat-form-field>
-            <mat-label for="byte_size1">Byte Size</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="byte_size"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(bitSizeRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="byte_size1"
-              name="byte_size1"
-              #byte_size1="ngModel"
-            />
-            <mat-hint align="end">Size of Platform Type in Bytes</mat-hint>
-            <mat-error id="byte_size1" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeBitSize">Bit Size</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeBitSize"
-              #input
-              required
-              [errorStateMatcher]="parentMatcher"
-              [required]="(bitSizeRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeBitSize"
-              name="interfacePlatformTypeBitSize"
-              #interfacePlatformTypeBitSize="ngModel"
-            />
-            <mat-hint align="end">Size of Platform Type in Bits</mat-hint>
-            <mat-error id="interfacePlatformTypeBitSize" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-        </div>
-        <br />
-        <div class="full-width">
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeBitsResolution">Resolution</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeBitsResolution"
-              [ngModel]="getResolution()"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(bitResolutionRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeBitsResolution"
-              name="interfacePlatformTypeBitsResolution"
-              #interfacePlatformTypeBitsResolution="ngModel"
-            />
-            <mat-hint align="end">Bit Resolution of a Platform Type</mat-hint>
-            <mat-error id="interfacePlatformTypeBitsResolution" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeCompRate">Comp Rate</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeCompRate"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(compRateRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeCompRate"
-              name="interfacePlatformTypeCompRate"
-              #interfacePlatformTypeCompRate="ngModel"
-            />
-            <mat-hint align="end">Comp Rate of a Platform Type</mat-hint>
-            <mat-error id="interfacePlatformTypeCompRate" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeAnalogAccuracy">Analog Accuracy</mat-label>
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="data.type.interfacePlatformTypeAnalogAccuracy"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(analogAccRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeAnalogAccuracy"
-              name="interfacePlatformTypeAnalogAccuracy"
-              #interfacePlatformTypeAnalogAccuracy="ngModel"
-            />
-            <mat-hint align="end">Analog Accuracy of a Platform Type</mat-hint>
-            <mat-error id="interfacePlatformTypeAnalogAccuracy" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label for="interfacePlatformTypeUnits">Units</mat-label>
-            <mat-select
-              [(ngModel)]="data.type.interfacePlatformTypeUnits"
-              #input
-              [errorStateMatcher]="parentMatcher"
-              [required]="(unitsRequired|async)||false"
-              [ngModelOptions]="{updateOn: 'blur'}"
-              id="interfacePlatformTypeUnits"
-              name="interfacePlatformTypeUnits"
-              #interfacePlatformTypeUnits="ngModel"
-            >
-            <osee-mat-option-loading [options]="units" [objectName]="'Units'">
-              <mat-option *ngFor="let unit of units | async" [value]="unit">
-                {{ unit }}
-              </mat-option>
-            </osee-mat-option-loading>
-            </mat-select>
-            <mat-hint align="end">Select a Unit</mat-hint>
-            <mat-error id="interfacePlatformTypeUnits" *ngIf="platformTypeForm.errors?.['attributesNotUnique']">Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}} matches.</mat-error>
-          </mat-form-field>
-        </div>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()">Cancel</button>
-      <ng-container *ngIf="data.type.interfaceLogicalType==='enumeration'">
-        <button
-        mat-raised-button
-        matStepperNext
-        color="primary"
-        [disabled]="
-          data.type.name.length === 0 ||
-          data.type.interfaceLogicalType.length === 0 || platformTypeForm.invalid || platformTypeForm.pending || platformTypeName.invalid || platformTypeName.pending
-        "
-      >
-        Next
-      </button>
-      </ng-container>
-      <ng-container *ngIf="data.type.interfaceLogicalType!=='enumeration'">
-        <button
-        mat-raised-button
-        [mat-dialog-close]="data"
-        color="primary"
-        [disabled]="
-          data.type.name.length === 0 ||
-          data.type.interfaceLogicalType.length === 0 || platformTypeForm.invalid || platformTypeForm.pending || platformTypeName.invalid || platformTypeName.pending
-        "
-      >
-        Ok
-      </button>
-      </ng-container>
-    </mat-dialog-actions>
-  </mat-step>
-  <ng-container *ngIf="data.type.interfaceLogicalType==='enumeration'">
-    <mat-step label="Enumeration Set">
-        <mat-dialog-content>
-            <osee-edit-enum-set-field [editable]="true" [platformType]="data.type" (enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-          <button mat-button (click)="onNoClick()">Cancel</button>
-          <ng-container *ngIf="data.type.interfaceLogicalType==='enumeration'">
-            <button
-            mat-raised-button
-            [mat-dialog-close]="returnValue"
-            color="primary"
-            [disabled]="
-              data.type.name.length === 0 ||
-              data.type.interfaceLogicalType.length === 0 || platformTypeForm.invalid || platformTypeForm.pending || platformTypeName.invalid || platformTypeName.pending || (enumUnique|async)==='false'
-            "
-          >
-            Ok
-          </button>
-          </ng-container>
-        </mat-dialog-actions>
-    </mat-step>
-  </ng-container>
+	<mat-step label="Platform Type">
+		<mat-dialog-content>
+			<mat-form-field class="width-100">
+				<mat-label for="platformTypeName">Platform Type</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="data.type.name"
+					[ngModelOptions]="{ updateOn: 'blur' }"
+					oseeUniquePlatformTypeName
+					#input
+					required
+					id="platformTypeName"
+					name="platformTypeName"
+					#platformTypeName="ngModel" />
+				<mat-hint align="end">Name of Platform Type</mat-hint>
+				<mat-error
+					id="platformTypeName"
+					*ngIf="platformTypeName.errors?.['notUnique']"
+					>Name must be unique.</mat-error
+				>
+			</mat-form-field>
+			<form
+				oseeUniquePlatformTypeAttributes
+				#platformTypeForm="ngForm">
+				<mat-form-field class="width-100">
+					<mat-label for="interfaceLogicalType"
+						>Logical Type</mat-label
+					>
+					<mat-select
+						[(ngModel)]="data.type.interfaceLogicalType"
+						(ngModelChange)="updateLogicalType($event)"
+						required
+						[errorStateMatcher]="parentMatcher"
+						[compareWith]="compareLogicalTypes"
+						id="interfaceLogicalType"
+						name="interfaceLogicalType"
+						#interfaceLogicalType="ngModel">
+						<osee-mat-option-loading
+							[options]="logicalTypes"
+							[objectName]="'Logical Types'">
+							<mat-option
+								*ngFor="let logicaltype of logicalTypes | async"
+								[value]="logicaltype.name">
+								{{ logicaltype.name }}
+							</mat-option>
+						</osee-mat-option-loading>
+					</mat-select>
+					<mat-hint align="end"
+						>Corresponding Logical (Primitive) Type</mat-hint
+					>
+					<mat-error
+						id="interfaceLogicalType"
+						*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+						>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+						matches.</mat-error
+					>
+				</mat-form-field>
+				<br />
+				<div class="full-width">
+					<mat-form-field appearance="fill">
+						<mat-label>Description</mat-label>
+						<textarea
+							cdkTextareaAutosize
+							matInput
+							[errorStateMatcher]="parentMatcher"
+							[(ngModel)]="data.type.description"
+							[required]="(descriptionRequired | async) || false"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="description"
+							name="description"
+							#description="ngModel"></textarea>
+						<mat-hint>Description of Platform Type</mat-hint>
+						<mat-error
+							id="description"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+				</div>
+				<br />
+				<div class="full-width">
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeMinval"
+							>Minimum Value</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="data.type.interfacePlatformTypeMinval"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(minValRequired | async) || false"
+							[max]="data.type.interfacePlatformTypeMaxval"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeMinval"
+							name="interfacePlatformTypeMinval"
+							#interfacePlatformTypeMinval="ngModel" />
+						<mat-hint align="end"
+							>Minimum Value Platform Type can Achieve</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeMinval"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeMaxval"
+							>Maximum Value</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="data.type.interfacePlatformTypeMaxval"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(maxValRequired | async) || false"
+							[min]="data.type.interfacePlatformTypeMinval"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeMaxval"
+							name="interfacePlatformTypeMaxval"
+							#interfacePlatformTypeMaxval="ngModel" />
+						<mat-hint align="end"
+							>Maximum Value Platform Type can Achieve</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeMaxval"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeDefaultValue"
+							>Default Value</mat-label
+						>
+						<input
+							matInput
+							type="text"
+							[(ngModel)]="
+								data.type.interfacePlatformTypeDefaultValue
+							"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(defaultValRequired | async) || false"
+							[max]="data.type.interfacePlatformTypeMaxval"
+							[min]="data.type.interfacePlatformTypeMinval"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeDefaultValue"
+							name="interfacePlatformTypeDefaultValue"
+							#interfacePlatformTypeDefaultValue="ngModel" />
+						<mat-hint align="end"
+							>Default Value for Platform Type</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeDefaultValue"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeMsbValue"
+							>MSB Value</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="
+								data.type.interfacePlatformTypeMsbValue
+							"
+							[ngModel]="getMSBValue()"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(msbValRequired | async) || false"
+							[max]="data.type.interfacePlatformTypeMaxval"
+							[min]="data.type.interfacePlatformTypeMinval"
+							id="interfacePlatformTypeMsbValue"
+							name="interfacePlatformTypeMsbValue"
+							#interfacePlatformTypeMsbValue="ngModel" />
+						<mat-hint align="end">Most Significant Byte</mat-hint>
+						<mat-error
+							id="interfacePlatformTypeMsbValue"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+				</div>
+				<br />
+				<div class="full-width">
+					<mat-form-field>
+						<mat-label for="byte_size1">Byte Size</mat-label>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="byte_size"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(bitSizeRequired | async) || false"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="byte_size1"
+							name="byte_size1"
+							#byte_size1="ngModel" />
+						<mat-hint align="end"
+							>Size of Platform Type in Bytes</mat-hint
+						>
+						<mat-error
+							id="byte_size1"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeBitSize"
+							>Bit Size</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="data.type.interfacePlatformTypeBitSize"
+							#input
+							required
+							[errorStateMatcher]="parentMatcher"
+							[required]="(bitSizeRequired | async) || false"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeBitSize"
+							name="interfacePlatformTypeBitSize"
+							#interfacePlatformTypeBitSize="ngModel" />
+						<mat-hint align="end"
+							>Size of Platform Type in Bits</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeBitSize"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+				</div>
+				<br />
+				<div class="full-width">
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeBitsResolution"
+							>Resolution</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="
+								data.type.interfacePlatformTypeBitsResolution
+							"
+							[ngModel]="getResolution()"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="
+								(bitResolutionRequired | async) || false
+							"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeBitsResolution"
+							name="interfacePlatformTypeBitsResolution"
+							#interfacePlatformTypeBitsResolution="ngModel" />
+						<mat-hint align="end"
+							>Bit Resolution of a Platform Type</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeBitsResolution"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeCompRate"
+							>Comp Rate</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="
+								data.type.interfacePlatformTypeCompRate
+							"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(compRateRequired | async) || false"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeCompRate"
+							name="interfacePlatformTypeCompRate"
+							#interfacePlatformTypeCompRate="ngModel" />
+						<mat-hint align="end"
+							>Comp Rate of a Platform Type</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeCompRate"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeAnalogAccuracy"
+							>Analog Accuracy</mat-label
+						>
+						<input
+							matInput
+							type="number"
+							[(ngModel)]="
+								data.type.interfacePlatformTypeAnalogAccuracy
+							"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(analogAccRequired | async) || false"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeAnalogAccuracy"
+							name="interfacePlatformTypeAnalogAccuracy"
+							#interfacePlatformTypeAnalogAccuracy="ngModel" />
+						<mat-hint align="end"
+							>Analog Accuracy of a Platform Type</mat-hint
+						>
+						<mat-error
+							id="interfacePlatformTypeAnalogAccuracy"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label for="interfacePlatformTypeUnits"
+							>Units</mat-label
+						>
+						<mat-select
+							[(ngModel)]="data.type.interfacePlatformTypeUnits"
+							#input
+							[errorStateMatcher]="parentMatcher"
+							[required]="(unitsRequired | async) || false"
+							[ngModelOptions]="{ updateOn: 'blur' }"
+							id="interfacePlatformTypeUnits"
+							name="interfacePlatformTypeUnits"
+							#interfacePlatformTypeUnits="ngModel">
+							<osee-mat-option-loading
+								[options]="units"
+								[objectName]="'Units'">
+								<mat-option
+									*ngFor="let unit of units | async"
+									[value]="unit">
+									{{ unit }}
+								</mat-option>
+							</osee-mat-option-loading>
+						</mat-select>
+						<mat-hint align="end">Select a Unit</mat-hint>
+						<mat-error
+							id="interfacePlatformTypeUnits"
+							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
+							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
+							matches.</mat-error
+						>
+					</mat-form-field>
+				</div>
+			</form>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-button
+				(click)="onNoClick()">
+				Cancel
+			</button>
+			<ng-container
+				*ngIf="data.type.interfaceLogicalType === 'enumeration'">
+				<button
+					mat-raised-button
+					matStepperNext
+					color="primary"
+					[disabled]="
+						data.type.name.length === 0 ||
+						data.type.interfaceLogicalType.length === 0 ||
+						platformTypeForm.invalid ||
+						platformTypeForm.pending ||
+						platformTypeName.invalid ||
+						platformTypeName.pending
+					">
+					Next
+				</button>
+			</ng-container>
+			<ng-container
+				*ngIf="data.type.interfaceLogicalType !== 'enumeration'">
+				<button
+					mat-raised-button
+					[mat-dialog-close]="data"
+					color="primary"
+					[disabled]="
+						data.type.name.length === 0 ||
+						data.type.interfaceLogicalType.length === 0 ||
+						platformTypeForm.invalid ||
+						platformTypeForm.pending ||
+						platformTypeName.invalid ||
+						platformTypeName.pending
+					">
+					Ok
+				</button>
+			</ng-container>
+		</mat-dialog-actions>
+	</mat-step>
+	<ng-container *ngIf="data.type.interfaceLogicalType === 'enumeration'">
+		<mat-step label="Enumeration Set">
+			<mat-dialog-content>
+				<osee-edit-enum-set-field
+					[editable]="true"
+					[platformType]="data.type"
+					(enumUpdated)="
+						enumUpdate($event)
+					"></osee-edit-enum-set-field>
+			</mat-dialog-content>
+			<mat-dialog-actions align="end">
+				<button
+					mat-button
+					(click)="onNoClick()">
+					Cancel
+				</button>
+				<ng-container
+					*ngIf="data.type.interfaceLogicalType === 'enumeration'">
+					<button
+						mat-raised-button
+						[mat-dialog-close]="returnValue"
+						color="primary"
+						[disabled]="
+							data.type.name.length === 0 ||
+							data.type.interfaceLogicalType.length === 0 ||
+							platformTypeForm.invalid ||
+							platformTypeForm.pending ||
+							platformTypeName.invalid ||
+							platformTypeName.pending ||
+							(enumUnique | async) === 'false'
+						">
+						Ok
+					</button>
+				</ng-container>
+			</mat-dialog-actions>
+		</mat-step>
+	</ng-container>
 </mat-stepper>

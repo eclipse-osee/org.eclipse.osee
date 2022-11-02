@@ -13,11 +13,11 @@
 import { transportType } from '../types/transportType';
 
 export const ethernet: Required<transportType> = {
-    id: '1233456',
-    name: 'Ethernet',
-    byteAlignValidation: true,
-    messageGeneration: false,
-    byteAlignValidationSize: 4,
-    messageGenerationType: '',
-    messageGenerationPosition: ''
-}
+	id: '1233456',
+	name: 'Ethernet',
+	byteAlignValidation: true,
+	messageGeneration: false,
+	byteAlignValidationSize: 4,
+	messageGenerationType: '',
+	messageGenerationPosition: '',
+};

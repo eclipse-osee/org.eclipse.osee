@@ -11,13 +11,18 @@
  *     Boeing - initial API and implementation
  -->
 <div class="user-button">
-    <div [matMenuTriggerFor]="userTrigger" data-cy="user-overflow-btn" class="avatar-button">
-        <div class="avatar-image">
-            <mat-icon class="avatar-icon">account_circle</mat-icon>
-        </div>
-    </div>
+	<div
+		[matMenuTriggerFor]="userTrigger"
+		data-cy="user-overflow-btn"
+		class="avatar-button">
+		<div class="avatar-image">
+			<mat-icon class="avatar-icon">account_circle</mat-icon>
+		</div>
+	</div>
 </div>
-<mat-menu #userTrigger="matMenu" class="mat-menu-fit-content">
-    <div class="user-name">{{(userInfo | async)?.name}}</div>
-    <router-outlet name="userMenu"></router-outlet>
+<mat-menu
+	#userTrigger="matMenu"
+	class="mat-menu-fit-content">
+	<div class="user-name">{{ (userInfo | async)?.name }}</div>
+	<router-outlet name="userMenu"></router-outlet>
 </mat-menu>

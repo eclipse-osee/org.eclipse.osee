@@ -12,24 +12,22 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MimSingleDiffComponent } from '../mim-single-diff/mim-single-diff.component';
+import { SingleDiffComponent } from '../single-diff/single-diff.component';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-
-
 @NgModule({
-  declarations: [MimSingleDiffComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule
-  ],
-  exports:[MimSingleDiffComponent]
+	declarations: [SingleDiffComponent],
+	imports: [
+		CommonModule,
+		FormsModule,
+		MatButtonModule,
+		MatFormFieldModule,
+		MatIconModule,
+	],
+	exports: [SingleDiffComponent],
 })
-export class DiffViewsModule { }
+export class DiffViewsModule {}

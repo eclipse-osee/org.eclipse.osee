@@ -22,20 +22,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-
-
 @NgModule({
-  declarations: [ActionDropDownComponent,CreateActionDialogComponent],
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
-  ],
-  exports:[ActionDropDownComponent]
+	declarations: [ActionDropDownComponent, CreateActionDialogComponent],
+	imports: [
+		CommonModule,
+		MatDialogModule,
+		FormsModule,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatInputModule,
+		MatButtonModule,
+		MatIconModule,
+	],
+	exports: [ActionDropDownComponent],
 })
-export class ActionStateButtonModule { }
+export class ActionStateButtonModule {}

@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnChanges,
+	OnInit,
+	SimpleChanges,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { ActionStateButtonService } from '../../../services/action-state-button.service';
@@ -21,62 +27,61 @@ import { CreateActionDialogComponent } from '../create-action-dialog/create-acti
  * Allows users to create and manage the state of a branch from within a page.
  */
 @Component({
-  selector: 'action-dropdown',
-  templateUrl: './action-drop-down.component.html',
-  styleUrls: ['./action-drop-down.component.sass']
+	selector: 'osee-action-dropdown',
+	templateUrl: './action-drop-down.component.html',
+	styleUrls: ['./action-drop-down.component.sass'],
 })
-export class ActionDropDownComponent implements OnInit,OnChanges {
-  @Input() category: string = "0"
-  @Input() workType:string=""
-  branchInfo = this.actionService.branchState;
+export class ActionDropDownComponent implements OnChanges {
+	@Input() category: string = '0';
+	@Input() workType: string = '';
+	branchInfo = this.actionService.branchState;
 
-  branchTransitionable = this.actionService.branchTransitionable;
+	branchTransitionable = this.actionService.branchTransitionable;
 
+	branchApprovableOrCommittable = this.actionService.approvedState;
+	doAddAction = this.actionService.addActionInitialStep.pipe(
+		switchMap((thisUser) =>
+			this.dialog
+				.open(CreateActionDialogComponent, {
+					data: new PLConfigCreateAction(thisUser),
+					minWidth: '60%',
+				})
+				.afterClosed()
+				.pipe(
+					take(1),
+					filter(
+						(val): val is PLConfigCreateAction => val !== undefined
+					),
+					switchMap((value) =>
+						this.actionService.doAddAction(value, this.category)
+					)
+				)
+		)
+	);
 
-  branchApprovableOrCommittable = this.actionService.approvedState;
-  doAddAction = this.actionService.addActionInitialStep.pipe(
-    switchMap((thisUser) =>
-      this.dialog
-        .open(CreateActionDialogComponent, {
-          data: new PLConfigCreateAction(thisUser),
-          minWidth: '60%',
-        })
-        .afterClosed().pipe(
-          take(1),
-          filter((val):val is PLConfigCreateAction=> val!==undefined),
-          switchMap((value) => this.actionService.doAddAction(value,this.category)),
-      )
-    )
-  )
+	doApproveBranch = this.actionService.doApproveBranch;
 
-  doApproveBranch = this.actionService.doApproveBranch;
+	doTransition = this.actionService.doTransition;
+	doCommitBranch = this.actionService.doCommitBranch;
 
-  doTransition = this.actionService.doTransition;
-  doCommitBranch = this.actionService.doCommitBranch;
-
-  constructor (private actionService: ActionStateButtonService,
-    public dialog: MatDialog,) {
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.actionService.category = this.category;
-    this.actionService.workTypeValue = this.workType;
-  }
-
-  ngOnInit(): void {
-  }
-
-  addAction(): void {
-    this.doAddAction.subscribe();
-  }
-  transitionToReview(): void {
-    this.doTransition.subscribe();
-  }
-  approveBranch(): void {
-    this.doApproveBranch.subscribe();
-  }
-  commitBranch(): void {
-    this.doCommitBranch.subscribe();
-
-  }
-
+	constructor(
+		private actionService: ActionStateButtonService,
+		public dialog: MatDialog
+	) {}
+	ngOnChanges(changes: SimpleChanges): void {
+		this.actionService.category = this.category;
+		this.actionService.workTypeValue = this.workType;
+	}
+	addAction(): void {
+		this.doAddAction.subscribe();
+	}
+	transitionToReview(): void {
+		this.doTransition.subscribe();
+	}
+	approveBranch(): void {
+		this.doApproveBranch.subscribe();
+	}
+	commitBranch(): void {
+		this.doCommitBranch.subscribe();
+	}
 }

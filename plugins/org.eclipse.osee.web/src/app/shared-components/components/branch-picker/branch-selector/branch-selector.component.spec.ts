@@ -22,24 +22,31 @@ import { MatOptionLoadingModule } from '../../../mat-option-loading/mat-option-l
 import { BranchSelectorComponent } from './branch-selector.component';
 
 describe('BranchSelectorComponent', () => {
-  let component: BranchSelectorComponent;
-  let fixture: ComponentFixture<BranchSelectorComponent>;
+	let component: BranchSelectorComponent;
+	let fixture: ComponentFixture<BranchSelectorComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[RouterTestingModule,HttpClientTestingModule, MatFormFieldModule,FormsModule,MatSelectModule,NoopAnimationsModule, MatOptionLoadingModule],
-      declarations: [ BranchSelectorComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				RouterTestingModule,
+				HttpClientTestingModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatSelectModule,
+				NoopAnimationsModule,
+				MatOptionLoadingModule,
+			],
+			declarations: [BranchSelectorComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BranchSelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(BranchSelectorComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -15,16 +15,10 @@ import { CommonModule } from '@angular/common';
 
 import { OverviewRoutingModule } from './overview-routing.module';
 import { OverviewComponent } from './overview.component';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
-  declarations: [
-    OverviewComponent
-  ],
-  imports: [
-    CommonModule,
-    OverviewRoutingModule,
-    MatGridListModule
-  ]
+	declarations: [OverviewComponent],
+	imports: [CommonModule, OverviewRoutingModule, MatGridListModule],
 })
-export class OverviewModule { }
+export class OverviewModule {}

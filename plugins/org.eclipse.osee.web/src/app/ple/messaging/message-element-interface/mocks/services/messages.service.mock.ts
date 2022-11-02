@@ -10,16 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { messagesMock } from "../../../message-interface/mocks/ReturnObjects/messages.mock";
-import { subMessagesMock } from "../../../message-interface/mocks/ReturnObjects/submessages.mock";
-import { MessagesStructureService } from "../../../shared/services/http/messages.structure.service";
+import { of } from 'rxjs';
+import { messagesMock } from '../../../message-interface/mocks/ReturnObjects/messages.mock';
+import { subMessagesMock } from '../../../message-interface/mocks/ReturnObjects/submessages.mock';
+import { MessagesStructureService } from '../../../shared/services/http/messages.structure.service';
 
 export const messageServiceMock: Partial<MessagesStructureService> = {
-    getSubMessage(branchId: string, messageId: string, subMessageId: string,connectionId:string) {
-        return of(subMessagesMock[0]);
-    },
-    getMessages(branchId: string, connectionId: string) {
-        return of(messagesMock);
-    }
-}
+	getSubMessage(
+		branchId: string,
+		messageId: string,
+		subMessageId: string,
+		connectionId: string
+	) {
+		return of(subMessagesMock[0]);
+	},
+	getMessages(branchId: string, connectionId: string) {
+		return of(messagesMock);
+	},
+};

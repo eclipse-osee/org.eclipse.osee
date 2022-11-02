@@ -10,52 +10,52 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { connectionDiffItem } from "src/app/ple/messaging/shared/types/DifferenceReport";
+import { connectionDiffItem } from 'src/app/ple/messaging/shared/types/DifferenceReport';
 
 export const connectionDiffsMock: connectionDiffItem[] = [
-    {
-        "id": "200431",
-        "name": "Connection A",
-        "primaryNode": 200393,
-        "secondaryNode": 200394,
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "description": "Added this connection",
-        "transportType": "ETHERNET",
-        "diffInfo": {
-            "added": true,
-            "deleted": false,
-            "fieldsChanged": {},
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200392",
-        "name": "Connection1",
-        "primaryNode": 200390,
-        "secondaryNode": 200391,
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "description": "Added a description",
-        "transportType": "ETHERNET",
-        "diffInfo": {
-            "added": false,
-            "deleted": false,
-            "fieldsChanged": {
-                "transportType": "ETHERNET",
-                "description": null
-            },
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    }
-]
+	{
+		id: '200431',
+		name: 'Connection A',
+		primaryNode: 200393,
+		secondaryNode: 200394,
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		description: 'Added this connection',
+		transportType: 'ETHERNET',
+		diffInfo: {
+			added: true,
+			deleted: false,
+			fieldsChanged: {},
+			url: {
+				label: '',
+				url: '',
+			},
+		},
+	},
+	{
+		id: '200392',
+		name: 'Connection1',
+		primaryNode: 200390,
+		secondaryNode: 200391,
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		description: 'Added a description',
+		transportType: 'ETHERNET',
+		diffInfo: {
+			added: false,
+			deleted: false,
+			fieldsChanged: {
+				transportType: 'ETHERNET',
+				description: null,
+			},
+			url: {
+				label: '',
+				url: '',
+			},
+		},
+	},
+];

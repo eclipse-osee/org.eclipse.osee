@@ -10,24 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>OSEE</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script>
-    const ua = window.navigator.userAgent;
-    const msie = ua.indexOf('MSIE ');
-    const trident = ua.indexOf('Trident/');
-    if(msie > 0 || trident > 0){
-      alert("This browser is not supported by OSEE.  Please use the latest supported Edge, Firefox or Chrome.")
-    }
-  </script>
-</head>
-<body class="mat-typography">
-  <app-root></app-root>
-</body>
+	<head>
+		<meta charset="utf-8" />
+		<title>OSEE</title>
+		<base href="/" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1" />
+		<link
+			rel="icon"
+			type="image/x-icon"
+			href="favicon.ico" />
+		<script>
+			const ua = window.navigator.userAgent;
+			const msie = ua.indexOf('MSIE ');
+			const trident = ua.indexOf('Trident/');
+			if (msie > 0 || trident > 0) {
+				alert(
+					'This browser is not supported by OSEE.  Please use the latest supported Edge, Firefox or Chrome.'
+				);
+			}
+		</script>
+	</head>
+	<body class="mat-typography">
+		<osee-root></osee-root>
+	</body>
 </html>

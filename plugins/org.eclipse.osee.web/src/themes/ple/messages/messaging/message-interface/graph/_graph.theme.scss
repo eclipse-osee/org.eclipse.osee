@@ -12,50 +12,52 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../../../theme-system.scss';
+@import '../../../../../../theme-system';
 
- @mixin color($config-or-theme) {
-   // Extract the color configuration in case a theme has been passed.
-   // This allows consumers to either pass a theme object or a color configuration.
-   $config: mat.get-color-config($config-or-theme);
-   // Extract the palettes you need from the theme definition.
-   $primary: map-get($config, primary);
-   $accent: map-get($config, accent);
-   $warn: map-get($config, warn);
-   $background: map-get($config, background);
-   $foreground: map-get($config, foreground);
-   $success: map-get($config,success);
-   // Define any styles affected by the theme.
-    .link-text-path-deleted{
-      display: block;
-      fill: mat.get-color-from-palette($warn,400);
-      font-size: 12px;
-      stroke:none;
-    }
+@mixin color($config-or-theme) {
+	// Extract the color configuration in case a theme has been passed.
+	// This allows consumers to either pass a theme object or a color configuration.
+	$config: mat.get-color-config($config-or-theme);
 
-    .link-text-path-added{
-      display: block;
-      fill: mat.get-color-from-palette($success,400);
-      font-size: 12px;
-      stroke:none;
-    }
- }
- @mixin typography($config-or-theme){
-     
- }
- @mixin typography-themed($config-or-theme){
-   $config: mat.get-typography-config($config-or-theme);
- }
- 
- @mixin theme($theme, $typography){
-     $color: mat.get-color-config($theme);
-     $typography: mat.get-typography-config($typography);
-     @include typography($theme);
-     
-     @if $color != null {  
-       @include color($color);   
-     }  
-     @if $typography != null {
-       @include typography-themed($typography);  
-     }
- }
+	// Extract the palettes you need from the theme definition.
+	$primary: map.get($config, primary);
+	$accent: map.get($config, accent);
+	$warn: map.get($config, warn);
+	$background: map.get($config, background);
+	$foreground: map.get($config, foreground);
+	$success: map.get($config, success);
+
+	// Define any styles affected by the theme.
+	.link-text-path-deleted {
+		display: block;
+		fill: mat.get-color-from-palette($warn, 400);
+		font-size: 12px;
+		stroke: none;
+	}
+
+	.link-text-path-added {
+		display: block;
+		fill: mat.get-color-from-palette($success, 400);
+		font-size: 12px;
+		stroke: none;
+	}
+}
+/* stylelint-disable block-no-empty */
+@mixin typography($config-or-theme) {
+}
+@mixin typography-themed($config-or-theme) {
+	$config: mat.get-typography-config($config-or-theme);
+}
+
+@mixin theme($theme, $typography) {
+	$color: mat.get-color-config($theme);
+	$typography: mat.get-typography-config($typography);
+	@include typography($theme);
+
+	@if $color {
+		@include color($color);
+	}
+	@if $typography {
+		@include typography-themed($typography);
+	}
+}

@@ -11,26 +11,31 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 describe('PLConfig - Create Branch', () => {
-  before(() => {
-    cy.visit('/ple').get('[data-cy="plconfig-nav-button"]').click()
-      .url().should('include','plconfig');
-  });
-  describe('branch creation', () => {
-    before(() => {
-      cy.createBranch(
-        'SAW Product Line',
-        'SAW PL ARB',
-        'Improvement',
-        'SAW Product Line',
-        'Cypress Test',
-        'Cypress Action Description'
-      );
-    });
-    it('should have created a branch', () => {
-      cy.task<Cypress.NameResult>('getLatestBranchName').then((branchname) => {
-        const branch: string = branchname.name;
-        return cy.selectBranch(branch, 'working');
-      });
-    });
-  });
+	before(() => {
+		cy.visit('/ple')
+			.get('[data-cy="plconfig-nav-button"]')
+			.click()
+			.url()
+			.should('include', 'plconfig');
+	});
+	describe('branch creation', () => {
+		before(() => {
+			cy.createBranch(
+				'SAW Product Line',
+				'SAW PL ARB',
+				'Improvement',
+				'SAW Product Line',
+				'Cypress Test',
+				'Cypress Action Description'
+			);
+		});
+		it('should have created a branch', () => {
+			cy.task<Cypress.NameResult>('getLatestBranchName').then(
+				(branchname) => {
+					const branch: string = branchname.name;
+					return cy.selectBranch(branch, 'working');
+				}
+			);
+		});
+	});
 });

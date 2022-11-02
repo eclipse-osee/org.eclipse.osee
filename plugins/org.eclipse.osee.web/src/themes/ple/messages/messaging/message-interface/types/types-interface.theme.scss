@@ -14,40 +14,42 @@
 @use '@angular/material' as mat;
 
 @mixin color($config-or-theme) {
-  // Extract the color configuration in case a theme has been passed.
-  // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat.get-color-config($config-or-theme);
-  // Extract the palettes you need from the theme definition.
-  $primary: map-get($config, primary);
-  $accent: map-get($config, accent);
-  $warn: map-get($config, warn);
-  $background: map-get($config, background);
-  $foreground: map-get($config, foreground);
-  
-  // Define any styles affected by the theme.
-  .ple-messaging-type-grid-list{
-    background-color:mat.get-color-from-palette($background, app-bar)
-  }
-  .attribute-unique-error{
-    color: mat.get-color-from-palette($warn)
-  }
+	// Extract the color configuration in case a theme has been passed.
+	// This allows consumers to either pass a theme object or a color configuration.
+	$config: mat.get-color-config($config-or-theme);
+
+	// Extract the palettes you need from the theme definition.
+	$primary: map.get($config, primary);
+	$accent: map.get($config, accent);
+	$warn: map.get($config, warn);
+	$background: map.get($config, background);
+	$foreground: map.get($config, foreground);
+
+	// Define any styles affected by the theme.
+	.ple-messaging-type-grid-list {
+		background-color: mat.get-color-from-palette($background, app-bar);
+	}
+
+	.attribute-unique-error {
+		color: mat.get-color-from-palette($warn);
+	}
 }
-@mixin typography($config-or-theme){
-    
+/* stylelint-disable block-no-empty */
+@mixin typography($config-or-theme) {
 }
-@mixin typography-themed($config-or-theme){
-  $config: mat.get-typography-config($config-or-theme);
+@mixin typography-themed($config-or-theme) {
+	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography){
-    $color: mat.get-color-config($theme);
-    $typography: mat.get-typography-config($typography);
-    @include typography($theme);
-    
-    @if $color != null {  
-      @include color($color);   
-    }  
-    @if $typography != null {
-      @include typography-themed($typography);  
-    }
+@mixin theme($theme, $typography) {
+	$color: mat.get-color-config($theme);
+	$typography: mat.get-typography-config($typography);
+	@include typography($theme);
+
+	@if $color {
+		@include color($color);
+	}
+	@if $typography {
+		@include typography-themed($typography);
+	}
 }

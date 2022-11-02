@@ -13,68 +13,107 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
-import { concatMap, filter, map, switchMap, takeUntil, tap, reduce } from 'rxjs/operators';
+import {
+	concatMap,
+	filter,
+	map,
+	switchMap,
+	takeUntil,
+	tap,
+	reduce,
+} from 'rxjs/operators';
 import { PlConfigUIStateService } from './services/pl-config-uistate.service';
 
 @Component({
-  selector: 'app-plconfig',
-  templateUrl: './plconfig.component.html',
-  styleUrls: ['./plconfig.component.sass']
+	selector: 'osee-plconfig',
+	templateUrl: './plconfig.component.html',
+	styleUrls: ['./plconfig.component.sass'],
 })
-export class PlconfigComponent implements OnInit,OnDestroy {
-  _updateRequired: Observable<boolean>= this.uiStateService.updateReq;
-  _branchType: string = '';
-  branchType = this.uiStateService.viewBranchType;
-  branchId = this.uiStateService.branchId;
-  private _done = new Subject();
-  isAllowedToDiff = combineLatest([this.uiStateService.viewBranchType, this.uiStateService.branchId, this.uiStateService.isInDiff]).pipe(
-    //invalid conditions equals false
-    switchMap(([branchType,branchId,inDiff])=>iif(()=>inDiff===false && branchId.length!==0&&branchId!=='-1'&&branchId!==undefined,of('true'),of('false')))
-  );
-  diff = "./diff"
-  currentRoute = this.route;
-  constructor (private uiStateService: PlConfigUIStateService, private route: ActivatedRoute, private router: Router) {
-    this.uiStateService.branchIdNum = '';
-    this.uiStateService.viewBranchTypeString='';
-    this.uiStateService.viewBranchType.subscribe((id) => {
-      this._branchType = id;
-    })
-   }
-  ngOnDestroy(): void {
-    this._done.next('');
-    this._done.complete();
-  }
+export class PlconfigComponent implements OnInit, OnDestroy {
+	_updateRequired: Observable<boolean> = this.uiStateService.updateReq;
+	_branchType: string = '';
+	branchType = this.uiStateService.viewBranchType;
+	branchId = this.uiStateService.branchId;
+	private _done = new Subject();
+	isAllowedToDiff = combineLatest([
+		this.uiStateService.viewBranchType,
+		this.uiStateService.branchId,
+		this.uiStateService.isInDiff,
+	]).pipe(
+		//invalid conditions equals false
+		switchMap(([branchType, branchId, inDiff]) =>
+			iif(
+				() =>
+					inDiff === false &&
+					branchId.length !== 0 &&
+					branchId !== '-1' &&
+					branchId !== undefined,
+				of('true'),
+				of('false')
+			)
+		)
+	);
+	diff = './diff';
+	currentRoute = this.route;
+	constructor(
+		private uiStateService: PlConfigUIStateService,
+		private route: ActivatedRoute,
+		private router: Router
+	) {
+		this.uiStateService.branchIdNum = '';
+		this.uiStateService.viewBranchTypeString = '';
+		this.uiStateService.viewBranchType.subscribe((id) => {
+			this._branchType = id;
+		});
+	}
+	ngOnDestroy(): void {
+		this._done.next('');
+		this._done.complete();
+	}
 
-  ngOnInit(): void {
-    combineLatest([this.route.paramMap, of(this.route).pipe(
-      switchMap(route => {
-        while (route.firstChild) {
-          route = route.firstChild;
-        }
-        return of(route);
-      }),
-      filter((activatedRoute) => activatedRoute.outlet === 'primary'),
-      switchMap((route)=>route.data)
-    )]).pipe(
-      tap(([paramMap,data]) => {
-        this.uiStateService.viewBranchTypeString = paramMap.get('branchType') || '';
-        this.uiStateService.branchIdNum = paramMap.get('branchId') || '';
-      }),
-      switchMap(([paramMap,data])=>iif(() => data.diff !== undefined, of(data).pipe(
-        map(data => {
-          this.uiStateService.difference = data.diff;
-          this.uiStateService.updateReqConfig = true;
-          return data.diff;
-        })
-      ), of(data).pipe(
-        map(data => {
-          this.uiStateService.diffMode = false;
-          this.uiStateService.difference = [];
-          this.uiStateService.updateReqConfig = true;
-          return data;
-        })
-      ))),
-      takeUntil(this._done)
-    ).subscribe();
-  }
+	ngOnInit(): void {
+		combineLatest([
+			this.route.paramMap,
+			of(this.route).pipe(
+				switchMap((route) => {
+					while (route.firstChild) {
+						route = route.firstChild;
+					}
+					return of(route);
+				}),
+				filter((activatedRoute) => activatedRoute.outlet === 'primary'),
+				switchMap((route) => route.data)
+			),
+		])
+			.pipe(
+				tap(([paramMap, data]) => {
+					this.uiStateService.viewBranchTypeString =
+						paramMap.get('branchType') || '';
+					this.uiStateService.branchIdNum =
+						paramMap.get('branchId') || '';
+				}),
+				switchMap(([paramMap, data]) =>
+					iif(
+						() => data.diff !== undefined,
+						of(data).pipe(
+							map((data) => {
+								this.uiStateService.difference = data.diff;
+								this.uiStateService.updateReqConfig = true;
+								return data.diff;
+							})
+						),
+						of(data).pipe(
+							map((data) => {
+								this.uiStateService.diffMode = false;
+								this.uiStateService.difference = [];
+								this.uiStateService.updateReqConfig = true;
+								return data;
+							})
+						)
+					)
+				),
+				takeUntil(this._done)
+			)
+			.subscribe();
+	}
 }

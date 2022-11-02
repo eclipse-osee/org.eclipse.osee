@@ -10,10 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-    selector: 'osee-branch-type-selector',
-    template:'<div>Dummy</div>'
-  })
-  export class BranchTypeDummySelector{}
+	selector: 'osee-branch-type-selector',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class BranchTypeDummySelector {}

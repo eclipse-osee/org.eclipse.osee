@@ -13,19 +13,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-sub-element-table-no-edit-field-name',
-  templateUrl: './sub-element-table-no-edit-field-name.component.html',
-  styleUrls: ['./sub-element-table-no-edit-field-name.component.sass']
+	selector: 'osee-messaging-sub-element-table-no-edit-field-name',
+	templateUrl: './sub-element-table-no-edit-field-name.component.html',
+	styleUrls: ['./sub-element-table-no-edit-field-name.component.sass'],
 })
-export class SubElementTableNoEditFieldNameComponent implements OnInit {
-
-  @Input() filter: string = ""
-  @Input() name: string = "";
-  @Input() end: number = 0;
-  @Input() start: number = 0;
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class SubElementTableNoEditFieldNameComponent {
+	@Input() filter: string = '';
+	@Input() name: string = '';
+	@Input() end: number = 0;
+	@Input() start: number = 0;
+	constructor() {}
 }

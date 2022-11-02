@@ -17,19 +17,27 @@ import { UiService } from '../ui/ui.service';
 import { UpdateService } from '../ui/update/update.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class CurrentBranchTransactionService {
+	private _undoLatest = this._uiService.id.pipe(
+		take(1),
+		switchMap((id) =>
+			this._branchTransactionService.undoLatest(id).pipe(
+				map((result) => {
+					this._updateService.updated = true;
+					return result;
+				})
+			)
+		)
+	);
+	constructor(
+		private _uiService: UiService,
+		private _branchTransactionService: BranchTransactionService,
+		private _updateService: UpdateService
+	) {}
 
-  private _undoLatest = this._uiService.id.pipe(
-    take(1),
-    switchMap(id => this._branchTransactionService.undoLatest(id).pipe(
-      map(result => { this._updateService.updated = true; return result; })
-    ))
-  );
-  constructor (private _uiService: UiService, private _branchTransactionService: BranchTransactionService, private _updateService: UpdateService) { }
-  
-  get undoLatest() {
-    return this._undoLatest;
-  }
+	get undoLatest() {
+		return this._undoLatest;
+	}
 }

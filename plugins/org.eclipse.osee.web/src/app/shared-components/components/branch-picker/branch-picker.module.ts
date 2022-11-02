@@ -22,21 +22,21 @@ import { BranchTypeSelectorComponent } from './branch-type-selector/branch-type-
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatOptionLoadingModule } from '../../mat-option-loading/mat-option-loading.module';
 
-
-
 @NgModule({
-  declarations: [BranchTypeSelectorComponent,BranchSelectorComponent, BranchPickerComponent],
-  imports: [
-    CommonModule,
-    MatRadioModule,
-    MatFormFieldModule,
-    MatOptionLoadingModule,
-    FormsModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-  ],
-  exports: [
-    BranchPickerComponent
-  ]
+	declarations: [
+		BranchTypeSelectorComponent,
+		BranchSelectorComponent,
+		BranchPickerComponent,
+	],
+	imports: [
+		CommonModule,
+		MatRadioModule,
+		MatFormFieldModule,
+		MatOptionLoadingModule,
+		FormsModule,
+		MatProgressSpinnerModule,
+		MatSelectModule,
+	],
+	exports: [BranchPickerComponent],
 })
-export class BranchPickerModule { }
+export class BranchPickerModule {}

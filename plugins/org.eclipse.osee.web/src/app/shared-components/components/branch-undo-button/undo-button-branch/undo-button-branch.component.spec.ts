@@ -23,35 +23,37 @@ import { currentBranchTransactionServiceMock } from '../../../../ple-services/ht
 import { UndoButtonBranchComponent } from './undo-button-branch.component';
 
 describe('UndoButtonBranchComponent', () => {
-  let component: UndoButtonBranchComponent;
-  let fixture: ComponentFixture<UndoButtonBranchComponent>;
-  let loader: HarnessLoader;
+	let component: UndoButtonBranchComponent;
+	let fixture: ComponentFixture<UndoButtonBranchComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatIconModule,MatButtonModule,MatTooltipModule],
-      declarations: [UndoButtonBranchComponent],
-      providers: [
-        {provide: CurrentBranchTransactionService, useValue: currentBranchTransactionServiceMock}
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [MatIconModule, MatButtonModule, MatTooltipModule],
+			declarations: [UndoButtonBranchComponent],
+			providers: [
+				{
+					provide: CurrentBranchTransactionService,
+					useValue: currentBranchTransactionServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UndoButtonBranchComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(UndoButtonBranchComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should undo a change', async () => {
-    const spy = spyOn(component, 'undo').and.callThrough();
-    await (await loader.getHarness(MatButtonHarness)).click();
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should undo a change', async () => {
+		const spy = spyOn(component, 'undo').and.callThrough();
+		await (await loader.getHarness(MatButtonHarness)).click();
+		expect(spy).toHaveBeenCalled();
+	});
 });

@@ -19,30 +19,38 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { TransactionService } from 'src/app/transactions/transaction.service';
 import { transactionServiceMock } from 'src/app/transactions/transaction.service.mock';
 
-import { MimSingleDiffComponent } from './mim-single-diff.component';
+import { SingleDiffComponent } from './single-diff.component';
 
 describe('MimSingleDiffComponent', () => {
-  let component: MimSingleDiffComponent;
-  let fixture: ComponentFixture<MimSingleDiffComponent>;
+	let component: SingleDiffComponent;
+	let fixture: ComponentFixture<SingleDiffComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatFormFieldModule, FormsModule,MatIconModule, NoopAnimationsModule],
-      providers: [
-        {provide: SideNavService},
-        { provide: TransactionService, useValue: transactionServiceMock }],
-      declarations: [ MimSingleDiffComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				FormsModule,
+				MatIconModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{ provide: SideNavService },
+				{
+					provide: TransactionService,
+					useValue: transactionServiceMock,
+				},
+			],
+			declarations: [SingleDiffComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MimSingleDiffComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SingleDiffComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

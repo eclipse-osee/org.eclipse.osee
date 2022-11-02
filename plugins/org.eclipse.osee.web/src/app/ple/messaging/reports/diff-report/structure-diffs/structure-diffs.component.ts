@@ -14,75 +14,84 @@ import { Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
 import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
-import { DiffHeaderType, elementDiffItem, structureDiffItem } from '../../../shared/types/DifferenceReport.d';
+import {
+	DiffHeaderType,
+	elementDiffItem,
+	structureDiffItem,
+} from '../../../shared/types/DifferenceReport.d';
 
 @Component({
-  selector: 'app-structure-diffs',
-  templateUrl: './structure-diffs.component.html',
-  styleUrls: ['./structure-diffs.component.sass']
+	selector: 'osee-messaging-structure-diffs',
+	templateUrl: './structure-diffs.component.html',
+	styleUrls: ['./structure-diffs.component.sass'],
 })
-export class StructureDiffsComponent implements OnInit {
+export class StructureDiffsComponent {
+	constructor(private diffReportService: DiffReportService) {}
 
-  constructor(private diffReportService: DiffReportService) { }
+	headers: (keyof structureDiffItem)[] = [
+		'name',
+		'description',
+		'interfaceMinSimultaneity',
+		'interfaceMaxSimultaneity',
+		'interfaceTaskFileType',
+		'interfaceStructureCategory',
+	];
 
-  ngOnInit(): void {
-  }
+	elementHeaders: (keyof elementDiffItem)[] = [
+		'name',
+		'description',
+		'logicalType',
+		'interfaceElementIndexStart',
+		'interfaceElementIndexEnd',
+		'elementSizeInBits',
+		'interfacePlatformTypeMinval',
+		'interfacePlatformTypeMaxval',
+		'interfacePlatformTypeDefaultValue',
+		'units',
+		'enumeration',
+		'interfaceElementAlterable',
+		'enumLiteral',
+		'notes',
+		'applicability',
+	];
 
-  headers:(keyof structureDiffItem)[] = [
-    'name',
-    'description',
-    'interfaceMinSimultaneity',
-    'interfaceMaxSimultaneity',
-    'interfaceTaskFileType',
-    'interfaceStructureCategory'
-  ]
+	headerType = DiffHeaderType.STRUCTURE;
+	elementHeaderType = DiffHeaderType.ELEMENT;
 
-  elementHeaders:(keyof elementDiffItem)[] = [
-    'name',
-    'description',
-    'logicalType',
-    'interfaceElementIndexStart',
-    'interfaceElementIndexEnd',
-    'elementSizeInBits',
-    'interfacePlatformTypeMinval',
-    'interfacePlatformTypeMaxval',
-    'interfacePlatformTypeDefaultValue',
-    'units',
-    'enumeration',
-    'interfaceElementAlterable',
-    'enumLiteral',
-    'notes',
-    'applicability'
-  ]
+	allStructures = this.diffReportService.structuresWithElements;
 
-  headerType = DiffHeaderType.STRUCTURE;
-  elementHeaderType = DiffHeaderType.ELEMENT;
+	structuresChanged = this.allStructures.pipe(
+		switchMap((structures) =>
+			from(structures).pipe(
+				filter(
+					(structure) =>
+						!structure.diffInfo?.added &&
+						!structure.diffInfo?.deleted
+				),
+				reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
+			)
+		)
+	);
 
-  allStructures = this.diffReportService.structuresWithElements;
+	structuresAdded = this.allStructures.pipe(
+		switchMap((structures) =>
+			from(structures).pipe(
+				filter((structure) => structure.diffInfo?.added === true),
+				reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
+			)
+		)
+	);
 
-  structuresChanged = this.allStructures.pipe(
-    switchMap(structures => from(structures).pipe(
-      filter(structure => !structure.diffInfo?.added && !structure.diffInfo?.deleted),
-      reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
-    ))
-  )
+	structuresDeleted = this.allStructures.pipe(
+		switchMap((structures) =>
+			from(structures).pipe(
+				filter((structure) => structure.diffInfo?.deleted === true),
+				reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
+			)
+		)
+	);
 
-  structuresAdded = this.allStructures.pipe(
-    switchMap(structures => from(structures).pipe(
-      filter(structure => structure.diffInfo?.added === true),
-      reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
-    ))
-  )
-
-  structuresDeleted = this.allStructures.pipe(
-    switchMap(structures => from(structures).pipe(
-      filter(structure => structure.diffInfo?.deleted === true),
-      reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
-    ))
-  )
-
-  getArrayLength(arr: structureDiffItem[]) {
-    return [...Array(arr.length).keys()];
-  }
-
+	getArrayLength(arr: structureDiffItem[]) {
+		return [...Array(arr.length).keys()];
+	}
 }

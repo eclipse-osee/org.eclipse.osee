@@ -25,23 +25,32 @@ import { dialogRef } from '../../../../connection-view/mocks/dialogRef.mock';
 import { NewTransportTypeDialogComponent } from './new-transport-type-dialog.component';
 
 describe('NewTransportTypeDialogComponent', () => {
-  let component: NewTransportTypeDialogComponent;
-  let fixture: ComponentFixture<NewTransportTypeDialogComponent>;
+	let component: NewTransportTypeDialogComponent;
+	let fixture: ComponentFixture<NewTransportTypeDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatDialogModule,MatFormFieldModule,MatInputModule,MatSelectModule,MatOptionLoadingModule,MatButtonModule,FormsModule,NoopAnimationsModule,MatSlideToggleModule],
-      providers:[{provide: MatDialogRef, useValue: dialogRef}],
-      declarations: [ NewTransportTypeDialogComponent ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatDialogModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				MatOptionLoadingModule,
+				MatButtonModule,
+				FormsModule,
+				NoopAnimationsModule,
+				MatSlideToggleModule,
+			],
+			providers: [{ provide: MatDialogRef, useValue: dialogRef }],
+			declarations: [NewTransportTypeDialogComponent],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(NewTransportTypeDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(NewTransportTypeDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

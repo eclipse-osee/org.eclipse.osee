@@ -10,27 +10,46 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field cdkMonitorSubtreeFocus (cdkFocusChange)="focusChanged($event)">
-    <ng-container *ngIf="header==='interfaceStructureCategory' || header ==='applicability';else generalEdit">
-        
-        <ng-container *ngIf="header==='interfaceStructureCategory'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateImmediately(value)">
-                <mat-option *ngFor="let option of (categories|async)" [value]="option" >
-                    {{option}}
-                </mat-option>
-            </mat-select>
-        </ng-container>
+<mat-form-field
+	cdkMonitorSubtreeFocus
+	(cdkFocusChange)="focusChanged($event)">
+	<ng-container
+		*ngIf="
+			header === 'interfaceStructureCategory' ||
+				header === 'applicability';
+			else generalEdit
+		">
+		<ng-container *ngIf="header === 'interfaceStructureCategory'">
+			<mat-select
+				[(ngModel)]="value"
+				(ngModelChange)="updateImmediately(value)">
+				<mat-option
+					*ngFor="let option of categories | async"
+					[value]="option">
+					{{ option }}
+				</mat-option>
+			</mat-select>
+		</ng-container>
 
-        <ng-container *ngIf="header ==='applicability'">
-            <!-- applicability changes go here -->
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateImmediately(value)" [compareWith]="compareApplics">
-                <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
-                    {{option.name}}
-                </mat-option>
-            </mat-select>
-        </ng-container>
-    </ng-container>
-    <ng-template #generalEdit>
-        <input matInput [(ngModel)]="value" (ngModelChange)="updateStructure(value)">
-    </ng-template>
+		<ng-container *ngIf="header === 'applicability'">
+			<!-- applicability changes go here -->
+			<mat-select
+				[(ngModel)]="value"
+				(ngModelChange)="updateImmediately(value)"
+				[compareWith]="compareApplics">
+				<mat-option
+					*ngFor="let option of applics | async"
+					[value]="option"
+					[id]="option.id">
+					{{ option.name }}
+				</mat-option>
+			</mat-select>
+		</ng-container>
+	</ng-container>
+	<ng-template #generalEdit>
+		<input
+			matInput
+			[(ngModel)]="value"
+			(ngModelChange)="updateStructure(value)" />
+	</ng-template>
 </mat-form-field>

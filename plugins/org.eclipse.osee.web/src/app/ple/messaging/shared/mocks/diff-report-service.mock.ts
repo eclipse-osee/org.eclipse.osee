@@ -1,13 +1,13 @@
-import { BehaviorSubject } from "rxjs";
-import { connectionDiffsMock } from "src/app/ple-services/http/difference-report-connections.mock";
-import { elementDiffsMock } from "src/app/ple-services/http/difference-report-elements.mock";
-import { messageDiffsMock } from "src/app/ple-services/http/difference-report-messages.mock";
-import { nodeDiffsMock } from "src/app/ple-services/http/difference-report-nodes.mock";
-import { structureElementDiffsMock } from "src/app/ple-services/http/difference-report-structures-elements.mock";
-import { structureDiffsMock } from "src/app/ple-services/http/difference-report-structures.mock";
-import { submessageDiffsMock } from "src/app/ple-services/http/difference-report-submessages.mock";
-import { differenceReportMock } from "src/app/ple-services/http/difference-report.mock";
-import { DiffReportService } from "../services/ui/diff-report.service";
+import { BehaviorSubject } from 'rxjs';
+import { connectionDiffsMock } from 'src/app/ple-services/http/difference-report-connections.mock';
+import { elementDiffsMock } from 'src/app/ple-services/http/difference-report-elements.mock';
+import { messageDiffsMock } from 'src/app/ple-services/http/difference-report-messages.mock';
+import { nodeDiffsMock } from 'src/app/ple-services/http/difference-report-nodes.mock';
+import { structureElementDiffsMock } from 'src/app/ple-services/http/difference-report-structures-elements.mock';
+import { structureDiffsMock } from 'src/app/ple-services/http/difference-report-structures.mock';
+import { submessageDiffsMock } from 'src/app/ple-services/http/difference-report-submessages.mock';
+import { differenceReportMock } from 'src/app/ple-services/http/difference-report.mock';
+import { DiffReportService } from '../services/ui/diff-report.service';
 
 /*********************************************************************
  * Copyright (c) 2022 Boeing
@@ -21,49 +21,48 @@ import { DiffReportService } from "../services/ui/diff-report.service";
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- export const DiffReportServiceMock: Partial<DiffReportService> = {
+export const DiffReportServiceMock: Partial<DiffReportService> = {
+	// get branchInfo() {
+	//     return this._branchInfo;
+	// },
 
-    // get branchInfo() {
-    //     return this._branchInfo;
-    // },
+	// get parentBranchInfo() {
+	//     return this._parentBranchInfo;
+	// },
 
-    // get parentBranchInfo() {
-    //     return this._parentBranchInfo;
-    // },
+	// get branchSummary() {
+	//     return this._branchSummary;
+	// },
 
-    // get branchSummary() {
-    //     return this._branchSummary;
-    // },
+	get diffReport() {
+		return new BehaviorSubject(differenceReportMock);
+	},
 
-    get diffReport() {
-        return new BehaviorSubject(differenceReportMock);
-    },
+	get nodes() {
+		return new BehaviorSubject(nodeDiffsMock);
+	},
 
-    get nodes() {
-        return new BehaviorSubject(nodeDiffsMock);
-    },
+	get connections() {
+		return new BehaviorSubject(connectionDiffsMock);
+	},
 
-    get connections() {
-        return new BehaviorSubject(connectionDiffsMock);
-    },
+	get messages() {
+		return new BehaviorSubject(messageDiffsMock);
+	},
 
-    get messages() {
-        return new BehaviorSubject(messageDiffsMock);
-    },
+	get submessages() {
+		return new BehaviorSubject(submessageDiffsMock);
+	},
 
-    get submessages() {
-        return new BehaviorSubject(submessageDiffsMock);
-    },
-      
-    get structures() {
-        return new BehaviorSubject(structureDiffsMock);
-    },
-    
-    get structuresWithElements() {
-        return new BehaviorSubject(structureElementDiffsMock);
-    },
+	get structures() {
+		return new BehaviorSubject(structureDiffsMock);
+	},
 
-    get elements() {
-        return new BehaviorSubject(elementDiffsMock);
-      }
- }
+	get structuresWithElements() {
+		return new BehaviorSubject(structureElementDiffsMock);
+	},
+
+	get elements() {
+		return new BehaviorSubject(elementDiffsMock);
+	},
+};

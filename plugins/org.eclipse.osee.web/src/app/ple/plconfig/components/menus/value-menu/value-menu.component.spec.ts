@@ -26,61 +26,86 @@ import { plCurrentBranchServiceMock } from '../../../testing/mockPlCurrentBranch
 import { ValueMenuComponent } from './value-menu.component';
 
 describe('ValueMenuComponent', () => {
-  let component: ValueMenuComponent;
-  let fixture: ComponentFixture<ValueMenuComponent>;
-  let loader: HarnessLoader;
+	let component: ValueMenuComponent;
+	let fixture: ComponentFixture<ValueMenuComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatIconModule,NoopAnimationsModule,RouterTestingModule.withRoutes([{
-        path: '',
-        component: ValueMenuComponent,
-        children: [
-          {
-            path: ':branchType',
-            children: [
-              {
-                path: ':branchId',
-                children: [
-                  {
-                    path: 'diff',
-                    component:ValueMenuComponent
-                  }
-                ]
-              },
-            ]
-          }
-        ]
-      },
-      {
-        path: 'diffOpen', component: ValueMenuComponent, outlet:'rightSideNav'
-      }])],
-      declarations: [ValueMenuComponent],
-      providers: [
-        { provide: DialogService, useValue: DialogServiceMock },
-        { provide: PlConfigCurrentBranchService, useValue: plCurrentBranchServiceMock }
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatMenuModule,
+				MatIconModule,
+				NoopAnimationsModule,
+				RouterTestingModule.withRoutes([
+					{
+						path: '',
+						component: ValueMenuComponent,
+						children: [
+							{
+								path: ':branchType',
+								children: [
+									{
+										path: ':branchId',
+										children: [
+											{
+												path: 'diff',
+												component: ValueMenuComponent,
+											},
+										],
+									},
+								],
+							},
+						],
+					},
+					{
+						path: 'diffOpen',
+						component: ValueMenuComponent,
+						outlet: 'rightSideNav',
+					},
+				]),
+			],
+			declarations: [ValueMenuComponent],
+			providers: [
+				{ provide: DialogService, useValue: DialogServiceMock },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: plCurrentBranchServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ValueMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    component.value={id:'',name:'abcd',value:'',values:[],changes:{value:{previousValue:'',currentValue:'abcd',transactionToken:{id:'10343213',branchId:'8'}}}}
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ValueMenuComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		component.value = {
+			id: '',
+			name: 'abcd',
+			value: '',
+			values: [],
+			changes: {
+				value: {
+					previousValue: '',
+					currentValue: 'abcd',
+					transactionToken: { id: '10343213', branchId: '8' },
+				},
+			},
+		};
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-  it('should open a diff sidenav', async () => {
-    const spy = spyOn(component, 'viewDiff').and.callThrough();
-    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') }));
-    expect(menu).toBeDefined();
-    await menu.focus();
-    await menu.click();
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+	it('should open a diff sidenav', async () => {
+		const spy = spyOn(component, 'viewDiff').and.callThrough();
+		const menu = await loader.getHarness(
+			MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') })
+		);
+		expect(menu).toBeDefined();
+		await menu.focus();
+		await menu.click();
+		expect(spy).toHaveBeenCalled();
+	});
 });

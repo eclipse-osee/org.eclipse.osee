@@ -16,33 +16,39 @@ import { BranchUIService } from '../branch/branch-ui.service';
 import { DifferenceBranchInfoService } from './difference-branch-info.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class DiffReportBranchService {
+	constructor(
+		private differenceService: DifferenceBranchInfoService,
+		private branchService: BranchUIService
+	) {}
 
-  constructor (private differenceService: DifferenceBranchInfoService, private branchService: BranchUIService) { }
-  
-  get differences() {
-    return this.branchService.id.pipe(
-      take(1),
-      switchMap((id) => this.differenceService.differences(id).pipe(
-        shareReplay({bufferSize:5,refCount:true})
-      ))
-    )
-  }
+	get differences() {
+		return this.branchService.id.pipe(
+			take(1),
+			switchMap((id) =>
+				this.differenceService
+					.differences(id)
+					.pipe(shareReplay({ bufferSize: 5, refCount: true }))
+			)
+		);
+	}
 
-  get parentBranch() {
-    return this.differenceService.parentBranch.pipe(
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
-  }
+	get parentBranch() {
+		return this.differenceService.parentBranch.pipe(
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
 
-  get differenceReport() {
-    return this.branchService.id.pipe(
-      take(1),
-      switchMap((id) => this.differenceService.differenceReport(id).pipe(
-        shareReplay({bufferSize:5,refCount:true})
-      ))
-    )
-  }
+	get differenceReport() {
+		return this.branchService.id.pipe(
+			take(1),
+			switchMap((id) =>
+				this.differenceService
+					.differenceReport(id)
+					.pipe(shareReplay({ bufferSize: 5, refCount: true }))
+			)
+		);
+	}
 }

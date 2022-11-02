@@ -16,7 +16,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatStepperHarness, MatStepperNextHarness } from '@angular/material/stepper/testing' 
+import {
+	MatStepperHarness,
+	MatStepperNextHarness,
+} from '@angular/material/stepper/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -50,86 +53,133 @@ import { MockEnumSetFormUnique } from '../enum-set-form/enum-set-form.component.
 import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 describe('NewTypeDialogComponent', () => {
-  let component: NewTypeDialogComponent;
-  let fixture: ComponentFixture<NewTypeDialogComponent>;
-  let loader: HarnessLoader;
+	let component: NewTypeDialogComponent;
+	let fixture: ComponentFixture<NewTypeDialogComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatDialogModule, MatStepperModule,NoopAnimationsModule,MatSelectModule,FormsModule,MatFormFieldModule,MatInputModule,MatButtonModule,MatTableModule,MatIconModule, MatOptionLoadingModule],
-      declarations: [NewTypeDialogComponent, MockNewTypeForm,MockEnumSetFormUnique],
-      providers: [{ provide: MatDialogRef, useValue: {} },
-        { provide: TransactionBuilderService, useValue: transactionBuilderMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock },
-        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock }],
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatDialogModule,
+				MatStepperModule,
+				NoopAnimationsModule,
+				MatSelectModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatButtonModule,
+				MatTableModule,
+				MatIconModule,
+				MatOptionLoadingModule,
+			],
+			declarations: [
+				NewTypeDialogComponent,
+				MockNewTypeForm,
+				MockEnumSetFormUnique,
+			],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: TransactionBuilderService,
+					useValue: transactionBuilderMock,
+				},
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{ provide: TypesService, useValue: typesServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+				{
+					provide: EnumerationSetService,
+					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(async() => {
-    fixture = TestBed.createComponent(NewTypeDialogComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    fixture.detectChanges();
-  });
+	beforeEach(async () => {
+		fixture = TestBed.createComponent(NewTypeDialogComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-  describe('Page 1 Testing', () => {
-    it('should select enumeration', async() => {
-      let select = await loader.getHarness(MatSelectHarness);
-      await select.clickOptions({ text: 'Enumeration' })
-      let button = await loader.getHarness(MatButtonHarness.with({ text: 'Next' }));
-      expect(button).toBeDefined();
-      expect(await button.isDisabled()).toBe(false);
-      await button.click();
-    })
-  })
-  describe('Page 2 testing', () => {
-    beforeEach(async () => {
-      let selectPage1 = await loader.getHarness(MatSelectHarness);
-      await selectPage1.clickOptions({ text: 'Enumeration' })
-      let buttonPage1 = await loader.getHarness(MatStepperNextHarness.with({ text:'Next' }));
-      await buttonPage1.click();
-    })
-    it('should select an enum set', async () => {
-      let selectEnum = await loader.getHarness(MatSelectHarness)
-      expect(selectEnum).toBeDefined();
-      await selectEnum.open();
-      await selectEnum.clickOptions({ text: 'Enumeration' });
-      expect(await selectEnum.getValueText()).toEqual('Enumeration');
-    })
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+	describe('Page 1 Testing', () => {
+		it('should select enumeration', async () => {
+			let select = await loader.getHarness(MatSelectHarness);
+			await select.clickOptions({ text: 'Enumeration' });
+			let button = await loader.getHarness(
+				MatButtonHarness.with({ text: 'Next' })
+			);
+			expect(button).toBeDefined();
+			expect(await button.isDisabled()).toBe(false);
+			await button.click();
+		});
+	});
+	describe('Page 2 testing', () => {
+		beforeEach(async () => {
+			let selectPage1 = await loader.getHarness(MatSelectHarness);
+			await selectPage1.clickOptions({ text: 'Enumeration' });
+			let buttonPage1 = await loader.getHarness(
+				MatStepperNextHarness.with({ text: 'Next' })
+			);
+			await buttonPage1.click();
+		});
+		it('should select an enum set', async () => {
+			let selectEnum = await loader.getHarness(MatSelectHarness);
+			expect(selectEnum).toBeDefined();
+			await selectEnum.open();
+			await selectEnum.clickOptions({ text: 'Enumeration' });
+			expect(await selectEnum.getValueText()).toEqual('Enumeration');
+		});
 
-    it('should toggle enum mode', async () => {
-      const spy = spyOn(component, 'toggleEnumCreationState').and.callThrough();
-      let button = await loader.getHarness(MatButtonHarness.with({ text: new RegExp('add') }))
-      await button.click();
-      expect(spy).toHaveBeenCalled();
-    })
-    describe('enum editing', () => {
-      beforeEach(async() => {
-        let button = await loader.getHarness(MatButtonHarness.with({ text: new RegExp('add') }))
-        await button.click();
-      })
-    })
+		it('should toggle enum mode', async () => {
+			const spy = spyOn(
+				component,
+				'toggleEnumCreationState'
+			).and.callThrough();
+			let button = await loader.getHarness(
+				MatButtonHarness.with({ text: new RegExp('add') })
+			);
+			await button.click();
+			expect(spy).toHaveBeenCalled();
+		});
+		describe('enum editing', () => {
+			beforeEach(async () => {
+				let button = await loader.getHarness(
+					MatButtonHarness.with({ text: new RegExp('add') })
+				);
+				await button.click();
+			});
+		});
 
-    describe('Page 3 testing', () => {
-      beforeEach(async() => {
-        let buttonPage2 = await loader.getHarness(MatStepperNextHarness.with({ text:'Next' }));
-        await buttonPage2.click();
-      })
+		describe('Page 3 testing', () => {
+			beforeEach(async () => {
+				let buttonPage2 = await loader.getHarness(
+					MatStepperNextHarness.with({ text: 'Next' })
+				);
+				await buttonPage2.click();
+			});
 
-      it('should create a type', async () => {
-        let spy = spyOn(component, 'hideTypeDialog').and.callThrough();
-        let button = await loader.getHarness(MatButtonHarness.with({ text: 'Create Type' }))
-        await button.click()
-        expect(spy).toHaveBeenCalled();
-      })
-    })
-  })
+			it('should create a type', async () => {
+				let spy = spyOn(component, 'hideTypeDialog').and.callThrough();
+				let button = await loader.getHarness(
+					MatButtonHarness.with({ text: 'Create Type' })
+				);
+				await button.click();
+				expect(spy).toHaveBeenCalled();
+			});
+		});
+	});
 });

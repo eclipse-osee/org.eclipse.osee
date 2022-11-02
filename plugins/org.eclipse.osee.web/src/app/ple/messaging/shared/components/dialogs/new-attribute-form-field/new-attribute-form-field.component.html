@@ -11,48 +11,48 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="form.editable">
-    <ng-container *ngIf="form.name === 'Units'; else genericInput">
-      <mat-form-field>
-        <mat-label>{{ form.name }}</mat-label>
-        <mat-select
-          [(ngModel)]="form.value"
-          #input
-          [required]="form.required"
-          (ngModelChange)="change()"
-          [attr.data-cy]="'field-' + form.attributeType"
-        >
-          <mat-option *ngFor="let unit of units" [value]="unit">
-            {{ unit }}
-          </mat-option>
-          <ng-container *ngIf="form.defaultValue">
-            <mat-hint align="end"
-              >Default Value: {{ form.defaultValue }}</mat-hint
-            >
-          </ng-container>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-    <ng-template #genericInput>
-      <mat-form-field>
-        <mat-label>{{ form.name }}</mat-label>
-        <input
-          matInput
-          type="text"
-          [(ngModel)]="form.value"
-          #input
-          [required]="form.required"
-          (ngModelChange)="change()"
-          [attr.data-cy]="'field-' + form.attributeType"
-        />
-        <ng-container *ngIf="form.defaultValue">
-          <mat-hint align="end"
-            >Default Value: {{ form.defaultValue }}</mat-hint
-          >
-        </ng-container>
-      </mat-form-field>
-    </ng-template>
-    <br />
-  </ng-container>
-  <ng-container *ngIf="!form.editable">
-    {{ setDefaultValue() }}
-  </ng-container>
+	<ng-container *ngIf="form.name === 'Units'; else genericInput">
+		<mat-form-field>
+			<mat-label>{{ form.name }}</mat-label>
+			<mat-select
+				[(ngModel)]="form.value"
+				#input
+				[required]="form.required"
+				(ngModelChange)="change()"
+				[attr.data-cy]="'field-' + form.attributeType">
+				<mat-option
+					*ngFor="let unit of units"
+					[value]="unit">
+					{{ unit }}
+				</mat-option>
+				<ng-container *ngIf="form.defaultValue">
+					<mat-hint align="end"
+						>Default Value: {{ form.defaultValue }}</mat-hint
+					>
+				</ng-container>
+			</mat-select>
+		</mat-form-field>
+	</ng-container>
+	<ng-template #genericInput>
+		<mat-form-field>
+			<mat-label>{{ form.name }}</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="form.value"
+				#input
+				[required]="form.required"
+				(ngModelChange)="change()"
+				[attr.data-cy]="'field-' + form.attributeType" />
+			<ng-container *ngIf="form.defaultValue">
+				<mat-hint align="end"
+					>Default Value: {{ form.defaultValue }}</mat-hint
+				>
+			</ng-container>
+		</mat-form-field>
+	</ng-template>
+	<br />
+</ng-container>
+<ng-container *ngIf="!form.editable">
+	{{ setDefaultValue() }}
+</ng-container>

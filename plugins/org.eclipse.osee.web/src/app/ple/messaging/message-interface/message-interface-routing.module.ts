@@ -13,26 +13,33 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
-import { MimSingleDiffComponent } from '../../diff-views/mim-single-diff/mim-single-diff.component';
+import { SingleDiffComponent } from '../../diff-views/single-diff/single-diff.component';
 import { MimHeaderComponent } from '../shared/components/mim-header/mim-header.component';
 import { UsermenuComponent } from './components/usermenu/usermenu/usermenu.component';
 import { MessageInterfaceComponent } from './message-interface.component';
 
 const routes: Routes = [
-  {
-    path: '', component: MessageInterfaceComponent, children: [
-    
-  ] },
-  { path: 'diff', component: MessageInterfaceComponent, resolve: { diff: DiffReportResolver } },
-  {
-    path: '', component: MimSingleDiffComponent, outlet:'rightSideNav'
-  },
-  { path: '', component: UsermenuComponent, outlet: 'userMenu' },
-  {path: '',component: MimHeaderComponent, outlet:'navigationHeader'}
+	{
+		path: '',
+		component: MessageInterfaceComponent,
+		children: [],
+	},
+	{
+		path: 'diff',
+		component: MessageInterfaceComponent,
+		resolve: { diff: DiffReportResolver },
+	},
+	{
+		path: '',
+		component: SingleDiffComponent,
+		outlet: 'rightSideNav',
+	},
+	{ path: '', component: UsermenuComponent, outlet: 'userMenu' },
+	{ path: '', component: MimHeaderComponent, outlet: 'navigationHeader' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class MessageInterfaceRoutingModule { }
+export class MessageInterfaceRoutingModule {}

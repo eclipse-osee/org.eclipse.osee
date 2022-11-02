@@ -15,25 +15,25 @@ import { TestBed } from '@angular/core/testing';
 import { BranchIdService } from './branch-id.service';
 
 describe('BranchIdService', () => {
-  let service: BranchIdService;
+	let service: BranchIdService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(BranchIdService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(BranchIdService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  describe('Core Functionality',()=> {
-    describe('Branch Id', () => {
-      describe('Valid States', () => {
-        it('should set id to 8', () => {
-          service.id='8'
-          expect(service.id).toEqual('8')
-        });    
-      })
-    })
-  })
+	describe('Core Functionality', () => {
+		describe('Branch Id', () => {
+			describe('Valid States', () => {
+				it('should set id to 8', () => {
+					service.id = '8';
+					expect(service.id).toEqual('8');
+				});
+			});
+		});
+	});
 });

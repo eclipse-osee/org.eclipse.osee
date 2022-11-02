@@ -17,18 +17,16 @@ import { QueryService } from '../http/query.service';
 import { CurrentQueryService } from './current-query.service';
 
 describe('CurrentQueryService', () => {
-  let service: CurrentQueryService;
+	let service: CurrentQueryService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        {provide: QueryService, useValue: QueryServiceMock}
-      ]
-    });
-    service = TestBed.inject(CurrentQueryService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [{ provide: QueryService, useValue: QueryServiceMock }],
+		});
+		service = TestBed.inject(CurrentQueryService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

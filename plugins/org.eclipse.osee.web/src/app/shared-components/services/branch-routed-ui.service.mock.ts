@@ -14,12 +14,12 @@ import { BehaviorSubject } from 'rxjs';
 import { BranchRoutedUIService } from './branch-routed-ui.service';
 
 export const branchRoutedUiServiceMock: Partial<BranchRoutedUIService> = {
-    branchType: '',
-    type: new BehaviorSubject(""),
-    id: new BehaviorSubject(""),
-    branchId: '',
-    
-    set position (value:{type:string,id:string})  {
-        //do nothing
-    }
-}
+	branchType: '',
+	type: new BehaviorSubject(''),
+	id: new BehaviorSubject(''),
+	branchId: '',
+
+	set position(value: { type: string; id: string }) {
+		//do nothing
+	},
+};

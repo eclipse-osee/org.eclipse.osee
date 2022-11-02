@@ -16,41 +16,38 @@ import { applic } from '../../../../../types/applicability/applic';
 import { element } from '../../../shared/types/element';
 
 @Component({
-  selector: 'app-sub-element-table-no-edit-field',
-  templateUrl: './sub-element-table-no-edit-field.component.html',
-  styleUrls: ['./sub-element-table-no-edit-field.component.sass']
+	selector: 'osee-messaging-sub-element-table-no-edit-field',
+	templateUrl: './sub-element-table-no-edit-field.component.html',
+	styleUrls: ['./sub-element-table-no-edit-field.component.sass'],
 })
 export class SubElementTableNoEditFieldComponent implements OnInit {
+	@Input() filter: string = '';
+	@Input() element: element = {
+		id: '',
+		name: '',
+		description: '',
+		notes: '',
+		interfaceElementIndexEnd: 0,
+		interfaceElementIndexStart: 0,
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		units: '',
+		interfaceElementAlterable: false,
+		enumLiteral: '',
+	};
+	@Input() header: string = '';
+	@Input() width: string = '';
+	_branchId: string = '';
+	_branchType: string = '';
 
-  @Input() filter: string = "";
-  @Input() element: element= {
-    id: '',
-    name: '',
-    description: '',
-    notes: '',
-    interfaceElementIndexEnd: 0,
-    interfaceElementIndexStart: 0,
-    applicability: {
-      id: '1',
-      name:'Base'
-    },
-    units:'',
-    interfaceElementAlterable: false,
-    enumLiteral:''
-  };
-  @Input() header: string = "";
-  @Input() width: string = "";
-  _branchId: string = "";
-  _branchType: string = "";
+	constructor(private route: ActivatedRoute) {}
 
-
-  constructor(private route: ActivatedRoute) { }
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((values) => {
-      this._branchId = values.get("branchId") || '';
-      this._branchType = values.get("branchType") || '';
-    })
-  }
-
+	ngOnInit(): void {
+		this.route.paramMap.subscribe((values) => {
+			this._branchId = values.get('branchId') || '';
+			this._branchType = values.get('branchType') || '';
+		});
+	}
 }

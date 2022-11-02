@@ -17,17 +17,15 @@ import { CurrentQueryService } from '../../services/ui/current-query.service';
 import { UniquePlatformTypeNameDirective } from './unique-platform-type-name.directive';
 
 describe('UniquePlatformTypeNameDirective', () => {
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        { provide: QueryService, useValue: QueryServiceMock },
-      ],
-    }).compileComponents();
-
-  });
-  it('should create an instance', () => {
-    const directive = new UniquePlatformTypeNameDirective(TestBed.inject(CurrentQueryService));
-    expect(directive).toBeTruthy();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			providers: [{ provide: QueryService, useValue: QueryServiceMock }],
+		}).compileComponents();
+	});
+	it('should create an instance', () => {
+		const directive = new UniquePlatformTypeNameDirective(
+			TestBed.inject(CurrentQueryService)
+		);
+		expect(directive).toBeTruthy();
+	});
 });

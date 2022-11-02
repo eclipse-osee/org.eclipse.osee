@@ -12,31 +12,48 @@
  -->
 <h1 mat-dialog-title>Copy Configuration</h1>
 <mat-label [style.fontSize.px]="18">Copy To:</mat-label>
-<br>
+<br />
 <mat-form-field [style.fontSize.px]="18">
-    <mat-label>Select a Configuration</mat-label>
-    <mat-select (selectionChange)="selectDestinationBranch($event)" data-cy="copyTo-configuration">
-        <mat-option *ngFor="let option of views|async" [value]="option" [attr.data-cy]="'option-'+option.name">
-            {{option.name}}
-        </mat-option>
-    </mat-select>
+	<mat-label>Select a Configuration</mat-label>
+	<mat-select
+		(selectionChange)="selectDestinationBranch($event)"
+		data-cy="copyTo-configuration">
+		<mat-option
+			*ngFor="let option of views | async"
+			[value]="option"
+			[attr.data-cy]="'option-' + option.name">
+			{{ option.name }}
+		</mat-option>
+	</mat-select>
 </mat-form-field>
-<br>
+<br />
 <mat-label [style.fontSize.px]="18">Copy From:</mat-label>
-<br>
+<br />
 <mat-form-field [style.fontSize.px]="18">
-    <mat-label>Select a Configuration</mat-label>
-    <mat-select (selectionChange)="selectBranch($event)" data-cy="copyFrom-configuration">
-        <mat-option *ngFor="let option of views|async" [value]="option.id" [attr.data-cy]="'option-'+option.name">
-            {{option.name}}
-        </mat-option>
-    </mat-select>
+	<mat-label>Select a Configuration</mat-label>
+	<mat-select
+		(selectionChange)="selectBranch($event)"
+		data-cy="copyFrom-configuration">
+		<mat-option
+			*ngFor="let option of views | async"
+			[value]="option.id"
+			[attr.data-cy]="'option-' + option.name">
+			{{ option.name }}
+		</mat-option>
+	</mat-select>
 </mat-form-field>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()" data-cy="cancel-btn">
-        Cancel
-    </button>
-    <button mat-button [mat-dialog-close]="data" cdkFocusInitial data-cy="submit-btn">
-        Ok
-    </button>
+	<button
+		mat-button
+		(click)="onNoClick()"
+		data-cy="cancel-btn">
+		Cancel
+	</button>
+	<button
+		mat-button
+		[mat-dialog-close]="data"
+		cdkFocusInitial
+		data-cy="submit-btn">
+		Ok
+	</button>
 </div>

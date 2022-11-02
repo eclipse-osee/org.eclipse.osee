@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface EditViewFreeTextDialog {
-    original: string,
-    type: string,
-    return:string
+	original: string;
+	type: string;
+	return: string;
 }

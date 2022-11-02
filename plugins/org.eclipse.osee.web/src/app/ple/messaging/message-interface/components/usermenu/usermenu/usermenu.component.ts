@@ -13,46 +13,67 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest } from 'rxjs';
-import { takeUntil, map, share, shareReplay, take, switchMap } from 'rxjs/operators';
+import {
+	takeUntil,
+	map,
+	share,
+	shareReplay,
+	take,
+	switchMap,
+} from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
 import { HeaderService } from 'src/app/ple/messaging/shared/services/ui/header.service';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 
 @Component({
-  selector: 'app-usermenu',
-  templateUrl: './usermenu.component.html',
-  styleUrls: ['./usermenu.component.sass']
+	selector: 'osee-messaging-usermenu',
+	templateUrl: './usermenu.component.html',
+	styleUrls: ['./usermenu.component.sass'],
 })
-export class UsermenuComponent implements OnInit {
-  preferences = this.messageService.preferences.pipe(takeUntil(this.messageService.done));
-  inEditMode = this.preferences.pipe(
-    map((r) => r.inEditMode),
-    share(),
-    shareReplay(1),
-    takeUntil(this.messageService.done)
-  );
-  constructor(private messageService: CurrentMessagesService,public dialog: MatDialog, private headerService:HeaderService,) { }
+export class UsermenuComponent {
+	preferences = this.messageService.preferences.pipe(
+		takeUntil(this.messageService.done)
+	);
+	inEditMode = this.preferences.pipe(
+		map((r) => r.inEditMode),
+		share(),
+		shareReplay(1),
+		takeUntil(this.messageService.done)
+	);
+	constructor(
+		private messageService: CurrentMessagesService,
+		public dialog: MatDialog,
+		private headerService: HeaderService
+	) {}
 
-  ngOnInit(): void {
-  }
-  openSettingsDialog() {
-    combineLatest([this.inEditMode, this.messageService.BranchId]).pipe(
-      take(1),
-      switchMap(([edit, branch]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-        data: {
-          branchId: branch,
-          allHeaders2: [],
-          allowedHeaders2: [],
-          allHeaders1: [],
-          allowedHeaders1: [],
-          editable: edit,
-          headers1Label: 'Structure Headers',
-          headers2Label: 'Element Headers',
-          headersTableActive: false,
-        }
-      }).afterClosed().pipe(
-        take(1),
-        switchMap((result) => this.messageService.updatePreferences(result))))
-    ).subscribe();
-  }
+	openSettingsDialog() {
+		combineLatest([this.inEditMode, this.messageService.BranchId])
+			.pipe(
+				take(1),
+				switchMap(([edit, branch]) =>
+					this.dialog
+						.open(ColumnPreferencesDialogComponent, {
+							data: {
+								branchId: branch,
+								allHeaders2: [],
+								allowedHeaders2: [],
+								allHeaders1: [],
+								allowedHeaders1: [],
+								editable: edit,
+								headers1Label: 'Structure Headers',
+								headers2Label: 'Element Headers',
+								headersTableActive: false,
+							},
+						})
+						.afterClosed()
+						.pipe(
+							take(1),
+							switchMap((result) =>
+								this.messageService.updatePreferences(result)
+							)
+						)
+				)
+			)
+			.subscribe();
+	}
 }

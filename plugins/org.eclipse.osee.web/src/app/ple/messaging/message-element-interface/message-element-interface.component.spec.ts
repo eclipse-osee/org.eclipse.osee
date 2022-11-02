@@ -20,7 +20,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Router, ActivatedRoute, convertToParamMap, NavigationEnd } from '@angular/router';
+import {
+	Router,
+	ActivatedRoute,
+	convertToParamMap,
+	NavigationEnd,
+} from '@angular/router';
 import { of } from 'rxjs';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
@@ -44,66 +49,71 @@ import { MatIconModule } from '@angular/material/icon';
 let loader: HarnessLoader;
 
 describe('MessageElementInterfaceComponent', () => {
-  let component: MessageElementInterfaceComponent;
-  let fixture: ComponentFixture<MessageElementInterfaceComponent>;
+	let component: MessageElementInterfaceComponent;
+	let fixture: ComponentFixture<MessageElementInterfaceComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        MatFormFieldModule,
-        MatDialogModule,
-        MatInputModule,
-        MatIconModule,
-        MatSelectModule,
-        MatMenuModule,
-        FormsModule,
-        NoopAnimationsModule,
-        MatTableModule,
-        MatTooltipModule,
-        OseeStringUtilsPipesModule,
-        OseeStringUtilsDirectivesModule,
-        RouterTestingModule,
-        SharedMessagingModule
-      ],
-      declarations: [
-        MessageElementInterfaceComponent,
-        SubElementTableComponentMock,
-        EditElementFieldComponent,
-        EditStructureFieldComponentMock,
-        StructureTableComponentMock
-      ],
-      providers: [
-        {
-          provide: Router, useValue: {
-            navigate: () => { }, url: '', events: of<NavigationEnd>(new NavigationEnd(1,'','')) } },
-        { provide: EditAuthService,useValue:editAuthServiceMock },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            data:of({diff:changeReportMock}),
-            paramMap: of(
-              convertToParamMap({
-                name: 'Name > Name',
-              })
-            ),
-          },
-        },
-        {
-          provide: CurrentStructureService, useValue: CurrentStateServiceMock
-        },
-      ],
-    }).compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				MatDialogModule,
+				MatInputModule,
+				MatIconModule,
+				MatSelectModule,
+				MatMenuModule,
+				FormsModule,
+				NoopAnimationsModule,
+				MatTableModule,
+				MatTooltipModule,
+				OseeStringUtilsPipesModule,
+				OseeStringUtilsDirectivesModule,
+				RouterTestingModule,
+				SharedMessagingModule,
+			],
+			declarations: [
+				MessageElementInterfaceComponent,
+				SubElementTableComponentMock,
+				EditElementFieldComponent,
+				EditStructureFieldComponentMock,
+				StructureTableComponentMock,
+			],
+			providers: [
+				{
+					provide: Router,
+					useValue: {
+						navigate: () => {},
+						url: '',
+						events: of<NavigationEnd>(new NavigationEnd(1, '', '')),
+					},
+				},
+				{ provide: EditAuthService, useValue: editAuthServiceMock },
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						data: of({ diff: changeReportMock }),
+						paramMap: of(
+							convertToParamMap({
+								name: 'Name > Name',
+							})
+						),
+					},
+				},
+				{
+					provide: CurrentStructureService,
+					useValue: CurrentStateServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MessageElementInterfaceComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(MessageElementInterfaceComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

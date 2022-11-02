@@ -10,16 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface tableRecommendations{
-    width: string,
-    columns:number
+export interface tableRecommendations {
+	width: string;
+	columns: number;
 }
-export interface pageState{
-    xsmall: boolean,
-    small: boolean,
-    medium: boolean,
-    large: boolean,
-    xlarge: boolean,
-    recommendedCardColumnCount: number,
-    tableRecommendations: tableRecommendations
+export interface pageState {
+	xsmall: boolean;
+	small: boolean;
+	medium: boolean;
+	large: boolean;
+	xlarge: boolean;
+	recommendedCardColumnCount: number;
+	tableRecommendations: tableRecommendations;
 }

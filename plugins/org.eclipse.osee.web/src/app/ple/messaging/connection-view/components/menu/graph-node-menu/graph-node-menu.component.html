@@ -11,32 +11,99 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="hasChanges(data)">
-    <button mat-menu-item [matMenuTriggerFor]="nodeDiffMenu" [matMenuTriggerData]="{data:data}"><mat-icon color="accent">pageview</mat-icon>View Diff for</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="nodeDiffMenu"
+		[matMenuTriggerData]="{ data: data }">
+		<mat-icon color="accent">pageview</mat-icon>View Diff for
+	</button>
 </ng-container>
 <ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
-    <button mat-menu-item (click)="openEditNodeDialog(data)"><mat-icon color="primary">edit</mat-icon>Edit {{data.name}}</button>
-    <button mat-menu-item (click)="removeNodeAndConnection(data,sources,targets)"><mat-icon color="warn" data-cy="delete-node-btn">remove_circle_outline</mat-icon>Remove {{data.name}} & Connection</button>
-    <button mat-menu-item (click)="createConnectionToNode(data)"><mat-icon color="success" data-cy="create-connection-btn">show_chart</mat-icon><span>Create Connection To {{data.name}}</span></button>
+	<button
+		mat-menu-item
+		(click)="openEditNodeDialog(data)">
+		<mat-icon color="primary">edit</mat-icon>Edit {{ data.name }}
+	</button>
+	<button
+		mat-menu-item
+		(click)="removeNodeAndConnection(data, sources, targets)">
+		<mat-icon
+			color="warn"
+			data-cy="delete-node-btn"
+			>remove_circle_outline</mat-icon
+		>Remove {{ data.name }} & Connection
+	</button>
+	<button
+		mat-menu-item
+		(click)="createConnectionToNode(data)">
+		<mat-icon
+			color="success"
+			data-cy="create-connection-btn"
+			>show_chart</mat-icon
+		><span>Create Connection To {{ data.name }}</span>
+	</button>
 </ng-container>
 <ng-container *ngIf="!(hasChanges(data) || editMode)">
-    <mat-label mat-menu-item [disabled]=true>No options available.</mat-label>
+	<mat-label
+		mat-menu-item
+		[disabled]="true"
+		>No options available.</mat-label
+	>
 </ng-container>
 <mat-menu #nodeDiffMenu="matMenu">
-    <ng-template matMenuContent let-data="data">
-      <ng-container *ngIf="data?.changes?.name!==undefined">
-        <button mat-menu-item (click)="viewDiff(true,data.changes.name,'Name')">Name</button>
-      </ng-container>
-      <ng-container *ngIf="data?.changes?.description!==undefined">
-        <button mat-menu-item (click)="viewDiff(true,data.changes.description,'Description')">Description</button>
-      </ng-container>
-      <ng-container *ngIf="data?.changes?.interfaceNodeAddress!==undefined">
-        <button mat-menu-item (click)="viewDiff(true,data.changes.interfaceNodeAddress,'Address/Port')">Address/Port</button>
-      </ng-container>
-      <ng-container *ngIf="data?.changes?.interfaceNodeBgColor!==undefined">
-        <button mat-menu-item (click)="viewDiff(true,data.changes.interfaceNodeBgColor,'Background Color')">Background Color</button>
-      </ng-container>
-      <ng-container *ngIf="data?.changes?.applicability!==undefined">
-        <button mat-menu-item (click)="viewDiff(true,data.changes.applicability,'Applicability')">Applicability</button>
-      </ng-container>
-    </ng-template>
+	<ng-template
+		matMenuContent
+		let-data="data">
+		<ng-container *ngIf="data?.changes?.name !== undefined">
+			<button
+				mat-menu-item
+				(click)="viewDiff(true, data.changes.name, 'Name')">
+				Name
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.description !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, data.changes.description, 'Description')
+				">
+				Description
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.interfaceNodeAddress !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(
+						true,
+						data.changes.interfaceNodeAddress,
+						'Address/Port'
+					)
+				">
+				Address/Port
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.interfaceNodeBgColor !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(
+						true,
+						data.changes.interfaceNodeBgColor,
+						'Background Color'
+					)
+				">
+				Background Color
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.applicability !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, data.changes.applicability, 'Applicability')
+				">
+				Applicability
+			</button>
+		</ng-container>
+	</ng-template>
 </mat-menu>

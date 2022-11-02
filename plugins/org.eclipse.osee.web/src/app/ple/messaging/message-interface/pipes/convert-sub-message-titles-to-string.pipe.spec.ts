@@ -13,17 +13,17 @@
 import { ConvertSubMessageTitlesToStringPipe } from './convert-sub-message-titles-to-string.pipe';
 
 describe('ConvertSubMessageTitlesToStringPipe', () => {
-  it('create an instance', () => {
-    const pipe = new ConvertSubMessageTitlesToStringPipe();
-    expect(pipe).toBeTruthy();
-  });
-  it('should return value back if not in list', () => {
-    const pipe = new ConvertSubMessageTitlesToStringPipe();
-    expect(pipe.transform('abcdef')).toEqual('abcdef')
-  })
+	it('create an instance', () => {
+		const pipe = new ConvertSubMessageTitlesToStringPipe();
+		expect(pipe).toBeTruthy();
+	});
+	it('should return value back if not in list', () => {
+		const pipe = new ConvertSubMessageTitlesToStringPipe();
+		expect(pipe.transform('abcdef')).toEqual('abcdef');
+	});
 
-  it('should return proper value if in list', () => {
-    const pipe = new ConvertSubMessageTitlesToStringPipe();
-    expect(pipe.transform('applicability')).toEqual('Applicability')
-  })
+	it('should return proper value if in list', () => {
+		const pipe = new ConvertSubMessageTitlesToStringPipe();
+		expect(pipe.transform('applicability')).toEqual('Applicability');
+	});
 });

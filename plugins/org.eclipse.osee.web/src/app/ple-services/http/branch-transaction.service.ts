@@ -16,13 +16,14 @@ import { apiURL } from '../../../environments/environment';
 import { transactionResult } from '../../types/change-report/transaction';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchTransactionService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  undoLatest(branchId: string | number) {
-    return this.http.delete<transactionResult>(apiURL + '/orcs/branches/' + branchId + '/undo/');
-  }
+	undoLatest(branchId: string | number) {
+		return this.http.delete<transactionResult>(
+			apiURL + '/orcs/branches/' + branchId + '/undo/'
+		);
+	}
 }

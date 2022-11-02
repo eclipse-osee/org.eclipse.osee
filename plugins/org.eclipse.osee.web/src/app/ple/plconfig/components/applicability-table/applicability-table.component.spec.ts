@@ -35,42 +35,63 @@ import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchSer
 import { ApplicabilityTableComponent } from './applicability-table.component';
 
 describe('ApplicabilityTableComponent', () => {
-  let component: ApplicabilityTableComponent;
-  let fixture: ComponentFixture<ApplicabilityTableComponent>;
-  let loader: HarnessLoader;
+	let component: ApplicabilityTableComponent;
+	let fixture: ComponentFixture<ApplicabilityTableComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    
-    await TestBed.configureTestingModule({
-      imports:[MatFormFieldModule,MatListModule,MatDialogModule,MatInputModule,FormsModule, MatSelectModule,MatMenuModule, NoopAnimationsModule,MatTableModule, MatPaginatorModule,MatTooltipModule, MatPaginatorModule,RouterTestingModule],
-      declarations: [ApplicabilityTableComponent],
-      providers: [
-        { provide: DialogService, useValue: DialogServiceMock },
-        { provide: MatDialog, useValue: {} },
-        { provide: PlConfigCurrentBranchService, useValue: plCurrentBranchServiceMock }
-      ]
-    })
-      .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				MatListModule,
+				MatDialogModule,
+				MatInputModule,
+				FormsModule,
+				MatSelectModule,
+				MatMenuModule,
+				NoopAnimationsModule,
+				MatTableModule,
+				MatPaginatorModule,
+				MatTooltipModule,
+				MatPaginatorModule,
+				RouterTestingModule,
+			],
+			declarations: [ApplicabilityTableComponent],
+			providers: [
+				{ provide: DialogService, useValue: DialogServiceMock },
+				{ provide: MatDialog, useValue: {} },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: plCurrentBranchServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ApplicabilityTableComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ApplicabilityTableComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should filter the table', async () => {
-    let spy = spyOn(component, 'applyFilter').and.callThrough();
-    let input = await (await loader.getHarness(MatFormFieldHarness.with({ floatingLabelText: 'Filter Configuration Information' }))).getControl(MatInputHarness);
-    expect(input).toBeDefined();
-    await input?.focus();
-    await input?.setValue('abcdef');
-    await input?.blur();
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should filter the table', async () => {
+		let spy = spyOn(component, 'applyFilter').and.callThrough();
+		let input = await (
+			await loader.getHarness(
+				MatFormFieldHarness.with({
+					floatingLabelText: 'Filter Configuration Information',
+				})
+			)
+		).getControl(MatInputHarness);
+		expect(input).toBeDefined();
+		await input?.focus();
+		await input?.setValue('abcdef');
+		await input?.blur();
+		expect(spy).toHaveBeenCalled();
+	});
 });

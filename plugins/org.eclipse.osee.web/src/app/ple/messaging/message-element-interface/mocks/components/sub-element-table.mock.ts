@@ -10,31 +10,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { EventEmitter, Output } from "@angular/core";
-import { Component, Input } from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
-import { structure } from "../../../shared/types/structure";
+import { EventEmitter, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { structure } from '../../../shared/types/structure';
 
 @Component({
-    selector: 'ple-messaging-message-element-interface-sub-element-table',
-    template:'<p>Dummy</p>'
+	selector: 'osee-messaging-message-element-interface-sub-element-table',
+	template: '<p>Dummy</p>',
 })
-export class SubElementTableComponentMock{
-  @Input() data: any = {};
-  @Input() dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
-  @Input() filter: string = "";
-  
-  @Input() element: any = {};
-  @Output() expandRow = new EventEmitter();
-  @Input() subMessageHeaders: string[] = [];
-  @Input() editMode: boolean = false;
-  @Input() structure: structure = {
-    id: '',
-    name: '',
-    description: '',
-    interfaceMaxSimultaneity: '',
-    interfaceMinSimultaneity: '',
-    interfaceTaskFileType: 0,
-    interfaceStructureCategory: ''
-  };
-  }
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class SubElementTableComponentMock {
+	@Input() data: any = {};
+	@Input() dataSource: MatTableDataSource<any> =
+		new MatTableDataSource<any>();
+	@Input() filter: string = '';
+
+	@Input() element: any = {};
+	@Output() expandRow = new EventEmitter();
+	@Input() subMessageHeaders: string[] = [];
+	@Input() editMode: boolean = false;
+	@Input() structure: structure = {
+		id: '',
+		name: '',
+		description: '',
+		interfaceMaxSimultaneity: '',
+		interfaceMinSimultaneity: '',
+		interfaceTaskFileType: 0,
+		interfaceStructureCategory: '',
+	};
+}

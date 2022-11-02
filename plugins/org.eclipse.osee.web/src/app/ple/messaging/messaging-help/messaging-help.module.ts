@@ -17,13 +17,8 @@ import { MessagingHelpRoutingModule } from './messaging-help-routing.module';
 import { MessagingHelpComponent } from './messaging-help.component';
 import { MatButtonModule } from '@angular/material/button';
 
-
 @NgModule({
-  declarations: [MessagingHelpComponent],
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MessagingHelpRoutingModule
-  ]
+	declarations: [MessagingHelpComponent],
+	imports: [CommonModule, MatButtonModule, MessagingHelpRoutingModule],
 })
-export class MessagingHelpModule { }
+export class MessagingHelpModule {}

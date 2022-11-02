@@ -13,17 +13,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from 'src/environments/environment';
-import { connection, connectionWithChanges, OseeEdge } from '../../shared/types/connection';
-import { node, nodeData, nodeDataWithChanges, OseeNode } from '../../shared/types/node.d';
+import {
+	connection,
+	connectionWithChanges,
+	OseeEdge,
+} from '../../shared/types/connection';
+import {
+	node,
+	nodeData,
+	nodeDataWithChanges,
+	OseeNode,
+} from '../../shared/types/node.d';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class GraphService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getNodes(id: string) {
-    return this.http.get<{nodes:OseeNode<nodeData>[],edges:OseeEdge<connection>[]}>(apiURL+'/mim/branch/'+id+"/graph")
-  }
+	getNodes(id: string) {
+		return this.http.get<{
+			nodes: OseeNode<nodeData>[];
+			edges: OseeEdge<connection>[];
+		}>(apiURL + '/mim/branch/' + id + '/graph');
+	}
 }

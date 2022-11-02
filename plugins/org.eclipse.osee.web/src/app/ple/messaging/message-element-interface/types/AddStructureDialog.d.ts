@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure } from "../../shared/types/structure";
+import { structure } from '../../shared/types/structure';
 
-export interface AddStructureDialog{
-    id: string,
-    name: string,
-    structure:structure
+export interface AddStructureDialog {
+	id: string;
+	name: string;
+	structure: structure;
 }

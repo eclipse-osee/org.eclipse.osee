@@ -11,23 +11,33 @@
  *     Boeing - initial API and implementation
  -->
 <osee-branch-picker category="3"></osee-branch-picker>
-<mat-form-field class="width-100 filter" *ngIf="(loading|async)!=='true'">
-    <mat-label>Filter Structures</mat-label>
-    <input matInput type="search" (keyup)="applyFilter($event)" #input>
-    <mat-icon matPrefix>filter_list</mat-icon>
-    <mat-hint>Enter text to filter structures.</mat-hint>
+<mat-form-field
+	class="width-100 filter"
+	*ngIf="(loading | async) !== 'true'">
+	<mat-label>Filter Structures</mat-label>
+	<input
+		matInput
+		type="search"
+		(keyup)="applyFilter($event)"
+		#input />
+	<mat-icon matPrefix>filter_list</mat-icon>
+	<mat-hint>Enter text to filter structures.</mat-hint>
 </mat-form-field>
-<mat-accordion multi="true" displayMode="flat">
-    <mat-expansion-panel *ngFor="let name of names|async">
-        <mat-expansion-panel-header>
-            <mat-panel-title class="single-line">
-                {{name.name}}
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <ng-container *ngFor="let path of name.paths">
-            <a mat-button [routerLink]="((basePath|async)||'')+path.path">
-                {{path.name}}
-            </a>
-        </ng-container>
-    </mat-expansion-panel>
+<mat-accordion
+	multi="true"
+	displayMode="flat">
+	<mat-expansion-panel *ngFor="let name of names | async">
+		<mat-expansion-panel-header>
+			<mat-panel-title class="single-line">
+				{{ name.name }}
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+		<ng-container *ngFor="let path of name.paths">
+			<a
+				mat-button
+				[routerLink]="((basePath | async) || '') + path.path">
+				{{ path.name }}
+			</a>
+		</ng-container>
+	</mat-expansion-panel>
 </mat-accordion>

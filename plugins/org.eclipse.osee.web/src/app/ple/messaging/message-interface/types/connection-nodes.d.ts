@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { nodeData } from '../../shared/types/node'
+import { nodeData } from '../../shared/types/node';
 
- export interface ConnectionNode extends Pick<nodeData, "id">, Pick<nodeData, "name">{}
+export interface ConnectionNode
+	extends Pick<nodeData, 'id'>,
+		Pick<nodeData, 'name'> {}

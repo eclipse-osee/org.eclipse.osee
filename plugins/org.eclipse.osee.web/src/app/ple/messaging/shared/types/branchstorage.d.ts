@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface branchStorage{
-    mim: {
-        editMode: boolean,
-        StructureHeaders: string[],
-        ElementHeaders:string[]   
-    }
+export interface branchStorage {
+	mim: {
+		editMode: boolean;
+		StructureHeaders: string[];
+		ElementHeaders: string[];
+	};
 }

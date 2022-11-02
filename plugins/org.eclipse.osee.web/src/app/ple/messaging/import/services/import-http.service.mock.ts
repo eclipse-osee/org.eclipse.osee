@@ -10,18 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { importOptionsMock, importSummaryMock } from "../importMock";
-import { ImportHttpService } from "./import-http.service";
+import { of } from 'rxjs';
+import { importOptionsMock, importSummaryMock } from '../importMock';
+import { ImportHttpService } from './import-http.service';
 
 export const importHttpServiceMock: Partial<ImportHttpService> = {
-    
-    getImportSummary(url: string, formData: FormData) {
-        return of(importSummaryMock)
-      },
-    
-    getImportOptions() {
-        return of(importOptionsMock)
-    }
+	getImportSummary(url: string, formData: FormData) {
+		return of(importSummaryMock);
+	},
 
-}
+	getImportOptions() {
+		return of(importOptionsMock);
+	},
+};

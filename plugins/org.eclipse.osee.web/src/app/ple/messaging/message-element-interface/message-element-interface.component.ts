@@ -19,54 +19,74 @@ import { structure } from '../shared/types/structure';
 import { filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { combineLatest, iif, of } from 'rxjs';
 
-
 @Component({
-  selector: 'ple-messaging-message-element-interface',
-  templateUrl: './message-element-interface.component.html',
-  styleUrls: ['./message-element-interface.component.sass'],
+	selector: 'osee-messaging-message-element-interface',
+	templateUrl: './message-element-interface.component.html',
+	styleUrls: ['./message-element-interface.component.sass'],
 })
 export class MessageElementInterfaceComponent implements OnInit, OnDestroy {
-  tableData = of(new MatTableDataSource<structure>());
+	tableData = of(new MatTableDataSource<structure>());
 
-  messageData = combineLatest([this.tableData, this.structureService.structures]).pipe(
-    map(([table, structures]) => { table.data = structures; return table; }),
-    takeUntil(this.structureService.done)
-  )
-  breadCrumb = this.structureService.breadCrumbs;
-  constructor (
-    private route: ActivatedRoute,
-    private router:Router,
-    public dialog: MatDialog,
-    private structureService: CurrentStructureService,
-  ) {}
-  ngOnDestroy(): void {
-    this.structureService.toggleDone = true;
-  }
+	messageData = combineLatest([
+		this.tableData,
+		this.structureService.structures,
+	]).pipe(
+		map(([table, structures]) => {
+			table.data = structures;
+			return table;
+		}),
+		takeUntil(this.structureService.done)
+	);
+	breadCrumb = this.structureService.breadCrumbs;
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router,
+		public dialog: MatDialog,
+		private structureService: CurrentStructureService
+	) {}
+	ngOnDestroy(): void {
+		this.structureService.toggleDone = true;
+	}
 
-  ngOnInit(): void {
-    combineLatest([this.route.paramMap,this.route.data,iif(() => this.router.url.includes('diff'),
-    of(true),
-      of(false))]).pipe(takeUntil(this.structureService.done)).subscribe(([paramMap, data, mode]) => {
-        if (mode) {
-          this.structureService.BranchType = paramMap.get('branchType') || '';
-          this.structureService.branchId = paramMap.get('branchId') || '';
-          this.structureService.messageId = paramMap.get('messageId') || '';
-          this.structureService.subMessageId = paramMap.get('subMessageId') || '';
-          this.structureService.connection = paramMap.get('connection') || '';
-          this.structureService.singleStructureIdValue = '';
-          this.structureService.difference = data?.diff;
-          this.structureService.DiffMode = true;
-        } else {
-          this.structureService.BranchType = paramMap.get('branchType') || '';
-          this.structureService.branchId = paramMap.get('branchId') || '';
-          this.structureService.messageId = paramMap.get('messageId') || '';
-          this.structureService.subMessageId = paramMap.get('subMessageId') || '';
-          this.structureService.connection = paramMap.get('connection') || '';
-          this.structureService.BreadCrumb = paramMap.get('name') || '';
-          this.structureService.singleStructureIdValue = '';
-          this.structureService.DiffMode = false;
-          this.structureService.difference = [];
-        }
-    })
-  }
+	ngOnInit(): void {
+		combineLatest([
+			this.route.paramMap,
+			this.route.data,
+			iif(() => this.router.url.includes('diff'), of(true), of(false)),
+		])
+			.pipe(takeUntil(this.structureService.done))
+			.subscribe(([paramMap, data, mode]) => {
+				if (mode) {
+					this.structureService.BranchType =
+						paramMap.get('branchType') || '';
+					this.structureService.branchId =
+						paramMap.get('branchId') || '';
+					this.structureService.messageId =
+						paramMap.get('messageId') || '';
+					this.structureService.subMessageId =
+						paramMap.get('subMessageId') || '';
+					this.structureService.connection =
+						paramMap.get('connection') || '';
+					this.structureService.singleStructureIdValue = '';
+					this.structureService.difference = data?.diff;
+					this.structureService.DiffMode = true;
+				} else {
+					this.structureService.BranchType =
+						paramMap.get('branchType') || '';
+					this.structureService.branchId =
+						paramMap.get('branchId') || '';
+					this.structureService.messageId =
+						paramMap.get('messageId') || '';
+					this.structureService.subMessageId =
+						paramMap.get('subMessageId') || '';
+					this.structureService.connection =
+						paramMap.get('connection') || '';
+					this.structureService.BreadCrumb =
+						paramMap.get('name') || '';
+					this.structureService.singleStructureIdValue = '';
+					this.structureService.DiffMode = false;
+					this.structureService.difference = [];
+				}
+			});
+	}
 }

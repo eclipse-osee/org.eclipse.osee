@@ -10,26 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { enumerationSet } from "../../../shared/types/enum";
+import { enumerationSet } from '../../../shared/types/enum';
 
 export const enumerationSetMock: enumerationSet[] = [
-    {
-        name: 'Hello',
-        description: 'World',
-        applicability: {
-            id: '1',
-            name:'Base'
-        },
-        enumerations: [
-            {id:'1',name:'a',ordinal:0,applicability:{id:'1',name:'Base'}}
-        ]
-    },
-    {
-        name: 'enumset',
-        description: '',
-        applicability: {
-            id: '1',
-            name:'Base'
-        }
-    }
-]
+	{
+		name: 'Hello',
+		description: 'World',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		enumerations: [
+			{
+				id: '1',
+				name: 'a',
+				ordinal: 0,
+				applicability: { id: '1', name: 'Base' },
+			},
+		],
+	},
+	{
+		name: 'enumset',
+		description: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+	},
+];

@@ -16,13 +16,14 @@ import { apiURL } from '../../../../../../environments/environment';
 import { StructurePath } from '../../types/StructurePath';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class StructureNamesService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getStructureNames(branchId:string) {
-    return this.http.get<StructurePath[]>(apiURL+"/mim/branch/"+branchId+"/all/StructureNames")
-  }
+	getStructureNames(branchId: string) {
+		return this.http.get<StructurePath[]>(
+			apiURL + '/mim/branch/' + branchId + '/all/StructureNames'
+		);
+	}
 }

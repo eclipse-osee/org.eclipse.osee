@@ -17,15 +17,8 @@ import { TypeDetailRoutingModule } from './type-detail-routing.module';
 import { TypeDetailComponent } from './type-detail.component';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 
-
 @NgModule({
-  declarations: [
-    TypeDetailComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedMessagingModule,
-    TypeDetailRoutingModule
-  ]
+	declarations: [TypeDetailComponent],
+	imports: [CommonModule, SharedMessagingModule, TypeDetailRoutingModule],
 })
-export class TypeDetailModule { }
+export class TypeDetailModule {}

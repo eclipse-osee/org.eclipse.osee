@@ -15,37 +15,37 @@ import { TestBed } from '@angular/core/testing';
 import { RouterStateService } from './router-state.service';
 
 describe('RouterStateService', () => {
-  let service: RouterStateService;
+	let service: RouterStateService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(RouterStateService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(RouterStateService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-  describe('Core Functionality',()=> {
-    describe('Branch Type', () => {
-      describe('Valid States', () => {
-        it('should set type to baseline', () => {
-          service.type='baseline'
-          expect(service.type).toEqual('baseline')
-        });
-      
-        it('should set type to working', () => {
-          service.type='working'
-          expect(service.type).toEqual('working')
-        });    
-      })
-    })
-    describe('Branch Id', () => {
-      describe('Valid States', () => {
-        it('should set id to 8', () => {
-          service.id='8'
-          expect(service.id).toEqual('8')
-        });
-      })
-    })
-  })
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+	describe('Core Functionality', () => {
+		describe('Branch Type', () => {
+			describe('Valid States', () => {
+				it('should set type to baseline', () => {
+					service.type = 'baseline';
+					expect(service.type).toEqual('baseline');
+				});
+
+				it('should set type to working', () => {
+					service.type = 'working';
+					expect(service.type).toEqual('working');
+				});
+			});
+		});
+		describe('Branch Id', () => {
+			describe('Valid States', () => {
+				it('should set id to 8', () => {
+					service.id = '8';
+					expect(service.id).toEqual('8');
+				});
+			});
+		});
+	});
 });

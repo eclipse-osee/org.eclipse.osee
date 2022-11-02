@@ -16,15 +16,15 @@ import { UsermenuComponent } from './components/menus/usermenu/usermenu.componen
 import { TypesInterfaceComponent } from './types-interface.component';
 
 const routes: Routes = [
-  { path: '', component: TypesInterfaceComponent },
-  { path: ':branchType', component: TypesInterfaceComponent },
-  { path: ':branchType/:branchId', component: TypesInterfaceComponent },
-  { path: ':branchType/:branchId/:type', component: TypesInterfaceComponent },
-  { path: '', component: UsermenuComponent, outlet: 'userMenu' }
+	{ path: '', component: TypesInterfaceComponent },
+	{ path: ':branchType', component: TypesInterfaceComponent },
+	{ path: ':branchType/:branchId', component: TypesInterfaceComponent },
+	{ path: ':branchType/:branchId/:type', component: TypesInterfaceComponent },
+	{ path: '', component: UsermenuComponent, outlet: 'userMenu' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class TypesInterfaceRoutingModule { }
+export class TypesInterfaceRoutingModule {}

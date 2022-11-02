@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- export interface RemoveElementDialogData{
-    elementId: string,
-    structureId: string
-    elementName:string,
+export interface RemoveElementDialogData {
+	elementId: string;
+	structureId: string;
+	elementName: string;
 }

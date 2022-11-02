@@ -21,17 +21,18 @@ import { subMessage } from '../../../message-interface/types/sub-messages';
 import { MimPreferences } from '../../types/mim.preferences';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class MimPreferencesService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getUserPrefs(branchId: string, user: user) {
-    return this.http.get<MimPreferences<structure&message&subMessage&element>>(apiURL + '/mim/user/' + branchId)
-  }
+	getUserPrefs(branchId: string, user: user) {
+		return this.http.get<
+			MimPreferences<structure & message & subMessage & element>
+		>(apiURL + '/mim/user/' + branchId);
+	}
 
-  getBranchPrefs(user: user) {
-    return this.http.get<string[]>(apiURL + '/mim/user/branches')
-  }
+	getBranchPrefs(user: user) {
+		return this.http.get<string[]>(apiURL + '/mim/user/branches');
+	}
 }

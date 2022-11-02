@@ -13,7 +13,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -29,51 +33,76 @@ import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-br
 import { EditConfigurationDialogComponent } from './edit-config-dialog.component';
 
 describe('EditConfigDialogComponent', () => {
-  let component: EditConfigurationDialogComponent;
-  let fixture: ComponentFixture<EditConfigurationDialogComponent>;
+	let component: EditConfigurationDialogComponent;
+	let fixture: ComponentFixture<EditConfigurationDialogComponent>;
 
-  beforeEach(async () => {
-    const typesService = jasmine.createSpyObj('PlConfigTypesService', [], ['productApplicabilityTypes']);
-    const currentBranchService = jasmine.createSpyObj('PlConfigCurrentBranchService', [], ['cfgGroups']);
-    const branchService = jasmine.createSpyObj('PlConfigBranchService', ['getBranchApplicability']);
-    await TestBed.configureTestingModule({
-      imports:[MatFormFieldModule,MatInputModule,MatSelectModule,MatDialogModule,NoopAnimationsModule,MatListModule,MatButtonModule, FormsModule],
-      declarations: [EditConfigurationDialogComponent],
-      providers: [
-        { provide: PlConfigBranchService, useValue: branchService },
-        { provide: PlConfigCurrentBranchService, useValue: currentBranchService },
-        { provide: PlConfigTypesService, useValue: typesService },
-        { provide: MatDialogRef, useValue: {} },
-        {
-          provide: MAT_DIALOG_DATA, useValue: {
-            currentBranch: "3182843164128526558",
-            currentConfig: {
-              id:"200045",
-              name: "Product A",
-              ConfigurationToCopyFrom: {
-                id: "",
-                name:""
-              }
-            }
-          }
-        },
-        {
-          provide: PlConfigBranchService, useValue: {
-            getBranchApplicability() { return of(testBranchApplicability) }
-          }
-        },
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		const typesService = jasmine.createSpyObj(
+			'PlConfigTypesService',
+			[],
+			['productApplicabilityTypes']
+		);
+		const currentBranchService = jasmine.createSpyObj(
+			'PlConfigCurrentBranchService',
+			[],
+			['cfgGroups']
+		);
+		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
+			'getBranchApplicability',
+		]);
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				MatDialogModule,
+				NoopAnimationsModule,
+				MatListModule,
+				MatButtonModule,
+				FormsModule,
+			],
+			declarations: [EditConfigurationDialogComponent],
+			providers: [
+				{ provide: PlConfigBranchService, useValue: branchService },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: currentBranchService,
+				},
+				{ provide: PlConfigTypesService, useValue: typesService },
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: {
+						currentBranch: '3182843164128526558',
+						currentConfig: {
+							id: '200045',
+							name: 'Product A',
+							ConfigurationToCopyFrom: {
+								id: '',
+								name: '',
+							},
+						},
+					},
+				},
+				{
+					provide: PlConfigBranchService,
+					useValue: {
+						getBranchApplicability() {
+							return of(testBranchApplicability);
+						},
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditConfigurationDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditConfigurationDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

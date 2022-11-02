@@ -13,15 +13,15 @@
 import { UrlSerializer, UrlTree, DefaultUrlSerializer } from '@angular/router';
 
 export class OseeUrlSerializer implements UrlSerializer {
-    parse(url: any): UrlTree {
-        let dus = new DefaultUrlSerializer();
-        return dus.parse(url);
-    }
+	parse(url: any): UrlTree {
+		let dus = new DefaultUrlSerializer();
+		return dus.parse(url);
+	}
 
-    serialize(tree: UrlTree): any {
-        let defaultSerializer = new DefaultUrlSerializer(),
-        path = defaultSerializer.serialize(tree);
-        // use your regex to replace as per your requirement.
-        return path.replace(/-/g,'%2D').replace(/%20%3E%20/g, '%3E');
-      }
-   }
+	serialize(tree: UrlTree): any {
+		let defaultSerializer = new DefaultUrlSerializer(),
+			path = defaultSerializer.serialize(tree);
+		// use your regex to replace as per your requirement.
+		return path.replace(/-/g, '%2D').replace(/%20%3E%20/g, '%3E');
+	}
+}

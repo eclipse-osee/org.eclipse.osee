@@ -29,52 +29,65 @@ import { StructureDiffsComponent } from './structure-diffs/structure-diffs.compo
 import { SubmessageDiffsComponent } from './submessage-diffs/submessage-diffs.component';
 
 describe('DiffReportComponent', () => {
-  let component: DiffReportComponent;
-  let fixture: ComponentFixture<DiffReportComponent>;
-  let scheduler: TestScheduler;
+	let component: DiffReportComponent;
+	let fixture: ComponentFixture<DiffReportComponent>;
+	let scheduler: TestScheduler;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        { provide: DiffReportService, useValue: DiffReportServiceMock },
-      ],
-      imports: [
-        CommonModule,
-        GenericButtonsModule,
-        MatIconModule,
-        MatTableModule],
-      declarations: [  
-        ConnectionDiffsComponent, 
-        DiffReportComponent,
-        DiffReportTableComponent,
-        MessageDiffsComponent, 
-        NodeDiffsComponent, 
-        StructureDiffsComponent,
-        SubmessageDiffsComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			providers: [
+				{ provide: DiffReportService, useValue: DiffReportServiceMock },
+			],
+			imports: [
+				CommonModule,
+				GenericButtonsModule,
+				MatIconModule,
+				MatTableModule,
+			],
+			declarations: [
+				ConnectionDiffsComponent,
+				DiffReportComponent,
+				DiffReportTableComponent,
+				MessageDiffsComponent,
+				NodeDiffsComponent,
+				StructureDiffsComponent,
+				SubmessageDiffsComponent,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DiffReportComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(DiffReportComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should get the header name', () => {
-    scheduler.run(() => {
-      let expectedObservable = { a: { header: 'description', description: 'Description of the branch', humanReadable: 'Description' } };
-      let expectedMarble = '(a)';
-      scheduler.expectObservable(component.getHeaderByName('description', 'branchSummary')).toBe(expectedMarble, expectedObservable);
-    })
-  })
-
+	it('should get the header name', () => {
+		scheduler.run(() => {
+			let expectedObservable = {
+				a: {
+					header: 'description',
+					description: 'Description of the branch',
+					humanReadable: 'Description',
+				},
+			};
+			let expectedMarble = '(a)';
+			scheduler
+				.expectObservable(
+					component.getHeaderByName('description', 'branchSummary')
+				)
+				.toBe(expectedMarble, expectedObservable);
+		});
+	});
 });

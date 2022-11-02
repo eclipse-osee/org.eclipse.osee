@@ -11,7 +11,5 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const dialogRef = {
-    close() {
-        
-    }
-}
+	close() {},
+};

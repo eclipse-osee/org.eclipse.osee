@@ -12,7 +12,12 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+	ComponentFixture,
+	fakeAsync,
+	TestBed,
+	tick,
+} from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
@@ -35,112 +40,130 @@ import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateSer
 import { CurrentStructureService } from '../../../services/current-structure.service';
 import { EditElementFieldComponent } from './edit-element-field.component';
 
-
 describe('EditElementFieldComponent', () => {
-  let component: EditElementFieldComponent;
-  let fixture: ComponentFixture<EditElementFieldComponent>;
-  let loader: HarnessLoader;
+	let component: EditElementFieldComponent;
+	let fixture: ComponentFixture<EditElementFieldComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule,MatIconModule, MatAutocompleteModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule,MatMenuModule,RouterTestingModule],
-      providers: [{ provide: CurrentStructureService, useValue: CurrentStateServiceMock },
-        { provide: EnumsService, useValue:enumsServiceMock },
-        { provide: ActivatedRoute, useValue: {} },
-        { provide: WarningDialogService, useValue: warningDialogServiceMock }],
-      declarations: [ EditElementFieldComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				NoopAnimationsModule,
+				MatIconModule,
+				MatAutocompleteModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				SharedMessagingModule,
+				MatMenuModule,
+				RouterTestingModule,
+			],
+			providers: [
+				{
+					provide: CurrentStructureService,
+					useValue: CurrentStateServiceMock,
+				},
+				{ provide: EnumsService, useValue: enumsServiceMock },
+				{ provide: ActivatedRoute, useValue: {} },
+				{
+					provide: WarningDialogService,
+					useValue: warningDialogServiceMock,
+				},
+			],
+			declarations: [EditElementFieldComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditElementFieldComponent);
-    component = fixture.componentInstance;
-    component.structureId = '10';
-    component.elementId = '15';
-    component.platformTypeId='20'
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditElementFieldComponent);
+		component = fixture.componentInstance;
+		component.structureId = '10';
+		component.elementId = '15';
+		component.platformTypeId = '20';
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  describe('Applicability Editing', () => {
-    beforeEach(() => {
-      component.header='applicability'
-      component.value = { id: '1', name: 'Base' }
-      fixture.detectChanges();
-      loader = TestbedHarnessEnvironment.loader(fixture);
-    })
+	describe('Applicability Editing', () => {
+		beforeEach(() => {
+			component.header = 'applicability';
+			component.value = { id: '1', name: 'Base' };
+			fixture.detectChanges();
+			loader = TestbedHarnessEnvironment.loader(fixture);
+		});
 
-    it('should update the applicability', async() => {
-      let spy = spyOn(component, 'updateImmediately').and.callThrough();
-      let select = await loader.getHarness(MatSelectHarness);
-      await select.open();
-      if (await select.isOpen()) {
-        await select.clickOptions({ text: 'Second' });
-        component.focusChanged(null);
-        expect(spy).toHaveBeenCalled()
-      } else {
-        expect(spy).not.toHaveBeenCalled()
-      }
-    })
+		it('should update the applicability', async () => {
+			let spy = spyOn(component, 'updateImmediately').and.callThrough();
+			let select = await loader.getHarness(MatSelectHarness);
+			await select.open();
+			if (await select.isOpen()) {
+				await select.clickOptions({ text: 'Second' });
+				component.focusChanged(null);
+				expect(spy).toHaveBeenCalled();
+			} else {
+				expect(spy).not.toHaveBeenCalled();
+			}
+		});
 
-    it('should update value', fakeAsync(() => {
-      let spy = spyOn(component, 'updateElement').and.callThrough();
-      component.focusChanged('mouse');
-      component.focusChanged('mouse');
-      component.focusChanged(null)
-      component.updateElement('description', 'v2');
-      tick(500);
-      expect(spy).toHaveBeenCalled();
-    }));
+		it('should update value', fakeAsync(() => {
+			let spy = spyOn(component, 'updateElement').and.callThrough();
+			component.focusChanged('mouse');
+			component.focusChanged('mouse');
+			component.focusChanged(null);
+			component.updateElement('description', 'v2');
+			tick(500);
+			expect(spy).toHaveBeenCalled();
+		}));
+	});
 
-  })
+	describe('Platform Type Editing', () => {
+		beforeEach(() => {
+			component.header = 'platformTypeName2';
+			component.value = 'First';
+		});
 
-  describe('Platform Type Editing', () => {
-    beforeEach(() => {
-      component.header='platformTypeName2'
-      component.value = 'First'
-    })
+		it('should update the platform type', fakeAsync(async () => {
+			component.focusChanged('mouse');
+			component.focusChanged('mouse');
+			component.focusChanged(null);
+			let select = await loader.getHarness(MatAutocompleteHarness);
+			await select.focus();
+			await select.isOpen();
+			await select.enterText('2');
+			tick(500);
+			expect(await select.getValue()).toBe('First2');
+		}));
 
-    it('should update the platform type', fakeAsync(async () => {
-      component.focusChanged('mouse');
-      component.focusChanged('mouse');
-      component.focusChanged(null);
-      let select = await loader.getHarness(MatAutocompleteHarness);
-      await select.focus();
-      await select.isOpen() 
-      await select.enterText('2');
-      tick(500);
-      expect(await select.getValue()).toBe('First2')
-    }))
-
-    it('should emit an event to parent component', () => {
-      let mEvent = document.createEvent("MouseEvent");
-      let spy = spyOn(component.contextMenu, 'emit');
-      component.openMenu(mEvent, '');
-      expect(spy).toHaveBeenCalledWith(mEvent);
-    })
-  })
-  describe('Units editing', () => {
-    beforeEach(() => {
-      component.header='units'
-      component.value = unitsMock[0]
-    })
-    it('should update the units', fakeAsync(async () => {
-      component.focusChanged('mouse');
-      component.focusChanged('mouse');
-      component.focusChanged(null);
-      let select = await loader.getHarness(MatSelectHarness.with({selector:'.unit-selector'}));
-      await select.focus();
-      await select.open();
-      await select.isOpen();
-      await select.clickOptions({ text: unitsMock[5] });
-      tick(500);
-      expect(await select.getValueText()).toBe(unitsMock[5])
-    }))
-  })
+		it('should emit an event to parent component', () => {
+			let mEvent = document.createEvent('MouseEvent');
+			let spy = spyOn(component.contextMenu, 'emit');
+			component.openMenu(mEvent, '');
+			expect(spy).toHaveBeenCalledWith(mEvent);
+		});
+	});
+	describe('Units editing', () => {
+		beforeEach(() => {
+			component.header = 'units';
+			component.value = unitsMock[0];
+		});
+		it('should update the units', fakeAsync(async () => {
+			component.focusChanged('mouse');
+			component.focusChanged('mouse');
+			component.focusChanged(null);
+			let select = await loader.getHarness(
+				MatSelectHarness.with({ selector: '.unit-selector' })
+			);
+			await select.focus();
+			await select.open();
+			await select.isOpen();
+			await select.clickOptions({ text: unitsMock[5] });
+			tick(500);
+			expect(await select.getValueText()).toBe(unitsMock[5]);
+		}));
+	});
 });

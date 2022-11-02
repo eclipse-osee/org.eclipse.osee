@@ -14,7 +14,11 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -29,49 +33,65 @@ import { AddMessageDialog } from '../../../types/AddMessageDialog';
 import { AddMessageDialogComponent } from './add-message-dialog.component';
 
 describe('AddMessageDialogComponent', () => {
-  let component: AddMessageDialogComponent;
-  let fixture: ComponentFixture<AddMessageDialogComponent>;
-  let dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-  let dialogData: AddMessageDialog = {
-    id: '-1',
-    name: '',
-    description: '',
-    interfaceMessageNumber: '',
-    interfaceMessagePeriodicity: '',
-    interfaceMessageRate: '',
-    interfaceMessageType: '',
-    interfaceMessageWriteAccess: false,
-    initiatingNode: {
-      id:'',
-      name: ''
-    }
-  }
-  let enumServiceMock: Partial<EnumsService> = {
-    types: of(['type1', 'type2', 'type3']),
-    rates: of(['r1','r2','r3']),
-    periodicities:of(['p1','p2','p3'])
-  }
+	let component: AddMessageDialogComponent;
+	let fixture: ComponentFixture<AddMessageDialogComponent>;
+	let dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	let dialogData: AddMessageDialog = {
+		id: '-1',
+		name: '',
+		description: '',
+		interfaceMessageNumber: '',
+		interfaceMessagePeriodicity: '',
+		interfaceMessageRate: '',
+		interfaceMessageType: '',
+		interfaceMessageWriteAccess: false,
+		initiatingNode: {
+			id: '',
+			name: '',
+		},
+	};
+	let enumServiceMock: Partial<EnumsService> = {
+		types: of(['type1', 'type2', 'type3']),
+		rates: of(['r1', 'r2', 'r3']),
+		periodicities: of(['p1', 'p2', 'p3']),
+	};
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[CommonModule,MatDialogModule,FormsModule,MatFormFieldModule,MatInputModule,MatSelectModule,MatButtonModule,MatSlideToggleModule,NoopAnimationsModule],
-      declarations: [AddMessageDialogComponent],
-      providers: [{
-        provide: MatDialogRef, useValue: dialogRef
-      }, { provide: MAT_DIALOG_DATA, useValue: dialogData },
-      {provide: EnumsService, useValue:enumServiceMock},
-    {provide: CurrentMessagesService, useValue: CurrentMessageServiceMock}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				CommonModule,
+				MatDialogModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				MatButtonModule,
+				MatSlideToggleModule,
+				NoopAnimationsModule,
+			],
+			declarations: [AddMessageDialogComponent],
+			providers: [
+				{
+					provide: MatDialogRef,
+					useValue: dialogRef,
+				},
+				{ provide: MAT_DIALOG_DATA, useValue: dialogData },
+				{ provide: EnumsService, useValue: enumServiceMock },
+				{
+					provide: CurrentMessagesService,
+					useValue: CurrentMessageServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AddMessageDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(AddMessageDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

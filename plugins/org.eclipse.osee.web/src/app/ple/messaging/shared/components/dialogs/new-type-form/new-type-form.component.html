@@ -11,21 +11,22 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="formInfo | async as _formInfo">
-  <mat-label class="mat-headline"
-    >Set fields for new type based on logical type
-    {{ _formInfo.name | titlecase }}</mat-label
-  >
-  <br />
-  <ng-container *ngIf="units | async as _units">
-    <ng-container *ngFor="let form of _formInfo.fields; index as i">
-      <osee-new-attribute-form-field
-        [form]="form"
-        [units]="_units"
-        (formChanged)="updatedFormValue($event,i)"
-      ></osee-new-attribute-form-field>
-    </ng-container>
-  </ng-container>
-  <mat-label class="attribute-unique-error">
-    {{attributesUnique|async}}
-  </mat-label>
+	<mat-label class="mat-headline"
+		>Set fields for new type based on logical type
+		{{ _formInfo.name | titlecase }}</mat-label
+	>
+	<br />
+	<ng-container *ngIf="units | async as _units">
+		<ng-container *ngFor="let form of _formInfo.fields; index as i">
+			<osee-new-attribute-form-field
+				[form]="form"
+				[units]="_units"
+				(formChanged)="
+					updatedFormValue($event, i)
+				"></osee-new-attribute-form-field>
+		</ng-container>
+	</ng-container>
+	<mat-label class="attribute-unique-error">
+		{{ attributesUnique | async }}
+	</mat-label>
 </ng-container>

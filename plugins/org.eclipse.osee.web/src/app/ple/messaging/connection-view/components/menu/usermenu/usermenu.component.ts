@@ -19,42 +19,59 @@ import { CurrentGraphService } from '../../../services/current-graph.service';
 import { RouteStateService } from '../../../services/route-state-service.service';
 
 @Component({
-  selector: 'app-usermenu',
-  templateUrl: './usermenu.component.html',
-  styleUrls: ['./usermenu.component.sass']
+	selector: 'osee-messaging-usermenu',
+	templateUrl: './usermenu.component.html',
+	styleUrls: ['./usermenu.component.sass'],
 })
-export class UsermenuComponent implements OnInit {
-  settingsCapable = this.routeState.id.pipe(
-    switchMap((val)=>iif(()=>val!==''&&val!=='-1'&&val!=='0',of('true'),of('false')))
-  )
-  preferences = this.graphService.preferences;
-  inEditMode = this.graphService.preferences.pipe(
-    map((r) => r.inEditMode),
-    share(),
-    shareReplay(1)
-  )
-  constructor(private routeState: RouteStateService,public dialog: MatDialog,private graphService: CurrentGraphService,) { }
-
-  ngOnInit(): void {
-  }
-  openSettingsDialog() {
-    combineLatest([this.inEditMode, this.routeState.id]).pipe(
-      take(1),
-      switchMap(([edit, id]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-        data: {
-          branchId: id,
-          allHeaders2: [],
-          allowedHeaders2: [],
-          allHeaders1: [],
-          allowedHeaders1: [],
-          editable: edit,
-          headers1Label: '',
-          headers2Label: '',
-          headersTableActive: false,
-        }
-      }).afterClosed().pipe(
-        take(1),
-        switchMap((result) => this.graphService.updatePreferences(result))))
-    ).subscribe();
-  }
+export class UsermenuComponent {
+	settingsCapable = this.routeState.id.pipe(
+		switchMap((val) =>
+			iif(
+				() => val !== '' && val !== '-1' && val !== '0',
+				of('true'),
+				of('false')
+			)
+		)
+	);
+	preferences = this.graphService.preferences;
+	inEditMode = this.graphService.preferences.pipe(
+		map((r) => r.inEditMode),
+		share(),
+		shareReplay(1)
+	);
+	constructor(
+		private routeState: RouteStateService,
+		public dialog: MatDialog,
+		private graphService: CurrentGraphService
+	) {}
+	openSettingsDialog() {
+		combineLatest([this.inEditMode, this.routeState.id])
+			.pipe(
+				take(1),
+				switchMap(([edit, id]) =>
+					this.dialog
+						.open(ColumnPreferencesDialogComponent, {
+							data: {
+								branchId: id,
+								allHeaders2: [],
+								allowedHeaders2: [],
+								allHeaders1: [],
+								allowedHeaders1: [],
+								editable: edit,
+								headers1Label: '',
+								headers2Label: '',
+								headersTableActive: false,
+							},
+						})
+						.afterClosed()
+						.pipe(
+							take(1),
+							switchMap((result) =>
+								this.graphService.updatePreferences(result)
+							)
+						)
+				)
+			)
+			.subscribe();
+	}
 }

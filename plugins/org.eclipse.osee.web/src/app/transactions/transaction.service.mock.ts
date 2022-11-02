@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { transaction } from "./transaction";
-import { transactionInfoMock, transactionResultMock } from "./transaction.mock";
-import { TransactionService } from "./transaction.service";
+import { of } from 'rxjs';
+import { transaction } from './transaction';
+import { transactionInfoMock, transactionResultMock } from './transaction.mock';
+import { TransactionService } from './transaction.service';
 
 export const transactionServiceMock: Partial<TransactionService> = {
-    getTransaction(id: string | number) {
-        return of(transactionInfoMock)
-    },
+	getTransaction(id: string | number) {
+		return of(transactionInfoMock);
+	},
 
-    performMutation(body: transaction) {
-        return of(transactionResultMock)
-    }
-}
+	performMutation(body: transaction) {
+		return of(transactionResultMock);
+	},
+};

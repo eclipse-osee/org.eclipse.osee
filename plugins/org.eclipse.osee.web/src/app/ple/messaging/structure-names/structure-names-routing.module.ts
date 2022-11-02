@@ -15,21 +15,22 @@ import { RouterModule, Routes } from '@angular/router';
 import { StructureNamesComponent } from './structure-names.component';
 
 const routes: Routes = [
-  {
-    path: '', component: StructureNamesComponent,
-  },
-  {
-    path: ':branchType',
-    component: StructureNamesComponent,
-  },
-  {
-    path: ':branchType/:branchId',
-    component: StructureNamesComponent
-  }
+	{
+		path: '',
+		component: StructureNamesComponent,
+	},
+	{
+		path: ':branchType',
+		component: StructureNamesComponent,
+	},
+	{
+		path: ':branchType/:branchId',
+		component: StructureNamesComponent,
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class StructureNamesRoutingModule { }
+export class StructureNamesRoutingModule {}

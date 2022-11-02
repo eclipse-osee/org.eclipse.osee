@@ -12,7 +12,7 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { StructureNamesRoutingModule } from './structure-names-routing.module';
 import { StructureNamesComponent } from './structure-names.component';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
@@ -22,21 +22,18 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 
-
 @NgModule({
-  declarations: [
-    StructureNamesComponent
-  ],
-  imports: [
-    CommonModule,
-    BranchPickerModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    FormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    StructureNamesRoutingModule
-  ]
+	declarations: [StructureNamesComponent],
+	imports: [
+		CommonModule,
+		BranchPickerModule,
+		MatExpansionModule,
+		MatFormFieldModule,
+		FormsModule,
+		MatInputModule,
+		MatButtonModule,
+		MatIconModule,
+		StructureNamesRoutingModule,
+	],
 })
-export class StructureNamesModule { }
+export class StructureNamesModule {}

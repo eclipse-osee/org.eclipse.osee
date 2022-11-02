@@ -11,6 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface applic {
-    id: string,
-    name:string
+	id: string;
+	name: string;
 }

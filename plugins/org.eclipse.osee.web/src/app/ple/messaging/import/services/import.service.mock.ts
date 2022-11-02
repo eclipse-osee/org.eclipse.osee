@@ -10,57 +10,55 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of } from "rxjs";
-import { ImportOption } from "../../shared/types/Import";
-import { ImportService } from "./import.service";
-import { importOptionsMock, importSummaryMock } from "../importMock";
+import { BehaviorSubject, of } from 'rxjs';
+import { ImportOption } from '../../shared/types/Import';
+import { ImportService } from './import.service';
+import { importOptionsMock, importSummaryMock } from '../importMock';
 
 export const importServiceMock: Partial<ImportService> = {
-    
-    performImport() {},
+	performImport() {},
 
-    reset() {},
+	reset() {},
 
-    get branchId() {
-        return new BehaviorSubject<string>('10');
-    },
+	get branchId() {
+		return new BehaviorSubject<string>('10');
+	},
 
-    get branchType() {
-        return new BehaviorSubject<string>('working');
-    },
+	get branchType() {
+		return new BehaviorSubject<string>('working');
+	},
 
-    get importFile() {
-        return new BehaviorSubject<File|undefined>(undefined);
-    },
+	get importFile() {
+		return new BehaviorSubject<File | undefined>(undefined);
+	},
 
-    set ImportFile(importFile: File|undefined) {},
+	set ImportFile(importFile: File | undefined) {},
 
-    get selectedImportOption() {
-        return of(importOptionsMock[0]);
-    },
+	get selectedImportOption() {
+		return of(importOptionsMock[0]);
+	},
 
-    set SelectedImportOption(importOption: ImportOption|undefined) {},
+	set SelectedImportOption(importOption: ImportOption | undefined) {},
 
-    get importSummary() {
-        return of(importSummaryMock)
-    },
+	get importSummary() {
+		return of(importSummaryMock);
+	},
 
-    set toggleDone(done: unknown) {},
+	set toggleDone(done: unknown) {},
 
-    get importSuccess() {
-        return new BehaviorSubject<boolean|undefined>(true);
-    },
+	get importSuccess() {
+		return new BehaviorSubject<boolean | undefined>(true);
+	},
 
-    set ImportSuccess(value: boolean|undefined) {},
+	set ImportSuccess(value: boolean | undefined) {},
 
-    get importInProgress() {
-        return new BehaviorSubject<boolean>(true);
-    },
+	get importInProgress() {
+		return new BehaviorSubject<boolean>(true);
+	},
 
-    set ImportInProgress(value: boolean) {},
+	set ImportInProgress(value: boolean) {},
 
-    get importOptions() {
-        return of(importOptionsMock)
-    }
-
-}
+	get importOptions() {
+		return of(importOptionsMock);
+	},
+};

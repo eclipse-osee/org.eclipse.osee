@@ -10,19 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { logicalType } from "../../../shared/types/logicaltype";
+import { logicalType } from '../../../shared/types/logicaltype';
 
 export const logicalTypeMock: logicalType[] = [
-    {
-        id: '0',
-        name: 'enumeration',
-        idString: '0',
-        idIntValue: 0
-    },
-    {
-        id: '1',
-        name: 'boolean',
-        idIntValue: 1,
-        idString:'1'
-    }
-]
+	{
+		id: '0',
+		name: 'enumeration',
+		idString: '0',
+		idIntValue: 0,
+	},
+	{
+		id: '1',
+		name: 'boolean',
+		idIntValue: 1,
+		idString: '1',
+	},
+];

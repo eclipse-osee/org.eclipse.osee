@@ -10,22 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { NgModule } from '@angular/core';
- import { RouterModule, Routes } from '@angular/router';
- 
- import { TopLevelNavigationComponent } from './top-level-navigation/top-level-navigation.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
- const routes: Routes = [
-   { 
-      path: '',
-      component: TopLevelNavigationComponent,
-      outlet: 'TopLevelNav'
-    }
- ];
- 
- @NgModule({
-   imports: [RouterModule.forChild(routes)],
-   exports: [RouterModule]
- })
- export class NavigationRoutingModule { }
- 
+import { TopLevelNavigationComponent } from './top-level-navigation/top-level-navigation.component';
+
+const routes: Routes = [
+	{
+		path: '',
+		component: TopLevelNavigationComponent,
+		outlet: 'TopLevelNav',
+	},
+];
+
+@NgModule({
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
+})
+export class NavigationRoutingModule {}

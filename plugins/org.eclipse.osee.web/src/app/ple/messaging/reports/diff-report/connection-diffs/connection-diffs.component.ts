@@ -14,50 +14,67 @@ import { Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
 import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
-import { connectionDiffItem, DiffHeaderType } from '../../../shared/types/DifferenceReport.d';
+import {
+	connectionDiffItem,
+	DiffHeaderType,
+} from '../../../shared/types/DifferenceReport.d';
 
 @Component({
-  selector: 'app-connection-diffs',
-  templateUrl: './connection-diffs.component.html',
-  styleUrls: ['./connection-diffs.component.sass']
+	selector: 'osee-messaging-connection-diffs',
+	templateUrl: './connection-diffs.component.html',
+	styleUrls: ['./connection-diffs.component.sass'],
 })
-export class ConnectionDiffsComponent implements OnInit {
+export class ConnectionDiffsComponent {
+	constructor(private diffReportService: DiffReportService) {}
 
-  constructor(private diffReportService: DiffReportService) { }
+	headers: (keyof connectionDiffItem)[] = [
+		'name',
+		'description',
+		'transportType',
+		'applicability',
+	];
 
-  ngOnInit(): void {
-  }
+	headerType = DiffHeaderType.CONNECTION;
 
-  headers:(keyof connectionDiffItem)[] = [
-    'name',
-    'description',
-    'transportType',
-    'applicability'
-  ]
+	allConnections = this.diffReportService.connections;
 
-  headerType = DiffHeaderType.CONNECTION;
+	connectionsChanged = this.allConnections.pipe(
+		switchMap((connections) =>
+			from(connections).pipe(
+				filter(
+					(connection) =>
+						!connection.diffInfo?.added &&
+						!connection.diffInfo?.deleted
+				),
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as connectionDiffItem[]
+				)
+			)
+		)
+	);
 
-  allConnections = this.diffReportService.connections;
+	connectionsAdded = this.allConnections.pipe(
+		switchMap((connections) =>
+			from(connections).pipe(
+				filter((connection) => connection.diffInfo?.added === true),
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as connectionDiffItem[]
+				)
+			)
+		)
+	);
 
-  connectionsChanged = this.allConnections.pipe(
-    switchMap(connections => from(connections).pipe(
-      filter(connection => !connection.diffInfo?.added && !connection.diffInfo?.deleted),
-      reduce((acc, curr) => [...acc, curr], [] as connectionDiffItem[])
-    ))
-  )
-
-  connectionsAdded = this.allConnections.pipe(
-    switchMap(connections => from(connections).pipe(
-      filter(connection => connection.diffInfo?.added === true),
-      reduce((acc, curr) => [...acc, curr], [] as connectionDiffItem[])
-    ))
-  )
-
-  connectionsDeleted = this.allConnections.pipe(
-    switchMap(connections => from(connections).pipe(
-      filter(connection => connection.diffInfo?.deleted === true),
-      reduce((acc, curr) => [...acc, curr], [] as connectionDiffItem[])
-    ))
-  )
-
+	connectionsDeleted = this.allConnections.pipe(
+		switchMap((connections) =>
+			from(connections).pipe(
+				filter((connection) => connection.diffInfo?.deleted === true),
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as connectionDiffItem[]
+				)
+			)
+		)
+	);
 }

@@ -12,10 +12,9 @@
  **********************************************************************/
 import { UserHeaderDemoService } from '../app/userdata/services/user-header-demo.service';
 
- export const environment = {
-     production: true,
-     headerService: UserHeaderDemoService
-  };
-  export const apiURL = "";
-  export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
-  
+export const environment = {
+	production: true,
+	headerService: UserHeaderDemoService,
+};
+export const apiURL = '';
+export const OSEEAuthURL = apiURL + '/orcs/datastore/user';

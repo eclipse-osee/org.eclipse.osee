@@ -10,10 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-    selector: 'osee-typesearch-element-table-search',
-    template:'<p>Dummy Component</p>'
+	selector: 'osee-typesearch-element-table-search',
+	template: '<p>Dummy Component</p>',
 })
-export class ElementTableSearchDummy{ }
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class ElementTableSearchDummy {}

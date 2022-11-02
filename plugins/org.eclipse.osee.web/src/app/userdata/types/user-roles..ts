@@ -11,5 +11,5 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export enum UserRoles {
-    OSEE_ADMIN = '52247'
+	OSEE_ADMIN = '52247',
 }

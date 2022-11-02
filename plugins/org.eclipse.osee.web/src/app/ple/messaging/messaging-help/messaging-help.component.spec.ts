@@ -22,27 +22,37 @@ import { MessagingHelpComponent } from './messaging-help.component';
 import { ColumnDescriptionsMessageHelpComponentMock } from './mocks/components/column-descriptions-message-help.mock';
 
 describe('MessagingHelpComponent', () => {
-  let component: MessagingHelpComponent;
-  let fixture: ComponentFixture<MessagingHelpComponent>;
-  let loader: HarnessLoader;
+	let component: MessagingHelpComponent;
+	let fixture: ComponentFixture<MessagingHelpComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[RouterTestingModule.withRoutes([{path:'columnDescriptions',component:ColumnDescriptionsMessageHelpComponentMock}]),MatButtonModule,NoopAnimationsModule],
-      declarations: [ MessagingHelpComponent,ColumnDescriptionsMessageHelpComponentMock ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				RouterTestingModule.withRoutes([
+					{
+						path: 'columnDescriptions',
+						component: ColumnDescriptionsMessageHelpComponentMock,
+					},
+				]),
+				MatButtonModule,
+				NoopAnimationsModule,
+			],
+			declarations: [
+				MessagingHelpComponent,
+				ColumnDescriptionsMessageHelpComponentMock,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MessagingHelpComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(MessagingHelpComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

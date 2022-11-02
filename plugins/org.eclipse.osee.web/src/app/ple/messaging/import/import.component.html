@@ -11,70 +11,201 @@
  *     Boeing - initial API and implementation
  -->
 <div class="branch-controls">
-    <osee-branch-picker category="3"></osee-branch-picker>
-    <action-dropdown category="3" workType="MIM"></action-dropdown>
+	<osee-branch-picker category="3"></osee-branch-picker>
+	<osee-action-dropdown
+		category="3"
+		workType="MIM"></osee-action-dropdown>
 </div>
-<ng-container *ngIf="(branchId|async) as _branch">
-    <ng-container *ngIf="_branch !== '0' && _branch !== ' '">
-        <ng-container *ngIf="(branchType|async) as _branchType">
-            <ng-container *ngIf="_branchType === 'working'; else branchTypeMessage">
-                <ng-container *ngIf="(importOptions | async) as _importOptions">
-                    <div class="import-form-container">
-                        <h2>Import</h2>
-                        <mat-form-field appearance="fill">
-                            <mat-label>{{importOptionSelectionText|async}}</mat-label>
-                            <mat-select (selectionChange)="selectImportOption($event)" [disabled]="_importOptions.length===0" [value]="(importOptionSelection|async)">
-                                <mat-option *ngFor="let option of _importOptions" [value]="option" [id]="option.id">
-                                    {{option.name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <ng-container *ngIf="(importOptionSelection|async)">
-                            <label for="file-upload" class="input-label">
-                                <button mat-raised-button color="primary">Select File</button>
-                            </label>
-                            <input id="file-upload" type="file" (change)="selectFile($event)" accept=".xlsx, .xls">
-                            <ng-container *ngIf="(importSuccess|async) as _importSuccess; else summary">
-                                <div class="import-summary">
-                                    <ng-container *ngIf="_importSuccess">
-                                        <p>Import successful</p>
-                                    </ng-container>
-                                    <ng-container *ngIf="!_importSuccess">
-                                        <p>Import failed</p>
-                                    </ng-container>
-                                </div>
-                            </ng-container>
-                            <ng-template #summary>
-                                <ng-container *ngIf="(importSummary|async) as _importSummary">
-                                    <div class="import-summary">
-                                        <h3>The following will be imported from {{selectedImportFileName|async}}</h3>
-                                        <ul>
-                                        <ng-container *ngIf="_importSummary.primaryNode && _importSummary.secondaryNode">
-                                            <li>Node: {{_importSummary.primaryNode.name}}</li>
-                                            <li>Node: {{_importSummary.secondaryNode.name}}</li>
-                                            <li>Connection: {{_importSummary.primaryNode.name}}_{{_importSummary.secondaryNode.name}}</li>
-                                        </ng-container>
-                                        <li *ngIf="_importSummary.messages.length > 0">Messages: {{_importSummary.messages.length}}</li>
-                                        <li *ngIf="_importSummary.subMessages.length > 0">SubMessages: {{_importSummary.subMessages.length}}</li>
-                                        <li *ngIf="_importSummary.structures.length > 0">Structures: {{_importSummary.structures.length}}</li>
-                                        <li *ngIf="_importSummary.elements.length > 0">Elements: {{_importSummary.elements.length}}</li>
-                                        <li *ngIf="_importSummary.platformTypes.length > 0">Platform Types: {{_importSummary.platformTypes.length}}</li>
-                                        <li *ngIf="_importSummary.enumSets.length > 0">Enum Sets: {{_importSummary.enumSets.length}}</li>
-                                        <li *ngIf="_importSummary.enums.length > 0">Enums: {{_importSummary.enums.length}}</li>
-                                        </ul>
-                                    </div>
-                                    <button mat-raised-button color="primary" (click)="performImport()" [disabled]="!_importSummary">Import</button>
-                                </ng-container>
-                            </ng-template>
-                        </ng-container>
-                    </div>
-                </ng-container>
-            </ng-container>
-            <ng-template #branchTypeMessage>
-                <div class="import-form-container">
-                    <p>Can only import to a working branch</p>
-                </div>
-            </ng-template>
-        </ng-container>
-    </ng-container>
+<ng-container *ngIf="branchId | async as _branch">
+	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
+		<ng-container *ngIf="branchType | async as _branchType">
+			<ng-container
+				*ngIf="_branchType === 'working'; else branchTypeMessage">
+				<ng-container *ngIf="importOptions | async as _importOptions">
+					<div class="import-form-container">
+						<h2>Import</h2>
+						<mat-form-field appearance="fill">
+							<mat-label>{{
+								importOptionSelectionText | async
+							}}</mat-label>
+							<mat-select
+								(selectionChange)="selectImportOption($event)"
+								[disabled]="_importOptions.length === 0"
+								[value]="importOptionSelection | async">
+								<mat-option
+									*ngFor="let option of _importOptions"
+									[value]="option"
+									[id]="option.id">
+									{{ option.name }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+						<ng-container *ngIf="importOptionSelection | async">
+							<label
+								for="file-upload"
+								class="input-label">
+								<button
+									mat-raised-button
+									color="primary">
+									Select File
+								</button>
+							</label>
+							<input
+								id="file-upload"
+								type="file"
+								(change)="selectFile($event)"
+								accept=".xlsx, .xls" />
+							<ng-container
+								*ngIf="
+									importSuccess | async as _importSuccess;
+									else summary
+								">
+								<div class="import-summary">
+									<ng-container *ngIf="_importSuccess">
+										<p>Import successful</p>
+									</ng-container>
+									<ng-container *ngIf="!_importSuccess">
+										<p>Import failed</p>
+									</ng-container>
+								</div>
+							</ng-container>
+							<ng-template #summary>
+								<ng-container
+									*ngIf="
+										importSummary | async as _importSummary
+									">
+									<div class="import-summary">
+										<h3>
+											The following will be imported from
+											{{ selectedImportFileName | async }}
+										</h3>
+										<ul>
+											<ng-container
+												*ngIf="
+													_importSummary.primaryNode &&
+													_importSummary.secondaryNode
+												">
+												<li>
+													Node:
+													{{
+														_importSummary
+															.primaryNode.name
+													}}
+												</li>
+												<li>
+													Node:
+													{{
+														_importSummary
+															.secondaryNode.name
+													}}
+												</li>
+												<li>
+													Connection:
+													{{
+														_importSummary
+															.primaryNode.name
+													}}_{{
+														_importSummary
+															.secondaryNode.name
+													}}
+												</li>
+											</ng-container>
+											<li
+												*ngIf="
+													_importSummary.messages
+														.length > 0
+												">
+												Messages:
+												{{
+													_importSummary.messages
+														.length
+												}}
+											</li>
+											<li
+												*ngIf="
+													_importSummary.subMessages
+														.length > 0
+												">
+												SubMessages:
+												{{
+													_importSummary.subMessages
+														.length
+												}}
+											</li>
+											<li
+												*ngIf="
+													_importSummary.structures
+														.length > 0
+												">
+												Structures:
+												{{
+													_importSummary.structures
+														.length
+												}}
+											</li>
+											<li
+												*ngIf="
+													_importSummary.elements
+														.length > 0
+												">
+												Elements:
+												{{
+													_importSummary.elements
+														.length
+												}}
+											</li>
+											<li
+												*ngIf="
+													_importSummary.platformTypes
+														.length > 0
+												">
+												Platform Types:
+												{{
+													_importSummary.platformTypes
+														.length
+												}}
+											</li>
+											<li
+												*ngIf="
+													_importSummary.enumSets
+														.length > 0
+												">
+												Enum Sets:
+												{{
+													_importSummary.enumSets
+														.length
+												}}
+											</li>
+											<li
+												*ngIf="
+													_importSummary.enums
+														.length > 0
+												">
+												Enums:
+												{{
+													_importSummary.enums.length
+												}}
+											</li>
+										</ul>
+									</div>
+									<button
+										mat-raised-button
+										color="primary"
+										(click)="performImport()"
+										[disabled]="!_importSummary">
+										Import
+									</button>
+								</ng-container>
+							</ng-template>
+						</ng-container>
+					</div>
+				</ng-container>
+			</ng-container>
+			<ng-template #branchTypeMessage>
+				<div class="import-form-container">
+					<p>Can only import to a working branch</p>
+				</div>
+			</ng-template>
+		</ng-container>
+	</ng-container>
 </ng-container>

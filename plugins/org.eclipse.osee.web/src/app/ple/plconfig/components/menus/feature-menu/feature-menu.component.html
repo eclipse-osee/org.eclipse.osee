@@ -10,40 +10,110 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-menu-item (click)="displayFeatureMenu(feature)"><mat-icon color="primary">edit</mat-icon>Open Feature Menu</button>
+<button
+	mat-menu-item
+	(click)="displayFeatureMenu(feature)">
+	<mat-icon color="primary">edit</mat-icon>Open Feature Menu
+</button>
 <ng-container *ngIf="hasFeatureChanges(feature)">
-    <button mat-menu-item [matMenuTriggerFor]="featureDiffMenu" [matMenuTriggerData]="{feature:feature}"><mat-icon color="accent">pageview</mat-icon>View Diff for {{feature.name}}</button> <!--TODO IMPLEMENT DIFF VIEWER-->
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="featureDiffMenu"
+		[matMenuTriggerData]="{ feature: feature }">
+		<mat-icon color="accent">pageview</mat-icon>View Diff for
+		{{ feature.name }}
+	</button>
+	<!--TODO IMPLEMENT DIFF VIEWER-->
 </ng-container>
 <mat-menu #featureDiffMenu="matMenu">
-    <ng-template matMenuContent let-feature="feature">
-        <ng-container *ngIf="feature.changes.defaultValue!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,feature.changes.defaultValue,'Default Value')">Default Value</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.description!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,feature.changes.description,'Description')">Description</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.multiValued!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,feature.changes.multiValued,'Multi Valued')">Multi Valued</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.name!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,feature.changes.name,'Name')">Name</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.productApplicabilities!==undefined">
-            <button mat-menu-item [matMenuTriggerFor]="arrayDiffMenu" [matMenuTriggerData]="{array:feature.changes.productApplicabilities}">Product Applicabilities</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.valueType!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,feature.changes.valueType,'Value Type')">Value Type</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.values!==undefined">
-            <button mat-menu-item [matMenuTriggerFor]="arrayDiffMenu" [matMenuTriggerData]="{array:feature.changes.values}">Values</button>
-        </ng-container>
-        <ng-container *ngIf="feature.changes.defaultValue===undefined && feature.changes.description===undefined && feature.changes.multiValued===undefined && feature.changes.name===undefined && feature.changes.productApplicabilities===undefined && feature.changes.valueType===undefined && feature.changes.values===undefined">
-            <button mat-menu-item>No items currently available.</button>
-        </ng-container>
-    </ng-template>
+	<ng-template
+		matMenuContent
+		let-feature="feature">
+		<ng-container *ngIf="feature.changes.defaultValue !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(
+						true,
+						feature.changes.defaultValue,
+						'Default Value'
+					)
+				">
+				Default Value
+			</button>
+		</ng-container>
+		<ng-container *ngIf="feature.changes.description !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, feature.changes.description, 'Description')
+				">
+				Description
+			</button>
+		</ng-container>
+		<ng-container *ngIf="feature.changes.multiValued !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, feature.changes.multiValued, 'Multi Valued')
+				">
+				Multi Valued
+			</button>
+		</ng-container>
+		<ng-container *ngIf="feature.changes.name !== undefined">
+			<button
+				mat-menu-item
+				(click)="viewDiff(true, feature.changes.name, 'Name')">
+				Name
+			</button>
+		</ng-container>
+		<ng-container
+			*ngIf="feature.changes.productApplicabilities !== undefined">
+			<button
+				mat-menu-item
+				[matMenuTriggerFor]="arrayDiffMenu"
+				[matMenuTriggerData]="{
+					array: feature.changes.productApplicabilities
+				}">
+				Product Applicabilities
+			</button>
+		</ng-container>
+		<ng-container *ngIf="feature.changes.valueType !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, feature.changes.valueType, 'Value Type')
+				">
+				Value Type
+			</button>
+		</ng-container>
+		<ng-container *ngIf="feature.changes.values !== undefined">
+			<button
+				mat-menu-item
+				[matMenuTriggerFor]="arrayDiffMenu"
+				[matMenuTriggerData]="{ array: feature.changes.values }">
+				Values
+			</button>
+		</ng-container>
+		<ng-container
+			*ngIf="
+				feature.changes.defaultValue === undefined &&
+				feature.changes.description === undefined &&
+				feature.changes.multiValued === undefined &&
+				feature.changes.name === undefined &&
+				feature.changes.productApplicabilities === undefined &&
+				feature.changes.valueType === undefined &&
+				feature.changes.values === undefined
+			">
+			<button mat-menu-item>No items currently available.</button>
+		</ng-container>
+	</ng-template>
 </mat-menu>
 <mat-menu #arrayDiffMenu="matMenu">
-    <ng-template matMenuContent let-array="array">
-        <plconfig-array-diff-menu [array]="array"></plconfig-array-diff-menu>
-    </ng-template>
+	<ng-template
+		matMenuContent
+		let-array="array">
+		<osee-plconfig-array-diff-menu
+			[array]="array"></osee-plconfig-array-diff-menu>
+	</ng-template>
 </mat-menu>

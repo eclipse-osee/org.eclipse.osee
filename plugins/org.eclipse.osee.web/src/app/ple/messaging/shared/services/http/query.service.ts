@@ -16,29 +16,34 @@ import { apiURL } from '../../../../../../environments/environment';
 import { MimQuery } from '../../types/MimQuery';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class QueryService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  /**
-   * Returns a typed query element
-   * @param branchId branch to get information from
-   * @param query Typed Query
-   * @returns query result typed as @type Observable<T>
-   */
-  query<T>(branchId: string, query: MimQuery<T>) {
-    return this.http.post<Required<T>[]>(apiURL+"/mim/branch/"+branchId+"/query",query)
-  }
+	/**
+	 * Returns a typed query element
+	 * @param branchId branch to get information from
+	 * @param query Typed Query
+	 * @returns query result typed as @type Observable<T>
+	 */
+	query<T>(branchId: string, query: MimQuery<T>) {
+		return this.http.post<Required<T>[]>(
+			apiURL + '/mim/branch/' + branchId + '/query',
+			query
+		);
+	}
 
-  /**
-   * Returns a typed query element
-   * @param branchId branch to get information from
-   * @param query Typed Query
-   * @returns query result typed as @type Observable<T>
-   */
-   queryExact<T>(branchId: string, query: MimQuery<T>) {
-    return this.http.post<Required<T>[]>(apiURL+"/mim/branch/"+branchId+"/query/exact",query)
-  }
+	/**
+	 * Returns a typed query element
+	 * @param branchId branch to get information from
+	 * @param query Typed Query
+	 * @returns query result typed as @type Observable<T>
+	 */
+	queryExact<T>(branchId: string, query: MimQuery<T>) {
+		return this.http.post<Required<T>[]>(
+			apiURL + '/mim/branch/' + branchId + '/query/exact',
+			query
+		);
+	}
 }

@@ -23,21 +23,18 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-
 @NgModule({
-  declarations: [
-    ReportsComponent
-  ],
-  imports: [
-    BranchPickerModule,
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    ReportsRoutingModule
-  ]
+	declarations: [ReportsComponent],
+	imports: [
+		BranchPickerModule,
+		CommonModule,
+		FormsModule,
+		MatButtonModule,
+		MatCheckboxModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatSelectModule,
+		ReportsRoutingModule,
+	],
 })
-export class ReportsModule { }
+export class ReportsModule {}

@@ -1,20 +1,20 @@
 {
-    "/orcs/*":{
-        "target":"http://localhost:8095",
-        "secure":true,
-        "changeOrigin":true,
-        "logLevel":"debug",
-        "pathReWrite":{
-            "^/orcs":""
-        }
-    },
-    "/ats/*":{
-        "target":"http://localhost:8095",
-        "secure":true,
-        "changeOrigin":true,
-        "logLevel":"debug",
-        "pathReWrite":{
-            "^/ats":""
-        }
-    }
+	"/orcs/*": {
+		"target": "http://localhost:8095",
+		"secure": true,
+		"changeOrigin": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/orcs": ""
+		}
+	},
+	"/ats/*": {
+		"target": "http://localhost:8095",
+		"secure": true,
+		"changeOrigin": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/ats": ""
+		}
+	}
 }

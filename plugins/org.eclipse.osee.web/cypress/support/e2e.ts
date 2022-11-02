@@ -49,5 +49,5 @@ import './plconfig/values.commands';
 import '@jscutlery/cypress-harness/support';
 
 Cypress.Screenshot.defaults({
-  disableTimersAndAnimations: false,
+	disableTimersAndAnimations: false,
 });

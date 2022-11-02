@@ -10,50 +10,48 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from "src/app/types/change-report/change-report";
-import { applic } from "../../../../types/applicability/applic";
-import { Node } from "@swimlane/ngx-graph";
+import { difference } from 'src/app/types/change-report/change-report';
+import { applic } from '../../../../types/applicability/applic';
+import { Node } from '@swimlane/ngx-graph';
 
 export interface nodeData {
-    id: string,
-    name: string,
-    description?:string
-    interfaceNodeBgColor: string,
-    interfaceNodeAddress:string,
-    applicability?: applic
+	id: string;
+	name: string;
+	description?: string;
+	interfaceNodeBgColor: string;
+	interfaceNodeAddress: string;
+	applicability?: applic;
 }
 
 export interface nodeDataWithChanges extends nodeData {
-    deleted: boolean,
-    changes: nodeChanges
+	deleted: boolean;
+	changes: nodeChanges;
 }
 
-export interface nodeChanges{
-    name?: difference,
-    description?: difference,
-    interfaceNodeBgColor?: difference,
-    interfaceNodeAddress?: difference,
-    applicability?:difference
+export interface nodeChanges {
+	name?: difference;
+	description?: difference;
+	interfaceNodeBgColor?: difference;
+	interfaceNodeAddress?: difference;
+	applicability?: difference;
 }
 
 export interface node {
-    id?: string,
-    name: string,
-    description?: string,
-    applicability?:applic
-    
+	id?: string;
+	name: string;
+	description?: string;
+	applicability?: applic;
 }
 
 export interface nodeToken {
-    id?: string,
-    name: string,
-    description?: string,
-    applicability?:applic,
-    color?:string,
-    address?:string
-    
+	id?: string;
+	name: string;
+	description?: string;
+	applicability?: applic;
+	color?: string;
+	address?: string;
 }
 
-export interface OseeNode<T> extends Omit<Node, 'data'>{
-    data:T
+export interface OseeNode<T> extends Omit<Node, 'data'> {
+	data: T;
 }

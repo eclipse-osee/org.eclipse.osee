@@ -30,24 +30,27 @@ import { BranchPickerModule } from '../../../shared-components/components/branch
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 
-
 @NgModule({
-  declarations: [TypesInterfaceComponent, TypeGridComponent, UsermenuComponent],
-  imports: [
-    CommonModule,
-    MatGridListModule,
-    LayoutModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    FormsModule,
-    MatMenuModule,
-    PleSharedMaterialModule,
-    SharedMessagingModule,
-    BranchPickerModule,
-    ActionStateButtonModule,
-    BranchUndoButtonModule,
-    TypesInterfaceRoutingModule
-  ]
+	declarations: [
+		TypesInterfaceComponent,
+		TypeGridComponent,
+		UsermenuComponent,
+	],
+	imports: [
+		CommonModule,
+		MatGridListModule,
+		LayoutModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatIconModule,
+		FormsModule,
+		MatMenuModule,
+		PleSharedMaterialModule,
+		SharedMessagingModule,
+		BranchPickerModule,
+		ActionStateButtonModule,
+		BranchUndoButtonModule,
+		TypesInterfaceRoutingModule,
+	],
 })
-export class TypesInterfaceModule { }
+export class TypesInterfaceModule {}

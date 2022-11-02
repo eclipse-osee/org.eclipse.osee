@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+	HttpClientTestingModule,
+	HttpTestingController,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { testBranchInfo } from 'src/app/ple/plconfig/testing/mockBranchService';
 import { apiURL } from 'src/environments/environment';
@@ -18,27 +21,29 @@ import { apiURL } from 'src/environments/environment';
 import { BranchInfoService } from './branch-info.service';
 
 describe('BranchInfoService', () => {
-  let service: BranchInfoService;
-  let httpTestingController: HttpTestingController;
+	let service: BranchInfoService;
+	let httpTestingController: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule]
-    });
-    service = TestBed.inject(BranchInfoService);
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(BranchInfoService);
+		httpTestingController = TestBed.inject(HttpTestingController);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should get branch info', () => {
-    const testInfo = testBranchInfo;
-    service.getBranch('10').subscribe();
-    const req = httpTestingController.expectOne(apiURL+'/orcs/branches/'+10);
-    expect(req.request.method).toEqual('GET');
-    req.flush(testInfo);
-    httpTestingController.verify();
-  })
+	it('should get branch info', () => {
+		const testInfo = testBranchInfo;
+		service.getBranch('10').subscribe();
+		const req = httpTestingController.expectOne(
+			apiURL + '/orcs/branches/' + 10
+		);
+		expect(req.request.method).toEqual('GET');
+		req.flush(testInfo);
+		httpTestingController.verify();
+	});
 });

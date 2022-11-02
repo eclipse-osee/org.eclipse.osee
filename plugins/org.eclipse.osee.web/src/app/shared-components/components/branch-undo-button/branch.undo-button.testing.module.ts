@@ -11,27 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 /**
- * 
- * 
+ *
+ *
  * DO NOT IMPORT OUTSIDE OF TESTS
- * 
- * 
+ *
+ *
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UndoButtonBranchMockComponent } from './branch-undo-button.component.mock';
 
-
-
 @NgModule({
-  declarations: [
-    UndoButtonBranchMockComponent
-  ],
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    UndoButtonBranchMockComponent
-  ]
+	declarations: [UndoButtonBranchMockComponent],
+	imports: [CommonModule],
+	exports: [UndoButtonBranchMockComponent],
 })
-export class BranchUndoButtonTestingModule { }
+export class BranchUndoButtonTestingModule {}

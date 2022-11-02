@@ -24,37 +24,36 @@ import { ImportService } from './services/import.service';
 import { importServiceMock } from './services/import.service.mock';
 
 describe('ImportComponent', () => {
-  let component: ImportComponent;
-  let fixture: ComponentFixture<ImportComponent>;
+	let component: ImportComponent;
+	let fixture: ComponentFixture<ImportComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        MatButtonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-      ],
-      providers:[
-        {provide:ImportService,useValue: importServiceMock}
-      ],
-      declarations: [ 
-        ImportComponent,
-        ActionDropdownStub,
-        BranchPickerStub
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatButtonModule,
+				MatFormFieldModule,
+				MatSelectModule,
+				NoopAnimationsModule,
+				RouterTestingModule,
+			],
+			providers: [
+				{ provide: ImportService, useValue: importServiceMock },
+			],
+			declarations: [
+				ImportComponent,
+				ActionDropdownStub,
+				BranchPickerStub,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ImportComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ImportComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

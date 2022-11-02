@@ -16,13 +16,14 @@ import { apiURL } from '../../../../../../environments/environment';
 import { connection } from '../../types/connection';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class SharedConnectionService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getConnection(branchId: string, connectionId: string) {
-    return this.http.get<connection>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId);
-  }
+	getConnection(branchId: string, connectionId: string) {
+		return this.http.get<connection>(
+			apiURL + '/mim/branch/' + branchId + '/connections/' + connectionId
+		);
+	}
 }

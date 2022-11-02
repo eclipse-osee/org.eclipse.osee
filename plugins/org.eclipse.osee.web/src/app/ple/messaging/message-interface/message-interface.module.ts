@@ -49,34 +49,47 @@ import { MessageInterfaceComponent } from './message-interface.component';
 import { ConvertMessageTableTitlesToStringPipe } from './pipes/convert-message-table-titles-to-string.pipe';
 import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message-titles-to-string.pipe';
 
-
-
 @NgModule({
-  declarations: [MessageInterfaceComponent, MessageTableComponent, SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent, EditMessageFieldComponent, AddMessageDialogComponent, RemoveSubmessageDialogComponent, DeleteSubmessageDialogComponent, RemoveMessageDialogComponent, DeleteMessageDialogComponent, UsermenuComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatTableModule,
-    MatMenuModule,
-    MatStepperModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatSidenavModule,
-    MatIconModule,
-    A11yModule,
-    GenericButtonsModule,
-    PleSharedMaterialModule,
-    OseeStringUtilsPipesModule,
-    OseeStringUtilsDirectivesModule,
-    SharedMessagingModule,
-    DiffViewsModule,
-    ActionStateButtonModule,
-    BranchUndoButtonModule,
-    MessageInterfaceRoutingModule
-  ]
+	declarations: [
+		MessageInterfaceComponent,
+		MessageTableComponent,
+		SubMessageTableComponent,
+		ConvertMessageTableTitlesToStringPipe,
+		ConvertSubMessageTitlesToStringPipe,
+		EditSubMessageFieldComponent,
+		AddSubMessageDialogComponent,
+		EditMessageFieldComponent,
+		AddMessageDialogComponent,
+		RemoveSubmessageDialogComponent,
+		DeleteSubmessageDialogComponent,
+		RemoveMessageDialogComponent,
+		DeleteMessageDialogComponent,
+		UsermenuComponent,
+	],
+	imports: [
+		CommonModule,
+		FormsModule,
+		MatTableModule,
+		MatMenuModule,
+		MatStepperModule,
+		MatSelectModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatSlideToggleModule,
+		MatTooltipModule,
+		MatDialogModule,
+		MatSidenavModule,
+		MatIconModule,
+		A11yModule,
+		GenericButtonsModule,
+		PleSharedMaterialModule,
+		OseeStringUtilsPipesModule,
+		OseeStringUtilsDirectivesModule,
+		SharedMessagingModule,
+		DiffViewsModule,
+		ActionStateButtonModule,
+		BranchUndoButtonModule,
+		MessageInterfaceRoutingModule,
+	],
 })
-export class MessageInterfaceModule { }
+export class MessageInterfaceModule {}

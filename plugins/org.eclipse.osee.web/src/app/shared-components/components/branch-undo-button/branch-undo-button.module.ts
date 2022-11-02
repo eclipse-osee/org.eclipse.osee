@@ -17,20 +17,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-
-
 @NgModule({
-  declarations: [
-    UndoButtonBranchComponent
-  ],
-  imports: [
-    CommonModule,
-    MatTooltipModule,
-    MatIconModule,
-    MatButtonModule
-  ],
-  exports: [
-    UndoButtonBranchComponent
-  ]
+	declarations: [UndoButtonBranchComponent],
+	imports: [CommonModule, MatTooltipModule, MatIconModule, MatButtonModule],
+	exports: [UndoButtonBranchComponent],
 })
-export class BranchUndoButtonModule { }
+export class BranchUndoButtonModule {}

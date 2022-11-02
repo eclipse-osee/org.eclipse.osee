@@ -16,9 +16,29 @@
 * Functions used to extend theming system to allow for a fourth color.
 */
 
-@function light-theme($primary, $accent, $warn: mat.define-palette(mat.$red-palette), $success: mat.define-palette(mat.$green-palette)){
-    @return map-merge(mat.define-light-theme($primary, $accent, $warn), (success: $success));
+@function light-theme(
+	$primary,
+	$accent,
+	$warn: mat.define-palette(mat.$red-palette),
+	$success: mat.define-palette(mat.$green-palette)
+) {
+	@return map-merge(
+		mat.define-light-theme($primary, $accent, $warn),
+		(
+			success: $success,
+		)
+	);
 }
-@function dark-theme($primary, $accent, $warn: mat.define-palette(mat.$red-palette), $success: mat.define-palette(mat.$green-palette)) {
-    @return map-merge(mat.define-dark-theme($primary, $accent, $warn), (success: $success));
+@function dark-theme(
+	$primary,
+	$accent,
+	$warn: mat.define-palette(mat.$red-palette),
+	$success: mat.define-palette(mat.$green-palette)
+) {
+	@return map-merge(
+		mat.define-dark-theme($primary, $accent, $warn),
+		(
+			success: $success,
+		)
+	);
 }

@@ -17,16 +17,18 @@ import { BranchInfoServiceMock } from '../http/branch-info.service.mock';
 import { CurrentBranchInfoService } from './current-branch-info.service';
 
 describe('CurrentBranchInfoService', () => {
-  let service: CurrentBranchInfoService;
+	let service: CurrentBranchInfoService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers:[{ provide: BranchInfoService, useValue: BranchInfoServiceMock },]
-    });
-    service = TestBed.inject(CurrentBranchInfoService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
+			],
+		});
+		service = TestBed.inject(CurrentBranchInfoService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

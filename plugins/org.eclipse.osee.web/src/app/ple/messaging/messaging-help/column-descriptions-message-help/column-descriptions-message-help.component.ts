@@ -16,18 +16,33 @@ import { switchMap, tap } from 'rxjs/operators';
 import { HeaderService } from '../../shared/services/ui/header.service';
 
 @Component({
-  selector: 'app-column-descriptions-message-help',
-  templateUrl: './column-descriptions-message-help.component.html',
-  styleUrls: ['./column-descriptions-message-help.component.sass']
+	selector: 'osee-messaging-help-column-descriptions',
+	templateUrl: './column-descriptions-message-help.component.html',
+	styleUrls: ['./column-descriptions-message-help.component.sass'],
 })
-export class ColumnDescriptionsMessageHelpComponent implements OnInit {
-
-  list = combineLatest([this.headerService.AllElements, this.headerService.AllStructures,this.headerService.AllMessages,this.headerService.AllSubMessages]).pipe(
-    switchMap(([elementheaders, structureheaders,messageheaders,submessageheaders]) => of([{ elements: elementheaders, structures: structureheaders,submessages:submessageheaders,messages:messageheaders }])),
-  )
-  constructor(private headerService: HeaderService) { }
-
-  ngOnInit(): void {
-  }
-
+export class ColumnDescriptionsMessageHelpComponent {
+	list = combineLatest([
+		this.headerService.AllElements,
+		this.headerService.AllStructures,
+		this.headerService.AllMessages,
+		this.headerService.AllSubMessages,
+	]).pipe(
+		switchMap(
+			([
+				elementheaders,
+				structureheaders,
+				messageheaders,
+				submessageheaders,
+			]) =>
+				of([
+					{
+						elements: elementheaders,
+						structures: structureheaders,
+						submessages: submessageheaders,
+						messages: messageheaders,
+					},
+				])
+		)
+	);
+	constructor(private headerService: HeaderService) {}
 }

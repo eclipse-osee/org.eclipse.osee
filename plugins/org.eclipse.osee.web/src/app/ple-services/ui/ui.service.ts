@@ -18,63 +18,68 @@ import { ErrorService } from './error/error.service';
 import { UpdateService } from './update/update.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class UiService {
+	constructor(
+		private branchService: BranchUIService,
+		private updateService: UpdateService,
+		private diffModeService: DiffModeService,
+		private loadingService: HttpLoadingService,
+		private errorService: ErrorService
+	) {}
 
-  constructor (private branchService: BranchUIService, private updateService: UpdateService, private diffModeService:DiffModeService, private loadingService: HttpLoadingService, private errorService: ErrorService) { }
-  
-  get id() {
-    return this.branchService.id;
-  }
+	get id() {
+		return this.branchService.id;
+	}
 
-  /**
-   * @deprecated will be replacing id with idAsObservable's functionality
-   */
-  get idAsObservable() {
-    return this.branchService.idAsObservable
-  }
+	/**
+	 * @deprecated will be replacing id with idAsObservable's functionality
+	 */
+	get idAsObservable() {
+		return this.branchService.idAsObservable;
+	}
 
-  get type() {
-    return this.branchService.type;
-  }
+	get type() {
+		return this.branchService.type;
+	}
 
-  set idValue(id: string | number) {
-    this.branchService.idValue = id;
-  }
+	set idValue(id: string | number) {
+		this.branchService.idValue = id;
+	}
 
-  set typeValue(branchType: string) {
-    this.branchService.typeValue = branchType;
-  }
+	set typeValue(branchType: string) {
+		this.branchService.typeValue = branchType;
+	}
 
-  get update() {
-    return this.updateService.update;
-  }
+	get update() {
+		return this.updateService.update;
+	}
 
-  set updated(value: boolean) {
-    this.updateService.updated = value;
-  }
+	set updated(value: boolean) {
+		this.updateService.updated = value;
+	}
 
-  get isInDiff() {
-    return this.diffModeService.isInDiff;
-  }
+	get isInDiff() {
+		return this.diffModeService.isInDiff;
+	}
 
-  set diffMode(value: boolean) {
-    this.diffModeService.DiffMode = value;
-  }
+	set diffMode(value: boolean) {
+		this.diffModeService.DiffMode = value;
+	}
 
-  get isLoading() {
-    return this.loadingService.isLoading;
-  }
+	get isLoading() {
+		return this.loadingService.isLoading;
+	}
 
-  set loading(value: boolean) {
-    this.loadingService.loading = value;
-  }
+	set loading(value: boolean) {
+		this.loadingService.loading = value;
+	}
 
-  public get errors() {
-    return this.errorService.errors;
-  }
-  public set error(errorString: string) {
-    this.errorService.error = errorString;
-  }
+	public get errors() {
+		return this.errorService.errors;
+	}
+	public set error(errorString: string) {
+		this.errorService.error = errorString;
+	}
 }

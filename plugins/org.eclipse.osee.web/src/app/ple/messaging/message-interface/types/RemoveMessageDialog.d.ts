@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { message } from "./messages";
+import { message } from './messages';
 
 export interface RemoveMessageDialogData {
-    message:message
+	message: message;
 }

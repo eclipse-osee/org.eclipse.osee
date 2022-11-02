@@ -15,32 +15,34 @@ import { BranchIdService } from './branch-id.service';
 import { BranchTypeService } from './branch-type.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchUIService {
+	constructor(
+		private typeService: BranchTypeService,
+		private idService: BranchIdService
+	) {}
 
-  constructor (private typeService: BranchTypeService, private idService: BranchIdService) { }
-  
-  get id() {
-    return this.idService.BranchId;
-  }
+	get id() {
+		return this.idService.BranchId;
+	}
 
-  /**
-   * @deprecated Will be replacing .id with functionality of .idAsObservable()
-   */
-  get idAsObservable() {
-    return this.idService.BranchIdAsObservable;
-  }
+	/**
+	 * @deprecated Will be replacing .id with functionality of .idAsObservable()
+	 */
+	get idAsObservable() {
+		return this.idService.BranchIdAsObservable;
+	}
 
-  get type() {
-    return this.typeService.branchType;
-  }
+	get type() {
+		return this.typeService.branchType;
+	}
 
-  set idValue(id: string | number) {
-    this.idService.BranchIdValue = id;
-  }
+	set idValue(id: string | number) {
+		this.idService.BranchIdValue = id;
+	}
 
-  set typeValue(branchType: string) {
-    this.typeService.BranchType = branchType;
-  }
+	set typeValue(branchType: string) {
+		this.typeService.BranchType = branchType;
+	}
 }

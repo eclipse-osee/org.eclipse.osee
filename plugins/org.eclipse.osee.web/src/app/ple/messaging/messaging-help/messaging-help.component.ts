@@ -14,14 +14,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-messaging-help',
-  templateUrl: './messaging-help.component.html',
-  styleUrls: ['./messaging-help.component.sass']
+	selector: 'osee-messaging-help',
+	templateUrl: './messaging-help.component.html',
+	styleUrls: ['./messaging-help.component.sass'],
 })
-export class MessagingHelpComponent implements OnInit {
-
-  constructor(private route: ActivatedRoute, private router: Router) { }
-
-  ngOnInit(): void {
-  }
+export class MessagingHelpComponent {
+	constructor(private route: ActivatedRoute, private router: Router) {}
 }

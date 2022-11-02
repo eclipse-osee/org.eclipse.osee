@@ -14,50 +14,67 @@ import { Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
 import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
-import { DiffHeaderType, submessageDiffItem } from '../../../shared/types/DifferenceReport.d';
+import {
+	DiffHeaderType,
+	submessageDiffItem,
+} from '../../../shared/types/DifferenceReport.d';
 
 @Component({
-  selector: 'app-submessage-diffs',
-  templateUrl: './submessage-diffs.component.html',
-  styleUrls: ['./submessage-diffs.component.sass']
+	selector: 'osee-messaging-submessage-diffs',
+	templateUrl: './submessage-diffs.component.html',
+	styleUrls: ['./submessage-diffs.component.sass'],
 })
-export class SubmessageDiffsComponent implements OnInit {
+export class SubmessageDiffsComponent {
+	constructor(private diffReportService: DiffReportService) {}
 
-  constructor(private diffReportService: DiffReportService) { }
+	headers: (keyof submessageDiffItem)[] = [
+		'name',
+		'description',
+		'interfaceSubMessageNumber',
+		'applicability',
+	];
 
-  ngOnInit(): void {
-  }
+	headerType = DiffHeaderType.SUBMESSAGE;
 
-  headers:(keyof submessageDiffItem)[] = [
-    'name',
-    'description',
-    'interfaceSubMessageNumber',
-    'applicability'
-  ]
+	allSubMessages = this.diffReportService.submessages;
 
-  headerType = DiffHeaderType.SUBMESSAGE;
+	subMessagesChanged = this.allSubMessages.pipe(
+		switchMap((submessages) =>
+			from(submessages).pipe(
+				filter(
+					(submessage) =>
+						!submessage.diffInfo?.added &&
+						!submessage.diffInfo?.deleted
+				),
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as submessageDiffItem[]
+				)
+			)
+		)
+	);
 
-  allSubMessages = this.diffReportService.submessages;
+	subMessagesAdded = this.allSubMessages.pipe(
+		switchMap((submessages) =>
+			from(submessages).pipe(
+				filter((submessage) => submessage.diffInfo?.added === true),
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as submessageDiffItem[]
+				)
+			)
+		)
+	);
 
-  subMessagesChanged = this.allSubMessages.pipe(
-    switchMap(submessages => from(submessages).pipe(
-      filter(submessage => !submessage.diffInfo?.added && !submessage.diffInfo?.deleted),
-      reduce((acc, curr) => [...acc, curr], [] as submessageDiffItem[])
-    ))
-  )
-
-  subMessagesAdded = this.allSubMessages.pipe(
-    switchMap(submessages => from(submessages).pipe(
-      filter(submessage => submessage.diffInfo?.added === true),
-      reduce((acc, curr) => [...acc, curr], [] as submessageDiffItem[])
-    ))
-  )
-
-  subMessagesDeleted = this.allSubMessages.pipe(
-    switchMap(submessages => from(submessages).pipe(
-      filter(submessage => submessage.diffInfo?.deleted === true),
-      reduce((acc, curr) => [...acc, curr], [] as submessageDiffItem[])
-    ))
-  )
-
+	subMessagesDeleted = this.allSubMessages.pipe(
+		switchMap((submessages) =>
+			from(submessages).pipe(
+				filter((submessage) => submessage.diffInfo?.deleted === true),
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as submessageDiffItem[]
+				)
+			)
+		)
+	);
 }

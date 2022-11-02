@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+	HttpClientTestingModule,
+	HttpTestingController,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
 import { transactionInfo } from '../types/change-report/transaction';
@@ -19,27 +22,27 @@ import { transactionInfoMock } from './transaction.mock';
 import { TransactionService } from './transaction.service';
 
 describe('TransactionService', () => {
-  let service: TransactionService;
-  let httpTestingController: HttpTestingController;
+	let service: TransactionService;
+	let httpTestingController: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule]
-    });
-    service = TestBed.inject(TransactionService);
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(TransactionService);
+		httpTestingController = TestBed.inject(HttpTestingController);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should get transaction info', () => {
-    const testInfo:transactionInfo=transactionInfoMock
-    service.getTransaction('10').subscribe();
-    const req = httpTestingController.expectOne(apiURL + '/orcs/txs/' + 10);
-    expect(req.request.method).toEqual('GET');
-    req.flush(testInfo);
-    httpTestingController.verify();
-  })
+	it('should get transaction info', () => {
+		const testInfo: transactionInfo = transactionInfoMock;
+		service.getTransaction('10').subscribe();
+		const req = httpTestingController.expectOne(apiURL + '/orcs/txs/' + 10);
+		expect(req.request.method).toEqual('GET');
+		req.flush(testInfo);
+		httpTestingController.verify();
+	});
 });

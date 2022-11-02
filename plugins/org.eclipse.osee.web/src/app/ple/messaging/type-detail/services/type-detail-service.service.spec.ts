@@ -15,14 +15,14 @@ import { TestBed } from '@angular/core/testing';
 import { TypeDetailService } from './type-detail-service.service';
 
 describe('TypeDetailServiceService', () => {
-  let service: TypeDetailService;
+	let service: TypeDetailService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TypeDetailService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(TypeDetailService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

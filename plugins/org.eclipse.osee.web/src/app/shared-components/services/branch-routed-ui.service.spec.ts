@@ -17,52 +17,55 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BranchRoutedUIService } from './branch-routed-ui.service';
 
 describe('BranchRoutedUIService', () => {
-  let service: BranchRoutedUIService;
+	let service: BranchRoutedUIService;
 
-  @Component({
-    selector: 'dummy',
-    template: '<div>Dummy</div>'
-  })
-  class DummyComponent { };
+	@Component({
+		selector: 'osee-dummy',
+		template: '<div>Dummy</div>',
+	})
+	class DummyComponent {}
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes(
-        [
-          { path: '', component: DummyComponent },
-          { path: ':branchType', component: DummyComponent },
-          { path: ':branchType/:branchId', component: DummyComponent }
-        ]
-      )]
-    });
-    service = TestBed.inject(BranchRoutedUIService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [
+				RouterTestingModule.withRoutes([
+					{ path: '', component: DummyComponent },
+					{ path: ':branchType', component: DummyComponent },
+					{
+						path: ':branchType/:branchId',
+						component: DummyComponent,
+					},
+				]),
+			],
+		});
+		service = TestBed.inject(BranchRoutedUIService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-  describe('Core Functionality', () => {
-    describe('Branch Type Navigation', () => {
-      it('should utilize a split base url to form a url', () => {
-        service.branchType = "product line";
-        service.branchType = "working";
-        expect(service.type.getValue()).toEqual("working");
-      });
-    })
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+	describe('Core Functionality', () => {
+		describe('Branch Type Navigation', () => {
+			it('should utilize a split base url to form a url', () => {
+				service.branchType = 'product line';
+				service.branchType = 'working';
+				expect(service.type.getValue()).toEqual('working');
+			});
+		});
 
-    describe('Id Navigation', () => {
-      it('should utilize a split base url to form a url', () => {
-        service.branchType = "product line";
-        service.branchId = "0";
-        service.branchId = "8";
-        expect(service.id.getValue()).toEqual("8");
-      });
-    
-      it('should not utilize a split base url to form a url', () => {
-        service.branchId = "0";
-        service.branchId = "8";
-        expect(service.id.getValue()).toEqual("8");
-      });  
-    })
-  })
+		describe('Id Navigation', () => {
+			it('should utilize a split base url to form a url', () => {
+				service.branchType = 'product line';
+				service.branchId = '0';
+				service.branchId = '8';
+				expect(service.id.getValue()).toEqual('8');
+			});
+
+			it('should not utilize a split base url to form a url', () => {
+				service.branchId = '0';
+				service.branchId = '8';
+				expect(service.id.getValue()).toEqual('8');
+			});
+		});
+	});
 });

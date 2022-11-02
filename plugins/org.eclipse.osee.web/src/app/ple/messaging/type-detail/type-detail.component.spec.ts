@@ -30,32 +30,47 @@ import { TypesService } from '../shared/services/http/types.service';
 import { TypeDetailComponent } from './type-detail.component';
 
 describe('TypeDetailComponent', () => {
-  let component: TypeDetailComponent;
-  let fixture: ComponentFixture<TypeDetailComponent>;
+	let component: TypeDetailComponent;
+	let fixture: ComponentFixture<TypeDetailComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        { provide: TransactionBuilderService, useValue: transactionBuilderMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock}],
-      declarations: [ TypeDetailComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [RouterTestingModule],
+			providers: [
+				{ provide: TypesService, useValue: typesServiceMock },
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: EnumerationSetService,
+					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: TransactionBuilderService,
+					useValue: transactionBuilderMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{ provide: EnumsService, useValue: enumsServiceMock },
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+			],
+			declarations: [TypeDetailComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TypeDetailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(TypeDetailComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

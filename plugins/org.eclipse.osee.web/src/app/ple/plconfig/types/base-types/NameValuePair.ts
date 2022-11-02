@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface NameValuePair {
-    id: string,
-    name: string
+	id: string;
+	name: string;
 }
 
 export interface IdNameDescription {
-    id: string,
-    name: string,
-    description: string
+	id: string;
+	name: string;
+	description: string;
 }

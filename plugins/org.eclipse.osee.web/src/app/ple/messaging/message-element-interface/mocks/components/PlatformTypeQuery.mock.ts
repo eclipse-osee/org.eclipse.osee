@@ -10,16 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PlatformTypeQuery } from '../../../shared/types/MimQuery';
 import { PlatformType } from '../../../shared/types/platformType';
 
 @Component({
-    selector: 'app-platform-type-query',
-    template:'<p>Dummy</p>'
+	selector: 'osee-messaging-platform-type-query',
+	template: '<p>Dummy</p>',
 })
-export class PlatformTypeQueryMock{
-    @Input() platformTypes: PlatformType[] = [];
-    @Input() bitSizeSliderStepSize: number = 0.05;
-    @Output('query') returnQuery = new EventEmitter<PlatformTypeQuery>();
-  }
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class PlatformTypeQueryMock {
+	@Input() platformTypes: PlatformType[] = [];
+	@Input() bitSizeSliderStepSize: number = 0.05;
+	@Output('query') returnQuery = new EventEmitter<PlatformTypeQuery>();
+}

@@ -14,13 +14,25 @@ import { Observable, of } from 'rxjs';
 import { TransportTypeService } from '../services/http/transport-type.service';
 import { transportType } from '../types/transportType';
 
-
-export const transportTypes: Required<transportType>[] = [{ id: '12345', name: "ETHERNET", byteAlignValidation: false, byteAlignValidationSize: 0, messageGeneration: false, messageGenerationPosition: '', messageGenerationType: '' }];
+export const transportTypes: Required<transportType>[] = [
+	{
+		id: '12345',
+		name: 'ETHERNET',
+		byteAlignValidation: false,
+		byteAlignValidationSize: 0,
+		messageGeneration: false,
+		messageGenerationPosition: '',
+		messageGenerationType: '',
+	},
+];
 export const transportTypeServiceMock: Partial<TransportTypeService> = {
-    getAll: function (branchId: string): Observable<Required<transportType>[]> {
-        return of(transportTypes)
-    },
-    get: function (branchId: string, artId: string): Observable<Required<transportType>> {
-        return of(transportTypes[0])
-    }
-}
+	getAll: function (branchId: string): Observable<Required<transportType>[]> {
+		return of(transportTypes);
+	},
+	get: function (
+		branchId: string,
+		artId: string
+	): Observable<Required<transportType>> {
+		return of(transportTypes[0]);
+	},
+};

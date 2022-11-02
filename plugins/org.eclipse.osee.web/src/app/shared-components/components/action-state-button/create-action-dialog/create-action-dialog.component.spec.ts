@@ -13,7 +13,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,88 +30,103 @@ import { actionStateButtonServiceMock } from '../../../services/action-state-but
 import { CreateActionDialogComponent } from './create-action-dialog.component';
 
 describe('CreateActionDialogComponent', () => {
-  let component: CreateActionDialogComponent;
-  let fixture: ComponentFixture<CreateActionDialogComponent>;
+	let component: CreateActionDialogComponent;
+	let fixture: ComponentFixture<CreateActionDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatFormFieldModule,MatSelectModule,MatInputModule,MatButtonModule,MatDialogModule,NoopAnimationsModule, FormsModule],
-      declarations: [CreateActionDialogComponent],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        {
-          provide: MAT_DIALOG_DATA, useValue: {
-            originator: {
-              id: '',
-              name: '',
-              guid: null,
-              active: false,
-              description: null,
-              workTypes: [],
-              tags: [],
-              userId: '',
-              email: '',
-              loginIds: [],
-              savedSearches: [],
-              userGroups: [],
-              artifactId: '',
-              idString: '',
-              idIntValue: 0,
-              uuid:0
-            },
-            actionableItem: {
-              id: '',
-              name: '',
-            },
-            targetedVersion: '',
-            title: '',
-            description:''
-          } 
-        },
-        { provide: ActionStateButtonService, useValue: actionStateButtonServiceMock},
-        {
-          provide: ActionService, useValue: {
-            ARB: of([{
-              id: "123",
-              name:"First ARB"
-            },
-              {
-                id: "456",              
-                name: "Second ARB"
-            }
-            ]),
-            users: of([{
-              id: "123",
-              name: "user1",
-              guid: null,
-              active: true,
-              description: null,
-              workTypes: [],
-              tags: [],
-              userId: "123",
-              email: "user1@user1domain.com",
-              loginIds: ["123"],
-              savedSearches: [],
-              userGroups: [],
-              artifactId: "",
-              idString: "123",
-              idIntValue: 123,
-              uuid:123
-            }]
-            )
-        }}
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				MatSelectModule,
+				MatInputModule,
+				MatButtonModule,
+				MatDialogModule,
+				NoopAnimationsModule,
+				FormsModule,
+			],
+			declarations: [CreateActionDialogComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: {
+						originator: {
+							id: '',
+							name: '',
+							guid: null,
+							active: false,
+							description: null,
+							workTypes: [],
+							tags: [],
+							userId: '',
+							email: '',
+							loginIds: [],
+							savedSearches: [],
+							userGroups: [],
+							artifactId: '',
+							idString: '',
+							idIntValue: 0,
+							uuid: 0,
+						},
+						actionableItem: {
+							id: '',
+							name: '',
+						},
+						targetedVersion: '',
+						title: '',
+						description: '',
+					},
+				},
+				{
+					provide: ActionStateButtonService,
+					useValue: actionStateButtonServiceMock,
+				},
+				{
+					provide: ActionService,
+					useValue: {
+						ARB: of([
+							{
+								id: '123',
+								name: 'First ARB',
+							},
+							{
+								id: '456',
+								name: 'Second ARB',
+							},
+						]),
+						users: of([
+							{
+								id: '123',
+								name: 'user1',
+								guid: null,
+								active: true,
+								description: null,
+								workTypes: [],
+								tags: [],
+								userId: '123',
+								email: 'user1@user1domain.com',
+								loginIds: ['123'],
+								savedSearches: [],
+								userGroups: [],
+								artifactId: '',
+								idString: '123',
+								idIntValue: 123,
+								uuid: 123,
+							},
+						]),
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CreateActionDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(CreateActionDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

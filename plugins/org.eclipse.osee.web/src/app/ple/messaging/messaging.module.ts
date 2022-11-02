@@ -18,14 +18,13 @@ import { MessagingComponent } from './messaging.component';
 import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module';
 import { MatIconModule } from '@angular/material/icon';
 
-
 @NgModule({
-  declarations: [MessagingComponent],
-  imports: [
-    CommonModule,
-    PleSharedMaterialModule,
-    MessagingRoutingModule,
-    MatIconModule
-  ]
+	declarations: [MessagingComponent],
+	imports: [
+		CommonModule,
+		PleSharedMaterialModule,
+		MessagingRoutingModule,
+		MatIconModule,
+	],
 })
-export class MessagingModule { }
+export class MessagingModule {}

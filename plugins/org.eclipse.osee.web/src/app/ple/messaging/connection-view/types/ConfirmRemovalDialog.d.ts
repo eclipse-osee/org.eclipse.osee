@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface RemovalDialog {
-    id: string,
-    name: string,
-    extraNames: [],
-    type:string
+	id: string;
+	name: string;
+	extraNames: [];
+	type: string;
 }

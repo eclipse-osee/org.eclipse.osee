@@ -13,7 +13,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -29,58 +33,79 @@ import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-br
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
 
 describe('EditFeatureDialogComponent', () => {
-  let component: EditFeatureDialogComponent;
-  let fixture: ComponentFixture<EditFeatureDialogComponent>;
+	let component: EditFeatureDialogComponent;
+	let fixture: ComponentFixture<EditFeatureDialogComponent>;
 
-  beforeEach(async () => {
-    const typesService = jasmine.createSpyObj('PlConfigTypesService', [], ['productApplicabilityTypes']);
-    await TestBed.configureTestingModule({
-      imports:[MatFormFieldModule,MatInputModule,MatButtonModule,MatListModule,MatSelectModule,MatDialogModule,NoopAnimationsModule, MatSlideToggleModule, FormsModule],
-      declarations: [EditFeatureDialogComponent],
-      providers: [
-        { provide: PlConfigTypesService, useValue: typesService },
-        { provide: MatDialogRef, useValue: {} },
-        {
-          provide: MAT_DIALOG_DATA, useValue: {
-            currentBranch: "01238082141",
-            editable:true,
-            feature: {
-              id: '',
-              idIntValue: 6451325,
-              idString: '6451325',
-              type: null ,
-              name: 'feature1',
-              description: 'lorem ipsum',
-              valueType: 'string',
-              valueStr: '',
-              defaultValue: 'hello',
-              productAppStr: 'OFP',
-              values: ['hello','world'],
-              productApplicabilities: ['OFP'],
-              multiValued: false,
-              setValueStr(): void {
-        this.valueStr=this.values.toString();
-              },
-            setProductAppStr(): void {
-        this.productAppStr = this.productApplicabilities.toString();
-              } 
-            }
-        } },
-        {
-          provide: PlConfigBranchService, useValue: {
-          getBranchApplicability(){return of(testBranchApplicability)}
-        }}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		const typesService = jasmine.createSpyObj(
+			'PlConfigTypesService',
+			[],
+			['productApplicabilityTypes']
+		);
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				MatInputModule,
+				MatButtonModule,
+				MatListModule,
+				MatSelectModule,
+				MatDialogModule,
+				NoopAnimationsModule,
+				MatSlideToggleModule,
+				FormsModule,
+			],
+			declarations: [EditFeatureDialogComponent],
+			providers: [
+				{ provide: PlConfigTypesService, useValue: typesService },
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: {
+						currentBranch: '01238082141',
+						editable: true,
+						feature: {
+							id: '',
+							idIntValue: 6451325,
+							idString: '6451325',
+							type: null,
+							name: 'feature1',
+							description: 'lorem ipsum',
+							valueType: 'string',
+							valueStr: '',
+							defaultValue: 'hello',
+							productAppStr: 'OFP',
+							values: ['hello', 'world'],
+							productApplicabilities: ['OFP'],
+							multiValued: false,
+							setValueStr(): void {
+								this.valueStr = this.values.toString();
+							},
+							setProductAppStr(): void {
+								this.productAppStr =
+									this.productApplicabilities.toString();
+							},
+						},
+					},
+				},
+				{
+					provide: PlConfigBranchService,
+					useValue: {
+						getBranchApplicability() {
+							return of(testBranchApplicability);
+						},
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditFeatureDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditFeatureDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

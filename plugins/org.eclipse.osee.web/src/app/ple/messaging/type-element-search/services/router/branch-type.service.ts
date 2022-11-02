@@ -13,25 +13,26 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import {branchType} from '../../types/BranchTypes'
-
+import { branchType } from '../../types/BranchTypes';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchTypeService {
-  private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  constructor (private uiService: UiService) { }
-  
-  get BranchType() {
-    return this.uiService.type;
-  }
+	private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>(
+		''
+	);
+	constructor(private uiService: UiService) {}
 
-  set type(value: branchType) {
-    this.uiService.typeValue = value;
-  }
+	get BranchType() {
+		return this.uiService.type;
+	}
 
-  get type() {
-    return this.BranchType.getValue() as branchType;
-  }
+	set type(value: branchType) {
+		this.uiService.typeValue = value;
+	}
+
+	get type() {
+		return this.BranchType.getValue() as branchType;
+	}
 }

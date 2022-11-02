@@ -10,17 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { changeReportMock } from "../../http/change-report.mock";
-import { differenceReportMock } from "../../http/difference-report.mock";
-import { DifferenceBranchInfoService } from "./difference-branch-info.service";
+import { of } from 'rxjs';
+import { changeReportMock } from '../../http/change-report.mock';
+import { differenceReportMock } from '../../http/difference-report.mock';
+import { DifferenceBranchInfoService } from './difference-branch-info.service';
 
-export const DifferenceBranchInfoServiceMock: Partial<DifferenceBranchInfoService> = {
-    differences(branchId) {
-        return of(changeReportMock)
-    },
+export const DifferenceBranchInfoServiceMock: Partial<DifferenceBranchInfoService> =
+	{
+		differences(branchId) {
+			return of(changeReportMock);
+		},
 
-    differenceReport(branchId) {
-        return of(differenceReportMock)
-    }
-}
+		differenceReport(branchId) {
+			return of(differenceReportMock);
+		},
+	};

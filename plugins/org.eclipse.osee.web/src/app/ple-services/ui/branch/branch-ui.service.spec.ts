@@ -15,14 +15,14 @@ import { TestBed } from '@angular/core/testing';
 import { BranchUIService } from './branch-ui.service';
 
 describe('BranchUIService', () => {
-  let service: BranchUIService;
+	let service: BranchUIService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(BranchUIService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(BranchUIService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

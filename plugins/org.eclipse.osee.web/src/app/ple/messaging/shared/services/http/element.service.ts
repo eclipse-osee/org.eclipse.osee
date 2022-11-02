@@ -22,61 +22,168 @@ import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.en
 import { TransactionService } from '../../../../../transactions/transaction.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class ElementService {
+	constructor(
+		private http: HttpClient,
+		private builder: TransactionBuilderService,
+		private transactionService: TransactionService
+	) {}
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
-  
-  getElement(branchId: string,messageId: string, subMessageId: string, structureId: string, elementId: string,connectionId:string) {
-    return this.http.get<element>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/" + messageId + "/submessages/"+ subMessageId+"/structures/"+structureId+"/elements/"+elementId);
-  }
-  getFilteredElements(branchId:string,filter:string) {
-    return this.http.get<element[]>(apiURL + `/mim/branch/${branchId}/elements/filter/${filter}`);
-  }
+	getElement(
+		branchId: string,
+		messageId: string,
+		subMessageId: string,
+		structureId: string,
+		elementId: string,
+		connectionId: string
+	) {
+		return this.http.get<element>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/connections/' +
+				connectionId +
+				'/messages/' +
+				messageId +
+				'/submessages/' +
+				subMessageId +
+				'/structures/' +
+				structureId +
+				'/elements/' +
+				elementId
+		);
+	}
+	getFilteredElements(branchId: string, filter: string) {
+		return this.http.get<element[]>(
+			apiURL + `/mim/branch/${branchId}/elements/filter/${filter}`
+		);
+	}
 
-  createStructureRelation(structureId:string,elementId?:string, afterArtifact?:string) {
-    let relation: relation = {
-      typeName: "Interface Structure Content",
-      sideA: structureId,
-      sideB:elementId,
-      afterArtifact: afterArtifact||'end'
-    }
-    return of(relation);
-  }
-  createPlatformTypeRelation(platformTypeId: string,elementId?:string) {
-    let relation: relation = {
-      typeName: "Interface Element Platform Type",
-      sideB: platformTypeId,
-      sideA:elementId
-    }
-    return of(relation);
-  }
-  createElement(body: Partial<element>, branchId: string, relations: relation[], transaction?: transaction, key?: string) {
-    if (body.interfaceElementIndexEnd === 0 && body.interfaceElementIndexStart === 0) {
-      delete body.interfaceElementIndexEnd;
-      delete body.interfaceElementIndexStart;
-      return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT, relations, transaction, branchId, "Create Element", key));
-    } else {
-      delete body.interfaceElementAlterable;
-      return of(this.builder.createArtifact(body, ARTIFACTTYPEID.ELEMENT_ARRAY, relations, transaction, branchId, "Create Element", key));
-    }
-  }
-  changeElement(body: Partial<element>, branchId: string,transaction?:transaction) {
-    return of(this.builder.modifyArtifact(body, transaction, branchId, "Change Element"));
-  }
-  addRelation(branchId:string,relation:relation,transaction?:transaction) {
-    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))
-  }
+	createStructureRelation(
+		structureId: string,
+		elementId?: string,
+		afterArtifact?: string
+	) {
+		let relation: relation = {
+			typeName: 'Interface Structure Content',
+			sideA: structureId,
+			sideB: elementId,
+			afterArtifact: afterArtifact || 'end',
+		};
+		return of(relation);
+	}
+	createPlatformTypeRelation(platformTypeId: string, elementId?: string) {
+		let relation: relation = {
+			typeName: 'Interface Element Platform Type',
+			sideB: platformTypeId,
+			sideA: elementId,
+		};
+		return of(relation);
+	}
+	createElement(
+		body: Partial<element>,
+		branchId: string,
+		relations: relation[],
+		transaction?: transaction,
+		key?: string
+	) {
+		if (
+			body.interfaceElementIndexEnd === 0 &&
+			body.interfaceElementIndexStart === 0
+		) {
+			delete body.interfaceElementIndexEnd;
+			delete body.interfaceElementIndexStart;
+			return of(
+				this.builder.createArtifact(
+					body,
+					ARTIFACTTYPEID.ELEMENT,
+					relations,
+					transaction,
+					branchId,
+					'Create Element',
+					key
+				)
+			);
+		} else {
+			delete body.interfaceElementAlterable;
+			return of(
+				this.builder.createArtifact(
+					body,
+					ARTIFACTTYPEID.ELEMENT_ARRAY,
+					relations,
+					transaction,
+					branchId,
+					'Create Element',
+					key
+				)
+			);
+		}
+	}
+	changeElement(
+		body: Partial<element>,
+		branchId: string,
+		transaction?: transaction
+	) {
+		return of(
+			this.builder.modifyArtifact(
+				body,
+				transaction,
+				branchId,
+				'Change Element'
+			)
+		);
+	}
+	addRelation(
+		branchId: string,
+		relation: relation,
+		transaction?: transaction
+	) {
+		return of(
+			this.builder.addRelation(
+				relation.typeName,
+				undefined,
+				relation.sideA as string,
+				relation.sideB as string,
+				undefined,
+				transaction,
+				branchId,
+				'Relating Element'
+			)
+		);
+	}
 
-  deleteRelation(branchId:string,relation:relation,transaction?:transaction) {
-    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Element'))
-  }
+	deleteRelation(
+		branchId: string,
+		relation: relation,
+		transaction?: transaction
+	) {
+		return of(
+			this.builder.deleteRelation(
+				relation.typeName,
+				undefined,
+				relation.sideA as string,
+				relation.sideB as string,
+				undefined,
+				transaction,
+				branchId,
+				'Relating Element'
+			)
+		);
+	}
 
-  deleteElement(branchId:string,elementId: string) {
-    return of(this.builder.deleteArtifact(elementId,undefined,branchId,'Deleting element'))
-  }
-  performMutation(body: transaction) {
-    return this.transactionService.performMutation(body)
-  }
+	deleteElement(branchId: string, elementId: string) {
+		return of(
+			this.builder.deleteArtifact(
+				elementId,
+				undefined,
+				branchId,
+				'Deleting element'
+			)
+		);
+	}
+	performMutation(body: transaction) {
+		return this.transactionService.performMutation(body);
+	}
 }

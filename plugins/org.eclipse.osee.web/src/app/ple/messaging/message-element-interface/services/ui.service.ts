@@ -18,111 +18,118 @@ import { changeInstance } from 'src/app/types/change-report/change-report';
 import { MimRouteService } from '../../shared/services/ui/mim-route.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class ElementUiService {
+	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  private _filter: BehaviorSubject<string> = new BehaviorSubject<string>("");
+	private _messageId: BehaviorSubject<string> = new BehaviorSubject<string>(
+		'0'
+	);
+	private _subMessageId: BehaviorSubject<string> =
+		new BehaviorSubject<string>('0');
+	private _connectionId: BehaviorSubject<string> =
+		new BehaviorSubject<string>('0');
+	private _differences = new BehaviorSubject<changeInstance[] | undefined>(
+		undefined
+	);
+	private _done = new Subject();
+	constructor(private ui: UiService, private _mimRoute: MimRouteService) {}
 
-  private _messageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  private _subMessageId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  private _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  private _differences = new BehaviorSubject<changeInstance[] | undefined>(undefined);
-  private _done = new Subject();
-  constructor(private ui: UiService, private _mimRoute: MimRouteService) { }
+	get filter() {
+		return this._filter;
+	}
 
-  get filter() {
-    return this._filter
-  }
+	set filterString(filter: string) {
+		if (filter !== this._filter.getValue()) {
+			this._filter.next(filter);
+		}
+	}
 
-  set filterString(filter: string) {
-    if (filter !== this._filter.getValue()) {
-      this._filter.next(filter); 
-    }
-  }
+	get UpdateRequired() {
+		return this.ui.update;
+	}
 
-  get UpdateRequired() {
-    return this.ui.update;
-  }
+	set updateMessages(value: boolean) {
+		this.ui.updated = value;
+	}
 
-  set updateMessages(value: boolean) {
-    this.ui.updated = value;
-  }
+	get BranchId() {
+		return this._mimRoute.id;
+	}
 
-  get BranchId() {
-    return this._mimRoute.id;
-  }
+	set BranchIdString(value: string) {
+		this._mimRoute.idValue = value;
+	}
 
-  set BranchIdString(value: string) {
-    this._mimRoute.idValue = value;
-  }
+	get messageId() {
+		return this._mimRoute.messageId;
+	}
 
-  get messageId() {
-    return this._mimRoute.messageId;
-  }
+	set messageIdString(value: string) {
+		this._mimRoute.messageIdString = value;
+	}
 
-  set messageIdString(value: string) {
-    this._mimRoute.messageIdString = value;
-  }
+	get subMessageId() {
+		return this._mimRoute.submessageId;
+	}
 
-  get subMessageId() {
-    return this._mimRoute.submessageId;
-  }
+	set subMessageIdString(value: string) {
+		this._mimRoute.submessageIdString = value;
+	}
 
-  set subMessageIdString(value: string) {
-    this._mimRoute.submessageIdString = value;
-  }
+	get connectionId() {
+		return this._mimRoute.connectionId;
+	}
 
-  get connectionId() {
-    return this._mimRoute.connectionId;
-  }
+	set connectionIdString(value: string) {
+		this._mimRoute.connectionIdString = value;
+	}
 
-  set connectionIdString(value: string) {
-    this._mimRoute.connectionIdString = value;
-  }
+	get branchType() {
+		return this._mimRoute.type;
+	}
 
-  get branchType() {
-    return this._mimRoute.type;
-  }
+	set BranchType(value: string) {
+		this._mimRoute.typeValue = value;
+	}
 
-  set BranchType(value:string) {
-    this._mimRoute.typeValue = value;
-  }
+	set DiffMode(value: boolean) {
+		this._mimRoute.diffMode = value;
+	}
 
-  set DiffMode(value:boolean) {
-    this._mimRoute.diffMode = value;
-  }
+	get isInDiff() {
+		return this._mimRoute.isInDiff;
+	}
+	get differences() {
+		return this._differences.pipe(
+			shareReplay({ refCount: true, bufferSize: 1 })
+		);
+	}
+	set difference(value: changeInstance[]) {
+		this._differences.next(value);
+	}
+	set toggleDone(value: any) {
+		this._done.next(value);
+		this._done.complete();
+	}
 
-  get isInDiff() {
-    return this._mimRoute.isInDiff;
-  }
-  get differences() {
-    return this._differences.pipe(shareReplay({refCount:true,bufferSize:1}));
-  }
-  set difference(value: changeInstance[]) {
-    this._differences.next(value);
-  }
-  set toggleDone(value: any) {
-    this._done.next(value);
-    this._done.complete();
-  }
+	get done() {
+		return this._done;
+	}
 
-  get done() {
-    return this._done;
-  }
+	get subMessageBreadCrumbs() {
+		return this._mimRoute.submessageToStructureBreadCrumbs;
+	}
 
-  get subMessageBreadCrumbs() {
-    return this._mimRoute.submessageToStructureBreadCrumbs;
-  }
+	set subMessageBreadCrumbsString(value: string) {
+		this._mimRoute.submessageToStructureBreadCrumbsString = value;
+	}
+	get singleStructureId() {
+		return this._mimRoute.singleStructureId;
+	}
 
-  set subMessageBreadCrumbsString(value: string) {
-    this._mimRoute.submessageToStructureBreadCrumbsString = value;
-  }
-  get singleStructureId() {
-    return this._mimRoute.singleStructureId;
-  }
-
-  set singleStructureIdValue(value: string) {
-    this._mimRoute.singleStructureIdValue = value;
-  }
+	set singleStructureIdValue(value: string) {
+		this._mimRoute.singleStructureIdValue = value;
+	}
 }

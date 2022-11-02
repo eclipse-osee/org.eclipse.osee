@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+	HttpClientTestingModule,
+	HttpTestingController,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
@@ -23,7 +26,11 @@ import { typesServiceMock } from '../../shared/mocks/types.service.mock';
 import { ApplicabilityListService } from '../../shared/services/http/applicability-list.service';
 import { MimPreferencesService } from '../../shared/services/http/mim-preferences.service';
 import { TypesService } from '../../shared/services/http/types.service';
-import { structureRepeatingWithChanges, structuresMockWithChangesMulti, structuresPreChanges } from '../../shared/mocks/Structures.mock';
+import {
+	structureRepeatingWithChanges,
+	structuresMockWithChangesMulti,
+	structuresPreChanges,
+} from '../../shared/mocks/Structures.mock';
 import { elementServiceMock } from '../mocks/services/element.service.mock';
 import { messageServiceMock } from '../mocks/services/messages.service.mock';
 import { CurrentStructureService } from './current-structure.service';
@@ -33,76 +40,132 @@ import { PlatformTypeService } from './platform-type.service';
 import { StructuresService } from '../../shared/services/http/structures.service';
 import { ElementUiService } from './ui.service';
 
-
 describe('CurrentStateService', () => {
-  let service: CurrentStructureService;
-  let ui: ElementUiService;
-  let scheduler: TestScheduler;
-  let httpTestingController: HttpTestingController;
+	let service: CurrentStructureService;
+	let ui: ElementUiService;
+	let scheduler: TestScheduler;
+	let httpTestingController: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: ElementService, useValue: elementServiceMock },
-        {
-          provide: StructuresService, useValue: {
-            getFilteredStructures(v1: string, v2: string, v3: string, v4: string, v5: string) { return of(structuresPreChanges) },
-            getStructure(branchId: string, messageId: string, subMessageId: string, structureId: string, connectionId: string){return of (structuresPreChanges[0])}
-          }
-        },
-        { provide: MessagesStructureService, useValue: messageServiceMock },
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
-        { provide: ElementUiService },
-        { provide: DiffReportBranchService, useValue: diffReportBranchServiceMock },
-        CurrentStructureService
-      ],
-      imports:[HttpClientTestingModule]
-    });
-    service = TestBed.inject(CurrentStructureService);
-    ui = TestBed.inject(ElementUiService);
-    httpTestingController = TestBed.inject(HttpTestingController);
-    ui.DiffMode = false;
-    ui.BranchIdString = '50';
-    ui.messageIdString = '10';
-    ui.subMessageIdString = '20';
-    ui.connectionIdString = '5';
-    ui.subMessageBreadCrumbsString = '10>20';
-    ui.difference = [];
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{ provide: ElementService, useValue: elementServiceMock },
+				{
+					provide: StructuresService,
+					useValue: {
+						getFilteredStructures(
+							v1: string,
+							v2: string,
+							v3: string,
+							v4: string,
+							v5: string
+						) {
+							return of(structuresPreChanges);
+						},
+						getStructure(
+							branchId: string,
+							messageId: string,
+							subMessageId: string,
+							structureId: string,
+							connectionId: string
+						) {
+							return of(structuresPreChanges[0]);
+						},
+					},
+				},
+				{
+					provide: MessagesStructureService,
+					useValue: messageServiceMock,
+				},
+				{ provide: TypesService, useValue: typesServiceMock },
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+				{ provide: ElementUiService },
+				{
+					provide: DiffReportBranchService,
+					useValue: diffReportBranchServiceMock,
+				},
+				CurrentStructureService,
+			],
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(CurrentStructureService);
+		ui = TestBed.inject(ElementUiService);
+		httpTestingController = TestBed.inject(HttpTestingController);
+		ui.DiffMode = false;
+		ui.BranchIdString = '50';
+		ui.messageIdString = '10';
+		ui.subMessageIdString = '20';
+		ui.connectionIdString = '5';
+		ui.subMessageBreadCrumbsString = '10>20';
+		ui.difference = [];
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should fetch structures array with diff', () => {
-    service.DiffMode = true;
-    service.difference = changeReportMock;
-    service.subMessageId="201301"
-    scheduler.run(({ expectObservable, cold }) => {
-      service.branchId = '10';
-      const values = { a: [structuresMockWithChangesMulti[0],structuresMockWithChangesMulti[1],structuresMockWithChangesMulti[2]], b: true,c:undefined,d:[structuresMockWithChangesMulti[0],structuresMockWithChangesMulti[1],structuresMockWithChangesMulti[2],structuresMockWithChangesMulti[3]],e:structuresMockWithChangesMulti };
-      expectObservable(service.structures).toBe('500ms (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddeeee)', values);
-    })
-  })
+	it('should fetch structures array with diff', () => {
+		service.DiffMode = true;
+		service.difference = changeReportMock;
+		service.subMessageId = '201301';
+		scheduler.run(({ expectObservable, cold }) => {
+			service.branchId = '10';
+			const values = {
+				a: [
+					structuresMockWithChangesMulti[0],
+					structuresMockWithChangesMulti[1],
+					structuresMockWithChangesMulti[2],
+				],
+				b: true,
+				c: undefined,
+				d: [
+					structuresMockWithChangesMulti[0],
+					structuresMockWithChangesMulti[1],
+					structuresMockWithChangesMulti[2],
+					structuresMockWithChangesMulti[3],
+				],
+				e: structuresMockWithChangesMulti,
+			};
+			expectObservable(service.structures).toBe(
+				'500ms (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaddddeeee)',
+				values
+			);
+		});
+	});
 
-  it('should fetch structures single with diff', () => {
-    service.DiffMode = true;
-    service.difference = changeReportMock;
-    service.subMessageId="201301"
-    scheduler.run(({ expectObservable, cold }) => {
-      service.branchId = '10';
-      const values = { a: structureRepeatingWithChanges, b: true,c:undefined };
-      expectObservable(service.getStructureRepeating('10')).toBe('(a)', values);
-    })
-  })
-  afterEach(() => {
-    ui.DiffMode = false;
-    ui.difference = [];
-  })
+	it('should fetch structures single with diff', () => {
+		service.DiffMode = true;
+		service.difference = changeReportMock;
+		service.subMessageId = '201301';
+		scheduler.run(({ expectObservable, cold }) => {
+			service.branchId = '10';
+			const values = {
+				a: structureRepeatingWithChanges,
+				b: true,
+				c: undefined,
+			};
+			expectObservable(service.getStructureRepeating('10')).toBe(
+				'(a)',
+				values
+			);
+		});
+	});
+	afterEach(() => {
+		ui.DiffMode = false;
+		ui.difference = [];
+	});
 });

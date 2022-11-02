@@ -10,27 +10,42 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(enumObs|async) as enumerationSet">
-    <ng-container *ngIf="(inEditMode|async)===true && isOnEditablePage===true;else no_edit">
-        <h1 mat-dialog-title>Editing {{enumerationSet.name}}</h1>
-        <mat-dialog-content>
-            <osee-edit-enum-set-field [editable]="true" [platformTypeId]="data.id" (enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
-        </mat-dialog-content>
-    </ng-container>
-    <ng-template #no_edit>
-        <h1 mat-dialog-title>Viewing {{enumerationSet.name}}</h1>
-        <mat-dialog-content>
-            <osee-edit-enum-set-field [editable]="false" [platformTypeId]="data.id" (enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
-        </mat-dialog-content>
-    </ng-template>
+<ng-container *ngIf="enumObs | async as enumerationSet">
+	<ng-container
+		*ngIf="
+			(inEditMode | async) === true && isOnEditablePage === true;
+			else no_edit
+		">
+		<h1 mat-dialog-title>Editing {{ enumerationSet.name }}</h1>
+		<mat-dialog-content>
+			<osee-edit-enum-set-field
+				[editable]="true"
+				[platformTypeId]="data.id"
+				(enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
+		</mat-dialog-content>
+	</ng-container>
+	<ng-template #no_edit>
+		<h1 mat-dialog-title>Viewing {{ enumerationSet.name }}</h1>
+		<mat-dialog-content>
+			<osee-edit-enum-set-field
+				[editable]="false"
+				[platformTypeId]="data.id"
+				(enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
+		</mat-dialog-content>
+	</ng-template>
 </ng-container>
 <mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()">
-        Cancel
-    </button>
-    <ng-container *ngIf="changedEnum|async as result">
-        <button mat-raised-button color="primary" [mat-dialog-close]="result">
-            Ok
-        </button>
-    </ng-container>
+	<button
+		mat-button
+		(click)="onNoClick()">
+		Cancel
+	</button>
+	<ng-container *ngIf="changedEnum | async as result">
+		<button
+			mat-raised-button
+			color="primary"
+			[mat-dialog-close]="result">
+			Ok
+		</button>
+	</ng-container>
 </mat-dialog-actions>

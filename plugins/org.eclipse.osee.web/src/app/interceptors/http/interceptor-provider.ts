@@ -15,10 +15,21 @@ import { HttpTimeoutExtensionInterceptor } from './http-timeout-extension.interc
 import { OSEEAuthHeaderInterceptor } from './oseeauth-header.interceptor';
 import { PlConfigSetLoadingIndicatorInterceptor } from './plconfig-set-loading-indicator-interceptor';
 
-
 /** Http interceptor providers in outside-in order */
 export const httpInterceptorProviders = [
-  { provide: HTTP_INTERCEPTORS, useClass: PlConfigSetLoadingIndicatorInterceptor, multi: true },
-  { provide: HTTP_INTERCEPTORS, useClass: HttpTimeoutExtensionInterceptor, multi: true },
-  { provide: HTTP_INTERCEPTORS, useClass: OSEEAuthHeaderInterceptor, multi:true}
+	{
+		provide: HTTP_INTERCEPTORS,
+		useClass: PlConfigSetLoadingIndicatorInterceptor,
+		multi: true,
+	},
+	{
+		provide: HTTP_INTERCEPTORS,
+		useClass: HttpTimeoutExtensionInterceptor,
+		multi: true,
+	},
+	{
+		provide: HTTP_INTERCEPTORS,
+		useClass: OSEEAuthHeaderInterceptor,
+		multi: true,
+	},
 ];

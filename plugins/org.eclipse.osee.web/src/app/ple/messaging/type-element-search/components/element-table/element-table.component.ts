@@ -20,37 +20,38 @@ import { CurrentElementSearchService } from '../../services/current-element-sear
 import { element } from '../../types/element';
 
 @Component({
-  selector: 'osee-typesearch-element-table',
-  templateUrl: './element-table.component.html',
-  styleUrls: ['./element-table.component.sass']
+	selector: 'osee-typesearch-element-table',
+	templateUrl: './element-table.component.html',
+	styleUrls: ['./element-table.component.sass'],
 })
-export class ElementTableComponent implements OnInit {
-  dataSource = new MatTableDataSource<element>();
-  headers:(Extract<keyof elementWithPathsAndButtons,string>)[] = [
-    'name',
-    'platformTypeName2',
-    'path',
-    'interfaceElementAlterable',
-    'description',
-    'notes'];
-  branchType = this.uiService.type;
-  branchId = this.uiService.id;
-  constructor (private elementService: CurrentElementSearchService, private headerService: HeaderService, private uiService: UiService) {
-    this.elementService.elements.subscribe((val) => {
-      this.dataSource.data = val;
-    })
-  }
+export class ElementTableComponent {
+	dataSource = new MatTableDataSource<element>();
+	headers: Extract<keyof elementWithPathsAndButtons, string>[] = [
+		'name',
+		'platformTypeName2',
+		'path',
+		'interfaceElementAlterable',
+		'description',
+		'notes',
+	];
+	branchType = this.uiService.type;
+	branchId = this.uiService.id;
+	constructor(
+		private elementService: CurrentElementSearchService,
+		private headerService: HeaderService,
+		private uiService: UiService
+	) {
+		this.elementService.elements.subscribe((val) => {
+			this.dataSource.data = val;
+		});
+	}
+	valueTracker(index: any, item: any) {
+		return index;
+	}
 
-  ngOnInit(): void {
-  }
-
-  valueTracker(index: any, item: any) {
-    return index;
-  }
-
-  getHumanReadable(value:string) {
-    return this.headerService.getHeaderByName(value, 'element').pipe(
-      map((v)=>v.humanReadable)
-    )
-  }
+	getHumanReadable(value: string) {
+		return this.headerService
+			.getHeaderByName(value, 'element')
+			.pipe(map((v) => v.humanReadable));
+	}
 }

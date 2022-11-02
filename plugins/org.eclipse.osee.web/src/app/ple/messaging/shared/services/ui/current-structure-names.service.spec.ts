@@ -19,29 +19,37 @@ import { StructureNamesService } from '../http/structure-names.service';
 import { CurrentStructureNamesService } from './current-structure-names.service';
 
 describe('CurrentStructureNamesService', () => {
-  let service: CurrentStructureNamesService;
-  let scheduler: TestScheduler;
-  let uiService: UiService
+	let service: CurrentStructureNamesService;
+	let scheduler: TestScheduler;
+	let uiService: UiService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers:[{provide:StructureNamesService,useValue:structuresNameServiceMock}]
-    });
-    service = TestBed.inject(CurrentStructureNamesService);
-    uiService= TestBed.inject(UiService)
-  });
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: StructureNamesService,
+					useValue: structuresNameServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(CurrentStructureNamesService);
+		uiService = TestBed.inject(UiService);
+	});
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should fetch an array equal to getNames()', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.names).toBe('a',{a:[]})
-    })
-  })
+	it('should fetch an array equal to getNames()', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.names).toBe('a', { a: [] });
+		});
+	});
 });

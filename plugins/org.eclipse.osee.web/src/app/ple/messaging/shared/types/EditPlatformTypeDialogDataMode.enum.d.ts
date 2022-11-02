@@ -16,6 +16,6 @@
  * copy = 1
  */
 export const enum editPlatformTypeDialogDataMode {
-    edit,
-    copy
+	edit,
+	copy,
 }

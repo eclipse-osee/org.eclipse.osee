@@ -14,54 +14,60 @@ import { Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
 import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
-import { DiffHeaderType, messageDiffItem } from '../../../shared/types/DifferenceReport.d';
+import {
+	DiffHeaderType,
+	messageDiffItem,
+} from '../../../shared/types/DifferenceReport.d';
 
 @Component({
-  selector: 'app-message-diffs',
-  templateUrl: './message-diffs.component.html',
-  styleUrls: ['./message-diffs.component.sass']
+	selector: 'osee-messaging-message-diffs',
+	templateUrl: './message-diffs.component.html',
+	styleUrls: ['./message-diffs.component.sass'],
 })
-export class MessageDiffsComponent implements OnInit {
+export class MessageDiffsComponent {
+	constructor(private diffReportService: DiffReportService) {}
+	headers: (keyof messageDiffItem)[] = [
+		'name',
+		'description',
+		'interfaceMessageNumber',
+		'interfaceMessagePeriodicity',
+		'interfaceMessageRate',
+		'interfaceMessageWriteAccess',
+		'interfaceMessageType',
+		'applicability',
+	];
 
-  constructor(private diffReportService: DiffReportService) { }
+	headerType = DiffHeaderType.MESSAGE;
 
-  ngOnInit(): void {
-  }
+	allMessages = this.diffReportService.messages;
 
-  headers:(keyof messageDiffItem)[] = [
-    'name',
-    'description',
-    'interfaceMessageNumber',
-    'interfaceMessagePeriodicity',
-    'interfaceMessageRate',
-    'interfaceMessageWriteAccess',
-    'interfaceMessageType',
-    'applicability',
-  ]
+	messagesChanged = this.allMessages.pipe(
+		switchMap((messages) =>
+			from(messages).pipe(
+				filter(
+					(message) =>
+						!message.diffInfo?.added && !message.diffInfo?.deleted
+				),
+				reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
+			)
+		)
+	);
 
-  headerType = DiffHeaderType.MESSAGE;
+	messagesAdded = this.allMessages.pipe(
+		switchMap((messages) =>
+			from(messages).pipe(
+				filter((message) => message.diffInfo?.added === true),
+				reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
+			)
+		)
+	);
 
-  allMessages = this.diffReportService.messages;
-
-  messagesChanged = this.allMessages.pipe(
-    switchMap(messages => from(messages).pipe(
-      filter(message => !message.diffInfo?.added && !message.diffInfo?.deleted),
-      reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
-    ))
-  )
-
-  messagesAdded = this.allMessages.pipe(
-    switchMap(messages => from(messages).pipe(
-      filter(message => message.diffInfo?.added === true),
-      reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
-    ))
-  )
-
-  messagesDeleted = this.allMessages.pipe(
-    switchMap(messages => from(messages).pipe(
-      filter(message => message.diffInfo?.deleted === true),
-      reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
-    ))
-  )
-
+	messagesDeleted = this.allMessages.pipe(
+		switchMap((messages) =>
+			from(messages).pipe(
+				filter((message) => message.diffInfo?.deleted === true),
+				reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
+			)
+		)
+	);
 }

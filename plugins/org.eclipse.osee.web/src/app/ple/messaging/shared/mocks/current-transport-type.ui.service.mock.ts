@@ -18,14 +18,16 @@ import { CurrentTransportTypeService } from '../services/ui/current-transport-ty
 import { transportType } from '../types/transportType';
 import { transportTypes } from './transport-type.http.service.mock';
 
-
-export const CurrentTransportTypeServiceMock: Partial<CurrentTransportTypeService> = {
-    getType: function (artId: string): Observable<Required<transportType>> {
-        return of(transportTypes[0]);
-    },
-    createType: function (type: transportType): Observable<transactionResult> {
-        return of(transactionResultMock)
-    },
-    transportTypes: of(transportTypes),
-    types: of(transportTypes)
-}
+export const CurrentTransportTypeServiceMock: Partial<CurrentTransportTypeService> =
+	{
+		getType: function (artId: string): Observable<Required<transportType>> {
+			return of(transportTypes[0]);
+		},
+		createType: function (
+			type: transportType
+		): Observable<transactionResult> {
+			return of(transactionResultMock);
+		},
+		transportTypes: of(transportTypes),
+		types: of(transportTypes),
+	};

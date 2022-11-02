@@ -15,34 +15,59 @@ import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
 import { DialogService } from '../../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
-import { extendedFeature, extendedFeatureWithChanges } from '../../../types/features/base';
+import {
+	extendedFeature,
+	extendedFeatureWithChanges,
+} from '../../../types/features/base';
 
 @Component({
-  selector: 'plconfig-feature-menu',
-  templateUrl: './feature-menu.component.html',
-  styleUrls: ['./feature-menu.component.sass']
+	selector: 'osee-plconfig-value-menu',
+	templateUrl: './feature-menu.component.html',
+	styleUrls: ['./feature-menu.component.sass'],
 })
-export class FeatureMenuComponent implements OnInit {
-  @Input() feature: (extendedFeature | extendedFeatureWithChanges) = { id: '', type: undefined, name: '', description: '', valueType: '', valueStr: '', defaultValue: '', values: [], productApplicabilities: [], multiValued: false,configurations:[], setValueStr() { }, setProductAppStr() { },}
-  constructor(private dialogService: DialogService, private currentBranchService:PlConfigCurrentBranchService) { }
-
-  ngOnInit(): void {
-  }
-  hasFeatureChanges(value: extendedFeature|extendedFeatureWithChanges): value is extendedFeatureWithChanges {
-    return (value as extendedFeatureWithChanges).changes!==undefined
-  }
-  displayFeatureMenu(feature: extendedFeature) {
-    this.dialogService.displayFeatureMenu(feature).subscribe();
-  }
-  viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic;
-    let prev = value.previousValue as string | number | applic;
-    if (prev === null) {
-      prev = ''
-    }
-    if (current === null) {
-      current = ''
-    }
-    this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-  }
+export class FeatureMenuComponent {
+	@Input() feature: extendedFeature | extendedFeatureWithChanges = {
+		id: '',
+		type: undefined,
+		name: '',
+		description: '',
+		valueType: '',
+		valueStr: '',
+		defaultValue: '',
+		values: [],
+		productApplicabilities: [],
+		multiValued: false,
+		configurations: [],
+		setValueStr() {},
+		setProductAppStr() {},
+	};
+	constructor(
+		private dialogService: DialogService,
+		private currentBranchService: PlConfigCurrentBranchService
+	) {}
+	hasFeatureChanges(
+		value: extendedFeature | extendedFeatureWithChanges
+	): value is extendedFeatureWithChanges {
+		return (value as extendedFeatureWithChanges).changes !== undefined;
+	}
+	displayFeatureMenu(feature: extendedFeature) {
+		this.dialogService.displayFeatureMenu(feature).subscribe();
+	}
+	viewDiff(open: boolean, value: difference, header: string) {
+		let current = value.currentValue as string | number | applic;
+		let prev = value.previousValue as string | number | applic;
+		if (prev === null) {
+			prev = '';
+		}
+		if (current === null) {
+			current = '';
+		}
+		this.currentBranchService.sideNav = {
+			opened: open,
+			field: header,
+			currentValue: current,
+			previousValue: prev,
+			transaction: value.transactionToken,
+		};
+	}
 }

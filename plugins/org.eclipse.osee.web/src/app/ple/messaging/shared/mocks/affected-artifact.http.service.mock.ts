@@ -13,64 +13,90 @@ import { AffectedArtifactService } from '../services/http/affected-artifact.serv
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export const affectedArtifactHttpServiceMock: Partial<AffectedArtifactService> = {
-  getEnumSetsByEnums(branchId: string | number, enumId:string|number) {
-    return of([]);
-  },
+export const affectedArtifactHttpServiceMock: Partial<AffectedArtifactService> =
+	{
+		getEnumSetsByEnums(branchId: string | number, enumId: string | number) {
+			return of([]);
+		},
 
-  getPlatformTypesByEnumSet(branchId: string | number, enumSetId:string|number) {
-    return of([]);
-  },
+		getPlatformTypesByEnumSet(
+			branchId: string | number,
+			enumSetId: string | number
+		) {
+			return of([]);
+		},
 
-  getElementsByType(branchId: string | number, typeId:string|number) {
-    return of([]);
-  },
+		getElementsByType(branchId: string | number, typeId: string | number) {
+			return of([]);
+		},
 
-  getStructuresByElement(branchId: string | number, elementId:string|number) {
-    return of([]);
-  },
+		getStructuresByElement(
+			branchId: string | number,
+			elementId: string | number
+		) {
+			return of([]);
+		},
 
-  getSubMessagesByStructure(branchId: string | number, structureId:string|number) {
-    return of([]);
-  },
+		getSubMessagesByStructure(
+			branchId: string | number,
+			structureId: string | number
+		) {
+			return of([]);
+		},
 
-  getMessagesBySubMessage(branchId: string | number, subMessageId:string|number) {
-    return of([]);
-  }
-}
+		getMessagesBySubMessage(
+			branchId: string | number,
+			subMessageId: string | number
+		) {
+			return of([]);
+		},
+	};
 
-export const warningArtifacts=[
-  {
-    id: '10',
-    name:'affected1'
-  },
-  {
-    id: '11',
-    name:'affected2'
-  },
-]
-export const affectedArtifactHttpServiceWithWarningResultsMock: Partial<AffectedArtifactService> = {
-  getEnumSetsByEnums(branchId: string | number, enumId:string|number) {
-    return of(warningArtifacts);
-  },
+export const warningArtifacts = [
+	{
+		id: '10',
+		name: 'affected1',
+	},
+	{
+		id: '11',
+		name: 'affected2',
+	},
+];
+export const affectedArtifactHttpServiceWithWarningResultsMock: Partial<AffectedArtifactService> =
+	{
+		getEnumSetsByEnums(branchId: string | number, enumId: string | number) {
+			return of(warningArtifacts);
+		},
 
-  getPlatformTypesByEnumSet(branchId: string | number, enumSetId:string|number) {
-    return of(warningArtifacts);
-  },
+		getPlatformTypesByEnumSet(
+			branchId: string | number,
+			enumSetId: string | number
+		) {
+			return of(warningArtifacts);
+		},
 
-  getElementsByType(branchId: string | number, typeId:string|number) {
-    return of(warningArtifacts);
-  },
+		getElementsByType(branchId: string | number, typeId: string | number) {
+			return of(warningArtifacts);
+		},
 
-  getStructuresByElement(branchId: string | number, elementId:string|number) {
-    return of(warningArtifacts);
-  },
+		getStructuresByElement(
+			branchId: string | number,
+			elementId: string | number
+		) {
+			return of(warningArtifacts);
+		},
 
-  getSubMessagesByStructure(branchId: string | number, structureId:string|number) {
-    return of(warningArtifacts);
-  },
+		getSubMessagesByStructure(
+			branchId: string | number,
+			structureId: string | number
+		) {
+			return of(warningArtifacts);
+		},
 
-  getMessagesBySubMessage(branchId: string | number, subMessageId:string|number) {
-    return of(warningArtifacts);
-  }
-}
+		getMessagesBySubMessage(
+			branchId: string | number,
+			subMessageId: string | number
+		) {
+			return of(warningArtifacts);
+		},
+	};

@@ -14,17 +14,19 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class DiffModeService {
-  private _isInDiff: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  constructor () { }
-  
-  get isInDiff():Observable<boolean> {
-    return this._isInDiff;
-  }
+	private _isInDiff: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+		false
+	);
+	constructor() {}
 
-  set DiffMode(value: boolean) {
-    this._isInDiff.next(value);
-  }
+	get isInDiff(): Observable<boolean> {
+		return this._isInDiff;
+	}
+
+	set DiffMode(value: boolean) {
+		this._isInDiff.next(value);
+	}
 }

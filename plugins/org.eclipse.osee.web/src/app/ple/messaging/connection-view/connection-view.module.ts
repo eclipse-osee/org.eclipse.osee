@@ -40,30 +40,41 @@ import { BranchPickerModule } from '../../../shared-components/components/branch
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [ConnectionViewComponent, BaseComponent, GraphComponent, EditConnectionDialogComponent, ConfirmRemovalDialogComponent, EditNodeDialogComponent, CreateConnectionDialogComponent, CreateNewNodeDialogComponent, GraphLinkMenuComponent, GraphNodeMenuComponent, UsermenuComponent],
-  imports: [
-    CommonModule,
-    ConnectionViewRoutingModule,
-    DiffViewsModule,
-    BranchPickerModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatMenuModule,
-    FormsModule,
-    MatSelectModule,
-    MatInputModule,
-    MatSidenavModule,
-    MatIconModule,
-    ActionStateButtonModule,
-    BranchUndoButtonModule,
-    MatOptionLoadingModule,
-    MatProgressSpinnerModule,
-    NgxGraphModule
-  ]
+	declarations: [
+		ConnectionViewComponent,
+		BaseComponent,
+		GraphComponent,
+		EditConnectionDialogComponent,
+		ConfirmRemovalDialogComponent,
+		EditNodeDialogComponent,
+		CreateConnectionDialogComponent,
+		CreateNewNodeDialogComponent,
+		GraphLinkMenuComponent,
+		GraphNodeMenuComponent,
+		UsermenuComponent,
+	],
+	imports: [
+		CommonModule,
+		ConnectionViewRoutingModule,
+		DiffViewsModule,
+		BranchPickerModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatButtonModule,
+		MatMenuModule,
+		FormsModule,
+		MatSelectModule,
+		MatInputModule,
+		MatSidenavModule,
+		MatIconModule,
+		ActionStateButtonModule,
+		BranchUndoButtonModule,
+		MatOptionLoadingModule,
+		MatProgressSpinnerModule,
+		NgxGraphModule,
+	],
 })
-export class ConnectionViewModule { }
+export class ConnectionViewModule {}

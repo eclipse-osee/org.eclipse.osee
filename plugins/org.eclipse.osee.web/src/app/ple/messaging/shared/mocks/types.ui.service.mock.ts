@@ -12,27 +12,30 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { TypesUIService } from '../services/ui/types-ui.service';
-import { transactionMock, transactionResultMock } from "../../../../transactions/transaction.mock";
-import { response } from "../../connection-view/mocks/Response.mock";
-import { platformTypes1 } from "../../type-element-search/testing/MockResponses/PlatformType";
-import { TypesService } from "../services/http/types.service";
+import {
+	transactionMock,
+	transactionResultMock,
+} from '../../../../transactions/transaction.mock';
+import { response } from '../../connection-view/mocks/Response.mock';
+import { platformTypes1 } from '../../type-element-search/testing/MockResponses/PlatformType';
+import { TypesService } from '../services/http/types.service';
 import { PlatformType } from '../types/platformType';
 import { transaction } from '../../../../transactions/transaction';
 export const typesUIServiceMock: Partial<TypesUIService> = {
-      get types() {
-        return this._types;
-      },
-      getType( typeId: string) {
-        return of(platformTypes1[0])
-      },
-    
-      getTypeFromBranch(branchId: string, typeId: string) {
-        return of(platformTypes1[0])
-      },
-      changeType(type:Partial<PlatformType>) {
-        return of(transactionMock);
-      },
-      performMutation(body: transaction) {
-        return of(transactionResultMock);
-      },
-}
+	get types() {
+		return this._types;
+	},
+	getType(typeId: string) {
+		return of(platformTypes1[0]);
+	},
+
+	getTypeFromBranch(branchId: string, typeId: string) {
+		return of(platformTypes1[0]);
+	},
+	changeType(type: Partial<PlatformType>) {
+		return of(transactionMock);
+	},
+	performMutation(body: transaction) {
+		return of(transactionResultMock);
+	},
+};

@@ -13,8 +13,8 @@ import { UserHeaderProdService } from '../app/userdata/services/user-header-prod
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const environment = {
-  production: true,
-  headerService: UserHeaderProdService
+	production: true,
+	headerService: UserHeaderProdService,
 };
-export const apiURL = "";
+export const apiURL = '';
 export const OSEEAuthURL = apiURL + '/orcs/datastore/user';

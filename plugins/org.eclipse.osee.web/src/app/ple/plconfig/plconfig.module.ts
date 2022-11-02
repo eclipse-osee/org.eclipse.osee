@@ -19,7 +19,10 @@ import { PlconfigRoutingModule } from './plconfig-routing.module';
 import { PlconfigComponent } from './plconfig.component';
 
 //Angular material imports & forms
-import { MatRadioModule, MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
+import {
+	MatRadioModule,
+	MAT_RADIO_DEFAULT_OPTIONS,
+} from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
@@ -44,13 +47,12 @@ import { FeatureDropdownComponent } from './components/feature-dropdown/feature-
 import { AddFeatureDialogComponent } from './components/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from './components/edit-feature-dialog/edit-feature-dialog.component';
 import { TransitionActionToReviewDialogComponent } from './components/transition-action-to-review-dialog/transition-action-to-review-dialog.component';
-import { CommitBranchDialogComponent } from './components/commit-branch-dialog/commit-branch-dialog.component';
 import { CopyConfigurationDialogComponent } from './components/copy-configuration-dialog/copy-configuration-dialog.component';
 import { ConfigurationGroupDropdownComponent } from './components/configuration-group-dropdown/configuration-group-dropdown.component';
 import { AddConfigurationGroupDialogComponent } from './components/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { ConfigGroupDialogComponent } from './components/config-group-dialog/config-group-dialog.component';
 
-import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module'
+import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module';
 import { DiffViewsModule } from '../diff-views/diff-views/diff-views.module';
 import { FeatureMenuComponent } from './components/menus/feature-menu/feature-menu.component';
 import { ArrayDiffMenuComponent } from './components/menus/array-diff-menu/array-diff-menu.component';
@@ -60,35 +62,54 @@ import { ValueMenuComponent } from './components/menus/value-menu/value-menu.com
 import { ActionStateButtonModule } from '../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchPickerModule } from '../../shared-components/components/branch-picker/branch-picker.module';
 
-
-
 @NgModule({
-  declarations: [PlconfigComponent, ApplicabilityTableComponent, ConfigurationDropdownComponent, EditConfigurationDialogComponent, AddConfigurationDialogComponent, FeatureDropdownComponent, AddFeatureDialogComponent, EditFeatureDialogComponent, TransitionActionToReviewDialogComponent, CommitBranchDialogComponent, CopyConfigurationDialogComponent, ConfigurationGroupDropdownComponent, AddConfigurationGroupDialogComponent, ConfigGroupDialogComponent, FeatureMenuComponent, ArrayDiffMenuComponent, ConfigMenuComponent, ConfigGroupMenuComponent, ValueMenuComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatInputModule,
-    MatMenuModule,
-    BranchPickerModule,
-    PleSharedMaterialModule,
-    MatDialogModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatListModule,
-    DiffViewsModule,
-    ActionStateButtonModule,
-    PlconfigRoutingModule
-  ],
-  providers: [{
-    provide: MAT_RADIO_DEFAULT_OPTIONS,
-    useValue: { color: 'primary' },
-}]
+	declarations: [
+		PlconfigComponent,
+		ApplicabilityTableComponent,
+		ConfigurationDropdownComponent,
+		EditConfigurationDialogComponent,
+		AddConfigurationDialogComponent,
+		FeatureDropdownComponent,
+		AddFeatureDialogComponent,
+		EditFeatureDialogComponent,
+		TransitionActionToReviewDialogComponent,
+		CopyConfigurationDialogComponent,
+		ConfigurationGroupDropdownComponent,
+		AddConfigurationGroupDialogComponent,
+		ConfigGroupDialogComponent,
+		FeatureMenuComponent,
+		ArrayDiffMenuComponent,
+		ConfigMenuComponent,
+		ConfigGroupMenuComponent,
+		ValueMenuComponent,
+	],
+	imports: [
+		CommonModule,
+		FormsModule,
+		MatRadioModule,
+		MatSelectModule,
+		MatTableModule,
+		MatSortModule,
+		MatPaginatorModule,
+		MatInputModule,
+		MatMenuModule,
+		BranchPickerModule,
+		PleSharedMaterialModule,
+		MatDialogModule,
+		MatSlideToggleModule,
+		MatTooltipModule,
+		MatIconModule,
+		MatProgressSpinnerModule,
+		MatListModule,
+		DiffViewsModule,
+		ActionStateButtonModule,
+		PlconfigRoutingModule,
+	],
+	providers: [
+		{
+			provide: MAT_RADIO_DEFAULT_OPTIONS,
+			useValue: { color: 'primary' },
+		},
+	],
 })
-export class PlconfigModule { }
+export class PlconfigModule {}

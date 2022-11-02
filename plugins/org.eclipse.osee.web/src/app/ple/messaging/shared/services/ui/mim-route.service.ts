@@ -15,68 +15,73 @@ import { BehaviorSubject } from 'rxjs';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class MimRouteService {
+	private readonly _connectionId: BehaviorSubject<string> =
+		new BehaviorSubject<string>('0');
+	private readonly _messageId: BehaviorSubject<string> =
+		new BehaviorSubject<string>('');
+	private readonly _subMessageId: BehaviorSubject<string> =
+		new BehaviorSubject<string>('');
+	private readonly _subMessageToStructurebreadCrumbs: BehaviorSubject<string> =
+		new BehaviorSubject<string>('');
+	private readonly _singleStructureId: BehaviorSubject<string> =
+		new BehaviorSubject<string>('');
+	public readonly connectionId = this._connectionId.asObservable();
+	public readonly messageId = this._messageId.asObservable();
+	public readonly submessageId = this._subMessageId.asObservable();
+	public readonly submessageToStructureBreadCrumbs =
+		this._subMessageToStructurebreadCrumbs.asObservable();
+	public readonly singleStructureId = this._singleStructureId.asObservable();
+	constructor(private _ui: UiService) {}
 
-  private readonly _connectionId: BehaviorSubject<string> = new BehaviorSubject<string>("0");
-  private readonly _messageId: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private readonly _subMessageId: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private readonly _subMessageToStructurebreadCrumbs: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private readonly _singleStructureId: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  public readonly connectionId = this._connectionId.asObservable();
-  public readonly messageId = this._messageId.asObservable();
-  public readonly submessageId = this._subMessageId.asObservable();
-  public readonly submessageToStructureBreadCrumbs = this._subMessageToStructurebreadCrumbs.asObservable();
-  public readonly singleStructureId = this._singleStructureId.asObservable();
-  constructor (private _ui: UiService) { }
+	get type() {
+		return this._ui.type;
+	}
+	get id() {
+		return this._ui.idAsObservable;
+	}
 
-  get type() {
-    return this._ui.type;
-  }
-  get id() {
-    return this._ui.idAsObservable;
-  }
+	set typeValue(value: string) {
+		this._ui.typeValue = value;
+	}
+	set idValue(value: string) {
+		this._ui.idValue = value;
+	}
+	get isInDiff() {
+		return this._ui.isInDiff;
+	}
 
-  set typeValue(value: string) {
-    this._ui.typeValue = value;
-  }
-  set idValue(value: string) {
-    this._ui.idValue = value;
-  }
-  get isInDiff() {
-    return this._ui.isInDiff;
-  }
+	set diffMode(value: boolean) {
+		this._ui.diffMode = value;
+	}
 
-  set diffMode(value: boolean) {
-    this._ui.diffMode = value;
-  }
+	set connectionIdString(value: string) {
+		this._connectionId.next(value);
+	}
 
-  set connectionIdString(value: string) {
-    this._connectionId.next(value);
-  }
+	set messageIdString(value: string) {
+		this._messageId.next(value);
+	}
 
-  set messageIdString(value: string) {
-    this._messageId.next(value);
-  }
-  
-  set submessageIdString(value: string) {
-    this._subMessageId.next(value);
-  }
-  
-  set submessageToStructureBreadCrumbsString(value: string) {
-    this._subMessageToStructurebreadCrumbs.next(value);
-  }
+	set submessageIdString(value: string) {
+		this._subMessageId.next(value);
+	}
 
-  set singleStructureIdValue(value: string) {
-    this._singleStructureId.next(value);
-  }
+	set submessageToStructureBreadCrumbsString(value: string) {
+		this._subMessageToStructurebreadCrumbs.next(value);
+	}
 
-  get updated() {
-    return this._ui.update;
-  }
+	set singleStructureIdValue(value: string) {
+		this._singleStructureId.next(value);
+	}
 
-  set update(value: boolean) {
-    this._ui.updated = value;
-  }
+	get updated() {
+		return this._ui.update;
+	}
+
+	set update(value: boolean) {
+		this._ui.updated = value;
+	}
 }

@@ -33,27 +33,30 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 
-
 @NgModule({
-  declarations: [TypeElementSearchComponent, ElementTableComponent, ElementTableSearchComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatRadioModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTableModule,
-    SharedMessagingModule,
-    OseeStringUtilsPipesModule,
-    OseeStringUtilsDirectivesModule,
-    BranchPickerModule,
-    ActionStateButtonModule,
-    BranchUndoButtonModule,
-    TypeElementSearchRoutingModule
-  ]
+	declarations: [
+		TypeElementSearchComponent,
+		ElementTableComponent,
+		ElementTableSearchComponent,
+	],
+	imports: [
+		CommonModule,
+		FormsModule,
+		MatFormFieldModule,
+		MatRadioModule,
+		MatButtonModule,
+		MatMenuModule,
+		MatIconModule,
+		MatInputModule,
+		MatSelectModule,
+		MatTableModule,
+		SharedMessagingModule,
+		OseeStringUtilsPipesModule,
+		OseeStringUtilsDirectivesModule,
+		BranchPickerModule,
+		ActionStateButtonModule,
+		BranchUndoButtonModule,
+		TypeElementSearchRoutingModule,
+	],
 })
-export class TypeElementSearchModule { }
+export class TypeElementSearchModule {}

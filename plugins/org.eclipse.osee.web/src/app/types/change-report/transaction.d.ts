@@ -1,5 +1,5 @@
 import { response } from '../responses';
-import { transactionToken } from "./transaction-token";
+import { transactionToken } from './transaction-token';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -13,30 +13,30 @@ import { transactionToken } from "./transaction-token";
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface transactionInfo{
-    txId: transactionToken,
-    branchUuid: number,
-    txType: {
-        id: string,
-        name: string,
-        baseline: boolean,
-        idString: string,
-        idIntValue:number,
-    },
-    comment: string,
-    author: {
-        id: string,
-        name: string,
-        userId: string,
-        active: boolean,
-        email: string,
-        loginIds: Array<any>,
-        roles:Array<any>
-    },
-    timeStamp: string,
-    commitArt:string
+export interface transactionInfo {
+	txId: transactionToken;
+	branchUuid: number;
+	txType: {
+		id: string;
+		name: string;
+		baseline: boolean;
+		idString: string;
+		idIntValue: number;
+	};
+	comment: string;
+	author: {
+		id: string;
+		name: string;
+		userId: string;
+		active: boolean;
+		email: string;
+		loginIds: Array<any>;
+		roles: Array<any>;
+	};
+	timeStamp: string;
+	commitArt: string;
 }
-export interface transactionResult{
-    tx: transactionToken,
-    results:response
+export interface transactionResult {
+	tx: transactionToken;
+	results: response;
 }

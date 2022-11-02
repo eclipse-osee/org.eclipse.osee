@@ -14,16 +14,18 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchTypeService {
-  private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  constructor () { }
-  get branchType() {
-    return this._branchType;
-  }
+	private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>(
+		''
+	);
+	constructor() {}
+	get branchType() {
+		return this._branchType;
+	}
 
-  set BranchType(value:string) {
-    this._branchType.next(value);
-  }
+	set BranchType(value: string) {
+		this._branchType.next(value);
+	}
 }

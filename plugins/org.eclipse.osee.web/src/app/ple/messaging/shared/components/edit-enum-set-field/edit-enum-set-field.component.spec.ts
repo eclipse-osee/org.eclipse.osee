@@ -40,71 +40,76 @@ import { MockEnumFormUnique } from '../dialogs/enum-form/enum-form.component.moc
 import { EditEnumSetFieldComponent } from './edit-enum-set-field.component';
 
 describe('EditEnumSetFieldComponent', () => {
-  let component: EditEnumSetFieldComponent;
-  let fixture: ComponentFixture<EditEnumSetFieldComponent>;
-  let loader: HarnessLoader;
+	let component: EditEnumSetFieldComponent;
+	let fixture: ComponentFixture<EditEnumSetFieldComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [EditEnumSetFieldComponent,MockEnumFormUnique],
-      imports: [
-        MatIconModule,
-        MatSelectModule,
-        MatInputModule,
-        MatFormFieldModule,
-        FormsModule,
-        MatTableModule,
-        NoopAnimationsModule,
-        MatOptionLoadingModule
-      ],
-      providers: [
-        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        {
-          provide: ApplicabilityListService,
-          useValue: applicabilityListServiceMock,
-        },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        {
-          provide: UserDataAccountService,
-          useValue: userDataAccountServiceMock,
-        },
-        { provide: TypesService, useValue: typesServiceMock },
-      ],
-    }).compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [EditEnumSetFieldComponent, MockEnumFormUnique],
+			imports: [
+				MatIconModule,
+				MatSelectModule,
+				MatInputModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatTableModule,
+				NoopAnimationsModule,
+				MatOptionLoadingModule,
+			],
+			providers: [
+				{
+					provide: EnumerationSetService,
+					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{ provide: TypesService, useValue: typesServiceMock },
+			],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(EditEnumSetFieldComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
-  describe('Case 1 Platform Type By Id', () => {
-    beforeEach(() => {
-      component.editable = true;
-      component.platformTypeId = '10';
-      fixture.detectChanges();
-    });
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
-  });
-  describe('Case 2 Platform Type by Type', () => {
-    beforeEach(() => {
-      component.editable = true;
-      component.platformType = platformTypes1[0];
-      fixture.detectChanges();
-    });
+		fixture = TestBed.createComponent(EditEnumSetFieldComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
+	describe('Case 1 Platform Type By Id', () => {
+		beforeEach(() => {
+			component.editable = true;
+			component.platformTypeId = '10';
+			fixture.detectChanges();
+		});
+		it('should create', () => {
+			expect(component).toBeTruthy();
+		});
+	});
+	describe('Case 2 Platform Type by Type', () => {
+		beforeEach(() => {
+			component.editable = true;
+			component.platformType = platformTypes1[0];
+			fixture.detectChanges();
+		});
 
-    it('should select an applicability', async () => {
-      const spy = spyOn(component, 'setApplicability').and.callThrough();
-      const select = await loader.getHarness(MatSelectHarness);
-      await select.open();
-      const option = await select.getOptions({ text: 'Second' });
-      await option?.[0].click();
-      expect(spy).toHaveBeenCalled();
-    });
+		it('should select an applicability', async () => {
+			const spy = spyOn(component, 'setApplicability').and.callThrough();
+			const select = await loader.getHarness(MatSelectHarness);
+			await select.open();
+			const option = await select.getOptions({ text: 'Second' });
+			await option?.[0].click();
+			expect(spy).toHaveBeenCalled();
+		});
 
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
-
-  });
+		it('should create', () => {
+			expect(component).toBeTruthy();
+		});
+	});
 });

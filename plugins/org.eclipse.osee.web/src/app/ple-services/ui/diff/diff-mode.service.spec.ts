@@ -15,14 +15,14 @@ import { TestBed } from '@angular/core/testing';
 import { DiffModeService } from './diff-mode.service';
 
 describe('DiffModeService', () => {
-  let service: DiffModeService;
+	let service: DiffModeService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(DiffModeService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(DiffModeService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

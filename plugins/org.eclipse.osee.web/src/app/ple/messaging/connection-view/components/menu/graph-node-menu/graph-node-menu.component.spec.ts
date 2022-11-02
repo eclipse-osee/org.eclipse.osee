@@ -38,398 +38,811 @@ import { CurrentGraphService } from '../../../services/current-graph.service';
 import { GraphNodeMenuComponent } from './graph-node-menu.component';
 
 describe('GraphNodeMenuComponent', () => {
-  let component: GraphNodeMenuComponent;
-  let fixture: ComponentFixture<GraphNodeMenuComponent>;
-  let loader: HarnessLoader;
-  let router: any;
-  let route: any;
+	let component: GraphNodeMenuComponent;
+	let fixture: ComponentFixture<GraphNodeMenuComponent>;
+	let loader: HarnessLoader;
+	let router: any;
+	let route: any;
 
-  beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'], { 'url': new String() });
-    route = jasmine.createSpyObj('ActivatedRoute',[],{parent:''})
-    await TestBed.configureTestingModule({
-      imports:[MatButtonModule,MatIconModule,MatDialogModule,NoopAnimationsModule,RouterTestingModule,MatMenuModule,MatFormFieldModule,FormsModule,MatSelectModule,MatInputModule,CommonModule],
-      providers:
-        [
-          { provide: Router, useValue: router },
-          {provide: ActivatedRoute,useValue:route},
-          { provide: CurrentGraphService, useValue: graphServiceMock },
-          {provide: EnumsService,useValue:enumsServiceMock}
-      ],
-      declarations: [ GraphNodeMenuComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		router = jasmine.createSpyObj(
+			'Router',
+			['navigate', 'createUrlTree', 'serializeUrl'],
+			{ url: new String() }
+		);
+		route = jasmine.createSpyObj('ActivatedRoute', [], { parent: '' });
+		await TestBed.configureTestingModule({
+			imports: [
+				MatButtonModule,
+				MatIconModule,
+				MatDialogModule,
+				NoopAnimationsModule,
+				RouterTestingModule,
+				MatMenuModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatSelectModule,
+				MatInputModule,
+				CommonModule,
+			],
+			providers: [
+				{ provide: Router, useValue: router },
+				{ provide: ActivatedRoute, useValue: route },
+				{ provide: CurrentGraphService, useValue: graphServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+			],
+			declarations: [GraphNodeMenuComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GraphNodeMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(GraphNodeMenuComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  describe('Editing Enabled & no changes', () => {
-    beforeEach(() => {
-      component.editMode = true;
-      component.data = {
-        id: '1',
-        name: '1',
-        interfaceNodeAddress: '',
-        interfaceNodeBgColor: '',
-        description: '',
-        applicability: {
-          id: '1',
-          name: 'Base'
-        },
-      }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3', description:'', transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4', description:'', transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    })
+	describe('Editing Enabled & no changes', () => {
+		beforeEach(() => {
+			component.editMode = true;
+			component.data = {
+				id: '1',
+				name: '1',
+				interfaceNodeAddress: '',
+				interfaceNodeBgColor: '',
+				description: '',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
+			};
+			component.sources = [
+				{
+					source: '1',
+					target: '2',
+					label: '3',
+					data: {
+						name: '3',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			component.targets = [
+				{
+					source: '4',
+					target: '1',
+					label: '4',
+					data: {
+						name: '4',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			fixture.detectChanges();
+			expect(component).toBeTruthy();
+		});
 
-    it('should have the correct amount of items(3)', async() => {
-      const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
-      expect(buttons.length).toEqual(3)
-    })
+		it('should have the correct amount of items(3)', async () => {
+			const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
+			expect(buttons.length).toEqual(3);
+		});
 
-    it('should open the edit node dialog', async() => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(component.data), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Edit ' + component.data.name) }))).click();
-      expect(spy).toHaveBeenCalledWith(component.data);
-    })
+		it('should open the edit node dialog', async () => {
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of(component.data),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
+			await (
+				await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('Edit ' + component.data.name),
+					})
+				)
+			).click();
+			expect(spy).toHaveBeenCalledWith(component.data);
+		});
 
-    it('should open the remove node & connection dialog', async () => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:component.data.id,name:component.data.name,extraNames:[component.sources[0].label,component.targets[0].label],type:'node'}), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let spy = spyOn(component, 'removeNodeAndConnection').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Remove ' + component.data.name + " & Connection") }))).click();
-      expect(spy).toHaveBeenCalledWith(component.data,[component.sources[0]],[component.targets[0]]);
-    })
+		it('should open the remove node & connection dialog', async () => {
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of({
+					id: component.data.id,
+					name: component.data.name,
+					extraNames: [
+						component.sources[0].label,
+						component.targets[0].label,
+					],
+					type: 'node',
+				}),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let spy = spyOn(
+				component,
+				'removeNodeAndConnection'
+			).and.callThrough();
+			await (
+				await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp(
+							'Remove ' + component.data.name + ' & Connection'
+						),
+					})
+				)
+			).click();
+			expect(spy).toHaveBeenCalledWith(
+				component.data,
+				[component.sources[0]],
+				[component.targets[0]]
+			);
+		});
 
-    it('should open the create connection dialog', async () => {
-      const conn: _newConnection = {
-        name: '',
-        description: '',
-        transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}
-      }
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(conn), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let spy = spyOn(component, 'createConnectionToNode').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Create Connection To ' + component.data.name) }))).click();
-      expect(spy).toHaveBeenCalledWith(component.data);
-    })
-  })
+		it('should open the create connection dialog', async () => {
+			const conn: _newConnection = {
+				name: '',
+				description: '',
+				transportType: {
+					name: 'ETHERNET',
+					byteAlignValidation: false,
+					byteAlignValidationSize: 0,
+					messageGeneration: false,
+					messageGenerationPosition: '',
+					messageGenerationType: '',
+				},
+			};
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of(conn),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let spy = spyOn(
+				component,
+				'createConnectionToNode'
+			).and.callThrough();
+			await (
+				await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp(
+							'Create Connection To ' + component.data.name
+						),
+					})
+				)
+			).click();
+			expect(spy).toHaveBeenCalledWith(component.data);
+		});
+	});
 
-  describe('Editing Enabled & changes', () => {
-    beforeEach(() => {
-      component.editMode = true;
-      component.data = {
-        id: '1',
-        name: '1',
-        interfaceNodeAddress: '',
-        interfaceNodeBgColor: '',
-        description: '',
-        applicability: {
-          id: '1',
-          name: 'Base'
-        },
-        changes: {
-          name: {
-            previousValue: '7',
-            currentValue: '1',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          interfaceNodeAddress: {
-            previousValue: 'abcdef',
-            currentValue: '',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          interfaceNodeBgColor: {
-            previousValue: 'abcdef',
-            currentValue: '',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          description: {
-            previousValue: 'abcdef',
-            currentValue: '',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          applicability: {
-            previousValue: {
-              id: '2',
-              name:'Random applicability'
-            },
-            currentValue: {
-              id: '1',
-              name:'Base'
-            },
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          }
-        }
-      }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    })
+	describe('Editing Enabled & changes', () => {
+		beforeEach(() => {
+			component.editMode = true;
+			component.data = {
+				id: '1',
+				name: '1',
+				interfaceNodeAddress: '',
+				interfaceNodeBgColor: '',
+				description: '',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
+				changes: {
+					name: {
+						previousValue: '7',
+						currentValue: '1',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					interfaceNodeAddress: {
+						previousValue: 'abcdef',
+						currentValue: '',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					interfaceNodeBgColor: {
+						previousValue: 'abcdef',
+						currentValue: '',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					description: {
+						previousValue: 'abcdef',
+						currentValue: '',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					applicability: {
+						previousValue: {
+							id: '2',
+							name: 'Random applicability',
+						},
+						currentValue: {
+							id: '1',
+							name: 'Base',
+						},
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+				},
+			};
+			component.sources = [
+				{
+					source: '1',
+					target: '2',
+					label: '3',
+					data: {
+						name: '3',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			component.targets = [
+				{
+					source: '4',
+					target: '1',
+					label: '4',
+					data: {
+						name: '4',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			fixture.detectChanges();
+			expect(component).toBeTruthy();
+		});
 
-    it('should have the correct amount of items(4)', async() => {
-      const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
-      expect(buttons.length).toEqual(4)
-    })
+		it('should have the correct amount of items(4)', async () => {
+			const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
+			expect(buttons.length).toEqual(4);
+		});
 
-    it('should open the edit node dialog', async() => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(component.data), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Edit ' + component.data.name) }))).click();
-      expect(spy).toHaveBeenCalledWith(component.data);
-    })
+		it('should open the edit node dialog', async () => {
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of(component.data),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let spy = spyOn(component, 'openEditNodeDialog').and.callThrough();
+			await (
+				await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('Edit ' + component.data.name),
+					})
+				)
+			).click();
+			expect(spy).toHaveBeenCalledWith(component.data);
+		});
 
-    it('should open the remove node & connection dialog', async () => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:component.data.id,name:component.data.name,extraNames:[component.sources[0].label,component.targets[0].label],type:'node'}), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let spy = spyOn(component, 'removeNodeAndConnection').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Remove ' + component.data.name + " & Connection") }))).click();
-      expect(spy).toHaveBeenCalledWith(component.data,[component.sources[0]],[component.targets[0]]);
-    })
+		it('should open the remove node & connection dialog', async () => {
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of({
+					id: component.data.id,
+					name: component.data.name,
+					extraNames: [
+						component.sources[0].label,
+						component.targets[0].label,
+					],
+					type: 'node',
+				}),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let spy = spyOn(
+				component,
+				'removeNodeAndConnection'
+			).and.callThrough();
+			await (
+				await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp(
+							'Remove ' + component.data.name + ' & Connection'
+						),
+					})
+				)
+			).click();
+			expect(spy).toHaveBeenCalledWith(
+				component.data,
+				[component.sources[0]],
+				[component.targets[0]]
+			);
+		});
 
-    it('should open the create connection dialog', async() => {
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({data:component.data}), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let spy = spyOn(component, 'createConnectionToNode').and.callThrough();
-      await (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Create Connection To ' + component.data.name) }))).click();
-      expect(spy).toHaveBeenCalledWith(component.data);
-    })
+		it('should open the create connection dialog', async () => {
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of({ data: component.data }),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let spy = spyOn(
+				component,
+				'createConnectionToNode'
+			).and.callThrough();
+			await (
+				await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp(
+							'Create Connection To ' + component.data.name
+						),
+					})
+				)
+			).click();
+			expect(spy).toHaveBeenCalledWith(component.data);
+		});
 
-    describe('opening the diff sidenav', () => {
-      let spy:jasmine.Spy<(open:boolean,value:difference,header:string)=>void>;
-      beforeEach(() => {
-        spy = spyOn(component, 'viewDiff').and.callThrough();
-      })
+		describe('opening the diff sidenav', () => {
+			let spy: jasmine.Spy<
+				(open: boolean, value: difference, header: string) => void
+			>;
+			beforeEach(() => {
+				spy = spyOn(component, 'viewDiff').and.callThrough();
+			});
 
-      it('should open the name sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Name'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.name||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Name")
-      })
+			it('should open the name sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Name' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes.name || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Name'
+				);
+			});
 
-      it('should open the description sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Description'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.description||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Description")
-      })
+			it('should open the description sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Description' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.description || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Description'
+				);
+			});
 
-      it('should open the address/port sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Address/Port'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.interfaceNodeAddress||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Address/Port")
-      })
+			it('should open the address/port sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Address/Port' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.interfaceNodeAddress || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Address/Port'
+				);
+			});
 
-      it('should open the background color sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Background Color'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.interfaceNodeBgColor||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Background Color")
-      })
+			it('should open the background color sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Background Color' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.interfaceNodeBgColor || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Background Color'
+				);
+			});
 
-      it('should open the applicability sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Applicability'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.applicability||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Applicability")
-      })
-    })
-  })
+			it('should open the applicability sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Applicability' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.applicability || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Applicability'
+				);
+			});
+		});
+	});
 
-  describe('Editing Disabled & no changes', () => {
-    beforeEach(() => {
-      component.editMode = false;
-      component.data = {
-        id: '1',
-        name: '1',
-        interfaceNodeAddress: '',
-        interfaceNodeBgColor: '',
-        description: '',
-        applicability: {
-          id: '1',
-          name: 'Base'
-        },
-      }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    })
+	describe('Editing Disabled & no changes', () => {
+		beforeEach(() => {
+			component.editMode = false;
+			component.data = {
+				id: '1',
+				name: '1',
+				interfaceNodeAddress: '',
+				interfaceNodeBgColor: '',
+				description: '',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
+			};
+			component.sources = [
+				{
+					source: '1',
+					target: '2',
+					label: '3',
+					data: {
+						name: '3',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			component.targets = [
+				{
+					source: '4',
+					target: '1',
+					label: '4',
+					data: {
+						name: '4',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			fixture.detectChanges();
+			expect(component).toBeTruthy();
+		});
 
-    it('should have the correct amount of items(1)', async() => {
-      const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
-      expect(buttons.length).toEqual(1)
-    })
+		it('should have the correct amount of items(1)', async () => {
+			const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
+			expect(buttons.length).toEqual(1);
+		});
 
-    it('should have no options text', async() => {
-      const item = await loader.getHarness(MatMenuItemHarness);
-      expect(await item.getText()).toEqual("No options available.");
-    })
-  })
+		it('should have no options text', async () => {
+			const item = await loader.getHarness(MatMenuItemHarness);
+			expect(await item.getText()).toEqual('No options available.');
+		});
+	});
 
-  describe('Editing Disabled & changes', () => {
-    beforeEach(() => {
-      component.editMode = false;
-      component.data = {
-        id: '1',
-        name: '1',
-        interfaceNodeAddress: '',
-        interfaceNodeBgColor: '',
-        description: '',
-        applicability: {
-          id: '1',
-          name: 'Base'
-        },
-        changes: {
-          name: {
-            previousValue: '7',
-            currentValue: '1',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          interfaceNodeAddress: {
-            previousValue: 'abcdef',
-            currentValue: '',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          interfaceNodeBgColor: {
-            previousValue: 'abcdef',
-            currentValue: '',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          description: {
-            previousValue: 'abcdef',
-            currentValue: '',
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          },
-          applicability: {
-            previousValue: {
-              id: '2',
-              name:'Random applicability'
-            },
-            currentValue: {
-              id: '1',
-              name:'Base'
-            },
-            transactionToken: {
-              id: '-1',
-              branchId:'-1'
-            }
-          }
-        }
-      }
-      component.sources = [{source:'1',target:'2',label:'3',data:{name:'3',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];
-      component.targets = [{source:'4',target:'1',label:'4',data:{name:'4',description:'',transportType:{name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}}}];;
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-    })
-    it('should have the correct amount of items(1)', async() => {
-      const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
-      expect(buttons.length).toEqual(1)
-    })
+	describe('Editing Disabled & changes', () => {
+		beforeEach(() => {
+			component.editMode = false;
+			component.data = {
+				id: '1',
+				name: '1',
+				interfaceNodeAddress: '',
+				interfaceNodeBgColor: '',
+				description: '',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
+				changes: {
+					name: {
+						previousValue: '7',
+						currentValue: '1',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					interfaceNodeAddress: {
+						previousValue: 'abcdef',
+						currentValue: '',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					interfaceNodeBgColor: {
+						previousValue: 'abcdef',
+						currentValue: '',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					description: {
+						previousValue: 'abcdef',
+						currentValue: '',
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+					applicability: {
+						previousValue: {
+							id: '2',
+							name: 'Random applicability',
+						},
+						currentValue: {
+							id: '1',
+							name: 'Base',
+						},
+						transactionToken: {
+							id: '-1',
+							branchId: '-1',
+						},
+					},
+				},
+			};
+			component.sources = [
+				{
+					source: '1',
+					target: '2',
+					label: '3',
+					data: {
+						name: '3',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			component.targets = [
+				{
+					source: '4',
+					target: '1',
+					label: '4',
+					data: {
+						name: '4',
+						description: '',
+						transportType: {
+							name: 'ETHERNET',
+							byteAlignValidation: false,
+							byteAlignValidationSize: 0,
+							messageGeneration: false,
+							messageGenerationPosition: '',
+							messageGenerationType: '',
+						},
+					},
+				},
+			];
+			fixture.detectChanges();
+			expect(component).toBeTruthy();
+		});
+		it('should have the correct amount of items(1)', async () => {
+			const buttons = await loader.getAllHarnesses(MatMenuItemHarness);
+			expect(buttons.length).toEqual(1);
+		});
 
-    describe('opening the diff sidenav', () => {
-      let spy:jasmine.Spy<(open:boolean,value:difference,header:string)=>void>;
-      beforeEach(() => {
-        spy = spyOn(component, 'viewDiff').and.callThrough();
-      })
+		describe('opening the diff sidenav', () => {
+			let spy: jasmine.Spy<
+				(open: boolean, value: difference, header: string) => void
+			>;
+			beforeEach(() => {
+				spy = spyOn(component, 'viewDiff').and.callThrough();
+			});
 
-      it('should open the name sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Name'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.name||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Name")
-      })
+			it('should open the name sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Name' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes.name || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Name'
+				);
+			});
 
-      it('should open the description sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Description'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.description||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Description")
-      })
+			it('should open the description sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Description' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.description || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Description'
+				);
+			});
 
-      it('should open the address/port sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Address/Port'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.interfaceNodeAddress||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Address/Port")
-      })
+			it('should open the address/port sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Address/Port' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.interfaceNodeAddress || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Address/Port'
+				);
+			});
 
-      it('should open the background color sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Background Color'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.interfaceNodeBgColor||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Background Color")
-      })
+			it('should open the background color sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Background Color' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.interfaceNodeBgColor || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Background Color'
+				);
+			});
 
-      it('should open the applicability sidenav', async() => {
-        const topItem = (await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for') })))
-        if (await topItem.hasSubmenu()) {
-          const subMenu = await topItem.getSubmenu();
-          await subMenu?.clickItem({text:'Applicability'})
-        }
-        expect(spy).toHaveBeenCalledWith(true,(component.data as nodeDataWithChanges).changes.applicability||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},"Applicability")
-      })
-    })
-  })
+			it('should open the applicability sidenav', async () => {
+				const topItem = await loader.getHarness(
+					MatMenuItemHarness.with({
+						text: new RegExp('View Diff for'),
+					})
+				);
+				if (await topItem.hasSubmenu()) {
+					const subMenu = await topItem.getSubmenu();
+					await subMenu?.clickItem({ text: 'Applicability' });
+				}
+				expect(spy).toHaveBeenCalledWith(
+					true,
+					(component.data as nodeDataWithChanges).changes
+						.applicability || {
+						previousValue: '',
+						currentValue: '',
+						transactionToken: { id: '-1', branchId: '-1' },
+					},
+					'Applicability'
+				);
+			});
+		});
+	});
 });

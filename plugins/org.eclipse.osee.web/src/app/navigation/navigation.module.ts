@@ -22,15 +22,14 @@ import { TopLevelNavigationComponent } from './top-level-navigation/top-level-na
 import { NavigationRoutingModule } from './navigation-routing.module';
 
 @NgModule({
-    declarations: [TopLevelNavigationComponent],
-    imports: [
-        MatSidenavModule,
-        MatToolbarModule,
-        MatListModule,
-        MatIconModule,
-        CommonModule,
-        NavigationRoutingModule
-    ]
+	declarations: [TopLevelNavigationComponent],
+	imports: [
+		MatSidenavModule,
+		MatToolbarModule,
+		MatListModule,
+		MatIconModule,
+		CommonModule,
+		NavigationRoutingModule,
+	],
 })
-export class NavigationModule { }
- 
+export class NavigationModule {}

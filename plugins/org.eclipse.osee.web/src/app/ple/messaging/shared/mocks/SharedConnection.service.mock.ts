@@ -15,7 +15,7 @@ import { SharedConnectionService } from '../services/http/shared-connection.serv
 import { connectionMock } from './connection.mock';
 
 export const sharedConnectionServiceMock: Partial<SharedConnectionService> = {
-    getConnection(branchId: string, connectionId: string) {
-        return of(connectionMock)
-    }
-}
+	getConnection(branchId: string, connectionId: string) {
+		return of(connectionMock);
+	},
+};

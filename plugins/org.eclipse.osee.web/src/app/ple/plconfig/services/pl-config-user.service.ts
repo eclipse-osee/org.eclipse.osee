@@ -17,14 +17,18 @@ import { user } from 'src/app/userdata/types/user-data-user';
 import { ActionService } from '../../../ple-services/http/action.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class PlConfigUserService {
-
-  constructor(private actionService: ActionService) { }
-  private _getSortedUsers = this.actionService.users.pipe(map(results => results.sort((a,b) => { return a.name < b.name ? -1 : 1})));
-  public get usersSorted():Observable<user[]> {
-    return this._getSortedUsers;
-  }
-
+	constructor(private actionService: ActionService) {}
+	private _getSortedUsers = this.actionService.users.pipe(
+		map((results) =>
+			results.sort((a, b) => {
+				return a.name < b.name ? -1 : 1;
+			})
+		)
+	);
+	public get usersSorted(): Observable<user[]> {
+		return this._getSortedUsers;
+	}
 }

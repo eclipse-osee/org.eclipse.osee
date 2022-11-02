@@ -19,17 +19,25 @@ import { MimPreferencesService } from '../http/mim-preferences.service';
 import { PreferencesUIService } from './preferences-ui.service';
 
 describe('PreferencesUIService', () => {
-  let service: PreferencesUIService;
+	let service: PreferencesUIService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [{ provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-      {provide: UserDataAccountService, useValue:userDataAccountServiceMock}]
-    });
-    service = TestBed.inject(PreferencesUIService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(PreferencesUIService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

@@ -19,65 +19,89 @@ import { AffectedArtifactService } from '../http/affected-artifact.service';
 import { BranchedAffectedArtifactService } from './branched-affected-artifact.service';
 
 describe('BranchedAffectedArtifactService', () => {
-  let service: BranchedAffectedArtifactService;
-  let scheduler: TestScheduler;
-  let uiService: UiService;
+	let service: BranchedAffectedArtifactService;
+	let scheduler: TestScheduler;
+	let uiService: UiService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers:[{provide:AffectedArtifactService,useValue:affectedArtifactHttpServiceMock}]
-    });
-    service = TestBed.inject(BranchedAffectedArtifactService);
-    uiService = TestBed.inject(UiService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: AffectedArtifactService,
+					useValue: affectedArtifactHttpServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(BranchedAffectedArtifactService);
+		uiService = TestBed.inject(UiService);
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should fetch enum set array', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.getEnumSetsByEnums('20')).toBe('(a|)',{a:[]})
-    })
-  })
+	it('should fetch enum set array', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.getEnumSetsByEnums('20')).toBe('(a|)', {
+				a: [],
+			});
+		});
+	});
 
-  it('should fetch platform type array', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.getPlatformTypesByEnumSet('20')).toBe('(a|)',{a:[]})
-    })
-  })
+	it('should fetch platform type array', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.getPlatformTypesByEnumSet('20')).toBe(
+				'(a|)',
+				{ a: [] }
+			);
+		});
+	});
 
-  it('should fetch element array', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.getElementsByType('20')).toBe('(a|)',{a:[]})
-    })
-  })
+	it('should fetch element array', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.getElementsByType('20')).toBe('(a|)', {
+				a: [],
+			});
+		});
+	});
 
-  it('should fetch structure array', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.getStructuresByElement('20')).toBe('(a|)',{a:[]})
-    })
-  })
+	it('should fetch structure array', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.getStructuresByElement('20')).toBe(
+				'(a|)',
+				{ a: [] }
+			);
+		});
+	});
 
-  it('should fetch submessage array', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.getSubMessagesByStructure('20')).toBe('(a|)',{a:[]})
-    })
-  })
+	it('should fetch submessage array', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.getSubMessagesByStructure('20')).toBe(
+				'(a|)',
+				{ a: [] }
+			);
+		});
+	});
 
-  it('should fetch element array', () => {
-    scheduler.run(({ expectObservable }) => {
-      uiService.idValue = '10';
-      expectObservable(service.getMessagesBySubMessage('20')).toBe('(a|)',{a:[]})
-    })
-  })
+	it('should fetch element array', () => {
+		scheduler.run(({ expectObservable }) => {
+			uiService.idValue = '10';
+			expectObservable(service.getMessagesBySubMessage('20')).toBe(
+				'(a|)',
+				{ a: [] }
+			);
+		});
+	});
 });

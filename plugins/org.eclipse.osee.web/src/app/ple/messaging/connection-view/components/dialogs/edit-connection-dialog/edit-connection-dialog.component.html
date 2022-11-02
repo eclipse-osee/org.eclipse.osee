@@ -10,41 +10,76 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Editing {{title}}</h1>
+<h1 mat-dialog-title>Editing {{ title }}</h1>
 <mat-dialog-content>
-    <mat-form-field id='connection-name-field'>
-        <mat-label>Add a Name</mat-label>
-        <input matInput type="text" [(ngModel)]="data.name" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field id='connection-description-field'>
-        <mat-label>Add a Description</mat-label>
-        <input matInput type="text" [(ngModel)]="data.description" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field id='connection-transport-type-selector'>
-        <mat-label>Select a Transport Type</mat-label>
-        <mat-select [(ngModel)]="data.transportType" required [compareWith]="compareTransportTypes">
-            <osee-mat-option-loading [options]="transportTypes" [objectName]="'Transport Types'">
-                <mat-option *ngFor="let option of (transportTypes | async)" [value]="option" [id]="option.id">
-                    {{option.name}}
-                </mat-option>
-            </osee-mat-option-loading>
-        </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-form-field id='connection-applicability-selector'>
-        <mat-label>Select an Applicability</mat-label>
-        <mat-select [(ngModel)]="data.applicability" [compareWith]="compareApplics" required>
-            <osee-mat-option-loading [options]="applics" [objectName]="'applicabilities'">
-                <mat-option *ngFor="let applic of (applics|async)" [value]="applic">
-                    {{applic.name}}
-                </mat-option>
-            </osee-mat-option-loading>
-        </mat-select>
-    </mat-form-field>
+	<mat-form-field id="connection-name-field">
+		<mat-label>Add a Name</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.name"
+			#input
+			required />
+	</mat-form-field>
+	<br />
+	<mat-form-field id="connection-description-field">
+		<mat-label>Add a Description</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.description"
+			#input
+			required />
+	</mat-form-field>
+	<br />
+	<mat-form-field id="connection-transport-type-selector">
+		<mat-label>Select a Transport Type</mat-label>
+		<mat-select
+			[(ngModel)]="data.transportType"
+			required
+			[compareWith]="compareTransportTypes">
+			<osee-mat-option-loading
+				[options]="transportTypes"
+				[objectName]="'Transport Types'">
+				<mat-option
+					*ngFor="let option of transportTypes | async"
+					[value]="option"
+					[id]="option.id">
+					{{ option.name }}
+				</mat-option>
+			</osee-mat-option-loading>
+		</mat-select>
+	</mat-form-field>
+	<br />
+	<mat-form-field id="connection-applicability-selector">
+		<mat-label>Select an Applicability</mat-label>
+		<mat-select
+			[(ngModel)]="data.applicability"
+			[compareWith]="compareApplics"
+			required>
+			<osee-mat-option-loading
+				[options]="applics"
+				[objectName]="'applicabilities'">
+				<mat-option
+					*ngFor="let applic of applics | async"
+					[value]="applic">
+					{{ applic.name }}
+				</mat-option>
+			</osee-mat-option-loading>
+		</mat-select>
+	</mat-form-field>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0">Ok</button>
+	<button
+		mat-button
+		(click)="onNoClick()">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="data"
+		color="primary"
+		[disabled]="data.name.length === 0">
+		Ok
+	</button>
 </div>

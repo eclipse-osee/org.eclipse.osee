@@ -13,7 +13,16 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { from, of, Subject } from 'rxjs';
-import { concatMap, filter, reduce, scan, share, switchMap, take, takeUntil } from 'rxjs/operators';
+import {
+	concatMap,
+	filter,
+	reduce,
+	scan,
+	share,
+	switchMap,
+	take,
+	takeUntil,
+} from 'rxjs/operators';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { newConnection } from '../../../../shared/types/connection';
 import { node } from '../../../../shared/types/node';
@@ -22,50 +31,56 @@ import { CurrentTransportTypeService } from '../../../../shared/services/ui/curr
 import { transportType } from '../../../../shared/types/transportType';
 
 @Component({
-  selector: 'app-create-connection-dialog',
-  templateUrl: './create-connection-dialog.component.html',
-  styleUrls: ['./create-connection-dialog.component.sass']
+	selector: 'osee-create-connection-dialog',
+	templateUrl: './create-connection-dialog.component.html',
+	styleUrls: ['./create-connection-dialog.component.sass'],
 })
-export class CreateConnectionDialogComponent implements OnInit, OnDestroy {
-  private _done = new Subject();
-  nodes = this.graphService.nodeOptions.pipe(
-    take(1),
-    switchMap(nodes => of(nodes).pipe(
-      concatMap((nodeList) => from(nodeList).pipe(
-        filter((node)=>node.id!==this.data.id)
-      )),
-      take(nodes.length),
-      reduce((acc, curr) => [...acc, curr], [] as node[]),
-    )),
-    share()
-  );
-  title: string = "";
-  newConnection: newConnection = {
-    nodeId: '',
-    connection: {
-      name: '',
-      description:''
-    }
-  }
-  transportTypes = this.transportTypeService.types.pipe(
-    takeUntil(this._done)
-  );
-  constructor (private graphService: CurrentGraphService,private enumService: EnumsService,private transportTypeService: CurrentTransportTypeService, public dialogRef: MatDialogRef<CreateConnectionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: node) {
-    this.title = data.name;
-   }
-  ngOnDestroy(): void {
-    this._done.next(true);
-  }
+export class CreateConnectionDialogComponent implements OnDestroy {
+	private _done = new Subject();
+	nodes = this.graphService.nodeOptions.pipe(
+		take(1),
+		switchMap((nodes) =>
+			of(nodes).pipe(
+				concatMap((nodeList) =>
+					from(nodeList).pipe(
+						filter((node) => node.id !== this.data.id)
+					)
+				),
+				take(nodes.length),
+				reduce((acc, curr) => [...acc, curr], [] as node[])
+			)
+		),
+		share()
+	);
+	title: string = '';
+	newConnection: newConnection = {
+		nodeId: '',
+		connection: {
+			name: '',
+			description: '',
+		},
+	};
+	transportTypes = this.transportTypeService.types.pipe(
+		takeUntil(this._done)
+	);
+	constructor(
+		private graphService: CurrentGraphService,
+		private enumService: EnumsService,
+		private transportTypeService: CurrentTransportTypeService,
+		public dialogRef: MatDialogRef<CreateConnectionDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: node
+	) {
+		this.title = data.name;
+	}
+	ngOnDestroy(): void {
+		this._done.next(true);
+	}
 
-  ngOnInit(): void {
-  }
+	onNoClick() {
+		this.dialogRef.close();
+	}
 
-  onNoClick() {
-    this.dialogRef.close();
-  }
-
-  compareTransportTypes(o1: transportType, o2: transportType) {
-    return o1?.id === o2?.id && o1?.name === o2?.name;
-  }
-
+	compareTransportTypes(o1: transportType, o2: transportType) {
+		return o1?.id === o2?.id && o1?.name === o2?.name;
+	}
 }

@@ -15,13 +15,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { TransportsComponent } from './transports.component';
 
 const routes: Routes = [
-  { path: '', component: TransportsComponent },
-  { path: ':branchType', component: TransportsComponent },
-  { path: ':branchType/:branchId', component: TransportsComponent }
+	{ path: '', component: TransportsComponent },
+	{ path: ':branchType', component: TransportsComponent },
+	{ path: ':branchType/:branchId', component: TransportsComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class TransportsRoutingModule { }
+export class TransportsRoutingModule {}

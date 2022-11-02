@@ -1,5 +1,5 @@
-import { element } from "./element.d";
-import { structure } from "./structure.d";
+import { element } from './element.d';
+import { structure } from './structure.d';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -13,15 +13,14 @@ import { structure } from "./structure.d";
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface settingsDialogData{
-    branchId:string,
-    allowedHeaders1: (keyof element)[],
-    allHeaders1: (keyof element)[],
-    allHeaders2: (keyof structure)[],
-    allowedHeaders2: (keyof structure)[],
-    editable: boolean,
-    headers1Label: string,
-    headers2Label: string,
-    headersTableActive:boolean
-    
+export interface settingsDialogData {
+	branchId: string;
+	allowedHeaders1: (keyof element)[];
+	allHeaders1: (keyof element)[];
+	allHeaders2: (keyof structure)[];
+	allowedHeaders2: (keyof structure)[];
+	editable: boolean;
+	headers1Label: string;
+	headers2Label: string;
+	headersTableActive: boolean;
 }

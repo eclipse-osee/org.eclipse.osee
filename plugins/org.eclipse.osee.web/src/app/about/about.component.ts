@@ -11,19 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { BuildNum, version } from './version'
+import { BuildNum, version } from './version';
 
 @Component({
-  selector: 'app-about',
-  templateUrl: './about.component.html',
-  styleUrls: ['./about.component.sass']
+	selector: 'osee-about',
+	templateUrl: './about.component.html',
+	styleUrls: ['./about.component.sass'],
 })
-export class AboutComponent implements OnInit {
-  buildNumber = BuildNum;
-  version = version;
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class AboutComponent {
+	buildNumber = BuildNum;
+	version = version;
+	constructor() {}
 }

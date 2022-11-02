@@ -15,33 +15,33 @@ import { BehaviorSubject } from 'rxjs';
 import { UiService } from '../../../../ple-services/ui/ui.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class TypeDetailService {
-  private _typeId: BehaviorSubject<string> = new BehaviorSubject<string>("");
+	private _typeId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  constructor (private _ui: UiService) { }
-  
-  get typeId() {
-    return this._typeId;
-  }
+	constructor(private _ui: UiService) {}
 
-  set type(value:string) {
-    this._typeId.next(value)
-  }
-  get id() {
-    return this._ui.id;
-  }
+	get typeId() {
+		return this._typeId;
+	}
 
-  set idValue(value: string) {
-    this._ui.idValue = value;
-  }
+	set type(value: string) {
+		this._typeId.next(value);
+	}
+	get id() {
+		return this._ui.id;
+	}
 
-  get branchType() {
-    return this._ui.type;
-  }
+	set idValue(value: string) {
+		this._ui.idValue = value;
+	}
 
-  set typeValue(value: string) {
-    this._ui.typeValue = value;
-  }
+	get branchType() {
+		return this._ui.type;
+	}
+
+	set typeValue(value: string) {
+		this._ui.typeValue = value;
+	}
 }

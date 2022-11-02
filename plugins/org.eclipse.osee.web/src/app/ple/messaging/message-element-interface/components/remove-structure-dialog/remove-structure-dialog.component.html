@@ -10,13 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
- <h1 mat-dialog-title>Removing Structure from Submessage</h1>
- <mat-dialog-content>
-    Are you sure you want to remove {{data.structureName}} from this submessage?
- </mat-dialog-content>
- <mat-dialog-actions>
-    <button mat-button mat-dialog-close="cancel" data-cy="cancel-btn">No</button>
-    <button mat-raised-button color="primary" mat-dialog-close="ok" data-cy="submit-btn">
-        Yes
-    </button>
- </mat-dialog-actions>
+<h1 mat-dialog-title>Removing Structure from Submessage</h1>
+<mat-dialog-content>
+	Are you sure you want to remove {{ data.structureName }} from this
+	submessage?
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button
+		mat-button
+		mat-dialog-close="cancel"
+		data-cy="cancel-btn">
+		No
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
+		mat-dialog-close="ok"
+		data-cy="submit-btn">
+		Yes
+	</button>
+</mat-dialog-actions>

@@ -15,21 +15,21 @@ import { Injectable } from '@angular/core';
 import { UserHeaderService } from './user-header.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class UserHeaderDemoService extends UserHeaderService {
-  useCustomHeaders: boolean = true;
-  private _headers: HttpHeaders;
-  get headers(){
-    return this._headers;
-  }
+	useCustomHeaders: boolean = true;
+	private _headers: HttpHeaders;
+	get headers() {
+		return this._headers;
+	}
 
-  constructor () { 
-    super();
-    const accountId = localStorage.getItem('osee.account.id') || '';
-    this._headers = new HttpHeaders({
-      'osee.account.id': accountId,
-      'osee.user.id':accountId
-    })
-  }
+	constructor() {
+		super();
+		const accountId = localStorage.getItem('osee.account.id') || '';
+		this._headers = new HttpHeaders({
+			'osee.account.id': accountId,
+			'osee.user.id': accountId,
+		});
+	}
 }

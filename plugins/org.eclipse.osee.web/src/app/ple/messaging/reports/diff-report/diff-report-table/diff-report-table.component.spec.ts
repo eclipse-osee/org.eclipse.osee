@@ -20,43 +20,52 @@ import { DiffHeaderType } from '../../../shared/types/DifferenceReport';
 import { DiffReportTableComponent } from './diff-report-table.component';
 
 describe('DiffReportTableComponent', () => {
-  let component: DiffReportTableComponent;
-  let fixture: ComponentFixture<DiffReportTableComponent>;
-  let scheduler: TestScheduler;
+	let component: DiffReportTableComponent;
+	let fixture: ComponentFixture<DiffReportTableComponent>;
+	let scheduler: TestScheduler;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatIconModule, MatTableModule],
-      declarations: [ DiffReportTableComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [MatIconModule, MatTableModule],
+			declarations: [DiffReportTableComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DiffReportTableComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(DiffReportTableComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should create', () => {
-    component.items = connectionDiffsMock;
-    component.title = "Connections Added";
-    component.headers = ['name'];
-    component.headerKey = DiffHeaderType.CONNECTION;
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		component.items = connectionDiffsMock;
+		component.title = 'Connections Added';
+		component.headers = ['name'];
+		component.headerKey = DiffHeaderType.CONNECTION;
+		expect(component).toBeTruthy();
+	});
 
-  it('should get the header name', () => {
-    scheduler.run(() => {
-      component.headerKey = DiffHeaderType.ELEMENT;
-      let expectedObservable = { a: { header: 'name', description: 'Name of element', humanReadable: 'Name' } };
-      let expectedMarble = '(a)';
-      scheduler.expectObservable(component.getHeaderByName('name')).toBe(expectedMarble, expectedObservable);
-    })
-  })
-
+	it('should get the header name', () => {
+		scheduler.run(() => {
+			component.headerKey = DiffHeaderType.ELEMENT;
+			let expectedObservable = {
+				a: {
+					header: 'name',
+					description: 'Name of element',
+					humanReadable: 'Name',
+				},
+			};
+			let expectedMarble = '(a)';
+			scheduler
+				.expectObservable(component.getHeaderByName('name'))
+				.toBe(expectedMarble, expectedObservable);
+		});
+	});
 });

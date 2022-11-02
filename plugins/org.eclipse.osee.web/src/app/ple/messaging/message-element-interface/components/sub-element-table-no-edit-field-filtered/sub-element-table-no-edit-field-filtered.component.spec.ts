@@ -18,24 +18,28 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 import { SubElementTableNoEditFieldFilteredComponent } from './sub-element-table-no-edit-field-filtered.component';
 
 describe('SubElementTableNoEditFieldFilteredComponent', () => {
-  let component: SubElementTableNoEditFieldFilteredComponent;
-  let fixture: ComponentFixture<SubElementTableNoEditFieldFilteredComponent>;
+	let component: SubElementTableNoEditFieldFilteredComponent;
+	let fixture: ComponentFixture<SubElementTableNoEditFieldFilteredComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[CommonModule],
-      declarations: [ SubElementTableNoEditFieldFilteredComponent,HighlightFilteredTextDirective]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [CommonModule],
+			declarations: [
+				SubElementTableNoEditFieldFilteredComponent,
+				HighlightFilteredTextDirective,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubElementTableNoEditFieldFilteredComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(
+			SubElementTableNoEditFieldFilteredComponent
+		);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

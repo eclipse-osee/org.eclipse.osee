@@ -16,13 +16,14 @@ import { apiURL } from 'src/environments/environment';
 import { BranchListing } from '../../../../../types/branches/BranchListing';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getBranches(type:string) {
-    return this.http.get<BranchListing[]>(apiURL+'/orcs/branches/'+type);
-  }
+	getBranches(type: string) {
+		return this.http.get<BranchListing[]>(
+			apiURL + '/orcs/branches/' + type
+		);
+	}
 }

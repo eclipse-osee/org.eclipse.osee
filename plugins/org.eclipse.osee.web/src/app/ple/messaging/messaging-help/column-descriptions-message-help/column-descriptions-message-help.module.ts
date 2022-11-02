@@ -18,14 +18,13 @@ import { ColumnDescriptionsMessageHelpComponent } from './column-descriptions-me
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 
-
 @NgModule({
-  declarations: [ColumnDescriptionsMessageHelpComponent],
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatListModule,
-    ColumnDescriptionsMessageHelpRoutingModule
-  ]
+	declarations: [ColumnDescriptionsMessageHelpComponent],
+	imports: [
+		CommonModule,
+		MatTableModule,
+		MatListModule,
+		ColumnDescriptionsMessageHelpRoutingModule,
+	],
 })
-export class ColumnDescriptionsMessageHelpModule { }
+export class ColumnDescriptionsMessageHelpModule {}

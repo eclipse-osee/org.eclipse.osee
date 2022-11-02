@@ -15,23 +15,23 @@ import { BehaviorSubject } from 'rxjs';
 import { delay, refCount, shareReplay, startWith } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class HttpLoadingService {
+	private _isLoading: BehaviorSubject<string> = new BehaviorSubject<string>(
+		'false'
+	);
+	constructor() {}
 
-  private _isLoading: BehaviorSubject<string> = new BehaviorSubject<string>("false");
-  constructor () { }
-  
-  get isLoading() {
-    return this._isLoading.pipe(
-      startWith('false'),
-      delay(0),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
-  }
+	get isLoading() {
+		return this._isLoading.pipe(
+			startWith('false'),
+			delay(0),
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
 
-  set loading(value: boolean) {
-    this._isLoading.next(value.toString());
-  }
-
+	set loading(value: boolean) {
+		this._isLoading.next(value.toString());
+	}
 }

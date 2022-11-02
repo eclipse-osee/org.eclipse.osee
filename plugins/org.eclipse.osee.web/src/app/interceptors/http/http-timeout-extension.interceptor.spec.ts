@@ -15,14 +15,16 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTimeoutExtensionInterceptor } from './http-timeout-extension.interceptor';
 
 describe('HttpTimeoutExtensionInterceptor', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      HttpTimeoutExtensionInterceptor
-      ]
-  }));
+	beforeEach(() =>
+		TestBed.configureTestingModule({
+			providers: [HttpTimeoutExtensionInterceptor],
+		})
+	);
 
-  it('should be created', () => {
-    const interceptor: HttpTimeoutExtensionInterceptor = TestBed.inject(HttpTimeoutExtensionInterceptor);
-    expect(interceptor).toBeTruthy();
-  });
+	it('should be created', () => {
+		const interceptor: HttpTimeoutExtensionInterceptor = TestBed.inject(
+			HttpTimeoutExtensionInterceptor
+		);
+		expect(interceptor).toBeTruthy();
+	});
 });

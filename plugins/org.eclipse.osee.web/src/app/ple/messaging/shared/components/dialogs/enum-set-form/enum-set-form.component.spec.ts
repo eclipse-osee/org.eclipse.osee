@@ -28,47 +28,46 @@ import { MockEnumFormUnique } from '../enum-form/enum-form.component.mock';
 import { EnumSetFormComponent } from './enum-set-form.component';
 
 describe('EnumSetFormComponent', () => {
-    let component: EnumSetFormComponent;
-    let fixture: ComponentFixture<EnumSetFormComponent>;
-    let loader: HarnessLoader;
+	let component: EnumSetFormComponent;
+	let fixture: ComponentFixture<EnumSetFormComponent>;
+	let loader: HarnessLoader;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [
-                MatTableModule,
-                FormsModule,
-                MatFormFieldModule,
-                MatInputModule,
-                MatSelectModule,
-                MatIconModule,
-                NoopAnimationsModule,
-            ],
-            declarations: [EnumSetFormComponent, MockEnumFormUnique],
-            providers: [
-                {
-                    provide: ApplicabilityListService,
-                    useValue: applicabilityListServiceMock,
-                },
-            ],
-        }).compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatTableModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				MatIconModule,
+				NoopAnimationsModule,
+			],
+			declarations: [EnumSetFormComponent, MockEnumFormUnique],
+			providers: [
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+			],
+		}).compileComponents();
 
-        fixture = TestBed.createComponent(EnumSetFormComponent);
-        component = fixture.componentInstance;
-        component.bitSize = '32';
-        loader = TestbedHarnessEnvironment.loader(fixture);
-        fixture.detectChanges();
-    });
+		fixture = TestBed.createComponent(EnumSetFormComponent);
+		component = fixture.componentInstance;
+		component.bitSize = '32';
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-    it('should update the name', async () => {
-        const spy = spyOn(component, 'updateEnumSet').and.callThrough();
-        const input = await loader.getHarness(MatInputHarness);
-        expect(input).toBeDefined();
-        await input.setValue('new name');
-        expect(spy).toHaveBeenCalled();
-
-    })
+	it('should update the name', async () => {
+		const spy = spyOn(component, 'updateEnumSet').and.callThrough();
+		const input = await loader.getHarness(MatInputHarness);
+		expect(input).toBeDefined();
+		await input.setValue('new name');
+		expect(spy).toHaveBeenCalled();
+	});
 });

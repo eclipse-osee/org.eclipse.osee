@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'app-add-message-dialog',
-    template:'<button mat-raised-button>Ok</button>'
+	selector: 'osee-add-message-dialog',
+	template: '<button mat-raised-button>Ok</button>',
 })
-export class AddMessageDialogComponentMock{
-}
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class AddMessageDialogComponentMock {}

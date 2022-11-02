@@ -11,7 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatDialogHarness } from '@angular/material/dialog/testing';
@@ -35,58 +39,68 @@ import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-
 let loader: HarnessLoader;
 
 describe('EditTypeDialogComponent', () => {
-  let component: EditTypeDialogComponent;
-  let fixture: ComponentFixture<EditTypeDialogComponent>;
-  let overlayContainer: OverlayContainer;
-  let matDialogData: editPlatformTypeDialogData = {
-    mode: editPlatformTypeDialogDataMode.edit,
-    type: {
-      interfaceLogicalType: 'boolean',
-      description:'',
-      interfacePlatform2sComplement: false,
-      interfacePlatformTypeAnalogAccuracy: 'N/A',
-      interfacePlatformTypeBitsResolution: 'N/A',
-      interfacePlatformTypeCompRate: '50Hz',
-      interfacePlatformTypeBitSize: '8',
-      interfacePlatformTypeDefaultValue: '0',
-      interfacePlatformTypeMinval: '0',
-      interfacePlatformTypeMsbValue: '0',
-      interfacePlatformTypeMaxval: '1',
-      interfacePlatformTypeUnits: 'N/A',
-      interfacePlatformTypeValidRangeDescription: '',
-      name:'FACE Boolean'
-    }
-  }
+	let component: EditTypeDialogComponent;
+	let fixture: ComponentFixture<EditTypeDialogComponent>;
+	let overlayContainer: OverlayContainer;
+	let matDialogData: editPlatformTypeDialogData = {
+		mode: editPlatformTypeDialogDataMode.edit,
+		type: {
+			interfaceLogicalType: 'boolean',
+			description: '',
+			interfacePlatform2sComplement: false,
+			interfacePlatformTypeAnalogAccuracy: 'N/A',
+			interfacePlatformTypeBitsResolution: 'N/A',
+			interfacePlatformTypeCompRate: '50Hz',
+			interfacePlatformTypeBitSize: '8',
+			interfacePlatformTypeDefaultValue: '0',
+			interfacePlatformTypeMinval: '0',
+			interfacePlatformTypeMsbValue: '0',
+			interfacePlatformTypeMaxval: '1',
+			interfacePlatformTypeUnits: 'N/A',
+			interfacePlatformTypeValidRangeDescription: '',
+			name: 'FACE Boolean',
+		},
+	};
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatDialogModule, MatFormFieldModule,MatInputModule,NoopAnimationsModule,FormsModule,MatSlideToggleModule,MatSelectModule, MatStepperModule, MatOptionLoadingModule],
-      declarations: [EditTypeDialogComponent],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: matDialogData },
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock}
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatDialogModule,
+				MatFormFieldModule,
+				MatInputModule,
+				NoopAnimationsModule,
+				FormsModule,
+				MatSlideToggleModule,
+				MatSelectModule,
+				MatStepperModule,
+				MatOptionLoadingModule,
+			],
+			declarations: [EditTypeDialogComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				{ provide: MAT_DIALOG_DATA, useValue: matDialogData },
+				{ provide: TypesService, useValue: typesServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditTypeDialogComponent);
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    overlayContainer = TestBed.inject(OverlayContainer);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditTypeDialogComponent);
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		overlayContainer = TestBed.inject(OverlayContainer);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  afterEach(async () => {
-    const dialogs = loader.getAllHarnesses(MatDialogHarness);
-    await Promise.all((await dialogs).map(async (d: MatDialogHarness) => await d.close()));
-    overlayContainer.ngOnDestroy();
-  })
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
+	afterEach(async () => {
+		const dialogs = loader.getAllHarnesses(MatDialogHarness);
+		await Promise.all(
+			(await dialogs).map(async (d: MatDialogHarness) => await d.close())
+		);
+		overlayContainer.ngOnDestroy();
+	});
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -20,29 +20,39 @@ import { MimRouteService } from './mim-route.service';
 import { SharedConnectionUIService } from './shared-connection-ui.service';
 
 describe('SharedConnectionUIService', () => {
-  let service: SharedConnectionUIService;
-  let uiService: MimRouteService;
-  let scheduler: TestScheduler;
+	let service: SharedConnectionUIService;
+	let uiService: MimRouteService;
+	let scheduler: TestScheduler;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers:[{provide:SharedConnectionService,useValue:sharedConnectionServiceMock}]
-    });
-    service = TestBed.inject(SharedConnectionUIService);
-    uiService = TestBed.inject(MimRouteService);
-    uiService.idValue = '10';
-    uiService.connectionIdString = '20';
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: SharedConnectionService,
+					useValue: sharedConnectionServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(SharedConnectionUIService);
+		uiService = TestBed.inject(MimRouteService);
+		uiService.idValue = '10';
+		uiService.connectionIdString = '20';
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-  it('should get the connection', () => {
-    scheduler.run(({ expectObservable }) => {
-      expectObservable(service.connection).toBe('a',{a:connectionMock})
-    })
-  })
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+	it('should get the connection', () => {
+		scheduler.run(({ expectObservable }) => {
+			expectObservable(service.connection).toBe('a', {
+				a: connectionMock,
+			});
+		});
+	});
 });

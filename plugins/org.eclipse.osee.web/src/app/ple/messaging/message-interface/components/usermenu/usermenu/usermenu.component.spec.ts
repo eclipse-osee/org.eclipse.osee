@@ -24,36 +24,58 @@ import { CurrentMessagesService } from '../../../services/current-messages.servi
 import { UsermenuComponent } from './usermenu.component';
 
 describe('UsermenuComponent', () => {
-  let component: UsermenuComponent;
-  let fixture: ComponentFixture<UsermenuComponent>;
-  let loader: HarnessLoader;
+	let component: UsermenuComponent;
+	let fixture: ComponentFixture<UsermenuComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatMenuModule,MatIconModule, MatDialogModule],
-      providers:[{ provide: CurrentMessagesService, useValue: CurrentMessageServiceMock },],
-      declarations: [ UsermenuComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [MatMenuModule, MatIconModule, MatDialogModule],
+			providers: [
+				{
+					provide: CurrentMessagesService,
+					useValue: CurrentMessageServiceMock,
+				},
+			],
+			declarations: [UsermenuComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(UsermenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(UsermenuComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should open a settings dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({branchId:'10',allowedHeaders1:[],allowedHeaders2:[],allHeaders1:[],allHeaders2:[],editable:true,headers1Label:'',headers2Label:'',headersTableActive:false}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-    let button = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Settings') }));
-    await button.click();
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should open a settings dialog', async () => {
+		let dialogRefSpy = jasmine.createSpyObj({
+			afterClosed: of({
+				branchId: '10',
+				allowedHeaders1: [],
+				allowedHeaders2: [],
+				allHeaders1: [],
+				allHeaders2: [],
+				editable: true,
+				headers1Label: '',
+				headers2Label: '',
+				headersTableActive: false,
+			}),
+			close: null,
+		});
+		let dialogSpy = spyOn(
+			TestBed.inject(MatDialog),
+			'open'
+		).and.returnValue(dialogRefSpy);
+		let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
+		let button = await loader.getHarness(
+			MatMenuItemHarness.with({ text: new RegExp('Settings') })
+		);
+		await button.click();
+		expect(spy).toHaveBeenCalled();
+	});
 });

@@ -12,7 +12,11 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -26,32 +30,56 @@ import { MimPreferencesService } from '../../../services/http/mim-preferences.se
 import { EditViewFreeTextFieldDialogComponent } from './edit-view-free-text-field-dialog.component';
 
 describe('EditViewFreeTextFieldDialogComponent', () => {
-  let component: EditViewFreeTextFieldDialogComponent;
-  let fixture: ComponentFixture<EditViewFreeTextFieldDialogComponent>;
+	let component: EditViewFreeTextFieldDialogComponent;
+	let fixture: ComponentFixture<EditViewFreeTextFieldDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[FormsModule, MatIconModule,MatInputModule,MatDialogModule,MatFormFieldModule,NoopAnimationsModule],
-      declarations: [EditViewFreeTextFieldDialogComponent],
-      providers:[{
-        provide: MatDialogRef, useValue: {
-          close() { return of(); }
-        }
-      },
-        { provide: MAT_DIALOG_DATA, useValue: { original: 'abcdef', type: 'Description', return: 'abcdef' } },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
-        {provide:MimPreferencesService,useValue:MimPreferencesServiceMock}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				FormsModule,
+				MatIconModule,
+				MatInputModule,
+				MatDialogModule,
+				MatFormFieldModule,
+				NoopAnimationsModule,
+			],
+			declarations: [EditViewFreeTextFieldDialogComponent],
+			providers: [
+				{
+					provide: MatDialogRef,
+					useValue: {
+						close() {
+							return of();
+						},
+					},
+				},
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: {
+						original: 'abcdef',
+						type: 'Description',
+						return: 'abcdef',
+					},
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditViewFreeTextFieldDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditViewFreeTextFieldDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

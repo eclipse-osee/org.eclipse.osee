@@ -10,16 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { DialogService } from "../services/dialog.service";
-import { extendedFeature } from "../types/features/base";
-import { testDataResponse } from "./mockTypes";
+import { of } from 'rxjs';
+import { DialogService } from '../services/dialog.service';
+import { extendedFeature } from '../types/features/base';
+import { testDataResponse } from './mockTypes';
 
 export const DialogServiceMock: Partial<DialogService> = {
-    openConfigMenu(header: string, editable: string) {
-        return of(testDataResponse);
-    },
-    displayFeatureMenu(feature: extendedFeature) {
-        return of(testDataResponse)
-    }
-}
+	openConfigMenu(header: string, editable: string) {
+		return of(testDataResponse);
+	},
+	displayFeatureMenu(feature: extendedFeature) {
+		return of(testDataResponse);
+	},
+};

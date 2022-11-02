@@ -14,10 +14,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ColumnDescriptionsMessageHelpComponent } from './column-descriptions-message-help.component';
 
-const routes: Routes = [{ path: '', component: ColumnDescriptionsMessageHelpComponent }];
+const routes: Routes = [
+	{ path: '', component: ColumnDescriptionsMessageHelpComponent },
+];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class ColumnDescriptionsMessageHelpRoutingModule { }
+export class ColumnDescriptionsMessageHelpRoutingModule {}

@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { PlatformTypeService } from "../../services/platform-type.service";
-import { platformTypesMock } from "../../../shared/mocks/PlatformTypes.mock";
+import { of } from 'rxjs';
+import { PlatformTypeService } from '../../services/platform-type.service';
+import { platformTypesMock } from '../../../shared/mocks/PlatformTypes.mock';
 
 export const platformTypeServiceMock: Partial<PlatformTypeService> = {
-    getType(branchId: string, typeId: string) {
-        return of(platformTypesMock[0])
-    },
-    getTypes(branchId: string) {
-        return of(platformTypesMock)
-    }
-}
+	getType(branchId: string, typeId: string) {
+		return of(platformTypesMock[0]);
+	},
+	getTypes(branchId: string) {
+		return of(platformTypesMock);
+	},
+};

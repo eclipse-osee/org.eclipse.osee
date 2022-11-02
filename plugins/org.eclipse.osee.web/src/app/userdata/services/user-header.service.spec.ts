@@ -15,14 +15,14 @@ import { TestBed } from '@angular/core/testing';
 import { UserHeaderService } from './user-header.service';
 
 describe('UserHeaderService', () => {
-  let service: UserHeaderService;
+	let service: UserHeaderService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(UserHeaderService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(UserHeaderService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });
