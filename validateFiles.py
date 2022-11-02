@@ -7,6 +7,7 @@ from os.path import exists
 def main(argv):
     keywords = argv[1]
     files = argv[2:]
+    findings = []
 
     # create a regex pattern like "(keyword1|keyword2|keyword3)/i"
     regexPattern = "("
@@ -23,14 +24,18 @@ def main(argv):
                 for line in lines:
                     if requireDistStatement and line.find("* Copyright") > -1:
                         distStatementFound = True
-                    if re.search(regexPattern, line, re.IGNORECASE) != None:
-                        print("Found keyword on line " + str(lines.index(line)) + " of " + file)
-                        sys.exit(-1)
+                    searchResults = re.search(regexPattern, line, re.IGNORECASE)
+                    if searchResults != None:
+                        findings.append("Found keyword \"" + searchResults[0] + "\" on line " + str(lines.index(line)) + " of " + file + "\n  -->  " + line)
                 if requireDistStatement and not distStatementFound:
-                    print("No distribution statement in " + file)
-                    sys.exit(-1)
+                    findings.append("No distribution statement in " + file)
         else:
-            print("File not found: " + file)
+            print("File not found or was deleted: " + file)
+
+    if len(findings) > 0:
+        for finding in findings:
+            print(finding)
+        sys.exit(-1)
 
     sys.exit(0)
 
