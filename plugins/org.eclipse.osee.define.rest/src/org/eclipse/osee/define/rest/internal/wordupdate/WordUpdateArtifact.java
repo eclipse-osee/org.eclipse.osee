@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -47,7 +46,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,13 +59,11 @@ public class WordUpdateArtifact {
    private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
    private final Log logger;
-   private final EventAdmin eventAdmin;
 
    public WordUpdateArtifact(Log logger, OrcsApi orcsApi, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
       this.queryFactory = orcsApi.getQueryFactory();
       this.logger = logger;
-      this.eventAdmin = eventAdmin;
    }
 
    public WordUpdateChange updateArtifacts(WordUpdateData data) {
@@ -219,11 +215,7 @@ public class WordUpdateArtifact {
       updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {
          try {
-            HashMap<String, Object> properties = new HashMap<>();
-            properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_BRANCH_ID, tx.getBranch());
-            properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_USER_ART, account);
-            Event event = new Event(SafetyWorkflowEventHandler.SAFETY_EVENT_TOPIC, properties);
-            eventAdmin.postEvent(event);
+            // Place-holder to implement any safety related actions
          } catch (Exception ex) {
             logger.error(ex, "Could not create safety workflow");
          }
