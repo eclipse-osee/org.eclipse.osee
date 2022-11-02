@@ -100,24 +100,6 @@
 					../../plugins/org.eclipse.osee.framework.server.ide.api
 				</module>
 				<module>
-					../../plugins/org.eclipse.osee.icteam.common.clientserver
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.clientserver.dependent
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.clientserver.osee
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.interfaces
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.server.access
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.web.rest.layer
-				</module>
-				<module>
 					../../plugins/org.eclipse.osee.server.p2
 				</module>
 				<module>
@@ -177,24 +159,6 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.framework.server.ide.api
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.clientserver
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.clientserver.dependent
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.clientserver.osee
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.common.interfaces
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.server.access
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.icteam.web.rest.layer
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.server.application
