@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,29 +12,15 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PleComponent } from './ple.component';
+import { AsciidocEditorComponent } from './asciidoc-editor/asciidoc-editor.component';
 
 const routes: Routes = [
+	{ path: '', component: AsciidocEditorComponent },
+	{ path: ':branchType', component: AsciidocEditorComponent },
+	{ path: ':branchType/:branchId', component: AsciidocEditorComponent },
 	{
-		path: '',
-		component: PleComponent,
-	},
-	{
-		path: 'plconfig',
-		loadChildren: () =>
-			import('./plconfig/plconfig.module').then((m) => m.PlconfigModule),
-	},
-	{
-		path: 'messaging',
-		loadChildren: () =>
-			import('./messaging/messaging.module').then(
-				(m) => m.MessagingModule
-			),
-	},
-	{
-		path: 'asciidoc',
-		loadChildren: () =>
-			import('./asciidoc/asciidoc.module').then((m) => m.AsciidocModule),
+		path: ':branchType/:branchId/:artifactId',
+		component: AsciidocEditorComponent,
 	},
 ];
 
@@ -42,4 +28,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class PleRoutingModule {}
+export class AsciidocRoutingModule {}

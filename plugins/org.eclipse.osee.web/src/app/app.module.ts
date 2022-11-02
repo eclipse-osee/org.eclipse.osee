@@ -21,6 +21,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { httpInterceptorProviders } from './interceptors/http/interceptor-provider';
 
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+
 //Sub-component imports
 import { DisplayUserComponent } from './userdata/components/display-user/display-user.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -48,6 +50,15 @@ import { OseeUrlSerializer } from './UrlSerializer';
 		MatProgressBarModule,
 		BrowserAnimationsModule,
 		NavigationModule,
+		MarkdownModule.forRoot({
+			markedOptions: {
+				provide: MarkedOptions,
+				useValue: {
+					gfm: true,
+					breaks: true,
+				},
+			},
+		}),
 	],
 	providers: [
 		httpInterceptorProviders,
