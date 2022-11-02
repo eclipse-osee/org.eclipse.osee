@@ -21,30 +21,49 @@ import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edi
 import { SubElementTableRowComponent } from './sub-element-table-row.component';
 
 describe('SubElementTableRowComponent', () => {
-  let component: SubElementTableRowComponent;
-  let fixture: ComponentFixture<SubElementTableRowComponent>;
-  let router: any;
+	let component: SubElementTableRowComponent;
+	let fixture: ComponentFixture<SubElementTableRowComponent>;
+	let router: any;
 
-  beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl'],['paramMap']);
-    await TestBed.configureTestingModule({
-      declarations: [SubElementTableRowComponent, SubElementTableNoEditFieldComponent, SubElementTableNoEditFieldDynamicWidthComponent, SubElementTableNoEditFieldFilteredComponent, SubElementTableNoEditFieldNameComponent],
-      providers: [{ provide: Router, useValue: router }, {
-        provide: ActivatedRoute, useValue: {
-          paramMap: of(convertToParamMap({ branchId: "10",branchType:"working" }))
-      }}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		router = jasmine.createSpyObj(
+			'Router',
+			['navigate', 'createUrlTree', 'serializeUrl'],
+			['paramMap']
+		);
+		await TestBed.configureTestingModule({
+			declarations: [
+				SubElementTableRowComponent,
+				SubElementTableNoEditFieldComponent,
+				SubElementTableNoEditFieldDynamicWidthComponent,
+				SubElementTableNoEditFieldFilteredComponent,
+				SubElementTableNoEditFieldNameComponent,
+			],
+			providers: [
+				{ provide: Router, useValue: router },
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						paramMap: of(
+							convertToParamMap({
+								branchId: '10',
+								branchType: 'working',
+							})
+						),
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubElementTableRowComponent);
-    component = fixture.componentInstance;
-    component.header='applicability'
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SubElementTableRowComponent);
+		component = fixture.componentInstance;
+		component.header = 'applicability';
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -13,7 +13,7 @@
 import { enumerationSet } from './enum';
 import { PlatformType } from './platformType';
 
-export interface enumeratedPlatformType extends PlatformType{
-    interfaceLogicalType: 'enumeration',
-    enumerationSet: enumerationSet
+export interface enumeratedPlatformType extends PlatformType {
+	interfaceLogicalType: 'enumeration';
+	enumerationSet: enumerationSet;
 }

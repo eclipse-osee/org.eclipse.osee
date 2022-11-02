@@ -12,38 +12,48 @@
  **********************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { addButtonHoverIconTransition, addButtonIconTransition, slidingAddButtonAnim } from './two-layer-add-button.animation'
+import {
+	addButtonHoverIconTransition,
+	addButtonIconTransition,
+	slidingAddButtonAnim,
+} from './two-layer-add-button.animation';
 
 @Component({
-  selector: 'two-layer-add-button',
-  templateUrl: './two-layer-add-button.component.html',
-  styleUrls: ['./two-layer-add-button.component.sass'],
-  animations:[slidingAddButtonAnim,addButtonIconTransition, addButtonHoverIconTransition]
+	selector: 'osee-two-layer-add-button',
+	templateUrl: './two-layer-add-button.component.html',
+	styleUrls: ['./two-layer-add-button.component.sass'],
+	animations: [
+		slidingAddButtonAnim,
+		addButtonIconTransition,
+		addButtonHoverIconTransition,
+	],
 })
-export class TwoLayerAddButtonComponent<T extends string=any, R extends {id:string,name:string}=any> implements OnInit {
-  @Input() baseLevel: T = {} as T;
-  @Input() nestedLevel: R[] = [] as R[];
-  @Input() nestedLevelPrefix = "";
-  @Input() firstOptionDisabled = false;
-  @Input() baseIcon: string = "add";
-  @Input() nestedIcon: string = "add"
-  @Input() openDirection:string="UP" //@todo implement later when this is needed, default should be UP
-  defaultValue: R = {id:'-1',name:''} as R;
-  hoveredElements: string[] = [];
+export class TwoLayerAddButtonComponent<
+	T extends string = any,
+	R extends { id: string; name: string } = any
+> {
+	@Input() baseLevel: T = {} as T;
+	@Input() nestedLevel: R[] = [] as R[];
+	@Input() nestedLevelPrefix = '';
+	@Input() firstOptionDisabled = false;
+	@Input() baseIcon: string = 'add';
+	@Input() nestedIcon: string = 'add';
+	@Input() openDirection: string = 'UP'; //@todo implement later when this is needed, default should be UP
+	defaultValue: R = { id: '-1', name: '' } as R;
+	hoveredElements: string[] = [];
 
-  @Output() normalClick=new EventEmitter<string|undefined>()
-  @Output() nestedClick = new EventEmitter<R>();
-  isOpen = new BehaviorSubject<boolean>(false);
+	@Output() normalClick = new EventEmitter<string | undefined>();
+	@Output() nestedClick = new EventEmitter<R>();
+	isOpen = new BehaviorSubject<boolean>(false);
 
-  constructor() { }
+	constructor() {}
 
-  ngOnInit(): void {
-  }
-
-  mainClick() {
-    this.isOpen.next(!this.isOpen.getValue())
-  }
-  removeHover(element:R) {
-    this.hoveredElements=this.hoveredElements.filter((item)=>item!==element.id)
-  }
+	mainClick() {
+		this.isOpen.next(!this.isOpen.getValue());
+	}
+	removeHover(element: R) {
+		this.hoveredElements = this.hoveredElements.filter(
+			(item) => item !== element.id
+		);
+	}
 }

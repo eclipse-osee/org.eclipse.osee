@@ -11,73 +11,82 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 Cypress.Commands.add('createNewPlatformType', (type: string) => {
-  cy.intercept('/orcs/branches/working').as('working');
-  cy.intercept('/orcs/branch/10/applic').as('applic');
-  cy.intercept('POST','orcs/txs').as('txs');
-  cy.intercept('**/*/mim/branch/*/types/filter').as('filter');
-  cy.intercept('/mim/logicalType/*').as('typeInfo');
-  cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-  cy.intercept('/ats/ple/action/*/approval').as('approval');
-  cy.intercept('/mim/branch/*/query/exact').as('exact')
-  return cy
-    .get('[data-cy="add-type-bottom-button"]')
-    .click()
-    .get('mat-progress-bar')
-    .should('not.exist')
-    .get('[data-cy="logical-type-selector"]')
-    .click()
-    .get(`[data-cy="logical-type-${type}"]`)
-    .click()
-    .get('[data-cy="stepper-next-1"]')
-    .click()
-    .wait('@typeInfo')
-    .wait('@typeInfo')
-    .then((interception) => {
-      //interception has id, request , response
-      //based on response
-      interception.response?.body.fields.forEach((el: any) => {
-        if (el.required && el.editable && el.name !== 'Name') {
-          cy.get(`[data-cy="field-${el.attributeType}"]`)
-            .focus()
-            .type(el.defaultValue !== '' ? el.defaultValue : '0',{force:true});
-        }
-        if (el.name === 'Name') {
-          cy.get(`[data-cy="field-${el.attributeType}"]`)
-            .focus()
-            .type(el.defaultValue !== '' ? type + ' ' + el.defaultValue : '0',{force:true});
-        }
-        if (el.name === 'Units') {
-          cy.get(`[data-cy="field-${el.attributeType}"]`, {
-            timeout: 10000,
-          })
-            .focus()
-            .click({force:true})
-            .get('mat-option')
-            .first()
-            .click();
-        }
-        if (el.name === 'Description') {
-          cy.get(`[data-cy="field-${el.attributeType}"]`)
-            .focus()
-            .type((Math.random() + 1).toString(36).substring(7),{force:true});
-        }
-        if (el.required && el.editable) {
-          cy.wait('@exact');
-        }
-      });
-    })
-    .get('[data-cy="stepper-next-2-disabled"]')
-    .should('not.exist')
-    .get('[data-cy="stepper-next-2"]')
-    .click({force:true})
-    .get('[data-cy=close-new-platform-menu]')
-    .click()
-    .wait('@txs')
-    .get('mat-progress-bar')
-    .should('not.exist')
-    .wait('@filter')
-    .wait('@leads')
-    .wait('@approval')
-    .get('mat-progress-bar')
-    .should('not.exist');
+	cy.intercept('/orcs/branches/working').as('working');
+	cy.intercept('/orcs/branch/10/applic').as('applic');
+	cy.intercept('POST', 'orcs/txs').as('txs');
+	cy.intercept('**/*/mim/branch/*/types/filter').as('filter');
+	cy.intercept('/mim/logicalType/*').as('typeInfo');
+	cy.intercept('/ats/config/teamdef/*/leads').as('leads');
+	cy.intercept('/ats/ple/action/*/approval').as('approval');
+	cy.intercept('/mim/branch/*/query/exact').as('exact');
+	return cy
+		.get('[data-cy="add-type-bottom-button"]')
+		.click()
+		.get('mat-progress-bar')
+		.should('not.exist')
+		.get('[data-cy="logical-type-selector"]')
+		.click()
+		.get(`[data-cy="logical-type-${type}"]`)
+		.click()
+		.get('[data-cy="stepper-next-1"]')
+		.click()
+		.wait('@typeInfo')
+		.wait('@typeInfo')
+		.then((interception) => {
+			//interception has id, request , response
+			//based on response
+			interception.response?.body.fields.forEach((el: any) => {
+				if (el.required && el.editable && el.name !== 'Name') {
+					cy.get(`[data-cy="field-${el.attributeType}"]`)
+						.focus()
+						.type(el.defaultValue !== '' ? el.defaultValue : '0', {
+							force: true,
+						});
+				}
+				if (el.name === 'Name') {
+					cy.get(`[data-cy="field-${el.attributeType}"]`)
+						.focus()
+						.type(
+							el.defaultValue !== ''
+								? type + ' ' + el.defaultValue
+								: '0',
+							{ force: true }
+						);
+				}
+				if (el.name === 'Units') {
+					cy.get(`[data-cy="field-${el.attributeType}"]`, {
+						timeout: 10000,
+					})
+						.focus()
+						.click({ force: true })
+						.get('mat-option')
+						.first()
+						.click();
+				}
+				if (el.name === 'Description') {
+					cy.get(`[data-cy="field-${el.attributeType}"]`)
+						.focus()
+						.type((Math.random() + 1).toString(36).substring(7), {
+							force: true,
+						});
+				}
+				if (el.required && el.editable) {
+					cy.wait('@exact');
+				}
+			});
+		})
+		.get('[data-cy="stepper-next-2-disabled"]')
+		.should('not.exist')
+		.get('[data-cy="stepper-next-2"]')
+		.click({ force: true })
+		.get('[data-cy=close-new-platform-menu]')
+		.click()
+		.wait('@txs')
+		.get('mat-progress-bar')
+		.should('not.exist')
+		.wait('@filter')
+		.wait('@leads')
+		.wait('@approval')
+		.get('mat-progress-bar')
+		.should('not.exist');
 });

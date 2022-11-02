@@ -25,42 +25,51 @@ import { SearchService } from '../../services/router/search.service';
 import { ElementTableSearchComponent } from './element-table-search.component';
 
 describe('ElementTableSearchComponent', () => {
-  let component: ElementTableSearchComponent;
-  let fixture: ComponentFixture<ElementTableSearchComponent>;
-  let loader: HarnessLoader;
-  let service: SearchService;
-  let scheduler: TestScheduler;
+	let component: ElementTableSearchComponent;
+	let fixture: ComponentFixture<ElementTableSearchComponent>;
+	let loader: HarnessLoader;
+	let service: SearchService;
+	let scheduler: TestScheduler;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatInputModule,MatFormFieldModule,FormsModule,NoopAnimationsModule],
-      declarations: [ElementTableSearchComponent],
-      teardown:{destroyAfterEach:false}
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatInputModule,
+				MatFormFieldModule,
+				FormsModule,
+				NoopAnimationsModule,
+			],
+			declarations: [ElementTableSearchComponent],
+			teardown: { destroyAfterEach: false },
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ElementTableSearchComponent);
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    service = TestBed.inject(SearchService);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ElementTableSearchComponent);
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		service = TestBed.inject(SearchService);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should update search terms to Hello World', async () => {
-    await (await loader.getHarness(MatInputHarness)).setValue('Hello World');
-    scheduler.run(() => {
-      let values={a:'Hello World'}
-      let marble = 'a';
-      scheduler.expectObservable(service.searchTerm).toBe(marble, values);
-    });
-  });
+	it('should update search terms to Hello World', async () => {
+		await (
+			await loader.getHarness(MatInputHarness)
+		).setValue('Hello World');
+		scheduler.run(() => {
+			let values = { a: 'Hello World' };
+			let marble = 'a';
+			scheduler.expectObservable(service.searchTerm).toBe(marble, values);
+		});
+	});
 });

@@ -21,46 +21,45 @@ import { DifferenceReportServiceMock } from '../http/difference-report.service.m
 import { DiffUIService } from './diff-uiservice.service';
 
 describe('DiffUIService', () => {
-  let service: DiffUIService;
-  let scheduler: TestScheduler;
+	let service: DiffUIService;
+	let scheduler: TestScheduler;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: BranchInfoService, useValue: BranchInfoServiceMock },
-        {
-          provide: DifferenceReportService,
-          useValue: DifferenceReportServiceMock,
-        },
-      ],
-    });
-    service = TestBed.inject(DiffUIService);
-  });
-  beforeEach(
-    () =>
-      (scheduler = new TestScheduler((actual, expected) => {
-        expect(actual).toEqual(expected);
-      }))
-  );
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-  it('should not return a diff', () => {
-    scheduler.run(({ expectObservable, cold }) => {
-      service.DiffMode = false;
-      const expectedValues = { a: changeReportMock, b: undefined };
-      expectObservable(service.diff).toBe('(b|)', expectedValues);
-    });
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
+				{
+					provide: DifferenceReportService,
+					useValue: DifferenceReportServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(DiffUIService);
+	});
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+	it('should not return a diff', () => {
+		scheduler.run(({ expectObservable, cold }) => {
+			service.DiffMode = false;
+			const expectedValues = { a: changeReportMock, b: undefined };
+			expectObservable(service.diff).toBe('(b|)', expectedValues);
+		});
+	});
 
+	it('should return the branch id', () => {
+		service.branchId = '10';
+		expect(service.id).toBe('10');
+	});
 
-  it('should return the branch id', () => {
-    service.branchId = '10';
-    expect(service.id).toBe('10');
-  });
-
-  it('should return the branch type', () => {
-    service.branchType = 'working';
-    expect(service.type).toBe('working');
-  });
+	it('should return the branch type', () => {
+		service.branchType = 'working';
+		expect(service.type).toBe('working');
+	});
 });

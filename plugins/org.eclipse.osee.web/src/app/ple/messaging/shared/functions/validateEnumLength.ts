@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export function validateEnumLengthIsBelowMax(
-    enumArrayLength: number,
-    bitSize: number
+	enumArrayLength: number,
+	bitSize: number
 ) {
-    if (enumArrayLength >= 2 ** bitSize) {
-        return true;
-    }
-    return false;
+	if (enumArrayLength >= 2 ** bitSize) {
+		return true;
+	}
+	return false;
 }

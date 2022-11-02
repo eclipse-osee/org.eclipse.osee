@@ -15,23 +15,19 @@ import { HeaderService } from '../../../shared/services/ui/header.service';
 import { diffItem, diffItemKey } from '../../../shared/types/DifferenceReport';
 
 @Component({
-  selector: 'app-diff-report-table',
-  templateUrl: './diff-report-table.component.html',
-  styleUrls: ['./diff-report-table.component.sass']
+	selector: 'osee-messaging-diff-report-table',
+	templateUrl: './diff-report-table.component.html',
+	styleUrls: ['./diff-report-table.component.sass'],
 })
-export class DiffReportTableComponent implements OnInit {
-  @Input() items: diffItem[] = [];
-  @Input() title: string = "";
-  @Input() headers: diffItemKey[] = [];
-  @Input() headerKey: string = "";
+export class DiffReportTableComponent {
+	@Input() items: diffItem[] = [];
+	@Input() title: string = '';
+	@Input() headers: diffItemKey[] = [];
+	@Input() headerKey: string = '';
 
-  constructor(private headerService: HeaderService) { }
+	constructor(private headerService: HeaderService) {}
 
-  ngOnInit(): void {
-  }
-
-  getHeaderByName(value: diffItemKey) {
-    return this.headerService.getHeaderByName(value,this.headerKey);
-  }
-
+	getHeaderByName(value: diffItemKey) {
+		return this.headerService.getHeaderByName(value, this.headerKey);
+	}
 }

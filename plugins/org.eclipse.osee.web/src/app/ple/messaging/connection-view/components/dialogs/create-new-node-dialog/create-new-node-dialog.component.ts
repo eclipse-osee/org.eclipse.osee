@@ -15,25 +15,20 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { node, nodeData } from '../../../../shared/types/node.d';
 
 @Component({
-  selector: 'app-create-new-node-dialog',
-  templateUrl: './create-new-node-dialog.component.html',
-  styleUrls: ['./create-new-node-dialog.component.sass']
+	selector: 'osee-create-new-node-dialog',
+	templateUrl: './create-new-node-dialog.component.html',
+	styleUrls: ['./create-new-node-dialog.component.sass'],
 })
-export class CreateNewNodeDialogComponent implements OnInit {
+export class CreateNewNodeDialogComponent {
+	result: Partial<nodeData> = {
+		name: '',
+		description: '',
+		interfaceNodeAddress: '',
+		interfaceNodeBgColor: '',
+	};
+	constructor(public dialogRef: MatDialogRef<CreateNewNodeDialogComponent>) {}
 
-  result: Partial<nodeData> = {
-    name: '',
-    description: '',
-    interfaceNodeAddress: '',
-    interfaceNodeBgColor:''
-  };
-  constructor(public dialogRef: MatDialogRef<CreateNewNodeDialogComponent>) { }
-
-  ngOnInit(): void {
-  }
-
-  onNoClick() {
-    this.dialogRef.close();
-  }
-
+	onNoClick() {
+		this.dialogRef.close();
+	}
 }

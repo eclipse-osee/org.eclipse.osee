@@ -18,14 +18,16 @@ import navigationStructure from './top-level-navigation-structure';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 
 @Component({
-  selector: 'osee-top-level-navigation',
-  templateUrl: './top-level-navigation.component.html',
-  styleUrls: ['./top-level-navigation.component.sass']
+	selector: 'osee-top-level-navigation',
+	templateUrl: './top-level-navigation.component.html',
+	styleUrls: ['./top-level-navigation.component.sass'],
 })
 export class TopLevelNavigationComponent {
+	navElements = navigationStructure; // structure that stores the navigation elements
+	userIsAdmin = this.userService.userIsAdmin;
 
-  navElements = navigationStructure; // structure that stores the navigation elements
-  userIsAdmin = this.userService.userIsAdmin;
-
-  constructor(public router: Router, private userService: UserDataAccountService) {}
+	constructor(
+		public router: Router,
+		private userService: UserDataAccountService
+	) {}
 }

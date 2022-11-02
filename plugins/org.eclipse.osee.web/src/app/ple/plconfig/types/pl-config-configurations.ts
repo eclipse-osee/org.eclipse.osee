@@ -1,5 +1,5 @@
-import { difference } from "src/app/types/change-report/change-report";
-import { NameValuePair } from "./base-types/NameValuePair";
+import { difference } from 'src/app/types/change-report/change-report';
+import { NameValuePair } from './base-types/NameValuePair';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -14,27 +14,27 @@ import { NameValuePair } from "./base-types/NameValuePair";
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface configuration {
-    name: string,
-    copyFrom?: string,
-    configurationGroup?: string[],
-    productApplicabilities?:string[]
+	name: string;
+	copyFrom?: string;
+	configurationGroup?: string[];
+	productApplicabilities?: string[];
 }
 export interface editConfiguration extends configuration {
-    configurationGroup?: string[]
+	configurationGroup?: string[];
 }
 export interface configurationGroup extends configGroup {
-    hasFeatureApplicabilities: boolean
-    productApplicabilities:string[]
+	hasFeatureApplicabilities: boolean;
+	productApplicabilities: string[];
 }
 
-export interface configGroup extends NameValuePair{
-    configurations:string[],
+export interface configGroup extends NameValuePair {
+	configurations: string[];
 }
-export interface configGroupWithChanges extends configGroup{
-    deleted: boolean,
-    added: boolean,
-    changes: {
-        name?: difference,
-        configurations?:difference[]
-    }
+export interface configGroupWithChanges extends configGroup {
+	deleted: boolean;
+	added: boolean;
+	changes: {
+		name?: difference;
+		configurations?: difference[];
+	};
 }

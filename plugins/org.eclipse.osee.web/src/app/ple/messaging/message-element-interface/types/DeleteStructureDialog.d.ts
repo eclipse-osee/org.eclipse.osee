@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface DeleteStructureDialogData{
-    structureId: string
-    structureName:string,
+export interface DeleteStructureDialogData {
+	structureId: string;
+	structureName: string;
 }

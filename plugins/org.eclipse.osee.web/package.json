@@ -1,79 +1,86 @@
 {
-  "name": "osee-web",
-  "version": "0.0.1",
-  "licenses": [
-    {
-      "type": "EPL-2.0",
-      "url": "https://www.eclipse.org/legal/epl-2.0/"
-    }
-  ],
-  "contributors": [
-    {
-      "name": "Boeing"
-    }
-  ],
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "gfont-windows": "npm install material-design-icons && xcopy /s \"./node_modules/material-design-icons/iconfont\" \"src/assets/google/icon/font\"  /Y",
-    "gfont-copy-unix": "cp \"/node_modules/material-design-icons/iconfont\" \"/src/assets/google/icon/font\"",
-    "deploy-jetty-win": "xcopy /s \"./dist/osee/production\" \"../org.eclipse.osee.web.deploy/OSEE-INF/web/dist/\" /Y",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "^14.2.4",
-    "@angular/cdk": "^14.0.0",
-    "@angular/common": "^14.2.4",
-    "@angular/compiler": "^14.2.4",
-    "@angular/core": "^14.2.4",
-    "@angular/forms": "^14.2.4",
-    "@angular/material": "^14.0.0",
-    "@angular/platform-browser": "^14.2.4",
-    "@angular/platform-browser-dynamic": "^14.2.4",
-    "@angular/router": "^14.2.4",
-    "@swimlane/ngx-graph": "^8.0.2",
-    "d3-scale": "^4.0.2",
-    "material-design-icons": "^3.0.1",
-    "rxjs": "^7.5.7",
-    "tslib": "^2.0.0",
-    "zone.js": "~0.11.4"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^14.2.4",
-    "@angular-eslint/builder": "14.1.2",
-    "@angular-eslint/eslint-plugin": "14.1.2",
-    "@angular-eslint/eslint-plugin-template": "14.1.2",
-    "@angular-eslint/schematics": "14.1.2",
-    "@angular-eslint/template-parser": "14.1.2",
-    "@angular/cli": "^14.2.4",
-    "@angular/compiler-cli": "^14.2.4",
-    "@cypress/schematic": "^1.6.0",
-    "@jscutlery/cypress-harness": "^0.3.9",
-    "@types/d3-dispatch": "^3.0.0",
-    "@types/d3-drag": "^3.0.0",
-    "@types/d3-shape": "^2.1.0",
-    "@types/d3-timer": "^2.0.0",
-    "@types/jasmine": "~3.6.0",
-    "@types/node": "^12.11.1",
-    "@typescript-eslint/eslint-plugin": "5.37.0",
-    "@typescript-eslint/parser": "5.37.0",
-    "cypress": "latest",
-    "cypress-pipe": "^2.0.0",
-    "eslint": "^8.23.1",
-    "jasmine-core": "~3.8.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~6.3.11",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.0.3",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "^1.5.0",
-    "ts-node": "~8.3.0",
-    "typescript": "~4.7.3"
-  }
+	"name": "osee-web",
+	"version": "0.0.1",
+	"licenses": [
+		{
+			"type": "EPL-2.0",
+			"url": "https://www.eclipse.org/legal/epl-2.0/"
+		}
+	],
+	"contributors": [
+		{
+			"name": "Boeing"
+		}
+	],
+	"scripts": {
+		"ng": "ng",
+		"start": "ng serve",
+		"build": "ng build",
+		"test": "ng test",
+		"lint": "ng lint",
+		"e2e": "ng e2e",
+		"gfont-windows": "npm install material-design-icons && xcopy /s \"./node_modules/material-design-icons/iconfont\" \"src/assets/google/icon/font\"  /Y",
+		"gfont-copy-unix": "cp \"/node_modules/material-design-icons/iconfont\" \"/src/assets/google/icon/font\"",
+		"deploy-jetty-win": "xcopy /s \"./dist/osee/production\" \"../org.eclipse.osee.web.deploy/OSEE-INF/web/dist/\" /Y",
+		"cypress:open": "cypress open",
+		"cypress:run": "cypress run"
+	},
+	"private": true,
+	"dependencies": {
+		"@angular/animations": "^14.2.4",
+		"@angular/cdk": "^14.0.0",
+		"@angular/common": "^14.2.4",
+		"@angular/compiler": "^14.2.4",
+		"@angular/core": "^14.2.4",
+		"@angular/forms": "^14.2.4",
+		"@angular/material": "^14.0.0",
+		"@angular/platform-browser": "^14.2.4",
+		"@angular/platform-browser-dynamic": "^14.2.4",
+		"@angular/router": "^14.2.4",
+		"@swimlane/ngx-graph": "^8.0.2",
+		"d3-scale": "^4.0.2",
+		"material-design-icons": "^3.0.1",
+		"rxjs": "^7.5.7",
+		"tslib": "^2.0.0",
+		"zone.js": "~0.11.4"
+	},
+	"devDependencies": {
+		"@angular-devkit/build-angular": "^14.2.4",
+		"@angular-eslint/builder": "14.1.2",
+		"@angular-eslint/eslint-plugin": "14.1.2",
+		"@angular-eslint/eslint-plugin-template": "14.1.2",
+		"@angular-eslint/schematics": "14.1.2",
+		"@angular-eslint/template-parser": "14.1.2",
+		"@angular/cli": "^14.2.4",
+		"@angular/compiler-cli": "^14.2.4",
+		"@cypress/schematic": "^1.6.0",
+		"@jscutlery/cypress-harness": "^0.3.9",
+		"@types/d3-dispatch": "^3.0.0",
+		"@types/d3-drag": "^3.0.0",
+		"@types/d3-shape": "^2.1.0",
+		"@types/d3-timer": "^2.0.0",
+		"@types/jasmine": "~3.6.0",
+		"@types/node": "^12.11.1",
+		"@typescript-eslint/eslint-plugin": "5.37.0",
+		"@typescript-eslint/parser": "5.37.0",
+		"cypress": "latest",
+		"cypress-pipe": "^2.0.0",
+		"eslint": "^8.23.1",
+		"eslint-config-prettier": "^8.5.0",
+		"jasmine-core": "~3.8.0",
+		"jasmine-spec-reporter": "~5.0.0",
+		"karma": "~6.3.11",
+		"karma-chrome-launcher": "~3.1.0",
+		"karma-coverage": "~2.0.3",
+		"karma-jasmine": "~4.0.0",
+		"karma-jasmine-html-reporter": "^1.5.0",
+		"prettier": "2.7.1",
+		"stylelint": "^14.14.0",
+		"stylelint-config-prettier": "^9.0.3",
+		"stylelint-config-prettier-scss": "0.0.1",
+		"stylelint-config-standard": "^29.0.0",
+		"stylelint-config-standard-scss": "^6.0.0",
+		"ts-node": "~8.3.0",
+		"typescript": "~4.7.3"
+	}
 }

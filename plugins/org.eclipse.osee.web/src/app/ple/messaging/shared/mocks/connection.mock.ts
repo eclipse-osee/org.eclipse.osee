@@ -13,7 +13,14 @@
 import { connection } from '../types/connection';
 
 export const connectionMock: connection = {
-    name: 'connection1',
-    description:'',
-    transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}
-}
+	name: 'connection1',
+	description: '',
+	transportType: {
+		name: 'ETHERNET',
+		byteAlignValidation: false,
+		byteAlignValidationSize: 0,
+		messageGeneration: false,
+		messageGenerationPosition: '',
+		messageGenerationType: '',
+	},
+};

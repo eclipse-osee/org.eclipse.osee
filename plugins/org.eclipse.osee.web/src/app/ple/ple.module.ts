@@ -18,11 +18,7 @@ import { PleComponent } from './ple.component';
 import { PleSharedMaterialModule } from './ple-shared-material/ple-shared-material.module';
 
 @NgModule({
-  declarations: [PleComponent],
-  imports: [
-    CommonModule,
-    PleRoutingModule,
-    PleSharedMaterialModule
-  ]
+	declarations: [PleComponent],
+	imports: [CommonModule, PleRoutingModule, PleSharedMaterialModule],
 })
-export class PleModule { }
+export class PleModule {}

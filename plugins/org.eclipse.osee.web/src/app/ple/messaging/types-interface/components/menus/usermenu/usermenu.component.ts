@@ -19,34 +19,45 @@ import { CurrentTypesService } from '../../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../../services/pl-messaging-types-ui.service';
 
 @Component({
-  selector: 'app-usermenu',
-  templateUrl: './usermenu.component.html',
-  styleUrls: ['./usermenu.component.sass']
+	selector: 'osee-messaging-usermenu',
+	templateUrl: './usermenu.component.html',
+	styleUrls: ['./usermenu.component.sass'],
 })
-export class UsermenuComponent implements OnInit {
+export class UsermenuComponent {
+	constructor(
+		private typesService: CurrentTypesService,
+		private uiService: PlMessagingTypesUIService,
+		public dialog: MatDialog
+	) {}
 
-  constructor(private typesService: CurrentTypesService, private uiService: PlMessagingTypesUIService,public dialog: MatDialog) { }
-
-  ngOnInit(): void {
-  }
-  openSettingsDialog() {
-    combineLatest([this.typesService.inEditMode, this.uiService.BranchId]).pipe(
-      take(1),
-      switchMap(([edit, id]) => this.dialog.open(ColumnPreferencesDialogComponent, {
-        data: {
-          branchId: id,
-          allHeaders2: [],
-          allowedHeaders2: [],
-          allHeaders1: [],
-          allowedHeaders1: [],
-          editable: edit,
-          headers1Label: '',
-          headers2Label: '',
-          headersTableActive: false,
-        }
-      }).afterClosed().pipe(
-        take(1),
-        switchMap((result) => this.typesService.updatePreferences(result))))
-    ).subscribe();
-  }
+	openSettingsDialog() {
+		combineLatest([this.typesService.inEditMode, this.uiService.BranchId])
+			.pipe(
+				take(1),
+				switchMap(([edit, id]) =>
+					this.dialog
+						.open(ColumnPreferencesDialogComponent, {
+							data: {
+								branchId: id,
+								allHeaders2: [],
+								allowedHeaders2: [],
+								allHeaders1: [],
+								allowedHeaders1: [],
+								editable: edit,
+								headers1Label: '',
+								headers2Label: '',
+								headersTableActive: false,
+							},
+						})
+						.afterClosed()
+						.pipe(
+							take(1),
+							switchMap((result) =>
+								this.typesService.updatePreferences(result)
+							)
+						)
+				)
+			)
+			.subscribe();
+	}
 }

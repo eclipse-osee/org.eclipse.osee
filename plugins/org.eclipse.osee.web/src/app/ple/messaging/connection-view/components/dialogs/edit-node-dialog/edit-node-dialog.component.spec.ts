@@ -16,7 +16,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -29,42 +33,51 @@ import { node } from '../../../../shared/types/node';
 import { EditNodeDialogComponent } from './edit-node-dialog.component';
 
 describe('EditNodeDialogComponent', () => {
-  let component: EditNodeDialogComponent;
-  let fixture: ComponentFixture<EditNodeDialogComponent>;
-  let loader: HarnessLoader;
-  let dialogData: node = {
-    name: '',
-    applicability:{id:'1',name:'Base'}
-  }
+	let component: EditNodeDialogComponent;
+	let fixture: ComponentFixture<EditNodeDialogComponent>;
+	let loader: HarnessLoader;
+	let dialogData: node = {
+		name: '',
+		applicability: { id: '1', name: 'Base' },
+	};
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatDialogModule,MatFormFieldModule,MatSelectModule,MatInputModule,MatButtonModule,NoopAnimationsModule,FormsModule],
-      declarations: [EditNodeDialogComponent],
-      providers: [{ provide: MatDialogRef, useValue: dialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: dialogData },
-        { provide: CurrentGraphService, useValue: graphServiceMock }]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatDialogModule,
+				MatFormFieldModule,
+				MatSelectModule,
+				MatInputModule,
+				MatButtonModule,
+				NoopAnimationsModule,
+				FormsModule,
+			],
+			declarations: [EditNodeDialogComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: dialogRef },
+				{ provide: MAT_DIALOG_DATA, useValue: dialogData },
+				{ provide: CurrentGraphService, useValue: graphServiceMock },
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditNodeDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditNodeDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should close without anything returning', async() => {
-    let buttons = await loader.getAllHarnesses(MatButtonHarness);
-    let spy = spyOn(component, 'onNoClick').and.callThrough();
-    if ((await buttons[0].getText()) === 'Cancel') {
-      await buttons[0].click();
-      expect(spy).toHaveBeenCalled() 
-    }
-  })
+	it('should close without anything returning', async () => {
+		let buttons = await loader.getAllHarnesses(MatButtonHarness);
+		let spy = spyOn(component, 'onNoClick').and.callThrough();
+		if ((await buttons[0].getText()) === 'Cancel') {
+			await buttons[0].click();
+			expect(spy).toHaveBeenCalled();
+		}
+	});
 });

@@ -19,7 +19,6 @@ import { GraphDummy } from '../../../testing/MockComponents/Graph.mock';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
-
 import { BaseComponent } from './base.component';
 import { EditAuthService } from 'src/app/ple/messaging/shared/services/edit-auth-service.service';
 import { editAuthServiceMock } from '../../../mocks/EditAuthService.mock';
@@ -34,33 +33,46 @@ import { ActionDropdownStub } from '../../../../../../shared-components/componen
 import { BranchUndoButtonTestingModule } from '../../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
 
 describe('BaseComponent', () => {
-  let component: BaseComponent;
-  let routeState: RouteStateService;
-  let loader: HarnessLoader;
-  let fixture: ComponentFixture<BaseComponent>;
+	let component: BaseComponent;
+	let routeState: RouteStateService;
+	let loader: HarnessLoader;
+	let fixture: ComponentFixture<BaseComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatDialogModule,MatIconModule, MatButtonModule,MatSidenavModule,RouterTestingModule, BranchUndoButtonTestingModule, NoopAnimationsModule],
-      providers: [
-        { provide: EditAuthService, useValue: editAuthServiceMock },
-        { provide: CurrentGraphService, useValue: graphServiceMock }
-      ],
-      declarations: [ BaseComponent, GraphDummy, BranchPickerStub,MimSingleDiffDummy, ActionDropdownStub ]
-    })
-      .compileComponents();
-    routeState = TestBed.inject(RouteStateService);
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatDialogModule,
+				MatIconModule,
+				MatButtonModule,
+				MatSidenavModule,
+				RouterTestingModule,
+				BranchUndoButtonTestingModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{ provide: EditAuthService, useValue: editAuthServiceMock },
+				{ provide: CurrentGraphService, useValue: graphServiceMock },
+			],
+			declarations: [
+				BaseComponent,
+				GraphDummy,
+				BranchPickerStub,
+				MimSingleDiffDummy,
+				ActionDropdownStub,
+			],
+		}).compileComponents();
+		routeState = TestBed.inject(RouteStateService);
+	});
 
-  beforeEach(() => {
-    routeState.branchId = '10';
-    fixture = TestBed.createComponent(BaseComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		routeState.branchId = '10';
+		fixture = TestBed.createComponent(BaseComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -10,43 +10,45 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Edge } from "@swimlane/ngx-graph";
-import { difference } from "src/app/types/change-report/change-report";
-import { applic } from "../../../../types/applicability/applic";
+import { Edge } from '@swimlane/ngx-graph';
+import { difference } from 'src/app/types/change-report/change-report';
+import { applic } from '../../../../types/applicability/applic';
 import { transportType } from './transportType';
 
-export interface connection extends connectionAttributes,connectionRelations {
-    id?: string,
-    dashed?: boolean,
-    applicability?: applic
+export interface connection extends connectionAttributes, connectionRelations {
+	id?: string;
+	dashed?: boolean;
+	applicability?: applic;
 }
 
 interface connectionAttributes {
-    name: string,
-    description: string,
-}
- 
-interface connectionRelations{
-    transportType: transportType
-}
-export interface connectionWithChanges extends connection{
-    deleted:boolean,
-    changes: {
-        name?: difference,
-        description?: difference,
-        transportType?: difference,
-        applicability?:difference
-    }
+	name: string;
+	description: string;
 }
 
-export interface _newConnection extends connectionAttributes, Partial<connectionRelations>{
-    applicability?: applic
+interface connectionRelations {
+	transportType: transportType;
+}
+export interface connectionWithChanges extends connection {
+	deleted: boolean;
+	changes: {
+		name?: difference;
+		description?: difference;
+		transportType?: difference;
+		applicability?: difference;
+	};
+}
+
+export interface _newConnection
+	extends connectionAttributes,
+		Partial<connectionRelations> {
+	applicability?: applic;
 }
 export interface newConnection {
-    connection: _newConnection,
-    nodeId:string
+	connection: _newConnection;
+	nodeId: string;
 }
 
-export interface OseeEdge<T> extends Omit<Edge, 'data'>{
-    data:T
+export interface OseeEdge<T> extends Omit<Edge, 'data'> {
+	data: T;
 }

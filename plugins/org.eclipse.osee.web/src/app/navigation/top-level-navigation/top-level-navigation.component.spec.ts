@@ -22,34 +22,36 @@ import { UserDataAccountService } from 'src/app/userdata/services/user-data-acco
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 
 describe('TopLevelNavigationComponent', () => {
-  let component: TopLevelNavigationComponent;
-  let fixture: ComponentFixture<TopLevelNavigationComponent>;
+	let component: TopLevelNavigationComponent;
+	let fixture: ComponentFixture<TopLevelNavigationComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        MatIconModule,
-        MatListModule,
-        MatToolbarModule,
-        NoopAnimationsModule,
-        LayoutModule,
-        RouterTestingModule
-      ],
-      providers:[
-        {provide:UserDataAccountService, useValue:userDataAccountServiceMock}
-      ],
-      declarations: [ TopLevelNavigationComponent ],
-    })
-      .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatIconModule,
+				MatListModule,
+				MatToolbarModule,
+				NoopAnimationsModule,
+				LayoutModule,
+				RouterTestingModule,
+			],
+			providers: [
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+			],
+			declarations: [TopLevelNavigationComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TopLevelNavigationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(TopLevelNavigationComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should compile', () => {
-    expect(component).toBeTruthy();
-  })
+	it('should compile', () => {
+		expect(component).toBeTruthy();
+	});
 });

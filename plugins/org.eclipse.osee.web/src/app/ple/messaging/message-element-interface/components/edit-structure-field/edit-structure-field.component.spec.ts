@@ -13,7 +13,13 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, TestBed, tick, flush } from '@angular/core/testing';
+import {
+	ComponentFixture,
+	fakeAsync,
+	TestBed,
+	tick,
+	flush,
+} from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -31,69 +37,81 @@ import { CurrentStructureService } from '../../services/current-structure.servic
 import { ElementUiService } from '../../services/ui.service';
 import { EditStructureFieldComponent } from './edit-structure-field.component';
 
-
 describe('EditStructureFieldComponent', () => {
-  let component: EditStructureFieldComponent;
-  let fixture: ComponentFixture<EditStructureFieldComponent>;
-  let uiService: ElementUiService;
-  let loader:HarnessLoader;
+	let component: EditStructureFieldComponent;
+	let fixture: ComponentFixture<EditStructureFieldComponent>;
+	let uiService: ElementUiService;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NoopAnimationsModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, SharedMessagingModule],
-      providers: [
-        { provide: CurrentStructureService, useValue: CurrentStateServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock },
-        { provide: WarningDialogService, useValue: warningDialogServiceMock }
-      ],
-      declarations: [ EditStructureFieldComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				NoopAnimationsModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				SharedMessagingModule,
+			],
+			providers: [
+				{
+					provide: CurrentStructureService,
+					useValue: CurrentStateServiceMock,
+				},
+				{ provide: EnumsService, useValue: enumsServiceMock },
+				{
+					provide: WarningDialogService,
+					useValue: warningDialogServiceMock,
+				},
+			],
+			declarations: [EditStructureFieldComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    uiService = TestBed.inject(ElementUiService);
-    fixture = TestBed.createComponent(EditStructureFieldComponent);
-    component = fixture.componentInstance;
-    component.header = 'applicability';
-    component.value = { id: '1', name: 'Base' };
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		uiService = TestBed.inject(ElementUiService);
+		fixture = TestBed.createComponent(EditStructureFieldComponent);
+		component = fixture.componentInstance;
+		component.header = 'applicability';
+		component.value = { id: '1', name: 'Base' };
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should update value', async() => {
-    uiService.BranchIdString = '8';
-    uiService.messageIdString = '10';
-    uiService.subMessageIdString = '20';
-    uiService.connectionIdString = '10';
-    component.focusChanged(null);
-    let spy = spyOn(component, 'updateImmediately').and.callThrough();
-      let select = await loader.getHarness(MatSelectHarness);
-      await select.open();
-      if (await select.isOpen()) {
-        await select.clickOptions({ text: 'Second' });
-        expect(spy).toHaveBeenCalled()
-      } else {
-        expect(spy).not.toHaveBeenCalled()
-      }
-  });
-  it('should update description', fakeAsync(async() => {
-    uiService.BranchIdString = '8';
-    uiService.messageIdString = '10';
-    uiService.subMessageIdString = '20';
-    uiService.connectionIdString = '10';
-    component.header = 'description';
-    component.value = 'asdf'
-    fixture.detectChanges();
-    component.focusChanged(null);
-    let spy = spyOn(component, 'updateStructure').and.callThrough();
-    let input = await loader.getHarness(MatInputHarness);
-    await input.setValue('asdfghij');
-    tick(500);
-    expect(spy).toHaveBeenCalled();
-  }));
+	it('should update value', async () => {
+		uiService.BranchIdString = '8';
+		uiService.messageIdString = '10';
+		uiService.subMessageIdString = '20';
+		uiService.connectionIdString = '10';
+		component.focusChanged(null);
+		let spy = spyOn(component, 'updateImmediately').and.callThrough();
+		let select = await loader.getHarness(MatSelectHarness);
+		await select.open();
+		if (await select.isOpen()) {
+			await select.clickOptions({ text: 'Second' });
+			expect(spy).toHaveBeenCalled();
+		} else {
+			expect(spy).not.toHaveBeenCalled();
+		}
+	});
+	it('should update description', fakeAsync(async () => {
+		uiService.BranchIdString = '8';
+		uiService.messageIdString = '10';
+		uiService.subMessageIdString = '20';
+		uiService.connectionIdString = '10';
+		component.header = 'description';
+		component.value = 'asdf';
+		fixture.detectChanges();
+		component.focusChanged(null);
+		let spy = spyOn(component, 'updateStructure').and.callThrough();
+		let input = await loader.getHarness(MatInputHarness);
+		await input.setValue('asdfghij');
+		tick(500);
+		expect(spy).toHaveBeenCalled();
+	}));
 });

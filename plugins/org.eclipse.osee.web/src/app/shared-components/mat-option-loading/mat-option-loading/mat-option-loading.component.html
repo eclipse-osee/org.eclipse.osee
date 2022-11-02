@@ -10,21 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(_options | async) as _opt; else loadingMatOptions">
-    <ng-container *ngIf="_opt.length === 0">
-        <mat-option disabled>
-            No {{objectName}} available.
-        </mat-option>
-    </ng-container>
-    <ng-content></ng-content>
+<ng-container *ngIf="_options | async as _opt; else loadingMatOptions">
+	<ng-container *ngIf="_opt.length === 0">
+		<mat-option disabled> No {{ objectName }} available. </mat-option>
+	</ng-container>
+	<ng-content></ng-content>
 </ng-container>
 
 <ng-template #loadingMatOptions>
-    {{disableSelect?setDisabled(true):''}}
-    <mat-option disabled>
-        <span style="display:inline-block">
-            Loading...
-        </span>
-            <mat-spinner color="primary" diameter="40" class="option-spinner" data-cy="mat-option-loading-spinner"></mat-spinner>
-    </mat-option>
+	{{ disableSelect ? setDisabled(true) : '' }}
+	<mat-option disabled>
+		<span style="display: inline-block"> Loading... </span>
+		<mat-spinner
+			color="primary"
+			diameter="40"
+			class="option-spinner"
+			data-cy="mat-option-loading-spinner"></mat-spinner>
+	</mat-option>
 </ng-template>

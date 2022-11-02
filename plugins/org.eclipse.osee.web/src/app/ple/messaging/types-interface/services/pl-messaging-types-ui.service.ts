@@ -15,63 +15,65 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class PlMessagingTypesUIService {
+	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
+	private _singleLineAdjustment: BehaviorSubject<number> =
+		new BehaviorSubject<number>(0);
 
-  private _filter: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private _singleLineAdjustment: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+	private _columnCount: BehaviorSubject<number> = new BehaviorSubject<number>(
+		0
+	);
+	constructor(private ui: UiService) {}
 
-  private _columnCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  constructor(private ui: UiService) { }
+	get filter() {
+		return this._filter;
+	}
 
-  get filter() {
-    return this._filter
-  }
+	set filterString(filter: string) {
+		if (filter !== this._filter.getValue()) {
+			this._filter.next(filter);
+		}
+	}
 
-  set filterString(filter: string) {
-    if (filter !== this._filter.getValue()) {
-      this._filter.next(filter); 
-    }
-  }
+	get singleLineAdjustment() {
+		return this._singleLineAdjustment;
+	}
 
-  get singleLineAdjustment() {
-    return this._singleLineAdjustment;
-  }
+	set singleLineAdjustmentNumber(value: number) {
+		if (value !== this._singleLineAdjustment.getValue()) {
+			this._singleLineAdjustment.next(value);
+		}
+	}
 
-  set singleLineAdjustmentNumber(value: number) {
-    if (value !== this._singleLineAdjustment.getValue()) {
-      this._singleLineAdjustment.next(value);
-    }
-  }
+	get columnCount() {
+		return this._columnCount;
+	}
 
-  get columnCount() {
-    return this._columnCount;
-  }
+	set columnCountNumber(value: number) {
+		if (value !== this._columnCount.getValue()) {
+			this._columnCount.next(value);
+		}
+	}
 
-  set columnCountNumber(value: number) {
-    if (value !== this._columnCount.getValue()) {
-      this._columnCount.next(value);
-    }
-  }
+	get typeUpdateRequired() {
+		return this.ui.update;
+	}
 
-  get typeUpdateRequired() {
-    return this.ui.update;
-  }
+	set updateTypes(value: boolean) {
+		this.ui.updated = value;
+	}
 
-  set updateTypes(value: boolean) {
-    this.ui.updated = value;
-  }
+	get BranchId() {
+		return this.ui.id;
+	}
 
-  get BranchId() {
-    return this.ui.id;
-  }
+	set BranchIdString(value: string) {
+		this.ui.idValue = value;
+	}
 
-  set BranchIdString(value: string) {
-    this.ui.idValue = value;
-  }
-
-  set branchType(value: string) {
-    this.ui.typeValue = value;
-  }
+	set branchType(value: string) {
+		this.ui.typeValue = value;
+	}
 }

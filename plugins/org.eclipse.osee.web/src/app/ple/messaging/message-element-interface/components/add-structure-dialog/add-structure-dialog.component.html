@@ -10,86 +10,199 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Add Structure to {{data.name}}</h1>
-<mat-horizontal-stepper #stepper class ="new-submessage-stepper">
-    <mat-step label="Select Structure options" #step1>
-        <mat-dialog-content>
-            <div style="display:flex; flex-direction:row; justify-content: space-evenly; align-items: baseline;">
-                <button mat-raised-button color="primary" style="width:100%;" matStepperNext (click)="createNew()" data-cy="create-new-btn">Create new Structure</button>
-                <p style="width:100%; text-align:center;">or</p>
-                <mat-form-field style="width:100%;">
-                    <mat-label>Select a Structure to Add to Sub Message</mat-label>
-                    <mat-select [(ngModel)]="data.structure" (selectionChange)="storeId($event.value)">
-                        <mat-option *ngFor="let option of (availableStructures|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
-                            {{option.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-raised-button color="primary" *ngIf="data.structure?.id && data.structure?.id!=='-1'" (click)="moveToReview(stepper)">Proceed to Review</button>
-        </mat-dialog-actions>
-    </mat-step>
-    <mat-step label="Define Structure" #step2>
-        <mat-dialog-content>
-            <div style="display:flex; flex-direction:column">
-                <mat-form-field>
-                    <mat-label>Name</mat-label>
-                    <input matInput [(ngModel)]="data.structure.name" required data-cy="field-name">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Description</mat-label>
-                    <textarea cdkTextareaAutosize matInput [(ngModel)]="data.structure.description" required data-cy="field-description"></textarea>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Max Simultaneity</mat-label>
-                    <input matInput type="number" [(ngModel)]="data.structure.interfaceMaxSimultaneity" required data-cy="field-max-simultaneity">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Min Simultaneity</mat-label>
-                    <input matInput type="number" [(ngModel)]="data.structure.interfaceMinSimultaneity" required data-cy="field-min-simultaneity">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Task File Type</mat-label>
-                    <input type="number" matInput [(ngModel)]="data.structure.interfaceTaskFileType" required data-cy="field-task-file-type">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Category</mat-label>
-                    <!-- <input matInput [(ngModel)]="data.structure.interfaceStructureCategory" required> -->
-                    <mat-select [(ngModel)]="data.structure.interfaceStructureCategory" required data-cy="field-category">
-                        <mat-option *ngFor="let option of (categories|async)" [value]="option" [attr.data-cy]="'option-'+option">
-                            {{option}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-raised-button matStepperPrevious data-cy="stepper-back">Back</button>
-            <ng-container *ngIf="data.structure.name!=='' && data.structure.description!=='' && data.structure.interfaceMaxSimultaneity !=='' && data.structure.interfaceMinSimultaneity !=='' && data.structure.interfaceTaskFileType!==undefined && data.structure.interfaceStructureCategory!==''">
-                <button mat-raised-button color="primary" matStepperNext data-cy="stepper-next">Next</button>
-            </ng-container>
-        </mat-dialog-actions>
-    </mat-step>
-    <mat-step label="Review" #step3>
-        <mat-dialog-content>
-            <div style="display:flex;flex-direction:column">
-                A structure will be related to:
-                <mat-label>{{data.name}}</mat-label> with the following properties:
-                <mat-label>Structure Name: {{data.structure.name}}</mat-label>
-                <mat-label>Structure Description: {{data.structure.description}}</mat-label>
-                <mat-label>Structure Max Simultaneity: {{data.structure.interfaceMaxSimultaneity}}</mat-label>
-                <mat-label>Structure Min Simultaneity: {{data.structure.interfaceMinSimultaneity}}</mat-label>
-                <mat-label>Structure Task File Type: {{data.structure.interfaceTaskFileType}}</mat-label>
-                <mat-label>Structure Category: {{data.structure.interfaceStructureCategory}}</mat-label>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-button matStepperPrevious data-cy="stepper-back">Back</button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="data" data-cy="submit-btn">
-                Ok
-            </button>
-        </mat-dialog-actions>
-    </mat-step>
+<h1 mat-dialog-title>Add Structure to {{ data.name }}</h1>
+<mat-horizontal-stepper
+	#stepper
+	class="new-submessage-stepper">
+	<mat-step
+		label="Select Structure options"
+		#step1>
+		<mat-dialog-content>
+			<div
+				style="
+					display: flex;
+					flex-direction: row;
+					justify-content: space-evenly;
+					align-items: baseline;
+				">
+				<button
+					mat-raised-button
+					color="primary"
+					style="width: 100%"
+					matStepperNext
+					(click)="createNew()"
+					data-cy="create-new-btn">
+					Create new Structure
+				</button>
+				<p style="width: 100%; text-align: center">or</p>
+				<mat-form-field style="width: 100%">
+					<mat-label
+						>Select a Structure to Add to Sub Message</mat-label
+					>
+					<mat-select
+						[(ngModel)]="data.structure"
+						(selectionChange)="storeId($event.value)">
+						<mat-option
+							*ngFor="let option of availableStructures | async"
+							[value]="option"
+							[id]="
+								option !== undefined && option.id !== undefined
+									? option.id
+									: ''
+							">
+							{{ option.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				color="primary"
+				*ngIf="data.structure?.id && data.structure?.id !== '-1'"
+				(click)="moveToReview(stepper)">
+				Proceed to Review
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
+	<mat-step
+		label="Define Structure"
+		#step2>
+		<mat-dialog-content>
+			<div style="display: flex; flex-direction: column">
+				<mat-form-field>
+					<mat-label>Name</mat-label>
+					<input
+						matInput
+						[(ngModel)]="data.structure.name"
+						required
+						data-cy="field-name" />
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Description</mat-label>
+					<textarea
+						cdkTextareaAutosize
+						matInput
+						[(ngModel)]="data.structure.description"
+						required
+						data-cy="field-description"></textarea>
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Max Simultaneity</mat-label>
+					<input
+						matInput
+						type="number"
+						[(ngModel)]="data.structure.interfaceMaxSimultaneity"
+						required
+						data-cy="field-max-simultaneity" />
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Min Simultaneity</mat-label>
+					<input
+						matInput
+						type="number"
+						[(ngModel)]="data.structure.interfaceMinSimultaneity"
+						required
+						data-cy="field-min-simultaneity" />
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Task File Type</mat-label>
+					<input
+						type="number"
+						matInput
+						[(ngModel)]="data.structure.interfaceTaskFileType"
+						required
+						data-cy="field-task-file-type" />
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Category</mat-label>
+					<!-- <input matInput [(ngModel)]="data.structure.interfaceStructureCategory" required> -->
+					<mat-select
+						[(ngModel)]="data.structure.interfaceStructureCategory"
+						required
+						data-cy="field-category">
+						<mat-option
+							*ngFor="let option of categories | async"
+							[value]="option"
+							[attr.data-cy]="'option-' + option">
+							{{ option }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				matStepperPrevious
+				data-cy="stepper-back">
+				Back
+			</button>
+			<ng-container
+				*ngIf="
+					data.structure.name !== '' &&
+					data.structure.description !== '' &&
+					data.structure.interfaceMaxSimultaneity !== '' &&
+					data.structure.interfaceMinSimultaneity !== '' &&
+					data.structure.interfaceTaskFileType !== undefined &&
+					data.structure.interfaceStructureCategory !== ''
+				">
+				<button
+					mat-raised-button
+					color="primary"
+					matStepperNext
+					data-cy="stepper-next">
+					Next
+				</button>
+			</ng-container>
+		</mat-dialog-actions>
+	</mat-step>
+	<mat-step
+		label="Review"
+		#step3>
+		<mat-dialog-content>
+			<div style="display: flex; flex-direction: column">
+				A structure will be related to:
+				<mat-label>{{ data.name }}</mat-label> with the following
+				properties:
+				<mat-label>Structure Name: {{ data.structure.name }}</mat-label>
+				<mat-label
+					>Structure Description:
+					{{ data.structure.description }}</mat-label
+				>
+				<mat-label
+					>Structure Max Simultaneity:
+					{{ data.structure.interfaceMaxSimultaneity }}</mat-label
+				>
+				<mat-label
+					>Structure Min Simultaneity:
+					{{ data.structure.interfaceMinSimultaneity }}</mat-label
+				>
+				<mat-label
+					>Structure Task File Type:
+					{{ data.structure.interfaceTaskFileType }}</mat-label
+				>
+				<mat-label
+					>Structure Category:
+					{{ data.structure.interfaceStructureCategory }}</mat-label
+				>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-button
+				matStepperPrevious
+				data-cy="stepper-back">
+				Back
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				[mat-dialog-close]="data"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
 </mat-horizontal-stepper>

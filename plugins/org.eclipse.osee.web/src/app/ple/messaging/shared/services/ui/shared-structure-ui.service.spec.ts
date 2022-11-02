@@ -20,29 +20,36 @@ import { MimRouteService } from './mim-route.service';
 import { SharedStructureUIService } from './shared-structure-ui.service';
 
 describe('SharedStructureUIService', () => {
-  let service: SharedStructureUIService;
-  let uiService: MimRouteService;
-  let scheduler: TestScheduler;
+	let service: SharedStructureUIService;
+	let uiService: MimRouteService;
+	let scheduler: TestScheduler;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers:[{provide:StructuresService,useValue:structureServiceMock}]
-    });
-    service = TestBed.inject(SharedStructureUIService);
-    uiService = TestBed.inject(MimRouteService);
-    uiService.idValue = '10';
-    uiService.connectionIdString = '20';
-  });
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{ provide: StructuresService, useValue: structureServiceMock },
+			],
+		});
+		service = TestBed.inject(SharedStructureUIService);
+		uiService = TestBed.inject(MimRouteService);
+		uiService.idValue = '10';
+		uiService.connectionIdString = '20';
+	});
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should get the structure', () => {
-    scheduler.run(({ expectObservable }) => {
-      expectObservable(service.structure).toBe('a',{a:structuresMock[0]})
-    })
-  })
+	it('should get the structure', () => {
+		scheduler.run(({ expectObservable }) => {
+			expectObservable(service.structure).toBe('a', {
+				a: structuresMock[0],
+			});
+		});
+	});
 });

@@ -26,24 +26,23 @@ import { StructureDiffsComponent } from './structure-diffs/structure-diffs.compo
 import { MatIconModule } from '@angular/material/icon';
 import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
 
-
 @NgModule({
-  declarations: [
-    DiffReportComponent,
-    DiffReportTableComponent,
-    NodeDiffsComponent,
-    ConnectionDiffsComponent,
-    MessageDiffsComponent,
-    SubmessageDiffsComponent,
-    StructureDiffsComponent
-  ],
-  imports: [
-    CommonModule,
-    DiffReportRoutingModule,
-    GenericButtonsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule
-  ]
+	declarations: [
+		DiffReportComponent,
+		DiffReportTableComponent,
+		NodeDiffsComponent,
+		ConnectionDiffsComponent,
+		MessageDiffsComponent,
+		SubmessageDiffsComponent,
+		StructureDiffsComponent,
+	],
+	imports: [
+		CommonModule,
+		DiffReportRoutingModule,
+		GenericButtonsModule,
+		MatButtonModule,
+		MatIconModule,
+		MatTableModule,
+	],
 })
-export class DiffReportModule { }
+export class DiffReportModule {}

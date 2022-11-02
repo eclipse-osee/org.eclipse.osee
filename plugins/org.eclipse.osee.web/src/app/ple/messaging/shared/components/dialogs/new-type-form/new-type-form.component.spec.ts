@@ -22,26 +22,28 @@ import { NewTypeFormComponent } from './new-type-form.component';
 import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-attribute-form-field.component';
 
 describe('NewTypeFormComponent', () => {
-  let component: NewTypeFormComponent;
-  let fixture: ComponentFixture<NewTypeFormComponent>;
+	let component: NewTypeFormComponent;
+	let fixture: ComponentFixture<NewTypeFormComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        { provide: QueryService, useValue: QueryServiceMock },
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock }
-      ],
-      declarations: [ NewTypeFormComponent,NewAttributeFormFieldComponent ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			providers: [
+				{ provide: QueryService, useValue: QueryServiceMock },
+				{ provide: TypesService, useValue: typesServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+			],
+			declarations: [
+				NewTypeFormComponent,
+				NewAttributeFormFieldComponent,
+			],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(NewTypeFormComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(NewTypeFormComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

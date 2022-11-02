@@ -16,15 +16,13 @@ import { BranchPickerModule } from './components/branch-picker/branch-picker.mod
 import { ActionStateButtonModule } from './components/action-state-button/action-state-button.module';
 import { MatOptionLoadingModule } from './mat-option-loading/mat-option-loading.module';
 
-
-
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    BranchPickerModule,
-    MatOptionLoadingModule,
-    ActionStateButtonModule
-  ]
+	declarations: [],
+	imports: [
+		CommonModule,
+		BranchPickerModule,
+		MatOptionLoadingModule,
+		ActionStateButtonModule,
+	],
 })
-export class SharedComponentsModule { }
+export class SharedComponentsModule {}

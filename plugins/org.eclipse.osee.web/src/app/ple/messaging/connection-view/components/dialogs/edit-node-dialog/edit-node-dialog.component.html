@@ -10,38 +10,69 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Editing {{title}}</h1>
+<h1 mat-dialog-title>Editing {{ title }}</h1>
 <mat-dialog-content>
-    <mat-form-field>
-        <mat-label>Edit Name</mat-label>
-        <input matInput type="text" [(ngModel)]="data.name" #input required>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Edit Description</mat-label>
-        <input matInput type="text" [(ngModel)]="data.description" #input>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Edit Address/Port</mat-label>
-        <input matInput type="text" [(ngModel)]="data.interfaceNodeAddress" #input>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Select a Background Color</mat-label>
-        <input matInput type=color [(ngModel)]="data.interfaceNodeBgColor">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Select an Applicability</mat-label>
-        <mat-select [(ngModel)]="data.applicability" [compareWith]="compareApplics" required>
-            <mat-option *ngFor="let applic of (applics|async)" [value]="applic">
-                {{applic.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+	<mat-form-field>
+		<mat-label>Edit Name</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.name"
+			#input
+			required />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Edit Description</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.description"
+			#input />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Edit Address/Port</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.interfaceNodeAddress"
+			#input />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Select a Background Color</mat-label>
+		<input
+			matInput
+			type="color"
+			[(ngModel)]="data.interfaceNodeBgColor" />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Select an Applicability</mat-label>
+		<mat-select
+			[(ngModel)]="data.applicability"
+			[compareWith]="compareApplics"
+			required>
+			<mat-option
+				*ngFor="let applic of applics | async"
+				[value]="applic">
+				{{ applic.name }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0">Ok</button>
+	<button
+		mat-button
+		(click)="onNoClick()">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="data"
+		color="primary"
+		[disabled]="data.name.length === 0">
+		Ok
+	</button>
 </div>

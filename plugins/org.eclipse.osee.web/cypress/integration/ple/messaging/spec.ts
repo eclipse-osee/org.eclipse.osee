@@ -13,15 +13,18 @@ import { amountOfMessagePages } from '../../../support/messaging/navigation';
  *     Boeing - initial API and implementation
  **********************************************************************/
 describe('Visit messages page', () => {
-  it('Visits the page', () => {
-    cy.visit('/ple').get('[data-cy="messaging-nav-button"]').click();
-  });
+	it('Visits the page', () => {
+		cy.visit('/ple').get('[data-cy="messaging-nav-button"]').click();
+	});
 
-  it('should contain title', () => {
-    cy.get('.mat-display-4').should('contain.text', 'OSEE Messaging');
-  });
+	it('should contain title', () => {
+		cy.get('.mat-display-4').should('contain.text', 'OSEE Messaging');
+	});
 
-  it(`should have ${amountOfMessagePages} buttons`, () => {
-    cy.get('.messaging-grid').find('a').its('length').should('eq', amountOfMessagePages);
-  });
+	it(`should have ${amountOfMessagePages} buttons`, () => {
+		cy.get('.messaging-grid')
+			.find('a')
+			.its('length')
+			.should('eq', amountOfMessagePages);
+	});
 });

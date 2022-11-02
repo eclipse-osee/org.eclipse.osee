@@ -18,7 +18,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { httpInterceptorProviders } from './interceptors/http/interceptor-provider';
 
 //Sub-component imports
@@ -35,23 +35,25 @@ import { UrlSerializer } from '@angular/router';
 import { OseeUrlSerializer } from './UrlSerializer';
 
 @NgModule({
-  declarations: [
-    AppComponent, DisplayUserComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatProgressBarModule,
-    BrowserAnimationsModule,
-    NavigationModule
-  ],
-  providers: [httpInterceptorProviders,{ provide: UserHeaderService, useClass: environment.headerService },{ provide: UrlSerializer, useClass: OseeUrlSerializer }],
-  bootstrap: [AppComponent]
+	declarations: [AppComponent, DisplayUserComponent],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		HttpClientModule,
+		MatSidenavModule,
+		MatToolbarModule,
+		MatButtonModule,
+		MatMenuModule,
+		MatIconModule,
+		MatProgressBarModule,
+		BrowserAnimationsModule,
+		NavigationModule,
+	],
+	providers: [
+		httpInterceptorProviders,
+		{ provide: UserHeaderService, useClass: environment.headerService },
+		{ provide: UrlSerializer, useClass: OseeUrlSerializer },
+	],
+	bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

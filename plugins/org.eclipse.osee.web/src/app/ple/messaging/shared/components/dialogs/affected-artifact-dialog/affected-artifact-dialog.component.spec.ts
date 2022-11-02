@@ -15,7 +15,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
@@ -24,25 +28,38 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AffectedArtifactDialogComponent } from './affected-artifact-dialog.component';
 
 describe('AffectedArtifactDialogComponent', () => {
-  let component: AffectedArtifactDialogComponent;
-  let fixture: ComponentFixture<AffectedArtifactDialogComponent>;
+	let component: AffectedArtifactDialogComponent;
+	let fixture: ComponentFixture<AffectedArtifactDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatDialogModule, MatFormFieldModule,NoopAnimationsModule, MatListModule, FormsModule,MatButtonModule,MatTableModule,MatCheckboxModule, HttpClientTestingModule],
-      declarations: [AffectedArtifactDialogComponent],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: { data: { affectedArtifacts: [] } } }],
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatDialogModule,
+				MatFormFieldModule,
+				NoopAnimationsModule,
+				MatListModule,
+				FormsModule,
+				MatButtonModule,
+				MatTableModule,
+				MatCheckboxModule,
+				HttpClientTestingModule,
+			],
+			declarations: [AffectedArtifactDialogComponent],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: { data: { affectedArtifacts: [] } },
+				},
+			],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(AffectedArtifactDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(AffectedArtifactDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

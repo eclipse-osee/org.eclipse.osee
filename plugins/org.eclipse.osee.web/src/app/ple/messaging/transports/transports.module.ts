@@ -24,23 +24,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedMessagingModule } from '../shared/shared-messaging.module';
 
-
 @NgModule({
-  declarations: [
-    TransportsComponent
-  ],
-  imports: [
-    CommonModule,
-    BranchPickerModule,
-    MatTableModule,
-    MatTooltipModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    SharedMessagingModule,
-    ActionStateButtonModule,
-    BranchPickerModule,
-    TransportsRoutingModule
-  ]
+	declarations: [TransportsComponent],
+	imports: [
+		CommonModule,
+		BranchPickerModule,
+		MatTableModule,
+		MatTooltipModule,
+		MatButtonModule,
+		MatIconModule,
+		MatDialogModule,
+		SharedMessagingModule,
+		ActionStateButtonModule,
+		BranchPickerModule,
+		TransportsRoutingModule,
+	],
 })
-export class TransportsModule { }
+export class TransportsModule {}

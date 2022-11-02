@@ -21,29 +21,34 @@ import { logicalTypeFormDetailMock } from '../../../../types-interface/mocks/ret
 import { NewAttributeFormFieldComponent } from './new-attribute-form-field.component';
 
 describe('NewAttributeFormFieldComponent', () => {
-  let component: NewAttributeFormFieldComponent;
-  let fixture: ComponentFixture<NewAttributeFormFieldComponent>;
+	let component: NewAttributeFormFieldComponent;
+	let fixture: ComponentFixture<NewAttributeFormFieldComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatFormFieldModule,FormsModule,MatInputModule,MatSelectModule,NoopAnimationsModule],
-      declarations: [ NewAttributeFormFieldComponent ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatFormFieldModule,
+				FormsModule,
+				MatInputModule,
+				MatSelectModule,
+				NoopAnimationsModule,
+			],
+			declarations: [NewAttributeFormFieldComponent],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(NewAttributeFormFieldComponent);
-    component = fixture.componentInstance;
-    component.form = logicalTypeFormDetailMock.fields[0];
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(NewAttributeFormFieldComponent);
+		component = fixture.componentInstance;
+		component.form = logicalTypeFormDetailMock.fields[0];
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-  it('should set default value', () => {
-    component.form.editable = false;
-    component.form.value='123456789'
-    component.setDefaultValue();
-    expect(component.form.value).toEqual(component.form.defaultValue);
-  })
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+	it('should set default value', () => {
+		component.form.editable = false;
+		component.form.value = '123456789';
+		component.setDefaultValue();
+		expect(component.form.value).toEqual(component.form.defaultValue);
+	});
 });

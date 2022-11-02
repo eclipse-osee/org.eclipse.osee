@@ -10,11 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="settingsCapable|async as capable">
-    <ng-container *ngIf="capable==='true'">
-        <button mat-menu-item (click)="openSettingsDialog()" data-cy="mim-settings"><mat-icon>settings</mat-icon><span>Settings</span></button>
-    </ng-container>
-    <ng-container *ngIf="capable==='false'">
-        <button mat-menu-item [disabled]=true>No branch selected</button>
-    </ng-container>
+<ng-container *ngIf="settingsCapable | async as capable">
+	<ng-container *ngIf="capable === 'true'">
+		<button
+			mat-menu-item
+			(click)="openSettingsDialog()"
+			data-cy="mim-settings">
+			<mat-icon>settings</mat-icon><span>Settings</span>
+		</button>
+	</ng-container>
+	<ng-container *ngIf="capable === 'false'">
+		<button
+			mat-menu-item
+			[disabled]="true">
+			No branch selected
+		</button>
+	</ng-container>
 </ng-container>

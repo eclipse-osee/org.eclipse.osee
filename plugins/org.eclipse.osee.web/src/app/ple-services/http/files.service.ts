@@ -16,16 +16,25 @@ import { HttpMethods } from 'src/app/types/http-methods';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class FilesService {
+	constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getFileAsBlob(httpMethod: HttpMethods, url: string, body: string|File|undefined) {
-    const headers = new HttpHeaders().set('Content-Type', body instanceof File ? body.type : 'application/json');
-    const bodyToSend = body instanceof File ? new Blob([body]) : body;
-    return this.http.request(httpMethod, apiURL + url, {body: bodyToSend, headers,  responseType: 'blob'})
-  }
-
+	getFileAsBlob(
+		httpMethod: HttpMethods,
+		url: string,
+		body: string | File | undefined
+	) {
+		const headers = new HttpHeaders().set(
+			'Content-Type',
+			body instanceof File ? body.type : 'application/json'
+		);
+		const bodyToSend = body instanceof File ? new Blob([body]) : body;
+		return this.http.request(httpMethod, apiURL + url, {
+			body: bodyToSend,
+			headers,
+			responseType: 'blob',
+		});
+	}
 }

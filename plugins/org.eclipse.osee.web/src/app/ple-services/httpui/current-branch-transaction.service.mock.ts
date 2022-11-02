@@ -14,6 +14,7 @@ import { of } from 'rxjs';
 import { transactionResultMock } from '../../transactions/transaction.mock';
 import { CurrentBranchTransactionService } from './current-branch-transaction.service';
 
-export const currentBranchTransactionServiceMock: Partial<CurrentBranchTransactionService> = {
-    undoLatest:of(transactionResultMock)
-}
+export const currentBranchTransactionServiceMock: Partial<CurrentBranchTransactionService> =
+	{
+		undoLatest: of(transactionResultMock),
+	};

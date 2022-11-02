@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const enum HttpMethods {
-    GET = "GET",
-    POST = "POST",
-    PATCH = "PATCH",
-    PUT = "PUT",
-    DELETE = "DELETE"
+	GET = 'GET',
+	POST = 'POST',
+	PATCH = 'PATCH',
+	PUT = 'PUT',
+	DELETE = 'DELETE',
 }

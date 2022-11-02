@@ -16,14 +16,17 @@ import { DiffReportComponent } from './diff-report.component';
 import { DiffReportResolver } from '../../../../resolvers/diff-report-resolver.resolver';
 
 const routes: Routes = [
-  { path: '', component: DiffReportComponent, resolve: {
-      diff: DiffReportResolver
-    } 
-  }
+	{
+		path: '',
+		component: DiffReportComponent,
+		resolve: {
+			diff: DiffReportResolver,
+		},
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class DiffReportRoutingModule { }
+export class DiffReportRoutingModule {}

@@ -10,14 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { EnumsService } from "../services/http/enums.service";
+import { of } from 'rxjs';
+import { EnumsService } from '../services/http/enums.service';
 import { unitsMock } from './unit.mock';
 
 export const enumsServiceMock: Partial<EnumsService> = {
-    rates:of(['1','10','15','20']),
-    types:of(['Network','Connection']),
-    periodicities: of(['Periodic', 'Aperiodic', 'OnDemand']),
-    categories: of(["BIT Status", "Flight Test", "Miscellaneous", "N/A", "Network", "Tactical Status", "Taskfile", "Trackfile", "spare"]),
-    units: of(unitsMock)
-}
+	rates: of(['1', '10', '15', '20']),
+	types: of(['Network', 'Connection']),
+	periodicities: of(['Periodic', 'Aperiodic', 'OnDemand']),
+	categories: of([
+		'BIT Status',
+		'Flight Test',
+		'Miscellaneous',
+		'N/A',
+		'Network',
+		'Tactical Status',
+		'Taskfile',
+		'Trackfile',
+		'spare',
+	]),
+	units: of(unitsMock),
+};

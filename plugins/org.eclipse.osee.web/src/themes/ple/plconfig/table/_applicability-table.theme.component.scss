@@ -12,132 +12,154 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../theme-system.scss';
+@import '../../../../theme-system';
 
 @mixin color($config-or-theme) {
-  // Extract the color configuration in case a theme has been passed.
-  // This allows consumers to either pass a theme object or a color configuration.
-  $config: mat.get-color-config($config-or-theme);
-  // Extract the palettes you need from the theme definition.
-  $primary: map-get($config, primary);
-  $accent: map-get($config, accent);
-  $warn: map-get($config, warn);
-  $background: map-get($config, background);
-  $foreground: map-get($config, foreground);
-  $success: map-get($config,success);
-  
-  // Define any styles affected by the theme.
-  .config-group-header {
-    color: mat.get-color-from-palette($primary, darker);
-  }
-  .config-header {
-    color: mat.get-color-from-palette($primary)
-  }
-  .applic-table-header{
-    color:mat.get-color-from-palette($primary,600)
-  }
-  .applic-table-row-even{
-    background-color:mat.get-color-from-palette($background, card)
-  }
-  .applic-table-row-odd{
-    background-color:mat.get-color-from-palette($background, background)
-  }
-  .table-container::-webkit-scrollbar{
-    background-color:mat.get-color-from-palette($background,app-bar);
-  }
-  .table-container::-webkit-scrollbar-track{
-    background-color:mat.get-color-from-palette($background,app-bar);
-    border-radius: 10px;
-  }
-  .table-container::-webkit-scrollbar-thumb{
-    background-color:mat.get-color-from-palette($primary);
-  }
-  .table-container::-webkit-scrollbar-corner{
-    background-color:mat.get-color-from-palette($background,app-bar);
-  }
+	// Extract the color configuration in case a theme has been passed.
+	// This allows consumers to either pass a theme object or a color configuration.
+	$config: mat.get-color-config($config-or-theme);
 
-  .applic-table-row-even-added{
-    background-color:mat.get-color-from-palette($success,100);
-  }
-  .applic-table-row-odd-added{
-    background-color:mat.get-color-from-palette($success,300);
-  }
+	// Extract the palettes you need from the theme definition.
+	$primary: map.get($config, primary);
+	$accent: map.get($config, accent);
+	$warn: map.get($config, warn);
+	$background: map.get($config, background);
+	$foreground: map.get($config, foreground);
+	$success: map.get($config, success);
 
-  .applic-table-row-even-deleted{
-    background-color:mat.get-color-from-palette($warn,100);
-  }
-  .applic-table-row-odd-deleted{
-    background-color:mat.get-color-from-palette($warn,100);
-  }
+	// Define any styles affected by the theme.
+	.config-group-header {
+		color: mat.get-color-from-palette($primary, darker);
+	}
 
-  .applic-table-row-even-changed{
-    background-color:mat.get-color-from-palette($accent,100);
-  }
-  .applic-table-row-odd-changed{
-    background-color:mat.get-color-from-palette($accent,100);
-  }
-  .applic-table-column-changed{
-    background-color:mat.get-color-from-palette($accent,100);
-  }
+	.config-header {
+		color: mat.get-color-from-palette($primary);
+	}
 
-  .applic-table-column-added-row-even{
-    background-color:mat.get-color-from-palette($success,100);
-  }
+	.applic-table-header {
+		color: mat.get-color-from-palette($primary, 600);
+	}
 
-  .applic-table-column-added-row-odd{
-    background-color:mat.get-color-from-palette($success,300);
-  }
-  .applic-table-column-deleted{
-    background-color:mat.get-color-from-palette($warn,100);
-  }
-  .applic-table-column-added{
-    background-color:mat.get-color-from-palette($success,300);
-  }
-  .applicabilityChanged{
-    background-color:mat.get-color-from-palette($accent,100);
-  }
+	.applic-table-row-even {
+		background-color: mat.get-color-from-palette($background, card);
+	}
+
+	.applic-table-row-odd {
+		background-color: mat.get-color-from-palette($background, background);
+	}
+
+	.table-container::-webkit-scrollbar {
+		background-color: mat.get-color-from-palette($background, app-bar);
+	}
+
+	.table-container::-webkit-scrollbar-track {
+		background-color: mat.get-color-from-palette($background, app-bar);
+		border-radius: 10px;
+	}
+
+	.table-container::-webkit-scrollbar-thumb {
+		background-color: mat.get-color-from-palette($primary);
+	}
+
+	.table-container::-webkit-scrollbar-corner {
+		background-color: mat.get-color-from-palette($background, app-bar);
+	}
+
+	.applic-table-row-even-added {
+		background-color: mat.get-color-from-palette($success, 100);
+	}
+
+	.applic-table-row-odd-added {
+		background-color: mat.get-color-from-palette($success, 300);
+	}
+
+	.applic-table-row-even-deleted {
+		background-color: mat.get-color-from-palette($warn, 100);
+	}
+
+	.applic-table-row-odd-deleted {
+		background-color: mat.get-color-from-palette($warn, 100);
+	}
+
+	.applic-table-row-even-changed {
+		background-color: mat.get-color-from-palette($accent, 100);
+	}
+
+	.applic-table-row-odd-changed {
+		background-color: mat.get-color-from-palette($accent, 100);
+	}
+
+	.applic-table-column-changed {
+		background-color: mat.get-color-from-palette($accent, 100);
+	}
+
+	.applic-table-column-added-row-even {
+		background-color: mat.get-color-from-palette($success, 100);
+	}
+
+	.applic-table-column-added-row-odd {
+		background-color: mat.get-color-from-palette($success, 300);
+	}
+
+	.applic-table-column-deleted {
+		background-color: mat.get-color-from-palette($warn, 100);
+	}
+
+	.applic-table-column-added {
+		background-color: mat.get-color-from-palette($success, 300);
+	}
+
+	.applicability-changed {
+		background-color: mat.get-color-from-palette($accent, 100);
+	}
 }
-@mixin typography($config-or-theme){
-    .config-group-header {
-      font: {
-        weight:bold;
-      }
-        text-align: center;
-        cursor: pointer;
-    }
-    .config-header {
-      font: {
-        weight:bold;
-      }
-      text-align: center;
-      cursor: pointer;
-    }
-    .applic-table-header{
-      font: {
-        weight:bold;
-      }
-    }
-    .mat-form-field-infix {
-      border-top: 0;
-      margin-top: 1.25em;
-    }
-    .mat-tooltip{
-      font-size: 15px   // current default is 10px :-/
-    }
+@mixin typography($config-or-theme) {
+	.config-group-header {
+		font: {
+			weight: bold;
+		}
+
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.config-header {
+		font: {
+			weight: bold;
+		}
+
+		text-align: center;
+		cursor: pointer;
+	}
+
+	.applic-table-header {
+		font: {
+			weight: bold;
+		}
+	}
+
+	.mat-form-field-infix {
+		border-top: 0;
+		margin-top: 1.25em;
+	}
+
+	.mat-tooltip {
+		font-size: 15px; // current default is 10px :-/
+	}
 }
-@mixin typography-themed($config-or-theme){
-  $config: mat.get-typography-config($config-or-theme);
+@mixin typography-themed($config-or-theme) {
+	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography){
-    $color: mat.get-color-config($theme);
-    $typography: mat.get-typography-config($typography);
-    @include typography($theme);
-    
-    @if $color != null {  
-      @include color($color);   
-    }  
-    @if $typography != null {
-      @include typography-themed($typography);  
-    }
+@mixin theme($theme, $typography) {
+	$color: mat.get-color-config($theme);
+	$typography: mat.get-typography-config($typography);
+	@include typography($theme);
+
+	@if $color {
+		@include color($color);
+	}
+	@if $typography {
+		@include typography-themed($typography);
+	}
 }

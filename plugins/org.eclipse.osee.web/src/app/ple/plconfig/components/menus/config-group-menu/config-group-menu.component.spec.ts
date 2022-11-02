@@ -27,70 +27,99 @@ import { plCurrentBranchServiceMock } from '../../../testing/mockPlCurrentBranch
 import { ConfigGroupMenuComponent } from './config-group-menu.component';
 
 describe('ConfigGroupMenuComponent', () => {
-  let component: ConfigGroupMenuComponent;
-  let fixture: ComponentFixture<ConfigGroupMenuComponent>;
-  let loader: HarnessLoader;
+	let component: ConfigGroupMenuComponent;
+	let fixture: ComponentFixture<ConfigGroupMenuComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatIconModule,NoopAnimationsModule,RouterTestingModule.withRoutes([{
-        path: '',
-        component: ConfigGroupMenuComponent,
-        children: [
-          {
-            path: ':branchType',
-            children: [
-              {
-                path: ':branchId',
-                children: [
-                  {
-                    path: 'diff',
-                    component:ConfigGroupMenuComponent
-                  }
-                ]
-              },
-            ]
-          }
-        ]
-      },
-      {
-        path: 'diffOpen', component: ConfigGroupMenuComponent, outlet:'rightSideNav'
-      }])],
-      declarations: [ConfigGroupMenuComponent],
-      providers: [
-        { provide: DialogService, useValue: DialogServiceMock },
-        { provide: PlConfigCurrentBranchService, useValue: plCurrentBranchServiceMock }
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatMenuModule,
+				MatIconModule,
+				NoopAnimationsModule,
+				RouterTestingModule.withRoutes([
+					{
+						path: '',
+						component: ConfigGroupMenuComponent,
+						children: [
+							{
+								path: ':branchType',
+								children: [
+									{
+										path: ':branchId',
+										children: [
+											{
+												path: 'diff',
+												component:
+													ConfigGroupMenuComponent,
+											},
+										],
+									},
+								],
+							},
+						],
+					},
+					{
+						path: 'diffOpen',
+						component: ConfigGroupMenuComponent,
+						outlet: 'rightSideNav',
+					},
+				]),
+			],
+			declarations: [ConfigGroupMenuComponent],
+			providers: [
+				{ provide: DialogService, useValue: DialogServiceMock },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: plCurrentBranchServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ConfigGroupMenuComponent);
-    component = fixture.componentInstance;
-    component.group={id:'1',name:'abcd',configurations:[],changes:{name:{previousValue:'123',currentValue:'abcd',transactionToken:{id:'12',branchId:'12345'}}}}
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ConfigGroupMenuComponent);
+		component = fixture.componentInstance;
+		component.group = {
+			id: '1',
+			name: 'abcd',
+			configurations: [],
+			changes: {
+				name: {
+					previousValue: '123',
+					currentValue: 'abcd',
+					transactionToken: { id: '12', branchId: '12345' },
+				},
+			},
+		};
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-  
-  it('should open a diff sidenav', async () => {
-    const spy = spyOn(component, 'viewDiff').and.callThrough();
-    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') }));
-    expect(menu).toBeDefined();
-    await menu.focus();
-    expect(await menu.getSubmenu()).toBeDefined();
-    await (await menu.getSubmenu())?.clickItem({text:'Name'})
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should open the config group dialog', async() => {
-    const spy = spyOn(component, 'openConfigMenu').and.callThrough();
-    const menu = await loader.getHarness(MatMenuItemHarness.with({ text: new RegExp('Open Config Group Menu') }));
-    await menu.click();
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should open a diff sidenav', async () => {
+		const spy = spyOn(component, 'viewDiff').and.callThrough();
+		const menu = await loader.getHarness(
+			MatMenuItemHarness.with({ text: new RegExp('View Diff for abcd') })
+		);
+		expect(menu).toBeDefined();
+		await menu.focus();
+		expect(await menu.getSubmenu()).toBeDefined();
+		await (await menu.getSubmenu())?.clickItem({ text: 'Name' });
+		expect(spy).toHaveBeenCalled();
+	});
+
+	it('should open the config group dialog', async () => {
+		const spy = spyOn(component, 'openConfigMenu').and.callThrough();
+		const menu = await loader.getHarness(
+			MatMenuItemHarness.with({
+				text: new RegExp('Open Config Group Menu'),
+			})
+		);
+		await menu.click();
+		expect(spy).toHaveBeenCalled();
+	});
 });

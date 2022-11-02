@@ -17,27 +17,26 @@ import { BranchListService } from '../../../services/branch-list.service';
 import { BranchRoutedUIService } from '../../../services/branch-routed-ui.service';
 
 @Component({
-  selector: 'osee-branch-selector',
-  templateUrl: './branch-selector.component.html',
-  styleUrls: ['./branch-selector.component.sass']
+	selector: 'osee-branch-selector',
+	templateUrl: './branch-selector.component.html',
+	styleUrls: ['./branch-selector.component.sass'],
 })
-export class BranchSelectorComponent implements OnInit {
+export class BranchSelectorComponent {
+	selectedBranchType = this.routeState.type;
+	selectedBranchId = '';
+	options = this.branchListingService.branches;
+	loading = this.loadingService.isLoading;
+	constructor(
+		private routeState: BranchRoutedUIService,
+		private branchListingService: BranchListService,
+		private loadingService: HttpLoadingService
+	) {
+		this.routeState.id.subscribe((val) => {
+			this.selectedBranchId = val;
+		});
+	}
 
-  selectedBranchType = this.routeState.type;
-  selectedBranchId = "";
-  options = this.branchListingService.branches;
-  loading = this.loadingService.isLoading;
-  constructor (private routeState: BranchRoutedUIService, private branchListingService: BranchListService, private loadingService: HttpLoadingService) {
-    this.routeState.id.subscribe((val) => {
-      this.selectedBranchId = val;
-    })
-  }
-
-  ngOnInit(): void {
-  }
-  
-  selectBranch(event:MatSelectChange) {
-    this.routeState.branchId = event.value;
-  }
-
+	selectBranch(event: MatSelectChange) {
+		this.routeState.branchId = event.value;
+	}
 }

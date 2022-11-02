@@ -16,14 +16,12 @@
 
 import { UserHeaderProdService } from '../app/userdata/services/user-header-prod.service';
 
-
 export const environment = {
-  production: false,
-  headerService: UserHeaderProdService
+	production: false,
+	headerService: UserHeaderProdService,
 };
-export const apiURL = "http://localhost:4200"
+export const apiURL = 'http://localhost:4200';
 export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
-
 
 /*
  * For easier debugging in development mode, you can import the following file

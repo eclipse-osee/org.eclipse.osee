@@ -10,17 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ConnectionNode } from './connection-nodes'
+import { ConnectionNode } from './connection-nodes';
 
-export interface AddMessageDialog{
-    id: string,
-    name: string,
-    description: string,
-    interfaceMessageRate: string,
-    interfaceMessagePeriodicity: string,
-    interfaceMessageWriteAccess: boolean,
-    interfaceMessageType: string,
-    interfaceMessageNumber:string,
-    initiatingNode: ConnectionNode
-
+export interface AddMessageDialog {
+	id: string;
+	name: string;
+	description: string;
+	interfaceMessageRate: string;
+	interfaceMessagePeriodicity: string;
+	interfaceMessageWriteAccess: boolean;
+	interfaceMessageType: string;
+	interfaceMessageNumber: string;
+	initiatingNode: ConnectionNode;
 }

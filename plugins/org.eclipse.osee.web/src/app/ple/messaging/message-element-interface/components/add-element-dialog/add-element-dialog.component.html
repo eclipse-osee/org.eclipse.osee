@@ -10,123 +10,264 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Add Element to {{data.name}}</h1>
-<mat-horizontal-stepper #stepper class ="new-submessage-stepper">
-    <mat-step label="Select Element options" #step1>
-        <mat-dialog-content>
-            <div class="flex row justify-evenly align-baseline">
-                <button mat-raised-button color="primary" class="width-100" matStepperNext (click)="createNew()" data-cy="create-new-btn">Create new Element</button>
-                <p class="width-100 text-center">or</p>
-                <mat-form-field class="width-100">
-                    <mat-label>Select a Element to Add to Structure</mat-label>
-                    <mat-select [(ngModel)]="data.element" (selectionChange)="storeId($event.value)">
-                        <mat-option *ngFor="let option of (availableElements|async)" [value]="option" [id]="option!==undefined && option.id !==undefined ? option.id :''" >
-                            {{option.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-raised-button color="primary" *ngIf="data.element?.id && data.element?.id!=='-1'" (click)="moveToReview(stepper)">Proceed to Review</button>
-        </mat-dialog-actions>
-    </mat-step>
-    <mat-step label="Define element" #step2>
-        <mat-dialog-content>
-            <div style="visibility:visible">
-                <mat-form-field class="width-100">
-                    <mat-label>Name</mat-label>
-                    <input matInput [(ngModel)]="data.element.name" required data-cy="field-name">
-                    <mat-hint>Name of the element being created</mat-hint>
-                </mat-form-field>
-                <br>
-                <mat-form-field class="width-100">
-                    <mat-label>Description</mat-label>
-                    <textarea cdkTextareaAutosize matInput [(ngModel)]="data.element.description" required data-cy="field-description"></textarea>
-                    <mat-hint>Description of the element being created</mat-hint>
-                </mat-form-field>
-                <br>
-                <mat-form-field class="width-100">
-                    <mat-label>Notes</mat-label>
-                    <textarea cdkTextareaAutosize matInput [(ngModel)]="data.element.notes" data-cy="field-notes"></textarea>
-                    <mat-hint>Notes associated with the element being created</mat-hint>
-                </mat-form-field>
-                <br>
-                <mat-form-field class="width-100">
-                    <mat-label>Start Index</mat-label>
-                    <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexStart" required data-cy="field-index-start">
-                    <mat-hint>Starting index of the element array being created(if inserting an array of elements)</mat-hint>
-                </mat-form-field>
-                <br>
-                <mat-form-field class="width-100">
-                    <mat-label>End Index</mat-label>
-                    <input type="number" matInput [(ngModel)]="data.element.interfaceElementIndexEnd" required data-cy="field-index-end">
-                    <mat-hint>Ending index of the element array being created(if inserting an array of elements)</mat-hint>
-                </mat-form-field>
-                <br>
-                <mat-slide-toggle [(ngModel)]="data.element.interfaceElementAlterable" labelPosition='before' data-cy="field-alterable">
-                    Alterable
-                </mat-slide-toggle>
-                <br>
-            </div>
-            <br>
-            <ng-container *ngIf="(availableTypes|async) as _availableTypes">
-                <mat-form-field class="width-100">
-                    <mat-label>Platform Type</mat-label>
-                    <mat-select [(ngModel)]="data.type" (ngModelChange)="updateEnumLiteral()" required [compareWith]="compareTypes">
-                        <mat-option *ngFor="let selectableType of _availableTypes" [value]="selectableType">
-                            {{selectableType.name}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-hint align="start">{{platformTypeState|async}}</mat-hint>
-                    <mat-hint align="end">Find existing element information to create your element or create new type information.</mat-hint>
-                    <div matSuffix>
-                        <ng-container *ngIf="!searchOpen">
-                            <button mat-icon-button (click)="openSearch($event)" class="search-button"><mat-icon color="primary" data-cy="search-type-menu">search</mat-icon></button>
-                        </ng-container>
-                        <button mat-icon-button (click)="openPlatformTypeDialog($event)"><mat-icon color="success">add</mat-icon></button>
-                    </div>
-                </mat-form-field>
-            </ng-container>
-            <ng-container *ngIf="searchOpen">
-                <mat-divider></mat-divider>
-                <app-platform-type-query [platformTypes]="(types|async)||[]" (query)="receiveQuery($event)"></app-platform-type-query>
-                <br>
-            </ng-container>
-            <ng-container *ngIf="typeDialogOpen">
-                <mat-divider></mat-divider>
-                <osee-new-type-dialog (dialogClosed)="receivePlatformTypeData($event)" [preFillData]="(availableTypes|async)||[]"></osee-new-type-dialog>
-                <br>
-            </ng-container>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-raised-button matStepperPrevious data-cy="back-2" (click)="resetDialog()">Back</button>
-            <button mat-raised-button color="primary" (click)="resetDialog()" *ngIf="data.element.name.length>0 && 
-                                                            data.element.description.length>0 &&
-                                                            data.type.name.length>0 &&
-                                                            +(data.type.id!==undefined && data.type.id)>0" matStepperNext data-cy="stepper-next">Next</button>
-        </mat-dialog-actions>
-    </mat-step>
-    <mat-step label="Review" #step3>
-        <mat-dialog-content>
-            <div class="flex column">
-                An element will be related to:
-                <mat-label>{{data.name}}</mat-label> with the following properties:
-                <mat-label>Element Name: {{data.element.name}}</mat-label>
-                <mat-label>Element Description: {{data.element.description}}</mat-label>
-                <mat-label>Element Notes: {{data.element.notes}}</mat-label>
-                <mat-label>Element Start Index: {{data.element.interfaceElementIndexStart}}</mat-label>
-                <mat-label>Element End Index: {{data.element.interfaceElementIndexEnd}}</mat-label>
-                <mat-label>Element Alterable: {{data.element.interfaceElementAlterable}}</mat-label>
-                <mat-label>Enumerated Literals: {{data.element.enumLiteral}}</mat-label>
-                <mat-label>Platform Type: {{data.type.name}}</mat-label>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button mat-button matStepperPrevious data-cy="cancel-btn">Back</button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="data" data-cy="submit-btn">
-                Ok
-            </button>
-        </mat-dialog-actions>
-    </mat-step>
+<h1 mat-dialog-title>Add Element to {{ data.name }}</h1>
+<mat-horizontal-stepper
+	#stepper
+	class="new-submessage-stepper">
+	<mat-step
+		label="Select Element options"
+		#step1>
+		<mat-dialog-content>
+			<div class="flex row justify-evenly align-baseline">
+				<button
+					mat-raised-button
+					color="primary"
+					class="width-100"
+					matStepperNext
+					(click)="createNew()"
+					data-cy="create-new-btn">
+					Create new Element
+				</button>
+				<p class="width-100 text-center">or</p>
+				<mat-form-field class="width-100">
+					<mat-label>Select a Element to Add to Structure</mat-label>
+					<mat-select
+						[(ngModel)]="data.element"
+						(selectionChange)="storeId($event.value)">
+						<mat-option
+							*ngFor="let option of availableElements | async"
+							[value]="option"
+							[id]="
+								option !== undefined && option.id !== undefined
+									? option.id
+									: ''
+							">
+							{{ option.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				color="primary"
+				*ngIf="data.element?.id && data.element?.id !== '-1'"
+				(click)="moveToReview(stepper)">
+				Proceed to Review
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
+	<mat-step
+		label="Define element"
+		#step2>
+		<mat-dialog-content>
+			<div style="visibility: visible">
+				<mat-form-field class="width-100">
+					<mat-label>Name</mat-label>
+					<input
+						matInput
+						[(ngModel)]="data.element.name"
+						required
+						data-cy="field-name" />
+					<mat-hint>Name of the element being created</mat-hint>
+				</mat-form-field>
+				<br />
+				<mat-form-field class="width-100">
+					<mat-label>Description</mat-label>
+					<textarea
+						cdkTextareaAutosize
+						matInput
+						[(ngModel)]="data.element.description"
+						required
+						data-cy="field-description"></textarea>
+					<mat-hint
+						>Description of the element being created</mat-hint
+					>
+				</mat-form-field>
+				<br />
+				<mat-form-field class="width-100">
+					<mat-label>Notes</mat-label>
+					<textarea
+						cdkTextareaAutosize
+						matInput
+						[(ngModel)]="data.element.notes"
+						data-cy="field-notes"></textarea>
+					<mat-hint
+						>Notes associated with the element being
+						created</mat-hint
+					>
+				</mat-form-field>
+				<br />
+				<mat-form-field class="width-100">
+					<mat-label>Start Index</mat-label>
+					<input
+						type="number"
+						matInput
+						[(ngModel)]="data.element.interfaceElementIndexStart"
+						required
+						data-cy="field-index-start" />
+					<mat-hint
+						>Starting index of the element array being created(if
+						inserting an array of elements)</mat-hint
+					>
+				</mat-form-field>
+				<br />
+				<mat-form-field class="width-100">
+					<mat-label>End Index</mat-label>
+					<input
+						type="number"
+						matInput
+						[(ngModel)]="data.element.interfaceElementIndexEnd"
+						required
+						data-cy="field-index-end" />
+					<mat-hint
+						>Ending index of the element array being created(if
+						inserting an array of elements)</mat-hint
+					>
+				</mat-form-field>
+				<br />
+				<mat-slide-toggle
+					[(ngModel)]="data.element.interfaceElementAlterable"
+					labelPosition="before"
+					data-cy="field-alterable">
+					Alterable
+				</mat-slide-toggle>
+				<br />
+			</div>
+			<br />
+			<ng-container *ngIf="availableTypes | async as _availableTypes">
+				<mat-form-field class="width-100">
+					<mat-label>Platform Type</mat-label>
+					<mat-select
+						[(ngModel)]="data.type"
+						(ngModelChange)="updateEnumLiteral()"
+						required
+						[compareWith]="compareTypes">
+						<mat-option
+							*ngFor="let selectableType of _availableTypes"
+							[value]="selectableType">
+							{{ selectableType.name }}
+						</mat-option>
+					</mat-select>
+					<mat-hint align="start">{{
+						platformTypeState | async
+					}}</mat-hint>
+					<mat-hint align="end"
+						>Find existing element information to create your
+						element or create new type information.</mat-hint
+					>
+					<div matSuffix>
+						<ng-container *ngIf="!searchOpen">
+							<button
+								mat-icon-button
+								(click)="openSearch($event)"
+								class="search-button">
+								<mat-icon
+									color="primary"
+									data-cy="search-type-menu"
+									>search</mat-icon
+								>
+							</button>
+						</ng-container>
+						<button
+							mat-icon-button
+							(click)="openPlatformTypeDialog($event)">
+							<mat-icon color="success">add</mat-icon>
+						</button>
+					</div>
+				</mat-form-field>
+			</ng-container>
+			<ng-container *ngIf="searchOpen">
+				<mat-divider></mat-divider>
+				<osee-messaging-platform-type-query
+					[platformTypes]="(types | async) || []"
+					(query)="
+						receiveQuery($event)
+					"></osee-messaging-platform-type-query>
+				<br />
+			</ng-container>
+			<ng-container *ngIf="typeDialogOpen">
+				<mat-divider></mat-divider>
+				<osee-new-type-dialog
+					(dialogClosed)="receivePlatformTypeData($event)"
+					[preFillData]="
+						(availableTypes | async) || []
+					"></osee-new-type-dialog>
+				<br />
+			</ng-container>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				matStepperPrevious
+				data-cy="back-2"
+				(click)="resetDialog()">
+				Back
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="resetDialog()"
+				*ngIf="
+					data.element.name.length > 0 &&
+					data.element.description.length > 0 &&
+					data.type.name.length > 0 &&
+					+(data.type.id !== undefined && data.type.id) > 0
+				"
+				matStepperNext
+				data-cy="stepper-next">
+				Next
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
+	<mat-step
+		label="Review"
+		#step3>
+		<mat-dialog-content>
+			<div class="flex column">
+				An element will be related to:
+				<mat-label>{{ data.name }}</mat-label> with the following
+				properties:
+				<mat-label>Element Name: {{ data.element.name }}</mat-label>
+				<mat-label
+					>Element Description:
+					{{ data.element.description }}</mat-label
+				>
+				<mat-label>Element Notes: {{ data.element.notes }}</mat-label>
+				<mat-label
+					>Element Start Index:
+					{{ data.element.interfaceElementIndexStart }}</mat-label
+				>
+				<mat-label
+					>Element End Index:
+					{{ data.element.interfaceElementIndexEnd }}</mat-label
+				>
+				<mat-label
+					>Element Alterable:
+					{{ data.element.interfaceElementAlterable }}</mat-label
+				>
+				<mat-label
+					>Enumerated Literals:
+					{{ data.element.enumLiteral }}</mat-label
+				>
+				<mat-label>Platform Type: {{ data.type.name }}</mat-label>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-button
+				matStepperPrevious
+				data-cy="cancel-btn">
+				Back
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				[mat-dialog-close]="data"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
 </mat-horizontal-stepper>

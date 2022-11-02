@@ -18,41 +18,52 @@ import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { testBranchApplicability, testCfgGroups } from '../../testing/mockBranchService';
+import {
+	testBranchApplicability,
+	testCfgGroups,
+} from '../../testing/mockBranchService';
 
 import { ConfigurationGroupDropdownComponent } from './configuration-group-dropdown.component';
 
 describe('ConfigurationGroupDropdownComponent', () => {
-  let component: ConfigurationGroupDropdownComponent;
-  let fixture: ComponentFixture<ConfigurationGroupDropdownComponent>;
+	let component: ConfigurationGroupDropdownComponent;
+	let fixture: ComponentFixture<ConfigurationGroupDropdownComponent>;
 
-  beforeEach(async () => {
-    const currentBranchService = jasmine.createSpyObj('PlConfigCurrentBranchService', [], ['cfgGroups', 'branchApplicability']);
-    const uiService = jasmine.createSpyObj('PlConfigUIStateService', [], ['updateReqConfig']);
-    await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatButtonModule,MatIconModule],
-      declarations: [ConfigurationGroupDropdownComponent],
-      providers: [
-        { provide: MatDialog, useValue: {} },
-        {
-          provide: PlConfigCurrentBranchService, useValue: {
-            branchApplicability: of(testBranchApplicability),
-            cfgGroups: of(testCfgGroups)
-          }
-        },
-        { provide: PlConfigUIStateService, useValue: uiService}
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		const currentBranchService = jasmine.createSpyObj(
+			'PlConfigCurrentBranchService',
+			[],
+			['cfgGroups', 'branchApplicability']
+		);
+		const uiService = jasmine.createSpyObj(
+			'PlConfigUIStateService',
+			[],
+			['updateReqConfig']
+		);
+		await TestBed.configureTestingModule({
+			imports: [MatMenuModule, MatButtonModule, MatIconModule],
+			declarations: [ConfigurationGroupDropdownComponent],
+			providers: [
+				{ provide: MatDialog, useValue: {} },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: {
+						branchApplicability: of(testBranchApplicability),
+						cfgGroups: of(testCfgGroups),
+					},
+				},
+				{ provide: PlConfigUIStateService, useValue: uiService },
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ConfigurationGroupDropdownComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ConfigurationGroupDropdownComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -16,16 +16,20 @@ import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { StructureNamesService } from '../http/structure-names.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class CurrentStructureNamesService {
-
-  private _names = this.ui.id.pipe(
-    filter((id) => id !== '' && id !== undefined && id !== '-1' && id!=='0'),
-    switchMap((id)=>this.structureService.getStructureNames(id))
-  )
-  constructor (private ui: UiService, private structureService: StructureNamesService) { }
-  get names() {
-    return this._names;
-  }
+	private _names = this.ui.id.pipe(
+		filter(
+			(id) => id !== '' && id !== undefined && id !== '-1' && id !== '0'
+		),
+		switchMap((id) => this.structureService.getStructureNames(id))
+	);
+	constructor(
+		private ui: UiService,
+		private structureService: StructureNamesService
+	) {}
+	get names() {
+		return this._names;
+	}
 }

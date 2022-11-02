@@ -10,6 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
- <ng-container *ngIf="(messageData|async) as _data">
-    <osee-structure-table [messageData]="_data" [breadCrumb]="(breadCrumb|async)||''" [hasFilter]="'true'==='true'" previousLink="../../../"></osee-structure-table>
- </ng-container>
+<ng-container *ngIf="messageData | async as _data">
+	<osee-structure-table
+		[messageData]="_data"
+		[breadCrumb]="(breadCrumb | async) || ''"
+		[hasFilter]="'true' === 'true'"
+		previousLink="../../../"></osee-structure-table>
+</ng-container>

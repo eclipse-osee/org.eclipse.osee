@@ -14,52 +14,57 @@ import { Component, OnInit } from '@angular/core';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap, tap } from 'rxjs/operators';
 import { DiffReportService } from '../../../shared/services/ui/diff-report.service';
-import { DiffHeaderType, nodeDiffItem } from '../../../shared/types/DifferenceReport.d';
+import {
+	DiffHeaderType,
+	nodeDiffItem,
+} from '../../../shared/types/DifferenceReport.d';
 
 @Component({
-  selector: 'app-node-diffs',
-  templateUrl: './node-diffs.component.html',
-  styleUrls: ['./node-diffs.component.sass']
+	selector: 'osee-messaging-node-diffs',
+	templateUrl: './node-diffs.component.html',
+	styleUrls: ['./node-diffs.component.sass'],
 })
-export class NodeDiffsComponent implements OnInit {
+export class NodeDiffsComponent {
+	constructor(private diffReportService: DiffReportService) {}
 
+	headers: (keyof nodeDiffItem)[] = [
+		'name',
+		'description',
+		'address',
+		'color',
+		'applicability',
+	];
 
-  constructor(private diffReportService: DiffReportService) { }
+	headerType = DiffHeaderType.NODE;
 
-  ngOnInit(): void {
-  }
+	allNodes = this.diffReportService.nodes;
 
-  headers:(keyof nodeDiffItem)[] = [
-    'name',
-    'description',
-    'address',
-    'color',
-    'applicability'
-  ];
+	nodesChanged = this.allNodes.pipe(
+		switchMap((nodes) =>
+			from(nodes).pipe(
+				filter(
+					(node) => !node.diffInfo?.added && !node.diffInfo?.deleted
+				),
+				reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
+			)
+		)
+	);
 
-  headerType = DiffHeaderType.NODE;
+	nodesAdded = this.allNodes.pipe(
+		switchMap((nodes) =>
+			from(nodes).pipe(
+				filter((node) => node.diffInfo?.added === true),
+				reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
+			)
+		)
+	);
 
-  allNodes = this.diffReportService.nodes;
-
-  nodesChanged = this.allNodes.pipe(
-    switchMap(nodes => from(nodes).pipe(
-      filter(node => !node.diffInfo?.added && !node.diffInfo?.deleted),
-      reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
-    ))
-  )
-
-  nodesAdded = this.allNodes.pipe(
-    switchMap(nodes => from(nodes).pipe(
-      filter(node => node.diffInfo?.added === true),
-      reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
-    ))
-  )
-
-  nodesDeleted = this.allNodes.pipe(
-    switchMap(nodes => from(nodes).pipe(
-      filter(node => node.diffInfo?.deleted === true),
-      reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
-    ))
-  )
-
+	nodesDeleted = this.allNodes.pipe(
+		switchMap((nodes) =>
+			from(nodes).pipe(
+				filter((node) => node.diffInfo?.deleted === true),
+				reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
+			)
+		)
+	);
 }

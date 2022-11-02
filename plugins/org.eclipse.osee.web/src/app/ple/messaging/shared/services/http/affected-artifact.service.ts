@@ -16,32 +16,71 @@ import { apiURL } from '../../../../../../environments/environment';
 import { affectedArtifact } from '../../types/affectedArtifact';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class AffectedArtifactService {
+	constructor(private http: HttpClient) {}
+	getEnumSetsByEnums(branchId: string | number, enumId: string | number) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL + '/mim/branch/' + branchId + '/affected/enums/' + enumId
+		);
+	}
 
-  constructor (private http: HttpClient) { }
-  getEnumSetsByEnums(branchId: string | number, enumId:string|number) {
-    return this.http.get<affectedArtifact[]>(apiURL+'/mim/branch/'+branchId+'/affected/enums/'+enumId)
-  }
+	getPlatformTypesByEnumSet(
+		branchId: string | number,
+		enumSetId: string | number
+	) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/affected/enumsets/' +
+				enumSetId
+		);
+	}
 
-  getPlatformTypesByEnumSet(branchId: string | number, enumSetId:string|number) {
-    return this.http.get<affectedArtifact[]>(apiURL+'/mim/branch/'+branchId+'/affected/enumsets/'+enumSetId)
-  }
+	getElementsByType(branchId: string | number, typeId: string | number) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL + '/mim/branch/' + branchId + '/affected/types/' + typeId
+		);
+	}
 
-  getElementsByType(branchId: string | number, typeId:string|number) {
-    return this.http.get<affectedArtifact[]>(apiURL+'/mim/branch/'+branchId+'/affected/types/'+typeId)
-  }
+	getStructuresByElement(
+		branchId: string | number,
+		elementId: string | number
+	) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/affected/elements/' +
+				elementId
+		);
+	}
 
-  getStructuresByElement(branchId: string | number, elementId:string|number) {
-    return this.http.get<affectedArtifact[]>(apiURL+'/mim/branch/'+branchId+'/affected/elements/'+elementId)
-  }
+	getSubMessagesByStructure(
+		branchId: string | number,
+		structureId: string | number
+	) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/affected/structures/' +
+				structureId
+		);
+	}
 
-  getSubMessagesByStructure(branchId: string | number, structureId:string|number) {
-    return this.http.get<affectedArtifact[]>(apiURL+'/mim/branch/'+branchId+'/affected/structures/'+structureId)
-  }
-
-  getMessagesBySubMessage(branchId: string | number, subMessageId:string|number) {
-    return this.http.get<affectedArtifact[]>(apiURL+'/mim/branch/'+branchId+'/affected/submessages/'+subMessageId)
-  }
+	getMessagesBySubMessage(
+		branchId: string | number,
+		subMessageId: string | number
+	) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/affected/submessages/' +
+				subMessageId
+		);
+	}
 }

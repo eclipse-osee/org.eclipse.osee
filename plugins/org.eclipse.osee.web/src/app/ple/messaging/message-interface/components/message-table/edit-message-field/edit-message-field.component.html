@@ -10,53 +10,93 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field *ngIf="header !== 'interfaceMessageWriteAccess';else writeAccess" cdkMonitorSubtreeFocus (cdkFocusChange)="focusChanged($event)">
-    <ng-container *ngIf="header === 'interfaceMessageRate' || header === 'interfaceMessagePeriodicity' || header === 'interfaceMessageType' || header === 'applicability';else generalEdit">
-        <ng-container *ngIf="header ==='interfaceMessageRate'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateImmediately(value)" required>
-                <mat-option *ngFor="let option of (rates|async)" [value]="option" >
-                    {{option}}
-                </mat-option>
-            </mat-select>
-        </ng-container>
-        <ng-container *ngIf="header ==='interfaceMessageType'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateImmediately(value)" required>
-                <mat-option *ngFor="let option of (types|async)" [value]="option" >
-                    {{option}}
-                </mat-option>
-            </mat-select>
-        </ng-container>
-        <ng-container *ngIf="header ==='interfaceMessagePeriodicity'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateImmediately(value)" required>
-                <mat-option *ngFor="let option of (periodicities|async)" [value]="option" >
-                    {{option}}
-                </mat-option>
-            </mat-select>
-        </ng-container>
-        <ng-container *ngIf="header ==='applicability'">
-            <mat-select [(ngModel)]="value" (ngModelChange)="updateImmediately(value)" [compareWith]="compareApplics" required>
-                <mat-option *ngFor="let option of (applics|async)" [value]="option" [id]="option.id" >
-                    {{option.name}}
-                </mat-option>
-            </mat-select>
-        </ng-container>
-    </ng-container>
-    <ng-template #generalEdit>
-        <ng-container *ngIf="header==='interfaceMessageNumber'; else stringEdit">
-            <input matInput type="number" [(ngModel)]="value" (ngModelChange)="updateMessage(value)">
-        </ng-container>
-        <ng-template #stringEdit>
-            <input matInput [(ngModel)]="value" (ngModelChange)="updateMessage(value)">
-        </ng-template>
-    </ng-template>
+<mat-form-field
+	*ngIf="header !== 'interfaceMessageWriteAccess'; else writeAccess"
+	cdkMonitorSubtreeFocus
+	(cdkFocusChange)="focusChanged($event)">
+	<ng-container
+		*ngIf="
+			header === 'interfaceMessageRate' ||
+				header === 'interfaceMessagePeriodicity' ||
+				header === 'interfaceMessageType' ||
+				header === 'applicability';
+			else generalEdit
+		">
+		<ng-container *ngIf="header === 'interfaceMessageRate'">
+			<mat-select
+				[(ngModel)]="value"
+				(ngModelChange)="updateImmediately(value)"
+				required>
+				<mat-option
+					*ngFor="let option of rates | async"
+					[value]="option">
+					{{ option }}
+				</mat-option>
+			</mat-select>
+		</ng-container>
+		<ng-container *ngIf="header === 'interfaceMessageType'">
+			<mat-select
+				[(ngModel)]="value"
+				(ngModelChange)="updateImmediately(value)"
+				required>
+				<mat-option
+					*ngFor="let option of types | async"
+					[value]="option">
+					{{ option }}
+				</mat-option>
+			</mat-select>
+		</ng-container>
+		<ng-container *ngIf="header === 'interfaceMessagePeriodicity'">
+			<mat-select
+				[(ngModel)]="value"
+				(ngModelChange)="updateImmediately(value)"
+				required>
+				<mat-option
+					*ngFor="let option of periodicities | async"
+					[value]="option">
+					{{ option }}
+				</mat-option>
+			</mat-select>
+		</ng-container>
+		<ng-container *ngIf="header === 'applicability'">
+			<mat-select
+				[(ngModel)]="value"
+				(ngModelChange)="updateImmediately(value)"
+				[compareWith]="compareApplics"
+				required>
+				<mat-option
+					*ngFor="let option of applics | async"
+					[value]="option"
+					[id]="option.id">
+					{{ option.name }}
+				</mat-option>
+			</mat-select>
+		</ng-container>
+	</ng-container>
+	<ng-template #generalEdit>
+		<ng-container
+			*ngIf="header === 'interfaceMessageNumber'; else stringEdit">
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="value"
+				(ngModelChange)="updateMessage(value)" />
+		</ng-container>
+		<ng-template #stringEdit>
+			<input
+				matInput
+				[(ngModel)]="value"
+				(ngModelChange)="updateMessage(value)" />
+		</ng-template>
+	</ng-template>
 </mat-form-field>
 <ng-template #writeAccess>
-    <mat-slide-toggle [(ngModel)]="value" [labelPosition]='value? "after":"before"' color="primary" (ngModelChange)="updateImmediately(value)">
-        <ng-container *ngIf="value;else read">
-            Writable
-        </ng-container>
-        <ng-template #read>
-            Read Only
-        </ng-template>
-    </mat-slide-toggle>
+	<mat-slide-toggle
+		[(ngModel)]="value"
+		[labelPosition]="value ? 'after' : 'before'"
+		color="primary"
+		(ngModelChange)="updateImmediately(value)">
+		<ng-container *ngIf="value; else read"> Writable </ng-container>
+		<ng-template #read> Read Only </ng-template>
+	</mat-slide-toggle>
 </ng-template>

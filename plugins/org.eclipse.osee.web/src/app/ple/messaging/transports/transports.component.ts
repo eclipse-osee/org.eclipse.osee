@@ -22,46 +22,56 @@ import { HeaderService } from '../shared/services/ui/header.service';
 import { transportType } from '../shared/types/transportType';
 
 @Component({
-  selector: 'osee-transports',
-  templateUrl: './transports.component.html',
-  styleUrls: ['./transports.component.sass']
+	selector: 'osee-transports',
+	templateUrl: './transports.component.html',
+	styleUrls: ['./transports.component.sass'],
 })
 export class TransportsComponent implements OnInit, OnDestroy {
+	private _done = new Subject();
+	transports = this.transportTypesService.transportTypes.pipe(
+		takeUntil(this._done)
+	);
+	headers = this.headerService.AllTransportTypeHeaders.pipe(
+		takeUntil(this._done)
+	);
+	constructor(
+		private transportTypesService: CurrentTransportTypeService,
+		private headerService: HeaderService,
+		private ui: UiService,
+		private route: ActivatedRoute,
+		public dialog: MatDialog
+	) {}
+	ngOnDestroy(): void {
+		this._done.next(true);
+	}
 
-  private _done = new Subject();
-  transports = this.transportTypesService.transportTypes.pipe(
-    takeUntil(this._done)
-  );
-  headers = this.headerService.AllTransportTypeHeaders.pipe(
-    takeUntil(this._done)
-  );
-  constructor (private transportTypesService: CurrentTransportTypeService, private headerService: HeaderService, private ui: UiService, private route:ActivatedRoute,public dialog: MatDialog) { }
-  ngOnDestroy(): void {
-    this._done.next(true);
-  }
+	valueTracker(index: any, item: any) {
+		return index;
+	}
 
-  valueTracker(index: any, item: any) {
-    return index;
-  }
+	getHeaderByName(value: string) {
+		return this.headerService.getHeaderByName(value, 'transportType');
+	}
+	ngOnInit(): void {
+		this.route.paramMap
+			.pipe(
+				tap((params) => {
+					this.ui.typeValue = params.get('branchType') || '';
+					this.ui.idValue = params.get('branchId') || '';
+				})
+			)
+			.subscribe();
+	}
 
-  getHeaderByName(value: string) {
-    return this.headerService.getHeaderByName(value,'transportType');
-  }
-  ngOnInit(): void {
-    this.route.paramMap.pipe(
-      tap(params => {
-        this.ui.typeValue = params.get('branchType') || '';
-        this.ui.idValue = params.get('branchId') || '';
-      })
-    ).subscribe();
-  }
-
-  openAddDialog() {
-    this.dialog.open(NewTransportTypeDialogComponent).afterClosed().pipe(
-      take(1),
-      filter((value): value is transportType => value !== undefined),
-      switchMap(type=>this.transportTypesService.createType(type))
-    ).subscribe();
-  }
-
+	openAddDialog() {
+		this.dialog
+			.open(NewTransportTypeDialogComponent)
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter((value): value is transportType => value !== undefined),
+				switchMap((type) => this.transportTypesService.createType(type))
+			)
+			.subscribe();
+	}
 }

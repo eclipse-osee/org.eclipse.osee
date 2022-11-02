@@ -14,34 +14,49 @@ import { Component, Input, OnInit } from '@angular/core';
 import { applic } from 'src/app/types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
 import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
-import { ExtendedNameValuePair, ExtendedNameValuePairWithChanges } from '../../../types/base-types/ExtendedNameValuePair';
+import {
+	ExtendedNameValuePair,
+	ExtendedNameValuePairWithChanges,
+} from '../../../types/base-types/ExtendedNameValuePair';
 
 @Component({
-  selector: 'plconfig-value-menu',
-  templateUrl: './value-menu.component.html',
-  styleUrls: ['./value-menu.component.sass']
+	selector: 'osee-plconfig-value-menu',
+	templateUrl: './value-menu.component.html',
+	styleUrls: ['./value-menu.component.sass'],
 })
-export class ValueMenuComponent implements OnInit {
+export class ValueMenuComponent {
+	@Input() value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges = {
+		id: '',
+		name: '',
+		value: '',
+		values: [],
+	};
 
-  @Input() value: (ExtendedNameValuePair|ExtendedNameValuePairWithChanges)={id:'',name:'',value:'',values:[]}
+	constructor(private currentBranchService: PlConfigCurrentBranchService) {}
 
-  constructor(private currentBranchService:PlConfigCurrentBranchService) { }
+	hasChanges(
+		value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges
+	): value is ExtendedNameValuePairWithChanges {
+		return (
+			(value as ExtendedNameValuePairWithChanges).changes !== undefined
+		);
+	}
 
-  ngOnInit(): void {
-  }
-  hasChanges(value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges): value is ExtendedNameValuePairWithChanges {
-    return (value as ExtendedNameValuePairWithChanges).changes!==undefined
-  }
-
-  viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic;
-    let prev = value.previousValue as string | number | applic;
-    if (prev === null) {
-      prev = ''
-    }
-    if (current === null) {
-      current = ''
-    }
-    this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-  }
+	viewDiff(open: boolean, value: difference, header: string) {
+		let current = value.currentValue as string | number | applic;
+		let prev = value.previousValue as string | number | applic;
+		if (prev === null) {
+			prev = '';
+		}
+		if (current === null) {
+			current = '';
+		}
+		this.currentBranchService.sideNav = {
+			opened: open,
+			field: header,
+			currentValue: current,
+			previousValue: prev,
+			transaction: value.transactionToken,
+		};
+	}
 }

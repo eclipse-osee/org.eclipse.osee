@@ -31,51 +31,55 @@ import { EnumFormComponent } from './enum-form.component';
 import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 describe('EnumFormComponent', () => {
-  let component: EnumFormComponent;
-  let fixture: ComponentFixture<EnumFormComponent>;
-  let loader: HarnessLoader;
+	let component: EnumFormComponent;
+	let fixture: ComponentFixture<EnumFormComponent>;
+	let loader: HarnessLoader;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [
-                MatTableModule,
-                FormsModule,
-                MatFormFieldModule,
-                MatInputModule,
-                MatSelectModule,
-                NoopAnimationsModule,
-                MatOptionLoadingModule
-            ],
-            declarations: [EnumFormComponent],
-            providers: [
-                {
-                    provide: ApplicabilityListService,
-                    useValue: applicabilityListServiceMock,
-                },
-                { provide: QueryService, useValue: QueryServiceMock },
-            ],
-        }).compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatTableModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				NoopAnimationsModule,
+				MatOptionLoadingModule,
+			],
+			declarations: [EnumFormComponent],
+			providers: [
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+				{ provide: QueryService, useValue: QueryServiceMock },
+			],
+		}).compileComponents();
 
-        fixture = TestBed.createComponent(EnumFormComponent);
-      component = fixture.componentInstance;
-      component.enumSetName = 'enumSet1';
-      component.bitSize = '32';
-      loader = TestbedHarnessEnvironment.loader(fixture);
-      fixture.detectChanges();
-      component.ngOnChanges({});
-    });
+		fixture = TestBed.createComponent(EnumFormComponent);
+		component = fixture.componentInstance;
+		component.enumSetName = 'enumSet1';
+		component.bitSize = '32';
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+		component.ngOnChanges({});
+	});
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-  
-  it('should add an enum', async () => {
-        let table = await loader.getHarness(MatTableHarness);
-        expect(table).toBeDefined();
-        let addButton = await (await (await (await table.getFooterRows())[0].getCells({ columnName: 'applicability' })))[0].getHarness(MatButtonHarness);
-        expect(await addButton.isDisabled()).toBe(false);
-        let spy = spyOn(component, 'addEnum').and.callThrough();
-        await addButton.click();
-        expect(spy).toHaveBeenCalled();
-  })
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+
+	it('should add an enum', async () => {
+		let table = await loader.getHarness(MatTableHarness);
+		expect(table).toBeDefined();
+		let addButton = await (
+			await await (
+				await table.getFooterRows()
+			)[0].getCells({ columnName: 'applicability' })
+		)[0].getHarness(MatButtonHarness);
+		expect(await addButton.isDisabled()).toBe(false);
+		let spy = spyOn(component, 'addEnum').and.callThrough();
+		await addButton.click();
+		expect(spy).toHaveBeenCalled();
+	});
 });

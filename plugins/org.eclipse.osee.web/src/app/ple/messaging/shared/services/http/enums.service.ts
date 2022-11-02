@@ -16,39 +16,48 @@ import { share, shareReplay } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class EnumsService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
+	private _baseURL = apiURL + '/mim/enums/';
+	private _periodicities = this.http
+		.get<string[]>(this.baseURL + 'MessagePeriodicities')
+		.pipe(share());
+	private _rates = this.http
+		.get<string[]>(this.baseURL + 'MessageRates')
+		.pipe(share());
+	private _types = this.http
+		.get<string[]>(this.baseURL + 'MessageTypes')
+		.pipe(share());
+	private _categories = this.http
+		.get<string[]>(this.baseURL + 'StructureCategories')
+		.pipe(share(), shareReplay(1));
+	private _units = this.http
+		.get<string[]>(this.baseURL + 'Units')
+		.pipe(share(), shareReplay(1));
 
-  private _baseURL = apiURL + '/mim/enums/'
-  private _periodicities = this.http.get<string[]>(this.baseURL + 'MessagePeriodicities').pipe(share());
-  private _rates = this.http.get<string[]>(this.baseURL + 'MessageRates').pipe(share());
-  private _types = this.http.get<string[]>(this.baseURL + 'MessageTypes').pipe(share());
-  private _categories = this.http.get<string[]>(this.baseURL + 'StructureCategories').pipe(share(), shareReplay(1));
-  private _units = this.http.get<string[]>(this.baseURL + 'Units').pipe(share(),shareReplay(1));
-  
-  get baseURL() {
-    return this._baseURL;
-  }
-  
-  get periodicities() {
-    return this._periodicities;
-  }
+	get baseURL() {
+		return this._baseURL;
+	}
 
-  get rates() {
-    return this._rates;
-  }
+	get periodicities() {
+		return this._periodicities;
+	}
 
-  get types() {
-    return this._types;
-  }
+	get rates() {
+		return this._rates;
+	}
 
-  get categories() {
-    return this._categories;
-  }
-  get units() {
-    return this._units;
-  }
+	get types() {
+		return this._types;
+	}
+
+	get categories() {
+		return this._categories;
+	}
+	get units() {
+		return this._units;
+	}
 }

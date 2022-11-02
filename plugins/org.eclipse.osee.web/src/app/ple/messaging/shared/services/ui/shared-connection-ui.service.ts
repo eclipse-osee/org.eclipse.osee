@@ -17,12 +17,19 @@ import { SharedConnectionService } from '../http/shared-connection.service';
 import { MimRouteService } from './mim-route.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class SharedConnectionUIService {
-
-  public readonly connection = combineLatest([this._mimRoute.id, this._mimRoute.connectionId]).pipe(
-    switchMap(([id,connection])=>this._connectionService.getConnection(id,connection))
-  )
-  constructor(private _mimRoute: MimRouteService, private _connectionService:SharedConnectionService) { }
+	public readonly connection = combineLatest([
+		this._mimRoute.id,
+		this._mimRoute.connectionId,
+	]).pipe(
+		switchMap(([id, connection]) =>
+			this._connectionService.getConnection(id, connection)
+		)
+	);
+	constructor(
+		private _mimRoute: MimRouteService,
+		private _connectionService: SharedConnectionService
+	) {}
 }

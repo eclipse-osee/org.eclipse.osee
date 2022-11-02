@@ -13,35 +13,34 @@ import { transactionToken } from '../transactions/transaction';
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface response {
-    empty: boolean,
-    errorCount: number,
-    errors: boolean,
-    failed: boolean,
-    ids: string[],
-    infoCount: number,
-    numErrors: number,
-    numErrorsViaSearch: number,
-    numWarnings: number,
-    numWarningsViaSearch: number,
-    results: Array<string>,
-    success: boolean,
-    tables: [],
-    title: string | null,
-    txId: string,
-    warningCount: number,
+	empty: boolean;
+	errorCount: number;
+	errors: boolean;
+	failed: boolean;
+	ids: string[];
+	infoCount: number;
+	numErrors: number;
+	numErrorsViaSearch: number;
+	numWarnings: number;
+	numWarningsViaSearch: number;
+	results: Array<string>;
+	success: boolean;
+	tables: [];
+	title: string | null;
+	txId: string;
+	warningCount: number;
 }
 export interface commitResponse {
-    tx: transactionToken,
-    results: response,
-    success: boolean,
-    failed:boolean,
-    
+	tx: transactionToken;
+	results: response;
+	success: boolean;
+	failed: boolean;
 }
 export interface transitionResponse {
-    cancelled: boolean,
-    workItemIds: [],
-    results: Array<string>,
-    transitionWorkItems: [],
-    transaction: transactionToken,
-    empty:true
+	cancelled: boolean;
+	workItemIds: [];
+	results: Array<string>;
+	transitionWorkItems: [];
+	transaction: transactionToken;
+	empty: true;
 }

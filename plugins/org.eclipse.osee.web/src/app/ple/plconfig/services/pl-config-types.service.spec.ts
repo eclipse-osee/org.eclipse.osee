@@ -10,33 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+	HttpClientTestingModule,
+	HttpTestingController,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
 
 import { PlConfigTypesService } from './pl-config-types.service';
 
 describe('PlConfigTypesService', () => {
-  let service: PlConfigTypesService;
-  let httpTestingController: HttpTestingController;
+	let service: PlConfigTypesService;
+	let httpTestingController: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule]
-    });
-    service = TestBed.inject(PlConfigTypesService);
-    httpTestingController = TestBed.inject(HttpTestingController);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(PlConfigTypesService);
+		httpTestingController = TestBed.inject(HttpTestingController);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should get product applicability types', () => {
-    service.productApplicabilityTypes.subscribe();
-    const req = httpTestingController.expectOne(apiURL + '/orcs/types/productApplicability');
-    expect(req.request.method).toEqual('GET');
-    req.flush({});
-    httpTestingController.verify();
-  })
+	it('should get product applicability types', () => {
+		service.productApplicabilityTypes.subscribe();
+		const req = httpTestingController.expectOne(
+			apiURL + '/orcs/types/productApplicability'
+		);
+		expect(req.request.method).toEqual('GET');
+		req.flush({});
+		httpTestingController.verify();
+	});
 });

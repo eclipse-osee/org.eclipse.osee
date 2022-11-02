@@ -17,23 +17,36 @@ import { transactionToken } from 'src/app/transactions/transaction';
 import { applic } from 'src/app/types/applicability/applic';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class SideNavService {
+	private _sideNavContent = new ReplaySubject<{
+		opened: boolean;
+		field: string;
+		currentValue: string | number | applic | boolean;
+		previousValue?: string | number | applic | boolean;
+		transaction?: transactionToken;
+		user?: string;
+		date?: string;
+	}>();
+	constructor() {}
 
-  private _sideNavContent = new ReplaySubject<{opened:boolean, field:string, currentValue:string|number|applic|boolean, previousValue?:string|number|applic|boolean,transaction?:transactionToken,user?:string,date?:string}>();
-  constructor () { }
-  
-  get sideNavContent() {
-    return this._sideNavContent;
-  }
-  set sideNav(value:{opened:boolean, field:string, currentValue:string|number|applic|boolean, previousValue?:string|number|applic|boolean,transaction?:transactionToken,user?:string,date?:string}) {
-    this._sideNavContent.next(value);
-  }
+	get sideNavContent() {
+		return this._sideNavContent;
+	}
+	set sideNav(value: {
+		opened: boolean;
+		field: string;
+		currentValue: string | number | applic | boolean;
+		previousValue?: string | number | applic | boolean;
+		transaction?: transactionToken;
+		user?: string;
+		date?: string;
+	}) {
+		this._sideNavContent.next(value);
+	}
 
-  get opened() {
-    return this.sideNavContent.pipe(
-      map((val)=>val.opened)
-    )
-  }
+	get opened() {
+		return this.sideNavContent.pipe(map((val) => val.opened));
+	}
 }

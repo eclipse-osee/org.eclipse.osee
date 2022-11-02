@@ -16,16 +16,15 @@ import { PreferencesUIService } from '../../../services/ui/preferences-ui.servic
 import { EditViewFreeTextDialog } from '../../../types/EditViewFreeTextDialog';
 
 @Component({
-  selector: 'app-edit-view-free-text-field-dialog',
-  templateUrl: './edit-view-free-text-field-dialog.component.html',
-  styleUrls: ['./edit-view-free-text-field-dialog.component.sass']
+	selector: 'osee-messaging-edit-view-free-text-field-dialog',
+	templateUrl: './edit-view-free-text-field-dialog.component.html',
+	styleUrls: ['./edit-view-free-text-field-dialog.component.sass'],
 })
-export class EditViewFreeTextFieldDialogComponent implements OnInit {
-
-  editMode = this.preferencesService.inEditMode;
-  constructor(public dialogRef: MatDialogRef<EditViewFreeTextFieldDialogComponent>,@Inject(MAT_DIALOG_DATA) public data: EditViewFreeTextDialog, private preferencesService:PreferencesUIService) { }
-
-  ngOnInit(): void {
-  }
-
+export class EditViewFreeTextFieldDialogComponent {
+	editMode = this.preferencesService.inEditMode;
+	constructor(
+		public dialogRef: MatDialogRef<EditViewFreeTextFieldDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: EditViewFreeTextDialog,
+		private preferencesService: PreferencesUIService
+	) {}
 }

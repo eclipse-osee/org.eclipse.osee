@@ -10,32 +10,93 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="data.id!==undefined">
-    <ng-container *ngIf="(_messageRoute|async) as messageRoute">
-        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end" [attr.data-cy]="'goto-'+data.name"><mat-icon>subdirectory_arrow_right</mat-icon>Go to {{data.name}}</a>
-        <a mat-menu-item [routerLink]="messageRoute.beginning+data.id+'/messages'+messageRoute.end" target="_blank"><mat-icon color="primary">open_in_new</mat-icon>Go to {{data.name}} in new tab</a>
-    </ng-container>
+<ng-container *ngIf="data.id !== undefined">
+	<ng-container *ngIf="_messageRoute | async as messageRoute">
+		<a
+			mat-menu-item
+			[routerLink]="
+				messageRoute.beginning +
+				data.id +
+				'/messages' +
+				messageRoute.end
+			"
+			[attr.data-cy]="'goto-' + data.name"
+			><mat-icon>subdirectory_arrow_right</mat-icon>Go to
+			{{ data.name }}</a
+		>
+		<a
+			mat-menu-item
+			[routerLink]="
+				messageRoute.beginning +
+				data.id +
+				'/messages' +
+				messageRoute.end
+			"
+			target="_blank"
+			><mat-icon color="primary">open_in_new</mat-icon>Go to
+			{{ data.name }} in new tab</a
+		>
+	</ng-container>
 </ng-container>
 <ng-container *ngIf="hasChanges(data)">
-    <button mat-menu-item [matMenuTriggerFor]="linkDiffMenu" [matMenuTriggerData]="{data:data}"><mat-icon color="accent">pageview</mat-icon><span>View Diff for</span></button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="linkDiffMenu"
+		[matMenuTriggerData]="{ data: data }">
+		<mat-icon color="accent">pageview</mat-icon><span>View Diff for</span>
+	</button>
 </ng-container>
 <ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
-    <button mat-menu-item (click)="openConnectionEditDialog(data)"><mat-icon color="primary">edit</mat-icon>Edit {{data.name}}</button>
-    <button mat-menu-item (click)="openRemoveConnectionDialog(data,source,target)" data-cy="delete-connection-btn"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove connection {{data.name}}</button>
+	<button
+		mat-menu-item
+		(click)="openConnectionEditDialog(data)">
+		<mat-icon color="primary">edit</mat-icon>Edit {{ data.name }}
+	</button>
+	<button
+		mat-menu-item
+		(click)="openRemoveConnectionDialog(data, source, target)"
+		data-cy="delete-connection-btn">
+		<mat-icon color="warn">remove_circle_outline</mat-icon>Remove connection
+		{{ data.name }}
+	</button>
 </ng-container>
 <mat-menu #linkDiffMenu="matMenu">
-    <ng-template matMenuContent let-data="data">
-        <ng-container *ngIf="data?.changes?.name!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,data.changes.name,'Name')">Name</button>
-        </ng-container>
-        <ng-container *ngIf="data?.changes?.description!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,data.changes.description,'Description')">Description</button>
-        </ng-container>
-        <ng-container *ngIf="data?.changes?.transportType!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,data.changes.transportType,'Transport Type')">Transport Type</button>
-        </ng-container>
-        <ng-container *ngIf="data?.changes?.applicability!==undefined">
-            <button mat-menu-item (click)="viewDiff(true,data.changes.applicability,'Applicability')">Applicability</button>
-        </ng-container>
-    </ng-template>
+	<ng-template
+		matMenuContent
+		let-data="data">
+		<ng-container *ngIf="data?.changes?.name !== undefined">
+			<button
+				mat-menu-item
+				(click)="viewDiff(true, data.changes.name, 'Name')">
+				Name
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.description !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, data.changes.description, 'Description')
+				">
+				Description
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.transportType !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, data.changes.transportType, 'Transport Type')
+				">
+				Transport Type
+			</button>
+		</ng-container>
+		<ng-container *ngIf="data?.changes?.applicability !== undefined">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, data.changes.applicability, 'Applicability')
+				">
+				Applicability
+			</button>
+		</ng-container>
+	</ng-template>
 </mat-menu>

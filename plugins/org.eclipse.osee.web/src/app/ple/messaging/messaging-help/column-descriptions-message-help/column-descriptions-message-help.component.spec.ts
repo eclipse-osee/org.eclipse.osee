@@ -17,24 +17,25 @@ import { MatTableModule } from '@angular/material/table';
 import { ColumnDescriptionsMessageHelpComponent } from './column-descriptions-message-help.component';
 
 describe('ColumnDescriptionsMessageHelpComponent', () => {
-  let component: ColumnDescriptionsMessageHelpComponent;
-  let fixture: ComponentFixture<ColumnDescriptionsMessageHelpComponent>;
+	let component: ColumnDescriptionsMessageHelpComponent;
+	let fixture: ComponentFixture<ColumnDescriptionsMessageHelpComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatTableModule,MatListModule],
-      declarations: [ ColumnDescriptionsMessageHelpComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [MatTableModule, MatListModule],
+			declarations: [ColumnDescriptionsMessageHelpComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ColumnDescriptionsMessageHelpComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(
+			ColumnDescriptionsMessageHelpComponent
+		);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -15,14 +15,13 @@ import { Injectable } from '@angular/core';
 import { UserHeaderService } from './user-header.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class UserHeaderProdService extends UserHeaderService {
-  useCustomHeaders: boolean = false;
-  headers: HttpHeaders = new HttpHeaders();
+	useCustomHeaders: boolean = false;
+	headers: HttpHeaders = new HttpHeaders();
 
-  constructor () {
-    super();
-   }
-  
+	constructor() {
+		super();
+	}
 }

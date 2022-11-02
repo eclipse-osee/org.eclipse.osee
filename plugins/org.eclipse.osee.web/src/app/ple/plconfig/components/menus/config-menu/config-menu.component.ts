@@ -16,36 +16,49 @@ import { difference } from 'src/app/types/change-report/change-report';
 import { DialogService } from '../../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../../services/pl-config-uistate.service';
-import { view, viewWithChanges } from '../../../types/pl-config-applicui-branch-mapping';
+import {
+	view,
+	viewWithChanges,
+} from '../../../types/pl-config-applicui-branch-mapping';
 
 @Component({
-  selector: 'plconfig-config-menu',
-  templateUrl: './config-menu.component.html',
-  styleUrls: ['./config-menu.component.sass']
+	selector: 'osee-plconfig-config-menu',
+	templateUrl: './config-menu.component.html',
+	styleUrls: ['./config-menu.component.sass'],
 })
-export class ConfigMenuComponent implements OnInit {
-  _editable = this.uiStateService.editable;
-  @Input() config:view|viewWithChanges={name:'',hasFeatureApplicabilities:false,id:''}
-  constructor(private dialogService: DialogService,private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService) { }
-
-  ngOnInit(): void {
-  }
-
-  openConfigMenu(header: string, editable: string) {
-    this.dialogService.openConfigMenu(header, editable).subscribe();
-  }
-  viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic;
-    let prev = value.previousValue as string | number | applic;
-    if (prev === null) {
-      prev = ''
-    }
-    if (current === null) {
-      current = ''
-    }
-    this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-  }
-  hasViewChanges(value: view | viewWithChanges): value is viewWithChanges{
-    return (value as viewWithChanges).changes !== undefined;
-  }
+export class ConfigMenuComponent {
+	_editable = this.uiStateService.editable;
+	@Input() config: view | viewWithChanges = {
+		name: '',
+		hasFeatureApplicabilities: false,
+		id: '',
+	};
+	constructor(
+		private dialogService: DialogService,
+		private uiStateService: PlConfigUIStateService,
+		private currentBranchService: PlConfigCurrentBranchService
+	) {}
+	openConfigMenu(header: string, editable: string) {
+		this.dialogService.openConfigMenu(header, editable).subscribe();
+	}
+	viewDiff(open: boolean, value: difference, header: string) {
+		let current = value.currentValue as string | number | applic;
+		let prev = value.previousValue as string | number | applic;
+		if (prev === null) {
+			prev = '';
+		}
+		if (current === null) {
+			current = '';
+		}
+		this.currentBranchService.sideNav = {
+			opened: open,
+			field: header,
+			currentValue: current,
+			previousValue: prev,
+			transaction: value.transactionToken,
+		};
+	}
+	hasViewChanges(value: view | viewWithChanges): value is viewWithChanges {
+		return (value as viewWithChanges).changes !== undefined;
+	}
 }

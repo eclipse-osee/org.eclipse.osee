@@ -18,19 +18,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-
-
 @NgModule({
-  declarations: [
-    MatOptionLoadingComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatProgressSpinnerModule,
-    MatSelectModule
-  ],
-  exports:[MatOptionLoadingComponent]
+	declarations: [MatOptionLoadingComponent],
+	imports: [
+		CommonModule,
+		FormsModule,
+		MatFormFieldModule,
+		MatProgressSpinnerModule,
+		MatSelectModule,
+	],
+	exports: [MatOptionLoadingComponent],
 })
-export class MatOptionLoadingModule { }
+export class MatOptionLoadingModule {}

@@ -18,7 +18,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
@@ -54,102 +58,153 @@ import { AddElementDialog } from '../../types/AddElementDialog.d';
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
 describe('AddElementDialogComponent', () => {
-  let component: AddElementDialogComponent;
-  let fixture: ComponentFixture<AddElementDialogComponent>;
-  let dialogData: AddElementDialog = {
-    id: '12345',
-    name: 'structure',
-    type: {
-      id: '',
-      name: '',
-      description:'',
-      interfaceLogicalType: '',
-      interfacePlatform2sComplement: false,
-      interfacePlatformTypeAnalogAccuracy: '',
-      interfacePlatformTypeBitSize: '',
-      interfacePlatformTypeBitsResolution: '',
-      interfacePlatformTypeCompRate: '',
-      interfacePlatformTypeDefaultValue: '',
-      interfacePlatformTypeMaxval: '',
-      interfacePlatformTypeMinval: '',
-      interfacePlatformTypeMsbValue: '',
-      interfacePlatformTypeUnits: '',
-      interfacePlatformTypeValidRangeDescription:''
-    },
-    element: {
-      id: '-1',
-      name: '',
-      description: '',
-      notes: '',
-      interfaceElementAlterable: true,
-      interfaceElementIndexEnd: 0,
-      interfaceElementIndexStart: 0,
-      enumLiteral:'',
-      units:''
-    }
-  }
-  let loader: HarnessLoader;
-  let nestedDialog: DebugElement;
-  
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule,MatStepperModule,MatDialogModule,MatButtonModule,FormsModule,MatFormFieldModule,MatSelectModule,MatInputModule,MatSlideToggleModule,NoopAnimationsModule,MatIconModule, MatDividerModule],
-      declarations: [AddElementDialogComponent,MockNewTypeDialog, PlatformTypeQueryMock],
-      providers: [{
-        provide: MatDialogRef, useValue: {
-        
-        }
-      },
-        {
-          provide: MAT_DIALOG_DATA, useValue: dialogData
-        },
-        { provide: TransactionBuilderService, useValue: transactionBuilderMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock },
-        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
-        { provide: CurrentStructureService,useValue:CurrentStateServiceMock }]
-    })
-    .compileComponents();
-  });
+	let component: AddElementDialogComponent;
+	let fixture: ComponentFixture<AddElementDialogComponent>;
+	let dialogData: AddElementDialog = {
+		id: '12345',
+		name: 'structure',
+		type: {
+			id: '',
+			name: '',
+			description: '',
+			interfaceLogicalType: '',
+			interfacePlatform2sComplement: false,
+			interfacePlatformTypeAnalogAccuracy: '',
+			interfacePlatformTypeBitSize: '',
+			interfacePlatformTypeBitsResolution: '',
+			interfacePlatformTypeCompRate: '',
+			interfacePlatformTypeDefaultValue: '',
+			interfacePlatformTypeMaxval: '',
+			interfacePlatformTypeMinval: '',
+			interfacePlatformTypeMsbValue: '',
+			interfacePlatformTypeUnits: '',
+			interfacePlatformTypeValidRangeDescription: '',
+		},
+		element: {
+			id: '-1',
+			name: '',
+			description: '',
+			notes: '',
+			interfaceElementAlterable: true,
+			interfaceElementIndexEnd: 0,
+			interfaceElementIndexStart: 0,
+			enumLiteral: '',
+			units: '',
+		},
+	};
+	let loader: HarnessLoader;
+	let nestedDialog: DebugElement;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AddElementDialogComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    fixture.detectChanges();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientTestingModule,
+				MatStepperModule,
+				MatDialogModule,
+				MatButtonModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatSelectModule,
+				MatInputModule,
+				MatSlideToggleModule,
+				NoopAnimationsModule,
+				MatIconModule,
+				MatDividerModule,
+			],
+			declarations: [
+				AddElementDialogComponent,
+				MockNewTypeDialog,
+				PlatformTypeQueryMock,
+			],
+			providers: [
+				{
+					provide: MatDialogRef,
+					useValue: {},
+				},
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: dialogData,
+				},
+				{
+					provide: TransactionBuilderService,
+					useValue: transactionBuilderMock,
+				},
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{ provide: TypesService, useValue: typesServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+				{
+					provide: EnumerationSetService,
+					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+				{
+					provide: CurrentStructureService,
+					useValue: CurrentStateServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(AddElementDialogComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
-  describe('Page 2', () => {
-    beforeEach(async() => {
-      const createNewBtn = await loader.getHarness(MatButtonHarness.with({ text: 'Create new Element' }))
-      createNewBtn.click();
-    })
-    it('should fill out the form', async () => {
-      const spy = spyOn(component, 'receivePlatformTypeData').and.callThrough();
-      const addTypeBtn = await loader.getHarness(MatButtonHarness.with({text:new RegExp('add')}))
-      await addTypeBtn.click();
-      nestedDialog = fixture.debugElement.query(By.directive(MockNewTypeDialog))
-      fixture.detectChanges();
-      nestedDialog.componentInstance.closeDialog();
-      expect(spy).toHaveBeenCalled();
-    })
-    it('should open the search form', async() => {
-      const spy = spyOn(component, 'openSearch').and.callThrough();
-      const spy2 = spyOn(component,'receiveQuery').and.callThrough();
-      const searchbtn = await loader.getHarness(MatButtonHarness.with({ selector: '.search-button' }));
-      await searchbtn.click();
-      expect(spy).toHaveBeenCalled();
-      const nestedSearch = fixture.debugElement.query(By.directive(PlatformTypeQueryMock));
-      fixture.detectChanges();
-      nestedSearch.componentInstance.returnQuery.next(new PlatformTypeQueryMock());
-      expect(spy2).toHaveBeenCalled();
-    })
-  })
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+
+	describe('Page 2', () => {
+		beforeEach(async () => {
+			const createNewBtn = await loader.getHarness(
+				MatButtonHarness.with({ text: 'Create new Element' })
+			);
+			createNewBtn.click();
+		});
+		it('should fill out the form', async () => {
+			const spy = spyOn(
+				component,
+				'receivePlatformTypeData'
+			).and.callThrough();
+			const addTypeBtn = await loader.getHarness(
+				MatButtonHarness.with({ text: new RegExp('add') })
+			);
+			await addTypeBtn.click();
+			nestedDialog = fixture.debugElement.query(
+				By.directive(MockNewTypeDialog)
+			);
+			fixture.detectChanges();
+			nestedDialog.componentInstance.closeDialog();
+			expect(spy).toHaveBeenCalled();
+		});
+		it('should open the search form', async () => {
+			const spy = spyOn(component, 'openSearch').and.callThrough();
+			const spy2 = spyOn(component, 'receiveQuery').and.callThrough();
+			const searchbtn = await loader.getHarness(
+				MatButtonHarness.with({ selector: '.search-button' })
+			);
+			await searchbtn.click();
+			expect(spy).toHaveBeenCalled();
+			const nestedSearch = fixture.debugElement.query(
+				By.directive(PlatformTypeQueryMock)
+			);
+			fixture.detectChanges();
+			nestedSearch.componentInstance.returnQuery.next(
+				new PlatformTypeQueryMock()
+			);
+			expect(spy2).toHaveBeenCalled();
+		});
+	});
 });

@@ -18,24 +18,23 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TwoLayerAddButtonComponent } from './two-layer-add-button.component';
 
 describe('TwoLayerAddButtonComponent', () => {
-  let component: TwoLayerAddButtonComponent;
-  let fixture: ComponentFixture<TwoLayerAddButtonComponent>;
+	let component: TwoLayerAddButtonComponent;
+	let fixture: ComponentFixture<TwoLayerAddButtonComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[NoopAnimationsModule,MatButtonModule,MatIconModule],
-      declarations: [ TwoLayerAddButtonComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [NoopAnimationsModule, MatButtonModule, MatIconModule],
+			declarations: [TwoLayerAddButtonComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TwoLayerAddButtonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(TwoLayerAddButtonComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -15,27 +15,30 @@ import { HttpLoadingService } from './services/http-loading.service';
 import { SideNavService } from './shared-services/ui/side-nav.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+	selector: 'osee-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.sass'],
 })
 export class AppComponent {
-  opened = this.sideNavService.opened;
-  isLoading = this.loadingService.isLoading;
+	opened = this.sideNavService.opened;
+	isLoading = this.loadingService.isLoading;
 
-  // Top Level Navigation icon - change when opened/closed
-  topLevelNavIconOpen = false;
-  topLevelNavIcon = "menu";
-  toggleTopLevelNavIcon() {
-    this.topLevelNavIconOpen = !this.topLevelNavIconOpen;
-    this.topLevelNavIcon = this.topLevelNavIconOpen ? 'close' : 'menu';
-  }
+	// Top Level Navigation icon - change when opened/closed
+	topLevelNavIconOpen = false;
+	topLevelNavIcon = 'menu';
+	toggleTopLevelNavIcon() {
+		this.topLevelNavIconOpen = !this.topLevelNavIconOpen;
+		this.topLevelNavIcon = this.topLevelNavIconOpen ? 'close' : 'menu';
+	}
 
-  closeTopLevelNavIcon() {
-    this.topLevelNavIconOpen = false;
-    this.topLevelNavIcon= 'menu'
-  }
+	closeTopLevelNavIcon() {
+		this.topLevelNavIconOpen = false;
+		this.topLevelNavIcon = 'menu';
+	}
 
-  constructor (private sideNavService: SideNavService, private loadingService: HttpLoadingService) {}
-  title = 'OSEE';
+	constructor(
+		private sideNavService: SideNavService,
+		private loadingService: HttpLoadingService
+	) {}
+	title = 'OSEE';
 }

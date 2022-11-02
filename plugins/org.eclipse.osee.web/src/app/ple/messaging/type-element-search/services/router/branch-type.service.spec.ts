@@ -16,30 +16,30 @@ import { branchType } from '../../types/BranchTypes';
 import { BranchTypeService } from './branch-type.service';
 
 describe('BranchTypeService', () => {
-  let service: BranchTypeService;
+	let service: BranchTypeService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(BranchTypeService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(BranchTypeService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  describe('Core Functionality',()=> {
-    describe('Branch Type', () => {
-      describe('Valid States', () => {
-        it('should set type to baseline', () => {
-          service.type='baseline'
-          expect(service.type).toEqual('baseline')
-        });
-      
-        it('should set type to working', () => {
-          service.type='working'
-          expect(service.type).toEqual('working')
-        });    
-      })
-    })
-  })
+	describe('Core Functionality', () => {
+		describe('Branch Type', () => {
+			describe('Valid States', () => {
+				it('should set type to baseline', () => {
+					service.type = 'baseline';
+					expect(service.type).toEqual('baseline');
+				});
+
+				it('should set type to working', () => {
+					service.type = 'working';
+					expect(service.type).toEqual('working');
+				});
+			});
+		});
+	});
 });

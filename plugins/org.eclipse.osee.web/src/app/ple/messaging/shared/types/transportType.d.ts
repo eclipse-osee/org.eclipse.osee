@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface transportType extends transportTypeAttributes {
-    id?: string,
+	id?: string;
 }
 
 export interface transportTypeAttributes {
-    name: string,
-    byteAlignValidation: boolean,
-    messageGeneration: boolean,
-    byteAlignValidationSize: number,
-    messageGenerationType: string,
-    messageGenerationPosition:string
+	name: string;
+	byteAlignValidation: boolean;
+	messageGeneration: boolean;
+	byteAlignValidationSize: number;
+	messageGenerationType: string;
+	messageGenerationPosition: string;
 }

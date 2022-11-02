@@ -10,12 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
- @Component({
-     selector: 'osee-branch-picker',
-     template:'<div>Dummy</div>'
-   })
- export class BranchPickerStub{
-   @Input() actionSearch: boolean = false;
-   }
+@Component({
+	selector: 'osee-branch-picker',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class BranchPickerStub {
+	@Input() actionSearch: boolean = false;
+}

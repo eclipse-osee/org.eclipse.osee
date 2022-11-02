@@ -11,10 +11,22 @@
  *     Boeing - initial API and implementation
  -->
 <mat-radio-group
-(change)="selectType($event)" [(ngModel)]="branchType">
-    <div class="branch-types">
-        <mat-radio-button *ngFor="let type of branchTypes" [attr.data-cy]="normalizeType(type.toLowerCase())" [value]="normalizeType(type.toLowerCase())" [id]="normalizeType(type.toLowerCase())" [name]="type.toLowerCase()" [ngClass]="branchType ===type.toLowerCase() ? 'messaging-typeSearch-radio-option-selected' : 'messaging-typeSearch-radio-option'" color="primary">
-            {{type}}
-        </mat-radio-button>
-    </div>
+	(change)="selectType($event)"
+	[(ngModel)]="branchType">
+	<div class="branch-types">
+		<mat-radio-button
+			*ngFor="let type of branchTypes"
+			[attr.data-cy]="normalizeType(type.toLowerCase())"
+			[value]="normalizeType(type.toLowerCase())"
+			[id]="normalizeType(type.toLowerCase())"
+			[name]="type.toLowerCase()"
+			[ngClass]="
+				branchType === type.toLowerCase()
+					? 'messaging-type-search-radio-option-selected'
+					: 'messaging-type-search-radio-option'
+			"
+			color="primary">
+			{{ type }}
+		</mat-radio-button>
+	</div>
 </mat-radio-group>

@@ -10,13 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
- @Component({
-     selector: 'action-dropdown',
-     template:'<div>Dummy</div>'
-   })
- export class ActionDropdownStub{
-   @Input() category:string=""
-   @Input() workType:string=""
-   }
+@Component({
+	selector: 'osee-action-dropdown',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class ActionDropdownStub {
+	@Input() category: string = '';
+	@Input() workType: string = '';
+}

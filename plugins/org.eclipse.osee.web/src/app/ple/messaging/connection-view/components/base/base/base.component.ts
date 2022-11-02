@@ -18,32 +18,32 @@ import { applic } from 'src/app/types/applicability/applic';
 import { iif, of } from 'rxjs';
 
 @Component({
-  selector: 'osee-connectionview-base',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.sass']
+	selector: 'osee-connectionview-base',
+	templateUrl: './base.component.html',
+	styleUrls: ['./base.component.sass'],
 })
-export class BaseComponent implements OnInit {
+export class BaseComponent {
+	preferences = this.graphService.preferences;
+	inEditMode = this.graphService.preferences.pipe(
+		map((r) => r.inEditMode),
+		share(),
+		shareReplay(1)
+	);
+	inDiffMode = this.graphService.InDiff.pipe(
+		switchMap((val) => iif(() => val, of('true'), of('false')))
+	);
+	sideNav = this.graphService.sideNavContent;
+	sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
+	constructor(
+		public dialog: MatDialog,
+		private graphService: CurrentGraphService
+	) {}
 
-  preferences = this.graphService.preferences;
-  inEditMode = this.graphService.preferences.pipe(
-    map((r) => r.inEditMode),
-    share(),
-    shareReplay(1)
-  )
-  inDiffMode = this.graphService.InDiff.pipe(
-    switchMap((val) => iif(() => val, of('true'), of('false'))),
-  );
-  sideNav = this.graphService.sideNavContent;
-  sideNavOpened = this.sideNav.pipe(
-    map((value) => value.opened),
-  )
-  constructor (public dialog: MatDialog, private graphService: CurrentGraphService) {
-   }
-  
-  ngOnInit(): void {}
-
-  viewDiff(open:boolean,value:string|number|applic, header:string) {
-    this.graphService.sideNav = { opened: open,field:header, currentValue: value };
-  }
-
+	viewDiff(open: boolean, value: string | number | applic, header: string) {
+		this.graphService.sideNav = {
+			opened: open,
+			field: header,
+			currentValue: value,
+		};
+	}
 }

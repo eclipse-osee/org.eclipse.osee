@@ -27,55 +27,68 @@ import { response } from '../../../../types/responses';
 import { ConfigurationDropdownComponent } from './configuration-dropdown.component';
 
 describe('ConfigurationDropdownComponent', () => {
-  let component: ConfigurationDropdownComponent;
-  let fixture: ComponentFixture<ConfigurationDropdownComponent>;
+	let component: ConfigurationDropdownComponent;
+	let fixture: ComponentFixture<ConfigurationDropdownComponent>;
 
-  beforeEach(async () => {
-    const testResponse:response = {
-      empty: false,
-      errorCount: 0,
-      errors: false,
-      failed: false,
-      ids: [],
-      infoCount: 0,
-      numErrors: 0,
-      numErrorsViaSearch: 0,
-      numWarnings: 0,
-      numWarningsViaSearch: 0,
-      results: [],
-      success: true,
-      tables: [],
-      title: "",
-      txId: "2",
-      warningCount:0,
-    }
-    const branchService = jasmine.createSpyObj('PlConfigBranchService', ['deleteConfiguration', 'copyConfiguration', 'addConfiguration']);
-    var addConfigurationSpy = branchService.addConfiguration.and.returnValue(of(testResponse));
-    var copyConfigurationSpy = branchService.copyConfiguration.and.returnValue(of(testResponse));
-    var delteConfigurationSpy = branchService.deleteConfiguration.and.returnValue(of(testResponse));
-    await TestBed.configureTestingModule({
-      imports:[MatMenuModule,MatIconModule,MatButtonModule,MatFormFieldModule,NoopAnimationsModule],
-      declarations: [ConfigurationDropdownComponent],
-      providers: [
-        { provide: MatDialog, useValue: {} },
-        {
-          provide: PlConfigCurrentBranchService, useValue: {
-            branchApplicability: of(testBranchApplicability),
-          }
-        },
-        { provide: PlConfigBranchService, useValue: branchService },
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		const testResponse: response = {
+			empty: false,
+			errorCount: 0,
+			errors: false,
+			failed: false,
+			ids: [],
+			infoCount: 0,
+			numErrors: 0,
+			numErrorsViaSearch: 0,
+			numWarnings: 0,
+			numWarningsViaSearch: 0,
+			results: [],
+			success: true,
+			tables: [],
+			title: '',
+			txId: '2',
+			warningCount: 0,
+		};
+		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
+			'deleteConfiguration',
+			'copyConfiguration',
+			'addConfiguration',
+		]);
+		var addConfigurationSpy =
+			branchService.addConfiguration.and.returnValue(of(testResponse));
+		var copyConfigurationSpy =
+			branchService.copyConfiguration.and.returnValue(of(testResponse));
+		var delteConfigurationSpy =
+			branchService.deleteConfiguration.and.returnValue(of(testResponse));
+		await TestBed.configureTestingModule({
+			imports: [
+				MatMenuModule,
+				MatIconModule,
+				MatButtonModule,
+				MatFormFieldModule,
+				NoopAnimationsModule,
+			],
+			declarations: [ConfigurationDropdownComponent],
+			providers: [
+				{ provide: MatDialog, useValue: {} },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: {
+						branchApplicability: of(testBranchApplicability),
+					},
+				},
+				{ provide: PlConfigBranchService, useValue: branchService },
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ConfigurationDropdownComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ConfigurationDropdownComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

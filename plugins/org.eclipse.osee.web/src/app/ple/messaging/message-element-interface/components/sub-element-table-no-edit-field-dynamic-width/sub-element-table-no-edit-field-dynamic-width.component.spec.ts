@@ -16,23 +16,27 @@ import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-u
 import { SubElementTableNoEditFieldDynamicWidthComponent } from './sub-element-table-no-edit-field-dynamic-width.component';
 
 describe('SubElementTableNoEditFieldDynamicWidthComponent', () => {
-  let component: SubElementTableNoEditFieldDynamicWidthComponent;
-  let fixture: ComponentFixture<SubElementTableNoEditFieldDynamicWidthComponent>;
+	let component: SubElementTableNoEditFieldDynamicWidthComponent;
+	let fixture: ComponentFixture<SubElementTableNoEditFieldDynamicWidthComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SubElementTableNoEditFieldDynamicWidthComponent,HighlightFilteredTextDirective ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [
+				SubElementTableNoEditFieldDynamicWidthComponent,
+				HighlightFilteredTextDirective,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubElementTableNoEditFieldDynamicWidthComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(
+			SubElementTableNoEditFieldDynamicWidthComponent
+		);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

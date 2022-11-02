@@ -12,22 +12,22 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
+	HttpRequest,
+	HttpHandler,
+	HttpEvent,
+	HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 
 @Injectable()
 export class HttpTimeoutExtensionInterceptor implements HttpInterceptor {
+	constructor() {}
 
-  constructor() {}
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(
-      timeout(900000)
-    );
-  }
+	intercept(
+		request: HttpRequest<any>,
+		next: HttpHandler
+	): Observable<HttpEvent<any>> {
+		return next.handle(request).pipe(timeout(900000));
+	}
 }

@@ -11,48 +11,49 @@
  *     Boeing - initial API and implementation
  -->
 <mat-form-field>
-    <mat-label>Enter Enum Set Name</mat-label>
-    <input
-        matInput
-        [(ngModel)]="enumSet.name"
-        required
-        (ngModelChange)="updateEnumSet()"
-    />
-    <button mat-icon-button matSuffix (click)="closeForm()">
-        <mat-icon>remove</mat-icon>
-    </button>
+	<mat-label>Enter Enum Set Name</mat-label>
+	<input
+		matInput
+		[(ngModel)]="enumSet.name"
+		required
+		(ngModelChange)="updateEnumSet()" />
+	<button
+		mat-icon-button
+		matSuffix
+		(click)="closeForm()">
+		<mat-icon>remove</mat-icon>
+	</button>
 </mat-form-field>
 <br />
 <mat-form-field>
-    <mat-label>Enter Enum Set Description</mat-label>
-    <textarea
-        cdkTextareaAutosize
-        matInput
-        [(ngModel)]="enumSet.description"
-        required
-        disabled
-        (ngModelChange)="updateEnumSet()"
-    ></textarea>
+	<mat-label>Enter Enum Set Description</mat-label>
+	<textarea
+		cdkTextareaAutosize
+		matInput
+		[(ngModel)]="enumSet.description"
+		required
+		disabled
+		(ngModelChange)="updateEnumSet()"></textarea>
 </mat-form-field>
 <br />
 <mat-form-field id="connection-applicability-selector">
-    <mat-label>Select an Applicability</mat-label>
-    <mat-select
-        [(ngModel)]="enumSet.applicability"
-        (ngModelChange)="updateEnumSet()"
-        [compareWith]="compareApplics"
-        required
-    >
-        <mat-option *ngFor="let applic of applics | async" [value]="applic">
-            {{ applic.name }}
-        </mat-option>
-    </mat-select>
+	<mat-label>Select an Applicability</mat-label>
+	<mat-select
+		[(ngModel)]="enumSet.applicability"
+		(ngModelChange)="updateEnumSet()"
+		[compareWith]="compareApplics"
+		required>
+		<mat-option
+			*ngFor="let applic of applics | async"
+			[value]="applic">
+			{{ applic.name }}
+		</mat-option>
+	</mat-select>
 </mat-form-field>
 <osee-enum-form
-    [bitSize]="bitSize"
-    [enumSetName]="enumSet.name"
-    (enumSetString)="updateDescription($event)"
-    (enums)="updateEnums($event)"
-    (unique)="updateUnique($event)"
-></osee-enum-form>
+	[bitSize]="bitSize"
+	[enumSetName]="enumSet.name"
+	(enumSetString)="updateDescription($event)"
+	(enums)="updateEnums($event)"
+	(unique)="updateUnique($event)"></osee-enum-form>
 {{ unique | async }}

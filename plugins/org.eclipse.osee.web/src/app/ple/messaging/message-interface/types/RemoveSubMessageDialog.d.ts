@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { message } from "./messages";
-import { subMessage } from "./sub-messages";
+import { message } from './messages';
+import { subMessage } from './sub-messages';
 
-export interface RemoveSubMessageDialogData{
-    submessage: subMessage,
-    message:message
+export interface RemoveSubMessageDialogData {
+	submessage: subMessage;
+	message: message;
 }

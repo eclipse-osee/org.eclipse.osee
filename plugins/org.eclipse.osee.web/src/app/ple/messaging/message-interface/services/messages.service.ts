@@ -19,93 +19,187 @@ import { apiURL } from 'src/environments/environment';
 import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { message } from '../types/messages';
 import { connection } from '../../shared/types/connection';
-import { nodeData } from '../../shared/types/node'
-import { ConnectionNode } from '../types/connection-nodes'
+import { nodeData } from '../../shared/types/node';
+import { ConnectionNode } from '../types/connection-nodes';
 import { map } from 'rxjs/operators';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../transactions/transaction.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class MessagesService {
+	constructor(
+		private http: HttpClient,
+		private builder: TransactionBuilderService,
+		private transactionService: TransactionService
+	) {}
 
-  constructor (private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
-  
-  /**
-   * Gets an array of messages based on a filter condition
-   * @param filter parameter to filter out messages that don't meet criteria
-   * @param branchId branch to look for messages on
-   * @returns Observable of an array of messages matching filter condition
-   */
-  getFilteredMessages(filter: string, branchId: string,connectionId:string):Observable<message[]> {
-    return this.http.get<message[]>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/filter/" + filter);
-  }
+	/**
+	 * Gets an array of messages based on a filter condition
+	 * @param filter parameter to filter out messages that don't meet criteria
+	 * @param branchId branch to look for messages on
+	 * @returns Observable of an array of messages matching filter condition
+	 */
+	getFilteredMessages(
+		filter: string,
+		branchId: string,
+		connectionId: string
+	): Observable<message[]> {
+		return this.http.get<message[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/connections/' +
+				connectionId +
+				'/messages/filter/' +
+				filter
+		);
+	}
 
+	/**
+	 * Finds a specific message
+	 * @param branchId branch to look for contents on
+	 * @param messageId id of message to find
+	 * @returns message contents, if found
+	 */
+	getMessage(
+		branchId: string,
+		messageId: string,
+		connectionId: string
+	): Observable<message> {
+		return this.http.get<message>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/connections/' +
+				connectionId +
+				'/messages/' +
+				messageId
+		);
+	}
 
-  /**
-   * Finds a specific message
-   * @param branchId branch to look for contents on
-   * @param messageId id of message to find
-   * @returns message contents, if found
-   */
-  getMessage(branchId: string, messageId: string,connectionId:string):Observable<message> {
-    return this.http.get<message>(apiURL + "/mim/branch/" + branchId + "/connections/"+connectionId+"/messages/"+messageId);
-  }
+	getConnection(branchId: string, connectionId: string) {
+		return this.http.get<connection>(
+			apiURL + '/mim/branch/' + branchId + '/connections/' + connectionId
+		);
+	}
 
-  getConnection(branchId: string,connectionId:string) {
-    return this.http.get<connection>(apiURL + "/mim/branch/" + branchId + "/connections/" + connectionId);
-  }
+	getConnectionName(branchId: string, connectionId: string) {
+		return this.getConnection(branchId, connectionId).pipe(
+			map((x) => x.name)
+		);
+	}
 
-  getConnectionName(branchId: string, connectionId: string) {
-    return this.getConnection(branchId, connectionId).pipe(
-      map(x=>x.name)
-    )
-  }
+	getConnectionNodes(branchId: string, connectionId: string) {
+		return this.http.get<ConnectionNode[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/nodes/connection/' +
+				connectionId
+		);
+	}
 
-  getConnectionNodes(branchId: string, connectionId: string) {
-    return this.http.get<ConnectionNode[]>(apiURL + "/mim/branch/" + branchId + "/nodes/connection/" + connectionId);
-  }
+	createConnectionRelation(connectionId: string, messageId?: string) {
+		let relation: relation = {
+			typeName: 'Interface Connection Content',
+			sideA: connectionId,
+			sideB: messageId,
+		};
+		return of(relation);
+	}
 
-  createConnectionRelation(connectionId:string, messageId?:string) {
-    let relation: relation = {
-      typeName: 'Interface Connection Content',
-      sideA: connectionId,
-      sideB:messageId
-    }
-    return of(relation);
-  }
+	createNodeRelation(messageId: string, nodeId?: string) {
+		let relation: relation = {
+			typeName: 'Interface Message Sending Node',
+			sideA: messageId,
+			sideB: nodeId,
+		};
+		return of(relation);
+	}
 
-  createNodeRelation(messageId: string, nodeId?: string) {
-    let relation: relation = {
-      typeName: 'Interface Message Sending Node',
-      sideA: messageId,
-      sideB: nodeId
-    }
-    return of(relation);
-  }
+	changeMessage(branchId: string, message: Partial<message>) {
+		return of(
+			this.builder.modifyArtifact(
+				message,
+				undefined,
+				branchId,
+				'Update Message'
+			)
+		);
+	}
 
-  changeMessage(branchId: string, message: Partial<message>) {
-    return of(this.builder.modifyArtifact(message, undefined, branchId, "Update Message"));
-  }
+	createMessage(
+		branchId: string,
+		message: Partial<message>,
+		relations: relation[],
+		transaction?: transaction,
+		key?: string
+	) {
+		return of(
+			this.builder.createArtifact(
+				message,
+				ARTIFACTTYPEID.MESSAGE,
+				relations,
+				transaction,
+				branchId,
+				'Create Message',
+				key
+			)
+		);
+	}
 
-  createMessage(branchId: string, message: Partial<message>,relations:relation[], transaction?: transaction, key?: string) {
-    return of(this.builder.createArtifact(message, ARTIFACTTYPEID.MESSAGE, relations, transaction, branchId, "Create Message", key));
-  }
+	deleteMessage(
+		branchId: string,
+		messageId: string,
+		transaction?: transaction
+	) {
+		return of(
+			this.builder.deleteArtifact(
+				messageId,
+				transaction,
+				branchId,
+				'Deleting message'
+			)
+		);
+	}
 
-  deleteMessage(branchId: string, messageId: string, transaction?:transaction) {
-    return of(this.builder.deleteArtifact(messageId, transaction, branchId, "Deleting message"));
-  }
+	addRelation(
+		branchId: string,
+		relation: relation,
+		transaction?: transaction
+	) {
+		return of(
+			this.builder.addRelation(
+				relation.typeName,
+				undefined,
+				relation.sideA as string,
+				relation.sideB as string,
+				undefined,
+				transaction,
+				branchId,
+				'Relating Message'
+			)
+		);
+	}
 
-  addRelation(branchId:string,relation:relation,transaction?:transaction) {
-    return of(this.builder.addRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,transaction,branchId,'Relating Message'))
-  }
+	deleteRelation(branchId: string, relation: relation) {
+		return of(
+			this.builder.deleteRelation(
+				relation.typeName,
+				undefined,
+				relation.sideA as string,
+				relation.sideB as string,
+				undefined,
+				undefined,
+				branchId,
+				'Removing message'
+			)
+		);
+	}
 
-  deleteRelation(branchId: string, relation: relation) {
-    return of(this.builder.deleteRelation(relation.typeName,undefined,relation.sideA as string,relation.sideB as string,undefined,undefined,branchId,'Removing message'))
-  }
-
-  performMutation(body:transaction) {
-    return this.transactionService.performMutation(body)
-  }
+	performMutation(body: transaction) {
+		return this.transactionService.performMutation(body);
+	}
 }

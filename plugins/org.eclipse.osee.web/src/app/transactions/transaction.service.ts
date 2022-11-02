@@ -13,21 +13,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from 'src/environments/environment';
-import { transactionInfo, transactionResult } from '../types/change-report/transaction';
+import {
+	transactionInfo,
+	transactionResult,
+} from '../types/change-report/transaction';
 import { transaction } from './transaction';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class TransactionService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getTransaction(id: string | number) {
-    return this.http.get<transactionInfo>(apiURL + '/orcs/txs/' + id);
-  }
+	getTransaction(id: string | number) {
+		return this.http.get<transactionInfo>(apiURL + '/orcs/txs/' + id);
+	}
 
-  performMutation(body: transaction) {
-    return this.http.post<transactionResult>(apiURL + "/orcs/txs",body)
-  }
+	performMutation(body: transaction) {
+		return this.http.post<transactionResult>(apiURL + '/orcs/txs', body);
+	}
 }

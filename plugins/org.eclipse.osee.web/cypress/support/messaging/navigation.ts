@@ -13,4 +13,13 @@
 import navigationStructure from '../../../src/app/navigation/top-level-navigation/top-level-navigation-structure';
 export const amountOfPages = navigationStructure.length;
 
-export const amountOfMessagePages = navigationStructure.find(v=>v.cypressLabel==='ple')?.children.find(v => v.cypressLabel === 'messaging')?.children?.filter(a=>!a.isAdminRequired).length!==undefined?navigationStructure.find(v=>v.cypressLabel==='ple')!.children.find(v => v.cypressLabel === 'messaging')!.children!.length:0;
+export const amountOfMessagePages =
+	navigationStructure
+		.find((v) => v.cypressLabel === 'ple')
+		?.children.find((v) => v.cypressLabel === 'messaging')
+		?.children?.filter((a) => !a.isAdminRequired).length !== undefined
+		? navigationStructure
+				.find((v) => v.cypressLabel === 'ple')!
+				.children.find((v) => v.cypressLabel === 'messaging')!.children!
+				.length
+		: 0;

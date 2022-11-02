@@ -10,105 +10,340 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
- <div class="message-interface">
-        <div class="message-interface-header">
-            <ng-container *ngIf="(_connectionsRoute | async) as connectionRoute">
-                <a mat-raised-button class="connections-button" color="primary" [routerLink]="connectionRoute">Connections</a>
-            </ng-container>
-        <div class="message-interface-header grouped-buttons">
-            <ng-container *ngIf="(inEditMode | async)===true">
-                <osee-undo-button-branch class="message-element-interface-button-header"></osee-undo-button-branch>
-            </ng-container>
-            <ng-container *ngIf="(inDiffMode|async) as _diff">
-                <a mat-raised-button class="message-element-interface-button-header" [routerLink]="_diff==='false'?[{outlets:{primary:'diff', 'rightSideNav':null}}]:'../'"><mat-icon *ngIf="_diff==='false'">change_history</mat-icon><mat-icon *ngIf="_diff==='true'">visibility_off</mat-icon><span>{{_diff==='false'?"Show Deltas":"Hide Deltas"}}</span></a>
-            </ng-container>
-            <action-dropdown category="3" workType="MIM" class="action-button"></action-dropdown>
-        </div>
-    </div>
+<div class="message-interface">
+	<div class="message-interface-header">
+		<ng-container *ngIf="_connectionsRoute | async as connectionRoute">
+			<a
+				mat-raised-button
+				class="connections-button"
+				color="primary"
+				[routerLink]="connectionRoute"
+				>Connections</a
+			>
+		</ng-container>
+		<div class="message-interface-header grouped-buttons">
+			<ng-container *ngIf="(inEditMode | async) === true">
+				<osee-undo-button-branch
+					class="message-element-interface-button-header"></osee-undo-button-branch>
+			</ng-container>
+			<ng-container *ngIf="inDiffMode | async as _diff">
+				<a
+					mat-raised-button
+					class="message-element-interface-button-header"
+					[routerLink]="
+						_diff === 'false'
+							? [
+									{
+										outlets: {
+											primary: 'diff',
+											rightSideNav: null
+										}
+									}
+							  ]
+							: '../'
+					"
+					><mat-icon *ngIf="_diff === 'false'"
+						>change_history</mat-icon
+					><mat-icon *ngIf="_diff === 'true'">visibility_off</mat-icon
+					><span>{{
+						_diff === 'false' ? 'Show Deltas' : 'Hide Deltas'
+					}}</span></a
+				>
+			</ng-container>
+			<osee-action-dropdown
+				category="3"
+				workType="MIM"
+				class="action-button"></osee-action-dropdown>
+		</div>
+	</div>
 </div>
-<two-layer-add-button *ngIf="(inEditMode | async)===true" class="new-message-button" [nestedLevel]="(expandedElement|async)||[]" baseLevel="Add message" nestedLevelPrefix="Add submessage to " (normalClick)="openNewMessageDialog()" (nestedClick)="createNewSubMessage($event)" nestedIcon="description" baseIcon="assignment"></two-layer-add-button>
+<osee-two-layer-add-button
+	*ngIf="(inEditMode | async) === true"
+	class="new-message-button"
+	[nestedLevel]="(expandedElement | async) || []"
+	baseLevel="Add message"
+	nestedLevelPrefix="Add submessage to "
+	(normalClick)="openNewMessageDialog()"
+	(nestedClick)="createNewSubMessage($event)"
+	nestedIcon="description"
+	baseIcon="assignment"></osee-two-layer-add-button>
 <div class="message-interface message-element-interface-top-level-table">
-    <mat-form-field class="message-interface-table-view-width-100 message-interface-table-filter-padding">
-        <mat-label>Filter Message Information</mat-label>
-        <input matInput type="text" (keyup)="applyFilter($event)" #input>
-        <mat-icon matPrefix>filter_list</mat-icon>
-        <mat-hint>Enter text to filter Message Table.
-            Only full text matches will display results.
-        </mat-hint>
-    </mat-form-field>
-    <table mat-table  [dataSource]="(messageData|async)||[]" multiTemplateDataRows class="mat-elevation-z8">
-        <ng-container [matColumnDef]="header" *ngFor="let header of (headers|async)||[]; let i = index; trackBy:valueTracker;">
-            <th mat-header-cell *matHeaderCellDef [attr.colspan]="((headers|async)||[])[i]" class="message-interface-table-view-message-header" [matTooltip]="(getHeaderByName(header)|async)?.description||''">
-                <ng-container>
-                    {{(getHeaderByName(header)|async)?.humanReadable||''}}
-                </ng-container>
-            </th>
-            <td mat-cell *matCellDef="let element; let i = dataIndex" [ngClass]="i%2===0? element.added? 'message-table-row-even-added':element.deleted?'message-table-row-even-deleted':'message-table-row-even':element.added? 'message-table-row-odd-added':element.deleted?'message-table-row-even-deleted':'message-table-row-odd'" (contextmenu)="openMenu($event,element,element[header],header)">
-                <div class="flex-cell" [ngClass]="!element.added && element.changes && element.changes[header] !==undefined?'message-table-attribute-changed':'message-table-attribute-not-changed'">
-                    <ng-container *ngIf="header==='name'">
-                        <ng-container *ngIf="{value:((rowIsExpanded(element.id)|async))} as _expanded">
-                            <button mat-icon-button [@expandButton]="!_expanded.value ?  'closed' : 'open'" [attr.data-cy]="_expanded.value ? 'close-message-btn-'+element.name:'expand-message-btn-'+element.name" (click)="rowChange(element,!_expanded.value)" [ngClass]="element.hasSubMessageChanges ? 'message-table-attribute-changed':'message-table-attribute-not-changed'"><mat-icon>expand_more</mat-icon></button>
-                        </ng-container>
-                    </ng-container>
-                    <ng-container *ngIf="(inEditMode | async)===true && !element.deleted && !nonEditableHeaders.includes(header);else no_edit">
-                        <osee-messaging-edit-message-field [messageId]="element.id" [header]="header" [value]="element[header]" [attr.data-cy]="'message-table-'+header+'-'+element.name+'-'+element[header]"></osee-messaging-edit-message-field>
-                    </ng-container>
-                    <ng-template #no_edit>
-                        <ng-container *ngIf="header==='applicability'">
-                            <ng-container *ngIf="element[header].name!=='Base'">
-                                <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header].name" classToApply="ple-message-interface-table-highlighted-text" [attr.data-cy]="'message-table-'+header+'-'+element.name+'-'+element[header].name">
-                                    {{element[header]}}
-                                </div>
-                            </ng-container>
-                        </ng-container>
-                        <ng-container *ngIf="header!=='applicability' && header!=='initiatingNode'">
-                            <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header]" classToApply="ple-message-interface-table-highlighted-text" [attr.data-cy]="'message-table-'+header+'-'+element.name+'-'+element[header]">
-                                {{element[header]}}
-                            </div>
-                        </ng-container>
-                        <ng-container *ngIf="header==='initiatingNode'">
-                            <div appHighlightFilteredText [searchTerms]="searchTerms" [text]="element[header].name" classToApply="ple-message-interface-table-highlighted-text" [attr.data-cy]="'message-table-'+header+'-'+element.name+'-'+element[header].name">
-                                {{element[header]}}
-                            </div>
-                        </ng-container>
-                    </ng-template>
-                </div>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="expandedMessage">
-            <td mat-cell *matCellDef="let element" [attr.colspan]="(headers|async)?.length||0" class="no-pad">    
-                <div class="sub-message-table-message-table-detail message-element-interface-table-view-width-100"
-                [@detailExpand]="((rowIsExpanded(element.id)|async)||false) ? 'expanded' : 'collapsed'">
-                   <ng-container *ngIf="((rowIsExpanded(element.id)|async)||false)">
-                    <ple-messaging-sub-message-table [data]="element.subMessages" [filter]="filter" [element]="element" (expandRow)="expandRow($event)" [editMode]="(inEditMode | async) ||false"></ple-messaging-sub-message-table>
-                   </ng-container>
-                </div>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="(headers|async)||[]; sticky:true">
-        </tr>    
-        <tr mat-row *matRowDef= "let row; columns: (headers|async)||[];"    
-        class="message-detail-row"
-        [class.message-expanded-detail-row]="!((rowIsExpanded(row.id)|async)||false)" [attr.data-cy]="'message-table-row-'+row.name">
-        </tr>
-        <tr mat-row *matRowDef="let row; columns: ['expandedMessage']" class="message-expanded-detail-row">
-        </tr>
-    </table>
+	<mat-form-field
+		class="message-interface-table-view-width-100 message-interface-table-filter-padding">
+		<mat-label>Filter Message Information</mat-label>
+		<input
+			matInput
+			type="text"
+			(keyup)="applyFilter($event)"
+			#input />
+		<mat-icon matPrefix>filter_list</mat-icon>
+		<mat-hint
+			>Enter text to filter Message Table. Only full text matches will
+			display results.
+		</mat-hint>
+	</mat-form-field>
+	<table
+		mat-table
+		[dataSource]="(messageData | async) || []"
+		multiTemplateDataRows
+		class="mat-elevation-z8">
+		<ng-container
+			[matColumnDef]="header"
+			*ngFor="
+				let header of (headers | async) || [];
+				let i = index;
+				trackBy: valueTracker
+			">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				[attr.colspan]="((headers | async) || [])[i]"
+				class="message-interface-table-view-message-header"
+				[matTooltip]="
+					(getHeaderByName(header) | async)?.description || ''
+				">
+				<ng-container>
+					{{ (getHeaderByName(header) | async)?.humanReadable || '' }}
+				</ng-container>
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let element; let i = dataIndex"
+				[ngClass]="
+					i % 2 === 0
+						? element.added
+							? 'message-table-row-even-added'
+							: element.deleted
+							? 'message-table-row-even-deleted'
+							: 'message-table-row-even'
+						: element.added
+						? 'message-table-row-odd-added'
+						: element.deleted
+						? 'message-table-row-even-deleted'
+						: 'message-table-row-odd'
+				"
+				(contextmenu)="
+					openMenu($event, element, element[header], header)
+				">
+				<div
+					class="flex-cell"
+					[ngClass]="
+						!element.added &&
+						element.changes &&
+						element.changes[header] !== undefined
+							? 'message-table-attribute-changed'
+							: 'message-table-attribute-not-changed'
+					">
+					<ng-container *ngIf="header === 'name'">
+						<ng-container
+							*ngIf="{
+								value: (rowIsExpanded(element.id) | async)
+							} as _expanded">
+							<button
+								mat-icon-button
+								[@expandButton]="
+									!_expanded.value ? 'closed' : 'open'
+								"
+								[attr.data-cy]="
+									_expanded.value
+										? 'close-message-btn-' + element.name
+										: 'expand-message-btn-' + element.name
+								"
+								(click)="rowChange(element, !_expanded.value)"
+								[ngClass]="
+									element.hasSubMessageChanges
+										? 'message-table-attribute-changed'
+										: 'message-table-attribute-not-changed'
+								">
+								<mat-icon>expand_more</mat-icon>
+							</button>
+						</ng-container>
+					</ng-container>
+					<ng-container
+						*ngIf="
+							(inEditMode | async) === true &&
+								!element.deleted &&
+								!nonEditableHeaders.includes(header);
+							else no_edit
+						">
+						<osee-messaging-edit-message-field
+							[messageId]="element.id"
+							[header]="header"
+							[value]="element[header]"
+							[attr.data-cy]="
+								'message-table-' +
+								header +
+								'-' +
+								element.name +
+								'-' +
+								element[header]
+							"></osee-messaging-edit-message-field>
+					</ng-container>
+					<ng-template #no_edit>
+						<ng-container *ngIf="header === 'applicability'">
+							<ng-container
+								*ngIf="element[header].name !== 'Base'">
+								<div
+									oseeHighlightFilteredText
+									[searchTerms]="searchTerms"
+									[text]="element[header].name"
+									classToApply="ple-message-interface-table-highlighted-text"
+									[attr.data-cy]="
+										'message-table-' +
+										header +
+										'-' +
+										element.name +
+										'-' +
+										element[header].name
+									">
+									{{ element[header] }}
+								</div>
+							</ng-container>
+						</ng-container>
+						<ng-container
+							*ngIf="
+								header !== 'applicability' &&
+								header !== 'initiatingNode'
+							">
+							<div
+								oseeHighlightFilteredText
+								[searchTerms]="searchTerms"
+								[text]="element[header]"
+								classToApply="ple-message-interface-table-highlighted-text"
+								[attr.data-cy]="
+									'message-table-' +
+									header +
+									'-' +
+									element.name +
+									'-' +
+									element[header]
+								">
+								{{ element[header] }}
+							</div>
+						</ng-container>
+						<ng-container *ngIf="header === 'initiatingNode'">
+							<div
+								oseeHighlightFilteredText
+								[searchTerms]="searchTerms"
+								[text]="element[header].name"
+								classToApply="ple-message-interface-table-highlighted-text"
+								[attr.data-cy]="
+									'message-table-' +
+									header +
+									'-' +
+									element.name +
+									'-' +
+									element[header].name
+								">
+								{{ element[header] }}
+							</div>
+						</ng-container>
+					</ng-template>
+				</div>
+			</td>
+		</ng-container>
+		<ng-container matColumnDef="expandedMessage">
+			<td
+				mat-cell
+				*matCellDef="let element"
+				[attr.colspan]="(headers | async)?.length || 0"
+				class="no-pad">
+				<div
+					class="sub-message-table-message-table-detail message-element-interface-table-view-width-100"
+					[@detailExpand]="
+						(rowIsExpanded(element.id) | async) || false
+							? 'expanded'
+							: 'collapsed'
+					">
+					<ng-container
+						*ngIf="(rowIsExpanded(element.id) | async) || false">
+						<osee-messaging-sub-message-table
+							[data]="element.subMessages"
+							[filter]="filter"
+							[element]="element"
+							(expandRow)="expandRow($event)"
+							[editMode]="
+								(inEditMode | async) || false
+							"></osee-messaging-sub-message-table>
+					</ng-container>
+				</div>
+			</td>
+		</ng-container>
+		<tr
+			mat-header-row
+			*matHeaderRowDef="(headers | async) || []; sticky: true"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: (headers | async) || []"
+			class="message-detail-row"
+			[class.message-expanded-detail-row]="
+				!((rowIsExpanded(row.id) | async) || false)
+			"
+			[attr.data-cy]="'message-table-row-' + row.name"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: ['expandedMessage']"
+			class="message-expanded-detail-row"></tr>
+	</table>
 </div>
-<mat-menu #contextMenu="matMenu" class=wide-mat-menu>
-    <ng-template matMenuContent let-message="message" let-field="field" let-header="header">
-        <button mat-menu-item (click)="openDescriptionDialog(message.description,message.id)" data-cy="message-description-btn"><mat-icon color="primary">description</mat-icon>Open Description</button>
-        <ng-container *ngIf="hasChanges(message) && changeExists(message,header) && (getHeaderByName(header)|async)?.humanReadable as headerName">
-            <button mat-menu-item (click)="viewDiff(true,message.changes[header]||{previousValue:'',currentValue:'',transactionToken:{id:'-1',branchId:'-1'}},headerName)" data-cy="message-diff-btn"><mat-icon color="accent">pageview</mat-icon>View Diff</button>
-        </ng-container>
-        <ng-container *ngIf="(inEditMode | async)===true && !message.deleted">
-            <button mat-menu-item (click)="removeMessage(message)" data-cy="message-remove-btn"><mat-icon color="warn">remove_circle_outline</mat-icon>Remove message from connection</button>
-            <button mat-menu-item (click)="deleteMessage(message)" *ngIf="message.subMessages.length===0" data-cy="message-delete-btn"><mat-icon color="warn">delete_forever</mat-icon>Delete message globally</button>
-        </ng-container>
-
-    </ng-template>
+<mat-menu
+	#contextMenu="matMenu"
+	class="wide-mat-menu">
+	<ng-template
+		matMenuContent
+		let-message="message"
+		let-field="field"
+		let-header="header">
+		<button
+			mat-menu-item
+			(click)="openDescriptionDialog(message.description, message.id)"
+			data-cy="message-description-btn">
+			<mat-icon color="primary">description</mat-icon>Open Description
+		</button>
+		<ng-container
+			*ngIf="
+				hasChanges(message) &&
+				changeExists(message, header) &&
+				(getHeaderByName(header) | async)?.humanReadable as headerName
+			">
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(
+						true,
+						message.changes[header] || {
+							previousValue: '',
+							currentValue: '',
+							transactionToken: { id: '-1', branchId: '-1' }
+						},
+						headerName
+					)
+				"
+				data-cy="message-diff-btn">
+				<mat-icon color="accent">pageview</mat-icon>View Diff
+			</button>
+		</ng-container>
+		<ng-container *ngIf="(inEditMode | async) === true && !message.deleted">
+			<button
+				mat-menu-item
+				(click)="removeMessage(message)"
+				data-cy="message-remove-btn">
+				<mat-icon color="warn">remove_circle_outline</mat-icon>Remove
+				message from connection
+			</button>
+			<button
+				mat-menu-item
+				(click)="deleteMessage(message)"
+				*ngIf="message.subMessages.length === 0"
+				data-cy="message-delete-btn">
+				<mat-icon color="warn">delete_forever</mat-icon>Delete message
+				globally
+			</button>
+		</ng-container>
+	</ng-template>
 </mat-menu>
-<div style="visibility: hidden; position: fixed;" 
-[style.left]="menuPosition.x" 
-[style.top]="menuPosition.y" 
-[matMenuTriggerFor]="contextMenu"></div>
+<div
+	style="visibility: hidden; position: fixed"
+	[style.left]="menuPosition.x"
+	[style.top]="menuPosition.y"
+	[matMenuTriggerFor]="contextMenu"></div>

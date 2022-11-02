@@ -48,164 +48,330 @@ import { EditSubMessageFieldComponent } from './edit-sub-message-field/edit-sub-
 import { SubMessageTableComponent } from './sub-message-table.component';
 
 describe('SubMessageTableComponent', () => {
-  let component: SubMessageTableComponent;
-  let fixture: ComponentFixture<SubMessageTableComponent>;
-  let loader: HarnessLoader;
-  let scheduler: TestScheduler;
-  let expectedData = [
-    {
-        name: "Name",
-        description: "description adslkfj;asjfadkljf;lajdfla;jsdfdlkasjf;lkajslfjad;ljfkladjsf;",
-        interfaceSubMessageNumber: "0",
-        interfaceMessageRate:"1Hz"
-    },
-    {
-        name: "Name2",
-        description: "description2",
-        interfaceSubMessageNumber: "1",
-        interfaceMessageRate:"1Hz"
-    }
-]
+	let component: SubMessageTableComponent;
+	let fixture: ComponentFixture<SubMessageTableComponent>;
+	let loader: HarnessLoader;
+	let scheduler: TestScheduler;
+	let expectedData = [
+		{
+			name: 'Name',
+			description:
+				'description adslkfj;asjfadkljf;lajdfla;jsdfdlkasjf;lkajslfjad;ljfkladjsf;',
+			interfaceSubMessageNumber: '0',
+			interfaceMessageRate: '1Hz',
+		},
+		{
+			name: 'Name2',
+			description: 'description2',
+			interfaceSubMessageNumber: '1',
+			interfaceMessageRate: '1Hz',
+		},
+	];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatTableModule,MatIconModule, MatTooltipModule, MatButtonModule, OseeStringUtilsDirectivesModule, OseeStringUtilsPipesModule, RouterTestingModule.withRoutes([{path:'',component:SubMessageTableComponent},{ path: 'diffOpen', component: MimSingleDiffDummy,outlet:'rightSideNav' }]), MatMenuModule, MatDialogModule, HttpClientTestingModule,NoopAnimationsModule],
-      declarations: [SubMessageTableComponent, ConvertMessageTableTitlesToStringPipe, ConvertSubMessageTitlesToStringPipe, EditSubMessageFieldComponent, AddSubMessageDialogComponent,HighlightFilteredTextDirective],
-      providers: [{provide: CurrentMessagesService, useValue:CurrentMessageServiceMock},
-    ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatTableModule,
+				MatIconModule,
+				MatTooltipModule,
+				MatButtonModule,
+				OseeStringUtilsDirectivesModule,
+				OseeStringUtilsPipesModule,
+				RouterTestingModule.withRoutes([
+					{ path: '', component: SubMessageTableComponent },
+					{
+						path: 'diffOpen',
+						component: MimSingleDiffDummy,
+						outlet: 'rightSideNav',
+					},
+				]),
+				MatMenuModule,
+				MatDialogModule,
+				HttpClientTestingModule,
+				NoopAnimationsModule,
+			],
+			declarations: [
+				SubMessageTableComponent,
+				ConvertMessageTableTitlesToStringPipe,
+				ConvertSubMessageTitlesToStringPipe,
+				EditSubMessageFieldComponent,
+				AddSubMessageDialogComponent,
+				HighlightFilteredTextDirective,
+			],
+			providers: [
+				{
+					provide: CurrentMessagesService,
+					useValue: CurrentMessageServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubMessageTableComponent);
-    component = fixture.componentInstance;
-    component.element={id:'5',name:'blah',description:'abcdef',interfaceMessageNumber:'1234',interfaceMessagePeriodicity:'Aperiodic',interfaceMessageRate:'5Hz',interfaceMessageType:'Connection',interfaceMessageWriteAccess:true,subMessages:[], initiatingNode:{id: '1', name:'Node 1'}}
-    component.dataSource = new MatTableDataSource();
-    component.data = expectedData;
-    component.editMode = true;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SubMessageTableComponent);
+		component = fixture.componentInstance;
+		component.element = {
+			id: '5',
+			name: 'blah',
+			description: 'abcdef',
+			interfaceMessageNumber: '1234',
+			interfaceMessagePeriodicity: 'Aperiodic',
+			interfaceMessageRate: '5Hz',
+			interfaceMessageType: 'Connection',
+			interfaceMessageWriteAccess: true,
+			subMessages: [],
+			initiatingNode: { id: '1', name: 'Node 1' },
+		};
+		component.dataSource = new MatTableDataSource();
+		component.data = expectedData;
+		component.editMode = true;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  }));
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should update the datasource filter', () => {
+		scheduler.run(({ expectObservable }) => {
+			component.filter = 'sub message: Name2';
+			component.ngOnChanges({
+				data: new SimpleChange(component.data, component.data, false),
+				filter: new SimpleChange('', component.filter, false),
+			});
+			const expectedMarble = { a: component.element };
+			const expectedObservable = '';
+			expectObservable(component.expandRow).toBe(
+				expectedObservable,
+				expectedMarble
+			);
+		});
+	});
 
+	describe('Menu Tests', () => {
+		let mEvent: MouseEvent;
+		beforeEach(() => {
+			mEvent = document.createEvent('MouseEvent');
+		});
 
-  it('should update the datasource filter', () => {
-    scheduler.run(({ expectObservable }) => {
-      component.filter = "sub message: Name2";
-      component.ngOnChanges({
-        data: new SimpleChange(component.data, component.data, false),
-        filter: new SimpleChange('', component.filter, false)
-      })
-      const expectedMarble = { a: component.element }
-      const expectedObservable=''
-      expectObservable(component.expandRow).toBe(expectedObservable, expectedMarble);
-    })
-  });
+		it('should open the menu and open the view diff sidenav', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'field',
+				'name'
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'viewDiff').and.callThrough();
+			await menu.clickItem({ text: new RegExp('View Diff') });
+			expect(spy).toHaveBeenCalled();
+		});
 
-  describe('Menu Tests', () => {
-    let mEvent:MouseEvent
-    beforeEach(() => {
-      mEvent = document.createEvent("MouseEvent");
-    })
+		it('should open the menu and dismiss a description', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'',
+				' '
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(
+				component,
+				'openDescriptionDialog'
+			).and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of('ok'),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'partialUpdateSubMessage'
+			).and.callThrough();
+			await menu.clickItem({ text: new RegExp('Open Description') });
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and open the view diff sidenav', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','field','name');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'viewDiff').and.callThrough();
-      await menu.clickItem({ text: new RegExp("View Diff") });
-      expect(spy).toHaveBeenCalled();
-    })
+		it('should open the menu and edit a description', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'',
+				' '
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(
+				component,
+				'openDescriptionDialog'
+			).and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of({
+					original: 'abcdef',
+					type: 'description',
+					return: 'jkl',
+				}),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'partialUpdateSubMessage'
+			).and.callThrough();
+			await menu.clickItem({ text: new RegExp('Open Description') });
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and dismiss a description', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Open Description") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
+		it('should open the menu and remove a sub message', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'',
+				' '
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'removeSubMessage').and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of('ok'),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'removeSubMessage'
+			).and.callThrough();
+			await menu.clickItem({
+				text: new RegExp('Remove submsg from message'),
+			});
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and edit a description', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateSubMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Open Description") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
+		it('should open the menu and not remove a sub message', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'',
+				' '
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'removeSubMessage').and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of(),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'removeSubMessage'
+			).and.callThrough();
+			await menu.clickItem({
+				text: new RegExp('Remove submsg from message'),
+			});
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).not.toHaveBeenCalled();
+		});
 
-    it('should open the menu and remove a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'removeSubMessage').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Remove submsg from message") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
+		it('should open the menu and delete a sub message', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'',
+				' '
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of('ok'),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'deleteSubMessage'
+			).and.callThrough();
+			await menu.clickItem({
+				text: new RegExp('Delete submsg globally'),
+			});
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and not remove a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'removeSubMessage').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeSubMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Remove submsg from message") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).not.toHaveBeenCalled();
-    })
+		it('should open the menu and not delete a sub message', async () => {
+			component.openMenu(
+				mEvent,
+				messagesMock[0],
+				subMessagesMock[0],
+				'string',
+				'',
+				' '
+			);
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of(),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'deleteSubMessage'
+			).and.callThrough();
+			await menu.clickItem({
+				text: new RegExp('Delete submsg globally'),
+			});
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).not.toHaveBeenCalled();
+		});
 
-    it('should open the menu and delete a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Delete submsg globally") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
-
-    it('should open the menu and not delete a sub message', async () => {
-      component.openMenu(mEvent, messagesMock[0], subMessagesMock[0], 'string','',' ');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteSubMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Delete submsg globally") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).not.toHaveBeenCalled();
-    })
-
-    afterEach(() => {
-      component.matMenuTrigger.closeMenu();
-    })
-  })
+		afterEach(() => {
+			component.matMenuTrigger.closeMenu();
+		});
+	});
 });

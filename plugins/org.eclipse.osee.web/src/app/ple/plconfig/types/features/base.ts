@@ -10,44 +10,53 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from "src/app/types/change-report/change-report";
-import { ExtendedNameValuePair, ExtendedNameValuePairWithChanges } from "../base-types/ExtendedNameValuePair";
-import { NameValuePair } from "../base-types/NameValuePair";
+import { difference } from 'src/app/types/change-report/change-report';
+import {
+	ExtendedNameValuePair,
+	ExtendedNameValuePairWithChanges,
+} from '../base-types/ExtendedNameValuePair';
+import { NameValuePair } from '../base-types/NameValuePair';
 
 export interface feature {
-    name: string,
-    description: string,
-    valueType: string,
-    valueStr?: string,
-    defaultValue: string,
-    productAppStr?: string,
-    values: string[],
-    productApplicabilities: string[],
-    multiValued: boolean;
-    setValueStr(): void;
-    setProductAppStr(): void;
-    
+	name: string;
+	description: string;
+	valueType: string;
+	valueStr?: string;
+	defaultValue: string;
+	productAppStr?: string;
+	values: string[];
+	productApplicabilities: string[];
+	multiValued: boolean;
+	setValueStr(): void;
+	setProductAppStr(): void;
 }
-export interface trackableFeature extends feature{
-    id: string,
-    idIntValue?: number,
-    idString?: string,
-    type: null | undefined,
+export interface trackableFeature extends feature {
+	id: string;
+	idIntValue?: number;
+	idString?: string;
+	type: null | undefined;
 }
 export interface extendedFeature extends trackableFeature {
-    configurations:(ExtendedNameValuePair|ExtendedNameValuePairWithChanges)[]
+	configurations: (
+		| ExtendedNameValuePair
+		| ExtendedNameValuePairWithChanges
+	)[];
 }
-export interface extendedFeatureWithChanges extends extendedFeature{
-    added: boolean,
-    deleted: boolean,
-    changes: {
-        name?: difference,
-        description?: difference,
-        defaultValue?: difference,
-        multiValued?: difference,
-        productApplicabilities?: difference[],
-        valueType?: difference,
-        values?: difference[],
-        configurations?: {name:difference, value:difference,values:difference[]}[]
-    }
+export interface extendedFeatureWithChanges extends extendedFeature {
+	added: boolean;
+	deleted: boolean;
+	changes: {
+		name?: difference;
+		description?: difference;
+		defaultValue?: difference;
+		multiValued?: difference;
+		productApplicabilities?: difference[];
+		valueType?: difference;
+		values?: difference[];
+		configurations?: {
+			name: difference;
+			value: difference;
+			values: difference[];
+		}[];
+	};
 }

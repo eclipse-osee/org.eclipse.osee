@@ -10,9 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="end-start>0">
-    <div appHighlightFilteredText [searchTerms]="filter" [text]="name+'['+start+'...'+end+']'" classToApply="ple-message-element-interface-table-highlighted-text"></div>
+<ng-container *ngIf="end - start > 0">
+	<div
+		oseeHighlightFilteredText
+		[searchTerms]="filter"
+		[text]="name + '[' + start + '...' + end + ']'"
+		classToApply="ple-message-element-interface-table-highlighted-text"></div>
 </ng-container>
-<ng-container *ngIf="end-start<=0">
-    <div appHighlightFilteredText [searchTerms]="filter" [text]="name" classToApply="ple-message-element-interface-table-highlighted-text"></div>
+<ng-container *ngIf="end - start <= 0">
+	<div
+		oseeHighlightFilteredText
+		[searchTerms]="filter"
+		[text]="name"
+		classToApply="ple-message-element-interface-table-highlighted-text"></div>
 </ng-container>

@@ -16,23 +16,27 @@ import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-u
 import { SubElementTableNoEditFieldNameComponent } from './sub-element-table-no-edit-field-name.component';
 
 describe('SubElementTableNoEditFieldNameComponent', () => {
-  let component: SubElementTableNoEditFieldNameComponent;
-  let fixture: ComponentFixture<SubElementTableNoEditFieldNameComponent>;
+	let component: SubElementTableNoEditFieldNameComponent;
+	let fixture: ComponentFixture<SubElementTableNoEditFieldNameComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SubElementTableNoEditFieldNameComponent,HighlightFilteredTextDirective ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [
+				SubElementTableNoEditFieldNameComponent,
+				HighlightFilteredTextDirective,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubElementTableNoEditFieldNameComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(
+			SubElementTableNoEditFieldNameComponent
+		);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

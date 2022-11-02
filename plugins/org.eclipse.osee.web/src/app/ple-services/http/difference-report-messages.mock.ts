@@ -10,83 +10,83 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { messageDiffItem } from "src/app/ple/messaging/shared/types/DifferenceReport";
+import { messageDiffItem } from 'src/app/ple/messaging/shared/types/DifferenceReport';
 export const messageDiffsMock: messageDiffItem[] = [
-    {
-        "id": "200402",
-        "name": "Message D",
-        "subMessages": [],
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "initiatingNode": null,
-        "description": "Delete this message",
-        "interfaceMessageNumber": "4",
-        "interfaceMessagePeriodicity": "Periodic",
-        "interfaceMessageType": "Operational",
-        "interfaceMessageRate": "10",
-        "interfaceMessageWriteAccess": false,
-        "diffInfo": {
-            "added": false,
-            "deleted": true,
-            "fieldsChanged": {},
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200432",
-        "name": "Message A",
-        "subMessages": [],
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "initiatingNode": null,
-        "description": "Added this message",
-        "interfaceMessageNumber": "3",
-        "interfaceMessagePeriodicity": "Periodic",
-        "interfaceMessageType": "Connection",
-        "interfaceMessageRate": "20",
-        "interfaceMessageWriteAccess": true,
-        "diffInfo": {
-            "added": true,
-            "deleted": false,
-            "fieldsChanged": {},
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    },
-    {
-        "id": "200399",
-        "name": "Message1",
-        "subMessages": [],
-        "applicability": {
-            "id": "1",
-            "name": "Base"
-        },
-        "initiatingNode": null,
-        "description": "This is message 1",
-        "interfaceMessageNumber": "1",
-        "interfaceMessagePeriodicity": "Aperiodic",
-        "interfaceMessageType": "Connection",
-        "interfaceMessageRate": "5",
-        "interfaceMessageWriteAccess": false,
-        "diffInfo": {
-            "added": false,
-            "deleted": false,
-            "fieldsChanged": {
-                "interfaceMessagePeriodicity": "OnDemand"
-            },
-            "url": {
-                "label": "",
-                "url": ""
-            }
-        }
-    }
-]
+	{
+		id: '200402',
+		name: 'Message D',
+		subMessages: [],
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		initiatingNode: null,
+		description: 'Delete this message',
+		interfaceMessageNumber: '4',
+		interfaceMessagePeriodicity: 'Periodic',
+		interfaceMessageType: 'Operational',
+		interfaceMessageRate: '10',
+		interfaceMessageWriteAccess: false,
+		diffInfo: {
+			added: false,
+			deleted: true,
+			fieldsChanged: {},
+			url: {
+				label: '',
+				url: '',
+			},
+		},
+	},
+	{
+		id: '200432',
+		name: 'Message A',
+		subMessages: [],
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		initiatingNode: null,
+		description: 'Added this message',
+		interfaceMessageNumber: '3',
+		interfaceMessagePeriodicity: 'Periodic',
+		interfaceMessageType: 'Connection',
+		interfaceMessageRate: '20',
+		interfaceMessageWriteAccess: true,
+		diffInfo: {
+			added: true,
+			deleted: false,
+			fieldsChanged: {},
+			url: {
+				label: '',
+				url: '',
+			},
+		},
+	},
+	{
+		id: '200399',
+		name: 'Message1',
+		subMessages: [],
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		initiatingNode: null,
+		description: 'This is message 1',
+		interfaceMessageNumber: '1',
+		interfaceMessagePeriodicity: 'Aperiodic',
+		interfaceMessageType: 'Connection',
+		interfaceMessageRate: '5',
+		interfaceMessageWriteAccess: false,
+		diffInfo: {
+			added: false,
+			deleted: false,
+			fieldsChanged: {
+				interfaceMessagePeriodicity: 'OnDemand',
+			},
+			url: {
+				label: '',
+				url: '',
+			},
+		},
+	},
+];

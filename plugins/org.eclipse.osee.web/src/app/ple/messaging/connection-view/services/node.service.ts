@@ -22,33 +22,69 @@ import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum'
 import { TransactionService } from '../../../../transactions/transaction.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class NodeService {
+	constructor(
+		private http: HttpClient,
+		private builder: TransactionBuilderService,
+		private transactionService: TransactionService
+	) {}
 
-  constructor (private http: HttpClient,private builder: TransactionBuilderService, private transactionService: TransactionService) { }
-  
-  getNodes(branchId: string) {
-    return this.http.get<node[]>(apiURL + '/mim/branch/' + branchId + '/nodes/');
-  }
+	getNodes(branchId: string) {
+		return this.http.get<node[]>(
+			apiURL + '/mim/branch/' + branchId + '/nodes/'
+		);
+	}
 
-  getNode(branchId: string,nodeId:string) {
-    return this.http.get<node>(apiURL + '/mim/branch/' + branchId + '/nodes/'+nodeId);
-  }
+	getNode(branchId: string, nodeId: string) {
+		return this.http.get<node>(
+			apiURL + '/mim/branch/' + branchId + '/nodes/' + nodeId
+		);
+	}
 
-  changeNode(branchId: string, node: Partial<node>) {
-    return of(this.builder.modifyArtifact(node, undefined, branchId, "Update Node"));
-  }
+	changeNode(branchId: string, node: Partial<node>) {
+		return of(
+			this.builder.modifyArtifact(
+				node,
+				undefined,
+				branchId,
+				'Update Node'
+			)
+		);
+	}
 
-  deleteArtifact(branchId: string, artId:string) {
-    return of(this.builder.deleteArtifact(artId, undefined, branchId, 'Delete Node'));
-  }
+	deleteArtifact(branchId: string, artId: string) {
+		return of(
+			this.builder.deleteArtifact(
+				artId,
+				undefined,
+				branchId,
+				'Delete Node'
+			)
+		);
+	}
 
-  createNode(branchId: string, node: Partial<node>, transaction?: transaction, key?: string) {
-    return of(this.builder.createArtifact(node, ARTIFACTTYPEID.NODE, [], transaction, branchId, "Create Node", key));
-  }
+	createNode(
+		branchId: string,
+		node: Partial<node>,
+		transaction?: transaction,
+		key?: string
+	) {
+		return of(
+			this.builder.createArtifact(
+				node,
+				ARTIFACTTYPEID.NODE,
+				[],
+				transaction,
+				branchId,
+				'Create Node',
+				key
+			)
+		);
+	}
 
-  performMutation(body:transaction) {
-    return this.transactionService.performMutation(body)
-  }
+	performMutation(body: transaction) {
+		return this.transactionService.performMutation(body);
+	}
 }

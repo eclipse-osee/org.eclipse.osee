@@ -10,16 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
- @Component({
-     selector: 'app-mim-single-diff',
-     template:'<div>Dummy</div>'
-   })
- export class MimSingleDiffDummy{
-    @Input() field: string = "";
-    @Input() currentValue: any = "";
-    @Input() previousValue: any = "";
-    @Input() user: string = "";
-    @Input() date: string = "";
-   }
+@Component({
+	selector: 'osee-single-diff',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class MimSingleDiffDummy {
+	@Input() field: string = '';
+	@Input() currentValue: any = '';
+	@Input() previousValue: any = '';
+	@Input() user: string = '';
+	@Input() date: string = '';
+}

@@ -10,32 +10,65 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(allStructures|async) as allItems">
-    <ng-container *ngIf="allItems.length !== 0">
-        <h2 class="mat-title diff-report-section-header">Structure Changes</h2>
-        <ng-container *ngIf="(structuresAdded|async) as structures">
-            <ng-container *ngFor="let i of getArrayLength(structures)">
-                <app-diff-report-table [items]="[structures[i]]" [headers]="headers" [headerKey]="headerType" [title]="i===0?'Structures Added':''"></app-diff-report-table>
-                <div class="diff-report-structure-elements-table">
-                    <app-diff-report-table [items]="structures[i].elementChanges!" [headers]="elementHeaders" [headerKey]="elementHeaderType"></app-diff-report-table>
-                </div>
-            </ng-container>
-        </ng-container>
-        <ng-container *ngIf="(structuresDeleted|async) as structures">
-            <ng-container *ngFor="let i of getArrayLength(structures)">
-                <app-diff-report-table [items]="[structures[i]]" [headers]="headers" [headerKey]="headerType" [title]="i===0?'Structures Deleted':''"></app-diff-report-table>
-                <div class="diff-report-structure-elements-table">
-                    <app-diff-report-table [items]="structures[i].elementChanges!" [headers]="elementHeaders" [headerKey]="elementHeaderType"></app-diff-report-table>
-                </div>
-            </ng-container>
-        </ng-container>
-        <ng-container *ngIf="(structuresChanged|async) as structures">
-            <ng-container *ngFor="let i of getArrayLength(structures)">
-                <app-diff-report-table [items]="[structures[i]]" [headers]="headers" [headerKey]="headerType" [title]="i===0?'Structures Changed':''"></app-diff-report-table>
-                <div class="diff-report-structure-elements-table">
-                    <app-diff-report-table [items]="structures[i].elementChanges!" [headers]="elementHeaders" [headerKey]="elementHeaderType"></app-diff-report-table>
-                </div>
-            </ng-container>
-        </ng-container>
-    </ng-container>
+<ng-container *ngIf="allStructures | async as allItems">
+	<ng-container *ngIf="allItems.length !== 0">
+		<h2 class="mat-title diff-report-section-header">Structure Changes</h2>
+		<ng-container *ngIf="structuresAdded | async as structures">
+			<ng-container *ngFor="let i of getArrayLength(structures)">
+				<osee-messaging-diff-report-table
+					[items]="[structures[i]]"
+					[headers]="headers"
+					[headerKey]="headerType"
+					[title]="
+						i === 0 ? 'Structures Added' : ''
+					"></osee-messaging-diff-report-table>
+				<div class="diff-report-structure-elements-table">
+					<osee-messaging-diff-report-table
+						[items]="structures[i].elementChanges!"
+						[headers]="elementHeaders"
+						[headerKey]="
+							elementHeaderType
+						"></osee-messaging-diff-report-table>
+				</div>
+			</ng-container>
+		</ng-container>
+		<ng-container *ngIf="structuresDeleted | async as structures">
+			<ng-container *ngFor="let i of getArrayLength(structures)">
+				<osee-messaging-diff-report-table
+					[items]="[structures[i]]"
+					[headers]="headers"
+					[headerKey]="headerType"
+					[title]="
+						i === 0 ? 'Structures Deleted' : ''
+					"></osee-messaging-diff-report-table>
+				<div class="diff-report-structure-elements-table">
+					<osee-messaging-diff-report-table
+						[items]="structures[i].elementChanges!"
+						[headers]="elementHeaders"
+						[headerKey]="
+							elementHeaderType
+						"></osee-messaging-diff-report-table>
+				</div>
+			</ng-container>
+		</ng-container>
+		<ng-container *ngIf="structuresChanged | async as structures">
+			<ng-container *ngFor="let i of getArrayLength(structures)">
+				<osee-messaging-diff-report-table
+					[items]="[structures[i]]"
+					[headers]="headers"
+					[headerKey]="headerType"
+					[title]="
+						i === 0 ? 'Structures Changed' : ''
+					"></osee-messaging-diff-report-table>
+				<div class="diff-report-structure-elements-table">
+					<osee-messaging-diff-report-table
+						[items]="structures[i].elementChanges!"
+						[headers]="elementHeaders"
+						[headerKey]="
+							elementHeaderType
+						"></osee-messaging-diff-report-table>
+				</div>
+			</ng-container>
+		</ng-container>
+	</ng-container>
 </ng-container>

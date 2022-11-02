@@ -10,6 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div appHighlightFilteredText [searchTerms]="filter" [text]="field?.toString()||''" classToApply="ple-message-element-interface-table-highlighted-text">
-    {{field}}
+<div
+	oseeHighlightFilteredText
+	[searchTerms]="filter"
+	[text]="field?.toString() || ''"
+	classToApply="ple-message-element-interface-table-highlighted-text">
+	{{ field }}
 </div>

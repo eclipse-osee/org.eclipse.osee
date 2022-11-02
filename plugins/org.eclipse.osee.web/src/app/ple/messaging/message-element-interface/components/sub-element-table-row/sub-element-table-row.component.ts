@@ -17,61 +17,66 @@ import { element } from '../../../shared/types/element';
 import { structure } from '../../../shared/types/structure';
 
 @Component({
-  selector: 'app-sub-element-table-row',
-  templateUrl: './sub-element-table-row.component.html',
-  styleUrls: ['./sub-element-table-row.component.sass']
+	selector: 'osee-messaging-sub-element-table-row',
+	templateUrl: './sub-element-table-row.component.html',
+	styleUrls: ['./sub-element-table-row.component.sass'],
 })
-export class SubElementTableRowComponent implements OnInit {
-  @Input() header: string = "";
-  @Input() editMode: boolean = false;
+export class SubElementTableRowComponent {
+	@Input() header: string = '';
+	@Input() editMode: boolean = false;
 
-  @Input() element:element={
-    id: '',
-    name: '',
-    description: '',
-    notes: '',
-    interfaceElementIndexEnd: 0,
-    interfaceElementIndexStart: 0,
-    applicability: {
-      id: '1',
-      name:'Base'
-    },
-    units:'',
-    interfaceElementAlterable: false,
-    enumLiteral:''
-  }
+	@Input() element: element = {
+		id: '',
+		name: '',
+		description: '',
+		notes: '',
+		interfaceElementIndexEnd: 0,
+		interfaceElementIndexStart: 0,
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		units: '',
+		interfaceElementAlterable: false,
+		enumLiteral: '',
+	};
 
-  @Input() structure: structure={
-    id: '',
-    name: '',
-    description: '',
-    interfaceMaxSimultaneity: '',
-    interfaceMinSimultaneity: '',
-    interfaceTaskFileType: 0,
-    interfaceStructureCategory: ''
-  }
-  editableElementHeaders: string[] = [
-    'name',
-    'platformTypeName2',
-    'interfaceElementAlterable',
-    'description',
-    'notes',
-    'applicability',
-    'units',
-    'interfaceElementIndexStart',
-    'interfaceElementIndexEnd',
-    'enumLiteral'
-  ];
-  @Input() filter:string=""
-  layout = this.layoutNotifier.layout;
+	@Input() structure: structure = {
+		id: '',
+		name: '',
+		description: '',
+		interfaceMaxSimultaneity: '',
+		interfaceMinSimultaneity: '',
+		interfaceTaskFileType: 0,
+		interfaceStructureCategory: '',
+	};
+	editableElementHeaders: string[] = [
+		'name',
+		'platformTypeName2',
+		'interfaceElementAlterable',
+		'description',
+		'notes',
+		'applicability',
+		'units',
+		'interfaceElementIndexStart',
+		'interfaceElementIndexEnd',
+		'enumLiteral',
+	];
+	@Input() filter: string = '';
+	layout = this.layoutNotifier.layout;
 
-  @Output() menu = new EventEmitter<{ event: MouseEvent, element: element, field?: string | number | boolean | applic }>();
-  constructor(private layoutNotifier: LayoutNotifierService) { }
+	@Output() menu = new EventEmitter<{
+		event: MouseEvent;
+		element: element;
+		field?: string | number | boolean | applic;
+	}>();
+	constructor(private layoutNotifier: LayoutNotifierService) {}
 
-  ngOnInit(): void {
-  }
-
-  openGeneralMenu(event: MouseEvent, element: element, field?: string | number | boolean | applic) {
-    this.menu.emit({ event, element, field })
-  }
+	openGeneralMenu(
+		event: MouseEvent,
+		element: element,
+		field?: string | number | boolean | applic
+	) {
+		this.menu.emit({ event, element, field });
+	}
 }

@@ -10,19 +10,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div style="height:100%" class="messaging-grid">
-    <div class ="mat-display-4 messaging-header">
-        OSEE Messaging
-    </div>
-    <ng-container *ngFor="let item of navItems; let i = index">
-        <a mat-raised-button color="primary" [routerLink]="item.routerLink" [class]="'message-button-'+i" [attr.data-cy]="item.cypressLabel"><mat-icon>{{item.icon}}</mat-icon><span>{{item.label}}</span></a>
-    </ng-container>
-    <ng-container *ngFor="let item of adminNavItems; let i = index">
-        <ng-container *ngIf="userIsAdmin|async">
-            <a mat-raised-button color="primary" [routerLink]="item.routerLink" [class]="'message-button-'+(i+adminNavItemsStartingPosition)" [attr.data-cy]="item.cypressLabel"><mat-icon>{{item.icon}}</mat-icon><span>{{item.label}}</span></a>
-        </ng-container>
-    </ng-container>
-    <div class="messaging-bottom">
-            
-    </div>
+<div
+	style="height: 100%"
+	class="messaging-grid">
+	<div class="mat-display-4 messaging-header">OSEE Messaging</div>
+	<ng-container *ngFor="let item of navItems; let i = index">
+		<a
+			mat-raised-button
+			color="primary"
+			[routerLink]="item.routerLink"
+			[class]="'message-button-' + i"
+			[attr.data-cy]="item.cypressLabel"
+			><mat-icon>{{ item.icon }}</mat-icon
+			><span>{{ item.label }}</span></a
+		>
+	</ng-container>
+	<ng-container *ngFor="let item of adminNavItems; let i = index">
+		<ng-container *ngIf="userIsAdmin | async">
+			<a
+				mat-raised-button
+				color="primary"
+				[routerLink]="item.routerLink"
+				[class]="
+					'message-button-' + (i + adminNavItemsStartingPosition)
+				"
+				[attr.data-cy]="item.cypressLabel"
+				><mat-icon>{{ item.icon }}</mat-icon
+				><span>{{ item.label }}</span></a
+			>
+		</ng-container>
+	</ng-container>
+	<div class="messaging-bottom"></div>
 </div>

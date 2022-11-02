@@ -11,13 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface affectedArtifact {
-    id: string,
-    name:string
+	id: string;
+	name: string;
 }
-  
+
 export interface affectedArtifactWarning<T, U = affectedArtifact> {
-    affectedArtifacts: U[];
-    body: T;
-    modifiedObjectType: string;
-    affectedObjectType: string;
+	affectedArtifacts: U[];
+	body: T;
+	modifiedObjectType: string;
+	affectedObjectType: string;
 }

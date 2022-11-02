@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { subMessage } from "./sub-messages";
+import { subMessage } from './sub-messages';
 
-export interface AddSubMessageDialog{
-    id: string,
-    name:string,
-    subMessage: subMessage,
+export interface AddSubMessageDialog {
+	id: string;
+	name: string;
+	subMessage: subMessage;
 }

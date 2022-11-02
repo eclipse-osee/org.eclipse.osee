@@ -16,17 +16,20 @@ import { apiURL } from 'src/environments/environment';
 import { applic } from '../../../../../types/applicability/applic';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class ApplicabilityListService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getApplicabilities(branchId: string | number) {
-    return this.http.get<applic[]>(apiURL+'/orcs/branch/'+branchId+'/applic')
-  }
+	getApplicabilities(branchId: string | number) {
+		return this.http.get<applic[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applic'
+		);
+	}
 
-  getViews(branchId: string | number) {
-    return this.http.get<applic[]>(apiURL+'/orcs/branch/'+branchId+'/applic/views')
-  }
+	getViews(branchId: string | number) {
+		return this.http.get<applic[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/views'
+		);
+	}
 }

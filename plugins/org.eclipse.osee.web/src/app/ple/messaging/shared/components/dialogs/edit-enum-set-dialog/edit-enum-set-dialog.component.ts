@@ -20,46 +20,55 @@ import { PreferencesUIService } from '../../../services/ui/preferences-ui.servic
 import { enumsetDialogData } from '../../../types/EnumSetDialogData';
 
 @Component({
-  selector: 'app-edit-enum-set-dialog',
-  templateUrl: './edit-enum-set-dialog.component.html',
-  styleUrls: ['./edit-enum-set-dialog.component.sass']
+	selector: 'osee-messaging-edit-enum-set-dialog',
+	templateUrl: './edit-enum-set-dialog.component.html',
+	styleUrls: ['./edit-enum-set-dialog.component.sass'],
 })
 export class EditEnumSetDialogComponent implements OnInit {
-  enumObs: Observable<enumerationSet> =this.enumSetService.getEnumSet(this.data.id);
-  private _enumUpdate: Subject<enumerationSet> = new Subject();
+	enumObs: Observable<enumerationSet> = this.enumSetService.getEnumSet(
+		this.data.id
+	);
+	private _enumUpdate: Subject<enumerationSet> = new Subject();
 
-  isOnEditablePage = this.data.isOnEditablePage;
-  inEditMode = this.preferenceService.inEditMode;
+	isOnEditablePage = this.data.isOnEditablePage;
+	inEditMode = this.preferenceService.inEditMode;
 
-  changedEnum!: Observable<unknown>;
-  constructor (public dialogRef: MatDialogRef<EditEnumSetDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: enumsetDialogData, private enumSetService: EnumerationUIService, private preferenceService: PreferencesUIService) { }
+	changedEnum!: Observable<unknown>;
+	constructor(
+		public dialogRef: MatDialogRef<EditEnumSetDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: enumsetDialogData,
+		private enumSetService: EnumerationUIService,
+		private preferenceService: PreferencesUIService
+	) {}
 
-  ngOnInit(): void {
-    this.changedEnum = combineLatest([this.enumObs, this._enumUpdate]).pipe(
-      switchMap(([previousEnum, currentEnum]) => of([previousEnum, currentEnum]).pipe(
-        map(([previousEnum, currentEnum]) => {
-          //find changes in currentEnum, remove existing contents of previousEnum
-          //this will end up being the old output
-  
-          return {
-            id: currentEnum.id,
-            name: currentEnum.name,
-            applicability: currentEnum.applicability,
-            applicabilityId:currentEnum.applicability.id,
-            description: currentEnum.description,
-            enumerations:currentEnum.enumerations
-          }
-        })
-      ))
-    )
-  }
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
+	ngOnInit(): void {
+		this.changedEnum = combineLatest([this.enumObs, this._enumUpdate]).pipe(
+			switchMap(([previousEnum, currentEnum]) =>
+				of([previousEnum, currentEnum]).pipe(
+					map(([previousEnum, currentEnum]) => {
+						//find changes in currentEnum, remove existing contents of previousEnum
+						//this will end up being the old output
 
-  enumUpdate(value: enumerationSet | undefined) {
-    if (value) {
-      this._enumUpdate.next(value);
-    }
-  }
+						return {
+							id: currentEnum.id,
+							name: currentEnum.name,
+							applicability: currentEnum.applicability,
+							applicabilityId: currentEnum.applicability.id,
+							description: currentEnum.description,
+							enumerations: currentEnum.enumerations,
+						};
+					})
+				)
+			)
+		);
+	}
+	onNoClick(): void {
+		this.dialogRef.close();
+	}
+
+	enumUpdate(value: enumerationSet | undefined) {
+		if (value) {
+			this._enumUpdate.next(value);
+		}
+	}
 }

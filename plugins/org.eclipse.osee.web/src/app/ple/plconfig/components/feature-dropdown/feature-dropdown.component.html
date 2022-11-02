@@ -10,15 +10,51 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button mat-stroked-button [matMenuTriggerFor]="mainMenu" *ngIf="(editable|async)===true" class="pl-config-feature-dropdown-dd-button" data-cy="change-feature-dropdown-btn">Change Features</button>
+<button
+	mat-stroked-button
+	[matMenuTriggerFor]="mainMenu"
+	*ngIf="(editable | async) === true"
+	class="pl-config-feature-dropdown-dd-button"
+	data-cy="change-feature-dropdown-btn">
+	Change Features
+</button>
 <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item (click)="addFeature()" data-cy="add-feature-btn"><mat-icon color="success">create</mat-icon>Add Feature</button>
-    <button mat-menu-item [matMenuTriggerFor]="editConfigMenu" *ngIf="(editable|async)===true" data-cy="edit-feature-btn"><mat-icon color="primary">edit</mat-icon>Edit Feature</button>
-    <button mat-menu-item [matMenuTriggerFor]="deleteConfigMenu" *ngIf="(editable|async)===true" data-cy="delete-feature-btn"><mat-icon color="warn">delete_forever</mat-icon>Delete Feature</button>
+	<button
+		mat-menu-item
+		(click)="addFeature()"
+		data-cy="add-feature-btn">
+		<mat-icon color="success">create</mat-icon>Add Feature
+	</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="editConfigMenu"
+		*ngIf="(editable | async) === true"
+		data-cy="edit-feature-btn">
+		<mat-icon color="primary">edit</mat-icon>Edit Feature
+	</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="deleteConfigMenu"
+		*ngIf="(editable | async) === true"
+		data-cy="delete-feature-btn">
+		<mat-icon color="warn">delete_forever</mat-icon>Delete Feature
+	</button>
 </mat-menu>
 <mat-menu #deleteConfigMenu="matMenu">
-    <button *ngFor="let feature of (features|async)" mat-menu-item (click)="deleteFeature(feature)" [attr.data-cy]="'delete-feature-'+feature.name+'-btn'">{{feature.name}}</button>
+	<button
+		*ngFor="let feature of features | async"
+		mat-menu-item
+		(click)="deleteFeature(feature)"
+		[attr.data-cy]="'delete-feature-' + feature.name + '-btn'">
+		{{ feature.name }}
+	</button>
 </mat-menu>
 <mat-menu #editConfigMenu="matMenu">
-    <button *ngFor="let feature of (features|async)" mat-menu-item (click)="openEditDialog(feature)" [attr.data-cy]="'edit-feature-'+feature.name+'-btn'">{{feature.name}}</button>
+	<button
+		*ngFor="let feature of features | async"
+		mat-menu-item
+		(click)="openEditDialog(feature)"
+		[attr.data-cy]="'edit-feature-' + feature.name + '-btn'">
+		{{ feature.name }}
+	</button>
 </mat-menu>

@@ -17,15 +17,15 @@ import { structure } from '../types/structure';
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const warningDialogServiceMock: Partial<WarningDialogService> = {
-    openSubMessageDialog(body: Partial<subMessage>) {
-        return of(body);
-    },
+	openSubMessageDialog(body: Partial<subMessage>) {
+		return of(body);
+	},
 
-    openStructureDialog(body: Partial<structure>) {
-        return of(body);
-    },
-  
-    openElementDialog(body: Partial<element>) {
-        return of(body);
-    }
- }
+	openStructureDialog(body: Partial<structure>) {
+		return of(body);
+	},
+
+	openElementDialog(body: Partial<element>) {
+		return of(body);
+	},
+};

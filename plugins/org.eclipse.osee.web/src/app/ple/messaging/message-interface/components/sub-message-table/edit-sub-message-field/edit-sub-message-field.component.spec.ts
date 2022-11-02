@@ -26,47 +26,60 @@ import { ConvertSubMessageTitlesToStringPipe } from '../../../pipes/convert-sub-
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 import { EditSubMessageFieldComponent } from './edit-sub-message-field.component';
 
-
 describe('EditSubMessageFieldComponent', () => {
-  let component: EditSubMessageFieldComponent;
-  let fixture: ComponentFixture<EditSubMessageFieldComponent>;
-  let loader: HarnessLoader;
+	let component: EditSubMessageFieldComponent;
+	let fixture: ComponentFixture<EditSubMessageFieldComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, NoopAnimationsModule],
-      providers: [
-        { provide: CurrentMessagesService, useValue: CurrentMessageServiceMock },
-        { provide: WarningDialogService, useValue: warningDialogServiceMock }
-      ],
-      declarations: [ EditSubMessageFieldComponent,ConvertSubMessageTitlesToStringPipe ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatSelectModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{
+					provide: CurrentMessagesService,
+					useValue: CurrentMessageServiceMock,
+				},
+				{
+					provide: WarningDialogService,
+					useValue: warningDialogServiceMock,
+				},
+			],
+			declarations: [
+				EditSubMessageFieldComponent,
+				ConvertSubMessageTitlesToStringPipe,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditSubMessageFieldComponent);
-    component = fixture.componentInstance;
-    component.header='applicability'
-    component.value={id:'1',name:'Base'}
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditSubMessageFieldComponent);
+		component = fixture.componentInstance;
+		component.header = 'applicability';
+		component.value = { id: '1', name: 'Base' };
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should update the applicabilities', async () => {
-    let spy = spyOn(component, 'updateSubMessage').and.callThrough();
-    let select = await loader.getHarness(MatSelectHarness);
-    component.focusChanged(null);
-    await select.open();
-    if (await select.isOpen()) {
-      await select.clickOptions({ text: 'Second' });
-      expect(spy).toHaveBeenCalled()
-    } else {
-      expect(spy).not.toHaveBeenCalled()
-    }
-  })
+	it('should update the applicabilities', async () => {
+		let spy = spyOn(component, 'updateSubMessage').and.callThrough();
+		let select = await loader.getHarness(MatSelectHarness);
+		component.focusChanged(null);
+		await select.open();
+		if (await select.isOpen()) {
+			await select.clickOptions({ text: 'Second' });
+			expect(spy).toHaveBeenCalled();
+		} else {
+			expect(spy).not.toHaveBeenCalled();
+		}
+	});
 });

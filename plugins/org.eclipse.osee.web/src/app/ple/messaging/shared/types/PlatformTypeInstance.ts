@@ -13,22 +13,21 @@
 
 import { PlatformType } from './platformType';
 
-export class PlatformTypeSentinel implements PlatformType{
-    id?: string | undefined = '-1';
-    description: string = '';
-    interfaceLogicalType: string = '';
-    interfacePlatform2sComplement: boolean = false;
-    interfacePlatformTypeAnalogAccuracy: string = '';
-    interfacePlatformTypeBitsResolution: string = '';
-    interfacePlatformTypeBitSize: string = '';
-    interfacePlatformTypeCompRate: string = '';
-    interfacePlatformTypeDefaultValue: string = '';
-    interfacePlatformTypeEnumLiteral: string = '';
-    interfacePlatformTypeMaxval: string = '';
-    interfacePlatformTypeMinval: string = '';
-    interfacePlatformTypeMsbValue: string = '';
-    interfacePlatformTypeUnits: string = '';
-    interfacePlatformTypeValidRangeDescription: string = '';
-    name: string = '';
-    
+export class PlatformTypeSentinel implements PlatformType {
+	id?: string | undefined = '-1';
+	description: string = '';
+	interfaceLogicalType: string = '';
+	interfacePlatform2sComplement: boolean = false;
+	interfacePlatformTypeAnalogAccuracy: string = '';
+	interfacePlatformTypeBitsResolution: string = '';
+	interfacePlatformTypeBitSize: string = '';
+	interfacePlatformTypeCompRate: string = '';
+	interfacePlatformTypeDefaultValue: string = '';
+	interfacePlatformTypeEnumLiteral: string = '';
+	interfacePlatformTypeMaxval: string = '';
+	interfacePlatformTypeMinval: string = '';
+	interfacePlatformTypeMsbValue: string = '';
+	interfacePlatformTypeUnits: string = '';
+	interfacePlatformTypeValidRangeDescription: string = '';
+	name: string = '';
 }

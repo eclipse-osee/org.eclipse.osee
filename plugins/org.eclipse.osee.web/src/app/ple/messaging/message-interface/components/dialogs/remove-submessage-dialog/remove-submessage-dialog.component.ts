@@ -15,15 +15,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RemoveSubMessageDialogData } from '../../../types/RemoveSubMessageDialog';
 
 @Component({
-  selector: 'app-remove-submessage-dialog',
-  templateUrl: './remove-submessage-dialog.component.html',
-  styleUrls: ['./remove-submessage-dialog.component.sass']
+	selector: 'osee-messaging-remove-submessage-dialog',
+	templateUrl: './remove-submessage-dialog.component.html',
+	styleUrls: ['./remove-submessage-dialog.component.sass'],
 })
-export class RemoveSubmessageDialogComponent implements OnInit {
-
-  constructor(public dialogRef: MatDialogRef<RemoveSubmessageDialogComponent>, @Inject(MAT_DIALOG_DATA) public data:RemoveSubMessageDialogData) { }
-
-  ngOnInit(): void {
-  }
-
+export class RemoveSubmessageDialogComponent {
+	constructor(
+		public dialogRef: MatDialogRef<RemoveSubmessageDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: RemoveSubMessageDialogData
+	) {}
 }

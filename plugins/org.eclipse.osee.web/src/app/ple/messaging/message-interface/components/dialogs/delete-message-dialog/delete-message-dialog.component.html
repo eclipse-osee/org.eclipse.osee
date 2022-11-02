@@ -12,11 +12,19 @@
  -->
 <h1 mat-dialog-title>Deleting Message</h1>
 <mat-dialog-content>
-   Are you sure you want to delete {{data.message.name}}? This will remove all instances of this element from all connections.
+	Are you sure you want to delete {{ data.message.name }}? This will remove
+	all instances of this element from all connections.
 </mat-dialog-content>
 <mat-dialog-actions>
-   <button mat-button mat-dialog-close="cancel">No</button>
-   <button mat-raised-button color="primary" mat-dialog-close="ok">
-       Yes
-   </button>
+	<button
+		mat-button
+		mat-dialog-close="cancel">
+		No
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
+		mat-dialog-close="ok">
+		Yes
+	</button>
 </mat-dialog-actions>

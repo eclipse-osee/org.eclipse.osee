@@ -23,44 +23,46 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 @Component({
-  selector: 'outer-component',
-  template:'<mat-form-field><mat-label>OuterComponent</mat-label><mat-select><osee-mat-option-loading [options]="observable$"><mat-option *ngFor="let option of (observable$ | async)"></mat-option></osee-mat-option-loading></mat-select></mat-form-field>',
+	selector: 'osee-outer-component',
+	template:
+		'<mat-form-field><mat-label>OuterComponent</mat-label><mat-select><osee-mat-option-loading [options]="observable$"><mat-option *ngFor="let option of (observable$ | async)"></mat-option></osee-mat-option-loading></mat-select></mat-form-field>',
 })
-class OuterComponent implements AfterViewInit{
-  observable$ = of(['1', '2', '3'])
-  @ViewChild('osee-mat-option-loading') public loading!:MatOptionLoadingComponent<string>
-  constructor () {
-    
-  }
-  ngAfterViewInit(): void {
-  }
+class OuterComponent implements AfterViewInit {
+	observable$ = of(['1', '2', '3']);
+	@ViewChild('osee-mat-option-loading')
+	public loading!: MatOptionLoadingComponent<string>;
+	constructor() {}
+	ngAfterViewInit(): void {
+		const variable = 0;
+	}
 }
 
 describe('MatOptionLoadingComponent', () => {
-  let component: OuterComponent;
-  let fixture: ComponentFixture<OuterComponent>;
-  let loader: HarnessLoader;
-  
-  
+	let component: OuterComponent;
+	let fixture: ComponentFixture<OuterComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatSelectModule, NoopAnimationsModule, MatProgressSpinnerModule],
-      declarations: [ MatOptionLoadingComponent,OuterComponent ]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatSelectModule,
+				NoopAnimationsModule,
+				MatProgressSpinnerModule,
+			],
+			declarations: [MatOptionLoadingComponent, OuterComponent],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(OuterComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+		fixture = TestBed.createComponent(OuterComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', async() => {
-    const select = await loader.getHarness(MatSelectHarness);
-    await select.open();
-    await select.isOpen();
-    const options = await select.getOptions();
-    expect(options.length).toBe(3);
-  });
+	it('should create', async () => {
+		const select = await loader.getHarness(MatSelectHarness);
+		await select.open();
+		await select.isOpen();
+		const options = await select.getOptions();
+		expect(options.length).toBe(3);
+	});
 });

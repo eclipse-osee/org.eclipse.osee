@@ -18,18 +18,32 @@ import { BranchIdService } from './router/branch-id.service';
 import { SearchService } from './router/search.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class CurrentElementSearchService {
+	private _elements = combineLatest([
+		this.idService.BranchId,
+		this.searchService.searchTerm,
+	]).pipe(
+		debounceTime(500),
+		filter(
+			([id, searchTerm]) =>
+				id !== '' &&
+				!isNaN(Number(id)) &&
+				Number(id) > 0 &&
+				searchTerm !== ''
+		),
+		switchMap(([id, search]) =>
+			this.platformTypesService.getFilteredElements(search, id)
+		)
+	);
+	constructor(
+		private idService: BranchIdService,
+		private platformTypesService: PlatformTypesService,
+		private searchService: SearchService
+	) {}
 
-  private _elements = combineLatest([this.idService.BranchId, this.searchService.searchTerm]).pipe(
-    debounceTime(500),
-    filter(([id, searchTerm]) => id !== '' && !isNaN(Number(id)) && Number(id) > 0 && searchTerm!==''),
-    switchMap(([id,search])=>this.platformTypesService.getFilteredElements(search,id))
-  )
-  constructor (private idService: BranchIdService, private platformTypesService: PlatformTypesService, private searchService: SearchService) { }
-  
-  get elements() {
-    return this._elements;
-  }
+	get elements() {
+		return this._elements;
+	}
 }

@@ -17,15 +17,8 @@ import { AboutRoutingModule } from './about-routing.module';
 import { AboutComponent } from './about.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-
 @NgModule({
-  declarations: [
-    AboutComponent
-  ],
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    AboutRoutingModule
-  ]
+	declarations: [AboutComponent],
+	imports: [CommonModule, MatFormFieldModule, AboutRoutingModule],
 })
-export class AboutModule { }
+export class AboutModule {}

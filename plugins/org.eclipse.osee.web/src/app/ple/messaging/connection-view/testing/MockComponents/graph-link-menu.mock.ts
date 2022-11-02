@@ -10,24 +10,40 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from "@angular/core";
-import { connection, connectionWithChanges } from "../../../shared/types/connection";
-import { OseeNode, node, nodeData, nodeDataWithChanges } from "../../../shared/types/node";
+import { Component, Input } from '@angular/core';
+import {
+	connection,
+	connectionWithChanges,
+} from '../../../shared/types/connection';
+import {
+	OseeNode,
+	node,
+	nodeData,
+	nodeDataWithChanges,
+} from '../../../shared/types/node';
 
 @Component({
-    selector: 'app-graph-link-menu',
-    template:'<div>Dummy</div>'
-  })
-export class GraphLinkMenuDummy{
-@Input() editMode: boolean = false;
-  @Input() data: connection | connectionWithChanges = {
-    name: '',
-    description:'',
-    transportType: {name:"ETHERNET",byteAlignValidation:false,byteAlignValidationSize:0,messageGeneration:false,messageGenerationPosition:'',messageGenerationType:''}
-  };
+	selector: 'osee-messaging-graph-link-menu',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class GraphLinkMenuDummy {
+	@Input() editMode: boolean = false;
+	@Input() data: connection | connectionWithChanges = {
+		name: '',
+		description: '',
+		transportType: {
+			name: 'ETHERNET',
+			byteAlignValidation: false,
+			byteAlignValidationSize: 0,
+			messageGeneration: false,
+			messageGenerationPosition: '',
+			messageGenerationType: '',
+		},
+	};
 
-  @Input()
-  source!: OseeNode<node | nodeData | nodeDataWithChanges>;
-  @Input()
-  target!: OseeNode<node | nodeData | nodeDataWithChanges>;
-  }
+	@Input()
+	source!: OseeNode<node | nodeData | nodeDataWithChanges>;
+	@Input()
+	target!: OseeNode<node | nodeData | nodeDataWithChanges>;
+}

@@ -17,16 +17,16 @@ import { TestBed } from '@angular/core/testing';
 import { PlConfigUserService } from './pl-config-user.service';
 
 describe('PlConfigUserService', () => {
-  let service: PlConfigUserService;
+	let service: PlConfigUserService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule],
-      });
-    service = TestBed.inject(PlConfigUserService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(PlConfigUserService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

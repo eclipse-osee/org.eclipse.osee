@@ -16,17 +16,20 @@ import { apiURL } from '../../../../../../environments/environment';
 import { transportType } from '../../types/transportType';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class TransportTypeService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getAll(branchId: string) {
-    return this.http.get<(Required<transportType>)[]>(apiURL + "/mim/branch/" + branchId + "/transportTypes");
-  }
+	getAll(branchId: string) {
+		return this.http.get<Required<transportType>[]>(
+			apiURL + '/mim/branch/' + branchId + '/transportTypes'
+		);
+	}
 
-  get(branchId: string, artId: string) {
-    return this.http.get<Required<transportType>>(apiURL + "/mim/branch/" + branchId + "/transportTypes/"+artId);
-  }
+	get(branchId: string, artId: string) {
+		return this.http.get<Required<transportType>>(
+			apiURL + '/mim/branch/' + branchId + '/transportTypes/' + artId
+		);
+	}
 }

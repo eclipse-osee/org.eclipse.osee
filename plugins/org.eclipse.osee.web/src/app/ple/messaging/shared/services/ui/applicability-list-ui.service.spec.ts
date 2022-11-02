@@ -17,16 +17,21 @@ import { ApplicabilityListService } from '../http/applicability-list.service';
 import { ApplicabilityListUIService } from './applicability-list-ui.service';
 
 describe('ApplicabilityListUIService', () => {
-  let service: ApplicabilityListUIService;
+	let service: ApplicabilityListUIService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers:[{provide: ApplicabilityListService, useValue:applicabilityListServiceMock}]
-    });
-    service = TestBed.inject(ApplicabilityListUIService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(ApplicabilityListUIService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

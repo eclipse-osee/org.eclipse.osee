@@ -12,8 +12,8 @@
  **********************************************************************/
 $mat-column: '.mat-column-';
 
- @mixin table-column-width($header, $width) {
-    #{$mat-column}#{$header}{
-        max-width: $width;
-    }
- }
+@mixin table-column-width($header, $width) {
+	#{$mat-column}#{$header} {
+		max-width: $width;
+	}
+}

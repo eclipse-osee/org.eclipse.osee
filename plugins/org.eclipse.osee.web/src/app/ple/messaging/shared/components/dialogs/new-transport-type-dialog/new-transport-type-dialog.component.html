@@ -12,44 +12,86 @@
  -->
 <h1 mat-dialog-title>Create New Transport Type</h1>
 <mat-dialog-content>
-    <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput [(ngModel)]="transportType.name" required data-cy="field-name">
-    </mat-form-field>
-    <br>
-    <mat-slide-toggle [(ngModel)]="transportType.byteAlignValidation" color="primary" data-cy="field-validation"><mat-label>Byte Align Validation</mat-label></mat-slide-toggle>
-    <br>
-    <mat-form-field>
-        <mat-label>Byte Align Validation Size</mat-label>
-        <input matInput type="number" [(ngModel)]="transportType.byteAlignValidationSize" [required]="transportType.byteAlignValidation" data-cy="field-validation-size">
-    </mat-form-field>
-    <br>
-    <mat-slide-toggle [(ngModel)]="transportType.messageGeneration" color="primary" data-cy="field-generation"><mat-label>Message Generation</mat-label></mat-slide-toggle>
-    <br>
-    <mat-form-field>
-        <mat-label>Message Generation Type</mat-label>
-        <mat-select [(ngModel)]="transportType.messageGenerationType" [required]="transportType.messageGeneration" data-cy="field-generation-type">
-            <mat-option *ngFor="let type of generationTypes" [value]="type" [id]="type" [attr.data-cy]="'option-'+type">
-                {{type}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <mat-label>Message Generation Position</mat-label>
-        <input matInput [(ngModel)]="transportType.messageGenerationPosition" [required]="transportType.messageGeneration" data-cy="field-generation-position">
-        <mat-hint align="end">Can be LAST, or 0..n</mat-hint>
-    </mat-form-field>
+	<mat-form-field>
+		<mat-label>Name</mat-label>
+		<input
+			matInput
+			[(ngModel)]="transportType.name"
+			required
+			data-cy="field-name" />
+	</mat-form-field>
+	<br />
+	<mat-slide-toggle
+		[(ngModel)]="transportType.byteAlignValidation"
+		color="primary"
+		data-cy="field-validation"
+		><mat-label>Byte Align Validation</mat-label></mat-slide-toggle
+	>
+	<br />
+	<mat-form-field>
+		<mat-label>Byte Align Validation Size</mat-label>
+		<input
+			matInput
+			type="number"
+			[(ngModel)]="transportType.byteAlignValidationSize"
+			[required]="transportType.byteAlignValidation"
+			data-cy="field-validation-size" />
+	</mat-form-field>
+	<br />
+	<mat-slide-toggle
+		[(ngModel)]="transportType.messageGeneration"
+		color="primary"
+		data-cy="field-generation"
+		><mat-label>Message Generation</mat-label></mat-slide-toggle
+	>
+	<br />
+	<mat-form-field>
+		<mat-label>Message Generation Type</mat-label>
+		<mat-select
+			[(ngModel)]="transportType.messageGenerationType"
+			[required]="transportType.messageGeneration"
+			data-cy="field-generation-type">
+			<mat-option
+				*ngFor="let type of generationTypes"
+				[value]="type"
+				[id]="type"
+				[attr.data-cy]="'option-' + type">
+				{{ type }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Message Generation Position</mat-label>
+		<input
+			matInput
+			[(ngModel)]="transportType.messageGenerationPosition"
+			[required]="transportType.messageGeneration"
+			data-cy="field-generation-position" />
+		<mat-hint align="end">Can be LAST, or 0..n</mat-hint>
+	</mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()">Cancel</button>
-    <button
-            mat-raised-button
-            [mat-dialog-close]="transportType"
-            color="primary"
-            data-cy="submit-btn"
-            [disabled]="transportType.name.length === 0 || !(transportType.byteAlignValidation ? transportType.byteAlignValidationSize!==0 : true) || !(transportType.messageGeneration ? transportType.messageGenerationType.length!==0 && transportType.messageGenerationPosition.length!==0 : true)"
-          >
-            Ok
-          </button>
+	<button
+		mat-button
+		(click)="onNoClick()">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="transportType"
+		color="primary"
+		data-cy="submit-btn"
+		[disabled]="
+			transportType.name.length === 0 ||
+			!(transportType.byteAlignValidation
+				? transportType.byteAlignValidationSize !== 0
+				: true) ||
+			!(transportType.messageGeneration
+				? transportType.messageGenerationType.length !== 0 &&
+				  transportType.messageGenerationPosition.length !== 0
+				: true)
+		">
+		Ok
+	</button>
 </mat-dialog-actions>

@@ -23,65 +23,72 @@ import { ElementTableSearchDummy } from './testing/MockComponents/ElementTableSe
 import { TypeElementSearchComponent } from './type-element-search.component';
 
 describe('TypeElementSearchComponent', () => {
-  let component: TypeElementSearchComponent;
-  let fixture: ComponentFixture<TypeElementSearchComponent>;
-  let params: Subject<Params>;
-  let idService: BranchIdService;
-  let typeService: BranchTypeService;
+	let component: TypeElementSearchComponent;
+	let fixture: ComponentFixture<TypeElementSearchComponent>;
+	let params: Subject<Params>;
+	let idService: BranchIdService;
+	let typeService: BranchTypeService;
 
-  beforeEach(async () => {
-    params = new Subject<Params>();
-    await TestBed.configureTestingModule({
-      providers: [{ provide: ActivatedRoute, useValue: { params: params } }],
-      declarations: [ TypeElementSearchComponent,ElementTableDummy,ElementTableSearchDummy,BranchPickerStub, ActionDropdownStub]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		params = new Subject<Params>();
+		await TestBed.configureTestingModule({
+			providers: [
+				{ provide: ActivatedRoute, useValue: { params: params } },
+			],
+			declarations: [
+				TypeElementSearchComponent,
+				ElementTableDummy,
+				ElementTableSearchDummy,
+				BranchPickerStub,
+				ActionDropdownStub,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    idService = TestBed.inject(BranchIdService);
-    typeService = TestBed.inject(BranchTypeService);
-    fixture = TestBed.createComponent(TypeElementSearchComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		idService = TestBed.inject(BranchIdService);
+		typeService = TestBed.inject(BranchTypeService);
+		fixture = TestBed.createComponent(TypeElementSearchComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should create with branchId 8 and type product line', () => {
-    params.next({ 'branchId': '8', 'branchType': 'baseline' });
-    expect(component).toBeTruthy();
-    expect(idService.id).toEqual('8');
-    expect(typeService.type).toEqual('baseline')
-  });
+	it('should create with branchId 8 and type product line', () => {
+		params.next({ branchId: '8', branchType: 'baseline' });
+		expect(component).toBeTruthy();
+		expect(idService.id).toEqual('8');
+		expect(typeService.type).toEqual('baseline');
+	});
 
-  it('should create with branchId 8 and type working', () => {
-    params.next({ 'branchId': '8', 'branchType': 'working' });
-    expect(component).toBeTruthy();
-    expect(idService.id).toEqual('8');
-    expect(typeService.type).toEqual('working')
-  });
+	it('should create with branchId 8 and type working', () => {
+		params.next({ branchId: '8', branchType: 'working' });
+		expect(component).toBeTruthy();
+		expect(idService.id).toEqual('8');
+		expect(typeService.type).toEqual('working');
+	});
 
-  it('should create with branchId(when set to -1) "" and type working', () => {
-    params.next({ 'branchId': '-1', 'branchType': 'working' });
-    expect(component).toBeTruthy();
-    expect(idService.id).toEqual('0');
-    expect(typeService.type).toEqual('working')
-  });
+	it('should create with branchId(when set to -1) "" and type working', () => {
+		params.next({ branchId: '-1', branchType: 'working' });
+		expect(component).toBeTruthy();
+		expect(idService.id).toEqual('0');
+		expect(typeService.type).toEqual('working');
+	});
 
-  it('should create with branchId(when set to asdf) "0" and type working', () => {
-    params.next({ 'branchId': 'asdf', 'branchType': 'working' });
-    expect(component).toBeTruthy();
-    expect(idService.id).toEqual('0');
-    expect(typeService.type).toEqual('working')
-  });
+	it('should create with branchId(when set to asdf) "0" and type working', () => {
+		params.next({ branchId: 'asdf', branchType: 'working' });
+		expect(component).toBeTruthy();
+		expect(idService.id).toEqual('0');
+		expect(typeService.type).toEqual('working');
+	});
 
-  it('should create with branchId 8 and type "" (when set to asdf)', () => {
-    params.next({ 'branchId': '8', 'branchType': 'asdf' });
-    expect(component).toBeTruthy();
-    expect(idService.id).toEqual('8');
-    expect(typeService.type).toEqual('')
-  });
+	it('should create with branchId 8 and type "" (when set to asdf)', () => {
+		params.next({ branchId: '8', branchType: 'asdf' });
+		expect(component).toBeTruthy();
+		expect(idService.id).toEqual('8');
+		expect(typeService.type).toEqual('');
+	});
 });

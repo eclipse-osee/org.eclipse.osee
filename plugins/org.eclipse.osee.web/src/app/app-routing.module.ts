@@ -14,26 +14,48 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'ple', loadChildren: () => import('./ple/ple.module').then(m => m.PleModule) },
-  {
-    path: '', //todo remove when main app page is made
-    redirectTo: 'ple',
-    pathMatch:'full'
-  },
-  { path: '404', loadChildren: () => import('./page-not-found/page-not-found.module').then(m => m.PageNotFoundModule) },
-  { path: 'about', loadChildren: () => import('./about/about.module').then(m => m.AboutModule) },
-  {
-    path: '**',
-    redirectTo:'404',
-  },
-  { 
-    path: '', 
-    loadChildren: () => import('./navigation/navigation.module').then(m => m.NavigationModule) 
-  },
+	{
+		path: 'ple',
+		loadChildren: () => import('./ple/ple.module').then((m) => m.PleModule),
+	},
+	{
+		path: '', //todo remove when main app page is made
+		redirectTo: 'ple',
+		pathMatch: 'full',
+	},
+	{
+		path: '404',
+		loadChildren: () =>
+			import('./page-not-found/page-not-found.module').then(
+				(m) => m.PageNotFoundModule
+			),
+	},
+	{
+		path: 'about',
+		loadChildren: () =>
+			import('./about/about.module').then((m) => m.AboutModule),
+	},
+	{
+		path: '**',
+		redirectTo: '404',
+	},
+	{
+		path: '',
+		loadChildren: () =>
+			import('./navigation/navigation.module').then(
+				(m) => m.NavigationModule
+			),
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled',scrollPositionRestoration: 'enabled',scrollOffset: [0, 256]})],
-  exports: [RouterModule]
+	imports: [
+		RouterModule.forRoot(routes, {
+			anchorScrolling: 'enabled',
+			scrollPositionRestoration: 'enabled',
+			scrollOffset: [0, 256],
+		}),
+	],
+	exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

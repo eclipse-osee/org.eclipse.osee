@@ -17,72 +17,77 @@ import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { changeInstance } from 'src/app/types/change-report/change-report';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class PlConfigUIStateService {
-  private _differences = new ReplaySubject<changeInstance[]|undefined>(undefined);
-  private _editable = new BehaviorSubject<string>("false");
-  private _groups = new BehaviorSubject<string[]>([]);
-  constructor(private ui: UiService) { }
+	private _differences = new ReplaySubject<changeInstance[] | undefined>(
+		undefined
+	);
+	private _editable = new BehaviorSubject<string>('false');
+	private _groups = new BehaviorSubject<string[]>([]);
+	constructor(private ui: UiService) {}
 
+	public set viewBranchTypeString(branchType: string) {
+		this.ui.typeValue = branchType?.toLowerCase();
+		this.updateReqConfig = true;
+	}
 
-  public set viewBranchTypeString(branchType: string) {
-    this.ui.typeValue = branchType?.toLowerCase();
-    this.updateReqConfig = true;
-  }
+	public get viewBranchType() {
+		return this.ui.type;
+	}
 
-  public get viewBranchType() {
-    return this.ui.type;
-  }
+	public set branchIdNum(branchId: string) {
+		this.ui.idValue = branchId;
+	}
+	public get branchId() {
+		return this.ui.id.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+	}
+	public set updateReqConfig(updateReq: boolean) {
+		this.ui.updated = updateReq;
+	}
+	public get updateReq() {
+		return this.ui.update;
+	}
+	public get loading() {
+		return this.ui.isLoading;
+	}
+	public set loadingValue(loading: boolean | string) {
+		this.ui.loading = loading as boolean;
+	}
+	public get editable() {
+		return this._editable;
+	}
+	public set editableValue(edit: boolean | string) {
+		this.editable.next(edit.toString());
+	}
+	public get errors() {
+		return this.ui.errors;
+	}
+	public set error(errorString: string) {
+		this.ui.error = errorString;
+	}
+	public set groupsString(groups: string[]) {
+		this._groups.next(groups);
+	}
+	public get groups() {
+		return this._groups;
+	}
+	get differences() {
+		return this._differences.pipe(
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
+	set difference(value: changeInstance[]) {
+		this._differences.next(value);
+	}
 
-  public set branchIdNum(branchId: string) {
-    this.ui.idValue = branchId;
-  }
-  public get branchId() {
-    return this.ui.id.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  }
-  public set updateReqConfig(updateReq: boolean) {
-    this.ui.updated = updateReq;
-  }
-  public get updateReq() {
-    return this.ui.update;
-  }
-  public get loading() {
-    return this.ui.isLoading;
-  }
-  public set loadingValue(loading: boolean|string) {
-    this.ui.loading = loading as boolean;
-  }
-  public get editable() {
-    return this._editable;
-  }
-  public set editableValue(edit: boolean |string) {
-    this.editable.next(edit.toString())
-  }
-  public get errors() {
-    return this.ui.errors
-  }
-  public set error(errorString: string) {
-    this.ui.error = errorString;
-  }
-  public set groupsString(groups: string[]) {
-    this._groups.next(groups);
-  }
-  public get groups() {
-    return this._groups;
-  }
-  get differences() {
-    return this._differences.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  }
-  set difference(value: changeInstance[]) {
-    this._differences.next(value);
-  }
+	get isInDiff() {
+		return this.ui.isInDiff.pipe(
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
 
-  get isInDiff() {
-    return this.ui.isInDiff.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  }
-
-  set diffMode(value: boolean) {
-    this.ui.diffMode = value;
-  }
+	set diffMode(value: boolean) {
+		this.ui.diffMode = value;
+	}
 }

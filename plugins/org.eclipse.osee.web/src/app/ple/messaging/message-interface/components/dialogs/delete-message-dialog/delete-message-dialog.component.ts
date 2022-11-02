@@ -15,15 +15,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DeleteMessageDialogData } from '../../../types/DeleteMessageDialog';
 
 @Component({
-  selector: 'app-delete-message-dialog',
-  templateUrl: './delete-message-dialog.component.html',
-  styleUrls: ['./delete-message-dialog.component.sass']
+	selector: 'osee-messaging-delete-message-dialog',
+	templateUrl: './delete-message-dialog.component.html',
+	styleUrls: ['./delete-message-dialog.component.sass'],
 })
-export class DeleteMessageDialogComponent implements OnInit {
-
-  constructor(public dialogRef: MatDialogRef<DeleteMessageDialogComponent>, @Inject(MAT_DIALOG_DATA) public data:DeleteMessageDialogData) { }
-
-  ngOnInit(): void {
-  }
-
+export class DeleteMessageDialogComponent {
+	constructor(
+		public dialogRef: MatDialogRef<DeleteMessageDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: DeleteMessageDialogData
+	) {}
 }

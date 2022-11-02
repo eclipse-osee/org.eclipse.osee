@@ -21,37 +21,38 @@ import { takeUntil } from 'rxjs/operators';
 import { transportType } from '../../../../shared/types/transportType';
 
 @Component({
-  selector: 'app-edit-connection-dialog',
-  templateUrl: './edit-connection-dialog.component.html',
-  styleUrls: ['./edit-connection-dialog.component.sass']
+	selector: 'osee-edit-connection-dialog',
+	templateUrl: './edit-connection-dialog.component.html',
+	styleUrls: ['./edit-connection-dialog.component.sass'],
 })
-export class EditConnectionDialogComponent implements OnInit, OnDestroy {
+export class EditConnectionDialogComponent implements OnDestroy {
+	private _done = new Subject();
+	title: string = '';
+	applics = this.graphService.applic;
+	transportTypes = this.transportTypeService.types.pipe(
+		takeUntil(this._done)
+	);
+	constructor(
+		public dialogRef: MatDialogRef<EditConnectionDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: connection,
+		private graphService: CurrentGraphService,
+		private transportTypeService: CurrentTransportTypeService
+	) {
+		this.title = data.name;
+	}
+	ngOnDestroy(): void {
+		this._done.next(true);
+	}
 
-  private _done = new Subject();
-  title: string = "";
-  applics = this.graphService.applic;
-  transportTypes = this.transportTypeService.types.pipe(
-    takeUntil(this._done)
-  );
-  constructor (public dialogRef: MatDialogRef<EditConnectionDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: connection, private graphService: CurrentGraphService, private transportTypeService: CurrentTransportTypeService) {
-    this.title = data.name;
-  }
-  ngOnDestroy(): void {
-    this._done.next(true);
-  }
+	onNoClick() {
+		this.dialogRef.close();
+	}
 
-  ngOnInit(): void {
-  }
+	compareApplics(o1: applic, o2: applic) {
+		return o1?.id === o2?.id && o1?.name === o2?.name;
+	}
 
-  onNoClick() {
-    this.dialogRef.close();
-  }
-
-  compareApplics(o1:applic,o2:applic) {
-    return o1?.id === o2?.id && o1?.name === o2?.name;
-  }
-
-  compareTransportTypes(o1: transportType, o2: transportType) {
-    return o1?.id === o2?.id && o1?.name === o2?.name;
-  }
+	compareTransportTypes(o1: transportType, o2: transportType) {
+		return o1?.id === o2?.id && o1?.name === o2?.name;
+	}
 }

@@ -19,31 +19,34 @@ import { branchTransactionServiceMock } from '../http/branch-transaction.service
 import { CurrentBranchTransactionService } from './current-branch-transaction.service';
 
 describe('CurrentBranchTransactionService', () => {
-  let service: CurrentBranchTransactionService;
-  let scheduler: TestScheduler;
+	let service: CurrentBranchTransactionService;
+	let scheduler: TestScheduler;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        {provide:BranchTransactionService,useValue:branchTransactionServiceMock}
-      ]
-    });
-    service = TestBed.inject(CurrentBranchTransactionService);
-  });
-  beforeEach(
-    () =>
-      (scheduler = new TestScheduler((actual, expected) => {
-        expect(actual).toEqual(expected);
-      }))
-  );
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: BranchTransactionService,
+					useValue: branchTransactionServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(CurrentBranchTransactionService);
+	});
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 
-  it('should undo latest transaction', () => {
-    scheduler.run(({ expectObservable}) => {
-      const expectedValues = { a: transactionResultMock, b: undefined };
-      expectObservable(service.undoLatest).toBe('(a|)', expectedValues);
-    });
-  })
+	it('should undo latest transaction', () => {
+		scheduler.run(({ expectObservable }) => {
+			const expectedValues = { a: transactionResultMock, b: undefined };
+			expectObservable(service.undoLatest).toBe('(a|)', expectedValues);
+		});
+	});
 });

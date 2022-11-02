@@ -34,7 +34,10 @@ import { applicabilityListServiceMock } from '../../../shared/mocks/Applicabilit
 import { enumerationSetServiceMock } from '../../../shared/mocks/enumeration.set.service.mock';
 import { enumsServiceMock } from '../../../shared/mocks/EnumsService.mock';
 import { MimPreferencesServiceMock } from '../../../shared/mocks/MimPreferencesService.mock';
-import { platformTypes1, platformTypesMock } from '../../../shared/mocks/PlatformTypes.mock';
+import {
+	platformTypes1,
+	platformTypesMock,
+} from '../../../shared/mocks/PlatformTypes.mock';
 import { typesServiceMock } from '../../../shared/mocks/types.service.mock';
 import { ApplicabilityListService } from '../../../shared/services/http/applicability-list.service';
 import { EnumerationSetService } from '../../../shared/services/http/enumeration-set.service';
@@ -46,65 +49,104 @@ import { PlatformTypeQueryComponent } from './platform-type-query.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 describe('PlatformTypeQueryComponent', () => {
-  let component: PlatformTypeQueryComponent;
-  let fixture: ComponentFixture<PlatformTypeQueryComponent>;
-  let loader: HarnessLoader;
+	let component: PlatformTypeQueryComponent;
+	let fixture: ComponentFixture<PlatformTypeQueryComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[MatSelectModule,MatFormFieldModule,FormsModule,MatDividerModule,MatButtonModule,MatIconModule,MatSliderModule,MatDividerModule,MatInputModule,MatAutocompleteModule,NoopAnimationsModule],
-      declarations: [PlatformTypeQueryComponent],
-      providers: [
-        { provide: TransactionBuilderService, useValue: transactionBuilderMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
-        { provide: TypesService, useValue: typesServiceMock },
-        { provide: EnumsService, useValue: enumsServiceMock },
-        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock}
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatSelectModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatDividerModule,
+				MatButtonModule,
+				MatIconModule,
+				MatSliderModule,
+				MatDividerModule,
+				MatInputModule,
+				MatAutocompleteModule,
+				NoopAnimationsModule,
+			],
+			declarations: [PlatformTypeQueryComponent],
+			providers: [
+				{
+					provide: TransactionBuilderService,
+					useValue: transactionBuilderMock,
+				},
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{ provide: TypesService, useValue: typesServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+				{
+					provide: EnumerationSetService,
+					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PlatformTypeQueryComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    component.platformTypes = platformTypesMock;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(PlatformTypeQueryComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		component.platformTypes = platformTypesMock;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-  async function testSelect(name: string,value:string,length:number,equalityCheck?:'>'|'<'|'='){
-    const select = await loader.getHarness(MatSelectHarness.with({ selector: `.${name}-select` }));
-    await select.open();
-    expect(await select.isOpen()).toBeTruthy();
-    if (equalityCheck === '>' || equalityCheck === undefined) {
-      expect(await (await select.getOptions()).length).toBeGreaterThan(length); 
-    } else if (equalityCheck === '<') {
-      expect(await (await select.getOptions()).length).toBeLessThan(length);
-    } else {
-      expect(await (await select.getOptions()).length).toEqual(length);
-    }
-    await select.clickOptions({ text: value });
-  }
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
+	async function testSelect(
+		name: string,
+		value: string,
+		length: number,
+		equalityCheck?: '>' | '<' | '='
+	) {
+		const select = await loader.getHarness(
+			MatSelectHarness.with({ selector: `.${name}-select` })
+		);
+		await select.open();
+		expect(await select.isOpen()).toBeTruthy();
+		if (equalityCheck === '>' || equalityCheck === undefined) {
+			expect(await (await select.getOptions()).length).toBeGreaterThan(
+				length
+			);
+		} else if (equalityCheck === '<') {
+			expect(await (await select.getOptions()).length).toBeLessThan(
+				length
+			);
+		} else {
+			expect(await (await select.getOptions()).length).toEqual(length);
+		}
+		await select.clickOptions({ text: value });
+	}
 
-  it('should create a query', async() => {
-    await testSelect('unit', "Feet^2", 3);
-    await testSelect('logical-type', "boolean", 0);
-    await testSelect('min-val', "4", 2,"=");
-    await testSelect('max-val', "8", 1,"=");
-    await testSelect('msb-val', "6", 1, "=");
-    await testSelect('default-val', "false", 1, "=");
-    const input = await loader.getHarness(MatInputHarness);
-    await input.setValue('8');
-    const slider = await loader.getHarness(MatSliderHarness);
-    expect(await slider.getValue()).toEqual(8);
-    component.name = 'abcd'; // no enumerations are in the mock currently
-    const queryButton = await loader.getHarness(MatButtonHarness.with({ selector: '.query-button' }))
-    await queryButton.click();
-  })
+	it('should create a query', async () => {
+		await testSelect('unit', 'Feet^2', 3);
+		await testSelect('logical-type', 'boolean', 0);
+		await testSelect('min-val', '4', 2, '=');
+		await testSelect('max-val', '8', 1, '=');
+		await testSelect('msb-val', '6', 1, '=');
+		await testSelect('default-val', 'false', 1, '=');
+		const input = await loader.getHarness(MatInputHarness);
+		await input.setValue('8');
+		const slider = await loader.getHarness(MatSliderHarness);
+		expect(await slider.getValue()).toEqual(8);
+		component.name = 'abcd'; // no enumerations are in the mock currently
+		const queryButton = await loader.getHarness(
+			MatButtonHarness.with({ selector: '.query-button' })
+		);
+		await queryButton.click();
+	});
 });

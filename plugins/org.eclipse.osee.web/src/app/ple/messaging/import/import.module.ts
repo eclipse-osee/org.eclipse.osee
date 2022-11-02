@@ -20,18 +20,15 @@ import { ActionStateButtonModule } from 'src/app/shared-components/components/ac
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 
-
 @NgModule({
-  declarations: [
-    ImportComponent
-  ],
-  imports: [
-    ActionStateButtonModule,
-    BranchPickerModule,
-    CommonModule,
-    ImportRoutingModule,
-    MatButtonModule,
-    MatSelectModule,
-  ]
+	declarations: [ImportComponent],
+	imports: [
+		ActionStateButtonModule,
+		BranchPickerModule,
+		CommonModule,
+		ImportRoutingModule,
+		MatButtonModule,
+		MatSelectModule,
+	],
 })
-export class ImportModule { }
+export class ImportModule {}

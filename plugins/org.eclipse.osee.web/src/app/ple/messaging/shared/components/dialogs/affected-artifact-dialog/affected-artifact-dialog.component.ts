@@ -15,18 +15,17 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { affectedArtifactWarning } from '../../../types/affectedArtifact';
 
 @Component({
-  selector: 'osee-affected-artifact-dialog',
-  templateUrl: './affected-artifact-dialog.component.html',
-  styleUrls: ['./affected-artifact-dialog.component.sass']
+	selector: 'osee-affected-artifact-dialog',
+	templateUrl: './affected-artifact-dialog.component.html',
+	styleUrls: ['./affected-artifact-dialog.component.sass'],
 })
-export class AffectedArtifactDialogComponent<T=unknown> implements OnInit {
+export class AffectedArtifactDialogComponent<T = unknown> {
+	constructor(
+		public dialogRef: MatDialogRef<AffectedArtifactDialogComponent<T>>,
+		@Inject(MAT_DIALOG_DATA) public data: affectedArtifactWarning<T>
+	) {}
 
-  constructor(public dialogRef: MatDialogRef<AffectedArtifactDialogComponent<T>>, @Inject(MAT_DIALOG_DATA) public data: affectedArtifactWarning<T>,) { }
-
-  ngOnInit(): void {
-  }
-
-  onNoClick() {
-    this.dialogRef.close();
-  }
+	onNoClick() {
+		this.dialogRef.close();
+	}
 }

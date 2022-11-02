@@ -14,12 +14,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TypeDetailComponent } from './type-detail.component';
 
-const routes: Routes = [
-  { path: '', component: TypeDetailComponent },
-];
+const routes: Routes = [{ path: '', component: TypeDetailComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class TypeDetailRoutingModule { }
+export class TypeDetailRoutingModule {}

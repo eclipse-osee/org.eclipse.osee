@@ -11,60 +11,77 @@
  *     Boeing - initial API and implementation
  -->
 <mat-card class="mat-elevation-z8">
-    <div mat-card-header>
-        <div mat-card-title>
-            {{typeData.name}}
-        </div>
-        <div mat-card-subtitle>
-            {{typeData.interfaceLogicalType}}
-        </div>
-    </div>
-    <div mat-card-content>
-        <div *ngIf="typeData.description">
-            Description:<br> {{typeData.description}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeMinval">
-            Minimum Value:<br> {{typeData.interfacePlatformTypeMinval}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeMaxval">
-            Maximum Value:<br> {{typeData.interfacePlatformTypeMaxval}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeBitSize">
-            Bit Size: {{typeData.interfacePlatformTypeBitSize}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeDefaultValue">
-            Default Value: {{typeData.interfacePlatformTypeDefaultValue}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeMsbValue">
-            MSB Value: {{typeData.interfacePlatformTypeMsbValue}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeBitsResolution">
-            Resolution: {{typeData.interfacePlatformTypeBitsResolution}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeCompRate">
-            Comp Rate: {{typeData.interfacePlatformTypeCompRate}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeAnalogAccuracy">
-            Analog Accuracy: {{typeData.interfacePlatformTypeAnalogAccuracy}}
-        </div>
-        <div *ngIf="typeData.interfacePlatformTypeUnits">
-            Units: {{typeData.interfacePlatformTypeUnits}}
-        </div>
-    </div>
-    <ng-container *ngIf="(inEditMode|async)===true; else no_edit">
-        <div mat-card-actions>
-            <!-- <button mat-stroked-button (click)="openDialog(edit)">
+	<div mat-card-header>
+		<div mat-card-title>
+			{{ typeData.name }}
+		</div>
+		<div mat-card-subtitle>
+			{{ typeData.interfaceLogicalType }}
+		</div>
+	</div>
+	<div mat-card-content>
+		<div *ngIf="typeData.description">
+			Description:<br />
+			{{ typeData.description }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeMinval">
+			Minimum Value:<br />
+			{{ typeData.interfacePlatformTypeMinval }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeMaxval">
+			Maximum Value:<br />
+			{{ typeData.interfacePlatformTypeMaxval }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeBitSize">
+			Bit Size: {{ typeData.interfacePlatformTypeBitSize }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeDefaultValue">
+			Default Value: {{ typeData.interfacePlatformTypeDefaultValue }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeMsbValue">
+			MSB Value: {{ typeData.interfacePlatformTypeMsbValue }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeBitsResolution">
+			Resolution: {{ typeData.interfacePlatformTypeBitsResolution }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeCompRate">
+			Comp Rate: {{ typeData.interfacePlatformTypeCompRate }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeAnalogAccuracy">
+			Analog Accuracy: {{ typeData.interfacePlatformTypeAnalogAccuracy }}
+		</div>
+		<div *ngIf="typeData.interfacePlatformTypeUnits">
+			Units: {{ typeData.interfacePlatformTypeUnits }}
+		</div>
+	</div>
+	<ng-container *ngIf="(inEditMode | async) === true; else no_edit">
+		<div mat-card-actions>
+			<!-- <button mat-stroked-button (click)="openDialog(edit)">
                 <mat-icon color="primary">edit</mat-icon>
                 Edit
             </button> -->
-            <button mat-stroked-button (click)="openDialog(copy)">
-                <mat-icon color="success">add</mat-icon>
-                Create New Type From Base
-            </button>
-            <button mat-stroked-button *ngIf="typeData.interfaceLogicalType==='enumeration'" (click)="openEnumDialog(true)"><mat-icon color="accent">toc</mat-icon>View Related Enumeration Set Attributes</button>
-        </div>
-    </ng-container>
-    <ng-template #no_edit>
-        <button mat-stroked-button *ngIf="typeData.interfaceLogicalType==='enumeration'" (click)="openEnumDialog(false)"><mat-icon color="primary">toc</mat-icon>View Related Enumeration Set Attributes</button>
-    </ng-template>
+			<button
+				mat-stroked-button
+				(click)="openDialog(copy)">
+				<mat-icon color="success">add</mat-icon>
+				Create New Type From Base
+			</button>
+			<button
+				mat-stroked-button
+				*ngIf="typeData.interfaceLogicalType === 'enumeration'"
+				(click)="openEnumDialog(true)">
+				<mat-icon color="accent">toc</mat-icon>View Related Enumeration
+				Set Attributes
+			</button>
+		</div>
+	</ng-container>
+	<ng-template #no_edit>
+		<button
+			mat-stroked-button
+			*ngIf="typeData.interfaceLogicalType === 'enumeration'"
+			(click)="openEnumDialog(false)">
+			<mat-icon color="primary">toc</mat-icon>View Related Enumeration Set
+			Attributes
+		</button>
+	</ng-template>
 </mat-card>

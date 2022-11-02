@@ -14,15 +14,15 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class ErrorService {
-  private _errors = new BehaviorSubject<string>("");
-  public get errors() {
-    return this._errors;
-  }
-  public set error(errorString: string) {
-    this._errors.next(errorString);
-  }
-  constructor() { }
+	private _errors = new BehaviorSubject<string>('');
+	public get errors() {
+		return this._errors;
+	}
+	public set error(errorString: string) {
+		this._errors.next(errorString);
+	}
+	constructor() {}
 }

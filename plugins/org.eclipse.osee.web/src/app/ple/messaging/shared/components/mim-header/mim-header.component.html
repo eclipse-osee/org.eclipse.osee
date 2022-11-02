@@ -10,9 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngFor="let link of route|async">
-    <ng-container *ngIf="link.displayName!==''">
-        <a mat-button [routerLink]="link.routerLink">{{link.displayName}}</a>
-        /
-    </ng-container>
+<ng-container *ngFor="let link of route | async">
+	<ng-container *ngIf="link.displayName !== ''">
+		<a
+			mat-button
+			[routerLink]="link.routerLink"
+			>{{ link.displayName }}</a
+		>
+		/
+	</ng-container>
 </ng-container>

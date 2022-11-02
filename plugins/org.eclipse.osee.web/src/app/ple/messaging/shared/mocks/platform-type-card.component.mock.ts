@@ -10,15 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PlatformTypeCardComponent } from '../components/platform-type-card/platform-type-card.component';
 import { PlatformType } from '../types/platformType';
 
- 
-  @Component({
-      selector: 'ple-messaging-types-platform-type-card',
-      template:'<p>Dummy</p>'
-  })
-  export class MockPlatformTypeCard implements Partial<PlatformTypeCardComponent>{
-    @Input() typeData!: PlatformType;
-  }
+@Component({
+	selector: 'osee-messaging-types-platform-type-card',
+	template: '<p>Dummy</p>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class MockPlatformTypeCard
+	implements Partial<PlatformTypeCardComponent>
+{
+	@Input() typeData!: PlatformType;
+}

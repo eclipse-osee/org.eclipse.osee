@@ -14,8 +14,8 @@
  * Wrapper containing transaction id and the branch id
  * @see {@link org.eclipse.osee.framework.core.data.TransactionToken.java}
  */
-export class transactionToken{
-    id: string;
-    branchId: string;
-    constructor(id?:string,branchId?:string)
+export class transactionToken {
+	id: string;
+	branchId: string;
+	constructor(id?: string, branchId?: string);
 }

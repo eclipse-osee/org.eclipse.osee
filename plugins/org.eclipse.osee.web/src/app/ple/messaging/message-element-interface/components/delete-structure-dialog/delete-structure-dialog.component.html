@@ -11,12 +11,22 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>Deleting structure</h1>
- <mat-dialog-content>
-    Are you sure you want to delete {{data.structureName}}? This will remove all instances of this structure from all submessages & messages.
- </mat-dialog-content>
- <mat-dialog-actions>
-    <button mat-button mat-dialog-close="cancel" data-cy="cancel-btn">No</button>
-    <button mat-raised-button color="primary" mat-dialog-close="ok" data-cy="submit-btn">
-        Yes
-    </button>
- </mat-dialog-actions>
+<mat-dialog-content>
+	Are you sure you want to delete {{ data.structureName }}? This will remove
+	all instances of this structure from all submessages & messages.
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button
+		mat-button
+		mat-dialog-close="cancel"
+		data-cy="cancel-btn">
+		No
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
+		mat-dialog-close="ok"
+		data-cy="submit-btn">
+		Yes
+	</button>
+</mat-dialog-actions>

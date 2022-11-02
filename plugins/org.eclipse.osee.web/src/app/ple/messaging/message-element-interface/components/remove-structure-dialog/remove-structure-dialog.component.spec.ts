@@ -12,35 +12,42 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { dialogRef } from '../../../connection-view/mocks/dialogRef.mock';
 
 import { RemoveStructureDialogComponent } from './remove-structure-dialog.component';
 
 describe('RemoveStructureDialogComponent', () => {
-  let component: RemoveStructureDialogComponent;
-  let fixture: ComponentFixture<RemoveStructureDialogComponent>;
+	let component: RemoveStructureDialogComponent;
+	let fixture: ComponentFixture<RemoveStructureDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ RemoveStructureDialogComponent ],
-      imports:[MatDialogModule,MatButtonModule],
-      providers: [{ provide: MatDialogRef, useValue: dialogRef },
-        {
-          provide: MAT_DIALOG_DATA, useValue: {
-            structureName:'abcdef'
-      }}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [RemoveStructureDialogComponent],
+			imports: [MatDialogModule, MatButtonModule],
+			providers: [
+				{ provide: MatDialogRef, useValue: dialogRef },
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: {
+						structureName: 'abcdef',
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RemoveStructureDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(RemoveStructureDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

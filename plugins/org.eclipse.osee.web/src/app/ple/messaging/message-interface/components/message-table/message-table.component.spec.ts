@@ -46,7 +46,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { AddMessageDialogComponent } from './add-message-dialog/add-message-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MessageUiService } from '../../services/ui.service'
+import { MessageUiService } from '../../services/ui.service';
 import { CurrentMessageServiceMock } from '../../mocks/services/CurrentMessageService.mock';
 import { messagesMock } from '../../mocks/ReturnObjects/messages.mock';
 import { MatMenuHarness } from '@angular/material/menu/testing';
@@ -64,234 +64,352 @@ import { transactionResultMock } from 'src/app/transactions/transaction.mock';
 let loader: HarnessLoader;
 
 describe('MessageTableComponent', () => {
-  let component: MessageTableComponent;
-  let uiService: MessageUiService;
-  let fixture: ComponentFixture<MessageTableComponent>;
-  let expectedData: message[] = [{
-    id:'10',
-    name: 'name',
-    description: 'description',
-    interfaceMessageRate: '50Hz',
-    interfaceMessageNumber: '0',
-    interfaceMessagePeriodicity: '1Hz',
-    interfaceMessageWriteAccess: true,
-    interfaceMessageType: 'Connection',
-    initiatingNode: {
-      id: '1',
-      name: 'Node 1'
-    },
-    subMessages: [{
-      id: '5',
-      name: 'sub message name',
-      description: '',
-      interfaceSubMessageNumber: '0',
-      applicability: {
-        id: '1',
-        name: 'Base',
-      }
-    }],
-    applicability: {
-      id: '1',
-      name:'Base'
-    }
-  }];
+	let component: MessageTableComponent;
+	let uiService: MessageUiService;
+	let fixture: ComponentFixture<MessageTableComponent>;
+	let expectedData: message[] = [
+		{
+			id: '10',
+			name: 'name',
+			description: 'description',
+			interfaceMessageRate: '50Hz',
+			interfaceMessageNumber: '0',
+			interfaceMessagePeriodicity: '1Hz',
+			interfaceMessageWriteAccess: true,
+			interfaceMessageType: 'Connection',
+			initiatingNode: {
+				id: '1',
+				name: 'Node 1',
+			},
+			subMessages: [
+				{
+					id: '5',
+					name: 'sub message name',
+					description: '',
+					interfaceSubMessageNumber: '0',
+					applicability: {
+						id: '1',
+						name: 'Base',
+					},
+				},
+			],
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+		},
+	];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatSelectModule,
-        MatTableModule,
-        MatSlideToggleModule,
-        MatButtonModule,
-        MatSidenavModule,
-        OseeStringUtilsDirectivesModule,
-        OseeStringUtilsPipesModule,
-        NoopAnimationsModule,
-        MatTooltipModule,
-        MatMenuModule,
-        MatDialogModule,
-        GenericButtonsModule,
-        BranchUndoButtonTestingModule,
-        RouterTestingModule.withRoutes([{ path: 'diff', component: MessageTableComponent, },{path:'diffOpen',component:MimSingleDiffDummy,outlet:'rightSideNav'}])
-      ],
-      declarations: [MessageTableComponent, ConvertMessageTableTitlesToStringPipe, SubMessageTableComponentMock, EditMessageFieldComponentMock,AddMessageDialogComponentMock,AddMessageDialogComponent,MimSingleDiffDummy,HighlightFilteredTextDirective, ActionDropdownStub],
-      providers:
-        [
-          { provide: CurrentMessagesService, useValue: CurrentMessageServiceMock },
-          { provide: EditAuthService, useValue: editAuthServiceMock },
-          { provide: EnumsService, useValue: enumsServiceMock }
-      ]
-    })
-      .compileComponents();
-    uiService=TestBed.inject(MessageUiService)
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				CommonModule,
+				FormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatIconModule,
+				MatSelectModule,
+				MatTableModule,
+				MatSlideToggleModule,
+				MatButtonModule,
+				MatSidenavModule,
+				OseeStringUtilsDirectivesModule,
+				OseeStringUtilsPipesModule,
+				NoopAnimationsModule,
+				MatTooltipModule,
+				MatMenuModule,
+				MatDialogModule,
+				GenericButtonsModule,
+				BranchUndoButtonTestingModule,
+				RouterTestingModule.withRoutes([
+					{ path: 'diff', component: MessageTableComponent },
+					{
+						path: 'diffOpen',
+						component: MimSingleDiffDummy,
+						outlet: 'rightSideNav',
+					},
+				]),
+			],
+			declarations: [
+				MessageTableComponent,
+				ConvertMessageTableTitlesToStringPipe,
+				SubMessageTableComponentMock,
+				EditMessageFieldComponentMock,
+				AddMessageDialogComponentMock,
+				AddMessageDialogComponent,
+				MimSingleDiffDummy,
+				HighlightFilteredTextDirective,
+				ActionDropdownStub,
+			],
+			providers: [
+				{
+					provide: CurrentMessagesService,
+					useValue: CurrentMessageServiceMock,
+				},
+				{ provide: EditAuthService, useValue: editAuthServiceMock },
+				{ provide: EnumsService, useValue: enumsServiceMock },
+			],
+		}).compileComponents();
+		uiService = TestBed.inject(MessageUiService);
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MessageTableComponent);
-    uiService.BranchIdString = '10';
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(MessageTableComponent);
+		uiService.BranchIdString = '10';
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	/**
+	 * TBD need to figure out a better mocking solution for this
+	 */
+	// it('should expand a row and hide a row on click', async () => {
+	//   expect(component).toBeTruthy();
+	//   const expandRow = spyOn(component, 'expandRow').and.callThrough();
+	//   const hideRow = spyOn(component, 'hideRow').and.callThrough();
+	//   let table = await loader.getHarness(MatTableHarness);
+	//   let buttons = await table.getAllHarnesses(MatButtonHarness);
+	//   await buttons[0].click();
+	//   await expect(expandRow).toHaveBeenCalled();
+	//   fixture.detectChanges();
+	//   await fixture.whenStable();
+	//   let hiddenButtons = await table.getAllHarnesses(MatButtonHarness);
+	//   await hiddenButtons[0].click();
+	//   expect(hideRow).toHaveBeenCalled();
+	// });
 
-  /**
-   * TBD need to figure out a better mocking solution for this
-   */
-  // it('should expand a row and hide a row on click', async () => {
-  //   expect(component).toBeTruthy();
-  //   const expandRow = spyOn(component, 'expandRow').and.callThrough();
-  //   const hideRow = spyOn(component, 'hideRow').and.callThrough();
-  //   let table = await loader.getHarness(MatTableHarness);
-  //   let buttons = await table.getAllHarnesses(MatButtonHarness);
-  //   await buttons[0].click();
-  //   await expect(expandRow).toHaveBeenCalled();
-  //   fixture.detectChanges();
-  //   await fixture.whenStable();
-  //   let hiddenButtons = await table.getAllHarnesses(MatButtonHarness);
-  //   await hiddenButtons[0].click();
-  //   expect(hideRow).toHaveBeenCalled();
-  // });
+	// it('should fail to hide random element', () => {
+	//   component.hideRow({id:'1'} as message);
+	//   expect(component.expandedElement.getValue().indexOf({id:'1'} as message)).toEqual(-1);
+	// })
 
-  // it('should fail to hide random element', () => {
-  //   component.hideRow({id:'1'} as message);
-  //   expect(component.expandedElement.getValue().indexOf({id:'1'} as message)).toEqual(-1);
-  // })
+	it('should filter the top level table', async () => {
+		let spy = spyOn(component, 'applyFilter').and.callThrough();
+		let form = await loader.getHarness(MatFormFieldHarness);
+		let input = await form.getControl(MatInputHarness);
+		await input?.focus();
+		await input?.setValue('Hello');
+		expect(spy).toHaveBeenCalled();
+	});
 
-  it('should filter the top level table', async () => {
-    let spy=spyOn(component,'applyFilter').and.callThrough()
-    let form = await loader.getHarness(MatFormFieldHarness);
-    let input = await form.getControl(MatInputHarness);
-    await input?.focus();
-    await input?.setValue('Hello');
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should open the create new message dialog', async () => {
+		let dialogRefSpy = jasmine.createSpyObj({
+			afterClosed: of({
+				name: '',
+				description: '',
+				interfaceMessageNumber: '',
+				interfaceMessagePeriodicity: '',
+				interfaceMessageRate: '',
+				interfaceMessageType: '',
+				interfaceMessageWriteAccess: '',
+			}),
+			close: null,
+		});
+		let dialogSpy = spyOn(
+			TestBed.inject(MatDialog),
+			'open'
+		).and.returnValue(dialogRefSpy);
+		let spy = spyOn(component, 'openNewMessageDialog').and.callThrough();
+		let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+		await addmenu.toggleOpen();
+		expect(await addmenu.isOpen()).toBeTruthy();
+		await addmenu.clickFirstOption();
+		expect(spy).toHaveBeenCalled();
+	});
 
-  it('should open the create new message dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({name: '',
-    description: '',
-    interfaceMessageNumber: '',
-    interfaceMessagePeriodicity: '',
-    interfaceMessageRate: '',
-    interfaceMessageType: '',
-    interfaceMessageWriteAccess: ''}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog),'open').and.returnValue(dialogRefSpy)
-    let spy = spyOn(component, 'openNewMessageDialog').and.callThrough();
-    let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
-    await addmenu.toggleOpen();
-    expect(await addmenu.isOpen()).toBeTruthy();
-    await addmenu.clickFirstOption();
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should open the create new sub message dialog', async () => {
+		let dialogRefSpy = jasmine.createSpyObj({
+			afterClosed: of<AddSubMessageDialog>({
+				id: '2',
+				name: 'blah',
+				subMessage: {
+					id: '5',
+					name: 'abcdef',
+					description: 'qwerty',
+					interfaceSubMessageNumber: '12345',
+				},
+			}),
+			close: null,
+		});
+		let dialogSpy = spyOn(
+			TestBed.inject(MatDialog),
+			'open'
+		).and.returnValue(dialogRefSpy);
+		let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
+		component.rowChange(
+			{ id: '1', name: 'dummy element' } as message,
+			true
+		);
+		let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+		await addmenu.toggleOpen();
+		expect(await addmenu.isOpen()).toBeTruthy();
+		await addmenu.clickItem({
+			text: 'Add submessage to dummy element description',
+		});
+		expect(spy).toHaveBeenCalled();
+	});
 
-  it('should open the create new sub message dialog', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{id:'5',name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
-    component.rowChange({ id: "1", name: 'dummy element' } as message, true);
-    let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
-    await addmenu.toggleOpen();
-    expect(await addmenu.isOpen()).toBeTruthy();
-    await addmenu.clickItem({ text: "Add submessage to dummy element description" });
-    expect(spy).toHaveBeenCalled();
-  })
+	it('should open the create new sub message dialog and relate', async () => {
+		let dialogRefSpy = jasmine.createSpyObj({
+			afterClosed: of<AddSubMessageDialog>({
+				id: '2',
+				name: 'blah',
+				subMessage: {
+					name: 'abcdef',
+					description: 'qwerty',
+					interfaceSubMessageNumber: '12345',
+				},
+			}),
+			close: null,
+		});
+		let dialogSpy = spyOn(
+			TestBed.inject(MatDialog),
+			'open'
+		).and.returnValue(dialogRefSpy);
+		let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
+		component.rowChange(
+			{ id: '1', name: 'dummy element' } as message,
+			true
+		);
+		let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
+		await addmenu.toggleOpen();
+		expect(await addmenu.isOpen()).toBeTruthy();
+		await addmenu.clickItem({
+			text: 'Add submessage to dummy element description',
+		});
+		expect(spy).toHaveBeenCalled();
+	});
+	// it('should filter the sub level table', async () => {
+	// don't know how to test yet
+	//   let form = await loader.getHarness(MatFormFieldHarness);
+	//   let input = await form.getControl(MatInputHarness);
+	//   await input?.setValue('sub message: Hello');
+	// })
 
-  it('should open the create new sub message dialog and relate', async () => {
-    let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<AddSubMessageDialog>({id:'2',name:'blah',subMessage:{name:'abcdef',description:'qwerty',interfaceSubMessageNumber:'12345'}}), close: null });
-    let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-    let spy = spyOn(component, 'createNewSubMessage').and.callThrough();
-    component.rowChange({ id: "1", name: 'dummy element' } as message, true);
-    let addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
-    await addmenu.toggleOpen();
-    expect(await addmenu.isOpen()).toBeTruthy();
-    await addmenu.clickItem({ text: "Add submessage to dummy element description" });
-    expect(spy).toHaveBeenCalled();
-  })
-  // it('should filter the sub level table', async () => {
-  // don't know how to test yet
-  //   let form = await loader.getHarness(MatFormFieldHarness);
-  //   let input = await form.getControl(MatInputHarness);
-  //   await input?.setValue('sub message: Hello');
-  // })
+	describe('menu testing', () => {
+		let mEvent: MouseEvent;
+		beforeEach(() => {
+			mEvent = document.createEvent('MouseEvent');
+		});
 
-  describe("menu testing",()=> {
-    let mEvent:MouseEvent
-    beforeEach(() => {
-      mEvent = document.createEvent("MouseEvent");
-    })
+		it('should open the menu and dismiss a description', async () => {
+			component.openMenu(mEvent, messagesMock[0], '', '');
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(
+				component,
+				'openDescriptionDialog'
+			).and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of('ok'),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'partialUpdateMessage'
+			).and.callThrough();
+			await menu.clickItem({ text: new RegExp('Open Description') });
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and dismiss a description', async () => {
-      component.openMenu(mEvent, messagesMock[0],'','');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Open Description") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
+		it('should open the menu and edit a description', async () => {
+			component.openMenu(mEvent, messagesMock[0], '', '');
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(
+				component,
+				'openDescriptionDialog'
+			).and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of({
+					original: 'abcdef',
+					type: 'description',
+					return: 'jkl',
+				}),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'partialUpdateMessage'
+			).and.callThrough();
+			await menu.clickItem({ text: new RegExp('Open Description') });
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and edit a description', async () => {
-      component.openMenu(mEvent, messagesMock[0],'','');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'openDescriptionDialog').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({original:'abcdef',type:'description',return:'jkl'}), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'partialUpdateMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Open Description") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
+		it('should open the menu and open the sidenav for diffs', async () => {
+			component.openMenu(mEvent, messagesMock[0], 'field', 'name');
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			expect(menu).toBeDefined();
+			let spy = spyOn(component, 'viewDiff').and.callThrough();
+			await menu.clickItem({ text: new RegExp('View Diff') });
+			expect(spy).toHaveBeenCalled();
+		});
 
-    it('should open the menu and open the sidenav for diffs', async () => {
-      component.openMenu(mEvent, messagesMock[0],'field','name');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      expect(menu).toBeDefined();
-      let spy = spyOn(component, 'viewDiff').and.callThrough();
-      await menu.clickItem({ text: new RegExp("View Diff") });
-      expect(spy).toHaveBeenCalled();
-    })
+		it('should open a dialog and remove a message', async () => {
+			component.openMenu(mEvent, messagesMock[0], '', '');
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'removeMessage').and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of('ok'),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'removeMessage'
+			).and.callThrough();
+			await menu.clickItem({
+				text: new RegExp('Remove message from connection'),
+			});
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
 
-    it('should open a dialog and remove a message', async() => {
-      component.openMenu(mEvent, messagesMock[0],'','');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'removeMessage').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'removeMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Remove message from connection") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
-
-    it('should open a dialog and delete a message', async() => {
-      component.openMenu(mEvent, messagesMock[1],'','');
-      await fixture.whenStable();
-      let menu = await loader.getHarness(MatMenuHarness);
-      let spy = spyOn(component, 'deleteMessage').and.callThrough();
-      let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of('ok'), close: null });
-      let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy);
-      let serviceSpy = spyOn(TestBed.inject(CurrentMessagesService), 'deleteMessage').and.callThrough();
-      await menu.clickItem({ text: new RegExp("Delete message globally") });
-      expect(spy).toHaveBeenCalled();
-      expect(serviceSpy).toHaveBeenCalled();
-    })
-    afterEach(() => {
-      component.matMenuTrigger.closeMenu();
-    })
-  })
+		it('should open a dialog and delete a message', async () => {
+			component.openMenu(mEvent, messagesMock[1], '', '');
+			await fixture.whenStable();
+			let menu = await loader.getHarness(MatMenuHarness);
+			let spy = spyOn(component, 'deleteMessage').and.callThrough();
+			let dialogRefSpy = jasmine.createSpyObj({
+				afterClosed: of('ok'),
+				close: null,
+			});
+			let dialogSpy = spyOn(
+				TestBed.inject(MatDialog),
+				'open'
+			).and.returnValue(dialogRefSpy);
+			let serviceSpy = spyOn(
+				TestBed.inject(CurrentMessagesService),
+				'deleteMessage'
+			).and.callThrough();
+			await menu.clickItem({
+				text: new RegExp('Delete message globally'),
+			});
+			expect(spy).toHaveBeenCalled();
+			expect(serviceSpy).toHaveBeenCalled();
+		});
+		afterEach(() => {
+			component.matMenuTrigger.closeMenu();
+		});
+	});
 });

@@ -11,5 +11,35 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const unitsMock: string[] = [
-    "Bd", "DI", "Feet^2", "Nm", "dB", "dBm", "days", "degrees", "degrees/second", "direction cosine", "direction cosine/second", "feet", "feet/second", "feet/second²", "feet²/second²", "hertz", "hours", "in HG", "kW", "minutes", "n/a", "nanoseconds", "radians", "radians/sec", "seconds", "unit²", "volts", "years", "°C", "°F", "°R"
-]
+	'Bd',
+	'DI',
+	'Feet^2',
+	'Nm',
+	'dB',
+	'dBm',
+	'days',
+	'degrees',
+	'degrees/second',
+	'direction cosine',
+	'direction cosine/second',
+	'feet',
+	'feet/second',
+	'feet/second²',
+	'feet²/second²',
+	'hertz',
+	'hours',
+	'in HG',
+	'kW',
+	'minutes',
+	'n/a',
+	'nanoseconds',
+	'radians',
+	'radians/sec',
+	'seconds',
+	'unit²',
+	'volts',
+	'years',
+	'°C',
+	'°F',
+	'°R',
+];

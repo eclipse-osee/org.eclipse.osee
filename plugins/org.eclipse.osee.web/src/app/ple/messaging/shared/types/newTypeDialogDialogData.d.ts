@@ -10,23 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from "../../../../types/applicability/applic";
-import { enumeration } from "../../shared/types/enum";
+import { applic } from '../../../../types/applicability/applic';
+import { enumeration } from '../../shared/types/enum';
 
 export interface newTypeDialogData {
-    fields:logicalTypefieldValue[]
+	fields: logicalTypefieldValue[];
 }
 export interface logicalTypefieldValue {
-    name: string,
-    value:string
+	name: string;
+	value: string;
 }
-export interface newPlatformTypeDialogReturnData{
-    fields: logicalTypefieldValue[],
-    createEnum: boolean,
-    enumSetId:string,    
-    enumSetName: string,
-    enumSetDescription: string,
-    enumSetApplicability: applic,
-    enums: enumeration[]
-    
+export interface newPlatformTypeDialogReturnData {
+	fields: logicalTypefieldValue[];
+	createEnum: boolean;
+	enumSetId: string;
+	enumSetName: string;
+	enumSetDescription: string;
+	enumSetApplicability: applic;
+	enums: enumeration[];
 }

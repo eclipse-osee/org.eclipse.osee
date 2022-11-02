@@ -17,23 +17,26 @@ import { BranchTypeDummySelector } from '../branch-type-selector/BranchTypeSelec
 import { BranchPickerComponent } from './branch-picker.component';
 
 describe('BranchPickerComponent', () => {
-  let component: BranchPickerComponent;
-  let fixture: ComponentFixture<BranchPickerComponent>;
+	let component: BranchPickerComponent;
+	let fixture: ComponentFixture<BranchPickerComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ BranchPickerComponent, BranchDummySelector,BranchTypeDummySelector ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [
+				BranchPickerComponent,
+				BranchDummySelector,
+				BranchTypeDummySelector,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BranchPickerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(BranchPickerComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

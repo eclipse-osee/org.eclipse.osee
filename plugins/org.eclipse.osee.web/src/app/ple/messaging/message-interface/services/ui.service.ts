@@ -16,76 +16,75 @@ import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { MimRouteService } from '../../shared/services/ui/mim-route.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class MessageUiService {
+	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
+	constructor(private _mimRoute: MimRouteService, private ui: UiService) {}
 
-  private _filter: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  constructor(private _mimRoute: MimRouteService, private ui: UiService) { }
+	get filter() {
+		return this._filter;
+	}
 
-  get filter() {
-    return this._filter
-  }
+	set filterString(filter: string) {
+		if (filter !== this._filter.getValue()) {
+			this._filter.next(filter);
+		}
+	}
 
-  set filterString(filter: string) {
-    if (filter !== this._filter.getValue()) {
-      this._filter.next(filter); 
-    }
-  }
+	get UpdateRequired() {
+		return this.ui.update;
+	}
 
-  get UpdateRequired() {
-    return this.ui.update;
-  }
+	set updateMessages(value: boolean) {
+		this.ui.updated = value;
+	}
 
-  set updateMessages(value: boolean) {
-    this.ui.updated = value;
-  }
+	get BranchId() {
+		return this._mimRoute.id;
+	}
 
-  get BranchId() {
-    return this._mimRoute.id;
-  }
+	get type() {
+		return this._mimRoute.type;
+	}
 
-  get type() {
-    return this._mimRoute.type;
-  }
+	set typeValue(value: string) {
+		this._mimRoute.typeValue = value;
+	}
 
-  set typeValue(value: string) {
-    this._mimRoute.typeValue = value;
-  }
+	set BranchIdString(value: string) {
+		this._mimRoute.idValue = value;
+	}
 
-  set BranchIdString(value: string) {
-    this._mimRoute.idValue = value;
-  }
+	get connectionId() {
+		return this._mimRoute.connectionId;
+	}
 
-  get connectionId() {
-    return this._mimRoute.connectionId;
-  }
+	set connectionIdString(value: string) {
+		this._mimRoute.connectionIdString = value;
+	}
 
-  set connectionIdString(value: string) {
-    this._mimRoute.connectionIdString = value;
-  }
+	set DiffMode(value: boolean) {
+		this._mimRoute.diffMode = value;
+	}
 
-  set DiffMode(value:boolean) {
-    this._mimRoute.diffMode = value;
-  }
+	get isInDiff() {
+		return this._mimRoute.isInDiff;
+	}
 
-  get isInDiff() {
-    return this._mimRoute.isInDiff;
-  }
+	set messageId(value: string) {
+		this._mimRoute.messageIdString = value;
+	}
 
-  set messageId(value: string) {
-    this._mimRoute.messageIdString = value;
-  }
+	set subMessageId(value: string) {
+		this._mimRoute.submessageIdString = value;
+	}
 
-  set subMessageId(value: string) {
-    this._mimRoute.submessageIdString = value;
-  }
+	set subMessageToStructureBreadCrumbs(value: string) {
+		this._mimRoute.submessageToStructureBreadCrumbsString = value;
+	}
 
-  set subMessageToStructureBreadCrumbs(value: string) {
-    this._mimRoute.submessageToStructureBreadCrumbsString = value;
-  }
-
-  set singleStructureId(value: string) {
-    this._mimRoute.singleStructureIdValue = value;
-  }
+	set singleStructureId(value: string) {
+		this._mimRoute.singleStructureIdValue = value;
+	}
 }

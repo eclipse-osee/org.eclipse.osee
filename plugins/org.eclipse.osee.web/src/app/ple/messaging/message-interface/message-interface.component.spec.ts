@@ -31,67 +31,78 @@ import { CurrentMessagesService } from './services/current-messages.service';
 import { message } from './types/messages';
 
 describe('MessageInterfaceComponent', () => {
-  let component: MessageInterfaceComponent;
-  let fixture: ComponentFixture<MessageInterfaceComponent>;
-  let expectedData: message[] = [{
-    id:'-1',
-    name: 'name',
-    description: 'description',
-    interfaceMessageRate: '50Hz',
-    interfaceMessageNumber: '0',
-    interfaceMessagePeriodicity: '1Hz',
-    interfaceMessageWriteAccess: true,
-    interfaceMessageType: 'Connection',
-    subMessages: [{
-      id: '0',
-      name: 'sub message name',
-      description: '',
-      interfaceSubMessageNumber: '0',
-      applicability: {
-        id: '1',
-        name:'Base'
-      }
-    }],
-    initiatingNode: {
-      id: '1',
-      name: 'Node 1'
-    },
-  }];
+	let component: MessageInterfaceComponent;
+	let fixture: ComponentFixture<MessageInterfaceComponent>;
+	let expectedData: message[] = [
+		{
+			id: '-1',
+			name: 'name',
+			description: 'description',
+			interfaceMessageRate: '50Hz',
+			interfaceMessageNumber: '0',
+			interfaceMessagePeriodicity: '1Hz',
+			interfaceMessageWriteAccess: true,
+			interfaceMessageType: 'Connection',
+			subMessages: [
+				{
+					id: '0',
+					name: 'sub message name',
+					description: '',
+					interfaceSubMessageNumber: '0',
+					applicability: {
+						id: '1',
+						name: 'Base',
+					},
+				},
+			],
+			initiatingNode: {
+				id: '1',
+				name: 'Node 1',
+			},
+		},
+	];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        MatTableModule,
-        MatFormFieldModule,
-        MatMenuModule,
-        MatIconModule,
-        FormsModule,
-        MatInputModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-        MatTooltipModule,
-        OseeStringUtilsDirectivesModule,
-        OseeStringUtilsPipesModule,
-        MatDialogModule,],
-      declarations: [MessageInterfaceComponent, MessageTableComponentMock],
-      providers: [{
-        provide: CurrentMessagesService, useValue: {
-          filter: '',
-          string: '',
-          messages: of(expectedData),
-          BranchId:new BehaviorSubject("10")
-      }}]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				MatTableModule,
+				MatFormFieldModule,
+				MatMenuModule,
+				MatIconModule,
+				FormsModule,
+				MatInputModule,
+				NoopAnimationsModule,
+				RouterTestingModule,
+				MatTooltipModule,
+				OseeStringUtilsDirectivesModule,
+				OseeStringUtilsPipesModule,
+				MatDialogModule,
+			],
+			declarations: [
+				MessageInterfaceComponent,
+				MessageTableComponentMock,
+			],
+			providers: [
+				{
+					provide: CurrentMessagesService,
+					useValue: {
+						filter: '',
+						string: '',
+						messages: of(expectedData),
+						BranchId: new BehaviorSubject('10'),
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MessageInterfaceComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(MessageInterfaceComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

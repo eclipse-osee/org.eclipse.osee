@@ -12,13 +12,15 @@
  **********************************************************************/
 @use '@angular/material' as mat;
 @use 'sass:map';
+
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 
 // @use 'themes/ple/plconfig/lib' as plconfig;
 // @use 'themes/ple/messages/lib' as plmessages;
 @use 'themes/ple/lib' as ple;
-@import 'modern-ple-theme.scss';
+@import 'modern-ple-theme';
+
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -26,41 +28,77 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core($modern-ple-typography);
 
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 
-    @include mat.all-component-themes($modern-ple-light-theme);
-    @include ple.plconfig-table-theme($modern-ple-light-theme,$modern-ple-typography);
-    @include ple.plconfig-main-theme($modern-ple-light-theme);
-    @include ple.plconfig-dropdown-configuration-theme($modern-ple-light-theme);
-    @include ple.plconfig-dropdown-feature-theme($modern-ple-light-theme);
-    @include ple.plconfig-dropdown-configuration-group-theme($modern-ple-light-theme);
-    @include ple.plconfig-branch-selector-radio-theme($modern-ple-light-theme);
-    @include ple.messages-messaging-message-interface-elements-theme($modern-ple-light-theme,$modern-ple-typography);
-    @include ple.messages-messaging-message-interface-interface-theme($modern-ple-light-theme,$modern-ple-typography);
-    @include ple.messages-messaging-message-interface-types-theme($modern-ple-light-theme,$modern-ple-typography);
-    @include ple.messages-messaging-message-interface-graph-theme($modern-ple-light-theme,$modern-ple-typography);
-    @include ple.messages-messaging-message-typeSearch-theme($modern-ple-light-theme);
-    @include ple.messages-messaging-message-reports-diffReport-theme($modern-ple-light-theme, $modern-ple-typography);
-    @include ple.top-level-navigation-theme($modern-ple-light-theme, $modern-ple-typography);
-    .mat-success{
-        color:mat.get-color-from-palette(map-get(mat.get-color-config($modern-ple-light-theme),success)) !important //hate having to use this
-    }
+@include mat.all-component-themes($modern-ple-light-theme);
+@include ple.plconfig-table-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
+@include ple.plconfig-main-theme($modern-ple-light-theme);
+@include ple.plconfig-dropdown-configuration-theme($modern-ple-light-theme);
+@include ple.plconfig-dropdown-feature-theme($modern-ple-light-theme);
+@include ple.plconfig-dropdown-configuration-group-theme(
+	$modern-ple-light-theme
+);
+@include ple.plconfig-branch-selector-radio-theme($modern-ple-light-theme);
+@include ple.messages-messaging-message-interface-elements-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
+@include ple.messages-messaging-message-interface-interface-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
+@include ple.messages-messaging-message-interface-types-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
+@include ple.messages-messaging-message-interface-graph-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
+@include ple.messages-messaging-message-typeSearch-theme(
+	$modern-ple-light-theme
+);
+@include ple.messages-messaging-message-reports-diffReport-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
+@include ple.top-level-navigation-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
 
-.dark-theme{
-    @include mat.all-component-colors($modern-ple-dark-theme);
-    @include ple.plconfig-table-color($modern-ple-dark-theme);
-    @include ple.plconfig-main-color($modern-ple-dark-theme);
-    @include ple.plconfig-dropdown-configuration-color($modern-ple-dark-theme);
-    @include ple.plconfig-dropdown-feature-color($modern-ple-dark-theme);
-    @include ple.plconfig-dropdown-configuration-group-color($modern-ple-dark-theme);
-    @include ple.plconfig-branch-selector-radio-color($modern-ple-dark-theme);
-    @include ple.messages-messaging-message-typeSearch-theme($modern-ple-dark-theme);
+.mat-success {
+	color: mat.get-color-from-palette(
+		map.get(mat.get-color-config($modern-ple-light-theme), success)
+	) !important; // hate having to use this
 }
 
+.dark-theme {
+	@include mat.all-component-colors($modern-ple-dark-theme);
+	@include ple.plconfig-table-color($modern-ple-dark-theme);
+	@include ple.plconfig-main-color($modern-ple-dark-theme);
+	@include ple.plconfig-dropdown-configuration-color($modern-ple-dark-theme);
+	@include ple.plconfig-dropdown-feature-color($modern-ple-dark-theme);
+	@include ple.plconfig-dropdown-configuration-group-color(
+		$modern-ple-dark-theme
+	);
+	@include ple.plconfig-branch-selector-radio-color($modern-ple-dark-theme);
+	@include ple.messages-messaging-message-typeSearch-theme(
+		$modern-ple-dark-theme
+	);
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }//padding: 30px
+html,
+body {
+	height: 100%;
+}
 
+body {
+	margin: 0;
+	font-family: Roboto, 'Helvetica Neue', sans-serif;
+}

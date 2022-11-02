@@ -12,77 +12,131 @@
  -->
 <h1 mat-dialog-title>Create New Message</h1>
 <mat-dialog-content>
-    <mat-form-field>
-        <label>Name</label>
-        <input matInput type="text" [(ngModel)]="data.name" #input required data-cy="field-name">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Description</label>
-        <textarea matInput cdkTextareaAutosize type="text" [(ngModel)]="data.description" #input required data-cy="field-description"></textarea>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Rate</label>
-        <mat-select [(ngModel)]="data.interfaceMessageRate" required data-cy="field-rate">
-            <mat-option *ngFor="let option of (rates|async)" [value]="option" [attr.data-cy]="'option-'+option">
-                {{option}} Hz
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Periodicity</label>
-        <mat-select [(ngModel)]="data.interfaceMessagePeriodicity" required data-cy="field-periodicity">
-            <mat-option *ngFor="let option of (periodicities|async)" [value]="option" [attr.data-cy]="'option-'+option">
-                {{option}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-slide-toggle [(ngModel)]="data.interfaceMessageWriteAccess" [labelPosition]='data.interfaceMessageWriteAccess? "after":"before"' data-cy="field-write-access">
-        <ng-container *ngIf="data.interfaceMessageWriteAccess;else read">
-            Writable
-        </ng-container>
-        <ng-template #read>
-            Read Only
-        </ng-template>
-    </mat-slide-toggle>
-    <br>
-    <mat-form-field>
-        <label>Type</label>
-        <mat-select [(ngModel)]="data.interfaceMessageType" required data-cy="field-message-type">
-            <mat-option *ngFor="let option of (types|async)" [value]="option" [attr.data-cy]="'option-'+option">
-                {{option}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Message Number</label>
-        <input matInput type="text" [(ngModel)]="data.interfaceMessageNumber" #input required data-cy="field-message-number">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-        <label>Initiating Node</label>
-        <mat-select [(ngModel)]="data.initiatingNode" required data-cy="field-init-node">
-            <mat-option *ngFor="let option of (nodes|async)" [value]="option" [attr.data-cy]="'option-'+option.name">
-                {{option.name}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+	<mat-form-field>
+		<label>Name</label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.name"
+			#input
+			required
+			data-cy="field-name" />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<label>Description</label>
+		<textarea
+			matInput
+			cdkTextareaAutosize
+			type="text"
+			[(ngModel)]="data.description"
+			#input
+			required
+			data-cy="field-description"></textarea>
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<label>Rate</label>
+		<mat-select
+			[(ngModel)]="data.interfaceMessageRate"
+			required
+			data-cy="field-rate">
+			<mat-option
+				*ngFor="let option of rates | async"
+				[value]="option"
+				[attr.data-cy]="'option-' + option">
+				{{ option }} Hz
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<label>Periodicity</label>
+		<mat-select
+			[(ngModel)]="data.interfaceMessagePeriodicity"
+			required
+			data-cy="field-periodicity">
+			<mat-option
+				*ngFor="let option of periodicities | async"
+				[value]="option"
+				[attr.data-cy]="'option-' + option">
+				{{ option }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<br />
+	<mat-slide-toggle
+		[(ngModel)]="data.interfaceMessageWriteAccess"
+		[labelPosition]="data.interfaceMessageWriteAccess ? 'after' : 'before'"
+		data-cy="field-write-access">
+		<ng-container *ngIf="data.interfaceMessageWriteAccess; else read">
+			Writable
+		</ng-container>
+		<ng-template #read> Read Only </ng-template>
+	</mat-slide-toggle>
+	<br />
+	<mat-form-field>
+		<label>Type</label>
+		<mat-select
+			[(ngModel)]="data.interfaceMessageType"
+			required
+			data-cy="field-message-type">
+			<mat-option
+				*ngFor="let option of types | async"
+				[value]="option"
+				[attr.data-cy]="'option-' + option">
+				{{ option }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<label>Message Number</label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.interfaceMessageNumber"
+			#input
+			required
+			data-cy="field-message-number" />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<label>Initiating Node</label>
+		<mat-select
+			[(ngModel)]="data.initiatingNode"
+			required
+			data-cy="field-init-node">
+			<mat-option
+				*ngFor="let option of nodes | async"
+				[value]="option"
+				[attr.data-cy]="'option-' + option.name">
+				{{ option.name }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()" data-cy="cancel-btn">
-        Cancel
-    </button>
-    <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="data.name.length===0||
-    data.description.length===0||
-    data.interfaceMessageNumber.length===0||
-    data.interfaceMessagePeriodicity.length===0||
-    data.interfaceMessageType.length===0||
-    data.interfaceMessageRate.length===0 ||
-    data.initiatingNode.name.length===0" data-cy="submit-btn">
-        Ok
-    </button>
+	<button
+		mat-button
+		(click)="onNoClick()"
+		data-cy="cancel-btn">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="data"
+		color="primary"
+		[disabled]="
+			data.name.length === 0 ||
+			data.description.length === 0 ||
+			data.interfaceMessageNumber.length === 0 ||
+			data.interfaceMessagePeriodicity.length === 0 ||
+			data.interfaceMessageType.length === 0 ||
+			data.interfaceMessageRate.length === 0 ||
+			data.initiatingNode.name.length === 0
+		"
+		data-cy="submit-btn">
+		Ok
+	</button>
 </mat-dialog-actions>

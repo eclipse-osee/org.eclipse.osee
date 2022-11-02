@@ -10,43 +10,44 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- @use 'sass:map';
+@use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../../../theme-system.scss';
+@import '../../../../../../theme-system';
 
 @mixin color($config-or-theme) {
-    // Extract the color configuration in case a theme has been passed.
-    // This allows consumers to either pass a theme object or a color configuration.
-    $config: mat.get-color-config($config-or-theme);
-    // Extract the palettes you need from the theme definition.
-    $primary: map-get($config, primary);
-    $accent: map-get($config, accent);
-    $warn: map-get($config, warn);
-    $background: map-get($config, background);
-    $foreground: map-get($config, foreground);
-    $success: map-get($config,success);
-    
-    // Define any styles affected by the theme.
-    .diff-report-base-color {
-      color:mat.get-color-from-palette($foreground,base);
-    }
-  }
-  @mixin typography($config-or-theme){
-      
-  }
-  @mixin typography-themed($config-or-theme){
-    $config: mat.get-typography-config($config-or-theme);
-  }
-  
-  @mixin theme($theme, $typography){
-      $color: mat.get-color-config($theme);
-      $typography: mat.get-typography-config($typography);
-      @include typography($theme);
-      
-      @if $color != null {  
-        @include color($color);   
-      }  
-      @if $typography != null {
-        @include typography-themed($typography);  
-      }
-  }
+	// Extract the color configuration in case a theme has been passed.
+	// This allows consumers to either pass a theme object or a color configuration.
+	$config: mat.get-color-config($config-or-theme);
+
+	// Extract the palettes you need from the theme definition.
+	$primary: map.get($config, primary);
+	$accent: map.get($config, accent);
+	$warn: map.get($config, warn);
+	$background: map.get($config, background);
+	$foreground: map.get($config, foreground);
+	$success: map.get($config, success);
+
+	// Define any styles affected by the theme.
+	.diff-report-base-color {
+		color: mat.get-color-from-palette($foreground, base);
+	}
+}
+/* stylelint-disable block-no-empty */
+@mixin typography($config-or-theme) {
+}
+@mixin typography-themed($config-or-theme) {
+	$config: mat.get-typography-config($config-or-theme);
+}
+
+@mixin theme($theme, $typography) {
+	$color: mat.get-color-config($theme);
+	$typography: mat.get-typography-config($typography);
+	@include typography($theme);
+
+	@if $color {
+		@include color($color);
+	}
+	@if $typography {
+		@include typography-themed($typography);
+	}
+}

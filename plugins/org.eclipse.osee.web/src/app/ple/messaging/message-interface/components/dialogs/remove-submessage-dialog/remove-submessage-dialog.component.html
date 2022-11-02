@@ -10,13 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
- <h1 mat-dialog-title>Removing Submessage {{data.submessage.name}} from Message {{data.message.name}}</h1>
- <mat-dialog-content>
-    Are you sure you want to remove {{data.submessage.name}} from this message?
- </mat-dialog-content>
- <mat-dialog-actions>
-    <button mat-button mat-dialog-close="cancel" data-cy="cancel-btn">No</button>
-    <button mat-raised-button color="primary" mat-dialog-close="ok" data-cy="submit-btn">
-        Yes
-    </button>
- </mat-dialog-actions>
+<h1 mat-dialog-title>
+	Removing Submessage {{ data.submessage.name }} from Message
+	{{ data.message.name }}
+</h1>
+<mat-dialog-content>
+	Are you sure you want to remove {{ data.submessage.name }} from this
+	message?
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button
+		mat-button
+		mat-dialog-close="cancel"
+		data-cy="cancel-btn">
+		No
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
+		mat-dialog-close="ok"
+		data-cy="submit-btn">
+		Yes
+	</button>
+</mat-dialog-actions>

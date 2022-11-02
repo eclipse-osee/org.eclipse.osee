@@ -15,18 +15,17 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RemovalDialog } from '../../../types/ConfirmRemovalDialog';
 
 @Component({
-  selector: 'app-confirm-removal-dialog',
-  templateUrl: './confirm-removal-dialog.component.html',
-  styleUrls: ['./confirm-removal-dialog.component.sass']
+	selector: 'osee-confirm-removal-dialog',
+	templateUrl: './confirm-removal-dialog.component.html',
+	styleUrls: ['./confirm-removal-dialog.component.sass'],
 })
-export class ConfirmRemovalDialogComponent implements OnInit {
+export class ConfirmRemovalDialogComponent {
+	constructor(
+		public dialogRef: MatDialogRef<ConfirmRemovalDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: RemovalDialog
+	) {}
 
-  constructor(public dialogRef: MatDialogRef<ConfirmRemovalDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RemovalDialog) { }
-
-  ngOnInit(): void {
-  }
-
-  onNoClick() {
-    this.dialogRef.close();
-  }
+	onNoClick() {
+		this.dialogRef.close();
+	}
 }

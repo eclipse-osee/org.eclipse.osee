@@ -1,4 +1,4 @@
-import { difference } from "src/app/types/change-report/change-report";
+import { difference } from 'src/app/types/change-report/change-report';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -13,14 +13,15 @@ import { difference } from "src/app/types/change-report/change-report";
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface ExtendedNameValuePair {
-    id: string,
-    name: string,
-    value:string,
-    values: string[]
+	id: string;
+	name: string;
+	value: string;
+	values: string[];
 }
 
-export interface ExtendedNameValuePairWithChanges extends ExtendedNameValuePair {
-    changes: {
-        value:difference
-    }
+export interface ExtendedNameValuePairWithChanges
+	extends ExtendedNameValuePair {
+	changes: {
+		value: difference;
+	};
 }

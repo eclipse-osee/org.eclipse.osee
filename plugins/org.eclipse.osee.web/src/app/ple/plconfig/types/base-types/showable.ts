@@ -10,6 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface showable{
-    show?:boolean
+export interface showable {
+	show?: boolean;
 }

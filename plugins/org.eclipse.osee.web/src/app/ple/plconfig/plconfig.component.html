@@ -11,21 +11,47 @@
  *     Boeing - initial API and implementation
  -->
 <div class="pl-config">
-    <div class="pl-config-container">
-        <osee-branch-picker category="2" [actionSearch]=true></osee-branch-picker>
-        <plconfig-configuration-dropdown></plconfig-configuration-dropdown>
-        <plconfig-configuration-group-dropdown></plconfig-configuration-group-dropdown>
-        <plconfig-feature-dropdown></plconfig-feature-dropdown>
-        <div class="left-buttons">
-            <ng-container *ngIf="(isAllowedToDiff|async) as _diff">
-                <ng-container *ngIf="(branchType|async) && (branchId|async)">
-                    <button mat-raised-button [routerLink]="_diff==='true'?[{outlets:{primary:'diff', rightSideNav:null}}]:'../'"><mat-icon *ngIf="_diff==='false'">visibility_off</mat-icon><mat-icon *ngIf="_diff==='true'">change_history</mat-icon><span>{{_diff==='true'?'Show Deltas':'Hide Deltas'}}</span></button>
-                </ng-container>
-            </ng-container>
-            <action-dropdown category="2" workType="ARB"></action-dropdown>
-        </div>
-    </div>
-    <plconfig-applicability-table>
-        <!-- [updateRequired]="_updateRequired |async" -->
-    </plconfig-applicability-table>
+	<div class="pl-config-container">
+		<osee-branch-picker
+			category="2"
+			[actionSearch]="true"></osee-branch-picker>
+		<osee-plconfig-configuration-dropdown></osee-plconfig-configuration-dropdown>
+		<osee-plconfig-configuration-group-dropdown></osee-plconfig-configuration-group-dropdown>
+		<osee-plconfig-feature-dropdown></osee-plconfig-feature-dropdown>
+		<div class="left-buttons">
+			<ng-container *ngIf="isAllowedToDiff | async as _diff">
+				<ng-container
+					*ngIf="(branchType | async) && (branchId | async)">
+					<button
+						mat-raised-button
+						[routerLink]="
+							_diff === 'true'
+								? [
+										{
+											outlets: {
+												primary: 'diff',
+												rightSideNav: null
+											}
+										}
+								  ]
+								: '../'
+						">
+						<mat-icon *ngIf="_diff === 'false'"
+							>visibility_off</mat-icon
+						><mat-icon *ngIf="_diff === 'true'"
+							>change_history</mat-icon
+						><span>{{
+							_diff === 'true' ? 'Show Deltas' : 'Hide Deltas'
+						}}</span>
+					</button>
+				</ng-container>
+			</ng-container>
+			<osee-action-dropdown
+				category="2"
+				workType="ARB"></osee-action-dropdown>
+		</div>
+	</div>
+	<osee-plconfig-applicability-table>
+		<!-- [updateRequired]="_updateRequired |async" -->
+	</osee-plconfig-applicability-table>
 </div>

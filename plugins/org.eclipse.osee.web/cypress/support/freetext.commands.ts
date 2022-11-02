@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 Cypress.Commands.add('editFreeText', (text: string) => {
-  return cy
-    .get(`[data-cy="field-description"]`)
-    .focus()
-    .clear()
-    .type(text)
-    .get(`[data-cy="submit-btn"]`)
-    .click();
+	return cy
+		.get(`[data-cy="field-description"]`)
+		.focus()
+		.clear()
+		.type(text)
+		.get(`[data-cy="submit-btn"]`)
+		.click();
 });

@@ -13,22 +13,17 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'osee-scroll-to-top-button',
-  templateUrl: './scroll-to-top-button.component.html',
-  styleUrls: ['./scroll-to-top-button.component.sass']
+	selector: 'osee-scroll-to-top-button',
+	templateUrl: './scroll-to-top-button.component.html',
+	styleUrls: ['./scroll-to-top-button.component.sass'],
 })
-export class ScrollToTopButtonComponent implements OnInit {
+export class ScrollToTopButtonComponent {
+	constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-  scrollToTop() {
-    document.getElementById('app-top')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  }
-
+	scrollToTop() {
+		document.getElementById('app-top')?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
 }

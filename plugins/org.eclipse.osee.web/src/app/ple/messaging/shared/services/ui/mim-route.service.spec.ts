@@ -15,14 +15,14 @@ import { TestBed } from '@angular/core/testing';
 import { MimRouteService } from './mim-route.service';
 
 describe('MimRouteService', () => {
-  let service: MimRouteService;
+	let service: MimRouteService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MimRouteService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(MimRouteService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

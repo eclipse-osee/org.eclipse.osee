@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 describe('Initial Visit', () => {
-  it('Visits the ple page', () => {
-    cy.visit('/ple');
-    cy.contains('Product Line Engineering');
-  });
+	it('Visits the ple page', () => {
+		cy.visit('/ple');
+		cy.contains('Product Line Engineering');
+	});
 });

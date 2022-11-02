@@ -20,27 +20,26 @@ import { DiffReportTableComponent } from '../diff-report-table/diff-report-table
 import { StructureDiffsComponent } from './structure-diffs.component';
 
 describe('StructureDiffsComponent', () => {
-  let component: StructureDiffsComponent;
-  let fixture: ComponentFixture<StructureDiffsComponent>;
+	let component: StructureDiffsComponent;
+	let fixture: ComponentFixture<StructureDiffsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        { provide: DiffReportService, useValue: DiffReportServiceMock },
-      ],
-      imports: [MatIconModule, MatTableModule],
-      declarations: [ StructureDiffsComponent, DiffReportTableComponent ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			providers: [
+				{ provide: DiffReportService, useValue: DiffReportServiceMock },
+			],
+			imports: [MatIconModule, MatTableModule],
+			declarations: [StructureDiffsComponent, DiffReportTableComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StructureDiffsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(StructureDiffsComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

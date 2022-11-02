@@ -11,14 +11,31 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use '@angular/material' as mat;
-//@import '@angular/material/theming';
-@import './theme-system.scss';
+
+@import './theme-system';
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$modern-ple-light-primary: mat.define-palette(mat.$blue-palette, A400,400,900);
-$modern-ple-dark-primary: mat.define-palette(mat.$light-blue-palette, 300,200,400);
-$modern-ple-light-accent: mat.define-palette(mat.$amber-palette, A100, 50, A200);
+/* stylelint-disable value-keyword-case */
+$modern-ple-light-primary: mat.define-palette(
+	mat.$blue-palette,
+	A400,
+	400,
+	900
+);
+$modern-ple-dark-primary: mat.define-palette(
+	mat.$light-blue-palette,
+	300,
+	200,
+	400
+);
+$modern-ple-light-accent: mat.define-palette(
+	mat.$amber-palette,
+	A100,
+	50,
+	A200
+);
 $modern-ple-dark-accent: mat.define-palette(mat.$yellow-palette, 600, 50, A200);
 
 // The warn palette is optional (defaults to red).
@@ -28,7 +45,12 @@ $modern-ple-dark-warn: mat.define-palette(mat.$red-palette);
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 
-$modern-ple-light-theme: light-theme($modern-ple-light-primary,$modern-ple-light-accent,$modern-ple-light-warn);
+$modern-ple-light-theme: light-theme(
+	$modern-ple-light-primary,
+	$modern-ple-light-accent,
+	$modern-ple-light-warn
+);
+
 // $modern-ple-light-theme: light-theme((
 //   color: (
 //     primary: $modern-ple-light-primary,
@@ -36,7 +58,12 @@ $modern-ple-light-theme: light-theme($modern-ple-light-primary,$modern-ple-light
 //     warn: $modern-ple-light-warn,
 //   ),
 // ));
-$modern-ple-dark-theme: dark-theme($modern-ple-dark-primary,$modern-ple-dark-accent,$modern-ple-dark-warn);
+$modern-ple-dark-theme: dark-theme(
+	$modern-ple-dark-primary,
+	$modern-ple-dark-accent,
+	$modern-ple-dark-warn
+);
+
 // $modern-ple-dark-theme: dark-theme((
 //   color:(
 //     primary:$modern-ple-dark-primary,
@@ -45,5 +72,5 @@ $modern-ple-dark-theme: dark-theme($modern-ple-dark-primary,$modern-ple-dark-acc
 //   )
 // ));
 $modern-ple-typography: mat.define-typography-config(
-  $font-family:'Roboto,"Helvetica Neue", sans-serif'
+	$font-family: 'Roboto,"Helvetica Neue", sans-serif',
 );

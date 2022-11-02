@@ -12,11 +12,11 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpHeaders
+	HttpRequest,
+	HttpHandler,
+	HttpEvent,
+	HttpInterceptor,
+	HttpHeaders,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
@@ -26,20 +26,30 @@ import { user } from 'src/app/userdata/types/user-data-user';
 
 @Injectable()
 export class OSEEAuthHeaderInterceptor implements HttpInterceptor {
-  currentUser!:user|undefined
+	currentUser!: user | undefined;
 
-  constructor (private accountService: UserDataAccountService) {
-    this.accountService.user.pipe(
-      take(1)
-    ).subscribe((user) => {
-      this.currentUser = user;
-    })
-  }
+	constructor(private accountService: UserDataAccountService) {
+		this.accountService.user.pipe(take(1)).subscribe((user) => {
+			this.currentUser = user;
+		});
+	}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (request.url.includes(apiURL) && this.currentUser!==undefined && request.url!==OSEEAuthURL) {
-      request = request.clone({ headers: request.headers.set('osee.account.id', this.currentUser?.id || '') })
-    }
-    return next.handle(request);
-  }
+	intercept(
+		request: HttpRequest<any>,
+		next: HttpHandler
+	): Observable<HttpEvent<any>> {
+		if (
+			request.url.includes(apiURL) &&
+			this.currentUser !== undefined &&
+			request.url !== OSEEAuthURL
+		) {
+			request = request.clone({
+				headers: request.headers.set(
+					'osee.account.id',
+					this.currentUser?.id || ''
+				),
+			});
+		}
+		return next.handle(request);
+	}
 }

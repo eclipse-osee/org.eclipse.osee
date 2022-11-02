@@ -15,24 +15,26 @@ import { RouterModule, Routes } from '@angular/router';
 import { PleComponent } from './ple.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: PleComponent,
-  },
-  {
-    path: 'plconfig',
-    loadChildren: () => import('./plconfig/plconfig.module').then(m => m.PlconfigModule),
-  },
-  { 
-    path: 'messaging', 
-    loadChildren: () => import('./messaging/messaging.module').then(m => m.MessagingModule) 
-  }
+	{
+		path: '',
+		component: PleComponent,
+	},
+	{
+		path: 'plconfig',
+		loadChildren: () =>
+			import('./plconfig/plconfig.module').then((m) => m.PlconfigModule),
+	},
+	{
+		path: 'messaging',
+		loadChildren: () =>
+			import('./messaging/messaging.module').then(
+				(m) => m.MessagingModule
+			),
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class PleRoutingModule { }
-
-
+export class PleRoutingModule {}

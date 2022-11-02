@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/component-class-suffix */
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -10,25 +11,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input } from "@angular/core";
-
- @Component({
-     selector: 'mockHelp',
-     template:'<p>Dummy</p>'
- })
- export class MessagingHelpDummy{
-}
-   
-@Component({
-    selector: 'mockMain',
-    template:'<p>Dummy</p>'
-})
-export class MessagingMainMock{
-}
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'mockTypeSearch',
-    template:'<p>Dummy</p>'
+	selector: 'osee-mock-help',
+	template: '<p>Dummy</p>',
 })
-export class MessagingTypeSearchMock{
-}
+export class MessagingHelpDummy {}
+
+@Component({
+	selector: 'osee-mock-main',
+	template: '<p>Dummy</p>',
+})
+export class MessagingMainMock {}
+
+@Component({
+	selector: 'osee-mock-type-search',
+	template: '<p>Dummy</p>',
+})
+export class MessagingTypeSearchMock {}

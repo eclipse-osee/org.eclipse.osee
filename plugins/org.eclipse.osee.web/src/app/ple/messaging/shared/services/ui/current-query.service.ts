@@ -17,24 +17,27 @@ import { MimQuery } from '../../types/MimQuery';
 import { QueryService } from '../http/query.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class CurrentQueryService {
+	constructor(private ui: UiService, private queryService: QueryService) {}
 
-  constructor (private ui: UiService, private queryService: QueryService) { }
-  
-  query<T=unknown>(query:MimQuery<T>) {
-    return this.ui.id.pipe(
-      switchMap(id => this.queryService.query(id, query).pipe(
-        shareReplay({bufferSize:1,refCount:true})
-      ))
-    )
-  }
-  queryExact<T=unknown>(query:MimQuery<T>) {
-    return this.ui.id.pipe(
-      switchMap(id => this.queryService.queryExact(id, query).pipe(
-        shareReplay({bufferSize:1,refCount:true})
-      ))
-    )
-  }
+	query<T = unknown>(query: MimQuery<T>) {
+		return this.ui.id.pipe(
+			switchMap((id) =>
+				this.queryService
+					.query(id, query)
+					.pipe(shareReplay({ bufferSize: 1, refCount: true }))
+			)
+		);
+	}
+	queryExact<T = unknown>(query: MimQuery<T>) {
+		return this.ui.id.pipe(
+			switchMap((id) =>
+				this.queryService
+					.queryExact(id, query)
+					.pipe(shareReplay({ bufferSize: 1, refCount: true }))
+			)
+		);
+	}
 }

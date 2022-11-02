@@ -19,19 +19,22 @@ import { DifferenceReportServiceMock } from '../ple-services/http/difference-rep
 import { DiffReportResolver } from './diff-report-resolver.resolver';
 
 describe('DiffReportResolverResolver', () => {
-  let resolver: DiffReportResolver;
+	let resolver: DiffReportResolver;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: BranchInfoService, useValue: BranchInfoServiceMock },
-        { provide: DifferenceReportService,useValue:DifferenceReportServiceMock}
-      ]
-    });
-    resolver = TestBed.inject(DiffReportResolver);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
+				{
+					provide: DifferenceReportService,
+					useValue: DifferenceReportServiceMock,
+				},
+			],
+		});
+		resolver = TestBed.inject(DiffReportResolver);
+	});
 
-  it('should be created', () => {
-    expect(resolver).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(resolver).toBeTruthy();
+	});
 });

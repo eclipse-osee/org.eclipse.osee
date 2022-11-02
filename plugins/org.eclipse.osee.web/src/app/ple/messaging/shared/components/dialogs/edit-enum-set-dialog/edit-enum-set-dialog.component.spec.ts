@@ -15,7 +15,11 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatIconHarness } from '@angular/material/icon/testing';
@@ -43,46 +47,77 @@ import { EditEnumSetFieldComponent } from '../../edit-enum-set-field/edit-enum-s
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
 
 describe('EditEnumSetDialogComponent', () => {
-  let component: EditEnumSetDialogComponent;
-  let fixture: ComponentFixture<EditEnumSetDialogComponent>;
-  let loader: HarnessLoader;
+	let component: EditEnumSetDialogComponent;
+	let fixture: ComponentFixture<EditEnumSetDialogComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [EditEnumSetDialogComponent, EditEnumSetFieldMock],
-      imports: [MatDialogModule,MatIconModule,MatSelectModule,MatInputModule,MatFormFieldModule,FormsModule,MatTableModule,NoopAnimationsModule],
-      providers: [{
-        provide: MatDialogRef, useValue: {
-          close() { return of(); }
-        }
-      },
-        { provide: MAT_DIALOG_DATA, useValue: of<enumsetDialogData>({ id:'1234567890', isOnEditablePage:true}) },
-        { provide: EnumerationSetService, useValue: enumerationSetServiceMock },
-        { provide: ApplicabilityListService, useValue: applicabilityListServiceMock },
-        { provide: MimPreferencesService, useValue: MimPreferencesServiceMock },
-        { provide: UserDataAccountService, useValue: userDataAccountServiceMock },
-        { provide: TypesService, useValue:typesServiceMock }
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			declarations: [EditEnumSetDialogComponent, EditEnumSetFieldMock],
+			imports: [
+				MatDialogModule,
+				MatIconModule,
+				MatSelectModule,
+				MatInputModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatTableModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{
+					provide: MatDialogRef,
+					useValue: {
+						close() {
+							return of();
+						},
+					},
+				},
+				{
+					provide: MAT_DIALOG_DATA,
+					useValue: of<enumsetDialogData>({
+						id: '1234567890',
+						isOnEditablePage: true,
+					}),
+				},
+				{
+					provide: EnumerationSetService,
+					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: ApplicabilityListService,
+					useValue: applicabilityListServiceMock,
+				},
+				{
+					provide: MimPreferencesService,
+					useValue: MimPreferencesServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+				{ provide: TypesService, useValue: typesServiceMock },
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditEnumSetDialogComponent);
-    component = fixture.componentInstance;
-    loader = TestbedHarnessEnvironment.loader(fixture);
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(EditEnumSetDialogComponent);
+		component = fixture.componentInstance;
+		loader = TestbedHarnessEnvironment.loader(fixture);
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should close the dialog', async () => {
-    const dialogRefClosure = spyOn(component.dialogRef, 'close').and.stub();
-    const button = await loader.getHarness(MatButtonHarness.with({ text: 'Cancel' }));
-    await button.click();
-    expect(dialogRefClosure).toHaveBeenCalled();
-  })
-
+	it('should close the dialog', async () => {
+		const dialogRefClosure = spyOn(component.dialogRef, 'close').and.stub();
+		const button = await loader.getHarness(
+			MatButtonHarness.with({ text: 'Cancel' })
+		);
+		await button.click();
+		expect(dialogRefClosure).toHaveBeenCalled();
+	});
 });

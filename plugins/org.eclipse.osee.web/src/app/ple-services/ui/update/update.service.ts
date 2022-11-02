@@ -15,21 +15,19 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class UpdateService {
-  private _updateRequired: Subject<boolean> = new Subject<boolean>();
+	private _updateRequired: Subject<boolean> = new Subject<boolean>();
 
-  private _updateOccurred = this._updateRequired.pipe(
-    debounceTime(100)
-  )
-  constructor () { }
-  
-  get update() {
-    return this._updateOccurred;
-  }
+	private _updateOccurred = this._updateRequired.pipe(debounceTime(100));
+	constructor() {}
 
-  set updated(value: boolean) {
-    this._updateRequired.next(value);
-  }
+	get update() {
+		return this._updateOccurred;
+	}
+
+	set updated(value: boolean) {
+		this._updateRequired.next(value);
+	}
 }

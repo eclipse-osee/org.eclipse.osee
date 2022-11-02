@@ -10,22 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from "@angular/core";
-import { connection, connectionWithChanges, OseeEdge } from "../../../shared/types/connection";
-import { OseeNode, node, nodeData, nodeDataWithChanges } from "../../../shared/types/node";
+import { Component, Input } from '@angular/core';
+import {
+	connection,
+	connectionWithChanges,
+	OseeEdge,
+} from '../../../shared/types/connection';
+import {
+	OseeNode,
+	node,
+	nodeData,
+	nodeDataWithChanges,
+} from '../../../shared/types/node';
 
 @Component({
-    selector: 'app-graph-node-menu',
-    template:'<div>Dummy</div>'
-  })
-export class GraphNodeMenuDummy{
-  @Input() editMode: boolean = false;
-  @Input() data: nodeData | nodeDataWithChanges = {
-    id: '',
-    name: '',
-    interfaceNodeAddress: '',
-    interfaceNodeBgColor:''
-  }
-  @Input() sources: OseeEdge<connection | connectionWithChanges>[] = []
-  @Input() targets: OseeEdge<connection | connectionWithChanges>[] = []
-  }
+	selector: 'osee-messaging-graph-node-menu',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class GraphNodeMenuDummy {
+	@Input() editMode: boolean = false;
+	@Input() data: nodeData | nodeDataWithChanges = {
+		id: '',
+		name: '',
+		interfaceNodeAddress: '',
+		interfaceNodeBgColor: '',
+	};
+	@Input() sources: OseeEdge<connection | connectionWithChanges>[] = [];
+	@Input() targets: OseeEdge<connection | connectionWithChanges>[] = [];
+}

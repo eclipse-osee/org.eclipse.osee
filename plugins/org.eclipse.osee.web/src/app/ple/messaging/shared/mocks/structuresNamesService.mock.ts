@@ -14,7 +14,7 @@ import { of } from 'rxjs';
 import { StructureNamesService } from '../services/http/structure-names.service';
 
 export const structuresNameServiceMock: Partial<StructureNamesService> = {
-    getStructureNames() {
-        return of([])
-    }
-}
+	getStructureNames() {
+		return of([]);
+	},
+};

@@ -14,30 +14,32 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { logicalTypeFieldInfo } from '../../../types/logicaltype';
 
 @Component({
-  selector: 'osee-new-attribute-form-field',
-  templateUrl: './new-attribute-form-field.component.html',
-  styleUrls: ['./new-attribute-form-field.component.sass']
+	selector: 'osee-new-attribute-form-field',
+	templateUrl: './new-attribute-form-field.component.html',
+	styleUrls: ['./new-attribute-form-field.component.sass'],
 })
 export class NewAttributeFormFieldComponent implements OnInit {
+	@Input() form!: logicalTypeFieldInfo;
+	@Input() units: string[] = [];
+	@Output() formChanged = new EventEmitter<logicalTypeFieldInfo>();
+	constructor() {}
 
-  @Input() form!: logicalTypeFieldInfo;
-  @Input() units: string[] = [];
-  @Output() formChanged = new EventEmitter<logicalTypeFieldInfo>();
-  constructor() { }
-
-  ngOnInit(): void {
-    this.setDefaultValue();
-  }
-  setDefaultValue() {
-    if (!this.form.editable) {
-      const value = this.form.value!==undefined?JSON.parse(JSON.stringify(this.form.value)):"";
-      this.form.value = this.form.defaultValue;
-      if (value !== this.form.defaultValue) {
-        this.change(); 
-      } 
-    }
-  }
-  change() {
-    this.formChanged.emit(this.form);
-  }
+	ngOnInit(): void {
+		this.setDefaultValue();
+	}
+	setDefaultValue() {
+		if (!this.form.editable) {
+			const value =
+				this.form.value !== undefined
+					? JSON.parse(JSON.stringify(this.form.value))
+					: '';
+			this.form.value = this.form.defaultValue;
+			if (value !== this.form.defaultValue) {
+				this.change();
+			}
+		}
+	}
+	change() {
+		this.formChanged.emit(this.form);
+	}
 }

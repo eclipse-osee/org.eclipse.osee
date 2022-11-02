@@ -17,17 +17,23 @@ import { changeInstance } from 'src/app/types/change-report/change-report';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class DifferenceReportService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getDifferences(fromBranchId: string | number, toBranchId:string|number) {
-    return this.http.get<changeInstance[]>(apiURL + '/orcs/branches/' + toBranchId + '/diff/' + fromBranchId);
-  }
+	getDifferences(fromBranchId: string | number, toBranchId: string | number) {
+		return this.http.get<changeInstance[]>(
+			apiURL + '/orcs/branches/' + toBranchId + '/diff/' + fromBranchId
+		);
+	}
 
-  getDifferenceReport(fromBranchId: string | number, toBranchId: string | number) {
-    return this.http.get<DifferenceReport>(apiURL + '/mim/branch/' + toBranchId + '/diff/' + fromBranchId);
-  }
+	getDifferenceReport(
+		fromBranchId: string | number,
+		toBranchId: string | number
+	) {
+		return this.http.get<DifferenceReport>(
+			apiURL + '/mim/branch/' + toBranchId + '/diff/' + fromBranchId
+		);
+	}
 }

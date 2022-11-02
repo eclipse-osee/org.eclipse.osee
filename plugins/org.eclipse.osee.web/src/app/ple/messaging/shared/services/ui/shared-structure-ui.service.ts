@@ -17,12 +17,28 @@ import { StructuresService } from '../http/structures.service';
 import { MimRouteService } from './mim-route.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class SharedStructureUIService {
-
-  public readonly structure = combineLatest([this._mimRoute.id, this._mimRoute.connectionId, this._mimRoute.messageId, this._mimRoute.submessageId, this._mimRoute.singleStructureId]).pipe(
-    switchMap(([branch,connection,message,submessage,structure])=>this.structureService.getStructure(branch,message,submessage,structure,connection))
-  )
-  constructor(private _mimRoute:MimRouteService, private structureService:StructuresService) { }
+	public readonly structure = combineLatest([
+		this._mimRoute.id,
+		this._mimRoute.connectionId,
+		this._mimRoute.messageId,
+		this._mimRoute.submessageId,
+		this._mimRoute.singleStructureId,
+	]).pipe(
+		switchMap(([branch, connection, message, submessage, structure]) =>
+			this.structureService.getStructure(
+				branch,
+				message,
+				submessage,
+				structure,
+				connection
+			)
+		)
+	);
+	constructor(
+		private _mimRoute: MimRouteService,
+		private structureService: StructuresService
+	) {}
 }

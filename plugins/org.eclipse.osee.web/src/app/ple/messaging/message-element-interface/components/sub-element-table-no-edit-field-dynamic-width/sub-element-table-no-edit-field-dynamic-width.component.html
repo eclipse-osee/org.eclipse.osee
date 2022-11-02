@@ -10,13 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div appHighlightFilteredText [searchTerms]="filter" [text]="field" classToApply="ple-message-element-interface-table-highlighted-text" class="consume-width" [ngStyle]="{
-    'width':width,
-    'white-space': 'nowrap',
-    'overflow': 'hidden',
-    'text-overflow': 'ellipsis'
-}">
-    {{field}}
+<div
+	oseeHighlightFilteredText
+	[searchTerms]="filter"
+	[text]="field"
+	classToApply="ple-message-element-interface-table-highlighted-text"
+	class="consume-width"
+	[ngStyle]="{
+		width: width,
+		'white-space': 'nowrap',
+		overflow: 'hidden',
+		'text-overflow': 'ellipsis'
+	}">
+	{{ field }}
 </div>
 <!--If in diff mode show below-->
 <!--

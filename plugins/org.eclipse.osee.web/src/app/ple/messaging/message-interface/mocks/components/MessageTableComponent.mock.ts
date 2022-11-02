@@ -10,12 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
 @Component({
-    selector: 'ple-messaging-message-table',
-    template:'<p>Dummy</p>'
+	selector: 'osee-messaging-message-table',
+	template: '<p>Dummy</p>',
 })
-export class MessageTableComponentMock{
-    
-}
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class MessageTableComponentMock {}

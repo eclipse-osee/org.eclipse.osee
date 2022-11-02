@@ -20,26 +20,26 @@ import { BaseDummy } from './testing/MockComponents/Base.mock';
 import { GraphDummy } from './testing/MockComponents/Graph.mock';
 
 describe('ConnectionViewComponent', () => {
-  let component: ConnectionViewComponent;
-  let fixture: ComponentFixture<ConnectionViewComponent>;
+	let component: ConnectionViewComponent;
+	let fixture: ComponentFixture<ConnectionViewComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers:[{provide: CurrentGraphService,useValue:graphServiceMock}],
-      declarations: [ ConnectionViewComponent, BaseDummy, GraphDummy ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [RouterTestingModule],
+			providers: [
+				{ provide: CurrentGraphService, useValue: graphServiceMock },
+			],
+			declarations: [ConnectionViewComponent, BaseDummy, GraphDummy],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ConnectionViewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ConnectionViewComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

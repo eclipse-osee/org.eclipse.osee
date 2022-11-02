@@ -11,26 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface user {
-    id: string,
-    name: string,
-    guid: null,
-    active: boolean,
-    description: null,
-    workTypes: any[],
-    tags: any[],
-    userId: string,
-    email: string,
-    loginIds: string[],
-    savedSearches: any[],
-    userGroups: any[],
-    artifactId: string,
-    idString: string,
-    idIntValue: number,
-    uuid:number,
-    roles: userRole[]
+	id: string;
+	name: string;
+	guid: null;
+	active: boolean;
+	description: null;
+	workTypes: any[];
+	tags: any[];
+	userId: string;
+	email: string;
+	loginIds: string[];
+	savedSearches: any[];
+	userGroups: any[];
+	artifactId: string;
+	idString: string;
+	idIntValue: number;
+	uuid: number;
+	roles: userRole[];
 }
 
 export interface userRole {
-    id: string,
-    name: string
+	id: string;
+	name: string;
 }

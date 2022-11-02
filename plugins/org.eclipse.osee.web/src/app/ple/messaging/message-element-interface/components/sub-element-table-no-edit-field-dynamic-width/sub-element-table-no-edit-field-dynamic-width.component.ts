@@ -13,18 +13,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-sub-element-table-no-edit-field-dynamic-width',
-  templateUrl: './sub-element-table-no-edit-field-dynamic-width.component.html',
-  styleUrls: ['./sub-element-table-no-edit-field-dynamic-width.component.sass']
+	selector: 'osee-messaging-sub-element-table-no-edit-field-dynamic-width',
+	templateUrl:
+		'./sub-element-table-no-edit-field-dynamic-width.component.html',
+	styleUrls: [
+		'./sub-element-table-no-edit-field-dynamic-width.component.sass',
+	],
 })
-export class SubElementTableNoEditFieldDynamicWidthComponent implements OnInit {
-
-  @Input() field: string = "";
-  @Input() width: string = "";
-  @Input() filter: string = "";
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class SubElementTableNoEditFieldDynamicWidthComponent {
+	@Input() field: string = '';
+	@Input() width: string = '';
+	@Input() filter: string = '';
+	constructor() {}
 }

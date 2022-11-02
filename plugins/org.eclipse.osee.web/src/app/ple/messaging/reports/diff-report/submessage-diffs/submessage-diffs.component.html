@@ -10,17 +10,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(allSubMessages|async) as allItems">
-    <ng-container *ngIf="allItems.length !== 0">
-        <h2 class="diff-report-section-header">SubMessage Changes</h2>
-        <ng-container *ngIf="(subMessagesAdded|async) as submessages">
-            <app-diff-report-table [items]="submessages" [headers]="headers" [headerKey]="headerType" [title]="'SubMessages Added'"></app-diff-report-table>
-        </ng-container>
-        <ng-container *ngIf="(subMessagesDeleted|async) as submessages">
-            <app-diff-report-table [items]="submessages" [headers]="headers" [headerKey]="headerType" [title]="'SubMessages Deleted'"></app-diff-report-table>
-        </ng-container>
-        <ng-container *ngIf="(subMessagesChanged|async) as submessages">
-            <app-diff-report-table [items]="submessages" [headers]="headers" [headerKey]="headerType" [title]="'SubMessages Changed'"></app-diff-report-table>
-        </ng-container>
-    </ng-container>
+<ng-container *ngIf="allSubMessages | async as allItems">
+	<ng-container *ngIf="allItems.length !== 0">
+		<h2 class="diff-report-section-header">SubMessage Changes</h2>
+		<ng-container *ngIf="subMessagesAdded | async as submessages">
+			<osee-messaging-diff-report-table
+				[items]="submessages"
+				[headers]="headers"
+				[headerKey]="headerType"
+				[title]="
+					'SubMessages Added'
+				"></osee-messaging-diff-report-table>
+		</ng-container>
+		<ng-container *ngIf="subMessagesDeleted | async as submessages">
+			<osee-messaging-diff-report-table
+				[items]="submessages"
+				[headers]="headers"
+				[headerKey]="headerType"
+				[title]="
+					'SubMessages Deleted'
+				"></osee-messaging-diff-report-table>
+		</ng-container>
+		<ng-container *ngIf="subMessagesChanged | async as submessages">
+			<osee-messaging-diff-report-table
+				[items]="submessages"
+				[headers]="headers"
+				[headerKey]="headerType"
+				[title]="
+					'SubMessages Changed'
+				"></osee-messaging-diff-report-table>
+		</ng-container>
+	</ng-container>
 </ng-container>

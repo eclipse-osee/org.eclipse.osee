@@ -10,17 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(allNodes|async) as allItems">
-    <ng-container *ngIf="allItems.length !== 0">
-        <h2 class="mat-title diff-report-section-header">Node Changes</h2>
-        <ng-container *ngIf="(nodesAdded|async) as nodes">
-            <app-diff-report-table [items]="nodes" [headers]="headers" [headerKey]="headerType" [title]="'Nodes Added'"></app-diff-report-table>
-        </ng-container>
-        <ng-container *ngIf="(nodesDeleted|async) as nodes">
-            <app-diff-report-table [items]="nodes" [headers]="headers" [headerKey]="headerType" [title]="'Nodes Deleted'"></app-diff-report-table>
-        </ng-container>
-        <ng-container *ngIf="(nodesChanged|async) as nodes">
-            <app-diff-report-table [items]="nodes" [headers]="headers" [headerKey]="headerType" [title]="'Nodes Changed'"></app-diff-report-table>
-        </ng-container>
-    </ng-container>
+<ng-container *ngIf="allNodes | async as allItems">
+	<ng-container *ngIf="allItems.length !== 0">
+		<h2 class="mat-title diff-report-section-header">Node Changes</h2>
+		<ng-container *ngIf="nodesAdded | async as nodes">
+			<osee-messaging-diff-report-table
+				[items]="nodes"
+				[headers]="headers"
+				[headerKey]="headerType"
+				[title]="'Nodes Added'"></osee-messaging-diff-report-table>
+		</ng-container>
+		<ng-container *ngIf="nodesDeleted | async as nodes">
+			<osee-messaging-diff-report-table
+				[items]="nodes"
+				[headers]="headers"
+				[headerKey]="headerType"
+				[title]="'Nodes Deleted'"></osee-messaging-diff-report-table>
+		</ng-container>
+		<ng-container *ngIf="nodesChanged | async as nodes">
+			<osee-messaging-diff-report-table
+				[items]="nodes"
+				[headers]="headers"
+				[headerKey]="headerType"
+				[title]="'Nodes Changed'"></osee-messaging-diff-report-table>
+		</ng-container>
+	</ng-container>
 </ng-container>

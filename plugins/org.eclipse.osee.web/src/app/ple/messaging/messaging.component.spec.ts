@@ -20,35 +20,50 @@ import { UserDataAccountService } from 'src/app/userdata/services/user-data-acco
 import { userDataAccountServiceMock } from '../plconfig/testing/mockUserDataAccountService';
 
 import { MessagingComponent } from './messaging.component';
-import { MessagingHelpDummy, MessagingMainMock, MessagingTypeSearchMock } from './mocks/components/navigation-components.mock';
+import {
+	MessagingHelpDummy,
+	MessagingMainMock,
+	MessagingTypeSearchMock,
+} from './mocks/components/navigation-components.mock';
 
 describe('MessagingComponent', () => {
-  let component: MessagingComponent;
-  let fixture: ComponentFixture<MessagingComponent>;
-  let loader: HarnessLoader;
+	let component: MessagingComponent;
+	let fixture: ComponentFixture<MessagingComponent>;
+	let loader: HarnessLoader;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[
-        RouterTestingModule.withRoutes([{path:'connections',component:MessagingMainMock},{path:'typeSearch',component:MessagingTypeSearchMock},{path:'help',component:MessagingHelpDummy}]),
-        MatIconModule],
-      providers:[
-        {provide:UserDataAccountService, useValue:userDataAccountServiceMock}
-      ],
-      declarations: [ MessagingComponent,MessagingMainMock,MessagingTypeSearchMock,MessagingHelpDummy ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				RouterTestingModule.withRoutes([
+					{ path: 'connections', component: MessagingMainMock },
+					{ path: 'typeSearch', component: MessagingTypeSearchMock },
+					{ path: 'help', component: MessagingHelpDummy },
+				]),
+				MatIconModule,
+			],
+			providers: [
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
+			],
+			declarations: [
+				MessagingComponent,
+				MessagingMainMock,
+				MessagingTypeSearchMock,
+				MessagingHelpDummy,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MessagingComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(MessagingComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

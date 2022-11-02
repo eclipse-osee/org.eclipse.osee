@@ -22,124 +22,126 @@ import { MimRouteService } from '../../services/ui/mim-route.service';
 
 import { MimHeaderComponent } from './mim-header.component';
 const headerUnderTest = [
-  {
-    title: 'Full Test',
-    type: true,
-    id: true,
-    connection: true,
-    message: true,
-    submessage: true,
-    breadcrumb: true,
-    structure: true
-  },
-  {
-    title: 'BreadCrumb',
-    type: true,
-    id: true,
-    connection: true,
-    message: true,
-    submessage: true,
-    breadcrumb: true,
-    structure: false
-  },
-  {
-    title: 'Submsg',
-    type: true,
-    id: true,
-    connection: true,
-    message: true,
-    submessage: true,
-    breadcrumb: false,
-    structure: false
-  },
-  {
-    title: 'Msg',
-    type: true,
-    id: true,
-    connection: true,
-    message: true,
-    submessage: false,
-    breadcrumb:false,
-    structure: false
-  },
-  {
-    title: 'Connection',
-    type: true,
-    id: true,
-    connection: true,
-    message: false,
-    submessage: false,
-    breadcrumb: false,
-    structure: false
-  },
-  {
-    title: 'Branch Id',
-    type: true,
-    id: true,
-    connection: false,
-    message: false,
-    submessage: false,
-    breadcrumb: false,
-    structure: false
-  },
-  {
-    title: 'Branch Type',
-    type: true,
-    id: false,
-    connection: false,
-    message: false,
-    submessage: false,
-    breadcrumb: false,
-    structure:false
-  },
-  {
-    title: 'None',
-    type: false,
-    id: false,
-    connection: false,
-    message: false,
-    submessage: false,
-    breadcrumb: false,
-    structure:false
-  },
-]
+	{
+		title: 'Full Test',
+		type: true,
+		id: true,
+		connection: true,
+		message: true,
+		submessage: true,
+		breadcrumb: true,
+		structure: true,
+	},
+	{
+		title: 'BreadCrumb',
+		type: true,
+		id: true,
+		connection: true,
+		message: true,
+		submessage: true,
+		breadcrumb: true,
+		structure: false,
+	},
+	{
+		title: 'Submsg',
+		type: true,
+		id: true,
+		connection: true,
+		message: true,
+		submessage: true,
+		breadcrumb: false,
+		structure: false,
+	},
+	{
+		title: 'Msg',
+		type: true,
+		id: true,
+		connection: true,
+		message: true,
+		submessage: false,
+		breadcrumb: false,
+		structure: false,
+	},
+	{
+		title: 'Connection',
+		type: true,
+		id: true,
+		connection: true,
+		message: false,
+		submessage: false,
+		breadcrumb: false,
+		structure: false,
+	},
+	{
+		title: 'Branch Id',
+		type: true,
+		id: true,
+		connection: false,
+		message: false,
+		submessage: false,
+		breadcrumb: false,
+		structure: false,
+	},
+	{
+		title: 'Branch Type',
+		type: true,
+		id: false,
+		connection: false,
+		message: false,
+		submessage: false,
+		breadcrumb: false,
+		structure: false,
+	},
+	{
+		title: 'None',
+		type: false,
+		id: false,
+		connection: false,
+		message: false,
+		submessage: false,
+		breadcrumb: false,
+		structure: false,
+	},
+];
 describe('MimHeaderComponent', () => {
-  let component: MimHeaderComponent;
-  let fixture: ComponentFixture<MimHeaderComponent>;
-  let uiService: MimRouteService;
+	let component: MimHeaderComponent;
+	let fixture: ComponentFixture<MimHeaderComponent>;
+	let uiService: MimRouteService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers: [
-        { provide: BranchInfoService, useValue: BranchInfoServiceMock },
-        { provide: SharedConnectionService, useValue: sharedConnectionServiceMock },
-        { provide: StructuresService, useValue: structureServiceMock}
-      ],
-      declarations: [ MimHeaderComponent ]
-    })
-      .compileComponents();
-      uiService = TestBed.inject(MimRouteService);
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [RouterTestingModule],
+			providers: [
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
+				{
+					provide: SharedConnectionService,
+					useValue: sharedConnectionServiceMock,
+				},
+				{ provide: StructuresService, useValue: structureServiceMock },
+			],
+			declarations: [MimHeaderComponent],
+		}).compileComponents();
+		uiService = TestBed.inject(MimRouteService);
+	});
 
-  headerUnderTest.forEach(header => {
-    describe(`${header.title}`, () => {
-      beforeEach(() => {
-        uiService.typeValue = header.type ? 'working' : '';
-        uiService.idValue = header.id ? '10' : '';
-        uiService.connectionIdString = header.connection ? '20' : '';
-        uiService.messageIdString = header.message ? '30' : '';
-        uiService.submessageIdString = header.submessage ? '40' : '';
-        uiService.submessageToStructureBreadCrumbsString ? '30>40' : '';
-        uiService.singleStructureIdValue ? '50' : '';
-        fixture = TestBed.createComponent(MimHeaderComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-      });
-    
-      it('should create', () => {
-        expect(component).toBeTruthy();
-      });  
-    })
-  })
+	headerUnderTest.forEach((header) => {
+		describe(`${header.title}`, () => {
+			beforeEach(() => {
+				uiService.typeValue = header.type ? 'working' : '';
+				uiService.idValue = header.id ? '10' : '';
+				uiService.connectionIdString = header.connection ? '20' : '';
+				uiService.messageIdString = header.message ? '30' : '';
+				uiService.submessageIdString = header.submessage ? '40' : '';
+				uiService.submessageToStructureBreadCrumbsString ? '30>40' : '';
+				uiService.singleStructureIdValue ? '50' : '';
+				fixture = TestBed.createComponent(MimHeaderComponent);
+				component = fixture.componentInstance;
+				fixture.detectChanges();
+			});
+
+			it('should create', () => {
+				expect(component).toBeTruthy();
+			});
+		});
+	});
 });

@@ -14,12 +14,11 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export abstract class UserHeaderService {
+	constructor() {}
 
-  constructor () { }
-  
-  abstract useCustomHeaders: boolean;
-  abstract headers: HttpHeaders;
+	abstract useCustomHeaders: boolean;
+	abstract headers: HttpHeaders;
 }

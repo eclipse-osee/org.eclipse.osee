@@ -23,38 +23,53 @@ import { structure } from '../../../shared/types/structure';
 import { SingleStructureTableComponent } from './single-structure-table.component';
 
 describe('SingleStructureTableComponent', () => {
-  let component: SingleStructureTableComponent;
-  let fixture: ComponentFixture<SingleStructureTableComponent>;
-  let scheduler: TestScheduler;
+	let component: SingleStructureTableComponent;
+	let fixture: ComponentFixture<SingleStructureTableComponent>;
+	let scheduler: TestScheduler;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      providers:[{provide:CurrentStructureService,useValue:CurrentStateServiceMock}],
-      declarations: [ SingleStructureTableComponent,StructureTableComponentMock ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [RouterTestingModule],
+			providers: [
+				{
+					provide: CurrentStructureService,
+					useValue: CurrentStateServiceMock,
+				},
+			],
+			declarations: [
+				SingleStructureTableComponent,
+				StructureTableComponentMock,
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SingleStructureTableComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(SingleStructureTableComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  beforeEach(() => scheduler = new TestScheduler((actual, expected) => {
-    expect(actual.filteredData).toEqual(expected.filteredData)
-  }));
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual.filteredData).toEqual(expected.filteredData);
+			}))
+	);
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  it('should return structures', () => {
-    scheduler.run(({ expectObservable }) => {
-      const dataSource = new MatTableDataSource<structure>([structuresMock[0]]);
-      const expectedValues = { a: dataSource.filteredData };
-      const expected = '(a|)';
-      expectObservable(component.messageData).toBe(expected, expectedValues);
-    })
-  })
+	it('should return structures', () => {
+		scheduler.run(({ expectObservable }) => {
+			const dataSource = new MatTableDataSource<structure>([
+				structuresMock[0],
+			]);
+			const expectedValues = { a: dataSource.filteredData };
+			const expected = '(a|)';
+			expectObservable(component.messageData).toBe(
+				expected,
+				expectedValues
+			);
+		});
+	});
 });

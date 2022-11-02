@@ -11,32 +11,53 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>
-    <ng-container *ngIf="(editMode|async)===true; else noEditHeader">Editing </ng-container>
-    <ng-template #noEditHeader>Viewing </ng-template>
-    {{data.type}}
+	<ng-container *ngIf="(editMode | async) === true; else noEditHeader"
+		>Editing
+	</ng-container>
+	<ng-template #noEditHeader>Viewing </ng-template>
+	{{ data.type }}
 </h1>
 <mat-dialog-content>
-    <ng-container *ngIf="(editMode|async)===true; else noEditContent">
-        <mat-form-field class="full-width full-height">
-            <mat-label>Description</mat-label>
-            <textarea matInput [(ngModel)]="data.return" cdkTextareaAutosize
-            cdkAutosizeMinRows="1" data-cy="field-description"></textarea>
-        </mat-form-field>
-    </ng-container>
-    <ng-template #noEditContent data-cy="field-description">{{data.original}}</ng-template>
+	<ng-container *ngIf="(editMode | async) === true; else noEditContent">
+		<mat-form-field class="full-width full-height">
+			<mat-label>Description</mat-label>
+			<textarea
+				matInput
+				[(ngModel)]="data.return"
+				cdkTextareaAutosize
+				cdkAutosizeMinRows="1"
+				data-cy="field-description"></textarea>
+		</mat-form-field>
+	</ng-container>
+	<ng-template
+		#noEditContent
+		data-cy="field-description"
+		>{{ data.original }}</ng-template
+	>
 </mat-dialog-content>
 <div mat-dialog-actions>
-    <button mat-button mat-dialog-close=cancel data-cy="cancel-btn">
-        Cancel
-    </button>
-    <ng-container *ngIf="(editMode|async)===true; else noEditSubmit">
-        <button mat-raised-button color="primary" [mat-dialog-close]="data" data-cy="submit-btn">
-            <mat-icon>save</mat-icon><span>Save Changes</span>
-        </button>
-    </ng-container>
-    <ng-template #noEditSubmit>
-        <button mat-raised-button color="primary" mat-dialog-close="ok" data-cy="submit-btn">
-            Ok
-        </button>
-    </ng-template>
+	<button
+		mat-button
+		mat-dialog-close="cancel"
+		data-cy="cancel-btn">
+		Cancel
+	</button>
+	<ng-container *ngIf="(editMode | async) === true; else noEditSubmit">
+		<button
+			mat-raised-button
+			color="primary"
+			[mat-dialog-close]="data"
+			data-cy="submit-btn">
+			<mat-icon>save</mat-icon><span>Save Changes</span>
+		</button>
+	</ng-container>
+	<ng-template #noEditSubmit>
+		<button
+			mat-raised-button
+			color="primary"
+			mat-dialog-close="ok"
+			data-cy="submit-btn">
+			Ok
+		</button>
+	</ng-template>
 </div>

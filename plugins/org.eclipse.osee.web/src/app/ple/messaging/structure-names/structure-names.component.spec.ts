@@ -26,25 +26,37 @@ import { StructureNamesService } from '../shared/services/http/structure-names.s
 import { StructureNamesComponent } from './structure-names.component';
 
 describe('StructureNamesComponent', () => {
-  let component: StructureNamesComponent;
-  let fixture: ComponentFixture<StructureNamesComponent>;
+	let component: StructureNamesComponent;
+	let fixture: ComponentFixture<StructureNamesComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports:[RouterTestingModule,MatExpansionModule,MatFormFieldModule,FormsModule,MatIconModule,MatInputModule,NoopAnimationsModule],
-      providers:[{provide:StructureNamesService,useValue:structuresNameServiceMock}],
-      declarations: [ StructureNamesComponent,BranchPickerStub ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				RouterTestingModule,
+				MatExpansionModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatIconModule,
+				MatInputModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{
+					provide: StructureNamesService,
+					useValue: structuresNameServiceMock,
+				},
+			],
+			declarations: [StructureNamesComponent, BranchPickerStub],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StructureNamesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(StructureNamesComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -10,9 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-Cypress.Commands.add('validateMIMValue', (tableName: string, column: string, row: string, value: string, isLast?: boolean) => {
-    if (isLast) {
-        return cy.get(`[data-cy="${tableName}-${column}-${row}-${value}"]`).last().scrollIntoView().should('exist')
-    }
-    return cy.get(`[data-cy="${tableName}-${column}-${row}-${value}"]`).first().scrollIntoView().should('exist')
-})
+Cypress.Commands.add(
+	'validateMIMValue',
+	(
+		tableName: string,
+		column: string,
+		row: string,
+		value: string,
+		isLast?: boolean
+	) => {
+		if (isLast) {
+			return cy
+				.get(`[data-cy="${tableName}-${column}-${row}-${value}"]`)
+				.last()
+				.scrollIntoView()
+				.should('exist');
+		}
+		return cy
+			.get(`[data-cy="${tableName}-${column}-${row}-${value}"]`)
+			.first()
+			.scrollIntoView()
+			.should('exist');
+	}
+);

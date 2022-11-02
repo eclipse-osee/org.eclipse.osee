@@ -15,14 +15,20 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReportsComponent } from './reports.component';
 
 const routes: Routes = [
-  { path: '', component: ReportsComponent },
-  { path: ':branchType', component: ReportsComponent },
-  { path: ':branchType/:branchId', component: ReportsComponent }, 
-  { path: ':branchType/:branchId/differences', loadChildren: () => import('./diff-report/diff-report.module').then(m => m.DiffReportModule) },
+	{ path: '', component: ReportsComponent },
+	{ path: ':branchType', component: ReportsComponent },
+	{ path: ':branchType/:branchId', component: ReportsComponent },
+	{
+		path: ':branchType/:branchId/differences',
+		loadChildren: () =>
+			import('./diff-report/diff-report.module').then(
+				(m) => m.DiffReportModule
+			),
+	},
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class ReportsRoutingModule { }
+export class ReportsRoutingModule {}

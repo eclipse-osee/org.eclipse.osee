@@ -16,16 +16,16 @@ import { TestBed } from '@angular/core/testing';
 import { ApplicabilityListService } from './applicability-list.service';
 
 describe('ApplicabilityListService', () => {
-  let service: ApplicabilityListService;
+	let service: ApplicabilityListService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports:[HttpClientTestingModule]
-    });
-    service = TestBed.inject(ApplicabilityListService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+		});
+		service = TestBed.inject(ApplicabilityListService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from "rxjs";
-import { UserDataAccountService } from "src/app/userdata/services/user-data-account.service";
-import { testDataUser } from "./mockTypes";
+import { of } from 'rxjs';
+import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { testDataUser } from './mockTypes';
 
 export const userDataAccountServiceMock: Partial<UserDataAccountService> = {
-    user:of(testDataUser),
-    userIsAdmin:of(true)
-  }
+	user: of(testDataUser),
+	userIsAdmin: of(true),
+};

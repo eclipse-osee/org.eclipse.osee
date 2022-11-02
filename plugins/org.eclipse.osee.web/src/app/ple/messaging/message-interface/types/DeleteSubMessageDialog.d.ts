@@ -1,4 +1,4 @@
-import { subMessage } from "./sub-messages";
+import { subMessage } from './sub-messages';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -12,6 +12,6 @@ import { subMessage } from "./sub-messages";
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface DeleteSubMessageDialog{
-    submessage:subMessage
+export interface DeleteSubMessageDialog {
+	submessage: subMessage;
 }

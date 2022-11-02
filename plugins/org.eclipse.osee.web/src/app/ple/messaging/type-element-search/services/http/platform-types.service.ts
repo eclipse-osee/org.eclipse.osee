@@ -14,17 +14,25 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { element, elementWithPathsAndButtons } from '../../../shared/types/element.d';
+import {
+	element,
+	elementWithPathsAndButtons,
+} from '../../../shared/types/element.d';
 import { PlatformType } from '../../../shared/types/platformType';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class PlatformTypesService {
+	constructor(private http: HttpClient) {}
 
-  constructor (private http: HttpClient) { }
-  
-  getFilteredElements(filter: string, branchId: string) {
-    return this.http.get<elementWithPathsAndButtons[]>(apiURL + "/mim/branch/" + branchId + "/elements/types/filter/" + filter);
-  }
+	getFilteredElements(filter: string, branchId: string) {
+		return this.http.get<elementWithPathsAndButtons[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/elements/types/filter/' +
+				filter
+		);
+	}
 }

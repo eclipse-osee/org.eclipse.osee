@@ -17,38 +17,47 @@ import { Observable } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
-import { ConfigGroup, PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
+import {
+	ConfigGroup,
+	PlConfigApplicUIBranchMapping,
+} from '../../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../../types/pl-config-branch';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
 
 @Component({
-  selector: 'plconfig-edit-configuration-dialog',
-  templateUrl: './edit-config-dialog.component.html',
-  styleUrls: ['./edit-config-dialog.component.sass']
+	selector: 'osee-plconfig-edit-configuration-dialog',
+	templateUrl: './edit-config-dialog.component.html',
+	styleUrls: ['./edit-config-dialog.component.sass'],
 })
-export class EditConfigurationDialogComponent implements OnInit {
-  branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
-  cfgGroups: Observable<cfgGroup[]>;
-  productApplicabilities: Observable<string[]>;
-  constructor(private typeService: PlConfigTypesService,public dialogRef: MatDialogRef<EditConfigurationDialogComponent>,@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,private branchService: PlConfigBranchService,private currentBranchService: PlConfigCurrentBranchService) {
-    this.branchApplicability = this.branchService.getBranchApplicability(data.currentBranch);
-    this.cfgGroups = this.currentBranchService.cfgGroups;
-    this.productApplicabilities = this.typeService.productApplicabilityTypes;
-   }
-
-  ngOnInit(): void {
-  }
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-  valueTracker(index: any, item: any) {
-    return index;
-  }
-  compareCfgGroup(o1: ConfigGroup, o2: ConfigGroup) {
-    return o1.id===o2.id
-  }
-  /**istanbul ignore next */
-  containsGroup(groups: ConfigGroup[], group: ConfigGroup) {
-    return groups.map(g => g.id).includes(group.id);
-  }
+export class EditConfigurationDialogComponent {
+	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
+	cfgGroups: Observable<cfgGroup[]>;
+	productApplicabilities: Observable<string[]>;
+	constructor(
+		private typeService: PlConfigTypesService,
+		public dialogRef: MatDialogRef<EditConfigurationDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,
+		private branchService: PlConfigBranchService,
+		private currentBranchService: PlConfigCurrentBranchService
+	) {
+		this.branchApplicability = this.branchService.getBranchApplicability(
+			data.currentBranch
+		);
+		this.cfgGroups = this.currentBranchService.cfgGroups;
+		this.productApplicabilities =
+			this.typeService.productApplicabilityTypes;
+	}
+	onNoClick(): void {
+		this.dialogRef.close();
+	}
+	valueTracker(index: any, item: any) {
+		return index;
+	}
+	compareCfgGroup(o1: ConfigGroup, o2: ConfigGroup) {
+		return o1.id === o2.id;
+	}
+	/**istanbul ignore next */
+	containsGroup(groups: ConfigGroup[], group: ConfigGroup) {
+		return groups.map((g) => g.id).includes(group.id);
+	}
 }

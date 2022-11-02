@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="(type|async) as resolvedType">
-    <ple-messaging-types-platform-type-card [typeData]="resolvedType"></ple-messaging-types-platform-type-card>
+<ng-container *ngIf="type | async as resolvedType">
+	<osee-messaging-types-platform-type-card
+		[typeData]="resolvedType"></osee-messaging-types-platform-type-card>
 </ng-container>

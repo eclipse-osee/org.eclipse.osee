@@ -15,29 +15,29 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { transportType } from '../../../types/transportType';
 
 @Component({
-  selector: 'osee-new-transport-type-dialog',
-  templateUrl: './new-transport-type-dialog.component.html',
-  styleUrls: ['./new-transport-type-dialog.component.sass']
+	selector: 'osee-new-transport-type-dialog',
+	templateUrl: './new-transport-type-dialog.component.html',
+	styleUrls: ['./new-transport-type-dialog.component.sass'],
 })
-export class NewTransportTypeDialogComponent implements OnInit {
+export class NewTransportTypeDialogComponent {
+	transportType: transportType = {
+		name: '',
+		byteAlignValidation: false,
+		messageGeneration: false,
+		byteAlignValidationSize: 0,
+		messageGenerationType: '',
+		messageGenerationPosition: '',
+	};
+	generationTypes = ['None', 'Dynamic', 'Relational', 'Static'];
+	validation = this.transportType.byteAlignValidation
+		? this.transportType.byteAlignValidationSize !== 0
+		: true;
 
-  transportType:transportType={
-    name: '',
-    byteAlignValidation: false,
-    messageGeneration: false,
-    byteAlignValidationSize: 0,
-    messageGenerationType: '',
-    messageGenerationPosition: ''
-  }
-  generationTypes = ['None', 'Dynamic', 'Relational', 'Static']
-  validation = this.transportType.byteAlignValidation ? this.transportType.byteAlignValidationSize!==0 : true;
+	constructor(
+		public dialogRef: MatDialogRef<NewTransportTypeDialogComponent>
+	) {}
 
-  constructor(public dialogRef: MatDialogRef<NewTransportTypeDialogComponent>) { }
-
-  ngOnInit(): void {
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
+	onNoClick(): void {
+		this.dialogRef.close();
+	}
 }

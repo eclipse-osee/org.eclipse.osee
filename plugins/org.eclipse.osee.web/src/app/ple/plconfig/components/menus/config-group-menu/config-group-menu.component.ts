@@ -16,35 +16,51 @@ import { difference } from 'src/app/types/change-report/change-report';
 import { DialogService } from '../../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../../services/pl-config-uistate.service';
-import { configGroup, configGroupWithChanges } from '../../../types/pl-config-configurations';
+import {
+	configGroup,
+	configGroupWithChanges,
+} from '../../../types/pl-config-configurations';
 
 @Component({
-  selector: 'plconfig-config-group-menu',
-  templateUrl: './config-group-menu.component.html',
-  styleUrls: ['./config-group-menu.component.sass']
+	selector: 'osee-plconfig-config-group-menu',
+	templateUrl: './config-group-menu.component.html',
+	styleUrls: ['./config-group-menu.component.sass'],
 })
-export class ConfigGroupMenuComponent implements OnInit {
-
-  constructor(private dialogService: DialogService,private uiStateService: PlConfigUIStateService, private currentBranchService: PlConfigCurrentBranchService) { }
-  _editable = this.uiStateService.editable;
-  @Input() group:configGroup|configGroupWithChanges={name:'',id:'',configurations:[]}
-  ngOnInit(): void {
-  }
-  openConfigMenu(header: string, editable: string) {
-    this.dialogService.openConfigMenu(header, editable).subscribe();
-  }
-  viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic;
-    let prev = value.previousValue as string | number | applic;
-    if (prev === null) {
-      prev = ''
-    }
-    if (current === null) {
-      current = ''
-    }
-    this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-  }
-  hasGroupChanges(value: configGroup | configGroupWithChanges): value is configGroupWithChanges{
-    return (value as configGroupWithChanges).changes !== undefined;
-  }
+export class ConfigGroupMenuComponent {
+	constructor(
+		private dialogService: DialogService,
+		private uiStateService: PlConfigUIStateService,
+		private currentBranchService: PlConfigCurrentBranchService
+	) {}
+	_editable = this.uiStateService.editable;
+	@Input() group: configGroup | configGroupWithChanges = {
+		name: '',
+		id: '',
+		configurations: [],
+	};
+	openConfigMenu(header: string, editable: string) {
+		this.dialogService.openConfigMenu(header, editable).subscribe();
+	}
+	viewDiff(open: boolean, value: difference, header: string) {
+		let current = value.currentValue as string | number | applic;
+		let prev = value.previousValue as string | number | applic;
+		if (prev === null) {
+			prev = '';
+		}
+		if (current === null) {
+			current = '';
+		}
+		this.currentBranchService.sideNav = {
+			opened: open,
+			field: header,
+			currentValue: current,
+			previousValue: prev,
+			transaction: value.transactionToken,
+		};
+	}
+	hasGroupChanges(
+		value: configGroup | configGroupWithChanges
+	): value is configGroupWithChanges {
+		return (value as configGroupWithChanges).changes !== undefined;
+	}
 }

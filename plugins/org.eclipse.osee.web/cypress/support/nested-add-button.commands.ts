@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 Cypress.Commands.add('toggleBaseAddMenu', () => {
-  return cy.get('#addButton').click();
+	return cy.get('#addButton').click();
 });
 Cypress.Commands.add('openNestedAddMenu', () => {
-  cy.toggleBaseAddMenu().get(`[data-cy="nested-add-button"]`).click();
+	cy.toggleBaseAddMenu().get(`[data-cy="nested-add-button"]`).click();
 });

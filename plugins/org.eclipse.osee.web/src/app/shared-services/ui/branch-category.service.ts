@@ -14,25 +14,26 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchCategoryService {
-  
-  private _branchCategory: BehaviorSubject<string> = new BehaviorSubject<string>("");
-  private _actionSearch: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  constructor () { }
+	private _branchCategory: BehaviorSubject<string> =
+		new BehaviorSubject<string>('');
+	private _actionSearch: BehaviorSubject<boolean> =
+		new BehaviorSubject<boolean>(false);
+	constructor() {}
 
-  public get actionSearch(): BehaviorSubject<boolean> {
-    return this._actionSearch;
-  }
-  public set shouldActionSearch(value: boolean) {
-    this._actionSearch.next(value)
-  }
-  get branchCategory() {
-    return this._branchCategory;
-  }
+	public get actionSearch(): BehaviorSubject<boolean> {
+		return this._actionSearch;
+	}
+	public set shouldActionSearch(value: boolean) {
+		this._actionSearch.next(value);
+	}
+	get branchCategory() {
+		return this._branchCategory;
+	}
 
-  set category(value:string) {
-    this._branchCategory.next(value);
-  }
+	set category(value: string) {
+		this._branchCategory.next(value);
+	}
 }

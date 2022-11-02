@@ -14,20 +14,20 @@ import { Injectable } from '@angular/core';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchIdService {
-  constructor (private uiService: UiService) { }
-  
-  get BranchId() {
-    return this.uiService.id;
-  }
+	constructor(private uiService: UiService) {}
 
-  set id(value: string) {
-    this.uiService.idValue = value;
-  }
+	get BranchId() {
+		return this.uiService.id;
+	}
 
-  get id() {
-    return this.BranchId.getValue();
-  }
+	set id(value: string) {
+		this.uiService.idValue = value;
+	}
+
+	get id() {
+		return this.BranchId.getValue();
+	}
 }

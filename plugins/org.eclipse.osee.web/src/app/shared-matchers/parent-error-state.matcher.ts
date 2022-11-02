@@ -14,12 +14,21 @@
 import { AbstractControl, NgForm, FormGroupDirective } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 
-export class ParentErrorStateMatcher implements ErrorStateMatcher{
-    isErrorState(control: AbstractControl<any, any> | null, form: NgForm | FormGroupDirective | null): boolean {
-      const controlTouched = !!(control && (control.dirty || control.touched));
-      const controlInvalid = !!(control && control.invalid);
-      const parentInvalid = !!(control && control.parent && control.parent.invalid)
-      return controlTouched && (controlInvalid || parentInvalid)
-    }
-    
-  }
+export class ParentErrorStateMatcher implements ErrorStateMatcher {
+	isErrorState(
+		control: AbstractControl<any, any> | null,
+		form: NgForm | FormGroupDirective | null
+	): boolean {
+		const controlTouched = !!(
+			control &&
+			(control.dirty || control.touched)
+		);
+		const controlInvalid = !!(control && control.invalid);
+		const parentInvalid = !!(
+			control &&
+			control.parent &&
+			control.parent.invalid
+		);
+		return controlTouched && (controlInvalid || parentInvalid);
+	}
+}

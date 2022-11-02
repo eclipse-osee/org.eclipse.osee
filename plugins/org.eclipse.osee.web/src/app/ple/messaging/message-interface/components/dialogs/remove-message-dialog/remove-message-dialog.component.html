@@ -11,12 +11,20 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>Removing Message</h1>
- <mat-dialog-content>
-    Are you sure you want to remove {{data.message.name}} from this connection?
- </mat-dialog-content>
- <mat-dialog-actions>
-    <button mat-button mat-dialog-close="cancel">No</button>
-    <button mat-raised-button color="primary" mat-dialog-close="ok">
-        Yes
-    </button>
- </mat-dialog-actions>
+<mat-dialog-content>
+	Are you sure you want to remove {{ data.message.name }} from this
+	connection?
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button
+		mat-button
+		mat-dialog-close="cancel">
+		No
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
+		mat-dialog-close="ok">
+		Yes
+	</button>
+</mat-dialog-actions>

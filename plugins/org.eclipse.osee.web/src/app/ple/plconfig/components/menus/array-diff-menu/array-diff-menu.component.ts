@@ -16,25 +16,29 @@ import { difference } from 'src/app/types/change-report/change-report';
 import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
 
 @Component({
-  selector: 'plconfig-array-diff-menu',
-  templateUrl: './array-diff-menu.component.html',
-  styleUrls: ['./array-diff-menu.component.sass']
+	selector: 'osee-plconfig-array-diff-menu',
+	templateUrl: './array-diff-menu.component.html',
+	styleUrls: ['./array-diff-menu.component.sass'],
 })
-export class ArrayDiffMenuComponent implements OnInit {
-  @Input() array: difference[] = [];
-  constructor(private currentBranchService:PlConfigCurrentBranchService) { }
+export class ArrayDiffMenuComponent {
+	@Input() array: difference[] = [];
+	constructor(private currentBranchService: PlConfigCurrentBranchService) {}
 
-  ngOnInit(): void {
-  }
-  viewDiff(open: boolean, value: difference, header: string) {
-    let current = value.currentValue as string | number | applic;
-    let prev = value.previousValue as string | number | applic;
-    if (prev === null) {
-      prev = ''
-    }
-    if (current === null) {
-      current = ''
-    }
-    this.currentBranchService.sideNav = { opened: open, field: header, currentValue: current, previousValue: prev, transaction: value.transactionToken };
-  }
+	viewDiff(open: boolean, value: difference, header: string) {
+		let current = value.currentValue as string | number | applic;
+		let prev = value.previousValue as string | number | applic;
+		if (prev === null) {
+			prev = '';
+		}
+		if (current === null) {
+			current = '';
+		}
+		this.currentBranchService.sideNav = {
+			opened: open,
+			field: header,
+			currentValue: current,
+			previousValue: prev,
+			transaction: value.transactionToken,
+		};
+	}
 }

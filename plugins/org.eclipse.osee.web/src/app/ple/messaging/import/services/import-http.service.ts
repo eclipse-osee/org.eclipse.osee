@@ -17,20 +17,18 @@ import { apiURL } from 'src/environments/environment';
 import { ImportOption, ImportSummary } from '../../shared/types/Import';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class ImportHttpService {
+	constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) {}
+	getImportSummary(url: string, formData: FormData) {
+		return this.http.post<ImportSummary>(apiURL + url, formData);
+	}
 
-  getImportSummary(url: string, formData: FormData) {
-    return this.http.post<ImportSummary>(apiURL + url, formData);
-  }
-
-  getImportOptions() {
-    return this.http.get<ImportOption[]>(apiURL+'/mim/import').pipe(
-      shareReplay(1)
-    )
-  }
-  
+	getImportOptions() {
+		return this.http
+			.get<ImportOption[]>(apiURL + '/mim/import')
+			.pipe(shareReplay(1));
+	}
 }

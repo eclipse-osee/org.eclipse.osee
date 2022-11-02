@@ -23,44 +23,81 @@ import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.en
 import { TransactionService } from '../../../../../transactions/transaction.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class TypesService {
-  
-  constructor(private http: HttpClient, private builder: TransactionBuilderService, private transactionService: TransactionService) { }
+	constructor(
+		private http: HttpClient,
+		private builder: TransactionBuilderService,
+		private transactionService: TransactionService
+	) {}
 
-  /**
-   * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
-   * @param filter @type {string} filter conditions for finding the correct platform types
-   * @param branchId @type {string} branch to fetch from
-   * @returns @type {Observable<PlatformType[]>} Observable of array of platform types matching filter conditions (see @type {PlatformType} and @type {Observable})
-   */
-  getFilteredTypes(filter: string, branchId: string): Observable<PlatformType[]> {
-    return this.http.get<PlatformType[]>(apiURL + "/mim/branch/" + branchId + "/types/filter/" + filter);
-  }
-  getTypes(branchId: string): Observable<PlatformType[]> {
-    return this.http.get<PlatformType[]>(apiURL + "/mim/branch/" + branchId + "/types");
-   }
+	/**
+	 * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
+	 * @param filter @type {string} filter conditions for finding the correct platform types
+	 * @param branchId @type {string} branch to fetch from
+	 * @returns @type {Observable<PlatformType[]>} Observable of array of platform types matching filter conditions (see @type {PlatformType} and @type {Observable})
+	 */
+	getFilteredTypes(
+		filter: string,
+		branchId: string
+	): Observable<PlatformType[]> {
+		return this.http.get<PlatformType[]>(
+			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter
+		);
+	}
+	getTypes(branchId: string): Observable<PlatformType[]> {
+		return this.http.get<PlatformType[]>(
+			apiURL + '/mim/branch/' + branchId + '/types'
+		);
+	}
 
-  getType(branchId: string, platformTypeId: string) {
-    return this.http.get<PlatformType>(apiURL + "/mim/branch/" + branchId + "/types/"+platformTypeId)
-  }
+	getType(branchId: string, platformTypeId: string) {
+		return this.http.get<PlatformType>(
+			apiURL + '/mim/branch/' + branchId + '/types/' + platformTypeId
+		);
+	}
 
-  createPlatformType(branchId:string,type:PlatformType|Partial<PlatformType>,relations:relation[], transaction?:transaction, key?:string) {
-    return of<transaction>(this.builder.createArtifact(type, ARTIFACTTYPEID.PLATFORMTYPE, relations, transaction, branchId, "Create Platform Type", key));
-  }
+	createPlatformType(
+		branchId: string,
+		type: PlatformType | Partial<PlatformType>,
+		relations: relation[],
+		transaction?: transaction,
+		key?: string
+	) {
+		return of<transaction>(
+			this.builder.createArtifact(
+				type,
+				ARTIFACTTYPEID.PLATFORMTYPE,
+				relations,
+				transaction,
+				branchId,
+				'Create Platform Type',
+				key
+			)
+		);
+	}
 
-  changePlatformType(branchId: string, type: Partial<PlatformType>) {
-    return of<transaction>(this.builder.modifyArtifact(type,undefined,branchId,"Change platform type attributes"));
-  }
-  performMutation(body: transaction) {
-    return this.transactionService.performMutation(body)
-  }
+	changePlatformType(branchId: string, type: Partial<PlatformType>) {
+		return of<transaction>(
+			this.builder.modifyArtifact(
+				type,
+				undefined,
+				branchId,
+				'Change platform type attributes'
+			)
+		);
+	}
+	performMutation(body: transaction) {
+		return this.transactionService.performMutation(body);
+	}
 
-  get logicalTypes() {
-    return this.http.get<logicalType[]>(apiURL + "/mim/logicalType");
-  }
-  getLogicalTypeFormDetail(id:string) {
-    return this.http.get<logicalTypeFormDetail>(apiURL + "/mim/logicalType/" + id);
-  }
+	get logicalTypes() {
+		return this.http.get<logicalType[]>(apiURL + '/mim/logicalType');
+	}
+	getLogicalTypeFormDetail(id: string) {
+		return this.http.get<logicalTypeFormDetail>(
+			apiURL + '/mim/logicalType/' + id
+		);
+	}
 }

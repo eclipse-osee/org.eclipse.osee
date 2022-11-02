@@ -13,28 +13,29 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
-import { CurrentMessagesService } from '../../../services/current-messages.service'
+import { CurrentMessagesService } from '../../../services/current-messages.service';
 import { AddMessageDialog } from '../../../types/AddMessageDialog';
 import { AddSubMessageDialogComponent } from '../../sub-message-table/add-sub-message-dialog/add-sub-message-dialog.component';
-import { of } from 'rxjs'
+import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-add-message-dialog',
-  templateUrl: './add-message-dialog.component.html',
-  styleUrls: ['./add-message-dialog.component.sass']
+	selector: 'osee-messaging-add-message-dialog',
+	templateUrl: './add-message-dialog.component.html',
+	styleUrls: ['./add-message-dialog.component.sass'],
 })
-export class AddMessageDialogComponent implements OnInit {
+export class AddMessageDialogComponent {
+	rates = this.enumService.rates;
+	types = this.enumService.types;
+	periodicities = this.enumService.periodicities;
+	nodes = this.currentMessagesService.connectionNodes;
+	constructor(
+		public dialogRef: MatDialogRef<AddSubMessageDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: AddMessageDialog,
+		private enumService: EnumsService,
+		private currentMessagesService: CurrentMessagesService
+	) {}
 
-  rates = this.enumService.rates;
-  types = this.enumService.types;
-  periodicities = this.enumService.periodicities;
-  nodes = this.currentMessagesService.connectionNodes
-  constructor(public dialogRef: MatDialogRef<AddSubMessageDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AddMessageDialog,private enumService: EnumsService, private currentMessagesService: CurrentMessagesService) { }
-
-  ngOnInit(): void {
-  }
-
-  onNoClick() {
-    this.dialogRef.close();
-  }
+	onNoClick() {
+		this.dialogRef.close();
+	}
 }

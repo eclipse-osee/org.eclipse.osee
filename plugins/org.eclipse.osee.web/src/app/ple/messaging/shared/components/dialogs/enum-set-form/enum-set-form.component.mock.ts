@@ -29,21 +29,22 @@ import { enumerationSet } from '../../../types/enum';
 import { EnumSetFormComponent } from './enum-set-form.component';
 
 @Component({
-    selector: 'osee-enum-set-form',
-    template: '<p>Dummy</p>',
+	selector: 'osee-enum-set-form',
+	template: '<p>Dummy</p>',
 })
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class MockEnumSetFormUnique implements Partial<EnumSetFormComponent> {
-    @Input() bitSize: string = '32';
-    applics: Observable<applic[]> = of([]);
-    enumSet: enumerationSet = {
-        name: '',
-        description: '',
-        applicability: {
-            id: '1',
-            name: 'Base',
-        },
-    };
-    _unique = new Subject<boolean>();
-    unique: Observable<string> = of('');
-    _closeForm: Subject<unknown> = new Subject();
+	@Input() bitSize: string = '32';
+	applics: Observable<applic[]> = of([]);
+	enumSet: enumerationSet = {
+		name: '',
+		description: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+	};
+	_unique = new Subject<boolean>();
+	unique: Observable<string> = of('');
+	_closeForm: Subject<unknown> = new Subject();
 }

@@ -15,56 +15,79 @@ import { Router } from '@angular/router';
 import { BranchUIService } from '../../ple-services/ui/branch/branch-ui.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class BranchRoutedUIService {
+	constructor(
+		private branchService: BranchUIService,
+		private router: Router
+	) {}
 
-  constructor (private branchService: BranchUIService, private router: Router) { }
-  
-  set branchType(value: string) {
-    let baseUrl;
-    if (this.branchService.type.getValue() != "") {
-      baseUrl = this.router.url.split(this.branchService.type.getValue().replace(/ /g, "%20"))[0]
-    } else {
-      baseUrl = this.router.url;
-    }
-    this.branchService.typeValue = value;
-    this.router.navigate([baseUrl,value])
-  }
-  get type() {
-    return this.branchService.type;
-  }
+	set branchType(value: string) {
+		let baseUrl;
+		if (this.branchService.type.getValue() != '') {
+			baseUrl = this.router.url.split(
+				this.branchService.type.getValue().replace(/ /g, '%20')
+			)[0];
+		} else {
+			baseUrl = this.router.url;
+		}
+		this.branchService.typeValue = value;
+		this.router.navigate([baseUrl, value]);
+	}
+	get type() {
+		return this.branchService.type;
+	}
 
-  get id() {
-    return this.branchService.id;
-  }
+	get id() {
+		return this.branchService.id;
+	}
 
-  set branchId(value: string) {
-    let baseUrl;
-    if (this.branchService.type.getValue() != "") {
-      baseUrl=this.router.url.split(this.branchService.type.getValue().replace(/ /g,"%20"))[0]
-    } else {
-      baseUrl = this.router.url;
-    }
-    this.branchService.idValue = value;
-    this.router.navigate([baseUrl,this.branchService.type.getValue(),value])
-  }
+	set branchId(value: string) {
+		let baseUrl;
+		if (this.branchService.type.getValue() != '') {
+			baseUrl = this.router.url.split(
+				this.branchService.type.getValue().replace(/ /g, '%20')
+			)[0];
+		} else {
+			baseUrl = this.router.url;
+		}
+		this.branchService.idValue = value;
+		this.router.navigate([
+			baseUrl,
+			this.branchService.type.getValue(),
+			value,
+		]);
+	}
 
-  /**
-   *  this function is used to change position from baseline/working & the branch id, however it has the catch of doing in-line position replacement instead of replacing the whole URL
-   */
-  set position(value: { type: string, id: string }) {
-    let baseUrl;
-    if (this.branchService.type.getValue() != "") {
-      baseUrl=this.router.url.split(this.branchService.type.getValue().replace(/ /g,"%20"))
-    } else {
-      baseUrl = this.router.url;
-    }
-    const [initialURL, idURL] = baseUrl;
-    const remainingURL = idURL.includes("/"+this.branchService.id.getValue()+"/")?idURL.split("/"+this.branchService.id.getValue()+"/")[1].replace(/ /g,"%20").split("/"):''
-    this.branchService.typeValue = value.type;
-    this.branchService.idValue = value.id;
-    this.router.navigate([initialURL,value.type,value.id,...remainingURL])
-  }
-
+	/**
+	 *  this function is used to change position from baseline/working & the branch id, however it has the catch of doing in-line position replacement instead of replacing the whole URL
+	 */
+	set position(value: { type: string; id: string }) {
+		let baseUrl;
+		if (this.branchService.type.getValue() != '') {
+			baseUrl = this.router.url.split(
+				this.branchService.type.getValue().replace(/ /g, '%20')
+			);
+		} else {
+			baseUrl = this.router.url;
+		}
+		const [initialURL, idURL] = baseUrl;
+		const remainingURL = idURL.includes(
+			'/' + this.branchService.id.getValue() + '/'
+		)
+			? idURL
+					.split('/' + this.branchService.id.getValue() + '/')[1]
+					.replace(/ /g, '%20')
+					.split('/')
+			: '';
+		this.branchService.typeValue = value.type;
+		this.branchService.idValue = value.id;
+		this.router.navigate([
+			initialURL,
+			value.type,
+			value.id,
+			...remainingURL,
+		]);
+	}
 }

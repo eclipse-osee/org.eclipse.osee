@@ -19,19 +19,25 @@ import { TransportTypeService } from '../http/transport-type.service';
 import { CurrentTransportTypeService } from './current-transport-type.service';
 
 describe('CurrentTransportTypeService', () => {
-  let service: CurrentTransportTypeService;
+	let service: CurrentTransportTypeService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: TransportTypeService, useValue: transportTypeServiceMock },
-        { provide: TransactionService, useValue: transactionServiceMock }
-      ]
-    });
-    service = TestBed.inject(CurrentTransportTypeService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: TransportTypeService,
+					useValue: transportTypeServiceMock,
+				},
+				{
+					provide: TransactionService,
+					useValue: transactionServiceMock,
+				},
+			],
+		});
+		service = TestBed.inject(CurrentTransportTypeService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

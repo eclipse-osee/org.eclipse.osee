@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from "../../shared/types/element.d";
+import { element } from '../../shared/types/element.d';
 import { PlatformType } from '../../shared/types/platformType.d';
 
-export interface AddElementDialog{
-    id: string,
-    name: string,
-    element: element,
-    type:PlatformType
+export interface AddElementDialog {
+	id: string;
+	name: string;
+	element: element;
+	type: PlatformType;
 }

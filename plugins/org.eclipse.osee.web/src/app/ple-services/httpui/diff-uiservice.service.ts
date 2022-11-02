@@ -17,40 +17,41 @@ import { DiffReportBranchService } from '../ui/diff/diff-report-branch.service';
 import { UiService } from '../ui/ui.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class DiffUIService {
+	private _diff = this.uiService.isInDiff.pipe(
+		take(1),
+		switchMap((mode) =>
+			iif(() => mode, this.diffService.differences, of(undefined))
+		)
+	);
+	constructor(
+		private uiService: UiService,
+		private diffService: DiffReportBranchService
+	) {}
 
-  private _diff = this.uiService.isInDiff.pipe(
-    take(1),
-    switchMap((mode) => iif(() => mode,
-      this.diffService.differences,
-      of(undefined)
-    )),
-  );
-  constructor (private uiService: UiService, private diffService: DiffReportBranchService) { }
+	get diff() {
+		return this._diff;
+	}
 
-  get diff() {
-    return this._diff;
-  }
+	get id() {
+		return this.uiService.id.getValue();
+	}
 
-  get id() {
-    return this.uiService.id.getValue();
-  }
+	get type() {
+		return this.uiService.type.getValue();
+	}
 
-  get type() {
-    return this.uiService.type.getValue();
-  }
+	set DiffMode(value: boolean) {
+		this.uiService.diffMode = value;
+	}
 
-  set DiffMode(value: boolean) {
-    this.uiService.diffMode = value;
-  }
+	set branchId(value: string) {
+		this.uiService.idValue = value;
+	}
 
-  set branchId(value: string) {
-    this.uiService.idValue = value;
-  }
-
-  set branchType(value: string) {
-    this.uiService.typeValue = value;
-  }
+	set branchType(value: string) {
+		this.uiService.typeValue = value;
+	}
 }

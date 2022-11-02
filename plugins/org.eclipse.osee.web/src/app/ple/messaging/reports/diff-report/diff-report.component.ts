@@ -12,62 +12,66 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { DiffReportService } from '../../shared/services/ui/diff-report.service';
-import { branchSummary, diffReportSummaryItem} from '../../shared/types/DifferenceReport';
+import {
+	branchSummary,
+	diffReportSummaryItem,
+} from '../../shared/types/DifferenceReport';
 import { HeaderService } from '../../shared/services/ui/header.service';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-diff-report',
-  templateUrl: './diff-report.component.html',
-  styleUrls: ['./diff-report.component.sass']
+	selector: 'osee-messaging-diff-report',
+	templateUrl: './diff-report.component.html',
+	styleUrls: ['./diff-report.component.sass'],
 })
-export class DiffReportComponent implements OnInit {
+export class DiffReportComponent {
+	constructor(
+		private diffReportService: DiffReportService,
+		private headerService: HeaderService
+	) {}
 
+	date = new Date();
 
-  constructor(private diffReportService: DiffReportService, private headerService: HeaderService) {}
+	branchSummaryKey = 'branchSummary';
+	branchSummaryHeaders: (keyof branchSummary)[] = [
+		'pcrNo',
+		'description',
+		'compareBranch',
+		'reportDate',
+	];
 
-  ngOnInit(): void {}
+	reportSummaryKey = 'diffReportSummary';
+	reportSummaryHeaders: (keyof diffReportSummaryItem)[] = [
+		'changeType',
+		'action',
+		'name',
+		'details',
+	];
 
-  date = new Date();
-  
-  branchSummaryKey = 'branchSummary';
-  branchSummaryHeaders:(keyof branchSummary)[] = [
-    'pcrNo',
-    'description',
-    'compareBranch',
-    'reportDate'
-  ]
-  
-  reportSummaryKey = 'diffReportSummary'
-  reportSummaryHeaders:(keyof diffReportSummaryItem)[] = [
-    'changeType',
-    'action',
-    'name',
-    'details'
-  ]
+	branchInfo = this.diffReportService.branchInfo;
+	parentBranchInfo = this.diffReportService.parentBranchInfo;
+	branchSummary = this.diffReportService.branchSummary;
+	diffReportSummary = this.diffReportService.diffReportSummary;
+	differenceReport = this.diffReportService.diffReport;
+	nodes = this.diffReportService.nodes;
 
-  branchInfo = this.diffReportService.branchInfo;
-  parentBranchInfo = this.diffReportService.parentBranchInfo;
-  branchSummary = this.diffReportService.branchSummary;
-  diffReportSummary = this.diffReportService.diffReportSummary;
-  differenceReport = this.diffReportService.diffReport;
-  nodes = this.diffReportService.nodes;
+	isDifference = this.differenceReport.pipe(
+		map((report) => {
+			return Object.keys(report.changeItems).length !== 0;
+		})
+	);
 
-  isDifference = this.differenceReport.pipe(
-    map(report => {
-      return Object.keys(report.changeItems).length !== 0;
-    })
-  )
+	getHeaderByName(
+		value: keyof branchSummary | keyof diffReportSummaryItem,
+		key: string
+	) {
+		return this.headerService.getHeaderByName(value, key);
+	}
 
-  getHeaderByName(value: keyof branchSummary|keyof diffReportSummaryItem, key: string) {
-    return this.headerService.getHeaderByName(value, key);
-  }
-
-  scrollTo(id: string) {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  }
-
+	scrollTo(id: string) {
+		document.getElementById(id)?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
 }

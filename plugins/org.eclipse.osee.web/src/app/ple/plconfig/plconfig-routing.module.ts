@@ -13,32 +13,32 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
-import { MimSingleDiffComponent } from '../diff-views/mim-single-diff/mim-single-diff.component';
+import { SingleDiffComponent } from '../diff-views/single-diff/single-diff.component';
 import { PlconfigComponent } from './plconfig.component';
 
 const routes: Routes = [
-  { path: '', component: PlconfigComponent },
-  { path: ':branchType', component: PlconfigComponent },
-  {
-    path: ':branchType/:branchId',
-    children: [
-      {
-        path: '',
-        component: PlconfigComponent
-      },
-    
-      {
-        path: 'diff',
-        component: PlconfigComponent,
-        resolve: { diff: DiffReportResolver }
-    }
-  ]
-  },
-  { path: '', component: MimSingleDiffComponent, outlet:'rightSideNav' }
+	{ path: '', component: PlconfigComponent },
+	{ path: ':branchType', component: PlconfigComponent },
+	{
+		path: ':branchType/:branchId',
+		children: [
+			{
+				path: '',
+				component: PlconfigComponent,
+			},
+
+			{
+				path: 'diff',
+				component: PlconfigComponent,
+				resolve: { diff: DiffReportResolver },
+			},
+		],
+	},
+	{ path: '', component: SingleDiffComponent, outlet: 'rightSideNav' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class PlconfigRoutingModule { }
+export class PlconfigRoutingModule {}

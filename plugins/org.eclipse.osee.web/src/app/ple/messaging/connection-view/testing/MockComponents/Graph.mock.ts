@@ -10,12 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'osee-connectionview-graph',
-    template:'<div>Dummy</div>'
-  })
-export class GraphDummy{
-  @Input() editMode: boolean = false;
-  }
+	selector: 'osee-connectionview-graph',
+	template: '<div>Dummy</div>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class GraphDummy {
+	@Input() editMode: boolean = false;
+}

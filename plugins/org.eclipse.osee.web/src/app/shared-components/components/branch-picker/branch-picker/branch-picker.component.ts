@@ -10,25 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnChanges,
+	OnInit,
+	SimpleChanges,
+} from '@angular/core';
 import { BranchCategoryService } from '../../../../shared-services/ui/branch-category.service';
 
 @Component({
-  selector: 'osee-branch-picker',
-  templateUrl: './branch-picker.component.html',
-  styleUrls: ['./branch-picker.component.sass']
+	selector: 'osee-branch-picker',
+	templateUrl: './branch-picker.component.html',
+	styleUrls: ['./branch-picker.component.sass'],
 })
-export class BranchPickerComponent implements OnInit,OnChanges {
-
-  @Input() category: string = "0";
-  @Input() actionSearch: boolean = false;
-  constructor (private branchCategoryService: BranchCategoryService) { }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.branchCategoryService.category = this.category;
-    this.branchCategoryService.shouldActionSearch = this.actionSearch;
-  }
-
-  ngOnInit(): void {
-  }
-
+export class BranchPickerComponent implements OnChanges {
+	@Input() category: string = '0';
+	@Input() actionSearch: boolean = false;
+	constructor(private branchCategoryService: BranchCategoryService) {}
+	ngOnChanges(changes: SimpleChanges): void {
+		this.branchCategoryService.category = this.category;
+		this.branchCategoryService.shouldActionSearch = this.actionSearch;
+	}
 }

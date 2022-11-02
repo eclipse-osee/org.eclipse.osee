@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
- @Component({
-     selector: 'mock',
-     template:'<p>Dummy</p>'
- })
- export class ColumnDescriptionsMessageHelpComponentMock{
-   }
+@Component({
+	selector: 'osee-mock',
+	template: '<p>Dummy</p>',
+})
+// eslint-disable-next-line @angular-eslint/component-class-suffix
+export class ColumnDescriptionsMessageHelpComponentMock {}

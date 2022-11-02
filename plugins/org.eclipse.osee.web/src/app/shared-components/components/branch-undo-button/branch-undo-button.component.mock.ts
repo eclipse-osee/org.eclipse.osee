@@ -10,11 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
- import { Component} from "@angular/core";
+import { Component } from '@angular/core';
 
- @Component({
-     selector: 'osee-undo-button-branch',
-     template:'<p>Dummy</p>'
- })
- export class UndoButtonBranchMockComponent{
-}
+@Component({
+	selector: 'osee-undo-button-branch',
+	template: '<p>Dummy</p>',
+})
+export class UndoButtonBranchMockComponent {}

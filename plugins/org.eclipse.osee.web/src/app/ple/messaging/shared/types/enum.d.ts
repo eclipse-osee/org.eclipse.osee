@@ -10,31 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from "../../../../types/applicability/applic";
+import { applic } from '../../../../types/applicability/applic';
 
-export interface enumeration{
-    id?:string,
-    name: string,
-    ordinal: number,
-    applicability: applic,
-    applicabilityId?:string
+export interface enumeration {
+	id?: string;
+	name: string;
+	ordinal: number;
+	applicability: applic;
+	applicabilityId?: string;
 }
 
 export interface enumerationSet extends enumSet {
-    id?: string,
-    name: string,
-    applicability: applic,
-    description: string,
-    enumerations?: enumeration[],
-    /**
-     * Only used in api creation
-     */
-    applicabilityId?: string
+	id?: string;
+	name: string;
+	applicability: applic;
+	description: string;
+	enumerations?: enumeration[];
+	/**
+	 * Only used in api creation
+	 */
+	applicabilityId?: string;
 }
-export interface enumSet{
-    id?: string,
-    name: string,
-    applicability: applic,
-    description: string,
-    applicabilityId?:string
+export interface enumSet {
+	id?: string;
+	name: string;
+	applicability: applic;
+	description: string;
+	applicabilityId?: string;
 }

@@ -39,62 +39,64 @@ import { FeatureDropdownComponent } from './components/feature-dropdown/feature-
 import { PlconfigComponent } from './plconfig.component';
 
 describe('PlconfigComponent', () => {
-  let component: PlconfigComponent;
-  let fixture: ComponentFixture<PlconfigComponent>;
+	let component: PlconfigComponent;
+	let fixture: ComponentFixture<PlconfigComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        MatDialogModule,
-        MatMenuModule,
-        MatIconModule,
-        RouterTestingModule,
-        MatTableModule,
-        MatFormFieldModule,
-        FormsModule,
-        MatInputModule,
-        MatSelectModule,
-        MatRadioModule,
-        MatTooltipModule,
-        MatPaginatorModule,
-        MatButtonModule,
-        NoopAnimationsModule
-      ],
-      declarations: [
-        PlconfigComponent,
-        ApplicabilityTableComponent,
-        BranchPickerStub,
-        ActionDropdownStub,
-        ConfigurationDropdownComponent,
-        ConfigurationGroupDropdownComponent,
-        FeatureDropdownComponent,
-      ],
-      providers: [{ provide: Router, useValue: { navigate: () => { },events:of()}},
-        {
-          provide: ActivatedRoute, useValue: {
-            paramMap: of(
-              convertToParamMap(
-                {
-                  branchId: '10',
-                  branchType: 'all'
-                }
-              )
-            )
-          }
-        },
-      ]
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [
+				HttpClientModule,
+				MatDialogModule,
+				MatMenuModule,
+				MatIconModule,
+				RouterTestingModule,
+				MatTableModule,
+				MatFormFieldModule,
+				FormsModule,
+				MatInputModule,
+				MatSelectModule,
+				MatRadioModule,
+				MatTooltipModule,
+				MatPaginatorModule,
+				MatButtonModule,
+				NoopAnimationsModule,
+			],
+			declarations: [
+				PlconfigComponent,
+				ApplicabilityTableComponent,
+				BranchPickerStub,
+				ActionDropdownStub,
+				ConfigurationDropdownComponent,
+				ConfigurationGroupDropdownComponent,
+				FeatureDropdownComponent,
+			],
+			providers: [
+				{
+					provide: Router,
+					useValue: { navigate: () => {}, events: of() },
+				},
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						paramMap: of(
+							convertToParamMap({
+								branchId: '10',
+								branchType: 'all',
+							})
+						),
+					},
+				},
+			],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PlconfigComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(PlconfigComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

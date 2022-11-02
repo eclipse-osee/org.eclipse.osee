@@ -16,24 +16,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { ScrollToTopButtonComponent } from './scroll-to-top-button.component';
 
 describe('ScrollToTopButtonComponent', () => {
-  let component: ScrollToTopButtonComponent;
-  let fixture: ComponentFixture<ScrollToTopButtonComponent>;
+	let component: ScrollToTopButtonComponent;
+	let fixture: ComponentFixture<ScrollToTopButtonComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MatIconModule],
-      declarations: [ ScrollToTopButtonComponent ],
-    })
-    .compileComponents();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [MatIconModule],
+			declarations: [ScrollToTopButtonComponent],
+		}).compileComponents();
+	});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ScrollToTopButtonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ScrollToTopButtonComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

@@ -15,7 +15,7 @@ import { transactionResultMock } from '../../transactions/transaction.mock';
 import { BranchTransactionService } from './branch-transaction.service';
 
 export const branchTransactionServiceMock: Partial<BranchTransactionService> = {
-    undoLatest(branchId: string) {
-        return of(transactionResultMock)
-    }
-}
+	undoLatest(branchId: string) {
+		return of(transactionResultMock);
+	},
+};

@@ -1,8 +1,17 @@
-import { element } from "./element";
-import { structure } from "./structure";
-import { message } from "../../message-interface/types/messages";
-import { subMessage } from "../../message-interface/types/sub-messages";
-import { branchSummary, connectionDiffItem, diffReportSummaryItem, elementDiffItem, messageDiffItem, nodeDiffItem, structureDiffItem, submessageDiffItem } from "./DifferenceReport.d";
+import { element } from './element';
+import { structure } from './structure';
+import { message } from '../../message-interface/types/messages';
+import { subMessage } from '../../message-interface/types/sub-messages';
+import {
+	branchSummary,
+	connectionDiffItem,
+	diffReportSummaryItem,
+	elementDiffItem,
+	messageDiffItem,
+	nodeDiffItem,
+	structureDiffItem,
+	submessageDiffItem,
+} from './DifferenceReport.d';
 import { transportType } from './transportType';
 
 /*********************************************************************
@@ -17,45 +26,40 @@ import { transportType } from './transportType';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface headerDetail<T>{
-    header: Extract<keyof T,string>,
-    description: string,
-    humanReadable:string
+export interface headerDetail<T> {
+	header: Extract<keyof T, string>;
+	description: string;
+	humanReadable: string;
 }
 
-export interface messageHeaderDetail extends headerDetail<message>{
-}
-export interface subMessageHeaderDetail extends headerDetail<subMessage>{
-}
-export interface structureHeaderDetail extends headerDetail<structure>{
-}
+export interface messageHeaderDetail extends headerDetail<message> {}
+export interface subMessageHeaderDetail extends headerDetail<subMessage> {}
+export interface structureHeaderDetail extends headerDetail<structure> {}
 
-export interface elementHeaderDetail extends headerDetail<element>{
-}
+export interface elementHeaderDetail extends headerDetail<element> {}
 
-export interface nodeDiffHeaderDetail extends headerDetail<nodeDiffItem>{
-}
+export interface nodeDiffHeaderDetail extends headerDetail<nodeDiffItem> {}
 
-export interface connectionDiffHeaderDetail extends headerDetail<connectionDiffItem>{
-}
+export interface connectionDiffHeaderDetail
+	extends headerDetail<connectionDiffItem> {}
 
-export interface messageDiffHeaderDetail extends headerDetail<messageDiffItem>{
-}
+export interface messageDiffHeaderDetail
+	extends headerDetail<messageDiffItem> {}
 
-export interface submessageDiffHeaderDetail extends headerDetail<submessageDiffItem>{
-}
+export interface submessageDiffHeaderDetail
+	extends headerDetail<submessageDiffItem> {}
 
-export interface structureDiffHeaderDetail extends headerDetail<structureDiffItem>{
-}
+export interface structureDiffHeaderDetail
+	extends headerDetail<structureDiffItem> {}
 
-export interface elementDiffHeaderDetail extends headerDetail<elementDiffItem>{
-}
+export interface elementDiffHeaderDetail
+	extends headerDetail<elementDiffItem> {}
 
-export interface branchSummaryHeaderDetail extends headerDetail<branchSummary>{
-}
+export interface branchSummaryHeaderDetail
+	extends headerDetail<branchSummary> {}
 
-export interface diffReportSummaryHeaderDetail extends headerDetail<diffReportSummaryItem>{
-}
+export interface diffReportSummaryHeaderDetail
+	extends headerDetail<diffReportSummaryItem> {}
 
-export interface transportTypeSummaryHeaderDetail extends headerDetail<transportType>{
-}
+export interface transportTypeSummaryHeaderDetail
+	extends headerDetail<transportType> {}
