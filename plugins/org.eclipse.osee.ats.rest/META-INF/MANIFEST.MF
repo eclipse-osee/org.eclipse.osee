@@ -12,7 +12,9 @@ Osee-Template: OSEE-INF/templates/*.html
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.google.common.base,
+ javax.activation,
  javax.mail,
+ javax.mail.event,
  javax.mail.internet,
  javax.transaction,
  javax.ws.rs,
@@ -77,9 +79,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.osgi.service.event,
  org.osgi.service.packageadmin
 Require-Bundle: org.eclipse.osee.ats.api,
- org.eclipse.osee.framework.core.server,
- javax.activation,
- javax.ws.rs
+ org.eclipse.osee.framework.core.server
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.internal.workitem.sync.jira,
  org.eclipse.osee.ats.rest.util
