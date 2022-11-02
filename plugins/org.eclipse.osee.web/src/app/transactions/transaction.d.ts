@@ -43,7 +43,8 @@ export interface artifact {
 }
 
 export interface attributeType {
-	typeName: string;
+	typeName?: string;
+	typeId?: string;
 	value: string | number | boolean | any[] | unknown;
 }
 

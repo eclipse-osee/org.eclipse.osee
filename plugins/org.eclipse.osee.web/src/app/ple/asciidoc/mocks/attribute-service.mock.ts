@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@forward 'messages/lib' as messages-*;
-@forward 'plconfig/lib' as plconfig-*;
-@forward 'navigation/lib' as top-level-navigation-*;
-@forward 'generics/lib' as generic-*;
+import { Observable, of } from 'rxjs';
+import { AttributeService } from 'src/app/ple-services/http/attribute.service';
+
+let bogusObservable$ = new Observable<string>();
+
+export const attributeServiceMock: Partial<AttributeService> = {
+	getMarkDownContent(
+		branchId: string,
+		artifactID: string,
+		attributeID: string
+	) {
+		return bogusObservable$;
+	},
+};

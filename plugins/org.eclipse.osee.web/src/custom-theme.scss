@@ -71,6 +71,10 @@
 	$modern-ple-light-theme,
 	$modern-ple-typography
 );
+@include ple.generic-material-divider-vertical-theme(
+	$modern-ple-light-theme,
+	$modern-ple-typography
+);
 
 .mat-success {
 	color: mat.get-color-from-palette(

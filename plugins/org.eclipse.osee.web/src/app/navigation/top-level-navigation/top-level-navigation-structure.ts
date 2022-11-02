@@ -214,6 +214,17 @@ const navigationStructure: navigationElement[] = [
 					},
 				],
 			},
+			{
+				label: 'AsciiDoc Editor',
+				cypressLabel: 'adocEditor',
+				pageTitle: 'AsciiDoc Editor',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/ple/asciidoc',
+				icon: '',
+				children: [],
+			},
 		],
 	},
 ];

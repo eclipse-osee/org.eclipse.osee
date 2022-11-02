@@ -1,0 +1,107 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+-->
+
+<!-- http://localhost:4200/ple/asciidoc/working/10/201279 -->
+
+<body
+	#body
+	class="body">
+	<div class="action_bar">
+		<div class="operation_actions">
+			<button
+				mat-icon-button
+				class="action_bar_button"
+				(click)="save()">
+				<mat-icon>save</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				class="action_bar_button">
+				<mat-icon>undo</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				class="action_bar_button">
+				<mat-icon>redo</mat-icon>
+			</button>
+		</div>
+		<div class="insertion_actions">
+			<button
+				mat-icon-button
+				class="action_bar_button"
+				(click)="makeInsertion('TABLE')">
+				<mat-icon>border_all</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				class="action_bar_button"
+				(click)="makeInsertion('IMAGE')">
+				<mat-icon>image</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				class="action_bar_button"
+				(click)="makeInsertion('OSEE_LOGO')">
+				<mat-icon>public</mat-icon>
+			</button>
+			<!-- <button mat-icon-button class="action_bar_button"><mat-icon>copyright_icon</mat-icon></button> -->
+		</div>
+	</div>
+
+	<div class="container">
+		<div
+			#container__left
+			class="container__left">
+			<div class="container_left_internal">
+				<mat-form-field ngPreserveWhitespaces>
+					<textarea
+						type="text"
+						matInput
+						#code
+						placeholder="Start typing code..."
+						class="codeInput"
+						[ngModel]="(mdRightinput$ | async) || ''"
+						(ngModelChange)="updateText($event)"
+						cdkTextareaAutosize
+						ngPreserveWhitespaces></textarea>
+				</mat-form-field>
+			</div>
+		</div>
+		<div
+			#resizer
+			class="resizer vert-divider"
+			id="dragMe">
+			<mat-divider
+				vertical
+				class="divider"></mat-divider>
+			<button
+				mat-icon-button
+				class="divider-icon"
+				disableRipple>
+				<mat-icon>more_vert</mat-icon>
+			</button>
+			<mat-divider
+				vertical
+				class="divider"></mat-divider>
+		</div>
+
+		<div
+			#container__right
+			class="container__right">
+			<markdown
+				[data]="(htmlRightInput$ | async) || ''"
+				ngPreserveWhitespaces>
+			</markdown>
+		</div>
+	</div>
+</body>
