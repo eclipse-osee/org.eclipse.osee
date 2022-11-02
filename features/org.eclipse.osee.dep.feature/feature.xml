@@ -951,6 +951,13 @@
          unpack="false"/>
 
    <plugin
+         id="javax.mail.glassfish"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.egit"
          download-size="0"
          install-size="0"
