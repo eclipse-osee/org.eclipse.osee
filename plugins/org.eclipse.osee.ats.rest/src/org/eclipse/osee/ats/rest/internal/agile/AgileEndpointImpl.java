@@ -981,6 +981,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (backlog != null) {
          int x = 1;
          for (IAgileItem aItem : atsApi.getAgileService().getItems(backlog)) {
+            if (aItem == null) {
+               continue;
+            }
             AgileItem item = SprintUtil.getAgileItem(aItem, atsApi);
             item.setOrder(x++);
             IAgileSprint sprint = atsApi.getAgileService().getSprint(aItem);

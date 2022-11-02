@@ -83,6 +83,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -391,9 +392,13 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public IAgileItem getAgileItem(ArtifactToken artifact) {
       IAgileItem item = null;
-      ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
-      if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, art);
+      try {
+         ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
+         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, art);
+         }
+      } catch (Exception ex) {
+         atsApi.getLogger().error("Exception loading agile item %s: %s", artifact.getId(), Lib.exceptionToString(ex));
       }
       return item;
    }
