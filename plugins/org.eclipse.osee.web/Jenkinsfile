@@ -64,11 +64,13 @@ spec:
       }
     }
 
-    stage('Build Production') {
+    stage('Linting') {
       steps {
         container('node') {
           dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng build -c production'
+            sh 'npx -p @angular/cli ng lint'
+            sh 'npx stylelint "**/*.scss"'
+            sh 'npx prettier --check .'
           }
         }
       }
@@ -79,6 +81,16 @@ spec:
         container('node') {
           dir('plugins/org.eclipse.osee.web') {
             sh 'npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false'
+          }
+        }
+      }
+    }
+
+    stage('Build Production') {
+      steps {
+        container('node') {
+          dir('plugins/org.eclipse.osee.web') {
+            sh 'npx -p @angular/cli ng build -c production'
           }
         }
       }
