@@ -33,8 +33,6 @@ Validate files:
     - python --version
     - FILES=$(cat $VARIABLES_FILE)
     - echo $FILES | tr " " "\n"
-    - python validateFiles.py $EXCLUDED_KEYWORDS $FILES
+    - python validateFiles.py "$EXCLUDED_KEYWORDS" $FILES
   only:
     - merge_requests
-
-
