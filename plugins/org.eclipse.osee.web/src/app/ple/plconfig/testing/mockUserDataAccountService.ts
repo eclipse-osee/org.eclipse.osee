@@ -12,9 +12,20 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { UserRoles } from 'src/app/userdata/types/user-roles.';
 import { testDataUser } from './mockTypes';
 
 export const userDataAccountServiceMock: Partial<UserDataAccountService> = {
 	user: of(testDataUser),
-	userIsAdmin: of(true),
+	userHasRoles(roles: UserRoles[]) {
+		return of(roles.length === 0);
+	},
 };
+
+export const userDataAccountAdminServiceMock: Partial<UserDataAccountService> =
+	{
+		user: of(testDataUser),
+		userHasRoles(roles: UserRoles[]) {
+			return of(true);
+		},
+	};

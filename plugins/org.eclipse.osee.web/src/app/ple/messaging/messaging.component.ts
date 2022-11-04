@@ -10,11 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import navigationStructure, {
 	navigationElement,
 } from 'src/app/navigation/top-level-navigation/top-level-navigation-structure';
+import { concatMap, from, iif, of, reduce, skip, switchMap } from 'rxjs';
 
 const _navItems = navigationStructure[0].children.filter(
 	(c) => c.label === 'Messaging Configuration'
@@ -27,23 +28,25 @@ const _navItems = navigationStructure[0].children.filter(
 export class MessagingComponent {
 	constructor(private userService: UserDataAccountService) {}
 
+	_filteredNavItems = from(this.allNavItems).pipe(
+		skip(1), // Skip the messaging home page item
+		concatMap((item) =>
+			this.userService
+				.userHasRoles(item.requiredRoles)
+				.pipe(
+					switchMap((hasPermission) =>
+						iif(() => hasPermission, of(item), of())
+					)
+				)
+		),
+		reduce((acc, curr) => [...acc, curr], [] as navigationElement[])
+	);
+
 	get allNavItems() {
-		return _navItems.slice(1);
+		return _navItems;
 	}
 
 	get navItems() {
-		return this.allNavItems.filter(
-			(item) => item.isAdminRequired === false
-		);
+		return this._filteredNavItems;
 	}
-
-	get adminNavItemsStartingPosition() {
-		return this.navItems.length;
-	}
-
-	get adminNavItems() {
-		return this.allNavItems.filter((item) => item.isAdminRequired === true);
-	}
-
-	userIsAdmin = this.userService.userIsAdmin;
 }

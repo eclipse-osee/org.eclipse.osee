@@ -14,8 +14,11 @@ import { UrlSegment, NavigationEnd } from '@angular/router';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import navigationStructure from './top-level-navigation-structure';
+import navigationStructure, {
+	navigationElement,
+} from './top-level-navigation-structure';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { filter, from, iif, of, reduce, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-top-level-navigation',
@@ -23,11 +26,25 @@ import { UserDataAccountService } from 'src/app/userdata/services/user-data-acco
 	styleUrls: ['./top-level-navigation.component.sass'],
 })
 export class TopLevelNavigationComponent {
-	navElements = navigationStructure; // structure that stores the navigation elements
-	userIsAdmin = this.userService.userIsAdmin;
-
 	constructor(
 		public router: Router,
 		private userService: UserDataAccountService
 	) {}
+
+	navElements = navigationStructure; // structure that stores the navigation elements
+
+	getElementsWithPermission(elements: navigationElement[]) {
+		return from(elements).pipe(
+			switchMap((item) =>
+				this.userService
+					.userHasRoles(item.requiredRoles)
+					.pipe(
+						switchMap((hasPermission) =>
+							iif(() => hasPermission, of(item), of())
+						)
+					)
+			),
+			reduce((acc, curr) => [...acc, curr], [] as navigationElement[])
+		);
+	}
 }

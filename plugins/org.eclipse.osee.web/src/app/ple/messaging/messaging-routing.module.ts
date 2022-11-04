@@ -12,6 +12,7 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RoleGuard } from 'src/app/auth/role.guard';
 import navigationStructure from '../../navigation/top-level-navigation/top-level-navigation-structure';
 import { MessagingComponent } from './messaging.component';
 
@@ -130,12 +131,16 @@ const routes: Routes = [
 	{
 		path: 'import',
 		title: imports?.pageTitle || 'OSEE',
+		canActivate: [RoleGuard],
+		data: { requiredRoles: imports?.requiredRoles },
 		loadChildren: () =>
 			import('./import/import.module').then((m) => m.ImportModule),
 	},
 	{
 		path: 'transports',
 		title: transports?.pageTitle || 'OSEE',
+		canActivate: [RoleGuard],
+		data: { requiredRoles: imports?.requiredRoles },
 		loadChildren: () =>
 			import('./transports/transports.module').then(
 				(m) => m.TransportsModule
