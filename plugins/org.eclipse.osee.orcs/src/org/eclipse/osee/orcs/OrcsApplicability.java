@@ -13,12 +13,15 @@
 
 package org.eclipse.osee.orcs;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
@@ -58,9 +61,17 @@ public interface OrcsApplicability {
 
    FeatureDefinition getFeature(String feature, BranchId branch);
 
+   Collection<FeatureDefinition> getFeatures(BranchId branch);
+
+   Collection<FeatureDefinition> getFeaturesByProductApplicability(BranchId branch, String productApplicability);
+
    XResultData deleteFeature(ArtifactId feature, BranchId branch);
 
    CreateViewDefinition getView(String view, BranchId branch);
+
+   Collection<CreateViewDefinition> getViewDefinitions(BranchId branch);
+
+   Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch, String productApplicability);
 
    XResultData createView(CreateViewDefinition view, BranchId branch);
 
@@ -105,5 +116,17 @@ public interface OrcsApplicability {
    XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch);
 
    XResultData validateCompoundApplicabilities(BranchId branch, boolean update);
+
+   ProductTypeDefinition getProductType(String productType, BranchId branch);
+
+   ProductTypeDefinition getProductTypeDefinition(ArtifactReadable artifact);
+
+   Collection<ProductTypeDefinition> getProductTypeDefinitions(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType);
+
+   XResultData createProductType(ProductTypeDefinition productType, BranchId branch);
+
+   XResultData updateProductType(ProductTypeDefinition productType, BranchId branch);
+
+   XResultData deleteProductType(ArtifactId productType, BranchId branch);
 
 }

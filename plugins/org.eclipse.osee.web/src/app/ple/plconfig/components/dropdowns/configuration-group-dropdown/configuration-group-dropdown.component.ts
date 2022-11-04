@@ -24,12 +24,12 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { cfgGroup } from '../../types/pl-config-branch';
-import { addCfgGroup } from '../../types/pl-config-cfggroups';
-import { response } from '../../../../types/responses';
-import { AddConfigurationGroupDialogComponent } from '../add-configuration-group-dialog/add-configuration-group-dialog.component';
+import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
+import { PlConfigUIStateService } from '../../../services/pl-config-uistate.service';
+import { cfgGroup } from '../../../types/pl-config-branch';
+import { addCfgGroup } from '../../../types/pl-config-cfggroups';
+import { response } from '../../../../../types/responses';
+import { AddConfigurationGroupDialogComponent } from '../../add-configuration-group-dialog/add-configuration-group-dialog.component';
 
 @Component({
 	selector: 'osee-plconfig-configuration-group-dropdown',

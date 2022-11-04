@@ -24,7 +24,9 @@ Cypress.Commands.add('addConfigurationGroup', (name: string) => {
 	cy.intercept('/ats/teamwf/*').as('teamwf');
 	cy.intercept('/ats/ple/action/*/approval').as('approval');
 	cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-	cy.intercept('/orcs/types/productApplicability').as('productApplicability');
+	cy.intercept('/orcs/branch/*/applic/product-types').as(
+		'productApplicability'
+	);
 	return cy
 		.openConfigGroupDropdown()
 		.get(`[data-cy="add-config-group-btn"]`)
@@ -66,7 +68,9 @@ Cypress.Commands.add('deleteConfigGroup', (name: string) => {
 	cy.intercept('/ats/teamwf/*').as('teamwf');
 	cy.intercept('/ats/ple/action/*/approval').as('approval');
 	cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-	cy.intercept('/orcs/types/productApplicability').as('productApplicability');
+	cy.intercept('/orcs/branch/*/applic/product-types').as(
+		'productApplicability'
+	);
 	cy.intercept('DELETE', '/orcs/branch/*/applic/cfggroup/*').as(
 		'deleteGroup'
 	);
@@ -141,7 +145,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		cy.get(`[data-cy="config-group-header-${group}"]`)

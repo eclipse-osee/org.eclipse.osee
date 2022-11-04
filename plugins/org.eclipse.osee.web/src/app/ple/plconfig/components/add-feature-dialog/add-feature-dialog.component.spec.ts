@@ -24,7 +24,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
+import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService';
+import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 import { writeFeature } from '../../types/pl-config-features';
 
 import { AddFeatureDialogComponent } from './add-feature-dialog.component';
@@ -37,11 +40,6 @@ describe('AddFeatureDialogComponent', () => {
 		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
 			'getBranchApplicability',
 		]);
-		const typesService = jasmine.createSpyObj(
-			'PlConfigTypesService',
-			[],
-			['productApplicabilityTypes']
-		);
 		await TestBed.configureTestingModule({
 			imports: [
 				MatFormFieldModule,
@@ -56,7 +54,14 @@ describe('AddFeatureDialogComponent', () => {
 			declarations: [AddFeatureDialogComponent],
 			providers: [
 				{ provide: PlConfigBranchService, useValue: branchService },
-				{ provide: PlConfigTypesService, useValue: typesService },
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: plCurrentBranchServiceMock,
+				},
+				{
+					provide: PlConfigTypesService,
+					useValue: plConfigTypesServiceMock,
+				},
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,

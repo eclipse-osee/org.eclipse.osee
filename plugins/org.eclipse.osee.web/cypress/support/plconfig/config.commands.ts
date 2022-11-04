@@ -46,7 +46,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		return cy
@@ -100,8 +100,10 @@ Cypress.Commands.add(
 			}[];
 		}
 	) => {
+		cy.get(`[data-cy="config-header-${wasValue.title}"`).as('header');
 		return cy
-			.get(`[data-cy="config-header-${wasValue.title}"`)
+			.get('@header')
+			.wait(100)
 			.click()
 			.editConfiguration(wasValue, isValue);
 	}
@@ -164,7 +166,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		cy.get('[data-cy=change-config-dropdown-btn]')
@@ -217,12 +219,14 @@ Cypress.Commands.add('deleteConfiguration', (name: string) => {
 	cy.intercept('DELETE', '/orcs/branch/*/applic/view/*').as('deleteConfig');
 	cy.intercept('/orcs/branches/*').as('branch');
 	cy.intercept('/orcs/branch/*/applic/cfggroup').as('cfggroup');
-	cy.intercept('/orcs/applicui/branch/*').as('applicui');
+	cy.intercept('GET', '/orcs/applicui/branch/*').as('applicui');
 	cy.intercept('/ats/action/*').as('action');
 	cy.intercept('/ats/teamwf/*').as('teamwf');
 	cy.intercept('/ats/ple/action/*/approval').as('approval');
 	cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-	cy.intercept('/orcs/types/productApplicability').as('productApplicability');
+	cy.intercept('/orcs/branch/*/applic/product-types').as(
+		'productApplicability'
+	);
 	return cy
 		.get('[data-cy=change-config-dropdown-btn]')
 		.click()
@@ -238,6 +242,7 @@ Cypress.Commands.add('deleteConfiguration', (name: string) => {
 		.wait('@teamwf')
 		.wait('@approval')
 		.wait('@leads')
+		.wait('@applicui')
 		.get('mat-progress-bar', { timeout: 10000 })
 		.should('not.exist');
 });
@@ -257,7 +262,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		cy.get('[data-cy=change-config-dropdown-btn]')

@@ -89,6 +89,8 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { applic } from 'src/app/types/applicability/applic';
 import { transactionToken } from 'src/app/types/change-report/transaction-token';
 import { NameValuePair } from '../types/base-types/NameValuePair';
+import { PlConfigTypesService } from './pl-config-types.service';
+import { productType } from '../types/pl-config-product-types';
 
 @Injectable({
 	providedIn: 'root',
@@ -120,8 +122,8 @@ export class PlConfigCurrentBranchService {
 				() =>
 					mode &&
 					applic !== new PlConfigApplicUIBranchMappingImpl() &&
-					differences !== [] &&
-					differences !== undefined,
+					differences !== undefined &&
+					differences.length !== 0,
 				this._parseDifferences(differences, branchId, applic),
 				of(applic)
 			)
@@ -284,6 +286,15 @@ export class PlConfigCurrentBranchService {
 			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
+	private _productTypes = this.uiStateService.branchId.pipe(
+		filter((id) => id !== '' && id !== '-1' && id !== undefined),
+		switchMap((id) =>
+			this.typesService
+				.getProductTypes(id)
+				.pipe(shareReplay({ bufferSize: 1, refCount: true }))
+		)
 	);
 	private _secondaryHeaderLength = this._grouping.pipe(
 		switchMap((response) =>
@@ -465,6 +476,7 @@ export class PlConfigCurrentBranchService {
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private branchService: PlConfigBranchService,
+		private typesService: PlConfigTypesService,
 		private actionService: ActionService,
 		private sideNavService: SideNavService
 	) {}
@@ -477,6 +489,10 @@ export class PlConfigCurrentBranchService {
 
 	public get groupCount() {
 		return this._groupCount;
+	}
+
+	public get productTypes() {
+		return this._productTypes;
 	}
 
 	get viewCount() {
@@ -2183,6 +2199,66 @@ export class PlConfigCurrentBranchService {
 			}, false as boolean)
 		);
 	}
+
+	createProductType(productType: productType) {
+		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((id) => id !== '' && id !== '-1' && id !== undefined),
+			switchMap((id) =>
+				this.typesService.createProductType(id, productType)
+			),
+			switchMap((response) =>
+				response.success
+					? of(response).pipe(
+							tap(
+								(_) =>
+									(this.uiStateService.updateReqConfig = true)
+							)
+					  )
+					: of(response)
+			)
+		);
+	}
+
+	updateProductType(productType: productType) {
+		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((id) => id !== '' && id !== '-1' && id !== undefined),
+			switchMap((id) =>
+				this.typesService.updateProductType(id, productType)
+			),
+			switchMap((response) =>
+				response.success
+					? of(response).pipe(
+							tap(
+								(_) =>
+									(this.uiStateService.updateReqConfig = true)
+							)
+					  )
+					: of(response)
+			)
+		);
+	}
+
+	deleteProductType(productTypeId: string) {
+		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((id) => id !== '' && id !== '-1' && id !== undefined),
+			switchMap((id) =>
+				this.typesService.deleteProductType(id, productTypeId)
+			),
+			switchMap((response) =>
+				response.success
+					? of(response).pipe(
+							tap(
+								(_) =>
+									(this.uiStateService.updateReqConfig = true)
+							)
+					  )
+					: of(response)
+			)
+		);
+	}
 	private _parseDifferences(
 		differences: changeInstance[] | undefined,
 		branchId: string,
@@ -2193,7 +2269,7 @@ export class PlConfigCurrentBranchService {
 		) as PlConfigApplicUIBranchMapping;
 		return of(differences).pipe(
 			filter(
-				(val) => val !== undefined && val !== []
+				(val) => val !== undefined && val.length !== 0
 			) as OperatorFunction<
 				changeInstance[] | undefined,
 				changeInstance[]

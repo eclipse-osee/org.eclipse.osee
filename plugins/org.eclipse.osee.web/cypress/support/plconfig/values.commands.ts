@@ -45,7 +45,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		cy.get(

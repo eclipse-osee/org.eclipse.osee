@@ -13,10 +13,6 @@
 
 package org.eclipse.osee.orcs.rest.internal.types;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -40,11 +36,4 @@ public class TypesEndpointImpl implements TypesEndpoint {
       return reportOp.run();
    }
 
-   @Override
-   public List<String> getProductApplicabilityTypes() {
-      List<String> types = new ArrayList<String>();
-      types.addAll(CoreAttributeTypes.ProductApplicability.getEnumStrValues());
-      types.sort(Comparator.comparing(String::toString));
-      return types;
-   }
 }

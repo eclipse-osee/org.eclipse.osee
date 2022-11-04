@@ -37,6 +37,8 @@ import { ActionService } from '../../../ple-services/http/action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
+import { PlConfigTypesService } from './pl-config-types.service';
+import { plConfigTypesServiceMock } from '../testing/pl-config-types.service.mock';
 
 describe('PlConfigCurrentBranchService', () => {
 	let service: PlConfigCurrentBranchService;
@@ -94,6 +96,10 @@ describe('PlConfigCurrentBranchService', () => {
 						useValue: branchServiceSpy,
 					},
 					{ provide: ActionService, useValue: actionServiceSpy },
+					{
+						provide: PlConfigTypesService,
+						useValue: plConfigTypesServiceMock,
+					},
 					PlConfigCurrentBranchService,
 				],
 			});

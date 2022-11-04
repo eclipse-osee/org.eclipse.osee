@@ -10,11 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-:host
-    width: 20%
-    margin-left: 1%
-    padding: 0px
-    display: flex
-    flex-direction: column
-    justify-content: center
-    align-content: center 
+@use '../../../../../../sass-utils/_host-utils'
+
+@include host-utils.plconfig-dropdown-host()

@@ -1,0 +1,72 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<button
+	mat-stroked-button
+	[matMenuTriggerFor]="mainMenu"
+	*ngIf="(editable | async) === true"
+	class="pl-config-product-type-dropdown-dd-button"
+	data-cy="change-product-type-dropdown-btn">
+	Change Product Types
+</button>
+<mat-menu #mainMenu="matMenu">
+	<button
+		mat-menu-item
+		(click)="addProductType()"
+		data-cy="add-product-type-btn">
+		<mat-icon color="success">create</mat-icon>Add Product Type
+	</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="editProductTypeMenu"
+		*ngIf="(editable | async) === true"
+		data-cy="edit-product-type-btn">
+		<mat-icon color="primary">edit</mat-icon>Edit Product Type
+	</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="deleteProductTypeMenu"
+		*ngIf="(editable | async) === true"
+		data-cy="delete-product-type-btn">
+		<mat-icon color="warn">delete_forever</mat-icon>Delete Product Type
+	</button>
+</mat-menu>
+<mat-menu #editProductTypeMenu="matMenu">
+	<ng-template matMenuContent>
+		<ng-container *ngFor="let productType of productTypes | async">
+			<button
+				mat-menu-item
+				(click)="editProductType(productType)"
+				[attr.data-cy]="
+					'edit-product-type-' +
+					productType.name.replace('/\s/g', '') +
+					'-btn'
+				">
+				{{ productType.name }}
+			</button>
+		</ng-container>
+	</ng-template>
+</mat-menu>
+<mat-menu #deleteProductTypeMenu="matMenu">
+	<ng-template matMenuContent>
+		<ng-container *ngFor="let productType of productTypes | async">
+			<button
+				mat-menu-item
+				(click)="deleteProductType(productType.id)"
+				[attr.data-cy]="
+					'delete-product-type-' + productType.name + '-btn'
+				">
+				{{ productType.name }}
+			</button>
+		</ng-container>
+	</ng-template>
+</mat-menu>

@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -422,5 +423,42 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
       return applicabilityQuery.getApplicabilityUsage(branch, applic, artTypes, attrTypes);
 
+   }
+
+   @Override
+   public XResultData createProductType(ProductTypeDefinition productType) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.createProductType(productType, branch);
+   }
+
+   @Override
+   public ProductTypeDefinition getProductType(String id) {
+      return ops.getProductType(id, branch);
+   }
+
+   @Override
+   public Collection<ProductTypeDefinition> getProductTypes(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return ops.getProductTypeDefinitions(branch, pageNum, pageSize, orderByAttributeType);
+   }
+
+   @Override
+   public XResultData updateProductType(ProductTypeDefinition productType) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.updateProductType(productType, branch);
+   }
+
+   @Override
+   public XResultData deleteProductType(ArtifactId id) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.deleteProductType(id, branch);
    }
 }

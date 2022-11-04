@@ -16,12 +16,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
+import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
+import { PlConfigUIStateService } from '../../../services/pl-config-uistate.service';
 import {
 	testBranchApplicability,
 	testCfgGroups,
-} from '../../testing/mockBranchService';
+} from '../../../testing/mockBranchService';
 
 import { ConfigurationGroupDropdownComponent } from './configuration-group-dropdown.component';
 

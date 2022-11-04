@@ -22,6 +22,7 @@ import {
 	tap,
 	reduce,
 } from 'rxjs/operators';
+import { ActionStateButtonService } from '../../shared-components/services/action-state-button.service';
 import { PlConfigUIStateService } from './services/pl-config-uistate.service';
 
 @Component({
@@ -35,6 +36,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	branchType = this.uiStateService.viewBranchType;
 	branchId = this.uiStateService.branchId;
 	private _done = new Subject();
+	isTeamLead = this.actionStateService.isTeamLead;
 	isAllowedToDiff = combineLatest([
 		this.uiStateService.viewBranchType,
 		this.uiStateService.branchId,
@@ -58,7 +60,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private route: ActivatedRoute,
-		private router: Router
+		private actionStateService: ActionStateButtonService //kinda hacky, but best place for it to live for now
 	) {
 		this.uiStateService.branchIdNum = '';
 		this.uiStateService.viewBranchTypeString = '';

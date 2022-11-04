@@ -26,8 +26,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
+import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService';
+import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
@@ -37,11 +40,6 @@ describe('EditFeatureDialogComponent', () => {
 	let fixture: ComponentFixture<EditFeatureDialogComponent>;
 
 	beforeEach(async () => {
-		const typesService = jasmine.createSpyObj(
-			'PlConfigTypesService',
-			[],
-			['productApplicabilityTypes']
-		);
 		await TestBed.configureTestingModule({
 			imports: [
 				MatFormFieldModule,
@@ -56,7 +54,14 @@ describe('EditFeatureDialogComponent', () => {
 			],
 			declarations: [EditFeatureDialogComponent],
 			providers: [
-				{ provide: PlConfigTypesService, useValue: typesService },
+				{
+					provide: PlConfigTypesService,
+					useValue: plConfigTypesServiceMock,
+				},
+				{
+					provide: PlConfigCurrentBranchService,
+					useValue: plCurrentBranchServiceMock,
+				},
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,

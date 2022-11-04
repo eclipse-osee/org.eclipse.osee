@@ -32,10 +32,12 @@ import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.NameValuePair;
+import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityCacheFile;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -61,6 +63,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -544,6 +547,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
       }
       return FeatureDefinition.SENTINEL;
+   }
+
+   @Override
+   public Collection<FeatureDefinition> getFeatures(BranchId branch) {
+      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+      return featureQuery.asArtifacts().stream().map(art -> getFeatureDefinition(art)).collect(Collectors.toList());
+   }
+
+   @Override
+   public Collection<FeatureDefinition> getFeaturesByProductApplicability(BranchId branch, String productApplicability) {
+      QueryBuilder featureQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).and(
+            CoreAttributeTypes.ProductApplicability, productApplicability);
+      return featureQuery.asArtifacts().stream().map(art -> getFeatureDefinition(art)).collect(Collectors.toList());
    }
 
    @Override
@@ -1746,4 +1763,173 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       results.setResults(actions);
       return results;
    }
+
+   @Override
+   public XResultData createProductType(ProductTypeDefinition productType, BranchId branch) {
+      XResultData results = new XResultData();
+      if (!Strings.isValid(productType.getName())) {
+         results.error("Name can not be empty for product type");
+         return results;
+      }
+      ProductTypeDefinition existingProductType = getProductType(productType.getName(), branch);
+      if (existingProductType.isValid()) {
+         results.errorf("Product Type Name is already in use.");
+         return results;
+      }
+      if (existingProductType.isInvalid()) {
+         try {
+
+            TransactionBuilder tx = txFactory.createTransaction(branch, "Create View ");
+            ArtifactToken productArt = ArtifactToken.SENTINEL;
+            productArt = tx.createArtifact(CoreArtifactTypes.ProductType, productType.getName());
+
+            tx.setSoleAttributeValue(productArt, CoreAttributeTypes.Description, productType.getDescription());
+
+            tx.commit();
+         } catch (Exception ex) {
+            results.errorf(Lib.exceptionToString(ex));
+            return results;
+         }
+      }
+      return results;
+   }
+
+   @Override
+   public ProductTypeDefinition getProductType(String productType, BranchId branch) {
+      ProductTypeDefinition productDef = new ProductTypeDefinition();
+      if (Strings.isNumeric(productType)) {
+         ArtifactReadable productArt =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.ProductType).andId(
+               ArtifactId.valueOf(productType)).asArtifactOrSentinel();
+         if (productArt.isValid()) {
+            productDef = getProductTypeDefinition(productArt);
+         }
+      } else {
+         ArtifactReadable productArt =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.ProductType).andNameEquals(
+               productType).asArtifactOrSentinel();
+         if (productArt.isValid()) {
+            productDef = getProductTypeDefinition(productArt);
+         }
+      }
+      return productDef;
+   }
+
+   @Override
+   public ProductTypeDefinition getProductTypeDefinition(ArtifactReadable artifact) {
+      return new ProductTypeDefinition(artifact.getId(), artifact.getName(),
+         artifact.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+   }
+
+   @Override
+   public Collection<ProductTypeDefinition> getProductTypeDefinitions(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      QueryBuilder productQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.ProductType);
+      if (orderByAttributeType != null && orderByAttributeType.isValid()) {
+         productQuery = productQuery.setOrderByAttribute(orderByAttributeType);
+      }
+      if (pageNum > 0L && pageSize > 0L) {
+         productQuery = productQuery.isOnPage(pageNum, pageSize);
+      }
+      return productQuery.asArtifacts().stream().map(art -> getProductTypeDefinition(art)).collect(Collectors.toList());
+   }
+
+   @Override
+   public XResultData updateProductType(ProductTypeDefinition productType, BranchId branch) {
+      XResultData results = new XResultData();
+
+      if (productType.isInvalid()) {
+         results.error("Product Type must have an id");
+         return results;
+      }
+      if (!Strings.isValid(productType.getName())) {
+         results.error("Name can not be empty for product type");
+         return results;
+      }
+      ProductTypeDefinition existingProductType = getProductType(productType.getIdString(), branch);
+      if (existingProductType.isValid() && existingProductType.getName().equals(
+         productType.getName()) && !existingProductType.getId().equals(productType.getId())) {
+         results.errorf("Product Type Name is already in use.");
+         return results;
+      }
+      if (existingProductType.isInvalid()) {
+         results.error("Product Type not found.");
+         return results;
+      }
+      TransactionBuilder tx = txFactory.createTransaction(branch, "Updating Product Type");
+      if (!existingProductType.getName().equals(productType.getName())) {
+         tx.setSoleAttributeValue(ArtifactId.valueOf(productType.getId()), CoreAttributeTypes.Name,
+            productType.getName());
+         for (FeatureDefinition feature : getFeaturesByProductApplicability(branch, existingProductType.getName())) {
+            if (feature.getProductApplicabilities().contains(existingProductType.getName())) {
+               feature.getProductApplicabilities().remove(existingProductType.getName());
+               feature.getProductApplicabilities().add(productType.getName());
+               tx.setAttributesFromValues(ArtifactId.valueOf(feature.getId()), CoreAttributeTypes.ProductApplicability,
+                  feature.getProductApplicabilities());
+            }
+         }
+         for (CreateViewDefinition view : getViewsDefinitionsByProductApplicability(branch,
+            existingProductType.getName())) {
+            if (view.getProductApplicabilities().contains(existingProductType.getName())) {
+               view.getProductApplicabilities().remove(existingProductType.getName());
+               view.getProductApplicabilities().add(productType.getName());
+               tx.setAttributesFromValues(ArtifactId.valueOf(view.getId()), CoreAttributeTypes.ProductApplicability,
+                  view.getProductApplicabilities());
+            }
+         }
+      }
+
+      if (!existingProductType.getDescription().equals(productType.getDescription())) {
+         tx.setSoleAttributeValue(ArtifactId.valueOf(productType.getId()), CoreAttributeTypes.Description,
+            productType.getDescription());
+      }
+      tx.commit();
+
+      return results;
+   }
+
+   @Override
+   public XResultData deleteProductType(ArtifactId productType, BranchId branch) {
+      XResultData results = new XResultData();
+      ProductTypeDefinition existingProductType = getProductType(productType.getIdString(), branch);
+      TransactionBuilder tx = txFactory.createTransaction(branch, "Delete Product Type");
+      for (FeatureDefinition feature : getFeaturesByProductApplicability(branch, existingProductType.getName())) {
+         if (feature.getProductApplicabilities().contains(existingProductType.getName())) {
+            feature.getProductApplicabilities().remove(existingProductType.getName());
+            tx.setAttributesFromValues(ArtifactId.valueOf(feature.getId()), CoreAttributeTypes.ProductApplicability,
+               feature.getProductApplicabilities());
+         }
+      }
+      for (CreateViewDefinition view : getViewsDefinitionsByProductApplicability(branch,
+         existingProductType.getName())) {
+         if (view.getProductApplicabilities().contains(existingProductType.getName())) {
+            view.getProductApplicabilities().remove(existingProductType.getName());
+            tx.setAttributesFromValues(ArtifactId.valueOf(view.getId()), CoreAttributeTypes.ProductApplicability,
+               view.getProductApplicabilities());
+         }
+      }
+      tx.deleteArtifact(productType);
+
+      tx.commit();
+
+      return results;
+   }
+
+   @Override
+   public Collection<CreateViewDefinition> getViewDefinitions(BranchId branch) {
+      QueryBuilder viewQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).follow(
+            CoreRelationTypes.PlConfigurationGroup_Group);
+      return viewQuery.asArtifacts().stream().map(art -> getViewDefinition(art)).collect(Collectors.toList());
+   }
+
+   @Override
+   public Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch, String productApplicability) {
+      QueryBuilder viewQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).and(
+            CoreAttributeTypes.ProductApplicability, productApplicability).follow(
+               CoreRelationTypes.PlConfigurationGroup_Group);
+      return viewQuery.asArtifacts().stream().map(art -> getViewDefinition(art)).collect(Collectors.toList());
+   }
+
 }

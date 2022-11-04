@@ -28,6 +28,7 @@ import { PlConfigBranchService } from '../../services/pl-config-branch-service.s
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
+import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 
 import { EditConfigurationDialogComponent } from './edit-config-dialog.component';
@@ -37,11 +38,6 @@ describe('EditConfigDialogComponent', () => {
 	let fixture: ComponentFixture<EditConfigurationDialogComponent>;
 
 	beforeEach(async () => {
-		const typesService = jasmine.createSpyObj(
-			'PlConfigTypesService',
-			[],
-			['productApplicabilityTypes']
-		);
 		const currentBranchService = jasmine.createSpyObj(
 			'PlConfigCurrentBranchService',
 			[],
@@ -68,7 +64,10 @@ describe('EditConfigDialogComponent', () => {
 					provide: PlConfigCurrentBranchService,
 					useValue: currentBranchService,
 				},
-				{ provide: PlConfigTypesService, useValue: typesService },
+				{
+					provide: PlConfigTypesService,
+					useValue: plConfigTypesServiceMock,
+				},
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,

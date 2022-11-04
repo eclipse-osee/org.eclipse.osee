@@ -25,6 +25,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
+import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 
 import { AddConfigurationDialogComponent } from './add-configuration-dialog.component';
 
@@ -40,11 +41,6 @@ describe('AddConfigurationDialogComponent', () => {
 			'PlConfigCurrentBranchService',
 			[],
 			['cfgGroups']
-		);
-		const typesService = jasmine.createSpyObj(
-			'PlConfigTypesService',
-			[],
-			['productApplicabilityTypes']
 		);
 		await TestBed.configureTestingModule({
 			imports: [
@@ -63,7 +59,10 @@ describe('AddConfigurationDialogComponent', () => {
 					provide: PlConfigCurrentBranchService,
 					useValue: currentBranchService,
 				},
-				{ provide: PlConfigTypesService, useValue: typesService },
+				{
+					provide: PlConfigTypesService,
+					useValue: plConfigTypesServiceMock,
+				},
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,

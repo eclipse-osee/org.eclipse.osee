@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -31,8 +30,4 @@ public interface TypesEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    XResultData getHealthReport();
 
-   @GET
-   @Path("productApplicability")
-   @Produces(MediaType.APPLICATION_JSON)
-   List<String> getProductApplicabilityTypes();
 }

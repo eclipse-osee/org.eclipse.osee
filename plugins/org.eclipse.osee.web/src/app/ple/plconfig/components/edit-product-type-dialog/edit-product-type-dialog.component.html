@@ -1,0 +1,61 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Edit Product Type</h1>
+<mat-dialog-content data-cy="edit-product-type-dialog">
+	<form #productTypeForm="ngForm">
+		<mat-form-field class="width-100">
+			<mat-label>Name</mat-label>
+			<textarea
+				cdkTextareaAutosize
+				matInput
+				[errorStateMatcher]="parentMatcher"
+				[(ngModel)]="data.name"
+				required
+				id="name"
+				name="name"
+				data-cy="input-name"
+				#name="ngModel"></textarea>
+			<mat-hint>Name of Product Type</mat-hint>
+		</mat-form-field>
+		<br />
+		<mat-form-field class="width-100">
+			<mat-label>Description</mat-label>
+			<textarea
+				cdkTextareaAutosize
+				matInput
+				[errorStateMatcher]="parentMatcher"
+				[(ngModel)]="data.description"
+				id="description"
+				name="description"
+				data-cy="input-description"
+				#description="ngModel"></textarea>
+			<mat-hint>Description of Product Type</mat-hint>
+		</mat-form-field>
+	</form>
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button
+		mat-button
+		(click)="onNoClick()"
+		data-cy="cancel-btn">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="data"
+		color="primary"
+		[disabled]="productTypeForm.pending || productTypeForm.invalid"
+		data-cy="submit-btn">
+		Ok
+	</button>
+</mat-dialog-actions>

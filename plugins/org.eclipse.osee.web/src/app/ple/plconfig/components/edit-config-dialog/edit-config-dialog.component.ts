@@ -32,7 +32,7 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 export class EditConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
 	cfgGroups: Observable<cfgGroup[]>;
-	productApplicabilities: Observable<string[]>;
+	productApplicabilities = this.currentBranchService.productTypes;
 	constructor(
 		private typeService: PlConfigTypesService,
 		public dialogRef: MatDialogRef<EditConfigurationDialogComponent>,
@@ -44,8 +44,6 @@ export class EditConfigurationDialogComponent {
 			data.currentBranch
 		);
 		this.cfgGroups = this.currentBranchService.cfgGroups;
-		this.productApplicabilities =
-			this.typeService.productApplicabilityTypes;
 	}
 	onNoClick(): void {
 		this.dialogRef.close();

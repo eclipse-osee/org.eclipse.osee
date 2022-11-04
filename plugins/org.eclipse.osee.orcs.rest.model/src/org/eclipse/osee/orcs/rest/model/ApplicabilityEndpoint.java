@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -160,6 +161,18 @@ public interface ApplicabilityEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    XResultData createView(CreateViewDefinition view);
 
+   @PUT
+   @Path("product-types")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData updateProductType(ProductTypeDefinition productType);
+
+   @POST
+   @Path("product-types")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData createProductType(ProductTypeDefinition productType);
+
    @GET
    @Path("view/{id}")
    @Produces(MediaType.APPLICATION_JSON)
@@ -186,6 +199,21 @@ public interface ApplicabilityEndpoint {
    @Path("view/def/{id}")
    @Produces({MediaType.APPLICATION_JSON})
    CreateViewDefinition getView(@PathParam("id") String id);
+
+   @GET
+   @Path("product-types/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   ProductTypeDefinition getProductType(@PathParam("id") String id);
+
+   @DELETE
+   @Path("product-types/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData deleteProductType(@PathParam("id") ArtifactId id);
+
+   @GET
+   @Path("product-types")
+   @Produces({MediaType.APPLICATION_JSON})
+   Collection<ProductTypeDefinition> getProductTypes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)

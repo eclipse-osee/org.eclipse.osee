@@ -31,7 +31,7 @@ describe('PLConfig - Features(View Mode)', () => {
 						enabled: false,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{
@@ -84,7 +84,7 @@ describe('PLConfig - Features(Edit Mode)', () => {
 						enabled: false,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{
@@ -118,7 +118,7 @@ describe('PLConfig - Features(Edit Mode)', () => {
 						enabled: true,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{
@@ -154,7 +154,7 @@ describe('PLConfig - Features(Edit Mode)', () => {
 				description: 'new feature',
 				valueType: 'Boolean',
 				defaultValue: 'Excluded',
-				productTypes: ['Code', 'Continuous Integration', 'Test'],
+				productTypes: ['Code', 'Continuous_Integration', 'Test'],
 			});
 		});
 		it('should add a multi valued feature', () => {
@@ -165,7 +165,7 @@ describe('PLConfig - Features(Edit Mode)', () => {
 				multiValued: true,
 				values: ['VALUE_1', 'VALUE_2', 'VALUE_3'],
 				defaultValue: 'VALUE_3',
-				productTypes: ['Code', 'Continuous Integration', 'Test'],
+				productTypes: ['Code', 'Continuous_Integration', 'Test'],
 			});
 		});
 		it('should add a feature and delete it', () => {
