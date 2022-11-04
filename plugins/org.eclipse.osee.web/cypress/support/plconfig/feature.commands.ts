@@ -85,7 +85,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		cy.get(`[data-cy="feature-${featureToEdit}"]`).click();
@@ -169,7 +169,7 @@ Cypress.Commands.add(
 		cy.intercept('/ats/teamwf/*').as('teamwf');
 		cy.intercept('/ats/ple/action/*/approval').as('approval');
 		cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-		cy.intercept('/orcs/types/productApplicability').as(
+		cy.intercept('/orcs/branch/*/applic/product-types').as(
 			'productApplicability'
 		);
 		cy.openFeatureDropdown()
@@ -245,7 +245,9 @@ Cypress.Commands.add('deleteFeature', (feature: string) => {
 	cy.intercept('/ats/teamwf/*').as('teamwf');
 	cy.intercept('/ats/ple/action/*/approval').as('approval');
 	cy.intercept('/ats/config/teamdef/*/leads').as('leads');
-	cy.intercept('/orcs/types/productApplicability').as('productApplicability');
+	cy.intercept('/orcs/branch/*/applic/product-types').as(
+		'productApplicability'
+	);
 	cy.openFeatureDropdown()
 		.get('[data-cy="delete-feature-btn"]')
 		.click()

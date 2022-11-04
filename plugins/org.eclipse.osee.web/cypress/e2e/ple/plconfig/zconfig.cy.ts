@@ -77,7 +77,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 					enabled: false,
 				},
 				{
-					name: 'Continuous Integration',
+					name: 'Continuous_Integration',
 					enabled: true,
 				},
 				{
@@ -110,7 +110,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 					enabled: true,
 				},
 				{
-					name: 'Continuous Integration',
+					name: 'Continuous_Integration',
 					enabled: false,
 				},
 				{
@@ -143,7 +143,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 					enabled: true,
 				},
 				{
-					name: 'Continuous Integration',
+					name: 'Continuous_Integration',
 					enabled: true,
 				},
 				{
@@ -176,7 +176,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 					enabled: true,
 				},
 				{
-					name: 'Continuous Integration',
+					name: 'Continuous_Integration',
 					enabled: true,
 				},
 				{
@@ -208,7 +208,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 						enabled: false,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{
@@ -238,7 +238,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 						enabled: false,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{
@@ -272,7 +272,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 						enabled: false,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{
@@ -302,7 +302,7 @@ describe('PLConfig - Configurations(Edit Mode)', () => {
 						enabled: false,
 					},
 					{
-						name: 'Continuous Integration',
+						name: 'Continuous_Integration',
 						enabled: false,
 					},
 					{

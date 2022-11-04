@@ -32,9 +32,10 @@ import { ActionDropDownComponent } from '../../shared-components/components/acti
 import { ActionDropdownStub } from '../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { BranchPickerStub } from '../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 import { ApplicabilityTableComponent } from './components/applicability-table/applicability-table.component';
-import { ConfigurationDropdownComponent } from './components/configuration-dropdown/configuration-dropdown.component';
-import { ConfigurationGroupDropdownComponent } from './components/configuration-group-dropdown/configuration-group-dropdown.component';
-import { FeatureDropdownComponent } from './components/feature-dropdown/feature-dropdown.component';
+import { ConfigurationDropdownComponent } from './components/dropdowns/configuration-dropdown/configuration-dropdown.component';
+import { ConfigurationGroupDropdownComponent } from './components/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
+import { FeatureDropdownComponent } from './components/dropdowns/feature-dropdown/feature-dropdown.component';
+import { ProductTypeDropDownComponent } from './components/dropdowns/product-type-drop-down/product-type-drop-down.component';
 
 import { PlconfigComponent } from './plconfig.component';
 
@@ -69,6 +70,7 @@ describe('PlconfigComponent', () => {
 				ConfigurationDropdownComponent,
 				ConfigurationGroupDropdownComponent,
 				FeatureDropdownComponent,
+				ProductTypeDropDownComponent,
 			],
 			providers: [
 				{

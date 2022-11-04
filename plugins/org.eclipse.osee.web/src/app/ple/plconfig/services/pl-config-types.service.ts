@@ -13,6 +13,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from 'src/environments/environment';
+import { response } from '../../../types/responses';
+import { productType, ProductType } from '../types/pl-config-product-types';
 
 @Injectable({
 	providedIn: 'root',
@@ -20,9 +22,29 @@ import { apiURL } from 'src/environments/environment';
 export class PlConfigTypesService {
 	constructor(private http: HttpClient) {}
 
-	get productApplicabilityTypes() {
-		return this.http.get<string[]>(
-			apiURL + '/orcs/types/productApplicability'
+	getProductTypes(branchId: string) {
+		return this.http.get<Required<ProductType>[]>(
+			apiURL + `/orcs/branch/${branchId}/applic/product-types`
+		);
+	}
+
+	createProductType(branchId: string, productType: productType) {
+		return this.http.post<response>(
+			apiURL + `/orcs/branch/${branchId}/applic/product-types`,
+			productType
+		);
+	}
+
+	updateProductType(branchId: string, productType: productType) {
+		return this.http.put<response>(
+			apiURL + `/orcs/branch/${branchId}/applic/product-types`,
+			productType
+		);
+	}
+
+	deleteProductType(branchId: string, id: string) {
+		return this.http.delete<response>(
+			apiURL + `/orcs/branch/${branchId}/applic/product-types/${id}`
 		);
 	}
 }

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { iif, of, combineLatest, BehaviorSubject } from 'rxjs';
+import { iif, of, combineLatest, BehaviorSubject, from } from 'rxjs';
 import {
 	filter,
 	switchMap,
@@ -22,6 +22,7 @@ import {
 	tap,
 	map,
 	distinctUntilChanged,
+	concatMap,
 } from 'rxjs/operators';
 import { ActionService } from '../../ple-services/http/action.service';
 import { BranchInfoService } from '../../ple-services/http/branch-info.service';
@@ -158,6 +159,19 @@ export class ActionStateButtonService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
+
+	private _isATeamLead = combineLatest([this.teamsLeads, this.user]).pipe(
+		switchMap(([leads, user]) =>
+			of([leads, user]).pipe(
+				concatMap(([leadsResponse, currentUser]) =>
+					from(leads).pipe(
+						filter((val) => val.id === user.id),
+						map((v) => true)
+					)
+				)
+			)
+		)
+	);
 	private _branchTransitionable = this.branchWorkFlow.pipe(
 		switchMap((workflow) =>
 			iif(() => workflow.State === 'InWork', of('true'), of('false'))
@@ -165,6 +179,9 @@ export class ActionStateButtonService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	get isTeamLead() {
+		return this._isATeamLead;
+	}
 	public get branchAction() {
 		return this._branchAction;
 	}

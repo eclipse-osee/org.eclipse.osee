@@ -18,11 +18,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { testBranchApplicability } from '../../testing/mockBranchService';
-import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
-import { response } from '../../../../types/responses';
+import { PlConfigBranchService } from '../../../services/pl-config-branch-service.service';
+import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
+import { testBranchApplicability } from '../../../testing/mockBranchService';
+import { PlConfigApplicUIBranchMapping } from '../../../types/pl-config-applicui-branch-mapping';
+import { response } from '../../../../../types/responses';
 
 import { ConfigurationDropdownComponent } from './configuration-dropdown.component';
 

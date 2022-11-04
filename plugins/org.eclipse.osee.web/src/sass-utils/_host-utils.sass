@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@mixin host($height:false,$width:false,$display:false)
+@mixin host($height:false,$width:false,$display:false, $padding: false, $flex-direction: false, $justify-content: false, $align-content: false)
     :host
         @if $display
             display: $display
@@ -22,6 +22,17 @@
             min-width: calc($width - 10%)
             width: $width
             max-width: $width
+        @if $padding
+            padding: $padding
+        @if $flex-direction
+            flex-direction: $flex-direction
+        @if $justify-content
+            justify-content: $justify-content
+        @if $align-content
+            align-content: $align-content
 @mixin main-route-host()
     @include host($height:94vh,$width:100vw,$display:inline-block)
+
+@mixin plconfig-dropdown-host()
+    @include host($width: 15%, $padding: 0px, $display: flex, $flex-direction:column, $justify-content:center, $align-content: center)
             

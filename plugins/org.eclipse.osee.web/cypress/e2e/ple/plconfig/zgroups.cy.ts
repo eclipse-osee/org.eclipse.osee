@@ -62,7 +62,7 @@ describe('PLConfig - Groups(Edit Mode)', () => {
 							enabled: false,
 						},
 						{
-							name: 'Continuous Integration',
+							name: 'Continuous_Integration',
 							enabled: true,
 						},
 						{
@@ -92,7 +92,7 @@ describe('PLConfig - Groups(Edit Mode)', () => {
 							enabled: false,
 						},
 						{
-							name: 'Continuous Integration',
+							name: 'Continuous_Integration',
 							enabled: true,
 						},
 						{

@@ -21,19 +21,19 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
-import { editConfiguration } from '../../types/pl-config-configurations';
-import { response } from '../../../../types/responses';
+import { PlConfigBranchService } from '../../../services/pl-config-branch-service.service';
+import { PlConfigCurrentBranchService } from '../../../services/pl-config-current-branch.service';
+import { PlConfigUIStateService } from '../../../services/pl-config-uistate.service';
+import { ConfigGroup } from '../../../types/pl-config-applicui-branch-mapping';
+import { editConfiguration } from '../../../types/pl-config-configurations';
+import { response } from '../../../../../types/responses';
 import {
 	PLAddConfigData,
 	PLEditConfigData,
-} from '../../types/pl-edit-config-data';
-import { AddConfigurationDialogComponent } from '../add-configuration-dialog/add-configuration-dialog.component';
-import { CopyConfigurationDialogComponent } from '../copy-configuration-dialog/copy-configuration-dialog.component';
-import { EditConfigurationDialogComponent } from '../edit-config-dialog/edit-config-dialog.component';
+} from '../../../types/pl-edit-config-data';
+import { AddConfigurationDialogComponent } from '../../add-configuration-dialog/add-configuration-dialog.component';
+import { CopyConfigurationDialogComponent } from '../../copy-configuration-dialog/copy-configuration-dialog.component';
+import { EditConfigurationDialogComponent } from '../../edit-config-dialog/edit-config-dialog.component';
 
 @Component({
 	selector: 'osee-plconfig-configuration-dropdown',

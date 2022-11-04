@@ -15,6 +15,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { Observable, of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
@@ -26,20 +27,18 @@ import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
 })
 export class AddFeatureDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
-	productApplicabilities: Observable<string[]>;
+	productApplicabilities = this.currentBranchService.productTypes;
 	private _valueTypes: string[] = ['String', 'Integer', 'Decimal', 'Boolean'];
 	valueTypes: Observable<string[]> = of(this._valueTypes);
 	constructor(
 		public dialogRef: MatDialogRef<AddFeatureDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLAddFeatureData,
 		private branchService: PlConfigBranchService,
-		private typeService: PlConfigTypesService
+		private currentBranchService: PlConfigCurrentBranchService
 	) {
 		this.branchApplicability = this.branchService.getBranchApplicability(
 			data.currentBranch
 		);
-		this.productApplicabilities =
-			this.typeService.productApplicabilityTypes;
 	}
 	onNoClick(): void {
 		this.dialogRef.close();

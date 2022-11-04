@@ -36,9 +36,9 @@ describe('PlConfigTypesService', () => {
 	});
 
 	it('should get product applicability types', () => {
-		service.productApplicabilityTypes.subscribe();
+		service.getProductTypes('10').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/orcs/types/productApplicability'
+			apiURL + `/orcs/branch/${10}/applic/product-types`
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

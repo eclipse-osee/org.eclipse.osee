@@ -19,6 +19,7 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../../types/pl-config-branch';
+import { ProductType } from '../../types/pl-config-product-types';
 import { PLAddConfigData } from '../../types/pl-edit-config-data';
 
 @Component({
@@ -29,7 +30,7 @@ import { PLAddConfigData } from '../../types/pl-edit-config-data';
 export class AddConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
 	cfgGroups: Observable<cfgGroup[]>;
-	productApplicabilities: Observable<string[]>;
+	productApplicabilities = this.currentBranchService.productTypes;
 	constructor(
 		private typeService: PlConfigTypesService,
 		public dialogRef: MatDialogRef<AddConfigurationDialogComponent>,
@@ -41,8 +42,6 @@ export class AddConfigurationDialogComponent {
 			data.currentBranch
 		);
 		this.cfgGroups = this.currentBranchService.cfgGroups;
-		this.productApplicabilities =
-			this.typeService.productApplicabilityTypes;
 	}
 
 	onNoClick(): void {

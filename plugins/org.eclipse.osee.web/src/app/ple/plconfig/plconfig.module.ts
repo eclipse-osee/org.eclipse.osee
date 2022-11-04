@@ -40,15 +40,15 @@ import { FormsModule } from '@angular/forms';
 
 //Sub-component imports
 import { ApplicabilityTableComponent } from './components/applicability-table/applicability-table.component';
-import { ConfigurationDropdownComponent } from './components/configuration-dropdown/configuration-dropdown.component';
+import { ConfigurationDropdownComponent } from './components/dropdowns/configuration-dropdown/configuration-dropdown.component';
 import { EditConfigurationDialogComponent } from './components/edit-config-dialog/edit-config-dialog.component';
 import { AddConfigurationDialogComponent } from './components/add-configuration-dialog/add-configuration-dialog.component';
-import { FeatureDropdownComponent } from './components/feature-dropdown/feature-dropdown.component';
+import { FeatureDropdownComponent } from './components/dropdowns/feature-dropdown/feature-dropdown.component';
 import { AddFeatureDialogComponent } from './components/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from './components/edit-feature-dialog/edit-feature-dialog.component';
 import { TransitionActionToReviewDialogComponent } from './components/transition-action-to-review-dialog/transition-action-to-review-dialog.component';
 import { CopyConfigurationDialogComponent } from './components/copy-configuration-dialog/copy-configuration-dialog.component';
-import { ConfigurationGroupDropdownComponent } from './components/configuration-group-dropdown/configuration-group-dropdown.component';
+import { ConfigurationGroupDropdownComponent } from './components/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
 import { AddConfigurationGroupDialogComponent } from './components/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { ConfigGroupDialogComponent } from './components/config-group-dialog/config-group-dialog.component';
 
@@ -61,6 +61,9 @@ import { ConfigGroupMenuComponent } from './components/menus/config-group-menu/c
 import { ValueMenuComponent } from './components/menus/value-menu/value-menu.component';
 import { ActionStateButtonModule } from '../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchPickerModule } from '../../shared-components/components/branch-picker/branch-picker.module';
+import { ProductTypeDropDownComponent } from './components/dropdowns/product-type-drop-down/product-type-drop-down.component';
+import { AddProductTypeDialogComponent } from './components/add-product-type-dialog/add-product-type-dialog.component';
+import { EditProductTypeDialogComponent } from './components/edit-product-type-dialog/edit-product-type-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -82,6 +85,9 @@ import { BranchPickerModule } from '../../shared-components/components/branch-pi
 		ConfigMenuComponent,
 		ConfigGroupMenuComponent,
 		ValueMenuComponent,
+		ProductTypeDropDownComponent,
+		AddProductTypeDialogComponent,
+		EditProductTypeDialogComponent,
 	],
 	imports: [
 		CommonModule,

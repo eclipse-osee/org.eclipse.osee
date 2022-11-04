@@ -117,14 +117,14 @@
 			[style.fontSize.px]="18">
 			<mat-list-option
 				*ngFor="let type of productApplicabilities | async"
-				[value]="type"
+				[value]="type.name"
 				[attr.data-cy]="
 					'field-product-type-' +
-					type +
+					type.name +
 					'-' +
-					data.feature.productApplicabilities.includes(type)
+					data.feature.productApplicabilities.includes(type.name)
 				">
-				{{ type }}
+				{{ type.name }}
 			</mat-list-option>
 		</mat-selection-list>
 	</div>

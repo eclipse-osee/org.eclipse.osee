@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PartitionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.ProducesMediaTypeAttributeType;
-import org.eclipse.osee.framework.core.enums.token.ProductTypeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.QualificationMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.SafetySeverityAttributeType;
 import org.eclipse.osee.framework.core.enums.token.SeverityCategoryAttributeType;
@@ -115,7 +114,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString FdalRationale = osee.createStringNoTag(926274413268034710L, "FDAL Rationale", MediaType.TEXT_PLAIN, "Functional Development Assurance Level Rationale");
    AttributeTypeBoolean FeatureMultivalued = osee.createBoolean(3641431177461038717L, "Feature Multivalued", MediaType.TEXT_PLAIN, "");
    FeatureValueAttributeType FeatureValueType = osee.createEnum(new FeatureValueAttributeType());
-   ProductTypeAttributeType ProductApplicability = osee.createEnum(new ProductTypeAttributeType());
+   AttributeTypeString ProductApplicability = osee.createString(4522673803793808650L,"Product Type",MediaType.TEXT_PLAIN, "");
    FileExtensionAttributeType FileExtension = osee.createEnum(new FileExtensionAttributeType());
    AttributeTypeString FileNamePrefix = osee.createString(1695022067194142778L, "File Name Prefix", MediaType.TEXT_PLAIN, "");
    AttributeTypeString FileSystemPath = osee.createString(1152921504606847707L, "File System Path", MediaType.TEXT_PLAIN, "");

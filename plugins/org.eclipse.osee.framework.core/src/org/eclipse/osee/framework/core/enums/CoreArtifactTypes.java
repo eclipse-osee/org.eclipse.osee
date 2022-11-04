@@ -47,7 +47,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(Subsystem, Subsystem.Unspecified));
    ArtifactTypeToken AbstractTestResult = osee.add(osee.artifactType(38L, "Abstract Test Result", true, Artifact));
    ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, Artifact)
-      .any(ProductApplicability, ProductApplicability.Unspecified));
+      .any(ProductApplicability, "Unspecified"));
    ArtifactTypeToken Breaker = osee.add(osee.artifactType(188458869981236L, "Breaker", false, Artifact)
       .exactlyOne(CircuitBreakerId)
       .exactlyOne(DisplayText, "unset")
@@ -75,7 +75,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Artifact));
    ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, Artifact)
       .zeroOrOne(DefaultValue)
-      .any(ProductApplicability, ProductApplicability.Unspecified)
+      .any(ProductApplicability, "Unspecified")
       .exactlyOne(FeatureMultivalued)
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
@@ -290,6 +290,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Artifact)
       .zeroOrOne(ImportTransportType)
       .exactlyOne(CoreAttributeTypes.EndpointUrl));
+   ArtifactTypeToken ProductType = osee.add(osee.artifactType(7274800616985881194L, "Product Type", false, Artifact));
    ArtifactTypeToken RootArtifact = osee.add(osee.artifactType(10L, "Root Artifact", false, Artifact));
    ArtifactTypeToken SafetyAssessment = osee.add(osee.artifactType(59L, "Safety Assessment", false, Artifact)
       .zeroOrOne(ParagraphNumber)
