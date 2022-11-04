@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { iif, Observable, of } from 'rxjs';
-import { shareReplay, switchMap } from 'rxjs/operators';
+import { Injectable, InjectionToken, Optional } from '@angular/core';
+import { combineLatest, from, iif, Observable, of } from 'rxjs';
+import { concatMap, reduce, shareReplay, take } from 'rxjs/operators';
 import { environment, OSEEAuthURL } from 'src/environments/environment';
 import { user } from '../types/user-data-user.d';
 import { UserRoles } from '../types/user-roles.';
@@ -67,17 +67,17 @@ export class UserDataAccountService {
 		this._devUser
 	).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-	private _userIsAdmin = this._user.pipe(
-		switchMap((user) =>
-			of(user.roles.map((u) => u.id).includes(UserRoles.OSEE_ADMIN))
-		)
-	);
+	public userHasRoles(roles: UserRoles[]) {
+		return combineLatest([this.user, from(roles)]).pipe(
+			concatMap(([user, role]) =>
+				of(user.roles.map((u) => u.id).includes(role))
+			),
+			take(roles.length),
+			reduce((curr, acc) => (acc = acc && curr), true)
+		);
+	}
 
 	public get user(): Observable<user> {
 		return this._user;
-	}
-
-	public get userIsAdmin() {
-		return this._userIsAdmin;
 	}
 }

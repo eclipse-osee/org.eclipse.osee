@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { UserRoles } from 'src/app/userdata/types/user-roles.';
+
 // Adding element(s) requires:
 // - Defining the element(s) in this file
 
@@ -23,7 +25,7 @@ export interface navigationElement {
 	pageTitle: string;
 	isDropdown: boolean;
 	isDropdownOpen: boolean;
-	isAdminRequired: boolean;
+	requiredRoles: UserRoles[];
 	routerLink: string;
 	icon: string;
 	children: navigationElement[];
@@ -37,7 +39,7 @@ const navigationStructure: navigationElement[] = [
 		pageTitle: 'OSEE - Product Line Engineering',
 		isDropdown: true,
 		isDropdownOpen: false,
-		isAdminRequired: false,
+		requiredRoles: [],
 		routerLink: '/ple',
 		icon: '',
 		children: [
@@ -48,7 +50,7 @@ const navigationStructure: navigationElement[] = [
 				pageTitle: 'OSEE - Product Line Engineering',
 				isDropdown: false,
 				isDropdownOpen: false,
-				isAdminRequired: false,
+				requiredRoles: [],
 				routerLink: '/ple',
 				icon: '',
 				children: [],
@@ -59,7 +61,7 @@ const navigationStructure: navigationElement[] = [
 				pageTitle: 'OSEE - Product Line Configuration',
 				isDropdown: false,
 				isDropdownOpen: false,
-				isAdminRequired: false,
+				requiredRoles: [],
 				routerLink: '/ple/plconfig',
 				icon: '',
 				children: [],
@@ -70,7 +72,7 @@ const navigationStructure: navigationElement[] = [
 				pageTitle: 'OSEE - MIM',
 				isDropdown: true,
 				isDropdownOpen: false,
-				isAdminRequired: false,
+				requiredRoles: [],
 				routerLink: '/ple/messaging',
 				icon: '',
 				children: [
@@ -81,7 +83,7 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM',
 						isDropdown: false,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging',
 						icon: 'home',
 						children: [],
@@ -92,7 +94,7 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM - Connection View',
 						isDropdown: false,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging/connections',
 						icon: 'device_hub',
 						children: [],
@@ -103,7 +105,7 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM - Type View',
 						isDropdown: false,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging/types',
 						icon: 'view_module',
 						children: [],
@@ -114,7 +116,7 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM - Structure Names',
 						isDropdown: false,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging/structureNames',
 						icon: 'line_style',
 						children: [],
@@ -125,20 +127,9 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM - Element TypeSearch',
 						isDropdown: false,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging/typeSearch',
 						icon: 'search',
-						children: [],
-					},
-					{
-						label: 'Transport Type Manager',
-						cypressLabel: 'transports-nav-button',
-						pageTitle: 'OSEE - MIM - Transport Type Manager',
-						isDropdown: false,
-						isDropdownOpen: false,
-						isAdminRequired: true,
-						routerLink: '/ple/messaging/transports',
-						icon: 'timeline',
 						children: [],
 					},
 					{
@@ -147,20 +138,9 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM - Reports',
 						isDropdown: false,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging/reports',
 						icon: 'insert_drive_file',
-						children: [],
-					},
-					{
-						label: 'Import Page',
-						cypressLabel: 'mimimport-nav-button',
-						pageTitle: 'OSEE - MIM - Importer',
-						isDropdown: false,
-						isDropdownOpen: false,
-						isAdminRequired: true,
-						routerLink: '/ple/messaging/import',
-						icon: 'cloud_upload',
 						children: [],
 					},
 					{
@@ -169,7 +149,7 @@ const navigationStructure: navigationElement[] = [
 						pageTitle: 'OSEE - MIM - Help',
 						isDropdown: true,
 						isDropdownOpen: false,
-						isAdminRequired: false,
+						requiredRoles: [],
 						routerLink: '/ple/messaging/help',
 						icon: 'help_outline',
 						children: [
@@ -179,7 +159,7 @@ const navigationStructure: navigationElement[] = [
 								pageTitle: 'OSEE - MIM - Help',
 								isDropdown: false,
 								isDropdownOpen: false,
-								isAdminRequired: false,
+								requiredRoles: [],
 								routerLink: '/ple/messaging/help',
 								icon: 'home_outline',
 								children: [],
@@ -191,7 +171,7 @@ const navigationStructure: navigationElement[] = [
 									'OSEE - MIM - Help - Column Descriptions',
 								isDropdown: false,
 								isDropdownOpen: false,
-								isAdminRequired: false,
+								requiredRoles: [],
 								routerLink:
 									'/ple/messaging/help/columnDescriptions',
 								icon: 'view_column',
@@ -203,12 +183,34 @@ const navigationStructure: navigationElement[] = [
 								pageTitle: 'OSEE - MIM - Help - Overview',
 								isDropdown: false,
 								isDropdownOpen: false,
-								isAdminRequired: false,
+								requiredRoles: [],
 								routerLink: '/ple/messaging/help/overview',
 								icon: 'view_column',
 								children: [],
 							},
 						],
+					},
+					{
+						label: 'Transport Type Manager',
+						cypressLabel: 'transports-nav-button',
+						pageTitle: 'OSEE - MIM - Transport Type Manager',
+						isDropdown: false,
+						isDropdownOpen: false,
+						requiredRoles: [UserRoles.OSEE_ADMIN],
+						routerLink: '/ple/messaging/transports',
+						icon: 'timeline',
+						children: [],
+					},
+					{
+						label: 'Import Page',
+						cypressLabel: 'mimimport-nav-button',
+						pageTitle: 'OSEE - MIM - Importer',
+						isDropdown: false,
+						isDropdownOpen: false,
+						requiredRoles: [UserRoles.OSEE_ADMIN],
+						routerLink: '/ple/messaging/import',
+						icon: 'cloud_upload',
+						children: [],
 					},
 				],
 			},

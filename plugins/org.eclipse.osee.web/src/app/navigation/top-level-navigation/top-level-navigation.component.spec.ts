@@ -17,13 +17,19 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TestScheduler } from 'rxjs/testing';
 import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import navigationStructure from './top-level-navigation-structure';
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 
-describe('TopLevelNavigationComponent', () => {
+export const tests = (
+	serviceMock: Partial<UserDataAccountService>,
+	isAdminTest: boolean
+) => {
 	let component: TopLevelNavigationComponent;
 	let fixture: ComponentFixture<TopLevelNavigationComponent>;
+	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -38,7 +44,7 @@ describe('TopLevelNavigationComponent', () => {
 			providers: [
 				{
 					provide: UserDataAccountService,
-					useValue: userDataAccountServiceMock,
+					useValue: serviceMock,
 				},
 			],
 			declarations: [TopLevelNavigationComponent],
@@ -51,7 +57,33 @@ describe('TopLevelNavigationComponent', () => {
 		fixture.detectChanges();
 	});
 
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
+
 	it('should compile', () => {
 		expect(component).toBeTruthy();
 	});
+
+	it('should get elements matching user permissions', () => {
+		scheduler.run(() => {
+			// Using the messaging configuration elements for this test
+			const elements = navigationStructure[0].children.filter(
+				(c) => c.label === 'Messaging Configuration'
+			)[0].children;
+			const elementsNoAdmin = elements.filter(
+				(e) => e.requiredRoles.length == 0
+			);
+			scheduler
+				.expectObservable(component.getElementsWithPermission(elements))
+				.toBe('(a|)', { a: isAdminTest ? elements : elementsNoAdmin });
+		});
+	});
+};
+
+describe('TopLevelNavigationComponent', () => {
+	tests(userDataAccountServiceMock, false);
 });
