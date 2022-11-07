@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
@@ -207,11 +206,10 @@ public class SqlObjectLoader {
 
       checkCancelled(cancellation);
       loadRelations(handler, criteria.getRelationCriteria(), loadContext, fetchSize);
-      if (!loadContext.getBranchCategories().isEmpty() && loadContext.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
-         checkCancelled(cancellation);
-         loadRelations2(handler, criteria.getRelationCriteria2(), loadContext, fetchSize);
-      }
+
+      checkCancelled(cancellation);
+      loadRelations2(handler, criteria.getRelationCriteria2(), loadContext, fetchSize);
+
    }
 
    protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext) {
