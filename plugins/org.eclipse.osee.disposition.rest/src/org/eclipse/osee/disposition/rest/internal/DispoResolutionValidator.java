@@ -68,13 +68,17 @@ public class DispoResolutionValidator {
 
    private boolean isValid(DispoAnnotationData annotation) {
       String pcr = annotation.getResolution().toUpperCase().trim();
-      if (!Strings.isValid(pcr)) {
-         return false;
-      }
       String type = annotation.getResolutionType().toUpperCase().trim();
+      if (!type.startsWith("DEACTIVATED_")) {
+         if (!Strings.isValid(pcr)) {
+            return false;
+         }
+      }
+
       if (isValidType(type)) {
          return isValidWorkItem(pcr);
       }
+
       return true;
    }
 

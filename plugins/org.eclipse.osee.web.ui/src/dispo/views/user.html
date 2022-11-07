@@ -1,3 +1,16 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+-->
+
 <!doctype html>
 <html>
    <head>
@@ -19,9 +32,8 @@
                   <select class="form-control" ng-show="sets" ng-disabled="isSearchView" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
                   </select>
                </div>
-                <div id="multItemEditDiv" class="col-md-5">
-										                   <button class="btn btn-primary active" ng-click="closeItemDetails()">Close Item Details</button>&nbsp;
-							                   <div ng-show="items.length>0" class="btn-group">
+                  <div id="multItemEditDiv" class="col-md-5" ng-show="items.length>0" ><button class="btn btn-primary active" ng-click="closeItemDetails()">Close Item Details</button>&nbsp; 
+                  <div ng-show="items.length>0" class="btn-group">
                      <button class="btn btn-primary active" ng-click="toggleEditItems()">Edit Multiple Items</button>
                      <button type="button" class="btn btn-default" ng-show="isMultiEditView" ng-disabled="selectedItems.length == 0" ng-click="showAssigneeModal()">Assignee</button>
                      <button type="button" class="btn btn-default" ng-show="isMultiEditView" ng-disabled="selectedItems.length == 0" ng-click="showCategoryModal()">Category</button>
