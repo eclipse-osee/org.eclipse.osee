@@ -18,9 +18,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
@@ -157,36 +155,30 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       } else {
          artWithAlias = startCommonTableExpression("arts");
          boolean firstAlias = true;
-         if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-            CoreBranchCategoryTokens.MIM)) {
-            for (String art : artWithAliases) {
-               if (!firstAlias) {
-                  write(" union ");
-               } else {
-                  firstAlias = false;
-               }
-               //for each alias see if osee_relation is within its () and if so do not add top_rel_type and top_rel_order
-               //otherwise add
-               if (this.output.toString().contains("osee_relation rel")) {
-                  String dataString = this.output.toString().replaceAll("\\/\\*.*?\\*\\/", "");
-                  Pattern pattern = Pattern.compile(art + "\\sAS\\s\\((.*?)\\)", Pattern.DOTALL);
-                  Matcher regexMatcher = pattern.matcher(dataString);
-                  if (regexMatcher.find()) {//Finds Matching Pattern in String
-                     if (regexMatcher.group(1).contains("osee_relation rel")) {
-                        write("SELECT " + art + ".* from " + art);
-                     } else if (rootQueryData.getCriteriaByType(CriteriaRelatedTo.class).isEmpty()) {
-                        write("SELECT " + art + ".*, 0 as top_rel_type, 0 as top_rel_order from " + art);
-                     } else {
-                        write("SELECT " + art + ".* from " + art);
-                     }
-                  }
-               } else {
-                  write("SELECT " + art + ".* from " + art);
-               }
+         for (String art : artWithAliases) {
+            if (!firstAlias) {
+               write(" union ");
+            } else {
+               firstAlias = false;
             }
-         } else {
-            write(Collections.toString(artWithAliases, "SELECT * FROM ", " UNION SELECT * FROM ", null));
+            if (this.output.toString().contains("osee_relation rel")) {
+               String dataString = this.output.toString().replaceAll("\\/\\*.*?\\*\\/", "");
+               Pattern pattern = Pattern.compile(art + "\\sAS\\s\\((.*?)\\)", Pattern.DOTALL);
+               Matcher regexMatcher = pattern.matcher(dataString);
+               if (regexMatcher.find()) {//Finds Matching Pattern in String
+                  if (regexMatcher.group(1).contains("osee_relation rel")) {
+                     write("SELECT " + art + ".* from " + art);
+                  } else if (rootQueryData.getCriteriaByType(CriteriaRelatedTo.class).isEmpty()) {
+                     write("SELECT " + art + ".*, 0 as top_rel_type, 0 as top_rel_order from " + art);
+                  } else {
+                     write("SELECT " + art + ".* from " + art);
+                  }
+               }
+            } else {
+               write("SELECT " + art + ".* from " + art);
+            }
          }
+
       }
       if (rootQueryData.isIdQueryType() || rootQueryData.isCountQueryType()) {
          fieldAlias = artWithAlias;
@@ -196,10 +188,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             fieldAlias = attsAlias;
          } else {
             writeRelsCommonTableExpression(artWithAlias);
-            if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-               CoreBranchCategoryTokens.MIM)) {
-               writeRelsCommonTableExpression2(artWithAlias);
-            }
+            writeRelsCommonTableExpression2(artWithAlias);
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
          }
       }
@@ -240,12 +229,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       fieldAlias = startCommonTableExpression("fields");
       writeSelectAndHint();
       writeSelectFields(attsAlias, "*");
-      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
-         write(", 0 as rel_type, 0 as rel_order, 0 AS other_art_type_id FROM ");
-      } else {
-         write(", 0 AS other_art_type_id FROM ");
-      }
+      write(", 0 as rel_type, 0 as rel_order, 0 AS other_art_type_id FROM ");
       write(attsAlias);
       write("\n UNION ALL\n ");
       SelectiveArtifactSqlWriter relWriter = new SelectiveArtifactSqlWriter(this);
@@ -271,33 +255,30 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       });
       relWriter.write(handlers);
       write(relWriter.toSql());
-      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
-         write("\n UNION ALL\n ");
-         SelectiveArtifactSqlWriter relWriter2 = new SelectiveArtifactSqlWriter(this);
-         relWriter2.rels2Alias = rels2Alias;
-         List<SqlHandler<?>> handlers2 = new ArrayList<SqlHandler<?>>();
-         handlers2.add(new SqlHandler<Criteria>() {
-            private String artAlias;
-            @Override
-            public void addTables(AbstractSqlWriter writer) {
-               writer.addTable(rels2Alias);
-               artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
-            }
+      write("\n UNION ALL\n ");
+      SelectiveArtifactSqlWriter relWriter2 = new SelectiveArtifactSqlWriter(this);
+      relWriter2.rels2Alias = rels2Alias;
+      List<SqlHandler<?>> handlers2 = new ArrayList<SqlHandler<?>>();
+      handlers2.add(new SqlHandler<Criteria>() {
+         private String artAlias;
+         @Override
+         public void addTables(AbstractSqlWriter writer) {
+            writer.addTable(rels2Alias);
+            artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+         }
 
-            @Override
-            public void addPredicates(AbstractSqlWriter writer) {
-               writer.writeEquals(rels2Alias, "other_art_id", artAlias, "art_id");
-            }
+         @Override
+         public void addPredicates(AbstractSqlWriter writer) {
+            writer.writeEquals(rels2Alias, "other_art_id", artAlias, "art_id");
+         }
 
-            @Override
-            public int getPriority() {
-               return SqlHandlerPriority.RELATED_TO_ART_IDS.ordinal();
-            }
-         });
-         relWriter2.write(handlers2);
-         write(relWriter2.toSql());
-      }
+         @Override
+         public int getPriority() {
+            return SqlHandlerPriority.RELATED_TO_ART_IDS.ordinal();
+         }
+      });
+      relWriter2.write(handlers2);
+      write(relWriter2.toSql());
    }
 
    private String writeAttsCommonTableExpression(String artWithAlias) {
@@ -326,14 +307,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String relTxsAlias = "txs";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
-      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
-         CoreBranchCategoryTokens.MIM)) {
-         write(
-            ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, 0 as rel_type, 0 as rel_order");
-      } else {
-         write(
-            ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id");
-      }
+      write(
+         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, 0 as rel_type, 0 as rel_order");
       write("\n FROM %s, osee_relation_link rel, osee_txs txs", artWithAlias);
       write("\n WHERE ");
       write(artWithAlias);

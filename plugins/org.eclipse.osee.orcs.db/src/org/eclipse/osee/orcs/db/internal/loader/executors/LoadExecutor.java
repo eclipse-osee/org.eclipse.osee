@@ -13,16 +13,11 @@
 
 package org.eclipse.osee.orcs.db.internal.loader.executors;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
-import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -62,11 +57,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
       for (ArtifactId artId : artifactIds) {
          join.add(branch, artId, transactionId);
       }
-      List<BranchCategoryToken> branchCategories = new ArrayList<>();
-      Consumer<BranchCategoryToken> consumer = branchCategories::add;
-      getJdbcClient().runQuery(stmt -> consumer.accept(BranchCategoryToken.valueOf(stmt.getLong("category"))),
-         OseeSql.GET_CURRENT_BRANCH_CATEGORIES.getSql(), branch);
-      LoadSqlContext loadContext = new LoadSqlContext(session, options, branch, branchCategories);
+      LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
       int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
       getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
    }
