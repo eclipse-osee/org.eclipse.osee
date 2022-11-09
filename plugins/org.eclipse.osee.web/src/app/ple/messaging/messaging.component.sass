@@ -12,42 +12,6 @@
  **********************************************************************/
 @use 'sass:math'
 @use '../../../sass-utils/host-utils'
+@use '../../../sass-utils/landing-page-utils'
 @include host-utils.host($height:94vh ,$width: 100%, $display:inline-block)
-body
-    height: 100%
-    width: 100%
-
-    // :host
-//     display: inline-block
-//     height: 94vh
-//     width: 100%
-.messaging-grid
-    display : grid
-    grid-template-rows : 3fr 3fr 1fr 1fr 1fr 2fr
-    grid-template-columns : 1fr 1fr 1fr 1fr 1fr
-    gap : 5%
-    justify-items: stretch
-    align-items: stretch
-.messaging-header
-    grid-row-start : 2
-    grid-row-end : 2
-    grid-column-start : 2
-    grid-column-end : 5
-    justify-self: center
-.messaging-bottom
-    grid-row-start : 5
-    grid-row-end : 5
-    grid-column-start : 1
-    grid-column-end : 5
-$buttons: 0,1,2,3,4,5,6,7,8,9,10
-@each $buttonNumber in $buttons
-    .message-button-#{$buttonNumber}
-        grid-row-start : 3 + math.floor(calc($buttonNumber/3))
-        grid-row-end : 3 + math.floor(calc($buttonNumber/3))
-        grid-column-start : math.max((calc($buttonNumber)%3)+2,2)
-        grid-column-end : math.max((calc($buttonNumber)%3)+2,2)
-        display: flex
-        justify-content: center
-        align-items: center
-        span
-            margin-left: 0.5em
+@include landing-page-utils.landing-page-classes
