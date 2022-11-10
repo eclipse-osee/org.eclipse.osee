@@ -41,6 +41,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
@@ -108,6 +109,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaRelationTypeFollow.class, RelationTypeFollowSqlHandler.class);
       handleMap.put(CriteriaAttributeSort.class, AttributeSortSqlHandler.class);
       handleMap.put(CriteriaPagination.class, PaginationSqlHandler.class);
+      handleMap.put(CriteriaFollowSearch.class, FollowSearchSqlHandler.class);
    }
 
    private static void addBranchHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {

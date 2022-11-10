@@ -85,6 +85,26 @@ public class SqlAliasManager {
       return aliasValue;
    }
 
+   public String getPreviousAlias(String prefix) {
+      AliasSet aliasByLevel = getAliasByLevel(0);
+      List<String> aliases = aliasByLevel.getAliases(prefix);
+      if (aliases.isEmpty() || aliases.size() == 1) {
+         return "";
+      } else {
+         return aliases.get(aliases.size() - 2);
+      }
+   }
+
+   public String getLastAlias(String prefix) {
+      AliasSet aliasByLevel = getAliasByLevel(0);
+      List<String> aliases = aliasByLevel.getAliases(prefix);
+      if (aliases.isEmpty() || aliases.size() == 1) {
+         return "";
+      } else {
+         return aliases.get(aliases.size() - 1);
+      }
+   }
+
    public void putAlias(SqlTable table, ObjectType type, String alias) {
       String prefix = table.getPrefix();
       putAlias(prefix, type, alias);

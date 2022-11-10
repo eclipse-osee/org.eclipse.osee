@@ -99,6 +99,14 @@ public class JdbcDbType extends BaseId {
       }
    }
 
+   public String getInStringSql(String str, String searchString) {
+      if (matches(oracle, hsql)) {
+         return "instr(" + str + "," + searchString + ")";
+      } else {
+         return "strpos(" + str + "," + searchString + ")";
+      }
+   }
+
    /**
     * return union keyword in recursive query using a Common Table Expression (WITH statement). Oracle requires UNION
     * ALL (does not support UNION in a recursive CTE). HSQLDB version 2.3.2+ hangs indefinitely when UNION ALL is used.

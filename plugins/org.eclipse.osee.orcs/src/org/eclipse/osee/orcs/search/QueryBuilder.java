@@ -140,6 +140,10 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder isOnPage(long pageNum, long pageSize);
 
+   QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options);
+
+   QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options);
+
    QueryBuilder andId(ArtifactId id);
 
    QueryBuilder andIds(Collection<? extends ArtifactId> ids);
