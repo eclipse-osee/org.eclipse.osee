@@ -14,6 +14,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,10 +28,12 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.FollowSearchSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -45,6 +48,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private String fieldAlias;
    private String relsAlias;
    private String rels2Alias;
+   private String attrSearchAlias;
    private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData rootQueryData) {
       super(sqlJoinFactory, jdbcClient, rootQueryData);
       this.parentWriter = parentWriter;
@@ -139,7 +143,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String artWithAlias = write(handlers, "artWith");
       artWithAliases.add(artWithAlias);
       QueryData tempQueryDataCursor = queryDataCursor;
+      Optional<Criteria> followSearchCriteria = queryDataCursor.getAllCriteria().stream().filter(
+         a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst();
       for (QueryData childQueryData : queryDataCursor.getChildrenQueryData()) {
+         if (followSearchCriteria.isPresent()) {
+            childQueryData.addCriteria(followSearchCriteria.get());
+         }
          queryDataCursor = childQueryData;
          follow(handlerFactory, artWithAliases, artWithAlias);
       }
@@ -189,6 +198,16 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          } else {
             writeRelsCommonTableExpression(artWithAlias);
             writeRelsCommonTableExpression2(artWithAlias);
+            if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
+               FollowSearchSqlHandler followSearchHandler = (FollowSearchSqlHandler) handlerFactory.createHandler(
+                  rootQueryData.getCriteriaByType(CriteriaFollowSearch.class).get(0));
+               boolean newRelationUsed = this.output.toString().contains("osee_relation rel");
+               attrSearchAlias =
+                  followSearchHandler.writeFollowSearchCommonTableExpression(this, attsAlias, newRelationUsed,
+                     (rootQueryData.hasCriteriaType(
+                        CriteriaPagination.class) ? rootQueryData.getCriteriaByType(CriteriaPagination.class).get(
+                           0) : null));
+            }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
          }
       }
@@ -197,6 +216,11 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write("SELECT count(*) FROM %s", fieldAlias);
       } else {
          write("SELECT * FROM %s", fieldAlias);
+      }
+      if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
+         write(
+            " where exists (select 'x' from " + attrSearchAlias + " where " + getJdbcClient().getDbType().getInStringSql(
+               attrSearchAlias + ".art_path", "','||" + fieldAlias + ".art_id||','") + "> 0 )");
       }
       if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
          write(" ORDER BY art_id");

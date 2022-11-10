@@ -62,6 +62,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -320,6 +321,18 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public boolean areApplicabilityTokensIncluded() {
       return OptionsUtil.getIncludeApplicabilityTokens(getOptions());
+   }
+
+   @Override
+   public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, values, options));
+   }
+
+   @Override
+   public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
+      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, value, options));
    }
 
    public AttributeTypeId getAttributeType() {
