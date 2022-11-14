@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { element } from './element';
 import { structure } from './structure';
 import { message } from '../../message-interface/types/messages';
@@ -14,18 +26,6 @@ import {
 } from './DifferenceReport.d';
 import { transportType } from './transportType';
 
-/*********************************************************************
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- **********************************************************************/
 export interface headerDetail<T> {
 	header: Extract<keyof T, string>;
 	description: string;

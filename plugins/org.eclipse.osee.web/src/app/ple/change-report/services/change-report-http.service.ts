@@ -12,24 +12,24 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpMethods } from 'src/app/types/http-methods';
+import { changeReportRow } from 'src/app/types/change-report/change-report';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class AttributeService {
+export class ChangeReportHttpService {
 	constructor(private http: HttpClient) {}
 
-	public getMarkDownContent(
-		branchId: string,
-		artifactID: string,
-		attributeID: string
-	) {
-		return this.http.request(
-			HttpMethods.GET,
-			`${apiURL}/orcs/branch/${branchId}/artifact/${artifactID}/attribute/type/${attributeID}`,
-			{ responseType: 'text' }
+	getBranchChangeReport(branch1Id: string, branch2Id: string) {
+		return this.http.get<changeReportRow[]>(
+			`${apiURL}/orcs/branches/${branch1Id}/changes/${branch2Id}`
+		);
+	}
+
+	getTxChangeReport(branchId: string, tx1: string, tx2: string) {
+		return this.http.get<changeReportRow[]>(
+			`${apiURL}/orcs/branches/${branchId}/changes/${tx1}/${tx2}`
 		);
 	}
 }

@@ -125,3 +125,13 @@ export class itemTypeIdRelation {
 	idString: string;
 	idIntValue: number;
 }
+
+export interface changeReportRow {
+	ids: string;
+	names: string;
+	itemType: string;
+	itemKind: string;
+	changeType: string;
+	isValue: string;
+	wasValue: string;
+}

@@ -45,6 +45,14 @@ import {
 	submessageDiffItem,
 } from '../../types/DifferenceReport.d';
 import { transportType } from '../../types/transportType';
+import { changeReportRow } from 'src/app/types/change-report/change-report';
+
+export const enum HeaderKeys {
+	'changeReportRow',
+	'message',
+	'structure',
+	'subMessage',
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -612,6 +620,44 @@ export class HeaderService {
 		},
 	]);
 
+	private _changeReportRowHeaders: headerDetail<changeReportRow>[] = [
+		{
+			header: 'ids',
+			description: 'ID(s) of changed artifact(s)',
+			humanReadable: 'Id(s)',
+		},
+		{
+			header: 'names',
+			description: 'Name of changed artifact(s)',
+			humanReadable: 'Artifact Name(s)',
+		},
+		{
+			header: 'itemType',
+			description: 'Type of changed item',
+			humanReadable: 'Item Type',
+		},
+		{
+			header: 'itemKind',
+			description: 'Kind of changed item',
+			humanReadable: 'Item Kind',
+		},
+		{
+			header: 'changeType',
+			description: 'Change Type',
+			humanReadable: 'Change Type',
+		},
+		{
+			header: 'isValue',
+			description: 'Current value',
+			humanReadable: 'Is Value',
+		},
+		{
+			header: 'wasValue',
+			description: 'Previous value',
+			humanReadable: 'Was Value',
+		},
+	];
+
 	private _allTransportTypeHeaders = this._allTransportTypes.pipe(
 		mergeMap((transports) =>
 			from(transports).pipe(
@@ -776,6 +822,7 @@ export class HeaderService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
+
 	constructor() {}
 
 	get AllNodeDiffHeaders() {
@@ -882,6 +929,20 @@ export class HeaderService {
 		return this._allTransportTypeHeaders;
 	}
 
+	getTableHeaderByName<T>(value: keyof T, headerKey: HeaderKeys) {
+		switch (headerKey) {
+			case HeaderKeys.changeReportRow:
+				return of(
+					this._changeReportRowHeaders.find((h) => h.header === value)
+				);
+			default:
+				return of();
+		}
+	}
+
+	/**
+	 * @deprecated transition to getTableHeaderByName
+	 */
 	getHeaderByName<T>(value: keyof T, type: string) {
 		return iif(
 			() => type === 'message',
@@ -1054,11 +1115,11 @@ export class HeaderService {
 																			)
 																		)
 																)
-															),
+															), //transport type obs
 															of<
 																headerDetail<T>
 															>()
-														) //transport type obs
+														)
 													)
 												)
 											)

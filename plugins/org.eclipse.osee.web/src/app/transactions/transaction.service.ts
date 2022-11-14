@@ -29,6 +29,12 @@ export class TransactionService {
 		return this.http.get<transactionInfo>(apiURL + '/orcs/txs/' + id);
 	}
 
+	getLatestBranchTransaction(branchId: string) {
+		return this.http.get<transactionInfo>(
+			apiURL + '/orcs/branches/' + branchId + '/txs/latest'
+		);
+	}
+
 	performMutation(body: transaction) {
 		return this.http.post<transactionResult>(apiURL + '/orcs/txs', body);
 	}

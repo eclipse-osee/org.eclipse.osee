@@ -20,6 +20,10 @@ export const transactionServiceMock: Partial<TransactionService> = {
 		return of(transactionInfoMock);
 	},
 
+	getLatestBranchTransaction(branchId: string) {
+		return of(transactionInfoMock);
+	},
+
 	performMutation(body: transaction) {
 		return of(transactionResultMock);
 	},

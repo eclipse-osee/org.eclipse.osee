@@ -15,17 +15,22 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import com.google.common.collect.Lists;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -229,6 +234,88 @@ public class TransactionFactoryImpl implements TransactionFactory {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   @Override
+   public List<ChangeReportRowDto> getTxChangeReport(BranchId branch, TransactionId txId1, TransactionId txId2) {
+      List<ChangeReportRowDto> changeReportRows = new LinkedList<>();
+      List<ChangeItem> changeItems = compareTxs(txId1, txId2);
+
+      List<ArtifactId> artIds = new LinkedList<>();
+
+      for (ChangeItem change : changeItems) {
+         if (change.getArtId().isValid() && !artIds.contains(change.getArtId())) {
+            artIds.add(change.getArtId());
+         }
+         if (change.getArtIdB().isValid() && !artIds.contains(change.getArtIdB())) {
+            artIds.add(change.getArtIdB());
+         }
+      }
+
+      List<ArtifactReadable> artifacts = orcsApi.getQueryFactory().fromBranch(branch).andIds(artIds).asArtifacts();
+
+      for (ChangeItem changeItem : changeItems) {
+         ArtifactReadable artA = artifacts.stream().filter(
+            a -> ArtifactId.valueOf(a.getId()).equals(changeItem.getArtId())).findFirst().orElse(
+               ArtifactReadable.SENTINEL);
+         ArtifactReadable artB = artifacts.stream().filter(
+            a -> ArtifactId.valueOf(a.getId()).equals(changeItem.getArtIdB())).findFirst().orElse(
+               ArtifactReadable.SENTINEL);
+
+         // IDs
+         String ids = artA.getIdString();
+         if (artB.isValid()) {
+            ids += " - " + artB.getIdString();
+         }
+
+         String itemKind = changeItem.getChangeType().getName().replace("Change", "");
+         String isValue = itemKind.equals("Relation") ? "" : changeItem.getCurrentVersion().getValue();
+         String wasValue = itemKind.equals("Relation") ? "" : changeItem.getBaselineVersion().getValue();
+         String changeType = changeItem.getNetChange().getModType().getName();
+
+         // Artifact Names
+         String names = artA.getName();
+         if (itemKind.equals("Relation") && artB.isValid()) {
+            names += " <---> " + artB.getName();
+         }
+
+         // Item Type
+         String itemType = "";
+         if (itemKind.equals("Artifact")) {
+            itemType = artA.getArtifactType().getName();
+         } else if (itemKind.equals("Attribute")) {
+            AttributeTypeToken attrToken = artA.getExistingAttributeTypes().stream().filter(
+               a -> a.getIdString().equals(changeItem.getItemTypeId().getIdString())).findFirst().orElse(
+                  AttributeTypeToken.SENTINEL);
+            itemType = attrToken.isValid() ? attrToken.getName() : "";
+         } else if (itemKind.equals("Relation")) {
+            RelationTypeToken relToken = artA.getExistingRelationTypes().stream().filter(
+               a -> a.getIdString().equals(changeItem.getItemTypeId().getIdString())).findFirst().orElse(
+                  RelationTypeToken.SENTINEL);
+            itemType = relToken.isValid() ? relToken.getName() : "";
+         }
+
+         // Handle applicability changes
+         if (itemKind.equals("Artifact")) {
+            ApplicabilityToken currentApplic = changeItem.getCurrentVersion().getApplicabilityToken();
+            ApplicabilityToken baselineApplic = changeItem.getBaselineVersion().getApplicabilityToken();
+            if (currentApplic != null && baselineApplic != null && !currentApplic.equals(baselineApplic)) {
+               changeType = "Applicability";
+               isValue = currentApplic.getName();
+               wasValue = baselineApplic.getName();
+            }
+         }
+
+         // Special case for modified artict is/was values
+         if (itemKind.equals("Artifact") && changeType.equals("Modified")) {
+            isValue = "";
+            wasValue = "";
+         }
+
+         changeReportRows.add(new ChangeReportRowDto(ids, names, itemType, itemKind, changeType, isValue, wasValue));
+      }
+
+      return changeReportRows;
    }
 
 }
