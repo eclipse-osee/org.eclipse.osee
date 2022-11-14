@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -159,6 +160,16 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
 
+   @GET
+   @Path("{branch1}/changes/{branch2}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ChangeReportRowDto> getBranchChangeReport(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
+
+   @GET
+   @Path("{branch}/changes/{tx1}/{tx2}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ChangeReportRowDto> getBranchTxChangeReport(@PathParam("branch") BranchId branch, @PathParam("tx1") TransactionId tx1, @PathParam("tx2") TransactionId tx2);
+
    @PUT
    @Path("{branch}/name")
    @Consumes({MediaType.TEXT_PLAIN})
@@ -194,6 +205,11 @@ public interface BranchEndpoint {
    @Path("{branch}/txs/{tx-id}")
    @Produces({MediaType.APPLICATION_JSON})
    Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") TransactionId txId);
+
+   @GET
+   @Path("{branch}/txs/latest")
+   @Produces({MediaType.APPLICATION_JSON})
+   Transaction getBranchLatestTx(@PathParam("branch") BranchId branch);
 
    @PUT
    @Path("{branch}/type/{branch-type}")

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,20 +16,19 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { transactionInfo } from '../types/change-report/transaction';
-import { transactionInfoMock } from './transaction.mock';
+import { changeReportMock } from '../mocks/changeReportMock';
 
-import { TransactionService } from './transaction.service';
+import { ChangeReportHttpService } from './change-report-http.service';
 
-describe('TransactionService', () => {
-	let service: TransactionService;
+describe('ChangeReportHttpService', () => {
+	let service: ChangeReportHttpService;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule],
 		});
-		service = TestBed.inject(TransactionService);
+		service = TestBed.inject(ChangeReportHttpService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
@@ -37,22 +36,23 @@ describe('TransactionService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should get transaction info', () => {
-		const testInfo: transactionInfo = transactionInfoMock;
-		service.getTransaction('10').subscribe();
-		const req = httpTestingController.expectOne(apiURL + '/orcs/txs/' + 10);
+	it('should get a change report using two branch ids', () => {
+		service.getBranchChangeReport('10', '12').subscribe();
+		const req = httpTestingController.expectOne(
+			`${apiURL}/orcs/branches/10/changes/12`
+		);
 		expect(req.request.method).toEqual('GET');
-		req.flush(testInfo);
+		req.flush(changeReportMock);
 		httpTestingController.verify();
 	});
 
-	it('should get latest transaction info for branch', () => {
-		service.getLatestBranchTransaction('10').subscribe();
+	it('should get a change report using transaction ids', () => {
+		service.getTxChangeReport('10', '1', '2').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/orcs/branches/' + 10 + '/txs/latest'
+			`${apiURL}/orcs/branches/10/changes/1/2`
 		);
 		expect(req.request.method).toEqual('GET');
-		req.flush(transactionInfoMock);
+		req.flush(changeReportMock);
 		httpTestingController.verify();
 	});
 });

@@ -19,7 +19,7 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
-
+import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,13 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -61,6 +59,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -91,8 +90,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -267,6 +264,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public Transaction getBranchLatestTx(BranchId branch) {
+      return asTransaction(newTxQuery().andIsHead(branch).getResults().getExactlyOne());
+   }
+
+   @Override
    public List<JsonArtifact> getArtifactDetailsByType(BranchId branchId, String artifactTypes) {
       return getArtifactDetailsByType(branchId, ArtifactId.SENTINEL, artifactTypes);
    }
@@ -326,6 +328,18 @@ public class BranchEndpointImpl implements BranchEndpoint {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return data;
+   }
+
+   @Override
+   public List<ChangeReportRowDto> getBranchChangeReport(BranchId branch1, BranchId branch2) {
+      TransactionToken sourceTx = newTxQuery().andIsHead(branch1).getResults().getExactlyOne();
+      TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
+      return getBranchTxChangeReport(branch1, sourceTx, destinationTx);
+   }
+
+   @Override
+   public List<ChangeReportRowDto> getBranchTxChangeReport(BranchId branch, TransactionId tx1, TransactionId tx2) {
+      return orcsApi.getTransactionFactory().getTxChangeReport(branch, tx1, tx2);
    }
 
    @Override

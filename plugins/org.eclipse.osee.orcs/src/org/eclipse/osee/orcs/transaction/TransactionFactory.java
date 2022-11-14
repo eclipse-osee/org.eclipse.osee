@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 
@@ -59,4 +60,6 @@ public interface TransactionFactory {
    boolean setTransactionCommitArtifact(TransactionId trans, ArtifactId commitArt);
 
    List<ChangeItem> getArtifactHistory(ArtifactId artifact, BranchId branch);
+
+   List<ChangeReportRowDto> getTxChangeReport(BranchId branch, TransactionId txId1, TransactionId txId2);
 }

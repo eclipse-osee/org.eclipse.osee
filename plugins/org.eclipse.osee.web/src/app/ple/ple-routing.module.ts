@@ -36,6 +36,13 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./asciidoc/asciidoc.module').then((m) => m.AsciidocModule),
 	},
+	{
+		path: 'changes',
+		loadChildren: () =>
+			import('./change-report/change-report.module').then(
+				(m) => m.ChangeReportModule
+			),
+	},
 ];
 
 @NgModule({
