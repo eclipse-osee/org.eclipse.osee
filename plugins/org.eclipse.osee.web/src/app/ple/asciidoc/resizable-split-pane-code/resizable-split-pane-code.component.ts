@@ -40,7 +40,9 @@ export class ResizableSplitPaneCodeComponent
 
 	// actually just realized, we can probably remove that tap, and just use that observable to populate both the markdown pane and the html pane
 	// REMEMBER TO GET RID OF SUBSCRIPTION IN ON DESTROY!!!!!!!!
-	mdContent$ = this.curTxtEdit.mdContent.subscribe();
+	mdContent$ = this.curTxtEdit.mdContent
+		.pipe(tap((response) => this.updateText(response)))
+		.subscribe();
 
 	userInputUpdate$ = this.curTxtEdit.userInput;
 
