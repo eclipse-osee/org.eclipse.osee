@@ -52,7 +52,7 @@ public class JournalWebOperations {
    private void handleForm() {
       String form = OseeInf.getResourceContents("templates/journal/journalForm.html", JournalWebOperations.class);
       page = page.replaceFirst(JournalKey.PUT_FORM_HERE.name(), form);
-      page = page.replaceFirst(JournalKey.PUT_ATS_ID_HERE.name(), workItem.getAtsId());
+      page = page.replaceAll(JournalKey.PUT_ATS_ID_HERE.name(), workItem.getAtsId());
       page = page.replaceFirst(JournalKey.PUT_USER_NAME_HERE.name(), user.getName());
       page = page.replaceFirst(JournalKey.PUT_USER_AID_HERE.name(), user.getIdString());
    }

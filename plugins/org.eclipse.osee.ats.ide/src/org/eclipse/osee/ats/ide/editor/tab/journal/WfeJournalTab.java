@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
+import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -44,6 +45,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -63,6 +65,7 @@ public class WfeJournalTab extends WfeAbstractTab {
    private JournalData journalData;
    private XText text;
    private Button submitButton;
+   private Button openJournalOnWebButton;
 
    public WfeJournalTab(WorkflowEditor editor, IAtsWorkItem workItem, AtsApiIde atsApi) {
       super(editor, ID, workItem, "Journal");
@@ -123,6 +126,17 @@ public class WfeJournalTab extends WfeAbstractTab {
       getManagedForm().getToolkit().adapt(composite);
 
       journalComp = new WfeJournalSubscribersComp(composite, SWT.NONE, workItem, workItem.isInWork(), editor);
+      openJournalOnWebButton = new Button(composite, SWT.PUSH);
+      openJournalOnWebButton.setText("Open Journal on Web");
+      managedForm.getToolkit().adapt(openJournalOnWebButton, true, true);
+      openJournalOnWebButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Program.launch(AtsWorkItemServiceImpl.getJournalUrl(atsApi.getAtsId(workItem).toString(),
+               atsApi.getUserService().getCurrentUser().getIdString(), atsApi));
+         }
+
+      });
 
       text = new XText("New Entry");
       text.setVerticalLabel(true);
