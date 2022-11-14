@@ -480,49 +480,49 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
-         if (attributeType.isString()) {
+         if (attributeType.isString() || attributeType.isEnumerated()) {
             try {
                objValues.add(value);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
+               throw new OseeArgumentException(ex, "Invalid date value [%s]; must be long date", value);
             }
          } else if (attributeType.isDate()) {
             try {
                Date date = new Date(Long.valueOf(value));
                objValues.add(date);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
+               throw new OseeArgumentException(ex, "Invalid date value [%s]; must be long date", value);
             }
          } else if (attributeType.isDouble()) {
             try {
                Double double1 = Double.valueOf(value);
                objValues.add(double1);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid double value [%v]", value);
+               throw new OseeArgumentException(ex, "Invalid double value [%s]", value);
             }
          } else if (attributeType.isInteger()) {
             try {
                Integer integer = Integer.valueOf(value);
                objValues.add(integer);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid integer value [%v]", value);
+               throw new OseeArgumentException(ex, "Invalid integer value [%s]", value);
             }
          } else if (attributeType.isLong()) {
             try {
                Long longVal = Long.valueOf(value);
                objValues.add(longVal);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid long value [%v]", value);
+               throw new OseeArgumentException(ex, "Invalid long value [%s]", value);
             }
          } else if (attributeType.isBoolean()) {
             try {
                Boolean bool = Boolean.valueOf(value);
                objValues.add(bool);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid boolean value [%v]", value);
+               throw new OseeArgumentException(ex, "Invalid boolean value [%s]", value);
             }
          } else {
-            throw new OseeArgumentException("Unsupported attribute value [%v] for type [%s]", attributeType, value);
+            throw new OseeArgumentException("Unsupported attribute value [%s] for type [%s]", attributeType, value);
          }
       }
       setAttributeValues(atsObject, attributeType, objValues);
