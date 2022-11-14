@@ -95,6 +95,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    protected final AtsApi atsApi;
    private IAtsStateNoteService stateNoteService;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
+   public static final String ATS_DEFAULT_JOURNAL_URL = "/ats/ui/action/ID/journal/USERID";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = null;
 
@@ -628,6 +629,13 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return journalData;
+   }
+
+   public static String getJournalUrl(String atsIdOrid, String userId, AtsApi atsApi) {
+      String journalUrl = System.getProperty("osee.application.server") + ATS_DEFAULT_JOURNAL_URL;
+      journalUrl = journalUrl.replaceFirst("ID", atsIdOrid);
+      journalUrl = journalUrl.replaceFirst("USERID", userId);
+      return journalUrl;
    }
 
    @Override
