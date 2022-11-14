@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.core.enums.token.SubsystemAttributeType.Subsys
  */
 public class SubsystemAttributeType extends AttributeTypeEnum<SubsystemEnum> {
 
-   public final SubsystemEnum Robot_API = new SubsystemEnum(0, "Robot_API");
-   public final SubsystemEnum Robot_Survivability_Equipment = new SubsystemEnum(1, "Robot_Survivability_Equipment");
-   public final SubsystemEnum Robot_Systems_Management = new SubsystemEnum(2, "Robot_Systems_Management");
+   public final SubsystemEnum Robot_API = new SubsystemEnum(0, "Robot API");
+   public final SubsystemEnum Robot_Survivability_Equipment = new SubsystemEnum(1, "Robot Survivability Equipment");
+   public final SubsystemEnum Robot_Systems_Management = new SubsystemEnum(2, "Robot Systems Management");
    public final SubsystemEnum Chassis = new SubsystemEnum(3, "Chassis");
    public final SubsystemEnum Communications = new SubsystemEnum(4, "Communications");
-   public final SubsystemEnum Data_Management = new SubsystemEnum(5, "Data_Management");
+   public final SubsystemEnum Data_Management = new SubsystemEnum(5, "Data Management");
    public final SubsystemEnum Electrical = new SubsystemEnum(6, "Electrical");
    public final SubsystemEnum Controls = new SubsystemEnum(7, "Controls");
    public final SubsystemEnum Hydraulics = new SubsystemEnum(8, "Hydraulics");
