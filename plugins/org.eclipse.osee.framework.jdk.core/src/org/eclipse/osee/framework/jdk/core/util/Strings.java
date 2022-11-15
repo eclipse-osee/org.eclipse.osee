@@ -44,8 +44,14 @@ public class Strings {
    }
 
    /**
-    * OTE pre-compile dependency. Left for binary compatibility for 0.9.8
+    * Predicate determines if a {@link String} is non-<code>null</code> and not empty.
+    *
+    * @param value the {@link String} to test.
+    * @return <code>true</code>, when the {@link String} is non-<code>null</code> and not empty; otherwise,
+    * <code>false</code>.
+    * @implNote OTE pre-compile dependency. Left for binary compatibility for 0.9.8
     */
+
    public static boolean isValid(String value) {
       return value != null && !value.isEmpty();
    }

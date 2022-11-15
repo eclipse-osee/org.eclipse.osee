@@ -19,7 +19,7 @@ package org.eclipse.osee.framework.core.xml.publishing;
  * @author Loren K. Ashley
  */
 
-public class WordTextList extends AbstractElementList<WordTableColumn, WordText> {
+public class WordTextList extends AbstractElementList<AbstractElement, WordText> {
 
    /**
     * Creates a new open and empty list for {@link WordText}s.
@@ -35,13 +35,36 @@ public class WordTextList extends AbstractElementList<WordTableColumn, WordText>
    }
 
    /**
+    * Creates a new open and empty list for {@link WordText}s.
+    *
+    * @apiNote This method is package private. Objects are created by package public methods in the class
+    * {@link PublishingXmlUtils}.
+    * @param WordParagrap the {@link WordParagraph} containing the texts.
+    * @throws NullPointerException when the parameter <code>wordParagraph</code> is <code>null</code>.
+    */
+
+   WordTextList(WordParagraph wordParagraph) {
+      super(wordParagraph);
+   }
+
+   /**
     * Get the containing (parent) {@link WordTableColumn}.
     *
     * @return the containing {@link WordTableColumn}.
     */
 
    public WordTableColumn getWordTableColumn() {
-      return this.getParent();
+      return (WordTableColumn) this.getParent();
+   }
+
+   /**
+    * Get the containing (parent) {@link WordParagraph}.
+    *
+    * @return the containing {@link WordParagraph}.
+    */
+
+   public WordParagraph getWordParagraph() {
+      return (WordParagraph) this.getParent();
    }
 
 }
