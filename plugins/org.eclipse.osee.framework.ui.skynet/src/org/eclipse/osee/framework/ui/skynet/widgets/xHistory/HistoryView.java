@@ -299,7 +299,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          @Override
          public void menuShown(MenuEvent e) {
             List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
-            TransactionId tx = ((Change) selections.iterator().next()).getTxDelta().getStartTx();
+            TransactionId tx = ((Change) selections.iterator().next()).getTxDelta().getEndTx();
             changeReportMenuItem.setEnabled(selections.size() == 1 && TransactionManager.getTransaction(
                tx).getTxType() != TransactionDetailsType.Baselined);
          }
@@ -315,7 +315,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
             if (selectedObject instanceof Change) {
                try {
-                  ChangeUiUtil.open(((Change) selectedObject).getTxDelta().getStartTx());
+                  ChangeUiUtil.open(((Change) selectedObject).getTxDelta().getEndTx());
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
