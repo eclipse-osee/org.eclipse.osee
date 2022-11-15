@@ -15,7 +15,9 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -195,7 +197,10 @@ public class Message {
             }
 
             case BLOCK: {
-               message.append(this.getTitle()).append(Message.lineEnding);
+               var indentString = IndentedString.indentString(this.getIndent());
+               for (var line : this.getTitle().toString().split("\\v")) {
+                  message.append(indentString).append(line);
+               }
                return;
             }
 
@@ -312,6 +317,7 @@ public class Message {
        * @param indentColumnStartArray an array containing the value starting column for each indent level.
        * @return the estimated number of character in the array.
        */
+
       int size(int[] indentColumnStartArray) {
 
          switch (this.lineType) {
@@ -534,8 +540,78 @@ public class Message {
 
    public Message copy(Message otherMessage) {
       this.cachedResult = null;
-      otherMessage.lines.forEach((otherLine) -> new Line(this.indent, otherLine));
+      otherMessage.lines.forEach((otherLine) -> this.lines.add(new Line(this.indent, otherLine)));
       return this;
+   }
+
+   /**
+    * Adds a title line with an indented text block. The lines will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;indent(n)&gt;   &lt;title&gt;
+    *    &lt;indent(n+1)&gt; &lt;block&gt;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>indent:</dt>
+    * <dd>is an indent string the message's current indent level n.</dd>
+    * <dt>title:</dt>
+    * <dd>is the provided title text.</dd>
+    * <dt>block</dt>
+    * <dd>is the provided block text.</dd>
+    * </dl>
+    *
+    * @param title the text for the title line.
+    * @param block the text for indent text block.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the either of the parameters <code>title</code> or <code>block</code> are
+    * <code>null</code>.
+    */
+
+   public Message follows(CharSequence title, CharSequence block) {
+      Objects.requireNonNull(title, "Message::follows, parameter \"title\" cannot be null.");
+      Objects.requireNonNull(block, "Message::follows, parameter \"block\" cannot be null.");
+      //@formatter:off
+      return
+         this
+            .title( title )
+            .indentInc()
+            .block( block )
+            .indentDec();
+      //@formatter:on
+   }
+
+   /**
+    * When the parameter <code>block</code> is non-<code>null</code>, adds a follows message as if the method
+    * {@link Message#follows} had been called; otherwise, no action is performed.
+    *
+    * @param title the text for the title line.
+    * @param block the text for indent text block.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>title</code> is <code>null</code>.
+    */
+
+   public Message followsIfNonNull(CharSequence title, CharSequence block) {
+      return Objects.nonNull(block) ? this.follows(title, block) : this;
+   }
+
+   /**
+    * When the parameter <code>blockOptional</code> is non-<code>null</code> and has a value present, adds a follows
+    * message as if the method {@link Message#follows} had been called; otherwise, no action is performed.
+    *
+    * @param title the text for the title line.
+    * @param block a possibly empty {@link Optional} containing the block text to be added to the {@link Message}. This
+    * parameter may be <code>null</code>.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>title</code> is <code>null</code>.
+    */
+
+   public Message followsIfPresent(CharSequence title, Optional<CharSequence> blockOptional) {
+      //@formatter:off
+      return Objects.nonNull( blockOptional ) && blockOptional.isPresent()
+                ? this.follows(title, blockOptional.get())
+                : this;
    }
 
    /**
@@ -546,7 +622,15 @@ public class Message {
     */
 
    public Message indent(int indent) {
-      this.indent = indent > 0 ? indent : 0;
+      //@formatter:off
+      this.indent =
+         indent > 0
+            ? indent
+            : indent == -1
+                 ? this.indent
+                 : 0;
+      //@formatter:on
+
       return this;
    }
 
@@ -580,6 +664,73 @@ public class Message {
 
    public boolean isEmpty() {
       return this.lines.size() == 0;
+   }
+
+   /**
+    * Adds a title line with a block containing the message from the throwable. The lines will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;indent(n)&gt;   &lt;title&gt;
+    *    &lt;indent(n+1)&gt; &lt;block&gt;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>indent:</dt>
+    * <dd>is an indent string the message's current indent level n.</dd>
+    * <dt>title:</dt>
+    * <dd>is the string "Reason Follows:"</dd>
+    * <dt>block</dt>
+    * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
+    * </dl>
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>throwable</code> is <code>null</code>.
+    */
+
+   public Message reasonFollows(Throwable throwable) {
+      Objects.requireNonNull(throwable, "Message::reasonFollows, parameter \"throwable\" cannot be null.");
+      var block = throwable.getMessage();
+      if (Objects.isNull(block)) {
+         block = "(null)";
+      }
+      this.title("Reason Follows:");
+      this.indentInc();
+      this.title(block);
+      this.indentDec();
+      return this;
+   }
+
+   /**
+    * When the parameter <code>throwable</code> is non-<code>null</code>, adds a reason follows message as if the method
+    * {@link Message#reasonFollows} had been called; otherwise, no action is performed.
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}. This parameter maybe
+    * <code>null</code>.
+    * @return this {@link Message}.
+    */
+
+   public Message reasonFollowsIfNonNull(Throwable throwable) {
+      return Objects.nonNull(throwable) ? this.reasonFollows(throwable) : this;
+   }
+
+   /**
+    * When the parameter <code>throwableOptional</code> is non-<code>null</code> and has a value present, adds a reason
+    * follows message as if the method {@link Message#reasonFollows} had been called with
+    * <code>throwableOptional.get()</code>; otherwise, no action is performed.
+    *
+    * @param throwable a possibly empty {@link Optional} containing the {@link Throwable} whose message is to be added
+    * to the {@link Message}.
+    * @return this {@link Message}.
+    */
+
+   public Message reasonFollowsIfPresent(Optional<? extends Throwable> throwableOptional) {
+      //@formatter:off
+      return Objects.nonNull(throwableOptional) && throwableOptional.isPresent()
+                ? this.reasonFollows(throwableOptional.get())
+                : this;
+      //@formatter:on
    }
 
    /**
@@ -845,8 +996,10 @@ public class Message {
     * Otherwise the method {@link ToMessage#toString} is used to generate the member value message.</dd>
     * </dl>
     *
-    * @param title the class member name for the member {@link List}.
-    * @param memberList the {@link List} of objects to generate a member value message for.
+    * @param <T> the type of values in the {@link List}.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueList a @{link List} of values to generate the value string from.
+    * @param valueExtractor a {@link Function} used to extract the value for the message from each list element.
     * @return this {@link Message}.
     */
 
@@ -871,10 +1024,106 @@ public class Message {
       for (var value : valueList) {
          var displayValue = valueExtractor.apply(value);
          listElementTitle.setLength(0);
-         listElementTitle.append("[").append(i).append("]");
+         listElementTitle.append("[").append(i++).append("]");
          if (value instanceof ToMessage) {
             this.lines.add(new Line(this.indent, listElementTitle));
             ((ToMessage) value).toMessage(this.indent + 1, this);
+         } else {
+            this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
+         }
+         this.indent--;
+      }
+
+      this.indent--;
+
+      return this;
+   }
+
+   /**
+    * Adds a new segment line with the value string generated from a {@link Map}. This method behaves as though the
+    * following method were called:
+    *
+    * <pre>
+    * message.segmentMap(&quot;title&quot;, theMap, Function.identity());
+    * </pre>
+    *
+    * @param <K> the type of the keys in the {@link Map}.
+    * @param <V> the type of values in the {@link Map}.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueMap a @{link Map} of keys and values to generate the value string from.
+    * @return this {@link Message}.
+    */
+
+   public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap) {
+      return this.segmentMap(title, valueMap, (v) -> v);
+   }
+
+   /**
+    * Adds a new segment line with a title and a value string generated from a {@link Map}. The invocation of this
+    * method generates the value string from the {@link Map}. Changes to the {@link Map} after this method completes
+    * will not be reflected in the {@link Message}. The segment line will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;title&gt; ": " { &lt;null-or-empty&gt; } "\n"
+    *    { &lt;indent+2&gt; "[" &lt;key&gt; "]:\n" &lt;indent+3&gt; &lt;member-element-value&gt; }
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>title:</dt>
+    * <dd>Is the member name as specified by the parameter <code>title</code>.</dd>
+    * <dt>null-or-empty:</dt>
+    * <dd>This string is determined by the parameter <code>valueMap</code> as follows:
+    * <dl>
+    * <dt><code>null</code>:</dt>
+    * <dd>the string "(null)".</dd>
+    * <dt><code>size</code> == 0:</dt>
+    * <dd>the string "(empty)".</dd>
+    * <dt>not <code>null</code> and <code>size</code> != 0:</dt>
+    * <dd>the empty string.</dd>
+    * </dl>
+    * <dt>key:</dt>
+    * <dd>Is the map key of the {@link Map} element.</dd>
+    * <dt>member-element-value:</dt>
+    * <dd>Is a string representation of the map value. When the member {@link Map} element implements the
+    * {@link ToMessage} interface the member value message is generated with the {@link ToMessage#toMessage} method.
+    * Otherwise the method {@link ToMessage#toString} is used to generate the member value message.</dd>
+    * </dl>
+    *
+    * @param <K> the type of the keys in the {@link Map}.
+    * @param <V> the type of values in the {@link Map}.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueMap a @{link Map} of keys and values to generate the value string from.
+    * @param valueExtractor a {@link Function} used to extract the value for the message from each map value.
+    * @return this {@link Message}.
+    */
+
+   public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap, Function<V, Object> valueExtractor) {
+
+      this.cachedResult = null;
+
+      if (Objects.isNull(valueMap)) {
+         this.lines.add(new Line(this.indent, title, "(null)"));
+         return this;
+      }
+
+      if (valueMap.isEmpty()) {
+         this.lines.add(new Line(this.indent, title, "(empty)"));
+         return this;
+      }
+
+      this.lines.add(new Line(this.indent++, title));
+
+      var listElementTitle = new StringBuilder();
+
+      for (var entry : valueMap.entrySet()) {
+         var displayValue = valueExtractor.apply(entry.getValue());
+         listElementTitle.setLength(0);
+         listElementTitle.append("[").append(Message.objectToString(entry.getKey())).append("]");
+         if (displayValue instanceof ToMessage) {
+            this.lines.add(new Line(this.indent, listElementTitle));
+            ((ToMessage) displayValue).toMessage(this.indent + 1, this);
+            this.indent--;
          } else {
             this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
          }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +23,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import java.util.zip.GZIPInputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
@@ -51,6 +51,24 @@ public class PublishingXmlUtils {
     */
 
    public static String BodyTagName = "w:body";
+
+   /**
+    * XML tag for a Word document paragraph element.
+    */
+
+   public static String ParagraphTagName = "w:p";
+
+   /**
+    * XML tag for a Word document table element.
+    */
+
+   public static String SectionTagName = "wx:sect";
+
+   /**
+    * XML tag for a Word document table element.
+    */
+
+   public static String SubSectionTagName = "wx:sub-section";
 
    /**
     * XML tag for a Word document table element.
@@ -281,23 +299,23 @@ public class PublishingXmlUtils {
    }
 
    /**
-    * Reads a Word ML document from a compressed input stream ({@link GZIPInputStream}) and parses it into a
+    * Reads a Word ML document from an input stream ({@link InputStream}), closes the stream, and parses it into a
     * {@link org.w3c.dom.Document} XML DOM.
     *
-    * @param gzipInputStream a compressed input stream containing the Word ML document
+    * @param inputStream an input stream, possibly compressed, containing the Word ML document
     * @return when the stream is successfully parsed, an {@link Optional} containing the {@link org.w3c.dom.Document};
     * otherwise, an empty {@link Optional}.
     */
 
-   public Optional<Document> parse(GZIPInputStream gzipInputStream) {
+   public Optional<Document> parse(InputStream inputStream) {
 
       this.startOperation();
 
-      try (var inputStream = gzipInputStream) {
+      try (var autoCloseInputStream = inputStream) {
 
          var documentBuilderFactory = DocumentBuilderFactory.newInstance();
          var documentBuilder = documentBuilderFactory.newDocumentBuilder();
-         var document = documentBuilder.parse(inputStream);
+         var document = documentBuilder.parse(autoCloseInputStream);
 
          return Optional.of(document);
 
@@ -590,6 +608,81 @@ public class PublishingXmlUtils {
    }
 
    /**
+    * Parses the first level Word paragraphs from a sub-section of a Word ML document. The found paragraphs are not
+    * necessarily immediate children of the document body, but are not nested within another section.
+    *
+    * @param wordSubSection the {@link WordSubSection} handle to the Word ML sub-section.
+    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordParagraphList}; otherwise,
+    * an empty {@link Optional}.
+    */
+
+   public Optional<WordParagraphList> parseWordParagraphListFromWordSubSection(WordSubSection wordSubSection) {
+
+      this.startOperation();
+
+      try {
+         var wordParagraphList = this.parseNonNestedAbstractElementList(wordSubSection, WordParagraphList::new,
+            WordParagraph::new, PublishingXmlUtils.ParagraphTagName);
+         wordSubSection.setChild(wordParagraphList);
+         return Optional.of(wordParagraphList);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   /**
+    * Parses the first level Word sections from the body of a Word ML document. The found sections are not necessarily
+    * immediate children of the document body, but are not nested within another section.
+    *
+    * @param wordBody the {@link WordBody} handle to the Word ML document body.
+    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordSectionList}; otherwise, an
+    * empty {@link Optional}.
+    */
+
+   public Optional<WordSectionList> parseWordSectionListFromWordBody(WordBody wordBody) {
+
+      this.startOperation();
+
+      try {
+         var wordSectionList = this.parseNonNestedAbstractElementList(wordBody, WordSectionList::new, WordSection::new,
+            PublishingXmlUtils.SectionTagName);
+         wordBody.setChild(wordSectionList);
+         return Optional.of(wordSectionList);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   /**
+    * Parses the first level Word sub-sections from a section of a Word ML document. The found sub-sections are not
+    * necessarily immediate children of the section, but are not nested within another sub-section.
+    *
+    * @param wordSection the {@link WordSection} handle to the Word ML section.
+    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordSubSectionList}; otherwise,
+    * an empty {@link Optional}.
+    */
+
+   public Optional<WordSubSectionList> parseWordSubSectionListFromWordSection(WordSection wordSection) {
+
+      this.startOperation();
+
+      try {
+         var wordSubSectionList = this.parseNonNestedAbstractElementList(wordSection, WordSubSectionList::new,
+            WordSubSection::new, PublishingXmlUtils.SubSectionTagName);
+         wordSection.setChild(wordSubSectionList);
+         return Optional.of(wordSubSectionList);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   /**
     * Parses the first level table columns from a Word table row. The found columns belong to the provided table row and
     * do not include any table columns from nested tables.
     *
@@ -667,6 +760,32 @@ public class PublishingXmlUtils {
    }
 
    /**
+    * Parses all the Word text elements from a Word paragraph. This will include text elements from any nested
+    * paragraphs within the Word paragraph being parsed.
+    *
+    * @param wordParagraph a {@link WordParagraph} handle to the the Word ML paragraph.
+    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordTextList}; otherwise, an
+    * empty {@link Optional}.
+    */
+
+   public Optional<WordTextList> parseWordTextListFromWordParagraph(WordParagraph wordParagraph) {
+
+      this.startOperation();
+
+      try {
+         var wordTextList = this.parseAbstractElementList(wordParagraph, WordTextList::new, WordText::new,
+            PublishingXmlUtils.TextTagName);
+         wordParagraph.setChild(wordTextList);
+         return Optional.of(wordTextList);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+
+   }
+
+   /**
     * Parses all the Word text elements from a Word table column. This will include text elements from any tables nested
     * within the Word table column being parsed.
     *
@@ -674,6 +793,7 @@ public class PublishingXmlUtils {
     * @return on successful completion, an {@link Optional} with a possibly empty {@link WordTextList}; otherwise, an
     * empty {@link Optional}.
     */
+
    public Optional<WordTextList> parseWordTextListFromWordTableColumn(WordTableColumn wordTableColumn) {
 
       this.startOperation();
@@ -714,7 +834,7 @@ public class PublishingXmlUtils {
          transformerFactory.setAttribute("indent-number", 3);
          var transformer = transformerFactory.newTransformer();
          transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
          transformer.setOutputProperty(OutputKeys.INDENT, "yes");
          var stringWriter = new StringWriter();
          transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
