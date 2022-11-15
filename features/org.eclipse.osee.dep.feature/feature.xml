@@ -436,7 +436,7 @@
          id="org.eclipse.jetty.io"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
 
@@ -485,35 +485,35 @@
          id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.server"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.servlet"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
@@ -564,13 +564,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   <plugin
-         id="org.eclipse.sphinx.emf.serialization"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>         
-
+      
     <plugin
          id="org.eclipse.rmf.reqif10"
          download-size="0"
@@ -591,7 +585,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                  
+    <plugin
+         id="org.eclipse.sphinx.emf.serialization"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>                 
    <plugin
          id="org.apache.ws.xmlschema.core"
          download-size="0"
@@ -1975,7 +1974,7 @@
          id="org.eclipse.jetty.util.ajax"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
@@ -2108,7 +2107,7 @@
          id="org.eclipse.jetty.webapp"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
@@ -2122,7 +2121,7 @@
          id="org.eclipse.jetty.xml"
          download-size="0"
          install-size="0"
-         version="9.4.44.v20210927"
+         version="9.4.48.v20220622"
          unpack="false"/>
 
    <plugin
