@@ -22,8 +22,17 @@ import org.junit.runners.Suite;
  * @author Loren K. Ashley
  */
 
+//@formatter:off
 @RunWith(Suite.class)
-@Suite.SuiteClasses({PublishingSharedArtifactsFolderTest.class})
+@Suite.SuiteClasses
+   (
+      {
+         PublishingDataRightsTest.class,
+         PublishingServerPreviewTest.class,
+         PublishingSharedArtifactsFolderTest.class
+      }
+   )
+//@formatter:on
 
 public class PublishingTestSuite {
    // Test Suite

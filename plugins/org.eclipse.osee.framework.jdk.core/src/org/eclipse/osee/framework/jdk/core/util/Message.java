@@ -205,9 +205,12 @@ public class Message {
             }
 
             case SEGMENT: {
-               message.append(IndentedString.indentString(this.getIndent()));
+               var maxIndent = indentColumnStartArray.length - 1;
+               var indent = this.getIndent();
+               indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
+               message.append(IndentedString.indentString(indent));
                message.append(this.getTitle()).append(": ");
-               var space = indentColumnStartArray[this.getIndent()] - this.title.length();
+               var space = indentColumnStartArray[indent] - this.title.length();
                for (int i = 0; i < space; i++) {
                   message.append(" ");
                }
@@ -331,10 +334,13 @@ public class Message {
             }
 
             case SEGMENT: {
+               var maxIndent = indentColumnStartArray.length - 1;
+               var indent = this.getIndent();
+               indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
                //@formatter:off
                return
                     IndentedString.indentSize() * this.getIndent()
-                  + indentColumnStartArray[this.getIndent()]
+                  + indentColumnStartArray[indent]
                   + this.value.length()
                   + Message.lineEndingSize;
               //@formatter:on
@@ -1028,10 +1034,10 @@ public class Message {
          if (value instanceof ToMessage) {
             this.lines.add(new Line(this.indent, listElementTitle));
             ((ToMessage) value).toMessage(this.indent + 1, this);
+            this.indent--;
          } else {
             this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
          }
-         this.indent--;
       }
 
       this.indent--;
@@ -1193,6 +1199,7 @@ public class Message {
                ( line ) ->
                {
                   var indent = line.getIndent();
+                  indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
                   var titleLength = line.getSegmentTitleLength() + 2;
                   indentColumnStartArray[indent] = indentColumnStartArray[indent] > titleLength ? indentColumnStartArray[indent] : titleLength;
                }

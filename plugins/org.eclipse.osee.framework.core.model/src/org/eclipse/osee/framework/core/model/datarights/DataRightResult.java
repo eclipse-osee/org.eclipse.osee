@@ -15,21 +15,25 @@ package org.eclipse.osee.framework.core.model.datarights;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.ReportConstants;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
  * @author Angel Avila
  */
-public class DataRightResult {
+public class DataRightResult implements ToMessage {
 
    public static final String UNSPECIFIED =
-      "<w:ftr w:type=\"odd\"><w:p><w:pPr><w:pStyle w:val=\"para8pt\"/><w:jc w:val=\"center\"/></w:pPr><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/><w:noProof/></w:rPr><w:t>5</w:t></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"end\"/></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>UNSPECIFIED - PLEASE TAG WITH CORRECT DATA RIGHTS ATTRIBUTE!!!</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contract No.: </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contractor Name: The Boeing Company</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contractor Address: 5000 E. McDowell Road; Mesa, AZ 85215-9797 </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t></w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>The Government's rights to use, modify, reproduce, release, perform, display, or disclose this software are restricted by paragraph (b)(3) of the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation clause contained in the above identified contract.  Any reproduction of computer software or portions thereof marked with this legend must also reproduce the markings.  Any person, other than the Government, who has been provided access to such software must promptly notify the above named Contractor. </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Copyright (c) 2017 – The Boeing Company</w:t></w:r></w:p></w:ftr>";
+      "<w:ftr w:type=\"odd\"><w:p><w:pPr><w:pStyle w:val=\"para8pt\"/><w:jc w:val=\"center\"/></w:pPr><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:instrText> PAGE </w:instrText></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/><w:noProof/></w:rPr><w:t>5</w:t></w:r><w:r><w:rPr><w:rStyle w:val=\"PageNumber\"/></w:rPr><w:fldChar w:fldCharType=\"end\"/></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>UNSPECIFIED - PLEASE TAG WITH CORRECT DATA RIGHTS ATTRIBUTE!!!</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contract No.: </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contractor Name: Acme Corporation</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contractor Address: 1234 W. World Road; Jersey City, NJ 07002</w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t></w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>The Government's rights to use, modify, reproduce, release, perform, display, or disclose this software are restricted by paragraph (b)(3) of the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation clause contained in the above identified contract.  Any reproduction of computer software or portions thereof marked with this legend must also reproduce the markings.  Any person, other than the Government, who has been provided access to such software must promptly notify the above named Contractor. </w:t></w:r></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr></w:p><w:p><w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Copyright (c) 2017 – The Boeing Company</w:t></w:r></w:p></w:ftr>";
 
    private List<DataRightAnchor> dataRightAnchors;
    private List<DataRight> dataRights;
@@ -40,6 +44,11 @@ public class DataRightResult {
          dataRightAnchors = new ArrayList<>();
       }
       return dataRightAnchors;
+   }
+
+   public Map<ArtifactId, DataRightAnchor> getMap() {
+      this.checkInitialized();
+      return Collections.unmodifiableMap(this.idToAnchor);
    }
 
    public void setDataRightAnchors(List<DataRightAnchor> dataRightAnchors) {
@@ -106,4 +115,36 @@ public class DataRightResult {
          }
       }
    }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Message toMessage(int indent, Message message) {
+
+      var outMessage = Objects.nonNull(message) ? message : new Message();
+
+      //@formatter:off
+      outMessage
+         .indent( indent )
+         .title( "DataRightResult" )
+         .indentInc()
+         .segmentIndexedList( "dataRightAncors", this.dataRightAnchors )
+         .indentDec()
+         ;
+      //@formatter:on
+
+      return outMessage;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String toString() {
+      return this.toMessage(0, null).toString();
+   }
+
 }

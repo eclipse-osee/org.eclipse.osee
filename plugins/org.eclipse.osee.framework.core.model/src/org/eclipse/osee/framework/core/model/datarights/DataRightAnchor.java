@@ -13,12 +13,15 @@
 
 package org.eclipse.osee.framework.core.model.datarights;
 
+import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
  * @author Angel Avila
  */
-public class DataRightAnchor {
+public class DataRightAnchor implements ToMessage {
 
    private ArtifactId id;
    private DataRight dataRight;
@@ -57,4 +60,39 @@ public class DataRightAnchor {
       this.isContinuous = isContinuous;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Message toMessage(int indent, Message message) {
+      var outMessage = Objects.nonNull(message) ? message : new Message();
+
+      var dataRightString = this.dataRight.getContent();
+      var dataRightLength = dataRightString.length() < 20 ? dataRightString.length() : 20;
+
+      //@formatter:off
+      outMessage
+         .indent( indent )
+         .title( "Data Right Anchor" )
+         .indentInc()
+         .segment( "artifactId",   this.id   )
+         .segment( "newFooter",    this.isSetDataRightFooter )
+         .segment( "isContinuous", this.isContinuous )
+         .segment( "dataRight",    dataRightString.subSequence( 0, dataRightLength ) )
+         .indentDec()
+         ;
+      //@formatter:on
+
+      return outMessage;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String toString() {
+      return this.toMessage(0, null).toString();
+   }
 }
