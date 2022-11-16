@@ -406,7 +406,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(ExecutionFrequency, 0, "Frequency of parameterized command execution")
       .exactlyOne(CommandTimestamp, DEFAULT_DATE,"The timestamp of the last execution of this command")
       .exactlyOne(ParameterizedCommand, "", "The JSON representation of the command with its parameterized attributes/values")
-      .zeroOrOne(Favorite, false, "Is executed command a favorite")
+      .exactlyOne(Favorite, false, "Is executed command a favorite")
       .exactlyOne(IsValidated, true, "Flags if the executed command was valid or not")
       );
    ArtifactTypeToken ExecutedCommandHistory =  osee.add(osee.artifactType(3102324341367389724L, "ExecutedCommand History", false, Artifact)
@@ -421,6 +421,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken ParameterBranch = osee.add(osee.artifactType(4683538775178036503L, "ParameterBranch", false, Parameter));
    ArtifactTypeToken ParameterBoolean = osee.add(osee.artifactType(9092244262700990331L, "ParameterBoolean", false, Parameter));
    ArtifactTypeToken ParameterString = osee.add(osee.artifactType(6057500041616318960L, "ParameterString", false, Parameter));
+   ArtifactTypeToken ParameterSingleSelect = osee.add(osee.artifactType(9154803029373920500L, "ParameterSingleSelect", false, Parameter));
+   ArtifactTypeToken ParameterMultipleSelect = osee.add(osee.artifactType(1937883426323978299L, "ParameterMultipleSelect", false, Parameter));
 
    // @formatter:on
 }
