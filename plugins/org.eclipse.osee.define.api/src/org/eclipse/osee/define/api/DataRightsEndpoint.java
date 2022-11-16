@@ -23,28 +23,77 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.model.datarights.DataRightAnchor;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
 /**
+ * The interface defines the REST API end points for obtaining the data rights for a sequence of artifacts.
+ *
  * @author Ryan D. Brooks
+ * @author Loren K. Ashley
  */
+
 @Path("datarights")
 public interface DataRightsEndpoint {
 
-   /*
-    * This will override the artifacts sent in with the specified Data Rights classification If classification is null
-    * or invalid, it will default to the Data Rights specified on the artifact(s)
+   /**
+    * Calling this method is functionally the same as calling:
+    *
+    * <pre>
+    *    dataRightAnchorsResult = {@link #getDataRights(List, BranchId, String) getDataRights}( artifactIdentifiers, branchIdentifier, "" );
+    * </pre>
+    *
+    * @param branch the branch to obtain the artifacts from.
+    * @param artifacts an ordered list of the artifacts by identifier to analyze.
+    * @return a {@link DataRightAnchor} map supplier.
     */
-   @POST
-   @Path("artifacts/branch/{branch}/classification/{classification}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   public DataRightResult getDataRights(@PathParam("branch") BranchId branch, @PathParam("classification") @DefaultValue("invalid") String overrideClassification, List<ArtifactId> artifacts);
 
+   //@formatter:off
    @POST
    @Path("artifacts/branch/{branch}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public DataRightResult getDataRights(@PathParam("branch") BranchId branch, List<ArtifactId> artifacts);
+   public DataRightResult
+      getDataRights
+         (
+            @PathParam("branch") BranchId         branch,
+                                 List<ArtifactId> artifacts
+         );
+   //@formatter:on
+
+   /**
+    * Creates a map supplier for maps of {@link DataRightAnchor} objects by {@link ArtifactId}. The map will contain one
+    * {@link DataRightAnchor} for each artifact that was retrieved from the OSEE database for the artifacts listed on
+    * the <code>artifactIdentifiers</code> list. Each {@link DataRightAnchor} contains the following data for it's
+    * associated artifact:
+    * <ul>
+    * <li>A flag to indicated if this artifact is the first in a subsequence of artifacts with the same data rights
+    * classification.</li>
+    * <li>A flag to indicate if this artifact is the last in a subsequence of artifacts with the same data rights Word
+    * ML footer.</li>
+    * <li>The artifact's data rights classification.</li>
+    * <li>The Word ML for the artifact's data right footer.</li>
+    * </ul>
+    *
+    * @param branch the branch to obtain the artifacts from.
+    * @param overrideClassification when specified, this will be used as each artifact's data right classification
+    * instead of the classification specified by the artifacts data rights attributes.
+    * @param artifacts an ordered list of the artifacts by identifier to analyze.
+    * @return a {@link DataRightAnchor} map supplier.
+    */
+
+   //@formatter:off
+   @POST
+   @Path("artifacts/branch/{branch}/classification/{classification}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public DataRightResult
+      getDataRights
+         (
+            @PathParam("branch")                                  BranchId         branch,
+            @PathParam("classification") @DefaultValue("invalid") String           overrideClassification,
+                                                                  List<ArtifactId> artifacts
+         );
+   //@formatter:on
 
 }
