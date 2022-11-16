@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityEndpointImpl;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.GridCommanderEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -92,5 +93,11 @@ public class BranchesResource {
    @Path("{branch}/relation")
    public RelationEndpoint getRelation(@PathParam("branch") BranchId branch) {
       return new RelationEndpointImpl(orcsApi, branch);
+   }
+
+   @Path("{branch}/gc")
+   @Produces({MediaType.APPLICATION_JSON})
+   public GridCommanderEndpoint getUserCommands(@PathParam("branch") BranchId branch) {
+      return new GridCommanderEndpointImpl(orcsApi, branch, uriInfo);
    }
 }
