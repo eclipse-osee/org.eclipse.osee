@@ -242,7 +242,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             if (this.output.toString().contains("top_rel_type")) {
                write(", top_rel_type, top_rel_order, rel_order");
             } else {
-               write(", rel_order");
+               write(", case when other_art_id = 0 then other_art_id else 1 end, rel_order");
             }
 
          }
