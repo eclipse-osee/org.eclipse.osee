@@ -75,7 +75,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          if (cCol.equals(ChangeXViewerFactory.Id)) {
             if (change instanceof RelationChange) {
                RelationChange relChg = (RelationChange) change;
-               return String.format("%s - %s", relChg.getArtId().getIdString(), relChg.getBArtId().getIdString());
+               return String.format("%s - %s - %s", relChg.getArtId().getIdString(),
+                  relChg.getRelLinkId().getIdString(), relChg.getBArtId().getIdString());
             }
             return change.getArtId().getIdString();
          }

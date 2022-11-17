@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemData;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeReportRollup;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -169,6 +170,9 @@ public interface IAtsChangeReportTaskNameProvider {
          ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
          Collection<ChangeReportRollup> rollups = data.getRollups().values();
          for (ChangeReportRollup rollup : rollups) {
+            if (rollup.getArtToken().getName().contains("COM_SUBTASK")) {
+               System.err.println("here");
+            }
             ArtifactIncluded result = isIncluded(crtd, crttwd, rollup, rollup.getArtType(), atsApi);
 
             if (result.isIncluded()) {
@@ -218,7 +222,8 @@ public interface IAtsChangeReportTaskNameProvider {
          if (ChangeItemUtil.createdAndDeleted(item)) {
             continue;
          }
-         if (ChangeItemUtil.isArtifactDeleted(item.getCurrentVersion())) {
+         if (item.getChangeType() != ChangeType.Relation && ChangeItemUtil.isArtifactDeleted(
+            item.getCurrentVersion())) {
             deleted = true;
          }
 
