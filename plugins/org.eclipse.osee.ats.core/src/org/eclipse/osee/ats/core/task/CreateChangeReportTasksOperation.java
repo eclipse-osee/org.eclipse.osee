@@ -112,7 +112,7 @@ public class CreateChangeReportTasksOperation {
          CreateTasksDefinitionBuilder taskSetDefinition =
             atsApi.getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
          if (taskSetDefinition == null) {
-            rd.errorf("No CreateTasksDefintiion found for Task Def id %s\n", taskDefToken.toStringWithId());
+            rd.errorf("No CreateTasksDefinition found for Task Def id %s\n", taskDefToken.toStringWithId());
             return crtd;
          }
          // Multiple TaskSetDefinitions can be declared, ensure this one is applicable to be run
