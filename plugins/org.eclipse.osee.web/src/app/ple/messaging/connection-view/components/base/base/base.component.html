@@ -11,22 +11,9 @@
  *     Boeing - initial API and implementation
  -->
 <div class="connection-view">
-	<div
-		style="
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-		">
+	<div class="controls-container">
 		<osee-branch-picker category="3"></osee-branch-picker>
-		<div
-			style="
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				align-items: center;
-				gap: 5px;
-			">
+		<div class="controls-right">
 			<ng-container *ngIf="(inEditMode | async) === true">
 				<osee-undo-button-branch></osee-undo-button-branch>
 			</ng-container>

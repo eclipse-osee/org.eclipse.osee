@@ -16,10 +16,5 @@ export const amountOfPages = navigationStructure.length;
 export const amountOfMessagePages =
 	navigationStructure
 		.find((v) => v.cypressLabel === 'ple')
-		?.children.find((v) => v.cypressLabel === 'messaging')
-		?.children?.filter((a) => !a.isAdminRequired).length !== undefined
-		? navigationStructure
-				.find((v) => v.cypressLabel === 'ple')!
-				.children.find((v) => v.cypressLabel === 'messaging')!.children!
-				.length
-		: 0;
+		?.children.find((v) => v.cypressLabel === 'messaging')?.children
+		.length || 0;

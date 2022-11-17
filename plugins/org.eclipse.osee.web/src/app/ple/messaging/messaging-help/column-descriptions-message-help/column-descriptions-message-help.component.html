@@ -26,8 +26,8 @@
 				*matCellDef="let element">
 				<mat-list>
 					<mat-list-item *ngFor="let item of element.elements">
-						<h3 matLine>{{ item.humanReadable }}</h3>
-						<body matLine>
+						<h3 matListItemTitle>{{ item.humanReadable }}</h3>
+						<body matListItemLine>
 							Description:{{ item.description }}
 						</body>
 					</mat-list-item>
@@ -45,8 +45,8 @@
 				*matCellDef="let element">
 				<mat-list>
 					<mat-list-item *ngFor="let item of element.structures">
-						<h3 matLine>{{ item.humanReadable }}</h3>
-						<body matLine>
+						<h3 matListItemTitle>{{ item.humanReadable }}</h3>
+						<body matListItemLine>
 							Description:{{ item.description }}
 						</body>
 					</mat-list-item>
@@ -64,8 +64,8 @@
 				*matCellDef="let element">
 				<mat-list>
 					<mat-list-item *ngFor="let item of element.submessages">
-						<h3 matLine>{{ item.humanReadable }}</h3>
-						<body matLine>
+						<h3 matListItemTitle>{{ item.humanReadable }}</h3>
+						<body matListItemLine>
 							Description:{{ item.description }}
 						</body>
 					</mat-list-item>
@@ -83,8 +83,8 @@
 				*matCellDef="let element">
 				<mat-list>
 					<mat-list-item *ngFor="let item of element.messages">
-						<h3 matLine>{{ item.humanReadable }}</h3>
-						<body matLine>
+						<h3 matListItemTitle>{{ item.humanReadable }}</h3>
+						<body matListItemLine>
 							Description:{{ item.description }}
 						</body>
 					</mat-list-item>

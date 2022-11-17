@@ -12,7 +12,9 @@
  -->
 <ng-container *ngIf="allMessages | async as allItems">
 	<ng-container *ngIf="allItems.length !== 0">
-		<h2 class="mat-title diff-report-section-header">Message Changes</h2>
+		<h2 class="mat-headline-6 diff-report-section-header">
+			Message Changes
+		</h2>
 		<ng-container *ngIf="messagesAdded | async as messages">
 			<osee-messaging-diff-report-table
 				[items]="messages"

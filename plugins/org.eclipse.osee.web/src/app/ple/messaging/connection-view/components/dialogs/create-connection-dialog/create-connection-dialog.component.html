@@ -12,7 +12,9 @@
  -->
 <h1 mat-dialog-title>Create Connection to Node: {{ title }}</h1>
 <mat-dialog-content>
-	<mat-form-field id="connection-name-field">
+	<mat-form-field
+		id="connection-name-field"
+		class="full-width">
 		<mat-label>Add a Name</mat-label>
 		<input
 			matInput
@@ -23,7 +25,9 @@
 			data-cy="field-name" />
 	</mat-form-field>
 	<br />
-	<mat-form-field id="connection-description-field">
+	<mat-form-field
+		id="connection-description-field"
+		class="full-width">
 		<mat-label>Add a Description</mat-label>
 		<input
 			matInput
@@ -33,7 +37,9 @@
 			data-cy="field-description" />
 	</mat-form-field>
 	<br />
-	<mat-form-field id="connection-transport-type-selector">
+	<mat-form-field
+		id="connection-transport-type-selector"
+		class="full-width">
 		<mat-label>Select a Transport Type</mat-label>
 		<mat-select
 			[(ngModel)]="newConnection.connection.transportType"
@@ -55,7 +61,9 @@
 		</mat-select>
 	</mat-form-field>
 	<br />
-	<mat-form-field id="connection-node-selector">
+	<mat-form-field
+		id="connection-node-selector"
+		class="full-width">
 		<mat-label>Select a Node to Connect To</mat-label>
 		<mat-select
 			[(ngModel)]="newConnection.nodeId"

@@ -12,15 +12,6 @@
  -->
 <div class="message-interface">
 	<div class="message-interface-header">
-		<ng-container *ngIf="_connectionsRoute | async as connectionRoute">
-			<a
-				mat-raised-button
-				class="connections-button"
-				color="primary"
-				[routerLink]="connectionRoute"
-				>Connections</a
-			>
-		</ng-container>
 		<div class="message-interface-header grouped-buttons">
 			<ng-container *ngIf="(inEditMode | async) === true">
 				<osee-undo-button-branch
@@ -73,7 +64,6 @@
 		<mat-label>Filter Message Information</mat-label>
 		<input
 			matInput
-			type="text"
 			(keyup)="applyFilter($event)"
 			#input />
 		<mat-icon matPrefix>filter_list</mat-icon>
@@ -124,7 +114,8 @@
 				"
 				(contextmenu)="
 					openMenu($event, element, element[header], header)
-				">
+				"
+				class="message-attribute-cell">
 				<div
 					class="flex-cell"
 					[ngClass]="
@@ -276,14 +267,17 @@
 			mat-row
 			*matRowDef="let row; columns: (headers | async) || []"
 			class="message-detail-row"
-			[class.message-expanded-detail-row]="
-				!((rowIsExpanded(row.id) | async) || false)
+			[class.message-expanded-row]="
+				(rowIsExpanded(row.id) | async) || false
 			"
 			[attr.data-cy]="'message-table-row-' + row.name"></tr>
 		<tr
 			mat-row
 			*matRowDef="let row; columns: ['expandedMessage']"
-			class="message-expanded-detail-row"></tr>
+			class="message-sub-detail-row"
+			[class.message-sub-detail-row-expanded]="
+				(rowIsExpanded(row.id) | async) || false
+			"></tr>
 	</table>
 </div>
 <mat-menu

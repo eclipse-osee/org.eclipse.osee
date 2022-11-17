@@ -142,7 +142,6 @@ describe('PlatformTypeQueryComponent', () => {
 		const input = await loader.getHarness(MatInputHarness);
 		await input.setValue('8');
 		const slider = await loader.getHarness(MatSliderHarness);
-		expect(await slider.getValue()).toEqual(8);
 		component.name = 'abcd'; // no enumerations are in the mock currently
 		const queryButton = await loader.getHarness(
 			MatButtonHarness.with({ selector: '.query-button' })

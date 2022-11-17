@@ -19,17 +19,6 @@ import {
 	platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 
-declare const require: {
-	context(
-		path: string,
-		deep?: boolean,
-		filter?: RegExp
-	): {
-		keys(): string[];
-		<T>(id: string): T;
-	};
-};
-
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
 	BrowserDynamicTestingModule,
@@ -38,13 +27,8 @@ getTestBed().initTestEnvironment(
 		teardown: { destroyAfterEach: true },
 	}
 );
-// Then we find all the tests.
-const context = require.context('./', true, /\.spec\.ts$/);
 beforeEach(function () {
 	let window1 = spyOn(window, 'open').and.callFake((url, target, replace) => {
 		return null;
 	});
 });
-// console.warn = (message) => { throw new Error(message) };
-// And load the modules.
-context.keys().map(context);

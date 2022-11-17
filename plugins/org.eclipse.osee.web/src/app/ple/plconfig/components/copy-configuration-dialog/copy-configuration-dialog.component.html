@@ -13,7 +13,9 @@
 <h1 mat-dialog-title>Copy Configuration</h1>
 <mat-label [style.fontSize.px]="18">Copy To:</mat-label>
 <br />
-<mat-form-field [style.fontSize.px]="18">
+<mat-form-field
+	[style.fontSize.px]="18"
+	class="full-width">
 	<mat-label>Select a Configuration</mat-label>
 	<mat-select
 		(selectionChange)="selectDestinationBranch($event)"
@@ -29,7 +31,9 @@
 <br />
 <mat-label [style.fontSize.px]="18">Copy From:</mat-label>
 <br />
-<mat-form-field [style.fontSize.px]="18">
+<mat-form-field
+	[style.fontSize.px]="18"
+	class="full-width">
 	<mat-label>Select a Configuration</mat-label>
 	<mat-select
 		(selectionChange)="selectBranch($event)"

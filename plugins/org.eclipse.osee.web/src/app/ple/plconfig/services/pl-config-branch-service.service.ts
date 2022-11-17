@@ -87,9 +87,9 @@ export class PlConfigBranchService {
 			body.copyFrom = '';
 		}
 		if (
-			body.configurationGroup === [] ||
 			body.configurationGroup === null ||
-			body.configurationGroup === undefined
+			body.configurationGroup === undefined ||
+			body.configurationGroup.length !== 0
 		) {
 			body.configurationGroup = [];
 		}

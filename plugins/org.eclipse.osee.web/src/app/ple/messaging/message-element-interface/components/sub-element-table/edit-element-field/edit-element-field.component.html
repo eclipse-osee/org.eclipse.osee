@@ -12,7 +12,9 @@
  -->
 <mat-form-field
 	cdkMonitorSubtreeFocus
-	(cdkFocusChange)="focusChanged($event)">
+	(cdkFocusChange)="focusChanged($event)"
+	subscriptSizing="dynamic"
+	class="wide-form">
 	<input
 		matInput
 		[(ngModel)]="value"
@@ -67,7 +69,6 @@
 					[disabled]="editingDisabled" />
 				<ng-container *ngIf="_location | async as location">
 					<a
-						mat-button
 						mat-icon-button
 						matSuffix
 						[routerLink]="

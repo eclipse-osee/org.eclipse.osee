@@ -249,7 +249,7 @@ describe('MessageTableComponent', () => {
 		await addmenu.toggleOpen();
 		expect(await addmenu.isOpen()).toBeTruthy();
 		await addmenu.clickItem({
-			text: 'Add submessage to dummy element description',
+			text: 'description Add submessage to dummy element',
 		});
 		expect(spy).toHaveBeenCalled();
 	});
@@ -280,7 +280,7 @@ describe('MessageTableComponent', () => {
 		await addmenu.toggleOpen();
 		expect(await addmenu.isOpen()).toBeTruthy();
 		await addmenu.clickItem({
-			text: 'Add submessage to dummy element description',
+			text: 'description Add submessage to dummy element',
 		});
 		expect(spy).toHaveBeenCalled();
 	});

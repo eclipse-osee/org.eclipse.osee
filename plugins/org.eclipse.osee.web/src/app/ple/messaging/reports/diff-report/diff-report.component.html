@@ -12,7 +12,7 @@
  -->
 <osee-scroll-to-top-button></osee-scroll-to-top-button>
 <ng-container>
-	<h1 class="mat-headline diff-report-header">Difference Report</h1>
+	<h1 class="mat-headline-5 diff-report-header">Difference Report</h1>
 	<ng-container *ngIf="branchSummary | async as _branchSummary">
 		<table
 			mat-table
@@ -53,7 +53,7 @@
 		</table>
 	</ng-container>
 	<ng-container *ngIf="diffReportSummary | async as _diffReportSummary">
-		<h2 class="mat-title diff-report-section-header">Summary</h2>
+		<h2 class="mat-headline-6 diff-report-section-header">Summary</h2>
 		<table
 			mat-table
 			[dataSource]="_diffReportSummary || []"

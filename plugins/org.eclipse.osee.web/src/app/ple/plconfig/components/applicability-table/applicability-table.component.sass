@@ -10,7 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-table 
+@use '../../../../../sass-utils/mdc-migration/_form-field'
+@use '../../../../../modern-ple-theme'
+@use '_theme.scss' as t
+:host-context(.light-theme)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'full-width')
+    @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'full-width')
+    @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
+table
     width: 100%
 .table-container
     width: 100%
@@ -21,9 +30,9 @@ table
 .mat-form-field
     width: 100%
 
-::ng-deep 
+::ng-deep
     #selectableTableOption
-        .mat-form-field-underline 
+        .mat-form-field-underline
             display: none
 .mat-row
     height: auto
@@ -38,8 +47,8 @@ table
     border-right-color: rgba(0,0,0,0.15)
 .selectApplicabilityTableOption
     margin-bottom: -1.25em
-    margin-top:-1em
-    padding-top:1.0em
+    margin-top: -1em
+    padding-top: 1.0em
 th
     justify-content: center
     border-right: 1px solid
@@ -47,21 +56,34 @@ th
     border-right-color: rgba(0,0,0,0.15)
     border-bottom-color: rgba(0,0,0,0.15)
 td.mat-cell:last-of-type
-    padding-right:0
+    padding-right: 0px
 .table-container::-webkit-scrollbar
-    height:12px
-    width:12px
+    height: 12px
+    width: 12px
 .table-container::-webkit-scrollbar-track
     border-radius: 10px
 .table-container::-webkit-scrollbar-thumb
     border-radius: 10px
-    
+
 .config-table-row
     height: 3.16em
     td
         padding: 0 0.25em
 
 .filter-form-field
-    padding-left: 1em
-
-          
+    @extend .full-width
+.full-width
+    width: 100%
+.text-align-center
+    text-align: center
+.clickable-table-header
+    @extend .text-align-center
+    cursor: pointer
+.applic-table-header
+    @extend .text-align-center
+.border-right
+    border-right: 1px solid
+.config-group-header
+    @extend .clickable-table-header
+.config-header
+    @extend .clickable-table-header

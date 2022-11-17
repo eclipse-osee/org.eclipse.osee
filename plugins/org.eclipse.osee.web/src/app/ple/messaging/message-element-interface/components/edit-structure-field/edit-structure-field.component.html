@@ -12,7 +12,9 @@
  -->
 <mat-form-field
 	cdkMonitorSubtreeFocus
-	(cdkFocusChange)="focusChanged($event)">
+	(cdkFocusChange)="focusChanged($event)"
+	subscriptSizing="dynamic"
+	class="wide-form">
 	<ng-container
 		*ngIf="
 			header === 'interfaceStructureCategory' ||

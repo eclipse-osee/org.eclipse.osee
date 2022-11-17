@@ -24,17 +24,20 @@
 					[min]="minBitSize"
 					[max]="maxBitSize"
 					data-cy="field-byte-size" />
+				<mat-slider
+					matSuffix
+					[min]="minBitSize"
+					[max]="maxBitSize"
+					[step]="bitSizeSliderStepSize"
+					thumbLabel="true"
+					[displayWith]="bitSizeDisplay"
+					color="primary"
+					matSuffix>
+					<input
+						[(ngModel)]="bitSize"
+						matSliderThumb />
+				</mat-slider>
 				<span matSuffix>
-					<mat-slider
-						matSuffix
-						[min]="minBitSize"
-						[value]="bitSize"
-						(input)="bitSize = $event.value ? $event.value : 0"
-						[max]="maxBitSize"
-						[step]="bitSizeSliderStepSize"
-						thumbLabel="true"
-						[displayWith]="bitSizeDisplay"
-						color="primary"></mat-slider>
 					<button
 						mat-icon-button
 						(click)="queryTypes()"

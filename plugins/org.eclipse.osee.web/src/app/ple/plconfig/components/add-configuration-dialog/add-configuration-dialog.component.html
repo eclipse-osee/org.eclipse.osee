@@ -12,7 +12,9 @@
  -->
 <h1 mat-dialog-title>Add Configuration</h1>
 <div mat-dialog-content>
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width">
 		<mat-label>Title</mat-label>
 		<input
 			matInput
@@ -26,12 +28,14 @@
 	<br />
 	<mat-label [style.fontSize.px]="18">Copy From:</mat-label>
 	<br />
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width"
+		data-cy="field-copyFrom">
 		<mat-label>Select a Configuration</mat-label>
 		<mat-select
 			[(ngModel)]="data.copyFrom"
-			required
-			data-cy="field-copyFrom">
+			required>
 			<mat-option
 				*ngFor="let option of (branchApplicability | async)?.views"
 				[value]="option"
@@ -43,7 +47,9 @@
 	<br />
 	<mat-label [style.fontSize.px]="18">Add a Configuration Group:</mat-label>
 	<br />
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width">
 		<mat-label> Select a Configuration Group </mat-label>
 		<mat-select
 			[(ngModel)]="data.group"
