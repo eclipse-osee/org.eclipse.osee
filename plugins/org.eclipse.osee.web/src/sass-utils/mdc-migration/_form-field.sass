@@ -1,0 +1,34 @@
+/*********************************************************************
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use 'sass:map'
+@use '@angular/material' as mat
+
+//
+//	This function should only be used in scenarios where the form field styling is awkward (i.e. dense tables)
+//	It will revert mat-form-fields to a similar styling method in the non-active state for the component that this mixin is referenced.
+//	NOTE: The mat-form-fields must contain the class
+//
+//		Examples of usage in components:
+//			:host-context(.light-theme)
+//				@include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'example-field')
+//
+//			:host-context(.dark-theme)
+//				@include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'example-field')
+//
+@mixin legacy($theme,$class)
+    $config: mat.get-color-config($theme)
+    $palette: map.get($config,'background')
+    ::ng-deep
+        .#{$class}
+            & > .mdc-text-field--filled
+                    background-color: inherit

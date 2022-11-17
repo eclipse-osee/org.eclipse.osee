@@ -18,11 +18,11 @@ describe('Visit messages page', () => {
 	});
 
 	it('should contain title', () => {
-		cy.get('.mat-display-4').should('contain.text', 'OSEE Messaging');
+		cy.get('.mat-headline-1').should('contain.text', 'OSEE Messaging');
 	});
 
 	it(`should have ${amountOfMessagePages - 1} buttons`, () => {
-		cy.get('.messaging-grid')
+		cy.get('.landing-page-links-container')
 			.find('a')
 			.its('length')
 			.should('eq', amountOfMessagePages - 1);

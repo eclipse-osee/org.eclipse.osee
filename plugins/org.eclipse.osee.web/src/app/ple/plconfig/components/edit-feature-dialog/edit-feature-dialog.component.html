@@ -22,7 +22,9 @@
 </h1>
 <div mat-dialog-content>
 	<div *ngIf="(editable | async) === 'true'">
-		<mat-form-field [style.fontSize.px]="18">
+		<mat-form-field
+			[style.fontSize.px]="18"
+			class="full-width">
 			<mat-label>Title</mat-label>
 			<input
 				matInput
@@ -34,7 +36,9 @@
 				[attr.data-cy-value]="'field-name-' + data.feature.name" />
 		</mat-form-field>
 		<br />
-		<mat-form-field [style.fontSize.px]="18">
+		<mat-form-field
+			[style.fontSize.px]="18"
+			class="full-width">
 			<mat-label>Description</mat-label>
 			<input
 				matInput
@@ -48,7 +52,9 @@
 				" />
 		</mat-form-field>
 		<br />
-		<mat-form-field [style.fontSize.px]="18">
+		<mat-form-field
+			[style.fontSize.px]="18"
+			class="full-width">
 			<mat-label>Select a Value Type</mat-label>
 			<mat-select
 				[(ngModel)]="data.feature.valueType"
@@ -85,7 +91,8 @@
 				index as i;
 				trackBy: valueTracker
 			"
-			[style.fontSize.px]="18">
+			[style.fontSize.px]="18"
+			class="full-width">
 			<mat-label>Value</mat-label>
 			<input
 				matInput
@@ -106,12 +113,15 @@
 				(click)="increaseValueArray()"
 				[disabled]="(editable | async) === 'false'"
 				[style.fontSize.px]="18"
-				data-cy="add-value-btn">
+				data-cy="add-value-btn"
+				class="full-width">
 				Add a Value
 			</button>
 			<br />
 		</div>
-		<mat-form-field [style.fontSize.px]="18">
+		<mat-form-field
+			[style.fontSize.px]="18"
+			class="full-width">
 			<mat-label>Select a Default Value</mat-label>
 			<mat-select
 				[(ngModel)]="data.feature.defaultValue"

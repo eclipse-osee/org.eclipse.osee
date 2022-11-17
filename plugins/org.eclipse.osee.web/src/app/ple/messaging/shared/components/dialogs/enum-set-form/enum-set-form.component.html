@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field>
+<mat-form-field class="wide-form">
 	<mat-label>Enter Enum Set Name</mat-label>
 	<input
 		matInput
@@ -25,7 +25,7 @@
 	</button>
 </mat-form-field>
 <br />
-<mat-form-field>
+<mat-form-field class="wide-form">
 	<mat-label>Enter Enum Set Description</mat-label>
 	<textarea
 		cdkTextareaAutosize
@@ -36,7 +36,9 @@
 		(ngModelChange)="updateEnumSet()"></textarea>
 </mat-form-field>
 <br />
-<mat-form-field id="connection-applicability-selector">
+<mat-form-field
+	id="connection-applicability-selector"
+	class="wide-form">
 	<mat-label>Select an Applicability</mat-label>
 	<mat-select
 		[(ngModel)]="enumSet.applicability"

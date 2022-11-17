@@ -216,7 +216,6 @@ export class ConfigurationDropdownComponent {
 								PLEditConfigData | undefined,
 								PLEditConfigData
 							>,
-							tap((v) => console.log(v)),
 							switchMap((dialog) =>
 								iif(
 									() => dialog !== undefined,

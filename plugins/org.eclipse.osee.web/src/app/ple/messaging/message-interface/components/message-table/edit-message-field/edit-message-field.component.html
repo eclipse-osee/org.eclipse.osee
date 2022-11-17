@@ -13,7 +13,9 @@
 <mat-form-field
 	*ngIf="header !== 'interfaceMessageWriteAccess'; else writeAccess"
 	cdkMonitorSubtreeFocus
-	(cdkFocusChange)="focusChanged($event)">
+	(cdkFocusChange)="focusChanged($event)"
+	class="wide-form"
+	subscriptSizing="dynamic">
 	<ng-container
 		*ngIf="
 			header === 'interfaceMessageRate' ||

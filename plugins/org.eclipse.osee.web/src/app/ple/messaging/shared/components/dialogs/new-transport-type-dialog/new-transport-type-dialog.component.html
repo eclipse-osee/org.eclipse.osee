@@ -12,7 +12,7 @@
  -->
 <h1 mat-dialog-title>Create New Transport Type</h1>
 <mat-dialog-content>
-	<mat-form-field>
+	<mat-form-field class="full-width">
 		<mat-label>Name</mat-label>
 		<input
 			matInput
@@ -28,7 +28,7 @@
 		><mat-label>Byte Align Validation</mat-label></mat-slide-toggle
 	>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="full-width">
 		<mat-label>Byte Align Validation Size</mat-label>
 		<input
 			matInput
@@ -45,7 +45,7 @@
 		><mat-label>Message Generation</mat-label></mat-slide-toggle
 	>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="full-width">
 		<mat-label>Message Generation Type</mat-label>
 		<mat-select
 			[(ngModel)]="transportType.messageGenerationType"
@@ -61,7 +61,7 @@
 		</mat-select>
 	</mat-form-field>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="full-width">
 		<mat-label>Message Generation Position</mat-label>
 		<input
 			matInput

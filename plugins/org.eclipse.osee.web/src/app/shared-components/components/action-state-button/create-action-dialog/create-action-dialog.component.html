@@ -12,7 +12,9 @@
  -->
 <h1 mat-dialog-title>Create Action</h1>
 <div mat-dialog-content>
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width">
 		<mat-label>Select Actionable Item</mat-label>
 		<mat-select
 			[(ngModel)]="data.actionableItem"
@@ -31,7 +33,9 @@
 	<div
 		*ngIf="data.actionableItem.id.length !== 0"
 		[style.fontSize.px]="18">
-		<mat-form-field *ngIf="data.actionableItem.id.length !== 0">
+		<mat-form-field
+			*ngIf="data.actionableItem.id.length !== 0"
+			class="full-width">
 			<mat-label>Select Targeted Version</mat-label>
 			<mat-select
 				[(ngModel)]="data.targetedVersion"
@@ -45,7 +49,9 @@
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<mat-form-field *ngIf="data.actionableItem.id.length !== 0">
+		<mat-form-field
+			*ngIf="data.actionableItem.id.length !== 0"
+			class="full-width">
 			<mat-label>Select Change Type</mat-label>
 			<mat-select
 				[(ngModel)]="data.changeType"
@@ -60,7 +66,9 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width">
 		<mat-label>Title</mat-label>
 		<input
 			matInput
@@ -71,7 +79,9 @@
 			data-cy="action-title" />
 	</mat-form-field>
 	<br />
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width">
 		<mat-label>Description</mat-label>
 		<input
 			matInput
@@ -82,7 +92,9 @@
 			data-cy="action-description" />
 	</mat-form-field>
 	<br />
-	<mat-form-field [style.fontSize.px]="18">
+	<mat-form-field
+		[style.fontSize.px]="18"
+		class="full-width">
 		<mat-label>Select Priority</mat-label>
 		<mat-select
 			[(ngModel)]="data.priority"

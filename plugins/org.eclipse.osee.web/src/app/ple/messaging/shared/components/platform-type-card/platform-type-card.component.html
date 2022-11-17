@@ -10,16 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-card class="mat-elevation-z8">
-	<div mat-card-header>
-		<div mat-card-title>
-			{{ typeData.name }}
-		</div>
-		<div mat-card-subtitle>
-			{{ typeData.interfaceLogicalType }}
-		</div>
-	</div>
-	<div mat-card-content>
+<mat-card
+	appearance="raised"
+	class="mat-elevation-z8">
+	<mat-card-header>
+		<mat-card-title-group>
+			<mat-card-title>
+				{{ typeData.name }}
+			</mat-card-title>
+			<mat-card-subtitle>
+				{{ typeData.interfaceLogicalType }}
+			</mat-card-subtitle>
+		</mat-card-title-group>
+	</mat-card-header>
+	<mat-card-content class="mat-body-1">
 		<div *ngIf="typeData.description">
 			Description:<br />
 			{{ typeData.description }}
@@ -53,9 +57,9 @@
 		<div *ngIf="typeData.interfacePlatformTypeUnits">
 			Units: {{ typeData.interfacePlatformTypeUnits }}
 		</div>
-	</div>
+	</mat-card-content>
 	<ng-container *ngIf="(inEditMode | async) === true; else no_edit">
-		<div mat-card-actions>
+		<mat-card-actions class="fit-buttons">
 			<!-- <button mat-stroked-button (click)="openDialog(edit)">
                 <mat-icon color="primary">edit</mat-icon>
                 Edit
@@ -73,15 +77,17 @@
 				<mat-icon color="accent">toc</mat-icon>View Related Enumeration
 				Set Attributes
 			</button>
-		</div>
+		</mat-card-actions>
 	</ng-container>
 	<ng-template #no_edit>
-		<button
-			mat-stroked-button
-			*ngIf="typeData.interfaceLogicalType === 'enumeration'"
-			(click)="openEnumDialog(false)">
-			<mat-icon color="primary">toc</mat-icon>View Related Enumeration Set
-			Attributes
-		</button>
+		<mat-card-actions>
+			<button
+				mat-stroked-button
+				*ngIf="typeData.interfaceLogicalType === 'enumeration'"
+				(click)="openEnumDialog(false)">
+				<mat-icon color="primary">toc</mat-icon>View Related Enumeration
+				Set Attributes
+			</button>
+		</mat-card-actions>
 	</ng-template>
 </mat-card>

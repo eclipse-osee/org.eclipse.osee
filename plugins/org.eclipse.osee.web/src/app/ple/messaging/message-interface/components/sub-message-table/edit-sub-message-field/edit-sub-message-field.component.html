@@ -12,7 +12,10 @@
  -->
 <mat-form-field
 	cdkMonitorSubtreeFocus
-	(cdkFocusChange)="focusChanged($event)">
+	(cdkFocusChange)="focusChanged($event)"
+	class="wide-form"
+	subscriptSizing="dynamic"
+	color="primary">
 	<ng-container *ngIf="header === 'applicability'; else generalEdit">
 		<ng-container *ngIf="header === 'applicability'">
 			<mat-select

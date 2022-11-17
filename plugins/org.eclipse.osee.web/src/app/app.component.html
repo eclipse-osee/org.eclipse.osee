@@ -13,7 +13,7 @@
 <div
 	class="light-theme"
 	(keydown.escape)="topLevelNav.close(); closeTopLevelNavIcon()">
-	<mat-toolbar>
+	<mat-toolbar class="top-toolbar-container">
 		<div class="top-toolbar">
 			<!-- Top Level Nav - Button -->
 			<button
@@ -52,6 +52,7 @@
 		hasBackdrop="false"
 		(keydown.escape)="closeTopLevelNavIcon()">
 		<mat-sidenav-content
+			class="sidenav-content"
 			(click)="topLevelNav.close(); closeTopLevelNavIcon()">
 			<router-outlet></router-outlet>
 		</mat-sidenav-content>

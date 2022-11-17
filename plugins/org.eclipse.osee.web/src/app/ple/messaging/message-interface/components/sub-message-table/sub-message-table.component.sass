@@ -10,6 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../../../modern-ple-theme'
+@use '../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
+
+:host-context(.light-theme)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+ 
 .message-interface-table-view-width-100
     width:100%
 .mat-header-cell
@@ -17,6 +25,10 @@
     size: 14px
 .message-interface-table-center
     text-align: center
+.minimal-padding
+    padding: 0 2px 0 2px
+.sub-message-table-row-last
+    display: none
 .message-interface-table-view-sub-message-header
     font:
         weight: 500

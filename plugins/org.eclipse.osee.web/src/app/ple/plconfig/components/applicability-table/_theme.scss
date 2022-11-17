@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,7 +12,6 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../theme-system';
 
 @mixin color($config-or-theme) {
 	// Extract the color configuration in case a theme has been passed.
@@ -112,54 +111,40 @@
 	.applicability-changed {
 		background-color: mat.get-color-from-palette($accent, 100);
 	}
+
+	.border-right {
+		border-right-color: mat.get-color-from-palette($background, status-bar);
+	}
 }
 @mixin typography($config-or-theme) {
-	.config-group-header {
-		font: {
-			weight: bold;
-		}
+	$config: mat.get-typography-config($config-or-theme);
 
-		text-align: center;
-		cursor: pointer;
+	.config-group-header {
+		@include mat.typography-level($config, 'bold-table-header');
 	}
 
 	.config-header {
-		font: {
-			weight: bold;
-		}
-
-		text-align: center;
-		cursor: pointer;
+		@include mat.typography-level($config, 'bold-table-header');
 	}
 
 	.applic-table-header {
-		font: {
-			weight: bold;
-		}
+		@include mat.typography-level($config, 'bold-table-header');
 	}
 
-	.mat-form-field-infix {
-		border-top: 0;
-		margin-top: 1.25em;
-	}
-
-	.mat-tooltip {
+	.mat-mdc-tooltip {
 		font-size: 15px; // current default is 10px :-/
 	}
-}
-@mixin typography-themed($config-or-theme) {
-	$config: mat.get-typography-config($config-or-theme);
 }
 
 @mixin theme($theme, $typography) {
 	$color: mat.get-color-config($theme);
-	$typography: mat.get-typography-config($typography);
-	@include typography($theme);
+	$typography: mat.get-typography-config($theme);
+
+	@if $typography {
+		@include typography($theme);
+	}
 
 	@if $color {
 		@include color($color);
-	}
-	@if $typography {
-		@include typography-themed($typography);
 	}
 }

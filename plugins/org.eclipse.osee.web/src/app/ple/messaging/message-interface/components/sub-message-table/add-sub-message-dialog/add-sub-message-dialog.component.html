@@ -17,19 +17,13 @@
 	<mat-step
 		label="Select Sub Message options"
 		#step1>
-		<div
-			style="
-				display: flex;
-				flex-direction: row;
-				justify-content: space-evenly;
-				align-items: baseline;
-			">
+		<div class="form-container">
 			<button
 				mat-raised-button
 				color="primary"
-				style="width: 100%"
 				matStepperNext
 				(click)="createNew()"
+				class="create-button"
 				data-cy="create-new-btn">
 				Create new Sub Message
 			</button>

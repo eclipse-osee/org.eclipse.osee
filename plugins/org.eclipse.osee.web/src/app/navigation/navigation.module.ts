@@ -20,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { TopLevelNavigationComponent } from './top-level-navigation/top-level-navigation.component';
 import { NavigationRoutingModule } from './navigation-routing.module';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
 	declarations: [TopLevelNavigationComponent],
@@ -28,6 +29,7 @@ import { NavigationRoutingModule } from './navigation-routing.module';
 		MatToolbarModule,
 		MatListModule,
 		MatIconModule,
+		MatDividerModule,
 		CommonModule,
 		NavigationRoutingModule,
 	],

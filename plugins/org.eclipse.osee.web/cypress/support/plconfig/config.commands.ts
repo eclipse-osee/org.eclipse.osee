@@ -177,8 +177,12 @@ Cypress.Commands.add(
 			.focus()
 			.clear()
 			.type(value.title)
+			.get('mat-progress-bar')
+			.should('not.exist')
 			.get('[data-cy="field-copyFrom"]')
 			.click()
+			.get('mat-progress-bar')
+			.should('not.exist')
 			.get(`[data-cy="option-${value.copyFrom}"]`)
 			.click()
 			.get('[data-cy="field-configGroup"]')
@@ -281,9 +285,9 @@ Cypress.Commands.add(
 			.get(`[data-cy="submit-btn"]`)
 			.click()
 			.wait('@configUpdate');
-		while (groupCount--) {
-			cy.wait('@cfgGroupSync');
-		}
+		// while (groupCount--) {
+		// 	cy.wait('@cfgGroupSync');
+		// } // TODO: might not occur anymore
 		return cy
 			.wait('@branch')
 			.wait('@cfggroup')

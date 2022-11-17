@@ -12,7 +12,6 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../../../theme-system';
 
 @mixin color($config-or-theme) {
 	// Extract the color configuration in case a theme has been passed.
@@ -65,6 +64,10 @@
 
 	.message-table-row-odd-deleted {
 		background-color: mat.get-color-from-palette($warn, 200);
+	}
+
+	.message-table-row-changed {
+		background-color: mat.get-color-from-palette($accent, 100);
 	}
 
 	tr.message-detail-row:not(.message-expanded-detail-row):hover {

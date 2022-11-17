@@ -10,6 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../../../modern-ple-theme'
+@use '../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
+
+:host-context(.light-theme)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+
 table
     width: 100%
     margin-bottom: 2em

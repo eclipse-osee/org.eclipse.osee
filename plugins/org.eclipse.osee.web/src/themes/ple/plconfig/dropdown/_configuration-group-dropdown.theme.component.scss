@@ -12,7 +12,6 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../theme-system';
 
 @mixin color($config-or-theme) {
 	// Extract the color configuration in case a theme has been passed.

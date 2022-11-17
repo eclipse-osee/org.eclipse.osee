@@ -12,7 +12,6 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../theme-system';
 
 @mixin color($config-or-theme) {
 	// Extract the color configuration in case a theme has been passed.
@@ -27,8 +26,12 @@
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
 
-	.mat-nav-list .onpage {
-		color: mat.get-color-from-palette($primary);
+	.onpage:not(.highlight) {
+		background-color: mat.get-color-from-palette($primary, 50);
+	}
+
+	.top-navigation:hover {
+		background-color: mat.get-color-from-palette($primary, 100);
 	}
 }
 /* stylelint-disable block-no-empty */

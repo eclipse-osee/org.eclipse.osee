@@ -11,34 +11,38 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use '@angular/material' as mat;
+@use 'sass:map';
 
 /**
 * Functions used to extend theming system to allow for a fourth color.
 */
-
-@function light-theme(
-	$primary,
-	$accent,
-	$warn: mat.define-palette(mat.$red-palette),
-	$success: mat.define-palette(mat.$green-palette)
-) {
-	@return map-merge(
-		mat.define-light-theme($primary, $accent, $warn),
+@function custom-theme($theme, $success) {
+	$color-map: map.deep-merge(
+		$theme,
 		(
-			success: $success,
+			color: (
+				success: $success,
+			),
 		)
 	);
-}
-@function dark-theme(
-	$primary,
-	$accent,
-	$warn: mat.define-palette(mat.$red-palette),
-	$success: mat.define-palette(mat.$green-palette)
-) {
-	@return map-merge(
-		mat.define-dark-theme($primary, $accent, $warn),
+
+	// note:
+	// this is WIP, but this is the first defined typography level outside of angular material
+	// TODO make a more general purpose solution
+
+	$bold-table-header: mat.define-typography-level(
+		$font-size: 14px,
+		$font-family: 'Roboto,"Helvetica Neue", sans-serif',
+		$font-weight: bold,
+		$letter-spacing: 0.1px,
+		$line-height: 22px,
+	);
+	@return map.deep-merge(
+		$color-map,
 		(
-			success: $success,
+			typography: (
+				bold-table-header: $bold-table-header,
+			),
 		)
 	);
 }
