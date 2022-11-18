@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.draw2d.GridData;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 
 /**
  * @author Donald G. Dunne
