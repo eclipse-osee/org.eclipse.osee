@@ -115,6 +115,16 @@ public final class RendererManager {
       return bestRenderer;
    }
 
+   /**
+    * Gets the first found {@link IRenderer} with the highest applicability rating with a rating higher than
+    * {@link IRenderer#NO_MATCH}. The {@link RendererManager} may contain additional {@link IRenderer} implementations
+    * with an equal applicability rating as the returned {@link IRenderer} implementation.
+    *
+    * @return the first found {@link IRenderer} with the highest applicability rating.
+    * @throws OseeStateException when an {@link IRenderer} implementation with an applicability rating greater than
+    * {@link IRenderer#NO_MATCH} is not found.
+    */
+
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (presentationType == DEFAULT_OPEN && RendererManager.isDefaultArtifactEditor()) {
          presentationType = GENERAL_REQUESTED;
