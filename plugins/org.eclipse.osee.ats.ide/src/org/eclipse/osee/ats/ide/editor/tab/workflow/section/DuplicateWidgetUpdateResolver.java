@@ -129,15 +129,7 @@ public class DuplicateWidgetUpdateResolver {
          }
          ((XIntegerDam) currUpdateWidget).set(rootText);
       } else if (currUpdateWidget instanceof XAbstractSignDateAndByButton) {
-         if (((XAbstractSignDateAndByButton) rootWidget).doSign()) {
-            String retText = ((XAbstractSignDateAndByButton) rootWidget).getResultsText();
-            if (retText.equals(XAbstractSignDateAndByButton.NOT_YET_SIGNED)) {
-               ((XAbstractSignDateAndByButton) currUpdateWidget).setUnsigned();
-            } else {
-               ((XAbstractSignDateAndByButton) currUpdateWidget).setSigned();
-            }
-            ((XAbstractSignDateAndByButton) currUpdateWidget).refresh();
-         }
+         ((XAbstractSignDateAndByButton) currUpdateWidget).refresh();
       } else if (currUpdateWidget instanceof XDateDam) {
          currText = ((XDateDam) currUpdateWidget).get();
          rootText = ((XDateDam) rootWidget).get();
