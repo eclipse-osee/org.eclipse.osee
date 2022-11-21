@@ -29,11 +29,12 @@ public class EventBasicGuidRelation extends DefaultBasicIdRelation {
    private final int artAId;
    private final int artBId;
    private String rationale;
+   private int relOrder;
+   private long relArtId;
 
    public EventBasicGuidRelation(RelationEventType relationEventType, ArtifactId artAId, ArtifactId artBId, DefaultBasicIdRelation guidRel) {
       this(relationEventType, guidRel.getBranch(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
-         guidRel.getGammaId(), artAId.getIdIntValue(), guidRel.getArtA(), artBId.getIdIntValue(),
-         guidRel.getArtB());
+         guidRel.getGammaId(), artAId.getIdIntValue(), guidRel.getArtA(), artBId.getIdIntValue(), guidRel.getArtB());
    }
 
    public EventBasicGuidRelation(RelationEventType relationEventType, BranchId branchUuid, Long relTypeGuid, Long relationId, GammaId gammaId, ArtifactId artAId, DefaultBasicGuidArtifact artA, ArtifactId artBId, DefaultBasicGuidArtifact artB) {
@@ -135,6 +136,26 @@ public class EventBasicGuidRelation extends DefaultBasicIdRelation {
          }
       }
       return false;
+   }
+
+   @Override
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   @Override
+   public void setRelOrder(int relOrder) {
+      this.relOrder = relOrder;
+   }
+
+   @Override
+   public Long getRelArtId() {
+      return relArtId;
+   }
+
+   @Override
+   public void setRelArtId(Long relArtId) {
+      this.relArtId = relArtId;
    }
 
 }

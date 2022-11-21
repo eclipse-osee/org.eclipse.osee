@@ -162,7 +162,7 @@ public class IntroduceArtifactOperation {
                ArtifactToken destArtB = ArtifactToken.valueOf(srcArtB, destinationBranch);
                destinationRelation = RelationManager.getOrCreate(destArtA, destArtB, sourceRelation.getRelationType(),
                   sourceRelation, sourceRelation.getGammaId(), sourceRelation.getRationale(), modType,
-                  sourceRelation.getApplicabilityId());
+                  sourceRelation.getApplicabilityId(), 0, ArtifactId.SENTINEL);
                destinationRelation.internalSetModType(modType, true, true);
             }
          } else {

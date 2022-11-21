@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -111,8 +112,7 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
 
    private void updateModifiedArtifact(EventTopicArtifactTransfer transArt, TransactionId transactionId) {
       try {
-         Artifact artifact =
-            ArtifactCache.getActive(transArt.getArtifactToken());
+         Artifact artifact = ArtifactCache.getActive(transArt.getArtifactToken());
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
@@ -205,9 +205,9 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
                   case Added:
                      if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
                         ApplicabilityId appId = relation == null ? ApplicabilityId.BASE : relation.getApplicabilityId();
-                        relation =
-                           RelationManager.getOrCreate(artifactIdA, artifactIdB, relationType, transRel.getRelationId(),
-                              transRel.getGammaId(), transRel.getRationale(), ModificationType.NEW, appId);
+                        relation = RelationManager.getOrCreate(artifactIdA, artifactIdB, relationType,
+                           transRel.getRelationId(), transRel.getGammaId(), transRel.getRationale(),
+                           ModificationType.NEW, appId, 0, ArtifactId.SENTINEL);
                      }
                      break;
                   case ModifiedRationale:

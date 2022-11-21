@@ -302,8 +302,19 @@ public final class FrameworkEventUtil {
          guidRel.getRelTypeGuid(), Long.valueOf(guidRel.getRelationId()), GammaId.valueOf(guidRel.getGammaId()),
          guidRel.getArtAId(), getBasicGuidArtifact(guidRel.getArtA(), tokenService), guidRel.getArtBId(),
          getBasicGuidArtifact(guidRel.getArtB(), tokenService));
+      if (eventType == RelationEventType.Added) {
+         event.setRationale(guidRel.getRationale());
+         event.setRelOrder(guidRel.getRelOrder());
+         event.setRelArtId(guidRel.getRelArtId());
+      }
       if (eventType == RelationEventType.ModifiedRationale || eventType == RelationEventType.Added) {
          event.setRationale(guidRel.getRationale());
+      }
+      if (eventType == RelationEventType.ModifiedOrder) {
+         event.setRelOrder(guidRel.getRelOrder());
+      }
+      if (eventType == RelationEventType.ModifiedRelatedArtifact) {
+         event.setRelArtId(guidRel.getRelArtId());
       }
       return event;
    }

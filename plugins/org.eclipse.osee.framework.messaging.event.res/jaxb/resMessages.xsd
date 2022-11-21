@@ -79,7 +79,9 @@
     <xsd:element name="artA" type="RemoteBasicGuidArtifact1" maxOccurs="1" minOccurs="1"/>
     <xsd:element name="artBId" type="xsd:int"/>
     <xsd:element name="artB" type="RemoteBasicGuidArtifact1" maxOccurs="1" minOccurs="1"/>
-    <xsd:element name="rationale" type="xsd:string"/>
+    <xsd:element name="rationale" type="xsd:string"/>    
+    <xsd:element name="relOrder" type="xsd:int"/>
+    <xsd:element name="relArtId" type="xsd:long"/>
   </xsd:sequence>
 </xsd:complexType>
 

@@ -27,6 +27,8 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
    Long relTypeUuid;
    GammaId gammaId;
    Long relationId;
+   Long relArtId;
+   int relOrder;
 
    public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, Long relationId, GammaId gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
       this.branch = branch;
@@ -35,6 +37,19 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       this.gammaId = gammaId;
       this.artA = artA;
       this.artB = artB;
+      this.setRelOrder(0);
+      this.setRelArtId(-1L);
+   }
+
+   public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, int relOrder, GammaId gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB, Long relArtId) {
+      this.branch = branch;
+      this.relTypeUuid = relTypeUuid;
+      this.relationId = gammaId.getId();
+      this.gammaId = gammaId;
+      this.artA = artA;
+      this.artB = artB;
+      this.setRelOrder(relOrder);
+      this.setRelArtId(relArtId);
    }
 
    @Override
@@ -91,6 +106,8 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       result = prime * result + (branch == null ? 0 : branch.hashCode());
       result = prime * result + gammaId.hashCode();
       result = prime * result + (relTypeUuid == null ? 0 : relTypeUuid.hashCode());
+      result = prime * result + (relArtId == null ? 0 : relArtId.hashCode());
+      result = prime * result + (Integer.toString(relOrder) == null ? 0 : Integer.hashCode(relOrder));
       return result;
    }
 
@@ -133,6 +150,13 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       } else if (!relTypeUuid.equals(other.getRelTypeGuid())) {
          return false;
       }
+      if (relArtId == null) {
+         if (other.getRelArtId() != null) {
+            return false;
+         }
+      } else if (!relArtId.equals(other.getRelArtId())) {
+         return false;
+      }
       return true;
    }
 
@@ -151,6 +175,24 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
          }
       }
       return false;
+   }
+
+   @Override
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   public void setRelOrder(int relOrder) {
+      this.relOrder = relOrder;
+   }
+
+   @Override
+   public Long getRelArtId() {
+      return relArtId;
+   }
+
+   public void setRelArtId(Long relArtId) {
+      this.relArtId = relArtId;
    }
 
 }

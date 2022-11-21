@@ -166,7 +166,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
                break;
             }
             case 7: {
-               ArtifactId relType = ArtifactId.valueOf(stmt.getLong("item_type"));
+               ArtifactId relType = ArtifactId.valueOf(stmt.getLong("item_type_id"));
                ArtifactId a_art_id = ArtifactId.valueOf(stmt.getLong("item_first"));
                ArtifactId b_art_id = ArtifactId.valueOf(stmt.getLong("item_second"));
                ArtifactId rel_art_id = ArtifactId.valueOf(stmt.getLong("item_third"));

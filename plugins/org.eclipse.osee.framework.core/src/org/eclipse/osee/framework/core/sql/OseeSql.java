@@ -26,7 +26,7 @@ public enum OseeSql {
    TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_artifact art, osee_txs txs WHERE art.art_id = ? AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
    TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
    TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_id = ? AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
-   TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_relation rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
+   TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2("SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_relation rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND rel.a_art_id = ? AND rel.b_art_id = ? AND rel.rel_type = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT),
 
    MERGE_GET_ARTIFACTS_FOR_BRANCH("SELECT art.art_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? and txs.gamma_id = art.gamma_id"),
    MERGE_GET_ATTRIBUTES_FOR_BRANCH("SELECT atr.art_id, atr.attr_id FROM osee_txs txs, osee_attribute atr WHERE txs.branch_id = ? and txs.gamma_id = atr.gamma_id"),
@@ -49,7 +49,7 @@ public enum OseeSql {
    LOAD_CURRENT_ARCHIVED_ATTRIBUTES_WITH_DELETED(Strings.SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX + "IN (1, 3) order by al1.id2, al1.id1, att1.attr_id, txs.transaction_id desc", Strings.HintsOrdered),
 
    LOAD_RELATIONS("SELECT%s txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id, aj.id4, txs.app_id FROM osee_join_id4 aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.id2 = rel.a_art_id OR aj.id2 = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxCurrent.CURRENT + " AND aj.id1 = txs.branch_id", Strings.HintsOrdered),
-   LOAD_RELATIONS2("SELECT%s txs.mod_type, rel_order, a_art_id, b_art_id, rel_type, rel.gamma_id, txs.branch_id, aj.id4, txs.app_id FROM osee_join_id4 aj, osee_relation rel, osee_txs txs WHERE aj.query_id = ? AND (aj.id2 = rel.a_art_id OR aj.id2 = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxCurrent.CURRENT + " AND aj.id1 = txs.branch_id", Strings.HintsOrdered),
+   LOAD_RELATIONS2("SELECT%s txs.mod_type,  a_art_id, b_art_id, rel_type, rel_order, rel_art_id, rel.gamma_id, txs.branch_id, aj.id4, txs.app_id FROM osee_join_id4 aj, osee_relation rel, osee_txs txs WHERE aj.query_id = ? AND (aj.id2 = rel.a_art_id OR aj.id2 = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxCurrent.CURRENT + " AND aj.id1 = txs.branch_id order by rel_type,a_art_id,rel_order", Strings.HintsOrdered),
 
    LOAD_CURRENT_ARTIFACTS(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "= 1", Strings.HintsOrdered),
    LOAD_CURRENT_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "in (1, 2)", Strings.HintsOrdered),

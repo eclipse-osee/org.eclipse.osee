@@ -78,6 +78,9 @@ public class RelationOrderData {
    }
 
    public RelationSorter getCurrentSorterGuid(RelationTypeToken type, RelationSide side) {
+      if (type.isNewRelationTable()) {
+         return RelationSorter.USER_DEFINED;
+      }
       Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getFirst() : type.getOrder();
    }

@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,7 +61,7 @@ public class ReplaceRelationWithBaselineOperation extends AbstractOperation {
                   if (relChange.getChangeItem().isDeleted()) {
                      RelationLink relation = RelationManager.getOrCreate(sideA, sideB, relChange.getRelationType(),
                         relChange.getRelLinkId(), relChange.getBaselineGamma(), relChange.getRationale(),
-                        relChange.getModificationType(), ApplicabilityId.BASE);
+                        relChange.getModificationType(), ApplicabilityId.BASE, 0, ArtifactId.SENTINEL);
                      relation.undelete();
                      sideA.persist(transaction);
                   }

@@ -201,7 +201,12 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                ArtifactToken artifactIdB = ArtifactToken.valueOf(guidArt.getArtBId(), branch);
                RelationLink relation = RelationManager.getLoadedRelationById(
                   RelationId.valueOf(guidArt.getRelationId()), artifactIdA, artifactIdB, branch);
-
+               int relOrder = 0;
+               ArtifactToken relArtifact = ArtifactToken.SENTINEL;
+               if (relationType.isNewRelationTable()) {
+                  relOrder = guidArt.getRelOrder();
+                  relArtifact = ArtifactToken.valueOf(guidArt.getRelArtId(), branch);
+               }
                RelationEventType eventType = guidArt.getModType();
                switch (eventType) {
                   case Added:
@@ -209,7 +214,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                         ApplicabilityId appId = relation == null ? ApplicabilityId.BASE : relation.getApplicabilityId();
                         relation = RelationManager.getOrCreate(artifactIdA, artifactIdB, relationType,
                            RelationId.valueOf(guidArt.getRelationId()), guidArt.getGammaId(), guidArt.getRationale(),
-                           ModificationType.NEW, appId);
+                           ModificationType.NEW, appId, relOrder, relArtifact);
                      }
                      break;
                   case ModifiedRationale:
@@ -218,6 +223,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                         relation.setNotDirty();
                      }
                      break;
+                  case ModifiedOrder:
+                  case ModifiedRelatedArtifact:
                   case Deleted:
                   case Purged:
                      if (relation != null) {

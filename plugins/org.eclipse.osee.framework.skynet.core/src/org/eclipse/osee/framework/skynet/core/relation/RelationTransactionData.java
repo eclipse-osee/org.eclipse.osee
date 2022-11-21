@@ -38,6 +38,8 @@ public class RelationTransactionData extends BaseTransactionData {
    private static final String INSERT_INTO_RELATION_TABLE =
       "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, gamma_id) VALUES (?,?,?,?,?,?)";
 
+   private static final String INSERT_INTO_RELATION_TABLE2 =
+      "INSERT INTO osee_relation (rel_type, a_art_id, b_art_id, rel_order, rel_art_id, gamma_id) VALUES (?,?,?,?,?,?)";
    private final RelationLink relation;
    private final RelationEventType relationEventType;
 
@@ -60,9 +62,15 @@ public class RelationTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(InsertDataCollector collector) {
       super.addInsertToBatch(collector);
       if (!relation.isUseBackingData()) {
-         internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
-            relation.getRelationType(), relation.getArtifactIdA(), relation.getArtifactIdB(), relation.getRationale(),
-            getGammaId());
+         if (!relation.getRelationType().isNewRelationTable()) {
+            internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
+               relation.getRelationType(), relation.getArtifactIdA(), relation.getArtifactIdB(),
+               relation.getRationale(), getGammaId());
+         } else {
+            internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE2, relation.getRelationType(),
+               relation.getArtifactIdA(), relation.getArtifactIdB(), relation.getRelOrder(), relation.getRelArtId(),
+               getGammaId());
+         }
       }
    }
 
@@ -98,9 +106,15 @@ public class RelationTransactionData extends BaseTransactionData {
       ArtifactToken artifactB = relation.getArtifactB();
       DefaultBasicGuidArtifact guidArtA = new DefaultBasicGuidArtifact(artifactA.getBranch(), artifactA);
       DefaultBasicGuidArtifact guidArtB = new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB);
+      DefaultBasicIdRelation defaultBasicGuidRelation;
 
-      DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relation.getBranch(),
-         relation.getRelationType().getId(), relation.getId(), relation.getGammaId(), guidArtA, guidArtB);
+      if (!relation.getRelationType().isNewRelationTable()) {
+         defaultBasicGuidRelation = new DefaultBasicIdRelation(relation.getBranch(), relation.getRelationType().getId(),
+            relation.getId(), relation.getGammaId(), guidArtA, guidArtB);
+      } else {
+         defaultBasicGuidRelation = new DefaultBasicIdRelation(relation.getBranch(), relation.getRelationType().getId(),
+            relation.getRelOrder(), relation.getGammaId(), guidArtA, guidArtB, relation.getRelArtId().getId());
+      }
       EventBasicGuidRelation event =
          new EventBasicGuidRelation(relationEventType, artifactA, artifactB, defaultBasicGuidRelation);
       if (relationEventType == RelationEventType.ModifiedRationale) {
@@ -123,6 +137,10 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected ApplicabilityId getApplicabilityId() {
       return relation.getApplicabilityId();
+   }
+
+   public RelationLink getRelation() {
+      return relation;
    }
 
 }

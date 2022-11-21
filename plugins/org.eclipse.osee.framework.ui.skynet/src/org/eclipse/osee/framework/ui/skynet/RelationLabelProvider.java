@@ -126,6 +126,10 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
          return String.valueOf(wrapper.getRelation().getGammaId());
       }
+      if (columnIndex == 5 && element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
+         return String.valueOf(wrapper.getRelation().getRelOrder());
+      }
       if (element instanceof RelationTypeToken) {
          if (columnIndex == 0) {
             return ((RelationTypeToken) element).getName();

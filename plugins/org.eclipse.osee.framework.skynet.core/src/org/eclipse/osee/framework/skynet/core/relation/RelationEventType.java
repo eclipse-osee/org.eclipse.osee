@@ -22,7 +22,9 @@ public enum RelationEventType {
    Purged("AAn_P4kbcxaUKL4bosgA"),
    Added("AISIbR69A2yjMFpbsSgA"),
    ModifiedRationale("AISIbR9Tm0dwqN1KdoAA"), // this handles modifiedRationale and UnDeleted for now
-   Undeleted("AISIbRqzlF3s4TeMvzgA");
+   Undeleted("AISIbRqzlF3s4TeMvzgA"),
+   ModifiedOrder("35990681-a172-4a34-8135-812aa3e26651"),
+   ModifiedRelatedArtifact("9c68d644-afe9-4887-b1be-ade3b511bf66");
 
    private final String guid;
 
