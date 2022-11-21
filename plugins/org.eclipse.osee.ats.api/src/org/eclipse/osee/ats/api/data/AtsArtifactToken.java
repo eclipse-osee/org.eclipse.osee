@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 
 /**
@@ -51,6 +52,7 @@ public final class AtsArtifactToken {
    public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken PeerAttachmentFolder = ArtifactToken.valueOf(8635196, "Peer Review Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
    public static ArtifactToken WalkthroughAttachmentFolder = ArtifactToken.valueOf(8649004, "Walkthrough Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
+   public static ArtifactToken AtsHealthUsers = ArtifactToken.valueOf(11174519, "ATS Health Users", CoreBranches.COMMON, CoreArtifactTypes.UserGroup);
 
    // Safety Workflow configuration
    public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);

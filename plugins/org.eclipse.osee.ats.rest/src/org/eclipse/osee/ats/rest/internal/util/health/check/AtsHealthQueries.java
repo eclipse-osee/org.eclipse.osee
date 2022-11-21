@@ -61,4 +61,15 @@ public class AtsHealthQueries {
       return query;
    }
 
+   public static String getInWorkWorkItemsWorkDefId(AtsApi atsApi) {
+      String query = "SELECT art.art_id, attr.VALUE FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr\n" + //
+         "WHERE txs.branch_id = 570 AND attr.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND \n" + //
+         "attr.ART_ID = art.ART_ID and attr.ATTR_TYPE_ID = 53049621055799825 and art.ART_ID IN (\n" + //
+         "   SELECT DISTINCT art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr\n" + //
+         "   WHERE txs.branch_id = 570 AND attr.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND \n" + //
+         "   attr.ART_ID = art.ART_ID and attr.ATTR_TYPE_ID = 1152921504606847147 and attr.VALUE = 'Working')";
+      return query;
+
+   }
+
 }

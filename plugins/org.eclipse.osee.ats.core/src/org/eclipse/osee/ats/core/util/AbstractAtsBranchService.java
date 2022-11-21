@@ -639,12 +639,12 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public BranchId getWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
+   public BranchToken getWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
       BranchToken branch = getWorkingBranch(teamWf);
       if (branch.isValid() && (getBranchState(branch).isCreated() || getBranchState(branch).isModified())) {
          return branch;
       }
-      return BranchId.SENTINEL;
+      return BranchToken.SENTINEL;
    }
 
    @Override

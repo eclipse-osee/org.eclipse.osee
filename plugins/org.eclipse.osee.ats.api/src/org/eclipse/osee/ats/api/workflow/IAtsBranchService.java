@@ -154,7 +154,7 @@ public interface IAtsBranchService {
 
    ArtifactId getAssociatedArtifactId(BranchId branch);
 
-   BranchId getWorkingBranchInWork(IAtsTeamWorkflow teamWf);
+   BranchToken getWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
    List<ChangeItem> getChangeData(BranchId branch);
 

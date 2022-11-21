@@ -21,4 +21,7 @@ import java.util.List;
 public interface IAtsHealthCheckProvider {
 
    List<IAtsHealthCheck> getHealthChecks();
+
+   void clearCaches();
+
 }

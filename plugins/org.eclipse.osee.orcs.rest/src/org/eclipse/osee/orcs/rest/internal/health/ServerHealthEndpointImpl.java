@@ -52,15 +52,15 @@ import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthUsage;
 @Path("/health")
 public final class ServerHealthEndpointImpl {
    private final IApplicationServerManager applicationServerManager;
-   private final JdbcClient jdbcClient;
    private final IAuthenticationManager authManager;
    private final ActivityLog activityLog;
    private final OrcsApi orcsApi;
+   private final Map<String, JdbcService> jdbcServices;
 
    public ServerHealthEndpointImpl(OrcsApi orcsApi, IApplicationServerManager applicationServerManager, Map<String, JdbcService> jdbcServices, IAuthenticationManager authManager, ActivityLog activityLog) {
       this.orcsApi = orcsApi;
       this.applicationServerManager = applicationServerManager;
-      this.jdbcClient = jdbcServices.values().iterator().next().getClient();
+      this.jdbcServices = jdbcServices;
       this.authManager = authManager;
       this.activityLog = activityLog;
    }
@@ -68,7 +68,7 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() {
-      ServerHealthMain main = new ServerHealthMain(orcsApi);
+      ServerHealthMain main = new ServerHealthMain(orcsApi, getJdbcClient());
       return main.getHtml();
    }
 
@@ -76,7 +76,7 @@ public final class ServerHealthEndpointImpl {
    @Path("usage")
    @Produces(MediaType.TEXT_HTML)
    public String getUsage(@Context UriInfo uriInfo) {
-      ServerHealthUsage ops = new ServerHealthUsage(uriInfo, orcsApi, jdbcClient);
+      ServerHealthUsage ops = new ServerHealthUsage(uriInfo, orcsApi, getJdbcClient());
       return ops.getHtml();
    }
 
@@ -100,7 +100,7 @@ public final class ServerHealthEndpointImpl {
    @Path("activemq")
    @Produces(MediaType.TEXT_HTML)
    public String getActiveMq() {
-      ServerHealthActiveMq amq = new ServerHealthActiveMq(applicationServerManager, jdbcClient);
+      ServerHealthActiveMq amq = new ServerHealthActiveMq(applicationServerManager, getJdbcClient());
       return amq.getHtml();
    }
 
@@ -108,7 +108,7 @@ public final class ServerHealthEndpointImpl {
    @Path("overview")
    @Produces(MediaType.TEXT_HTML)
    public String getServerHealthOverview() {
-      ServerHealthOverview overview = new ServerHealthOverview(jdbcClient);
+      ServerHealthOverview overview = new ServerHealthOverview(getJdbcClient());
       return overview.getHtml();
    }
 
@@ -116,7 +116,7 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getServerHealthDetails() {
-      ServerHealthOverviewDetails details = new ServerHealthOverviewDetails(jdbcClient, false);
+      ServerHealthOverviewDetails details = new ServerHealthOverviewDetails(getJdbcClient(), false);
       return details.getHtml();
    }
 
@@ -124,7 +124,7 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getServerHealthDetailsAll() {
-      ServerHealthOverviewDetails detailsAll = new ServerHealthOverviewDetails(jdbcClient, true);
+      ServerHealthOverviewDetails detailsAll = new ServerHealthOverviewDetails(getJdbcClient(), true);
       return detailsAll.getHtml();
    }
 
@@ -132,21 +132,21 @@ public final class ServerHealthEndpointImpl {
    @Path("balancer")
    @Produces(MediaType.TEXT_HTML)
    public String getBalancerStatus() {
-      return (new ServerHealthBalancers(jdbcClient)).getHtml();
+      return (new ServerHealthBalancers(getJdbcClient())).getHtml();
    }
 
    @GET
    @Path("logs")
    @Produces(MediaType.TEXT_HTML)
    public String getServerLogs() {
-      return (new ServerHealthLogs(jdbcClient)).getHtml();
+      return (new ServerHealthLogs(getJdbcClient())).getHtml();
    }
 
    @GET
    @Path("types")
    @Produces(MediaType.TEXT_HTML)
    public String getServerTypesHealth() {
-      return (new ServerHealthTypes(jdbcClient)).getHtml();
+      return (new ServerHealthTypes(getJdbcClient())).getHtml();
    }
 
    @Path("top")
@@ -181,8 +181,12 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String serverProcesses() {
-      ServerHealthProcesses proc = new ServerHealthProcesses(jdbcClient);
+      ServerHealthProcesses proc = new ServerHealthProcesses(getJdbcClient());
       return proc.getHtml();
+   }
+
+   private JdbcClient getJdbcClient() {
+      return jdbcServices.values().iterator().next().getClient();
    }
 
 }

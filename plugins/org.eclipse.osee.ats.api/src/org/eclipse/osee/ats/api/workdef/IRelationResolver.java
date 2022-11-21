@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -71,7 +72,7 @@ public interface IRelationResolver extends IParentProvider {
 
    int getRelatedCount(ArtifactToken artifact, RelationTypeSide relationTypeSide);
 
-   Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide);
+   List<ArtifactId> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide);
 
    default ArtifactToken getChildNamedOrNull(IAtsObject atsObject, String name) {
       for (ArtifactToken child : getChildren(atsObject.getStoreObject())) {

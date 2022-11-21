@@ -13,17 +13,18 @@
 
 package org.eclipse.osee.ats.api.util.health;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -35,10 +36,11 @@ public class HealthCheckResults {
    private final HashCollection<String, String> testNameToResultsMap = new HashCollection<>(50);
    private final HashCollection<String, String> testNameToIdMap = new HashCollection<>(50);
 
-   public void logTestTimeSpent(Date date, String testName) {
+   public int logTestTimeSpent(Date date, String testName) {
       Date now = new Date();
       int spent = Long.valueOf(now.getTime() - date.getTime()).intValue();
       testNameToTimeSpentMap.put(testName, spent);
+      return spent;
    }
 
    public void log(ArtifactId artifact, String testName, String message) {
@@ -56,7 +58,7 @@ public class HealthCheckResults {
       String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
       Arrays.sort(keys);
       for (String testName : keys) {
-         xResultData.log(testName);
+         xResultData.log("<b>" + testName + "</b>");
          for (String result : testNameToResultsMap.getValues(testName)) {
             xResultData.log("   - " + result);
          }
@@ -66,20 +68,30 @@ public class HealthCheckResults {
          if (values != null) {
             idStrs.addAll(values);
          }
-         xResultData.log(testName + "IDs: " + Collections.toString(",", idStrs) + "\n");
+         xResultData.logf("<b>" + testName + "</b> Ids: " + Collections.toString(",", idStrs) + "\n\n");
       }
    }
 
    public void addTestTimeMapToResultData(XResultData xResultData) {
-      xResultData.log("\n\nTime Spent in Tests");
+      xResultData.log("\n\n<b>Time Spent in Tests</b>");
       long totalTime = 0;
-      for (Entry<String, MutableInteger> entry : testNameToTimeSpentMap.getCounts()) {
-         xResultData.log(
-            "   " + entry.getKey() + " - " + (entry.getValue().getValue() / 1000) + " sec " + " - " + entry.getValue() + " ms");
-         totalTime += entry.getValue().getValue();
+      List<String> testNames = new ArrayList<>();
+      testNames.addAll(testNameToTimeSpentMap.keySet());
+      java.util.Collections.sort(testNames);
+      xResultData.log(AHTML.beginMultiColumnTable(70, 2));
+      // Sort tests
+      for (String prefix : Arrays.asList("CheckBefore", "Load", "Test", "CheckAfter")) {
+         for (String testName : testNames) {
+            if (testName.startsWith(prefix)) {
+               int testTime = testNameToTimeSpentMap.get(testName);
+               totalTime += testTime;
+               xResultData.logf(
+                  AHTML.addRowMultiColumnTable(testName, (testTime / 60000) + " min or " + (testTime / 1000) + " sec"));
+            }
+         }
       }
-      xResultData.log("TOTAL - " + (totalTime / 1000) + " sec " + totalTime + " ms");
-
+      xResultData.log(AHTML.endMultiColumnTable());
+      xResultData.log("TOTAL (Test Time) - " + (totalTime / 60000) + " min or " + (totalTime / 1000) + " sec");
       xResultData.log("\n");
    }
 

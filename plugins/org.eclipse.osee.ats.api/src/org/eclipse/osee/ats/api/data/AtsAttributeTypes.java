@@ -90,6 +90,8 @@ public interface AtsAttributeTypes {
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", MediaType.TEXT_PLAIN, "UserId of the user who created the workflow.");
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was created.");
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", MediaType.TEXT_PLAIN, "Current state of workflow state machine.");
+   AttributeTypeString CurrentStateName = ats.createString(4689644240272725681L, "ats.Current State Name", MediaType.TEXT_PLAIN, "Current state name of workflow state machine.");
+   AttributeTypeString CurrentStateAssignees = ats.createString(1902418199157448550L, "ats.Current State Assignees", MediaType.TEXT_PLAIN, "Current state assignees as user art id.");
    AttributeTypeString CurrentStateType = ats.createString(1152921504606847147L, "ats.Current State Type", MediaType.TEXT_PLAIN, "Type of Current State: InWork, Completed or Cancelled.");
    AttributeTypeBoolean CrashOrBlankDisplay = ats.createBoolean(1601107563L, "ats.Crash or Blank Display", MediaType.TEXT_PLAIN, "Crash OR cockpit displays are blank", DisplayHint.YesNoBoolean);
    AttributeTypeString Decision = ats.createString(1152921504606847221L, "ats.Decision", MediaType.TEXT_PLAIN, "Option selected during decision review.");

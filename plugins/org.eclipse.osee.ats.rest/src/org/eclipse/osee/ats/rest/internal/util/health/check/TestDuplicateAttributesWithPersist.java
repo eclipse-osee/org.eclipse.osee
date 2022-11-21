@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -37,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
 
    @Override
-   public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+   public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
       // Test for null attribute values
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem)) {
          if (attr.getValue() == null) {
@@ -98,6 +99,7 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
             error(results, workItem, result);
          }
       }
+      return true;
    }
 
 }

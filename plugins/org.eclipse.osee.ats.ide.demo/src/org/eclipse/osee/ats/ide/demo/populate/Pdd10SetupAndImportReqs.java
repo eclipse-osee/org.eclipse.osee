@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -61,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParameter;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
@@ -90,6 +92,9 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       OseeLog.log(Activator.class, Level.INFO, "Populate Demo Database");
 
       AtsApiService.get().reloadServerAndClientCaches();
+
+      OseeInfo.setValue(OseeProperties.OSEE_DB, "demo");
+      AtsApiService.get().setConfigValue("DatabaseName", "DEMO");
 
       // Import all requirements on SAW_Bld_1 Branch
       demoDbImportReqsTx();

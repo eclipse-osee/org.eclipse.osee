@@ -128,7 +128,7 @@ public class AtsApplication extends Application {
       // NOTE: @Consumes(MediaType.APPLICATION_JSON) doesn't work with GET, must be PUT
       singletons.add(new AtsActionEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AtsWorldEndpointImpl(atsApiServer));
-      singletons.add(new AtsHealthEndpointImpl(atsApiServer, jdbcService));
+      singletons.add(new AtsHealthEndpointImpl(orcsApi, atsApiServer, jdbcService));
       singletons.add(new AtsWorkDefEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AgileEndpointImpl(atsApiServer, registry, jdbcService, orcsApi));
       singletons.add(new CountryEndpointImpl(atsApiServer));
@@ -136,7 +136,7 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionEndpointImpl(atsApiServer));
       singletons.add(new InsertionActivityEndpointImpl(atsApiServer));
       singletons.add(new AtsTaskEndpointImpl(atsApiServer));
-      singletons.add(new AtsConfigEndpointImpl(atsApiServer, orcsApi, executorAdmin));
+      singletons.add(new AtsConfigEndpointImpl(atsApiServer, orcsApi, jdbcService, executorAdmin));
       singletons.add(new AtsProductLineEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AtsNotifyEndpointImpl(atsApiServer));
       singletons.add(new AtsWorkPackageEndpointImpl(atsApiServer));

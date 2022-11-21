@@ -23,6 +23,8 @@ public interface IUserGroup {
 
    ArtifactToken getArtifact();
 
+   Collection<String> getActiveMemberEmails();
+
    boolean addMember(UserId user, boolean persist);
 
    boolean isMember(UserId user);
@@ -81,6 +83,10 @@ public interface IUserGroup {
          return -1L;
       }
 
-   }
+      @Override
+      public Collection<String> getActiveMemberEmails() {
+         return Collections.emptyList();
+      }
 
+   }
 }
