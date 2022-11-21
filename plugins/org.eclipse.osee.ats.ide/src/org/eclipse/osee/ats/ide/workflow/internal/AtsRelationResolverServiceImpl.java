@@ -230,11 +230,11 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
-      List<Long> related = new LinkedList<>();
+   public List<ArtifactId> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
+      List<ArtifactId> related = new LinkedList<>();
       Artifact art = getArtifact(artifact);
       for (Artifact rel : art.getRelatedArtifacts(relationTypeSide)) {
-         related.add(rel.getId());
+         related.add(rel);
       }
       return related;
    }

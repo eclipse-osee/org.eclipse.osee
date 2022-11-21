@@ -28,17 +28,22 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServiceImpl {
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public AtsRelationResolverServiceImpl(AtsApi atsApi) {
+   public AtsRelationResolverServiceImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -215,13 +220,11 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
-      List<Long> related = new LinkedList<>();
-      ArtifactReadable art = getArtifact(artifact);
-      for (ArtifactReadable rel : art.getRelated(relationTypeSide)) {
-         related.add(rel.getId());
-      }
-      return related;
+   public List<ArtifactId> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(artifact);
+      List<ArtifactId> artifactIds = query.follow(relationTypeSide).asArtifactIds();
+      artifactIds.remove(artifact);
+      return artifactIds;
    }
 
    @Override

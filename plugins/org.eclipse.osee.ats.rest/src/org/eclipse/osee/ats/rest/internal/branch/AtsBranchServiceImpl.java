@@ -94,6 +94,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchState getBranchState(BranchId branch) {
+      if (branch instanceof Branch) {
+         return ((Branch) branch).getBranchState();
+      }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       Branch fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getBranchState();
@@ -126,6 +129,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public Branch getBranch(BranchId branch) {
+      if (branch instanceof Branch) {
+         return (Branch) branch;
+      }
       return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
    }
 
@@ -137,6 +143,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public boolean isArchived(BranchId branch) {
+      if (branch instanceof Branch) {
+         return ((Branch) branch).isArchived();
+      }
       return getBranch(branch).isArchived();
    }
 
@@ -163,6 +172,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchId getParentBranch(BranchId branch) {
+      if (branch instanceof Branch) {
+         return ((Branch) branch).getParentBranch();
+      }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       Branch fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getParentBranch();
@@ -205,6 +217,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public ArtifactId getAssociatedArtifactId(BranchId branch) {
+      if (branch instanceof Branch) {
+         return ((Branch) branch).getAssociatedArtifact();
+      }
       return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne().getAssociatedArtifact();
    }
 

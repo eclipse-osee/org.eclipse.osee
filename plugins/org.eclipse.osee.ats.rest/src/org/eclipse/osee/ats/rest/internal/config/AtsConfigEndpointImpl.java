@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.config.operation.ConvertAtsAisAndTeamDefsOperation;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
@@ -56,6 +57,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -67,10 +69,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private final AtsApi atsApi;
    private final ExecutorAdmin executorAdmin;
    private List<ArtifactImage> images;
+   private final JdbcService jdbcService;
 
-   public AtsConfigEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, ExecutorAdmin executorAdmin) {
+   public AtsConfigEndpointImpl(AtsApiServer atsApi, OrcsApi orcsApi, JdbcService jdbcService, ExecutorAdmin executorAdmin) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
+      this.jdbcService = jdbcService;
       this.executorAdmin = executorAdmin;
    }
 
@@ -266,7 +270,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public XResultData validate() {
-      AtsHealthCheckOperation op = new AtsHealthCheckOperation(atsApi, atsApi.getJdbcService());
+      AtsHealthCheckOperation op = new AtsHealthCheckOperation(orcsApi, atsApi, jdbcService);
       return op.run();
    }
 

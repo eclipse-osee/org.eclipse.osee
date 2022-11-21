@@ -12,7 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
+import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.health.HealthLink;
 import org.eclipse.osee.orcs.health.HealthLinks;
@@ -24,13 +28,19 @@ import org.eclipse.osee.orcs.rest.internal.health.ServerHealthEndpointImpl;
 public class ServerHealthMain {
 
    private final OrcsApi orcsApi;
+   private final JdbcClient jdbcClient;
 
-   public ServerHealthMain(OrcsApi orcsApi) {
+   public ServerHealthMain(OrcsApi orcsApi, JdbcClient jdbcClient) {
       this.orcsApi = orcsApi;
+      this.jdbcClient = jdbcClient;
    }
 
    public String getHtml() {
       String mainHtml = OseeInf.getResourceContents("web/health/main.html", ServerHealthEndpointImpl.class);
+      String dbName = OseeInfo.getCachedValue(jdbcClient, OseeProperties.OSEE_DB);
+      if (Strings.isValid(dbName)) {
+         mainHtml = mainHtml.replaceAll("OSEE Health", "OSEE " + dbName.toUpperCase() + " Health");
+      }
       StringBuffer sb = new StringBuffer();
       ServerHealthLinks healthLinks = new ServerHealthLinks(orcsApi);
       HealthLinks links = healthLinks.getLinks();

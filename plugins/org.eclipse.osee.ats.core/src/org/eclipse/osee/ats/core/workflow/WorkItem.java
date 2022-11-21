@@ -54,6 +54,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    IAtsTeamWorkflow parentTeamWf;
    IAtsAction parentAction;
    private final ArtifactTypeToken artifactType;
+   private WorkDefinition workDef;
 
    public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact, ArtifactTypeToken artifactType) {
       super(artifact.getName(), artifact.getId());
@@ -154,7 +155,10 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public WorkDefinition getWorkDefinition() {
-      return atsApi.getWorkDefinitionService().getWorkDefinition(this);
+      if (workDef == null) {
+         workDef = atsApi.getWorkDefinitionService().getWorkDefinition(this);
+      }
+      return workDef;
    }
 
    @Override

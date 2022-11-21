@@ -36,6 +36,7 @@ public class AtsStateFactory implements IAtsStateFactory {
    private final AtsApi atsApi;
    Map<Id, IAtsStateManager> idToStateManager = new HashMap<>();
    Map<Id, TransactionId> idToTransactionId = new HashMap<>();
+   private boolean enableTransactionCheck = true;
 
    public AtsStateFactory(AtsApi atsApi, IAtsWorkStateFactory workStateFactory, IAtsLogFactory logFactory) {
       this.atsApi = atsApi;
@@ -46,12 +47,22 @@ public class AtsStateFactory implements IAtsStateFactory {
    @Override
    public IAtsStateManager getStateManager(IAtsWorkItem workItem) {
       IAtsStateManager stateMgr = idToStateManager.get(workItem);
-      TransactionId transId = idToTransactionId.get(workItem);
-      TransactionId workItemTransaction = atsApi.getStoreService().getTransactionId(workItem);
-      if (stateMgr == null || workItemTransaction.isValid() && workItemTransaction.notEqual(transId)) {
+      /**
+       * Only reload state manager if workflow transaction has changed. Done for performance issues on client. Not
+       * necessary on server cause workflows are reloaded with every thread.
+       */
+      boolean sameTransaction = true;
+      if (enableTransactionCheck) {
+         TransactionId transId = idToTransactionId.get(workItem);
+         TransactionId workItemTransaction = atsApi.getStoreService().getTransactionId(workItem);
+         if (workItemTransaction.isValid()) {
+            sameTransaction = workItemTransaction.equals(transId);
+            idToTransactionId.put(workItem, workItemTransaction);
+         }
+      }
+      if (stateMgr == null || !sameTransaction) {
          stateMgr = new StateManager(workItem, logFactory, atsApi);
          idToStateManager.put(workItem, stateMgr);
-         idToTransactionId.put(workItem, workItemTransaction);
          StateManagerStore.load(workItem, stateMgr, atsApi.getAttributeResolver(), workStateFactory);
       }
       return stateMgr;
@@ -77,6 +88,15 @@ public class AtsStateFactory implements IAtsStateFactory {
    public void setStateMgr(IAtsWorkItem workItem, IAtsStateManager stateMgr) {
       idToStateManager.put(workItem, stateMgr);
       idToTransactionId.put(workItem, atsApi.getStoreService().getTransactionId(workItem));
+   }
+
+   public boolean isEnableTransactionCheck() {
+      return enableTransactionCheck;
+   }
+
+   @Override
+   public void setEnableTransactionCheck(boolean enable) {
+      this.enableTransactionCheck = enable;
    }
 
 }

@@ -13,10 +13,14 @@
 
 package org.eclipse.osee.framework.core.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 
 /**
  * @author Donald G. Dunne
@@ -48,4 +52,19 @@ public abstract class AbstractUserGroupImpl extends BaseId implements IUserGroup
    }
 
    protected abstract ArtifactToken getOrCreateGroupArtifact(ArtifactToken groupArtifact2);
+
+   @Override
+   public Collection<String> getActiveMemberEmails() {
+      ArrayList<String> toUserEmailList = new ArrayList<String>();
+      for (UserToken userTok : getMembers()) {
+         if (userTok.isActive()) {
+            String userEmail = userTok.getEmail();
+            if (EmailUtil.isEmailValid(userEmail)) {
+               toUserEmailList.add(userEmail);
+            }
+         }
+      }
+      return toUserEmailList;
+   }
+
 }

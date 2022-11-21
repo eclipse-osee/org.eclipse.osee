@@ -214,7 +214,9 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
-      return new UserGroupImpl(userGroupArt);
+      ArtifactToken art =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroupArt).getArtifactOrSentinal();
+      return new UserGroupImpl(art);
    }
 
    @Override

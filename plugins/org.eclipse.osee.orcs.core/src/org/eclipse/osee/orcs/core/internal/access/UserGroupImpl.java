@@ -97,19 +97,22 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    public Collection<UserToken> getMembers() {
       checkGroupExists();
       List<UserToken> users = new ArrayList<UserToken>();
-      for (ArtifactReadable userArt : getArtifact().getRelated(CoreRelationTypes.Users_User).getList()) {
-         String name = userArt.getName();
-         String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email, "");
-         String userId = userArt.getSoleAttributeValue(CoreAttributeTypes.UserId);
-         boolean active = userArt.getSoleAttributeValue(CoreAttributeTypes.Active);
-         List<IUserGroupArtifactToken> roles = new ArrayList<IUserGroupArtifactToken>();
-         for (ArtifactReadable userGroupArt : userArt.getRelated(CoreRelationTypes.Users_Artifact).getList()) {
-            IUserGroupArtifactToken userGroup =
-               UserGroupArtifactToken.valueOf(userGroupArt.getId(), userGroupArt.getName());
-            roles.add(userGroup);
+      ArtifactReadable artifact = getArtifact();
+      if (artifact != null) {
+         for (ArtifactReadable userArt : artifact.getRelated(CoreRelationTypes.Users_User).getList()) {
+            String name = userArt.getName();
+            String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+            String userId = userArt.getSoleAttributeValue(CoreAttributeTypes.UserId);
+            boolean active = userArt.getSoleAttributeValue(CoreAttributeTypes.Active);
+            List<IUserGroupArtifactToken> roles = new ArrayList<IUserGroupArtifactToken>();
+            for (ArtifactReadable userGroupArt : userArt.getRelated(CoreRelationTypes.Users_Artifact).getList()) {
+               IUserGroupArtifactToken userGroup =
+                  UserGroupArtifactToken.valueOf(userGroupArt.getId(), userGroupArt.getName());
+               roles.add(userGroup);
+            }
+            UserToken userToken = UserToken.create(userArt.getId(), name, email, userId, active, roles);
+            users.add(userToken);
          }
-         UserToken userToken = UserToken.create(userArt.getId(), name, email, userId, active, roles);
-         users.add(userToken);
       }
       return users;
    }

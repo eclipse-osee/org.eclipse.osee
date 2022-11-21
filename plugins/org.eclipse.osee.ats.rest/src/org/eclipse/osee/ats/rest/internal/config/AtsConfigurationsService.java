@@ -118,7 +118,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       AtsConfigurations configs = new AtsConfigurations();
       Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
 
-      boolean debugOn = false; // Set to true to enable debugging
+      boolean debugOn = false; // Set to true to enable debugging; false for commit/production
       ElapsedTime time = new ElapsedTime("Server ACS - getAtsConfigurationsFromDb", debugOn);
       if (!debugOn) {
          time.off(); // Turn on to debug (change above to false so doesn't log begin)

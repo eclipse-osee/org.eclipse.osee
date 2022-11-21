@@ -28,6 +28,10 @@ public class CountingMap<K> {
       countingMap = new HashMap<>(initialCapacity);
    }
 
+   public Collection<K> keySet() {
+      return countingMap.keySet();
+   }
+
    public CountingMap() {
       countingMap = new HashMap<>();
    }

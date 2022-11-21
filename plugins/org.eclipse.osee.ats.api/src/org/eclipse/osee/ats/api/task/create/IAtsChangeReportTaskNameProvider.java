@@ -170,9 +170,6 @@ public interface IAtsChangeReportTaskNameProvider {
          ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
          Collection<ChangeReportRollup> rollups = data.getRollups().values();
          for (ChangeReportRollup rollup : rollups) {
-            if (rollup.getArtToken().getName().contains("COM_SUBTASK")) {
-               System.err.println("here");
-            }
             ArtifactIncluded result = isIncluded(crtd, crttwd, rollup, rollup.getArtType(), atsApi);
 
             if (result.isIncluded()) {

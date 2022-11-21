@@ -58,9 +58,14 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
          atsWorkDefProv = new AtsWorkDefinitionProvider();
          workDefProviders.add(atsWorkDefProv);
       }
+      int cacheSize = idToWorkDef.keySet().size();
       // Add any not processed
       for (IAtsWorkDefinitionProvider workDefProvider : new CopyOnWriteArrayList<>(workDefProviders)) {
          handleProvider(workDefProvider);
+      }
+      // Don't process if no new work defs
+      if (cacheSize == idToWorkDef.keySet().size()) {
+         return;
       }
       XResultData rd = new XResultData();
       for (WorkDefinition workDef : idToWorkDef.values()) {

@@ -100,7 +100,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
       if (prefArt.isInvalid()) {
          prefArt = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
       }
-      tx.createAttribute(prefArt, CoreAttributeTypes.GeneralStringData, json);
+      tx.createAttribute(prefArt, CoreAttributeTypes.GeneralStringData, "OseeHealthLinks=" + json);
       tx.commit();
    }
 
