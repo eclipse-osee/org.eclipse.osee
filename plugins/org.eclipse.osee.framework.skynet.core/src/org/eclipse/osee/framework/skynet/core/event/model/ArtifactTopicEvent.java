@@ -177,7 +177,8 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
    public Collection<Artifact> getRelCacheArtifacts() {
       try {
          return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale, RelationEventType.Added,
-            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted), this.getBranch());
+            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted,
+            RelationEventType.ModifiedOrder, RelationEventType.ModifiedRelatedArtifact), this.getBranch());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -320,6 +321,18 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
     */
    private boolean isRelChange(Artifact artifact) {
       for (EventTopicRelationTransfer guidRel : getRelations(RelationEventType.ModifiedRationale)) {
+         if (guidRel.getArtAId().getId().equals(artifact.getId()) || guidRel.getArtBId().getId().equals(
+            artifact.getId())) {
+            return true;
+         }
+      }
+      for (EventTopicRelationTransfer guidRel : getRelations(RelationEventType.ModifiedOrder)) {
+         if (guidRel.getArtAId().getId().equals(artifact.getId()) || guidRel.getArtBId().getId().equals(
+            artifact.getId())) {
+            return true;
+         }
+      }
+      for (EventTopicRelationTransfer guidRel : getRelations(RelationEventType.ModifiedRelatedArtifact)) {
          if (guidRel.getArtAId().getId().equals(artifact.getId()) || guidRel.getArtBId().getId().equals(
             artifact.getId())) {
             return true;

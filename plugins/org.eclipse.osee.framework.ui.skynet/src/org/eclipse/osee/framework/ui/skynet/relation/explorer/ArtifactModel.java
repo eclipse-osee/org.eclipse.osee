@@ -24,22 +24,32 @@ public class ArtifactModel {
    private String name;
    private ArtifactTypeToken descriptor;
    private String rationale;
+   private int relOrder;
 
    public ArtifactModel(String name, ArtifactTypeToken descriptor) {
-      this(false, null, name, descriptor, "");
+      this(false, null, name, descriptor, "", 0);
    }
 
    public ArtifactModel(Artifact artifact) {
       this(true, artifact, artifact.getName(), artifact.getArtifactType(), "");
    }
 
-   private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactTypeToken descriptor, String rationale) {
+   private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactTypeToken descriptor, String rationale, int relOrder) {
       this.add = true;
       this.artifactFound = artifactFound;
       this.artifact = artifact;
       this.name = name;
       this.descriptor = descriptor;
       this.rationale = rationale;
+      this.setRelOrder(relOrder);
+   }
+
+   private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactTypeToken descriptor, int relOrder) {
+      this(artifactFound, artifact, name, descriptor, "", relOrder);
+   }
+
+   private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactTypeToken descriptor, String rationale) {
+      this(artifactFound, artifact, name, descriptor, rationale, 0);
    }
 
    /**
@@ -110,5 +120,13 @@ public class ArtifactModel {
     */
    public boolean isArtifactFound() {
       return artifactFound;
+   }
+
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   public void setRelOrder(int relOrder) {
+      this.relOrder = relOrder;
    }
 }

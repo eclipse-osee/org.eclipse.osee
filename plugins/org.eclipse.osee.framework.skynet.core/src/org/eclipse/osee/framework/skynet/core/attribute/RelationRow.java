@@ -54,8 +54,8 @@ public final class RelationRow {
       this.b_art_id = b_art_id;
       this.rationale = "";
       this.gamma_id = gamma_id;
-      this.rel_order = 0;
-      this.rel_art_id = ArtifactId.SENTINEL;
+      this.rel_order = rel_order;
+      this.rel_art_id = rel_art_id;
    }
 
    public ArtifactId getA_art_id() {

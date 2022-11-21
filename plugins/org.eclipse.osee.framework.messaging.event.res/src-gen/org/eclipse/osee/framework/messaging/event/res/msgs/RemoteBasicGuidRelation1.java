@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  *         &lt;element name="artBId" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="artB" type="{}RemoteBasicGuidArtifact1"/>
  *         &lt;element name="rationale" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="relOrder" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="relArtId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -52,7 +54,9 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
    "artA",
    "artBId",
    "artB",
-   "rationale"})
+   "rationale",
+   "relOrder",
+   "relArtId"})
 public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    @XmlElement(required = true)
@@ -70,6 +74,8 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
    protected RemoteBasicGuidArtifact1 artB;
    @XmlElement(required = true)
    protected String rationale;
+   private int relOrder;
+   private long relArtId;
 
    /**
     * Gets the value of the modTypeGuid property.
@@ -235,4 +241,19 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
       this.rationale = value;
    }
 
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   public void setRelOrder(int relOrder) {
+      this.relOrder = relOrder;
+   }
+
+   public Long getRelArtId() {
+      return relArtId;
+   }
+
+   public void setRelArtId(int relArtId) {
+      this.relArtId = relArtId;
+   }
 }

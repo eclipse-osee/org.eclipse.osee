@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,6 +44,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -100,6 +103,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       TransactionManager.internalPersist(connection, transactionRecord);
       if (!txDatas.isEmpty()) {
          executeTransactionDataItems(connection);
+
          if (BranchManager.getState(branch).isCreated()) {
             BranchManager.setState(branch, BranchState.MODIFIED);
          }
@@ -169,9 +173,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
 
    private void fetchTxNotCurrent(JdbcConnection connection, BranchId branchId, BaseTransactionData transactionData, List<Object[]> results) {
       try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
-         String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
 
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), branchId);
+         String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
+         if (transactionData.getSelectTxNotCurrentSql().equals(OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2)) {
+            RelationLink rel = ((RelationTransactionData) transactionData).getRelation();
+            chStmt.runPreparedQuery(query, branchId, rel.getArtifactA(), rel.getArtifactB(), rel.getRelationType());
+         } else {
+            chStmt.runPreparedQuery(query, transactionData.getItemId(), branchId);
+         }
          while (chStmt.next()) {
             results.add(new Object[] {branchId, chStmt.getLong("transaction_id"), chStmt.getLong("gamma_id")});
          }

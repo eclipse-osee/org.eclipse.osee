@@ -84,8 +84,9 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private NeedSelectedArtifactListener needSelectedArtifactListener;
    private final IDirtiableEditor editor;
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
-   public static final String[] columnNames = new String[] {"Type/Side/Name", "Art Id", "Rationale", "Id", "Gamma Id"};
-   public static final Integer[] columnLengths = new Integer[] {600, 50, 300, 50, 50};
+   public static final String[] columnNames =
+      new String[] {"Type/Side/Name", "Art Id", "Rationale", "Id", "Gamma Id", "Order By"};
+   public static final Integer[] columnLengths = new Integer[] {600, 50, 300, 50, 50, 50};
 
    private MenuItem openMenuItem, viewRelationTreeItem, deleteRelationMenuItem, deleteArtifactMenuItem;
 
@@ -401,8 +402,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
                Set<Artifact> relArts = java.util.Collections.singleton(
                   data.getArtifactA().equals(artifact) ? data.getArtifactB() : data.getArtifactA());
 
-               valid = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, relationTypeSide,
-                  relArts, PermissionEnum.WRITE, null).isSuccess();
+               valid = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, relationTypeSide, relArts,
+                  PermissionEnum.WRITE, null).isSuccess();
 
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

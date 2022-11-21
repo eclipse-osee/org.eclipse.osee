@@ -28,4 +28,8 @@ public interface IBasicGuidRelation extends HasBranchId {
    Long getRelTypeGuid();
 
    GammaId getGammaId();
+
+   Long getRelArtId();
+
+   int getRelOrder();
 }

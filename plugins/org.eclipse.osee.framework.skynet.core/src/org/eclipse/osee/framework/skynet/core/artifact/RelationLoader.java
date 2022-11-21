@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -62,11 +63,34 @@ class RelationLoader {
             ApplicabilityId applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
             RelationManager.getOrCreate(aArtifactId, bArtifactId, relationType, relationId, gammaId, rationale,
-               modificationType, applicabilityId);
+               modificationType, applicabilityId, 0, ArtifactId.SENTINEL);
          }
       } finally {
          chStmt.close();
       }
+      try {
+         String sqlQuery = ServiceUtil.getSql(OseeSql.LOAD_RELATIONS2);
+         chStmt.runPreparedQuery(artifacts.size() * 8, sqlQuery, joinQueryId);
+         while (chStmt.next()) {
+            BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+            ArtifactToken aArtifactId = ArtifactToken.valueOf(chStmt.getLong("a_art_id"), branch);
+            ArtifactToken bArtifactId = ArtifactToken.valueOf(chStmt.getLong("b_art_id"), branch);
+            RelationTypeToken relationType = tokenservice.getRelationType(chStmt.getLong("rel_type"));
+
+            GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
+            int relOrder = chStmt.getInt("rel_order");
+            ArtifactId relArtId = ArtifactId.valueOf(chStmt.getLong("rel_art_id"));
+
+            ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
+            ApplicabilityId applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
+
+            RelationManager.getOrCreate(aArtifactId, bArtifactId, relationType, RelationId.valueOf(0L), gammaId, "",
+               modificationType, applicabilityId, relOrder, relArtId);
+         }
+      } finally {
+         chStmt.close();
+      }
+
       for (Artifact artifact : artifacts) {
          artifact.setLinksLoaded(true);
       }

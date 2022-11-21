@@ -54,6 +54,8 @@ public class RelationLink implements HasBranchId, IRelationLink {
    private final ArtifactToken artifactA;
    private final ArtifactToken artifactB;
    private final BranchId branch;
+   private ArtifactId relArtId;
+   private int relOrder;
    private ModificationType modificationType;
    private final ApplicabilityId applicabilityId;
 
@@ -63,6 +65,12 @@ public class RelationLink implements HasBranchId, IRelationLink {
    private boolean useBackingData;
 
    public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, RelationId relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
+      this(artifactA, artifactB, branch, relationType, relationId, gammaId, rationale, 0, ArtifactId.SENTINEL,
+         modificationType, applicabilityId);
+
+   }
+
+   public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, RelationId relationId, GammaId gammaId, String rationale, int relOrder, ArtifactId relArtId, ModificationType modificationType, ApplicabilityId applicabilityId) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -72,6 +80,8 @@ public class RelationLink implements HasBranchId, IRelationLink {
       this.artifactB = artifactB;
       this.branch = branch;
       this.applicabilityId = applicabilityId;
+      this.relOrder = relOrder;
+      this.relArtId = relArtId;
       internalSetModType(modificationType, false, false);
    }
 
@@ -400,5 +410,29 @@ public class RelationLink implements HasBranchId, IRelationLink {
 
    public RelationId getRelationId() {
       return RelationId.valueOf(getId());
+   }
+
+   public ArtifactId getRelArtId() {
+      return relArtId;
+   }
+
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   public void setRelArtId(ArtifactId relArtId) {
+      if (relArtId != null && this.relArtId != null) {
+         if (relArtId.getIdString().equals(this.relArtId.getIdString())) {
+            this.relArtId = relArtId;
+            internalSetModType(ModificationType.MODIFIED, false, SET_DIRTY);
+         }
+      }
+   }
+
+   public void setRelOrder(int relOrder) {
+      if (this.relOrder != relOrder) {
+         this.relOrder = relOrder;
+         internalSetModType(ModificationType.MODIFIED, false, SET_DIRTY);
+      }
    }
 }

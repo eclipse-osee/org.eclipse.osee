@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -183,7 +184,8 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
                monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
                monitor.worked(1);
             }
-            RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt, roughRelation.getRationale());
+            RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt, roughRelation.getRationale(), 0,
+               ArtifactId.SENTINEL);
             aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {
             OseeLog.log(Activator.class, Level.WARNING, ex);

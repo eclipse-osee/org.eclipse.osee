@@ -138,7 +138,9 @@ public class RelationManager {
 
          ArtifactQuery.getArtifactListFrom(
             getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED), artifact.getBranch());
-
+         if (relationType.isNewRelationTable()) {
+            Collections.sort(selectedRelations, (r1, r2) -> r1.getRelOrder() - r2.getRelOrder());
+         }
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted()) {
                try {
@@ -154,7 +156,7 @@ public class RelationManager {
                }
             }
          }
-         if (sort) {
+         if (!relationType.isNewRelationTable() && sort) {
             sort(artifact, relationType, relationSide, relatedArtifacts);
          }
       }
@@ -401,8 +403,11 @@ public class RelationManager {
             }
          }
       }
-      if (sort) {
+
+      if (!relationType.isNewRelationTable() && sort) {
          sortRelations(artifact, relationType, relationSide, relations);
+      } else {
+         Collections.sort(relations, (r1, r2) -> r1.getRelOrder() - r2.getRelOrder());
       }
       return relations;
    }
@@ -520,10 +525,14 @@ public class RelationManager {
    }
 
    public static void addRelation(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB, String rationale) {
-      addRelation(PREEXISTING, relationType, artifactA, artifactB, rationale);
+      addRelation(PREEXISTING, relationType, artifactA, artifactB, rationale, 0, ArtifactId.SENTINEL);
    }
 
-   public static void addRelation(RelationSorter sorterId, RelationTypeToken relationType, Artifact artifactA, Artifact artifactB, String rationale) {
+   public static void addRelation(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB, int relOrder, ArtifactId relArtId) {
+      addRelation(PREEXISTING, relationType, artifactA, artifactB, "", relOrder, relArtId);
+   }
+
+   public static void addRelation(RelationSorter sorterId, RelationTypeToken relationType, Artifact artifactA, Artifact artifactB, String rationale, int relOrder, ArtifactId relArtId) {
       Conditions.checkExpressionFailOnTrue(artifactA.equals(artifactB), "Not valid to relate artifact [%s] to itself",
          artifactA);
       RelationLink relation =
@@ -533,7 +542,7 @@ public class RelationManager {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
          relation = getOrCreate(artifactA, artifactB, relationType, RelationId.valueOf(0L), GammaId.valueOf(0),
-            rationale, ModificationType.NEW, ApplicabilityId.BASE);
+            rationale, ModificationType.NEW, ApplicabilityId.BASE, relOrder, relArtId);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
@@ -609,7 +618,8 @@ public class RelationManager {
     *
     * @param relationId 0 or relationId if already created
     */
-   public static synchronized RelationLink getOrCreate(ArtifactToken aArtifactId, ArtifactToken bArtifactId, RelationTypeToken relationType, RelationId relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
+   public static synchronized RelationLink getOrCreate(ArtifactToken aArtifactId, ArtifactToken bArtifactId, RelationTypeToken relationType, RelationId relationId, GammaId gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId, int relOrder, ArtifactId relArtId) {
+
       BranchToken branch = aArtifactId.getBranch();
       RelationLink relation = null;
       if (relationId.notEqual(RelationId.valueOf(0L))) {
@@ -618,8 +628,13 @@ public class RelationManager {
          relation = getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
       }
       if (relation == null) {
-         relation = new RelationLink(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
-            modificationType, applicabilityId);
+         if (relationType.isNewRelationTable()) {
+            relation = new RelationLink(aArtifactId, bArtifactId, branch, relationType,
+               RelationId.valueOf(gammaId.getId()), gammaId, "", relOrder, relArtId, modificationType, applicabilityId);
+         } else {
+            relation = new RelationLink(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
+               modificationType, applicabilityId);
+         }
       }
       manageRelation(relation, RelationSide.SIDE_A);
       manageRelation(relation, RelationSide.SIDE_B);

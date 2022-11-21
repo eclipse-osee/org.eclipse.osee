@@ -149,7 +149,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
    public Collection<Artifact> getRelCacheArtifacts() {
       try {
          return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale, RelationEventType.Added,
-            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted));
+            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted,
+            RelationEventType.ModifiedOrder, RelationEventType.ModifiedRelatedArtifact));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -265,6 +266,16 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
     */
    private boolean isRelChange(DefaultBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedRationale)) {
+         if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
+            return true;
+         }
+      }
+      for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedOrder)) {
+         if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
+            return true;
+         }
+      }
+      for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedRelatedArtifact)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
          }

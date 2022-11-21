@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -71,6 +72,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.RelationOrderUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -221,6 +223,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationLink link = RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(), relationTypeSide);
       link.setRationale(rationale);
+   }
+
+   public final void setRelationRelOrder(Artifact artifact, RelationTypeSide relationTypeSide, int relOrder) {
+      Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
+      RelationLink link = RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(), relationTypeSide);
+      link.setRelOrder(relOrder);
    }
 
    private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, RelationTypeSide relationSide) {
@@ -1366,12 +1374,25 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact, String rationale) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
+
+      int relOrder = 0;
+      if (relationTypeSide.getRelationType().isNewRelationTable()) {
+         relOrder = getNewRelOrder(getRelations(relationTypeSide), relationTypeSide, null, artifact);
+      }
       RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(),
-         rationale);
+         rationale, relOrder, ArtifactId.SENTINEL);
+   }
+
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact, int relOrder, ArtifactId relArtId) {
+      Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
+      RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(), "",
+         relOrder, relArtId);
    }
 
    public final void addRelation(RelationTypeSide relationSide, Artifact artifact) {
+
       addRelation(PREEXISTING, relationSide, artifact, null);
+
    }
 
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationSide, Artifact artifact) {
@@ -1383,7 +1404,17 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       Artifact artifactA = sideA ? itemToAdd : this;
       Artifact artifactB = sideA ? this : itemToAdd;
 
-      RelationManager.addRelation(sorterId, relationEnumeration, artifactA, artifactB, rationale);
+      RelationManager.addRelation(sorterId, relationEnumeration, artifactA, artifactB, rationale, 0,
+         ArtifactId.SENTINEL);
+      setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
+   }
+
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, int relOrder, ArtifactId relArtId) {
+      boolean sideA = relationEnumeration.getSide().isSideA();
+      Artifact artifactA = sideA ? itemToAdd : this;
+      Artifact artifactB = sideA ? this : itemToAdd;
+
+      RelationManager.addRelation(sorterId, relationEnumeration, artifactA, artifactB, "", relOrder, relArtId);
       setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
@@ -1416,8 +1447,49 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          throw new OseeStateException("Could not set Relation Order");
       }
 
-      RelationManager.setRelationOrder(this, relationEnumeration, relationEnumeration.getSide(), USER_DEFINED,
-         currentOrder);
+      if (relationEnumeration.getRelationType().isNewRelationTable()) {
+         List<RelationLink> relations = getRelations(relationEnumeration);
+         RelationLink modRelation =
+            relations.stream().filter(a -> a.getArtifactB().equals(itemToAdd)).findFirst().get();
+         int relOrder = getNewRelOrder(relations, relationEnumeration, targetArtifact, itemToAdd);
+         modRelation.setRelOrder(relOrder);
+
+      } else {
+
+         RelationManager.setRelationOrder(this, relationEnumeration, relationEnumeration.getSide(), USER_DEFINED,
+            currentOrder);
+      }
+   }
+
+   private int getNewRelOrder(List<RelationLink> relations, RelationTypeSide relationEnumeration, Artifact targetArtifact, Artifact itemToAdd) {
+      String insertType = "end";
+      int afterIndex = 0;
+      int beforeIndex = 0;
+      int maxOrder = 0;
+      int minOrder = 0;
+      if (!relations.isEmpty()) {
+         maxOrder = relations.stream().max(Comparator.comparing(RelationLink::getRelOrder)).get().getRelOrder();
+         minOrder = relations.stream().min(Comparator.comparing(RelationLink::getRelOrder)).get().getRelOrder();
+         if (targetArtifact != null) {
+
+            RelationLink priorRelation =
+               relations.stream().filter(a -> a.getArtifactB().equals(targetArtifact)).findFirst().get();
+            if (priorRelation.isValid()) {
+
+               if (relations.get(0).equals(priorRelation)) {
+                  insertType = "first";
+
+               } else {
+                  insertType = "insert";
+                  afterIndex = relations.get(relations.indexOf(priorRelation) - 1).getRelOrder();
+                  beforeIndex = priorRelation.getRelOrder();
+               }
+            }
+         }
+      }
+      return RelationOrderUtil.getRelOrder(relationEnumeration.getRelationType(), insertType, afterIndex, beforeIndex,
+         minOrder, maxOrder);
+
    }
 
    public final void deleteRelation(RelationTypeSide relationTypeSide, Artifact artifact) {

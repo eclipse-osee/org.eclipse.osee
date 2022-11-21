@@ -314,7 +314,6 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    private void addRelations(Artifact artifact) {
       List<RelationLink> links = artifact.getRelationsAll(INCLUDE_DELETED);
-
       for (RelationLink relation : links) {
          if (relation.isDirty()) {
             addRelation(artifact, relation);
@@ -354,7 +353,11 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
                } else {
                   modificationType = MODIFIED;
                }
-               relationEventType = RelationEventType.ModifiedRationale;
+               if (link.getRelationType().isNewRelationTable()) {
+                  relationEventType = RelationEventType.ModifiedOrder;
+               } else {
+                  relationEventType = RelationEventType.ModifiedRationale;
+               }
             }
          } else {
             if (link.isDeleted()) {
