@@ -94,9 +94,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static Date getDate(Object object) {
-      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         return getDate(AtsApiService.get().getWorkItemService().getFirstTeam(object));
-      } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          return ((TeamWorkFlowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);
       } else if (object instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt =
