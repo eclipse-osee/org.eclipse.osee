@@ -148,8 +148,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    @Override
    public InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId) {
       try {
-         List<RelationTypeSide> parentRelations =
-            Arrays.asList(CoreRelationTypes.InterfaceConnectionContent_Connection);
+         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceConnectionContent_Connection,
+            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, messageId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
