@@ -12,20 +12,37 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import navigationStructure from '../navigation/top-level-navigation/top-level-navigation-structure';
 import { PleComponent } from './ple.component';
+
+const ple = navigationStructure[0].children.find(
+	(page) => page.label === 'Product Line Engineering - Home'
+);
+const plconfig = navigationStructure[0].children.find(
+	(page) => page.label === 'Product Line Configuration'
+);
+const messaging = navigationStructure[0].children.find(
+	(page) => page.label === 'Messaging Configuration'
+);
+const asciidoc = navigationStructure[0].children.find(
+	(page) => page.label === 'AsciiDoc Editor'
+);
 
 const routes: Routes = [
 	{
 		path: '',
+		title: ple?.pageTitle,
 		component: PleComponent,
 	},
 	{
 		path: 'plconfig',
+		title: plconfig?.pageTitle,
 		loadChildren: () =>
 			import('./plconfig/plconfig.module').then((m) => m.PlconfigModule),
 	},
 	{
 		path: 'messaging',
+		title: messaging?.pageTitle,
 		loadChildren: () =>
 			import('./messaging/messaging.module').then(
 				(m) => m.MessagingModule
@@ -33,6 +50,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'asciidoc',
+		title: asciidoc?.pageTitle,
 		loadChildren: () =>
 			import('./asciidoc/asciidoc.module').then((m) => m.AsciidocModule),
 	},
