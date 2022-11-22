@@ -16,6 +16,9 @@ import { RoleGuard } from 'src/app/auth/role.guard';
 import navigationStructure from '../../navigation/top-level-navigation/top-level-navigation-structure';
 import { MessagingComponent } from './messaging.component';
 
+const messaging = navigationStructure[0].children.filter(
+	(c) => c.label === 'Messaging Configuration'
+)[0];
 const transports = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
 	.children.find((page) => page.label === 'Transport Type Manager');
@@ -41,7 +44,7 @@ const help = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
 	.children.find((page) => page.label === 'Help');
 const routes: Routes = [
-	{ path: '', component: MessagingComponent },
+	{ path: '', title: messaging?.pageTitle, component: MessagingComponent },
 	{
 		path: ':branchType/:branchId/:connection/messages/:messageId/:subMessageId/elements',
 		title: connections?.pageTitle || 'OSEE',
