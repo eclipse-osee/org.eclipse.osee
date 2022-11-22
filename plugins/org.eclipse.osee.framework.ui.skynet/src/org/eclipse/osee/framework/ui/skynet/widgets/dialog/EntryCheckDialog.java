@@ -31,6 +31,7 @@ public class EntryCheckDialog extends EntryDialog {
 
    private final String checkBoxMessage;
    private boolean checked = false;
+   protected Composite checkComp;
 
    public EntryCheckDialog(String dialogTitle, String dialogMessage, String checkBoxMessage) {
       super(dialogTitle, dialogMessage);
@@ -48,16 +49,16 @@ public class EntryCheckDialog extends EntryDialog {
 
       (new org.eclipse.swt.widgets.Label(parent, SWT.NONE)).setText(" ");
 
-      Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayoutData(new GridData());
-      comp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      checkComp = new Composite(parent, SWT.NONE);
+      checkComp.setLayoutData(new GridData());
+      checkComp.setLayout(ALayout.getZeroMarginLayout(2, false));
 
       final XCheckBox checkbox = new XCheckBox(checkBoxMessage);
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);
       checkbox.set(checked);
-      checkbox.createWidgets(comp, 1);
+      checkbox.createWidgets(checkComp, 1);
 
       SelectionListener selectionListener = new SelectionAdapter() {
 
