@@ -49,7 +49,7 @@ public class EmailWizard extends Wizard {
 
    @Override
    public void addPages() {
-      wizardPage = new EmailWizardPage("Page1", emailableGroups, initialAddress);
+      wizardPage = new EmailWizardPage("Page1", emailableGroups, initialAddress, subject);
       addPage(wizardPage);
    }
 
@@ -65,8 +65,9 @@ public class EmailWizard extends Wizard {
             AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent"));
             return true;
          }
+         String useSubject = wizardPage.getSubject();
          OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()),
-            UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, "", BodyType.Html);
+            UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), useSubject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String otherText = wizardPage.getText();
