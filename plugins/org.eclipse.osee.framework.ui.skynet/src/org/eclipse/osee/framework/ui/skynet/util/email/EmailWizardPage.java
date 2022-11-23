@@ -27,6 +27,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -69,14 +71,14 @@ public class EmailWizardPage extends WizardPage {
 
    private final static String separator = "===============";
    private final List<EmailGroup> groups;
+   private XText subjectText;
+   private final String subject;
 
-   /**
-    * @param initialAddress User, EmailGroup or String
-    */
-   protected EmailWizardPage(String pageName, List<EmailGroup> groups, List<Object> initialAddress) {
+   protected EmailWizardPage(String pageName, List<EmailGroup> groups, List<Object> initialAddress, String subject) {
       super(pageName);
       this.groups = groups;
       this.initialAddress = initialAddress;
+      this.subject = subject;
    }
 
    @Override
@@ -90,6 +92,12 @@ public class EmailWizardPage extends WizardPage {
       composite.setLayout(gl);
       GridData gd = new GridData(GridData.FILL_BOTH);
       composite.setLayoutData(gd);
+
+      subjectText = new XText("Subject");
+      subjectText.createWidgets(composite, 2);
+      if (Strings.isValid(subject)) {
+         subjectText.set(subject);
+      }
 
       Composite namesComp = new Composite(composite, SWT.NONE);
       namesComp.setLayout(new GridLayout());
@@ -161,10 +169,10 @@ public class EmailWizardPage extends WizardPage {
       label = new Label(toComp, SWT.NONE);
       label.setText("(select and right-click to delete)");
 
-      Button b = new Button(toComp, SWT.NONE);
-      b.setText("To->   ");
-      b.setSize(1000, 5);
-      b.addSelectionListener(new SelectionListener() {
+      Button toButton = new Button(toComp, SWT.NONE);
+      toButton.setText("To->   ");
+      toButton.setSize(1000, 5);
+      toButton.addSelectionListener(new SelectionListener() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -195,9 +203,9 @@ public class EmailWizardPage extends WizardPage {
       }
       toList.getList().setMenu(getDeletePopup(toList));
 
-      b = new Button(toComp, SWT.NONE);
-      b.setText("  Cc->   ");
-      b.addSelectionListener(new SelectionListener() {
+      Button ccButton = new Button(toComp, SWT.NONE);
+      ccButton.setText("  Cc->   ");
+      ccButton.addSelectionListener(new SelectionListener() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -225,9 +233,9 @@ public class EmailWizardPage extends WizardPage {
       ccList.getList().setLayoutData(gd);
       ccList.getList().setMenu(getDeletePopup(ccList));
 
-      b = new Button(toComp, SWT.NONE);
-      b.setText("  Bcc->  ");
-      b.addSelectionListener(new SelectionListener() {
+      Button bccButton = new Button(toComp, SWT.NONE);
+      bccButton.setText("  Bcc->  ");
+      bccButton.addSelectionListener(new SelectionListener() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -313,6 +321,10 @@ public class EmailWizardPage extends WizardPage {
       });
 
       return previewMenu;
+   }
+
+   public String getSubject() {
+      return subjectText.get();
    }
 
    public String[] getToAddresses() {
