@@ -48,7 +48,25 @@ public interface QueryBuilder extends Query {
 
    List<ArtifactReadable> asArtifacts();
 
+   /**
+    * Gets a map of the artifacts selected by the query.
+    *
+    * @return a map of the loaded artifacts keyed by the artifact identifiers.
+    */
+
    Map<ArtifactId, ArtifactReadable> asArtifactMap();
+
+   /**
+    * Gets a map of the artifacts selected by the query. The found artifacts are loaded into the map specified by the
+    * parameter <code>artifacts</code>. If the <code>artifacts</code> map already contains an entry for an artifact
+    * found by the query, the artifact is replaced in the map. If the map specified by the parameter
+    * <code>artifacts</code> is <code>null</code>, a new map is created and returned.
+    *
+    * @param artifacts the map to add the loaded artifacts into. This parameter maybe <code>null</code>.
+    * @return a map of the loaded artifacts keyed by the artifact identifiers.
+    */
+
+   Map<ArtifactId, ArtifactReadable> asArtifactMap(Map<ArtifactId, ArtifactReadable> artifacts);
 
    ArtifactReadable asArtifact();
 

@@ -58,7 +58,29 @@ public interface QueryEngine {
 
    List<ArtifactId> asArtifactIds(QueryData queryData);
 
+   /**
+    * Gets a map of the artifacts selected by the specified query.
+    *
+    * @param queryData the database query used to select the artifacts to be loaded.
+    * @param queryFactory the {@link QueryFactory} to be passed to the created {@link ArtifactReadable} objects.
+    * @return a map containing the loaded artifacts keyed by the artifact identifiers.
+    */
+
    Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory);
+
+   /**
+    * Gets a map of the artifacts selected by the specified query. The found artifacts are loaded into the map specified
+    * by the parameter <code>artifacts</code>. If the <code>artifacts</code> map already contains an entry for an
+    * artifact found by the query, the artifact is replaced in the map. If the map specified by the parameter
+    * <code>artifacts</code> is <code>null</code>, a new map is created and returned.
+    *
+    * @param queryData the database query used to select the artifacts to be loaded.
+    * @param queryFactory the {@link QueryFactory} to be passed to the created {@link ArtifactReadable} objects.
+    * @param artifacts the map to add the loaded artifacts into. This parameter maybe <code>null</code>.
+    * @return a map containing the loaded artifacts keyed by the artifact identifiers.
+    */
+
+   Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory, Map<ArtifactId, ArtifactReadable> artifacts);
 
    List<ArtifactReadable> asArtifact(QueryData queryData, QueryFactory queryFactory);
 

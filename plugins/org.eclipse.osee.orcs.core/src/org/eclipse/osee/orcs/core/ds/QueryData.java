@@ -661,10 +661,24 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return queryEngine.asArtifactsTable(this, queryFactory);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public Map<ArtifactId, ArtifactReadable> asArtifactMap() {
       setQueryType(QueryType.SELECT);
       return queryEngine.asArtifactMap(this, queryFactory);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> asArtifactMap(Map<ArtifactId, ArtifactReadable> map) {
+      setQueryType(QueryType.SELECT);
+      return queryEngine.asArtifactMap(this, queryFactory, map);
    }
 
    @Override
