@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -172,10 +173,26 @@ public class QueryEngineImpl implements QueryEngine {
       return tokens;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory) {
       HashMap<ArtifactId, ArtifactReadable> artifacts = new HashMap<>(DefaultMapCapacity);
       loadArtifactsInto(queryData, queryFactory, a -> artifacts.put(a, a), DefaultArtifactNum);
+      return artifacts;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory, Map<ArtifactId, ArtifactReadable> artifacts) {
+      var artifactsMap =
+         Objects.nonNull(artifacts) ? artifacts : new HashMap<ArtifactId, ArtifactReadable>(DefaultMapCapacity);
+      loadArtifactsInto(queryData, queryFactory, a -> artifactsMap.put(a, a), DefaultArtifactNum);
       return artifacts;
    }
 
