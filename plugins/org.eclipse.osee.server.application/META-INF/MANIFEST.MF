@@ -14,9 +14,12 @@ Import-Package: com.fasterxml.jackson.annotation,
  javax.ws.rs.client,
  javax.ws.rs.core,
  org.eclipse.osee.activity.api,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jdbc,
- org.eclipse.osee.logger
+ org.eclipse.osee.logger,
+ org.eclipse.osee.orcs
+Require-Bundle: org.eclipse.osee.framework.jdk.core

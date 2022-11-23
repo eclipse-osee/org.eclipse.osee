@@ -23,6 +23,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.server.application.internal.ServerHealthEndpointImpl;
 
 /**
@@ -37,6 +38,7 @@ public class ServerApplication extends Application {
    private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<>();
    private IAuthenticationManager authManager;
    private ActivityLog activityLog;
+   private OrcsApi orcsApi;
 
    public void setActivityLog(ActivityLog activityLog) {
       this.activityLog = activityLog;
@@ -64,11 +66,20 @@ public class ServerApplication extends Application {
    }
 
    public void start(Map<String, Object> properties) {
-      singletons.add(new ServerHealthEndpointImpl(applicationServerManager, jdbcServices, authManager, activityLog));
+      singletons.add(
+         new ServerHealthEndpointImpl(orcsApi, applicationServerManager, jdbcServices, authManager, activityLog));
    }
 
    public void stop() {
       singletons.clear();
+   }
+
+   public OrcsApi getOrcsApi() {
+      return orcsApi;
+   }
+
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
 }
