@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,6 +31,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -38,11 +41,14 @@ import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.server.application.internal.model.ServerStatus;
 import org.eclipse.osee.server.application.internal.model.StatusKey;
 import org.eclipse.osee.server.application.internal.operations.BuildServerStatusOperation;
+import org.eclipse.osee.server.application.internal.operations.UsageOperations;
 
 /**
  * @author Donald G. Dunne
@@ -55,12 +61,35 @@ public final class ServerHealthEndpointImpl {
    private final ActivityLog activityLog;
    private ObjectMapper mapper;
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
+   private final OrcsApi orcsApi;
 
-   public ServerHealthEndpointImpl(IApplicationServerManager applicationServerManager, Map<String, JdbcService> jdbcServices, IAuthenticationManager authManager, ActivityLog activityLog) {
+   public ServerHealthEndpointImpl(OrcsApi orcsApi, IApplicationServerManager applicationServerManager, Map<String, JdbcService> jdbcServices, IAuthenticationManager authManager, ActivityLog activityLog) {
+      this.orcsApi = orcsApi;
       this.applicationServerManager = applicationServerManager;
       this.jdbcServices = jdbcServices;
       this.authManager = authManager;
       this.activityLog = activityLog;
+   }
+
+   @GET
+   @Path("usage")
+   @Produces(MediaType.TEXT_HTML)
+   public String getUsage(@Context UriInfo uriInfo) {
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
+      String months = "1";
+      Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
+      if (!entrySet.isEmpty()) {
+         for (Entry<String, List<String>> entry : entrySet) {
+            if (entry.getKey().toLowerCase().equals("months")) {
+               months = entry.getValue().iterator().next();
+            }
+         }
+      }
+      if (!Strings.isNumeric(months)) {
+         return AHTML.simplePage("Invalid Months = " + months);
+      }
+      UsageOperations ops = new UsageOperations(orcsApi, jdbcServices.values().iterator().next().getClient());
+      return ops.getUsageHtml(months);
    }
 
    @GET

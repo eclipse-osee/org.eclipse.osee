@@ -67,7 +67,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
          entry.setMessageArgs(stmt.getString("msg_args"));
          entry.setParentId(stmt.getLong("parent_id"));
          entry.setServerId(stmt.getLong("server_id"));
-         entry.setStartTime(stmt.getTimestamp("start_timestamp"));
+         entry.setStartTimestamp(stmt.getTimestamp("start_timestamp"));
          entry.setStatus(stmt.getInt("status"));
          entry.setTypeId(stmt.getLong("type_id"));
          found.setValue(true);

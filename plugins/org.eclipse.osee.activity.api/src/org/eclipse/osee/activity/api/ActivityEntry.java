@@ -26,7 +26,8 @@ public class ActivityEntry extends ActivityEntryId {
    private Long accountId;
    private Long serverId;
    private Long clientId;
-   private Timestamp startTime;
+   private Long startTime;
+   private Timestamp startTimestamp;
    private Long duration;
    private Integer status;
    private String messageArgs;
@@ -55,8 +56,8 @@ public class ActivityEntry extends ActivityEntryId {
       return clientId;
    }
 
-   public Timestamp getStartTime() {
-      return startTime;
+   public Timestamp getStartTimestamp() {
+      return startTimestamp;
    }
 
    public Long getDuration() {
@@ -91,8 +92,8 @@ public class ActivityEntry extends ActivityEntryId {
       this.clientId = clientId;
    }
 
-   public void setStartTime(Timestamp startTime) {
-      this.startTime = startTime;
+   public void setStartTimestamp(Timestamp startTimestamp) {
+      this.startTimestamp = startTimestamp;
    }
 
    public void setDuration(Long duration) {
@@ -109,7 +110,15 @@ public class ActivityEntry extends ActivityEntryId {
 
    @Override
    public String toString() {
-      return "ActivityEntry [" + getId() + ", parentId=" + parentId + ", typeId=" + typeId + ", accountId=" + accountId + ", serverId=" + serverId + ", clientId=" + clientId + ", startTime=" + startTime + ", duration=" + duration + ", status=" + status + ", messageArgs=" + messageArgs + "]";
+      return "ActivityEntry [" + getId() + ", parentId=" + parentId + ", typeId=" + typeId + ", accountId=" + accountId + ", serverId=" + serverId + ", clientId=" + clientId + ", startTime=" + startTimestamp + ", duration=" + duration + ", status=" + status + ", messageArgs=" + messageArgs + "]";
+   }
+
+   public Long getStartTime() {
+      return startTime;
+   }
+
+   public void setStartTime(Long startTime) {
+      this.startTime = startTime;
    }
 
 }
