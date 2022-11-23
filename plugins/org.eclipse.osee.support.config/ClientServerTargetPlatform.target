@@ -385,7 +385,7 @@
 <plugin id="org.eclipse.help.webapp.source"/>
 <plugin id="org.eclipse.jdt"/>
 <plugin id="org.eclipse.jdt.annotation" version="2.2.600.v20200408-1511"/>
-<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
+<plugin id="org.eclipse.jdt.annotation.source" version="1.1.500.v20200407-1355"/>
 <plugin id="org.eclipse.jdt.apt.core"/>
 <plugin id="org.eclipse.jdt.apt.core.source"/>
 <plugin id="org.eclipse.jdt.apt.pluggable.core"/>
@@ -425,7 +425,7 @@
 <plugin id="org.eclipse.jetty.server.source"/>
 <plugin id="org.eclipse.jetty.servlet" version="9.4.44.v20210927"/>
 <plugin id="org.eclipse.jetty.servlet.source"/>
-<plugin id="org.eclipse.jetty.util" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.util" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.util.ajax"/>
 <plugin id="org.eclipse.jface"/>
 <plugin id="org.eclipse.jface.databinding"/>
@@ -661,7 +661,7 @@
 	<plugin id="org.eclipse.equinox.concurrent.source"/>
 	<plugin id="org.eclipse.equinox.http.jetty.source"/>
 	<plugin id="org.eclipse.help.source"/>
-	<plugin id="org.eclipse.jdt.annotation.source" version="1.1.500.v20200407-1355"/>
+	<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
 	<plugin id="org.eclipse.jdt.apt.ui.source"/>
 	<plugin id="org.eclipse.jdt.ui.source"/>
 	<plugin id="org.eclipse.jetty.http.source"/>
@@ -677,6 +677,12 @@
 	<plugin id="org.eclipse.rmf.reqif10"/>
 	<plugin id="org.eclipse.sphinx.emf.serialization"/>
 	<plugin id="org.hsqldb"/>
+	<plugin id="org.eclipse.jetty.util" version="9.4.44.v20210927"/>
+	<plugin id="org.eclipse.jetty.servlet" version="9.4.48.v20220622"/>
+	<plugin id="org.eclipse.jetty.server" version="9.4.48.v20220622"/>
+	<plugin id="org.eclipse.jetty.security" version="9.4.48.v20220622"/>
+	<plugin id="org.eclipse.jetty.io" version="9.4.48.v20220622"/>
+	<plugin id="org.eclipse.jetty.http" version="9.4.48.v20220622"/>
 </includeBundles>
 <environment>
 <os>win32</os>
