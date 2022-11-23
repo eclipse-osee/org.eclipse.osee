@@ -155,7 +155,7 @@ public class CreateChangeReportTasksOperation {
 
          // Generate and store ChangeItems from branch or commit
          ChangeReportTasksUtil.getBranchOrCommitChangeData(crtd, setDef);
-         if (crtd.getResults().isErrors() || crtd.isNoChangeItems()) {
+         if (crtd.getResults().isErrors()) {
             return crtd;
          }
 
@@ -273,20 +273,22 @@ public class CreateChangeReportTasksOperation {
                crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
                crtd.getDestTeamWfs().add(ArtifactToken.valueOf(destTeamWf.getStoreObject().getId(),
                   destTeamWf.getName(), atsApi.getAtsBranch()));
-            }
 
-            // Add any additional attributes to copy from main workflow
-            for (AttributeTypeToken attrType : crtd.getSetDef().getChgRptOptions().getCopyAttrTypes()) {
-               List<String> sourceValues =
-                  atsApi.getAttributeResolver().getAttributesToStringList(chgRptTeamWf, attrType);
-               List<String> destValues = atsApi.getAttributeResolver().getAttributesToStringList(destTeamWf, attrType);
+               // Add any additional attributes to copy from main workflow
+               for (AttributeTypeToken attrType : crtd.getSetDef().getChgRptOptions().getCopyAttrTypes()) {
+                  List<String> sourceValues =
+                     atsApi.getAttributeResolver().getAttributesToStringList(chgRptTeamWf, attrType);
+                  List<String> destValues =
+                     atsApi.getAttributeResolver().getAttributesToStringList(destTeamWf, attrType);
 
-               if (!Collections.isEqual(sourceValues, destValues)) {
-                  crtd.getResults().success("Addition additional attr [%s]", attrType.toStringWithId() + "\n");
-                  if (changes != null) {
-                     changes.setAttributeValuesAsStrings(destTeamWf, attrType, sourceValues);
+                  if (!Collections.isEqual(sourceValues, destValues)) {
+                     crtd.getResults().success("Addition additional attr [%s]", attrType.toStringWithId() + "\n");
+                     if (changes != null) {
+                        changes.setAttributeValuesAsStrings(destTeamWf, attrType, sourceValues);
+                     }
                   }
                }
+
             }
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
