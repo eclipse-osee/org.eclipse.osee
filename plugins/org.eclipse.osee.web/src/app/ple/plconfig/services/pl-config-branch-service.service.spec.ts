@@ -51,7 +51,7 @@ describe('PlConfigBranchService', () => {
 	it('get branch applicability should return results from /orcs/applicui/branch', () => {
 		service.getBranchApplicability(10).subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/orcs/applicui/branch/' + 10
+			apiURL + '/orcs/applicui/branch/' + 10 + '/all'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

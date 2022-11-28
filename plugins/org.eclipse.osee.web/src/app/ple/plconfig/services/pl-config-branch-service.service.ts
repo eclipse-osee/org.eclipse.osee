@@ -50,7 +50,7 @@ export class PlConfigBranchService {
 	): Observable<PlConfigApplicUIBranchMapping> {
 		return this.http
 			.get<PlConfigApplicUIBranchMapping>(
-				apiURL + '/orcs/applicui/branch/' + id
+				apiURL + '/orcs/applicui/branch/' + id + '/all'
 			)
 			.pipe(share());
 	}

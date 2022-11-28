@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -553,7 +552,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
             tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
          }
       }
-      TransactionToken commit = tx.commit();
+      tx.commit();
       List<String> appsNoDups = new ArrayList<>(new HashSet<>(apps));
       Collections.sort(appsNoDups);
       return appsNoDups;

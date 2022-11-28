@@ -80,4 +80,9 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
       return ops.getConfig(branch);
    }
 
+   @Override
+   public ApplicabilityBranchConfig getConfigWithCompoundApplics(BranchId branch) {
+      return ops.getConfigWithCompoundApplics(branch);
+   }
+
 }

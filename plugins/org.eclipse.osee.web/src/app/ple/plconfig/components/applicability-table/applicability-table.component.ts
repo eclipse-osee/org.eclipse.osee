@@ -372,6 +372,17 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 	isACfgGroup(name: string) {
 		return this.currentBranchService.isACfgGroup(name);
 	}
+	isCompoundApplic(name: string) {
+		return name.includes(' | ') || name.includes(' & ');
+	}
+	getCompoundApplicLines(name: string) {
+		if (!this.isCompoundApplic(name)) {
+			return name;
+		}
+		const operator = name.includes('|') ? '|' : '&';
+		const names = name.split(operator);
+		return [names[0].trim() + ' ' + operator, names[1].trim()];
+	}
 	displayFeatureMenu(feature: extendedFeature) {
 		this.dialogService.displayFeatureMenu(feature).subscribe();
 	}

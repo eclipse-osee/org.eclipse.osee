@@ -94,4 +94,30 @@ describe('ApplicabilityTableComponent', () => {
 		await input?.blur();
 		expect(spy).toHaveBeenCalled();
 	});
+
+	it('should check for a compound applicability', () => {
+		expect(
+			component.isCompoundApplic('TEST1 = INCLUDED | TEST2 = INCLUDED')
+		).toBe(true);
+		expect(
+			component.isCompoundApplic('TEST1 = INCLUDED & TEST2 = INCLUDED')
+		).toBe(true);
+		expect(component.isCompoundApplic('TEST1 = INCLUDED')).toBe(false);
+		expect(component.isCompoundApplic('TEST2 = EXCLUDED')).toBe(false);
+	});
+
+	it('should get compound applicability lines', () => {
+		let lines = component.getCompoundApplicLines(
+			'TEST1 = INCLUDED | TEST2 = INCLUDED'
+		);
+		expect(lines[0]).toBe('TEST1 = INCLUDED |');
+		expect(lines[1]).toBe('TEST2 = INCLUDED');
+		lines = component.getCompoundApplicLines(
+			'TEST1 = EXCLUDED & TEST2 = EXCLUDED'
+		);
+		expect(lines[0]).toBe('TEST1 = EXCLUDED &');
+		expect(lines[1]).toBe('TEST2 = EXCLUDED');
+		lines = component.getCompoundApplicLines('TEST1 = INCLUDED');
+		expect(lines).toBe('TEST1 = INCLUDED');
+	});
 });

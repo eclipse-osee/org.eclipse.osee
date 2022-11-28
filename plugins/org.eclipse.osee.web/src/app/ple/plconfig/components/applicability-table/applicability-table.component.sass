@@ -70,6 +70,12 @@ td.mat-cell:last-of-type
     td
         padding: 0 0.25em
 
+.cursor-pointer
+    cursor: pointer
+
+.feature-cell
+    @extend .cursor-pointer
+
 .filter-form-field
     @extend .full-width
 .full-width
@@ -78,7 +84,7 @@ td.mat-cell:last-of-type
     text-align: center
 .clickable-table-header
     @extend .text-align-center
-    cursor: pointer
+    @extend .cursor-pointer
 .applic-table-header
     @extend .text-align-center
 .border-right
