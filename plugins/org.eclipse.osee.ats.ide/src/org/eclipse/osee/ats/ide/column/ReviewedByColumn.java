@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.ide.util.widgets.XReviewedWidget;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -88,6 +89,10 @@ public class ReviewedByColumn extends XViewerAtsColumn implements IXViewerValueC
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
+            XResultData rd = XReviewedWidget.checkReviewedBy(useArt);
+            if (rd.isErrors()) {
+               return false;
+            }
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
                if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
                   useArt = AtsApiService.get().getQueryServiceIde().getArtifact(
@@ -123,6 +128,12 @@ public class ReviewedByColumn extends XViewerAtsColumn implements IXViewerValueC
 
    public static boolean promptChange(final Collection<IAtsWorkItem> workItems, AtsApi atsApi) {
       try {
+         for (IAtsWorkItem workItem : workItems) {
+            XResultData rd = XReviewedWidget.checkReviewedBy(workItem.getArtifactToken());
+            if (rd.isErrors()) {
+               return false;
+            }
+         }
          // Ok --> 0, Cancel --> 1, Clear --> 2
          int res = MessageDialog.open(3, Displays.getActiveShell(), "Reviewed By", "Has been Reviewed", SWT.NONE,
             new String[] {"Ok", "Cancel", "Clear"});

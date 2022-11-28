@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -43,4 +44,12 @@ public interface ArtifactCheck {
    default public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData rd) {
       return rd;
    }
+
+   /**
+    * @return error(s) of which artifact(s) and why relation(s) can not be deleted
+    */
+   default public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, XResultData rd) {
+      return rd;
+   }
+
 }
