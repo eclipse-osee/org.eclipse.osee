@@ -21,7 +21,7 @@ import {
 } from '../../../types/features/base';
 
 @Component({
-	selector: 'osee-plconfig-value-menu',
+	selector: 'osee-plconfig-feature-menu',
 	templateUrl: './feature-menu.component.html',
 	styleUrls: ['./feature-menu.component.sass'],
 })
