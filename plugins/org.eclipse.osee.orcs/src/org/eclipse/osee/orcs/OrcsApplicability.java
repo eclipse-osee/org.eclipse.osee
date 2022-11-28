@@ -38,6 +38,8 @@ public interface OrcsApplicability {
 
    ApplicabilityBranchConfig getConfig(BranchId branchId);
 
+   ApplicabilityBranchConfig getConfigWithCompoundApplics(BranchId branchId);
+
    FeatureDefinition getFeatureDefinition(ArtifactReadable featureArt);
 
    ArtifactToken getProductLineFolder(BranchId branch);

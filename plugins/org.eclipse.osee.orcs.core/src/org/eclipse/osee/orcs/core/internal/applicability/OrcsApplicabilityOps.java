@@ -196,6 +196,64 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return config;
    }
 
+   @Override
+   public ApplicabilityBranchConfig getConfigWithCompoundApplics(BranchId branchId) {
+      ApplicabilityBranchConfig config = getConfig(branchId);
+      // Get compound applicabilities
+      for (ApplicabilityToken applicToken : orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(
+         branchId).values()) {
+         if (applicToken.getName().contains("|") || applicToken.getName().contains("&")) {
+            FeatureDefinition feature = new FeatureDefinition();
+            feature.setId(applicToken.getId());
+            feature.setName(applicToken.getName());
+            feature.setDefaultValue("");
+            feature.setValues(Collections.emptyList());
+            feature.setProductApplicabilities(Collections.emptyList());
+            feature.setValueType("String");
+            feature.setMultiValued(false);
+            feature.setDescription(applicToken.getName());
+            feature.setData(ArtifactReadable.SENTINEL);
+
+            ExtendedFeatureDefinition extfDef = new ExtendedFeatureDefinition(feature);
+
+            char operator = applicToken.getName().contains("|") ? '|' : '&';
+            String[] applics = applicToken.getName().split("[|&]");
+            String[] feature1 = applics[0].split(" = ");
+            String[] feature2 = applics[1].split(" = ");
+            String feature1Name = feature1[0].trim();
+            String feature1Value = feature1[1].trim();
+            String feature2Name = feature2[0].trim();
+            String feature2Value = feature2[1].trim();
+
+            ExtendedFeatureDefinition f1ExDef =
+               config.getFeatures().stream().filter(f -> f.getName().equals(feature1Name)).findFirst().orElse(
+                  ExtendedFeatureDefinition.SENTINEL);
+            ExtendedFeatureDefinition f2ExDef =
+               config.getFeatures().stream().filter(f -> f.getName().equals(feature2Name)).findFirst().orElse(
+                  ExtendedFeatureDefinition.SENTINEL);
+
+            if (f1ExDef.isValid() && f2ExDef.isValid()) {
+               for (NameValuePair f1Config : f1ExDef.getConfigurations()) {
+                  for (NameValuePair f2Config : f2ExDef.getConfigurations()) {
+                     if (f1Config.getName().equals(f2Config.getName())) {
+                        String compoundValue = "Excluded";
+                        boolean f1Applic = feature1Value.equals(f1Config.getValue());
+                        boolean f2Applic = feature2Value.equals(f2Config.getValue());
+                        if ((operator == '|' && (f1Applic || f2Applic)) || (operator == '&' && (f1Applic && f2Applic))) {
+                           compoundValue = "Included";
+                        }
+                        extfDef.addConfiguration(new NameValuePair(f1Config.getName(), compoundValue));
+                     }
+                  }
+               }
+            }
+
+            config.addFeature(extfDef);
+         }
+      }
+      return config;
+   }
+
    private String getViewToFeatureValue(ArtifactId view, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
       Map<String, List<String>> map = branchViewsMap.get(view);
       //

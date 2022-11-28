@@ -56,4 +56,9 @@ public interface ApplicabilityUiEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch);
 
+   @GET
+   @Path("branch/{branch}/all")
+   @Produces({MediaType.APPLICATION_JSON})
+   public ApplicabilityBranchConfig getConfigWithCompoundApplics(@PathParam("branch") BranchId branch);
+
 }

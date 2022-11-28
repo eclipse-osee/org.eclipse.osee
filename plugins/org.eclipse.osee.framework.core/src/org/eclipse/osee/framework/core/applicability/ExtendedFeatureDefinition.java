@@ -19,6 +19,7 @@ import java.util.List;
  * @author Luciano T. Vaglienti
  */
 public class ExtendedFeatureDefinition extends FeatureDefinition {
+   public static final ExtendedFeatureDefinition SENTINEL = new ExtendedFeatureDefinition();
    private final List<NameValuePair> configurations = new LinkedList<>();
 
    public ExtendedFeatureDefinition() {

@@ -208,10 +208,9 @@
 				<div *ngIf="displayedColumn.name === 'feature'">
 					<td
 						mat-cell
-						class="border-right"
+						class="border-right feature-cell"
 						*matCellDef="let element; index as r"
 						[matTooltip]="element['description']"
-						style="padding-right: 10%; cursor: pointer"
 						(click)="displayFeatureMenu(element)"
 						[ngClass]="
 							r % 2 === 0
@@ -234,7 +233,15 @@
 							openContextMenu($event, 'FEATURE', element)
 						"
 						[attr.data-cy]="'feature-' + element['name']">
-						{{ element['name'] }}
+						<ng-container *ngIf="isCompoundApplic(element['name'])">
+							{{ getCompoundApplicLines(element['name'])[0] }}
+							<br />
+							{{ getCompoundApplicLines(element['name'])[1] }}
+						</ng-container>
+						<ng-container
+							*ngIf="!isCompoundApplic(element['name'])">
+							{{ element['name'] }}
+						</ng-container>
 					</td>
 				</div>
 				<div
@@ -285,7 +292,8 @@
 											(isDeletedCfg(config.name)
 												| async) === true ||
 											(isDeletedCfgGroup(config.name)
-												| async) === true;
+												| async) === true ||
+											isCompoundApplic(element.name);
 										else edit_content
 									"
 									[ngClass]="
