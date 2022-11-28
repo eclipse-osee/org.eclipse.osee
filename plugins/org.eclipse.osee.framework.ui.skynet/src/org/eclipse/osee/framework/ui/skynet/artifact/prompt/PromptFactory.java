@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
 import java.text.NumberFormat;
 import java.util.Collection;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,7 +29,10 @@ public final class PromptFactory implements IPromptFactory {
    public IHandlePromptChange createPrompt(Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType, String displayName, boolean persist) {
       IHandlePromptChange promptChange;
 
-      if (attributeType.isDate()) {
+      if (attributeType.equals(AtsAttributeTypes.ReviewedBy) || attributeType.equals(
+         AtsAttributeTypes.ReviewedByDate)) {
+         promptChange = new SignoffHandlePromptChange(artifacts, attributeType, displayName, persist, null);
+      } else if (attributeType.isDate()) {
          promptChange = new DateHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else if (attributeType.isDouble()) {
          promptChange =

@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -73,5 +75,9 @@ public interface IAtsWorkItemHook {
 
    default public boolean createSiblingWorkflowEnabled(IAtsWorkItem workItem) {
       return true;
+   }
+
+   default public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, XResultData rd) {
+      return rd;
    }
 }

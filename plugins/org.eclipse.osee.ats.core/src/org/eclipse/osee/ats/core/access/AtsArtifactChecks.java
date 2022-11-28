@@ -29,10 +29,12 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.access.ArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -51,6 +53,17 @@ public class AtsArtifactChecks implements ArtifactCheck {
 
    private boolean isDeletionChecksEnabled() {
       return deletionChecksEnabled && !AtsUtil.isInTest();
+   }
+
+   @Override
+   public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, XResultData results) {
+      for (IAtsWorkItemHook wiHook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+         wiHook.isModifiableAttribute(artifact, attributeType, results);
+         if (results.isErrors()) {
+            return results;
+         }
+      }
+      return results;
    }
 
    @Override
