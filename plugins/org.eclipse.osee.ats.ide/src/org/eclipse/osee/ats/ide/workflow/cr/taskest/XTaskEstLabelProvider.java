@@ -87,7 +87,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             } else {
                return "";
             }
-         } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
+         } else if (xViewerColumn.getName().equals("Reviewed By")) {
             return XAbstractSignDateAndByButton.getText((Artifact) task.getStoreObject(),
                AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy);
          } else if (xViewerColumn.getName().equals("Related Workflow")) {
@@ -121,7 +121,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
          IAtsTask task = (IAtsTask) element;
          if (xViewerColumn.getName().equals("Select")) {
             return ImageManager.getImage(AtsImage.TASK);
-         } else if (xViewerColumn.getName().equals("TLE Reviewed")) {
+         } else if (xViewerColumn.getName().equals("Reviewed By")) {
             if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.ReviewedBy) > 0) {
                return ImageManager.getImage(AtsImage.CHECK_BLUE);
             }
