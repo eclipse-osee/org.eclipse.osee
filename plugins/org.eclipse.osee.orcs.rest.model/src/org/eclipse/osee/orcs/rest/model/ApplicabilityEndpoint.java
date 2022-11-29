@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -339,5 +340,26 @@ public interface ApplicabilityEndpoint {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityUseResultToken> getApplicabilityUsage(@QueryParam("applic") String applic, @QueryParam("artTypes") List<ArtifactTypeToken> artTypes, @QueryParam("attrTypes") List<AttributeTypeToken> attrTypes);
+
+   @POST
+   @Path("uploadBlockApplicability")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   String uploadBlockApplicability(InputStream zip);
+
+   @POST
+   @Path("blockVisibility/{blockApplicId}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData applyBlockVisibilityOnServer(@PathParam("blockApplicId") String blockApplicId, BlockApplicabilityStageRequest data);
+
+   @GET
+   @Path("downloadBlockApplicability/{blockApplicId}")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response downloadBlockApplicability(@PathParam("blockApplicId") String blockApplicId);
+
+   @DELETE
+   @Path("deleteBlockApplicability/{blockApplicId}")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   XResultData deleteBlockApplicability(@PathParam("blockApplicId") String blockApplicId);
 
 }
