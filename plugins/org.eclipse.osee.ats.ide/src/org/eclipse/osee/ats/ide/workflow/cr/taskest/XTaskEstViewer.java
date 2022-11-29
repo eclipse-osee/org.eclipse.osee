@@ -92,7 +92,7 @@ public abstract class XTaskEstViewer extends TaskXViewer {
                   Double pts = Double.valueOf(ptsStr);
                   if (pts > 0) {
                      if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.ReviewedBy) == 0) {
-                        AWorkbench.popupf("TLE Reviewed must be set for task %s\n", task.toStringWithAtsId());
+                        AWorkbench.popupf("Reviewed By must be set for task %s\n", task.toStringWithAtsId());
                         return false;
                      }
                      return createWorkflow(task);
