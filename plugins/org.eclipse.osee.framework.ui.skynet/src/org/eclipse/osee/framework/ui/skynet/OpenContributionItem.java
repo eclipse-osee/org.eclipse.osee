@@ -198,46 +198,71 @@ public class OpenContributionItem extends ContributionItem {
    }
 
    private Collection<IContributionItem> createOpenWithItems() {
-      clearOpenWithItems();
+
+      this.clearOpenWithItems();
+
       Collection<Artifact> artifacts = getSelectedArtifacts();
+
+      if (artifacts.isEmpty()) {
+         return this.openWithItems;
+      }
+
+      /*
+       * Scan selected artifacts and set the readOnly flag to true, if any artifacts are read only. This is used to
+       * select the allowable command groups for the artifacts.
+       */
+
       boolean readOnly = false;
-      if (!artifacts.isEmpty()) {
-         for (Object obj : artifacts) {
-            Artifact art = null;
-            if (obj instanceof ArtifactExplorerLinkNode) {
-               art = ((ArtifactExplorerLinkNode) obj).getArtifact();
-            } else if (obj instanceof Artifact) {
-               art = (Artifact) obj;
-            } else {
-               continue;
-            }
-            if (art.isReadOnly()) {
-               readOnly = true;
-               break;
-            }
+
+      for (Object obj : artifacts) {
+
+         Artifact art = null;
+
+         if (obj instanceof ArtifactExplorerLinkNode) {
+            art = ((ArtifactExplorerLinkNode) obj).getArtifact();
+         } else if (obj instanceof Artifact) {
+            art = (Artifact) obj;
+         } else {
+            continue;
          }
-         Artifact testArtifact = artifacts.iterator().next();
-         try {
-            CommandGroup[] groups = CommandGroup.values();
-            if (readOnly) {
-               groups = CommandGroup.getReadOnly();
-            }
-            CommandGroup lastGroup = groups[groups.length - 1];
-            for (CommandGroup commandGroup : groups) {
 
-               List<IRenderer> commonRenders =
-                  RendererManager.getCommonRenderers(artifacts, commandGroup.getPresentationType());
-               openWithItems.addAll(getCommonContributionItems(commandGroup, testArtifact, commonRenders));
-
-               if (lastGroup != commandGroup && !openWithItems.isEmpty()) {
-                  //add separator between presentation type commands
-                  openWithItems.add(new Separator());
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         if (art.isReadOnly()) {
+            readOnly = true;
+            break;
          }
       }
+
+      Artifact testArtifact = artifacts.iterator().next();
+
+      try {
+         int previousOpenWithItemsSize = this.openWithItems.size();
+
+         var groups = CommandGroup.getCommandGroups(readOnly);
+
+         var lastGroup = groups.get(groups.size() - 1);
+
+         for (CommandGroup commandGroup : groups) {
+
+            List<IRenderer> commonRenders =
+               RendererManager.getCommonRenderers(artifacts, commandGroup.getPresentationType());
+
+            this.openWithItems.addAll(getCommonContributionItems(commandGroup, testArtifact, commonRenders));
+
+            /*
+             * Add separator, when not the last command group AND when the command group has at least one command
+             */
+
+            if ((lastGroup != commandGroup) && (openWithItems.size() > previousOpenWithItemsSize)) {
+               this.openWithItems.add(new Separator());
+            }
+
+            previousOpenWithItemsSize = this.openWithItems.size();
+         }
+
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
       return openWithItems;
    }
 
