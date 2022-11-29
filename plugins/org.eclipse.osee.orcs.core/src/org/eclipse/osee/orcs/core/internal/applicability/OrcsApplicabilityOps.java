@@ -16,7 +16,12 @@ package org.eclipse.osee.orcs.core.internal.applicability;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +31,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
@@ -46,6 +57,7 @@ import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -56,6 +68,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -1932,4 +1945,199 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return viewQuery.asArtifacts().stream().map(art -> getViewDefinition(art)).collect(Collectors.toList());
    }
 
+   @Override
+   public String uploadBlockApplicability(InputStream zip) {
+      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(String.format("%s%sblockApplicability", serverDataPath, File.separator));
+      if (!serverApplicDir.exists()) {
+         serverApplicDir.mkdirs();
+      }
+      String uniqueId = generateUniqueFilePath(serverApplicDir);
+      String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
+      String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
+      try {
+         new File(uniqueIdDir).mkdir();
+         String fileZip = String.format("%s.zip", sourceNameDir);
+         File uploadedZip = new File(fileZip);
+         byte[] buffer = zip.readAllBytes();
+         zip.close();
+
+         OutputStream outStream = new FileOutputStream(uploadedZip);
+         outStream.write(buffer);
+         outStream.close();
+
+         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+         ZipEntry zipEntry = zis.getNextEntry();
+         File unzipLocation = new File(sourceNameDir);
+         unzipLocation.mkdirs();
+         while (zipEntry != null) {
+            File uploadedDirectory = newFile(unzipLocation, zipEntry);
+            if (zipEntry.isDirectory()) {
+               if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+                  throw new IOException("Failed to create directory " + uploadedDirectory);
+               }
+            } else {
+               // fix for Windows-created archives
+               File parent = uploadedDirectory.getParentFile();
+               if (!parent.isDirectory() && !parent.mkdirs()) {
+                  throw new IOException("Failed to create directory " + parent);
+               }
+               // write file content
+               FileOutputStream fos = new FileOutputStream(uploadedDirectory);
+               int len;
+               while ((len = zis.read(buffer)) > 0) {
+                  fos.write(buffer, 0, len);
+               }
+               fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+         }
+         zis.closeEntry();
+         zis.close();
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex, "Unable to upload zip file");
+      }
+
+      return uniqueId;
+   }
+
+   @Override
+   public XResultData applyBlockVisibilityOnServer(String blockApplicId, BlockApplicabilityStageRequest data, BranchId branch) {
+      XResultData results = new XResultData();
+
+      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(serverDataPath + File.separator + "blockApplicability");
+      if (!serverApplicDir.exists()) {
+         serverApplicDir.mkdirs();
+      }
+
+      String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, blockApplicId);
+      String sourceDir = String.format("%s%ssource", uniqueIdDir, File.separator);
+
+      File[] contents = new File(sourceDir + File.separator).listFiles();
+      if (contents.length == 1) {
+         sourceDir = contents[0].getPath();
+      }
+
+      data.setSourcePath(sourceDir);
+      data.setStagePath(uniqueIdDir);
+      data.setCustomStageDir("staging");
+
+      ExecutorService service = Executors.newFixedThreadPool(1);
+      service.submit(new Runnable() {
+         @Override
+         public void run() {
+            applyApplicabilityToFiles(data, branch);
+            try {
+               String sourceFile = String.format("%s%sstaging", uniqueIdDir, File.separator);
+               FileOutputStream fos =
+                  new FileOutputStream(String.format("%s%sstaging.zip", uniqueIdDir, File.separator));
+               ZipOutputStream zipOut = new ZipOutputStream(fos);
+
+               File fileToZip = new File(sourceFile);
+
+               zipFile(fileToZip, fileToZip.getName(), zipOut);
+
+               zipOut.close();
+               fos.close();
+            } catch (IOException ex) {
+               throw new OseeCoreException(ex, "Unable to zip file");
+            }
+         }
+      });
+      return results;
+   }
+
+   @Override
+   public XResultData deleteBlockApplicability(String blockApplicId) {
+      XResultData results = new XResultData();
+
+      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(serverDataPath + File.separator + "blockApplicability");
+      if (!serverApplicDir.isDirectory()) {
+         results.warning(String.format("Directory %s does not exist", serverApplicDir.getPath()));
+         return results;
+      }
+
+      File uniqueIdDir = new File(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, blockApplicId));
+
+      File[] contents = uniqueIdDir.listFiles();
+      if (contents != null) {
+         for (File f : contents) {
+            if (!Files.isSymbolicLink(f.toPath())) {
+               deleteDir(f);
+            }
+         }
+      }
+      uniqueIdDir.delete();
+      return results;
+   }
+
+   private void deleteDir(File file) {
+      File[] contents = file.listFiles();
+      if (contents != null) {
+         for (File f : contents) {
+            deleteDir(f);
+         }
+      }
+      file.delete();
+   }
+
+   private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+      File destFile = new File(destinationDir, zipEntry.getName());
+      String destDirPath = destinationDir.getCanonicalPath();
+      String destFilePath = destFile.getCanonicalPath();
+
+      if (!destFilePath.startsWith(destDirPath + File.separator)) {
+         throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+      }
+      return destFile;
+   }
+
+   private String generateUniqueFilePath(File serverApplicDir) {
+      String uniqueId = UUID.randomUUID().toString();
+      for (File file : serverApplicDir.listFiles()) {
+         if (file.getName().equals(uniqueId)) {
+            return generateUniqueFilePath(serverApplicDir);
+         }
+      }
+      return uniqueId;
+   }
+
+   private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+      if (fileToZip.isHidden()) {
+         return;
+      }
+      if (fileToZip.isDirectory()) {
+         if (fileName.endsWith("/")) {
+            zipOut.putNextEntry(new ZipEntry(fileName));
+            zipOut.closeEntry();
+         } else {
+            zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+            zipOut.closeEntry();
+         }
+         File[] children = fileToZip.listFiles();
+         for (File childFile : children) {
+            zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+         }
+         return;
+      }
+      FileInputStream fis = new FileInputStream(fileToZip);
+      ZipEntry zipEntry = new ZipEntry(fileName);
+      zipOut.putNextEntry(zipEntry);
+      byte[] bytes = fis.readAllBytes();
+      int length;
+      zipOut.write(bytes);
+      fis.close();
+      zipOut.close();
+   }
 }

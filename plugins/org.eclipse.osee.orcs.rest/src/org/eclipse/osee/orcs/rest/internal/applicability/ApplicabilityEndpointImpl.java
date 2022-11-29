@@ -13,12 +13,18 @@
 
 package org.eclipse.osee.orcs.rest.internal.applicability;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
@@ -37,6 +43,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -460,5 +467,45 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          return access;
       }
       return ops.deleteProductType(id, branch);
+   }
+
+   @Override
+   public String uploadBlockApplicability(InputStream zip) {
+      return ops.uploadBlockApplicability(zip);
+   }
+
+   @Override
+   public XResultData applyBlockVisibilityOnServer(String blockApplicId, BlockApplicabilityStageRequest data) {
+      return ops.applyBlockVisibilityOnServer(blockApplicId, data, branch);
+   }
+
+   @Override
+   public Response downloadBlockApplicability(String blockApplicId) {
+      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(serverDataPath + File.separator + "blockApplicability");
+      if (!serverApplicDir.isDirectory()) {
+         return Response.noContent().build();
+      }
+
+      File stagingZip = new File(String.format("%s%s%s%sstaging.zip", serverApplicDir.getPath(), File.separator,
+         blockApplicId, File.separator));
+
+      if (stagingZip.exists()) {
+         try {
+            return Response.ok(Files.readAllBytes(stagingZip.toPath())).type("application/zip").header(
+               "Content-Disposition", "attachment; filename=\"staging.zip\"").build();
+         } catch (IOException ex) {
+            return Response.serverError().build();
+         }
+      }
+      return Response.noContent().build();
+   }
+
+   @Override
+   public XResultData deleteBlockApplicability(String blockApplicId) {
+      return ops.deleteBlockApplicability(blockApplicId);
    }
 }
