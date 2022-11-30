@@ -17,18 +17,23 @@ def main(argv):
 
     for file in files:
         if exists(file):
-            with open(file, 'r') as f:
-                lines = f.readlines()
-                requireDistStatement = re.search("(java|html|js|ts|sass|scss)$", file) is not None
-                distStatementFound = False
-                for line in lines:
-                    if requireDistStatement and line.find("* Copyright") > -1:
-                        distStatementFound = True
-                    searchResults = re.search(regexPattern, line, re.IGNORECASE)
-                    if searchResults != None:
-                        findings.append("Found keyword \"" + searchResults[0] + "\" on line " + str(lines.index(line)) + " of " + file + "\n  -->  " + line)
-                if requireDistStatement and not distStatementFound:
-                    findings.append("No distribution statement in " + file)
+            fileNameResults = re.search(regexPattern, file, re.IGNORECASE)
+            if fileNameResults != None:
+                findings.append("Found keyword \"" + fileNameResults[0] + "\" in file name of " + file)
+            # Do not check contents of binary files such as images
+            if re.search("(png|jpeg|jpg|gif)$", file) is None:
+                with open(file, 'r') as f:
+                    lines = f.readlines()
+                    requireDistStatement = re.search("(java|html|js|ts|sass|scss)$", file) is not None
+                    distStatementFound = False
+                    for line in lines:
+                        if requireDistStatement and line.find("* Copyright") > -1:
+                            distStatementFound = True
+                        searchResults = re.search(regexPattern, line, re.IGNORECASE)
+                        if searchResults != None:
+                            findings.append("Found keyword \"" + searchResults[0] + "\" on line " + str(lines.index(line)) + " of " + file + "\n  -->  " + line)
+                    if requireDistStatement and not distStatementFound:
+                        findings.append("No distribution statement in " + file)
         else:
             print("File not found or was deleted: " + file)
 
