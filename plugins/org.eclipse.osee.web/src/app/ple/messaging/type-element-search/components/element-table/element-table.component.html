@@ -98,9 +98,7 @@
 			class="message-detail-row"></tr>
 	</table>
 </div>
-<mat-menu
-	#routeMenu
-	class="mat-menu-fit-content">
+<mat-menu #routeMenu>
 	<ng-template
 		matMenuContent
 		let-paths="paths"
@@ -113,6 +111,7 @@
 						[routerLink]="
 							'/ple/messaging/' + _type + '/' + _id + path + '/.'
 						"
+						class="menu-link"
 						>{{ names[i] }}</a
 					>
 				</ng-container>
