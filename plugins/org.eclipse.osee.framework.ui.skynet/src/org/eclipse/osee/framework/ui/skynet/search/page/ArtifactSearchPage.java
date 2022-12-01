@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -130,7 +131,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
    private final ArtifactDecorator artifactDecorator =
-      new ArtifactDecorator(Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
+      new ArtifactDecorator(Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF, true);
 
    public ArtifactSearchPage() {
       setElementLimit(Integer.valueOf(DEFAULT_ELEMENT_LIMIT));
