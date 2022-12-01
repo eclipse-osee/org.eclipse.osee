@@ -161,9 +161,6 @@
 					../../plugins/org.eclipse.osee.framework.server.ide.api
 				</module>
 				<module>
-					../../plugins/org.eclipse.osee.server.application
-				</module>
-				<module>
 					../../plugins/org.eclipse.osee.server.p2
 				</module>
 				<module>

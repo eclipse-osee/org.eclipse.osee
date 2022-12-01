@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.server.application;
+package org.eclipse.osee.orcs.rest.internal.health;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.server.application.internal.ServerHealthEndpointImpl;
 
 /**
  * @author Roberto E. Escobar

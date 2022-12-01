@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.server.application.internal.model;
+package org.eclipse.osee.orcs.rest.internal.health;
 
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.orcs.health.HealthLinks;

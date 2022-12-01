@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.server.application.internal.operations;
+package org.eclipse.osee.orcs.rest.internal.health.operations;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -24,7 +24,7 @@ public class ServerStatusTop {
       StringBuilder sb = new StringBuilder();
       if (Lib.isWindows()) {
          sb.append("<h3>Top is not available for windows (example below)</h3>");
-         String str = OseeInf.getResourceContents("web/status/top.txt", ServerStatusTop.class);
+         String str = OseeInf.getResourceContents("web/health/top.txt", ServerStatusTop.class);
          str = String.format("<pre>%s</pre>", str);
          sb.append(str);
       } else {
