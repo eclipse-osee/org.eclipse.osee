@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.server.application.internal.operations;
+package org.eclipse.osee.orcs.rest.internal.health.operations;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -24,7 +24,7 @@ public class ServerProcesses {
       StringBuilder sb = new StringBuilder();
       if (Lib.isWindows()) {
          sb.append("<h3>ps -ef is not available for windows (example below)</h3>");
-         String str = OseeInf.getResourceContents("web/status/psef.txt", ServerProcesses.class);
+         String str = OseeInf.getResourceContents("web/health/psef.txt", ServerProcesses.class);
          str = String.format("<pre>%s</pre>", str);
          sb.append(str);
       } else {

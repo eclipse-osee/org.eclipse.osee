@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.server.application.internal.operations;
+package org.eclipse.osee.orcs.rest.internal.health.operations;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
@@ -22,11 +22,11 @@ import org.eclipse.osee.jdbc.JdbcClient;
 /**
  * @author Donald G. Dunne
  */
-public class ServerStatusOverviewTable {
+public class ServerProcessesOperation {
 
    private final JdbcClient jdbcClient;
 
-   public ServerStatusOverviewTable(JdbcClient jdbcClient) {
+   public ServerProcessesOperation(JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
    }
 
@@ -37,7 +37,6 @@ public class ServerStatusOverviewTable {
       }
 
       StringBuilder sb = new StringBuilder();
-
       sb.append("<h3>Server Status</h3>");
       sb.append(AHTML.beginMultiColumnTable(95, 3));
       List<String> headers = new LinkedList<>();
@@ -49,7 +48,6 @@ public class ServerStatusOverviewTable {
          addServer(sb, server);
       }
       sb.append(AHTML.endMultiColumnTable());
-
       String html = AHTML.simplePage(sb.toString());
       return html;
    }

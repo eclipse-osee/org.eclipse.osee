@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.server.application.internal;
+package org.eclipse.osee.orcs.rest.internal.health;
 
 import java.util.List;
 import java.util.Map;
@@ -44,14 +44,14 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.health.HealthLink;
 import org.eclipse.osee.orcs.health.HealthLinks;
 import org.eclipse.osee.orcs.health.ServerStatus;
-import org.eclipse.osee.server.application.internal.operations.BuildServerStatusOperation;
-import org.eclipse.osee.server.application.internal.operations.ServerBalancerStatusTable;
-import org.eclipse.osee.server.application.internal.operations.ServerProcesses;
-import org.eclipse.osee.server.application.internal.operations.ServerStatusActiveMq;
-import org.eclipse.osee.server.application.internal.operations.ServerStatusOverviewTable;
-import org.eclipse.osee.server.application.internal.operations.ServerStatusTable;
-import org.eclipse.osee.server.application.internal.operations.ServerStatusTop;
-import org.eclipse.osee.server.application.internal.operations.UsageOperations;
+import org.eclipse.osee.orcs.rest.internal.health.operations.BuildServerStatusOperation;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerBalancerStatusTable;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerProcesses;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusActiveMq;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusOverviewTable;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusTable;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusTop;
+import org.eclipse.osee.orcs.rest.internal.health.operations.UsageOperations;
 
 /**
  * @author Donald G. Dunne
@@ -117,7 +117,7 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() {
-      String mainHtml = OseeInf.getResourceContents("web/status/main.html", ServerHealthEndpointImpl.class);
+      String mainHtml = OseeInf.getResourceContents("web/health/main.html", ServerHealthEndpointImpl.class);
       StringBuffer sb = new StringBuffer();
       HealthLinks links = getLinks();
       for (HealthLink link : links.getLinks()) {
