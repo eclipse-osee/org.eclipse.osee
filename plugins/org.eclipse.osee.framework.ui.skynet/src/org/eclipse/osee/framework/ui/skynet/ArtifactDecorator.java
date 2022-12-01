@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -66,12 +67,21 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    private ShowAttributeAction attributesAction;
    private SetSettingsAsDefault saveSettingsAction;
    private StructuredViewer viewer;
+   private final boolean isSearch;
 
    private final String storageKey;
 
    public ArtifactDecorator(String storageKey) {
+	      this.viewer = null;
+	      this.storageKey = storageKey;
+	      isSearch = false;
+	      addDecoratorInstance(this);
+   }
+   
+   public ArtifactDecorator(String storageKey, boolean isSearch) {
       this.viewer = null;
       this.storageKey = storageKey;
+      this.isSearch = isSearch;
       addDecoratorInstance(this);
    }
 
@@ -89,7 +99,9 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          saveAction(showArtType, "artifact.decorator.show.artType");
          saveAction(showArtBranch, "artifact.decorator.show.artBranch");
          saveAction(showArtVersion, "artifact.decorator.show.artVersion");
-         saveAction(showRelations, "artifact.decorator.show.relations");
+         if (!isSearch) {
+        	 saveAction(showRelations, "artifact.decorator.show.relations");
+         }
          if (attributesAction != null) {
             Collection<AttributeTypeToken> items = attributesAction.getSelected();
             saveSetting("artifact.decorator.attrTypes", Collections.toString(",", items));
@@ -106,7 +118,9 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          loadAction(showArtType, "artifact.decorator.show.artType");
          loadAction(showArtBranch, "artifact.decorator.show.artBranch");
          loadAction(showArtVersion, "artifact.decorator.show.artVersion");
-         loadAction(showRelations, "artifact.decorator.show.relations");
+         if (!isSearch) {
+        	 loadAction(showRelations, "artifact.decorator.show.relations");
+         }
          if (attributesAction != null) {
             String value = getSetting("artifact.decorator.attrTypes");
             if (Strings.isValid(value)) {
@@ -154,7 +168,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          showArtVersion = new DecoratorAction("Artifact Version", FrameworkImage.FILTERS, false);
       }
 
-      if (showRelations == null) {
+      if (showRelations == null && !isSearch) {
          showRelations = new DecoratorAction("Relations", FrameworkImage.FILTERS, false);
       }
 
@@ -178,13 +192,17 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          manager.add(showArtVersion);
          manager.add(showArtType);
          manager.add(showArtBranch);
-         manager.add(showRelations);
+         if (!isSearch) {
+        	 manager.add(showRelations);
+         }
       }
       showArtIds.updateText();
       showArtType.updateText();
       showArtVersion.updateText();
       showArtBranch.updateText();
-      showRelations.updateText();
+      if (!isSearch) {
+    	  showRelations.updateText();
+      }
 
       if (manager != null) {
          manager.add(attributesAction);
