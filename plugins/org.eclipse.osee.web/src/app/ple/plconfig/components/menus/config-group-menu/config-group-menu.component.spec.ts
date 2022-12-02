@@ -83,6 +83,7 @@ describe('ConfigGroupMenuComponent', () => {
 		component.group = {
 			id: '1',
 			name: 'abcd',
+			description: '',
 			configurations: [],
 			changes: {
 				name: {

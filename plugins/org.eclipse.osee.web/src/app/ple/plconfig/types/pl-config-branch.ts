@@ -1,3 +1,4 @@
+import { IdNameDescription } from './base-types/NameValuePair';
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -40,4 +41,4 @@ export class PlConfigBranchListingBranchImpl
 	viewId = '-1';
 }
 
-export interface cfgGroup extends NameValuePair {}
+export interface cfgGroup extends IdNameDescription {}

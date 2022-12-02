@@ -32,6 +32,16 @@
 				required />
 		</mat-form-field>
 		<br />
+		<mat-form-field [style.fontSize.px]="18">
+			<mat-label>Configuration Group Description</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.configGroup.description"
+				#input
+				required />
+		</mat-form-field>
+		<br />
 		<div>
 			<mat-label [style.fontSize.px]="18">Select Views</mat-label>
 			<mat-selection-list
@@ -51,6 +61,10 @@
 		<div>
 			<mat-label><b>Configuration Group Name:</b></mat-label>
 			{{ data.configGroup.name }}
+		</div>
+		<div>
+			<mat-label><b>Configuration Group Description:</b></mat-label>
+			{{ data.configGroup.description }}
 		</div>
 		<div>
 			<mat-label><b>Configurations:</b></mat-label>

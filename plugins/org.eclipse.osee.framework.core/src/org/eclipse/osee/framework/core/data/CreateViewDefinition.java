@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -26,16 +27,26 @@ public class CreateViewDefinition extends NamedIdBase {
    public ArtifactId copyFrom = ArtifactId.SENTINEL;
    private List<String> productApplicabilities;
    private List<ArtifactId> configurationGroup;
+   private String description = Strings.EMPTY_STRING;
 
    public CreateViewDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
       this.configurationGroup = new ArrayList<>();
    }
 
-   public CreateViewDefinition(Long id, String name, List<String> productApplicabilities, List<ArtifactId> configurationGroups) {
+   public CreateViewDefinition(Long id, String name, String description, List<String> productApplicabilities, List<ArtifactId> configurationGroups) {
       super(id, name);
+      this.description = description;
       this.productApplicabilities = productApplicabilities;
       this.configurationGroup = configurationGroups;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
    }
 
    public Object getData() {

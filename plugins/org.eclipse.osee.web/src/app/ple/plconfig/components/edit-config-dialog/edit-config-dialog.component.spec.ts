@@ -76,9 +76,11 @@ describe('EditConfigDialogComponent', () => {
 						currentConfig: {
 							id: '200045',
 							name: 'Product A',
+							description: '',
 							ConfigurationToCopyFrom: {
 								id: '',
 								name: '',
+								description: '',
 							},
 						},
 					},

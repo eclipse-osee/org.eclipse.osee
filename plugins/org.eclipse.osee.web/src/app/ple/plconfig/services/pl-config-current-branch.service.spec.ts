@@ -70,6 +70,7 @@ describe('PlConfigCurrentBranchService', () => {
 			getCfgGroupDetail: of<configurationGroup>({
 				id: '1',
 				name: 'Hello',
+				description: '',
 				hasFeatureApplicabilities: false,
 				productApplicabilities: [],
 				configurations: [],
@@ -339,6 +340,7 @@ describe('PlConfigCurrentBranchService', () => {
 						a: {
 							id: '200045',
 							name: 'Product A',
+							description: '',
 							hasFeatureApplicabilities: true,
 						},
 						b: undefined,
@@ -355,6 +357,7 @@ describe('PlConfigCurrentBranchService', () => {
 						a: {
 							id: '200045',
 							name: 'Product A',
+							description: '',
 							hasFeatureApplicabilities: true,
 						},
 					}
@@ -370,6 +373,7 @@ describe('PlConfigCurrentBranchService', () => {
 						a: {
 							id: '736857919',
 							name: 'abGroup',
+							description: '',
 							configurations: ['200045', '200046'],
 						},
 						b: undefined,
@@ -394,33 +398,39 @@ describe('PlConfigCurrentBranchService', () => {
 							group: {
 								id: '-1',
 								name: 'No Group',
+								description: '',
 								configurations: [],
 							},
 							views: [
 								{
 									id: '200047',
 									name: 'Product C',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '200048',
 									name: 'Product D',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '201325',
 									name: 'added view',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '201334',
 									name: 'modified product app',
+									description: '',
 									hasFeatureApplicabilities: true,
 									productApplicabilities: ['hello world'],
 								},
 								{
 									id: '201343',
 									name: 'newconfig',
+									description: '',
 									hasFeatureApplicabilities: true,
 									productApplicabilities: ['Unspecified'],
 								},
@@ -430,6 +440,7 @@ describe('PlConfigCurrentBranchService', () => {
 							group: {
 								id: '201321',
 								name: 'test',
+								description: '',
 								configurations: [],
 							},
 							views: [],
@@ -438,6 +449,7 @@ describe('PlConfigCurrentBranchService', () => {
 							group: {
 								id: '201322',
 								name: 'deleted group',
+								description: '',
 								configurations: [],
 							},
 							views: [],
@@ -446,17 +458,20 @@ describe('PlConfigCurrentBranchService', () => {
 							group: {
 								id: '736857919',
 								name: 'abGroup',
+								description: '',
 								configurations: ['200045', '200046'],
 							},
 							views: [
 								{
 									id: '200045',
 									name: 'Product A',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '200046',
 									name: 'Product B',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 							],
@@ -467,33 +482,39 @@ describe('PlConfigCurrentBranchService', () => {
 							group: {
 								id: '-1',
 								name: 'No Group',
+								description: '',
 								configurations: [],
 							},
 							views: [
 								{
 									id: '200047',
 									name: 'Product C',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '200048',
 									name: 'Product D',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '201325',
 									name: 'added view',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '201334',
 									name: 'modified product app',
+									description: '',
 									hasFeatureApplicabilities: true,
 									productApplicabilities: ['hello world'],
 								},
 								{
 									id: '201343',
 									name: 'newconfig',
+									description: '',
 									hasFeatureApplicabilities: true,
 									productApplicabilities: ['Unspecified'],
 								},
@@ -503,17 +524,20 @@ describe('PlConfigCurrentBranchService', () => {
 							group: {
 								id: '736857919',
 								name: 'abGroup',
+								description: '',
 								configurations: ['200045', '200046'],
 							},
 							views: [
 								{
 									id: '200045',
 									name: 'Product A',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 								{
 									id: '200046',
 									name: 'Product B',
+									description: '',
 									hasFeatureApplicabilities: true,
 								},
 							],
@@ -529,6 +553,7 @@ describe('PlConfigCurrentBranchService', () => {
 					a: {
 						id: '1',
 						name: 'Hello',
+						description: '',
 						hasFeatureApplicabilities: false,
 						productApplicabilities: [],
 						configurations: [],
@@ -547,7 +572,12 @@ describe('PlConfigCurrentBranchService', () => {
 			scheduler.run(({ expectObservable }) => {
 				expectObservable(
 					service.modifyConfiguration('123', 'string', [
-						{ id: '1', name: 'name', configurations: ['2', '3'] },
+						{
+							id: '1',
+							name: 'name',
+							description: '',
+							configurations: ['2', '3'],
+						},
 					])
 				).toBe('|', { a: testDataResponse });
 			});
@@ -557,6 +587,7 @@ describe('PlConfigCurrentBranchService', () => {
 				expectObservable(
 					service.editConfigurationDetails({
 						name: 'abcd',
+						description: '',
 						configurationGroup: ['123'],
 						productApplicabilities: [],
 						copyFrom: '',
@@ -575,6 +606,7 @@ describe('PlConfigCurrentBranchService', () => {
 				expectObservable(
 					service.addConfiguration({
 						name: '',
+						description: '',
 						copyFrom: '1',
 						configurationGroup: ['123'],
 					})
@@ -651,6 +683,7 @@ describe('PlConfigCurrentBranchService', () => {
 				expectObservable(
 					service.addConfigurationGroup({
 						name: 'abcd',
+						description: '',
 						configurations: ['1', '2'],
 					})
 				).toBe('a', { a: testDataResponse });
@@ -669,6 +702,7 @@ describe('PlConfigCurrentBranchService', () => {
 				expectObservable(
 					service.updateConfigurationGroup({
 						name: 'abcd',
+						description: '',
 						configurations: ['1', '2', '3'],
 					})
 				).toBe('a', { a: testDataResponse });

@@ -136,6 +136,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             (namedViewApplicabilityMap.entrySet().stream().filter(map -> !map.getKey().equals("Config")).collect(
                Collectors.toMap(map -> map.getKey(), map -> map.getValue())).size() > 1);
          config.addView(new BranchViewDefinition(branchView.getIdString(), branchView.getName(),
+            branchView.getSoleAttributeAsString(CoreAttributeTypes.Description, ""),
             branchView.fetchAttributesAsStringList(CoreAttributeTypes.ProductApplicability),
             hasFeatureApplicabilities));
          branchViewsMap.put(branchView, namedViewApplicabilityMap);
@@ -716,19 +717,19 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch) {
       ConfigurationGroupDefinition configGroup = new ConfigurationGroupDefinition();
-      ArtifactToken groupArt = ArtifactToken.SENTINEL;
+      ArtifactReadable groupArt = ArtifactReadable.SENTINEL;
       if (Strings.isNumeric(cfgGroup)) {
          groupArt = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andId(
-            ArtifactId.valueOf(cfgGroup)).asArtifactTokenOrSentinel();
-
+            ArtifactId.valueOf(cfgGroup)).asArtifactOrSentinel();
       } else {
          groupArt =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andNameEquals(
-               cfgGroup).asArtifactTokenOrSentinel();
+               cfgGroup).asArtifactOrSentinel();
       }
       if (groupArt.isValid()) {
          configGroup.setName(groupArt.getName());
          configGroup.setId(groupArt.getIdString());
+         configGroup.setDescription(groupArt.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
          List<String> views = new ArrayList<>();
          for (ArtifactId view : orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(
             CoreRelationTypes.PlConfigurationGroup_Group, groupArt).asArtifactIds()) {
@@ -736,6 +737,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          configGroup.setConfigurations(views);
       }
+
       return configGroup;
    }
 
@@ -764,7 +766,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             view.getProductApplicabilities());
          tx.commit();
       }
-
+      if (!view.getDescription().equals(editView.getDescription())) {
+         TransactionBuilder tx = txFactory.createTransaction(branch, "Update Configuration Description");
+         tx.setSoleAttributeValue(ArtifactId.valueOf(view.getId()), CoreAttributeTypes.Description,
+            view.getDescription());
+         tx.commit();
+      }
       if (!view.getName().equals(editView.getName())) {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Update Configuration Name");
          tx.setName(ArtifactId.valueOf(editView), view.getName());
@@ -812,7 +819,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          results.errorf("Name can not be empty for configuration %s", view.getId());
          return results;
       }
-
       CreateViewDefinition newView = getView(view.getName(), branch);
       if (newView.isValid()) {
          results.errorf("Configuration Name is already in use.");
@@ -825,7 +831,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             ArtifactToken vDefArt = ArtifactToken.SENTINEL;
             vDefArt =
                tx.createArtifact(getConfigurationsFolder(tx.getBranch()), CoreArtifactTypes.BranchView, view.getName());
-
+            tx.setSoleAttributeValue(vDefArt, CoreAttributeTypes.Description, view.getDescription());
             if (!view.getProductApplicabilities().isEmpty()) {
                tx.setAttributesFromValues(vDefArt, CoreAttributeTypes.ProductApplicability,
                   view.getProductApplicabilities());
@@ -1275,6 +1281,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          vDefArt = tx.createArtifact(getPlConfigurationGroupsFolder(tx.getBranch()), CoreArtifactTypes.GroupArtifact,
             group.getName());
          tx.setName(vDefArt, group.getName());
+         tx.setSoleAttributeValue(vDefArt, CoreAttributeTypes.Description, group.getDescription());
          addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, vDefArt, tx,
             "ConfigurationGroup = " + vDefArt.getName());
          // reload artifact to return
@@ -1317,6 +1324,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   "ConfigurationGroup = " + currentGroup.getName());
                addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(group.getId()), tx,
                   "ConfigurationGroup = " + group.getName());
+               tx.commit();
+            }
+            if (!group.getDescription().equals(currentGroup.getDescription())) {
+               TransactionBuilder tx = txFactory.createTransaction(branch, "Update PL Configuration Description");
+               tx.setSoleAttributeValue(ArtifactId.valueOf(group.getId()), CoreAttributeTypes.Description,
+                  group.getDescription());
                tx.commit();
             }
             if (!group.getConfigurations().toString().equals(currentGroup.getConfigurations().toString())) {

@@ -26,6 +26,18 @@
 			[attr.data-cy-value]="'field-name-' + data.title" />
 	</mat-form-field>
 	<br />
+	<mat-form-field [style.fontSize.px]="18">
+		<mat-label>Description</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.description"
+			#input
+			required
+			data-cy="field-description"
+			[attr.data-cy-value]="'field-description-' + data.description" />
+	</mat-form-field>
+	<br />
 	<mat-label [style.fontSize.px]="18">Copy From:</mat-label>
 	<br />
 	<mat-form-field

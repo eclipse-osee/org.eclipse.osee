@@ -549,6 +549,7 @@
 			[config]="
 				(config | async) || {
 					name: '',
+					description: '',
 					hasFeatureApplicabilities: false,
 					id: ''
 				}
@@ -561,7 +562,12 @@
 		let-group="group">
 		<osee-plconfig-config-group-menu
 			[group]="
-				(group | async) || { name: '', id: '', configurations: [] }
+				(group | async) || {
+					name: '',
+					description: '',
+					id: '',
+					configurations: []
+				}
 			"></osee-plconfig-config-group-menu>
 	</ng-template>
 </mat-menu>

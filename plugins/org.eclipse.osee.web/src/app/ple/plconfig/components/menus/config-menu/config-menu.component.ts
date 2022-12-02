@@ -30,6 +30,7 @@ export class ConfigMenuComponent {
 	_editable = this.uiStateService.editable;
 	@Input() config: view | viewWithChanges = {
 		name: '',
+		description: '',
 		hasFeatureApplicabilities: false,
 		id: '',
 	};

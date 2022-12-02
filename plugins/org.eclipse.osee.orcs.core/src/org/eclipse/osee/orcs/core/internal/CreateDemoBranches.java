@@ -91,6 +91,12 @@ public class CreateDemoBranches {
       ArtifactToken productC = tx.createView(branch, "Product C");
       ArtifactToken productD = tx.createView(branch, "Product D");
 
+      // Add description to each view
+      tx.setSoleAttributeValue(productA, CoreAttributeTypes.Description, "Description for A");
+      tx.setSoleAttributeValue(productB, CoreAttributeTypes.Description, "Description for B");
+      tx.setSoleAttributeValue(productC, CoreAttributeTypes.Description, "Description for C");
+      tx.setSoleAttributeValue(productD, CoreAttributeTypes.Description, "Description for D");
+
       ArtifactToken[] products = new ArtifactToken[] {productA, productB, productC, productD};
 
       createFeatureConfigs(featuresFolder, tx, orcsApi);
@@ -124,6 +130,7 @@ public class CreateDemoBranches {
       tx.commit();
       ConfigurationGroupDefinition group = new ConfigurationGroupDefinition();
       group.setName("abGroup");
+      group.setDescription("Description for abGroup");
       orcsApi.getApplicabilityOps().createCfgGroup(group, branch);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch);
       orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch);

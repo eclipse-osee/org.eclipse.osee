@@ -63,6 +63,7 @@ export class ConfigurationDropdownComponent {
 		config: {
 			id: string;
 			name: string;
+			description: string;
 			hasFeatureApplicabilities: boolean;
 		},
 		productApplicabilities?: string[],
@@ -145,10 +146,12 @@ export class ConfigurationDropdownComponent {
 						copyFrom: {
 							id: '0',
 							name: '',
+							description: '',
 							hasFeatureApplicabilities: false,
 							productApplicabilities: [],
 						},
 						title: '',
+						description: '',
 						group: [],
 						productApplicabilities: [],
 					}).pipe(
@@ -174,6 +177,8 @@ export class ConfigurationDropdownComponent {
 											this.currentBranchService
 												.addConfiguration({
 													name: result.title,
+													description:
+														result.description,
 													copyFrom:
 														result.copyFrom.id,
 													configurationGroup:

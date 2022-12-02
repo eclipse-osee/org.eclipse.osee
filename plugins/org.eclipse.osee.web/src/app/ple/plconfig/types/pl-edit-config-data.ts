@@ -15,6 +15,7 @@ import {
 	view,
 	viewWithChangesAndGroups,
 	viewWithGroups,
+	viewWithDescription,
 } from './pl-config-applicui-branch-mapping';
 
 export class PLEditConfigData implements ConfigData {
@@ -47,13 +48,22 @@ export class PLEditConfigData implements ConfigData {
 	}
 	productApplicabilities: string[] = [];
 	currentBranch = '';
-	currentConfig: viewWithChangesAndGroups | viewWithGroups = {
+	currentConfig:
+		| viewWithChangesAndGroups
+		| viewWithGroups
+		| viewWithDescription = {
 		id: '',
 		name: '',
+		description: '',
 		hasFeatureApplicabilities: false,
 		groups: [],
 	};
-	copyFrom = { id: '', name: '', hasFeatureApplicabilities: false };
+	copyFrom = {
+		id: '',
+		name: '',
+		description: '',
+		hasFeatureApplicabilities: false,
+	};
 	group: ConfigGroup[] = [];
 	editable: boolean = false;
 }
@@ -62,6 +72,7 @@ export interface copyFrom {
 }
 export interface PLAddConfigData extends ConfigData {
 	title: string;
+	description: string;
 }
 interface ConfigData {
 	currentBranch: string | undefined;

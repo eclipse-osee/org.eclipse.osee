@@ -82,6 +82,7 @@ describe('ConfigMenuComponent', () => {
 		component.config = {
 			id: '1',
 			name: 'abcd',
+			description: '',
 			hasFeatureApplicabilities: false,
 			changes: {
 				name: {

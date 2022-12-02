@@ -38,6 +38,22 @@
 				" />
 		</mat-form-field>
 		<br />
+		<mat-form-field
+			[style.fontSize.px]="18"
+			class="full-width">
+			<mat-label>Configuration Description</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.currentConfig.description"
+				#input
+				required
+				data-cy="field-description"
+				[attr.data-cy-value]="
+					'field-description-' + data.currentConfig.description
+				" />
+		</mat-form-field>
+		<br />
 		<mat-label [style.fontSize.px]="18">Copy From:</mat-label>
 		<br />
 		<mat-form-field
@@ -105,11 +121,15 @@
 	</div>
 	<div *ngIf="data.editable === false">
 		<div>
-			<mat-label><b>Configuration Name:</b></mat-label>
+			<mat-label class="label">Configuration Name:</mat-label>
 			{{ data.currentConfig.name }}
 		</div>
+		<div>
+			<mat-label class="label">Configuration Description:</mat-label>
+			{{ data.currentConfig.description }}
+		</div>
 		<div *ngIf="data.productApplicabilities.length > 0">
-			<mat-label><b>Product Types:</b></mat-label>
+			<mat-label class="label">Product Types:</mat-label>
 			<div *ngFor="let app of data.productApplicabilities">
 				{{ app }}
 			</div>

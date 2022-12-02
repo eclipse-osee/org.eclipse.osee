@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class BranchViewDefinition {
    private String id = Strings.EMPTY_STRING;
    private String name = Strings.EMPTY_STRING;
+   private String description = Strings.EMPTY_STRING;
    private List<String> productApplicabilities = new ArrayList<>();
    private boolean hasFeatureApplicabilities = true;
 
@@ -29,11 +30,20 @@ public class BranchViewDefinition {
       //Empty constructor is required for json compatibility
    }
 
-   public BranchViewDefinition(String id, String name, List<String> productApplicabilities, boolean hasFeatureApplicabilities) {
+   public BranchViewDefinition(String id, String name, String desc, List<String> productApplicabilities, boolean hasFeatureApplicabilities) {
       this.setId(id);
       this.setName(name);
+      this.setDescription(desc);
       this.setProductApplicabilities(productApplicabilities);
       this.setHasFeatureApplicabilities(hasFeatureApplicabilities);
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 
    public String getName() {
@@ -44,12 +54,12 @@ public class BranchViewDefinition {
       this.name = name;
    }
 
-   public String getId() {
-      return id;
+   public String getDescription() {
+      return description;
    }
 
-   public void setId(String id) {
-      this.id = id;
+   public void setDescription(String desc) {
+      this.description = desc;
    }
 
    public boolean isHasFeatureApplicabilities() {

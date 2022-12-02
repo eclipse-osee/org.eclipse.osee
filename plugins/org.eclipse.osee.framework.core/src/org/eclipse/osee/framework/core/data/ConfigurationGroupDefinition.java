@@ -23,16 +23,26 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ConfigurationGroupDefinition {
    private String id = Strings.EMPTY_STRING;
    private String name = Strings.EMPTY_STRING;
+   private String description = Strings.EMPTY_STRING;
    private List<String> configurations = new ArrayList<>();
 
    public ConfigurationGroupDefinition() {
       //
    }
 
-   public ConfigurationGroupDefinition(String id, String name, List<String> configurations) {
+   public ConfigurationGroupDefinition(String id, String name, String desc, List<String> configurations) {
       this.setId(id);
       this.setName(name);
+      this.setDescription(desc);
       this.setConfigurations(configurations);
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 
    public String getName() {
@@ -43,12 +53,12 @@ public class ConfigurationGroupDefinition {
       this.name = name;
    }
 
-   public String getId() {
-      return id;
+   public String getDescription() {
+      return description;
    }
 
-   public void setId(String id) {
-      this.id = id;
+   public void setDescription(String desc) {
+      this.description = desc;
    }
 
    public List<String> getConfigurations() {

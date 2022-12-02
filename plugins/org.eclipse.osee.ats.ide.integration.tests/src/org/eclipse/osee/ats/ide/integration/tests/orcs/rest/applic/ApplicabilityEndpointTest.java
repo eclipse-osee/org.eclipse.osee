@@ -121,6 +121,7 @@ public class ApplicabilityEndpointTest {
 
       CreateViewDefinition newView = new CreateViewDefinition();
       newView.setName("New View");
+      newView.setDescription("description");
       newView.setCopyFrom(ArtifactId.valueOf(updateView.getId()));
       List<String> pApps = new ArrayList<>();
       pApps.add("Code");
@@ -155,6 +156,7 @@ public class ApplicabilityEndpointTest {
          ServiceUtil.getOseeClient().getArtifactEndpoint(DemoBranches.SAW_PL_Working_Branch);
 
       CreateViewDefinition view = appl.getView("Product A");
+      view.setDescription("description");
       XResultData createNewApp =
          appl.createApplicabilityForView(ArtifactId.valueOf(view.getId()), "ROBOT_ARM_LIGHT = Included");
       Assert.assertEquals(createNewApp.getErrorCount(), 0);

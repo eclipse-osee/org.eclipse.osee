@@ -89,7 +89,7 @@ export class PlConfigBranchService {
 		if (
 			body.configurationGroup === null ||
 			body.configurationGroup === undefined ||
-			body.configurationGroup.length !== 0
+			body.configurationGroup.length === 0
 		) {
 			body.configurationGroup = [];
 		}
