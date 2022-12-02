@@ -30,7 +30,7 @@ public class ServerStatusTop {
       } else {
          sb.append("<h3>Machine \"top\" results</h3>");
          try {
-            ProcessBuilder pb = new ProcessBuilder("top", "-l", "1");
+            ProcessBuilder pb = new ProcessBuilder("top", "-n");
             pb.redirectError();
             Process p = pb.start();
             InputStream is = p.getInputStream();
