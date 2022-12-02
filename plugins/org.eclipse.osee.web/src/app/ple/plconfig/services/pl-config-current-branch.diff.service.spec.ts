@@ -412,6 +412,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '736857919',
 				name: 'abGroup',
+				description: '',
 				configurations: ['200045', '200046'],
 				added: true,
 				changes: {},
@@ -419,6 +420,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '201322',
 				name: 'testForEdit',
+				description: '',
 				configurations: [],
 				deleted: true,
 				changes: {
@@ -435,6 +437,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '201321',
 				name: 'test',
+				description: '',
 				configurations: [],
 				added: true,
 				changes: {
@@ -459,11 +462,13 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '200045',
 				name: 'Product A',
+				description: '',
 				hasFeatureApplicabilities: true,
 			},
 			{
 				id: '200046',
 				name: 'Product B',
+				description: '',
 				hasFeatureApplicabilities: true,
 				changes: {
 					productApplicabilities: [],
@@ -472,6 +477,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '200047',
 				name: 'Product C',
+				description: '',
 				hasFeatureApplicabilities: true,
 				changes: {
 					productApplicabilities: [],
@@ -480,6 +486,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '200048',
 				name: 'Product D',
+				description: '',
 				hasFeatureApplicabilities: true,
 				deleted: true,
 				changes: {
@@ -496,6 +503,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '201325',
 				name: 'added view',
+				description: '',
 				added: true,
 				hasFeatureApplicabilities: true,
 				changes: {
@@ -505,6 +513,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '201334',
 				name: 'modified product app',
+				description: '',
 				hasFeatureApplicabilities: true,
 				productApplicabilities: ['hello world'],
 				changes: {
@@ -523,6 +532,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '201343',
 				name: 'newconfig',
+				description: '',
 				hasFeatureApplicabilities: true,
 				productApplicabilities: ['Unspecified'],
 				added: true,
@@ -550,6 +560,7 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			{
 				id: '201326',
 				name: 'test9',
+				description: '',
 				hasFeatureApplicabilities: false,
 				productApplicabilities: ['Unspecified'],
 				added: false,

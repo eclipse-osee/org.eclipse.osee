@@ -205,6 +205,7 @@ export class PlConfigCurrentBranchService {
 										configurations: [],
 										id: '-1',
 										name: 'No Group',
+										description: '',
 									},
 									views: unGroupedViews,
 								},
@@ -235,6 +236,7 @@ export class PlConfigCurrentBranchService {
 									group: {
 										id: '-1',
 										name: '',
+										description: '',
 										configurations: [],
 									},
 									views: [],
@@ -413,7 +415,12 @@ export class PlConfigCurrentBranchService {
 							iif(
 								() => grouping.group.name !== 'No Group',
 								of(grouping.group),
-								of({ id: '-1', name: '', configurations: [] })
+								of({
+									id: '-1',
+									name: '',
+									description: '',
+									configurations: [],
+								})
 							).pipe()
 						)
 					)
@@ -452,7 +459,11 @@ export class PlConfigCurrentBranchService {
 										)
 									)
 									.map((c) => {
-										return { id: c.id, name: c.name };
+										return {
+											id: c.id,
+											name: c.name,
+											description: c.description,
+										};
 									}),
 							};
 						})
@@ -463,6 +474,7 @@ export class PlConfigCurrentBranchService {
 					[] as {
 						id: string;
 						name: string;
+						description: string;
 						hasFeatureApplicabilities: boolean;
 						productApplicabilities?: string[];
 						show?: boolean;
@@ -2330,6 +2342,7 @@ export class PlConfigCurrentBranchService {
 													applic.views.push({
 														id: change.artId,
 														name: '',
+														description: '',
 														hasFeatureApplicabilities:
 															false,
 														productApplicabilities:
@@ -2533,6 +2546,7 @@ export class PlConfigCurrentBranchService {
 														applic.groups.push({
 															id: change.artId,
 															name: '',
+															description: '',
 															configurations: [],
 															deleted: true,
 														});

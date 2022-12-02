@@ -1,6 +1,3 @@
-import { difference } from 'src/app/types/change-report/change-report';
-import { NameValuePair } from './base-types/NameValuePair';
-
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -13,8 +10,12 @@ import { NameValuePair } from './base-types/NameValuePair';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { difference } from 'src/app/types/change-report/change-report';
+import { IdNameDescription } from './base-types/NameValuePair';
+
 export interface configuration {
 	name: string;
+	description: string;
 	copyFrom?: string;
 	configurationGroup?: string[];
 	productApplicabilities?: string[];
@@ -27,7 +28,7 @@ export interface configurationGroup extends configGroup {
 	productApplicabilities: string[];
 }
 
-export interface configGroup extends NameValuePair {
+export interface configGroup extends IdNameDescription {
 	configurations: string[];
 }
 export interface configGroupWithChanges extends configGroup {

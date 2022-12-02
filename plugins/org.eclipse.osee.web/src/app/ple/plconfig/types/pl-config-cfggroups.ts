@@ -14,11 +14,13 @@ import { view } from './pl-config-applicui-branch-mapping';
 
 export interface addCfgGroup {
 	title: string;
+	description: string;
 }
 
 export interface CfgGroupDialog {
 	configGroup: {
 		name: string;
+		description: string;
 		id: string;
 		views: view[];
 		configurations: string[];
@@ -28,5 +30,6 @@ export interface CfgGroupDialog {
 export interface ConfigurationGroupDefinition {
 	id?: string;
 	name: string;
+	description: string;
 	configurations?: string[];
 }

@@ -1,3 +1,4 @@
+import { IdNameDescription } from './base-types/NameValuePair';
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -52,8 +53,8 @@ export class PlConfigApplicUIBranchMappingImpl
 	views: (view | viewWithChanges)[] = [];
 }
 
-export interface ConfigGroup extends NameValuePair, showable {}
-export interface view extends NameValuePair, showable {
+export interface ConfigGroup extends IdNameDescription, showable {}
+export interface view extends IdNameDescription, showable {
 	hasFeatureApplicabilities: boolean;
 	productApplicabilities?: string[];
 }
@@ -72,4 +73,8 @@ export interface viewWithChangesAndGroups extends viewWithChanges {
 }
 export interface viewWithGroups extends view {
 	groups: (configGroup | configGroupWithChanges)[];
+}
+export interface viewWithDescription extends view {
+	groups: (configGroup | configGroupWithChanges)[];
+	description: string;
 }

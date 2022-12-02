@@ -63,7 +63,10 @@ export class ConfigurationGroupDropdownComponent {
 					iif(
 						() => result !== undefined,
 						this.currentBranchService
-							.addConfigurationGroup({ name: result.title })
+							.addConfigurationGroup({
+								name: result.title,
+								description: result.description,
+							})
 							.pipe(take(1)),
 						of(undefined)
 					)

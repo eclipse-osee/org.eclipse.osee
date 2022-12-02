@@ -25,6 +25,17 @@
 			data-cy="field-title" />
 	</mat-form-field>
 	<br />
+	<mat-form-field [style.fontSize.px]="18">
+		<mat-label>Description</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.description"
+			#input
+			required
+			data-cy="field-description" />
+	</mat-form-field>
+	<br />
 </div>
 <div mat-dialog-actions>
 	<button

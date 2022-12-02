@@ -137,6 +137,7 @@ export class DialogService {
 										return {
 											id: group.id,
 											name: group.name,
+											description: group.description,
 											configurations:
 												group.configurations,
 											views: acc.views,
@@ -145,11 +146,13 @@ export class DialogService {
 									{
 										id: group.id,
 										name: group.name,
+										description: group.description,
 										configurations: group.configurations,
 										views: [],
 									} as {
 										id: string;
 										name: string;
+										description: string;
 										configurations: string[];
 										views: view[];
 									}
@@ -209,6 +212,10 @@ export class DialogService {
 																					name: dialogResult
 																						.configGroup
 																						.name,
+																					description:
+																						dialogResult
+																							.configGroup
+																							.description,
 																					configurations:
 																						cfgArray,
 																				}

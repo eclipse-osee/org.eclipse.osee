@@ -199,6 +199,7 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping = {
 		{
 			id: '736857919',
 			name: 'abGroup',
+			description: '',
 			//hasFeatureApplicabilities:true,
 			configurations: ['200045', '200046'],
 			//productApplicabilities:[]
@@ -206,11 +207,13 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping = {
 		{
 			id: '201322',
 			name: 'deleted group',
+			description: '',
 			configurations: [],
 		},
 		{
 			id: '201321',
 			name: 'test',
+			description: '',
 			configurations: [],
 		},
 	],
@@ -224,37 +227,44 @@ export const testBranchApplicability: PlConfigApplicUIBranchMapping = {
 		{
 			id: '200045',
 			name: 'Product A',
+			description: '',
 			hasFeatureApplicabilities: true,
 		},
 		{
 			id: '200046',
 			name: 'Product B',
+			description: '',
 			hasFeatureApplicabilities: true,
 		},
 		{
 			id: '200047',
 			name: 'Product C',
+			description: '',
 			hasFeatureApplicabilities: true,
 		},
 		{
 			id: '200048',
 			name: 'Product D',
+			description: '',
 			hasFeatureApplicabilities: true,
 		},
 		{
 			id: '201325',
 			name: 'added view',
+			description: '',
 			hasFeatureApplicabilities: true,
 		},
 		{
 			id: '201334',
 			name: 'modified product app',
+			description: '',
 			hasFeatureApplicabilities: true,
 			productApplicabilities: ['hello world'],
 		},
 		{
 			id: '201343',
 			name: 'newconfig',
+			description: '',
 			hasFeatureApplicabilities: true,
 			productApplicabilities: ['Unspecified'],
 		},

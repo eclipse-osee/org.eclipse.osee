@@ -62,15 +62,17 @@ describe('DialogService', () => {
 					currentConfig: {
 						id: '',
 						name: '',
+						description: '',
 						hasFeatureApplicabilities: false,
 						groups: [],
 					},
 					copyFrom: {
 						id: '',
 						name: '',
+						description: '',
 						hasFeatureApplicabilities: false,
 					},
-					group: [{ id: '', name: '' }],
+					group: [{ id: '', name: '', description: '' }],
 					productApplicabilities: [],
 				}),
 				close: null,
@@ -94,10 +96,12 @@ describe('DialogService', () => {
 					configGroup: {
 						name: 'abGroup',
 						id: '123',
+						description: '',
 						views: [
 							{
 								id: '123',
 								name: 'Product A',
+								description: '',
 								hasFeatureApplicabilities: false,
 							},
 						],

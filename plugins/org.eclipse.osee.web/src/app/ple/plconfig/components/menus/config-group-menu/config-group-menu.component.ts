@@ -35,6 +35,7 @@ export class ConfigGroupMenuComponent {
 	_editable = this.uiStateService.editable;
 	@Input() group: configGroup | configGroupWithChanges = {
 		name: '',
+		description: '',
 		id: '',
 		configurations: [],
 	};
