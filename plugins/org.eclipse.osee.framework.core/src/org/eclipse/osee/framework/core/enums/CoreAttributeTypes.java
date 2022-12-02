@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeDate;
 import org.eclipse.osee.framework.core.data.AttributeTypeInputStream;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
+import org.eclipse.osee.framework.core.data.AttributeTypeLong;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.DisplayHint;
@@ -158,7 +159,8 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger InterfaceElementIndexStart = osee.createInteger(2455059983007225801L, "Interface Element Index Start", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger InterfaceElementIndexEnd = osee.createInteger(2455059983007225802L, "Interface Element Index End", MediaType.TEXT_PLAIN, "");
    InterfaceLogicalTypeAttribute InterfaceLogicalType = osee.createEnum(new InterfaceLogicalTypeAttribute());
-   AttributeTypeInteger InterfaceEnumOrdinal = osee.createInteger(2455059983007225790L, "Ordinal", MediaType.TEXT_PLAIN, "");
+   AttributeTypeLong InterfaceEnumOrdinal = osee.createLong(2455059983007225790L, "Ordinal", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString InterfaceEnumOrdinalType = osee.createString(2664267173310317306L, "Ordinal Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfaceElementEnumLiteral = osee.createString(2455059983007225803L, "Enum Literal", MediaType.TEXT_PLAIN, "");
    InterfacePlatformTypeUnitsAttribute InterfacePlatformTypeUnits = osee.createEnum(new InterfacePlatformTypeUnitsAttribute());
    AttributeTypeString InterfacePlatformTypeValidRangeDescription = osee.createString(2121416901992068417L, "Interface Platform Type Valid Range Desc", MediaType.TEXT_PLAIN, "");

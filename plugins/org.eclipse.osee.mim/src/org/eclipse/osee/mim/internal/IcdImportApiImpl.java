@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.Wor
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
 import org.eclipse.osee.mim.types.InterfaceElementImportToken;
+import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
@@ -382,13 +383,17 @@ public class IcdImportApiImpl implements MimImportApi {
                   new LinkedList<>(Arrays.asList(enumSet.getIdString())));
 
                for (String line : enumDescLines) {
-                  if (line.trim().matches("^\\s*\\d+\\s*[-=].*")) {
+                  if (line.trim().matches("^\\s*\\d+\\s*[-=].*") || line.trim().matches("^0x.*\\s*[-=].*")) {
                      String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
-                     int ordinal = Integer.parseInt(splitLine[0]);
+                     long ordinal =
+                        splitLine[0].matches("^0x.*") ? Long.decode(splitLine[0].trim()) : Long.parseLong(splitLine[0]);
+                     InterfaceEnumOrdinalType ordinalType =
+                        splitLine[0].matches("^0x.*") ? InterfaceEnumOrdinalType.HEX : InterfaceEnumOrdinalType.LONG;
                      InterfaceEnumeration enumeration = new InterfaceEnumeration(id, splitLine[1].trim());
                      incrementId();
                      enumeration.setApplicability(ApplicabilityToken.BASE);
                      enumeration.setOrdinal(ordinal);
+                     enumeration.setOrdinalType(ordinalType);
                      summary.getEnums().add(enumeration);
                      List<String> rels =
                         summary.getEnumSetEnumRelations().getOrDefault(enumSet.getIdString(), new LinkedList<>());
@@ -447,6 +452,9 @@ public class IcdImportApiImpl implements MimImportApi {
                String[] prevNameSplit = previousElement.getName().split(" ");
                int prevArrayNum = Integer.parseInt(prevNameSplit[prevNameSplit.length - 1]);
                previousElement.setInterfaceElementIndexStart(prevArrayNum);
+            } else if (previousElement.getName().matches(".*\\s\\d+$")) {
+               // Remove number from previous element name
+               previousElement.setName(previousElement.getName().split("\\s\\d+$")[0].trim());
             }
             previousElement.setInterfaceElementIndexEnd(arrayNum);
             relateElement = false;

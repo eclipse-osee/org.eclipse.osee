@@ -269,7 +269,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfacePlatformTypeAnalogAccuracy)
       .zeroOrOne(InterfacePlatformTypeValidRangeDescription));
    ArtifactTypeToken InterfaceEnum = osee.add(osee.artifactType(2455059983007225793L, "Interface Enumeration", false, InterfaceArtifact)
-      .exactlyOne(InterfaceEnumOrdinal));
+      .exactlyOne(InterfaceEnumOrdinal)
+      .exactlyOne(InterfaceEnumOrdinalType));
    ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, InterfaceArtifact));
    ArtifactTypeToken TransportType = osee.add(osee.artifactType(6663383168705248989L, "Transport Type", false, Artifact)
       .exactlyOne(ByteAlignValidation)
