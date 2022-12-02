@@ -58,7 +58,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public List<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeToken attributeType) {
-      return getArtifact(atsObject).getAttributeValues(attributeType);
+      List<String> values = new ArrayList<>();
+      for (Object obj : getArtifact(atsObject).getAttributeValues(attributeType)) {
+         values.add(obj.toString());
+      }
+      return values;
    }
 
    @Override
