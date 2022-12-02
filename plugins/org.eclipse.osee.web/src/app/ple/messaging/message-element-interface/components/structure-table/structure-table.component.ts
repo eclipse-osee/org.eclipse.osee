@@ -144,7 +144,7 @@ export class StructureTableComponent implements OnInit {
 		share(),
 		shareReplay(1)
 	);
-	currentElementHeaders = combineLatest([
+	private _currentElementHeaders = combineLatest([
 		this.headerService.AllElementHeaders,
 		this.preferences,
 	]).pipe(
@@ -193,7 +193,19 @@ export class StructureTableComponent implements OnInit {
 		share(),
 		shareReplay(1)
 	);
-	currentStructureHeaders = combineLatest([
+
+	currentElementHeaders = combineLatest([
+		this._currentElementHeaders,
+		this.headerService.AllElementHeaders,
+	]).pipe(
+		map(([headers, allheaders]) =>
+			headers.sort(
+				(a, b) => allheaders.indexOf(a) - allheaders.indexOf(b)
+			)
+		)
+	);
+
+	private _currentStructureHeaders = combineLatest([
 		this.headerService.AllStructureHeaders,
 		this.preferences,
 	]).pipe(
@@ -243,6 +255,16 @@ export class StructureTableComponent implements OnInit {
 		),
 		share(),
 		shareReplay(1)
+	);
+	currentStructureHeaders = combineLatest([
+		this._currentStructureHeaders,
+		this.headerService.AllStructureHeaders,
+	]).pipe(
+		map(([headers, allheaders]) =>
+			headers.sort(
+				(a, b) => allheaders.indexOf(a) - allheaders.indexOf(b)
+			)
+		)
 	);
 	_connectionsRoute = this.structureService.connectionsRoute;
 	_messageData = this.structureService.message.pipe(
