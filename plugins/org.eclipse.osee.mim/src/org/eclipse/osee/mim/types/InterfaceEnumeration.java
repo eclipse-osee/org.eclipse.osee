@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public class InterfaceEnumeration extends PLGenericDBObject {
    public static final InterfaceEnumeration SENTINEL = new InterfaceEnumeration();
    private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
-   private Integer ordinal = 0;
+   private Long ordinal = 0L;
+   private InterfaceEnumOrdinalType ordinalType;
    private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
 
    public InterfaceEnumeration(ArtifactToken art) {
@@ -34,7 +35,9 @@ public class InterfaceEnumeration extends PLGenericDBObject {
 
    public InterfaceEnumeration(ArtifactReadable art) {
       super(art);
-      this.setOrdinal(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceEnumOrdinal, 0));
+      this.setOrdinal(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceEnumOrdinal, 0L));
+      this.setOrdinalType(InterfaceEnumOrdinalType.valueOf(
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinalType, "LONG")));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
       this.artifactReadable = art;
@@ -65,15 +68,23 @@ public class InterfaceEnumeration extends PLGenericDBObject {
    /**
     * @return the ordinal
     */
-   public Integer getOrdinal() {
+   public Long getOrdinal() {
       return ordinal;
    }
 
    /**
     * @param ordinal the ordinal to set
     */
-   public void setOrdinal(Integer ordinal) {
+   public void setOrdinal(Long ordinal) {
       this.ordinal = ordinal;
+   }
+
+   public InterfaceEnumOrdinalType getOrdinalType() {
+      return ordinalType;
+   }
+
+   public void setOrdinalType(InterfaceEnumOrdinalType ordinalType) {
+      this.ordinalType = ordinalType;
    }
 
    @JsonIgnore

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
+import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimImportSummary;
@@ -89,8 +90,12 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
                   continue;
                }
                InterfaceEnumeration enumToken = new InterfaceEnumeration(id, split[1]);
-               enumToken.setOrdinal(Integer.parseInt(split[0]));
+               long ordinal = split[0].matches("^0x.*") ? Long.decode(split[0].trim()) : Long.parseLong(split[0]);
+               InterfaceEnumOrdinalType ordinalType =
+                  split[0].matches("^0x.*") ? InterfaceEnumOrdinalType.HEX : InterfaceEnumOrdinalType.LONG;
+               enumToken.setOrdinal(ordinal);
                enumToken.setApplicability(ApplicabilityToken.BASE);
+               enumToken.setOrdinalType(ordinalType);
                incrementId();
                summary.getEnums().add(enumToken);
                List<String> rels =
