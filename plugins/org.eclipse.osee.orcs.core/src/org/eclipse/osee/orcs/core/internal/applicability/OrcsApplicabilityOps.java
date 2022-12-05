@@ -2080,7 +2080,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       File[] contents = new File(sourceDir + File.separator).listFiles();
       if (contents.length == 1) {
-         sourceDir = contents[0].getPath();
+         try {
+            sourceDir = contents[0].getPath();
+         } catch (Exception ex) {
+            //DO NOTHING
+         }
       }
 
       data.setSourcePath(sourceDir);
