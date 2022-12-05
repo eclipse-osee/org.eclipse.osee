@@ -79,6 +79,7 @@ public class OrcsApplication extends Application {
       singletons.add(new LinkUpdateResource(orcsApi));
       singletons.add(new ReportEndpointImpl(orcsApi));
       singletons.add(new TransactionBuilderMessageReader(orcsApi));
+      singletons.add(new ExceptionRegistryEndpointImpl(orcsApi));
    }
 
    public void stop() {

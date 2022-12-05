@@ -61,7 +61,7 @@ public class PublishingDataRightsTest {
     * Set this flag to <code>true</code> to print the received Word ML documents to <code>stdout</code>.
     */
 
-   private static boolean printDocuments = true;
+   private static boolean printDocuments = false;
 
    /**
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.

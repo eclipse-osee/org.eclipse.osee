@@ -24,10 +24,9 @@ import org.eclipse.osee.define.api.synchronization.ExportRequest;
 import org.eclipse.osee.define.api.synchronization.ImportRequest;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.operations.synchronization.BadDocumentRootException;
 import org.eclipse.osee.define.operations.synchronization.UnknownSynchronizationArtifactTypeException;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 
 /**
  * Provides the wrapper methods that expose the Synchronization operations methods as REST API end points.
@@ -36,22 +35,6 @@ import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
  */
 
 public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
-
-   /**
-    * Verifies the threads current user is authorized to access the REST API for end points requiring Publishing Group
-    * membership.
-    *
-    * @implNote Catches the OSEE exception and wraps it into a {@link javax.ws.rs} exception.
-    * @throws NotAuthorizedException when the user is not a member of the {@link CoreUserGroups#OseeAccessAdmin}.
-    */
-
-   private static void verifyAccess() {
-      try {
-         PublishingPermissions.verify();
-      } catch (OseeAccessDeniedException e) {
-         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build());
-      }
-   }
 
    /**
     * Saves a handle to the Define Service Publishing operations implementation.
@@ -82,10 +65,11 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
    @Override
    public InputStream exporter(ExportRequest exportRequest) {
 
-      SynchronizationEndpointImpl.verifyAccess();
-
       try {
+         PublishingPermissions.verify();
          return this.defineOperations.getSynchronizationOperations().exporter(exportRequest);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException | BadDocumentRootException | UnknownSynchronizationArtifactTypeException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
@@ -105,10 +89,11 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
    @Override
    public void importer(ImportRequest importRequest, InputStream inputStream) {
 
-      SynchronizationEndpointImpl.verifyAccess();
-
       try {
+         PublishingPermissions.verify();
          this.defineOperations.getSynchronizationOperations().importer(importRequest, inputStream);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException | BadDocumentRootException | UnknownSynchronizationArtifactTypeException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {

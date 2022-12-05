@@ -34,6 +34,7 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
+import org.eclipse.osee.orcs.rest.model.ExceptionRegistryEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
@@ -67,6 +68,15 @@ public interface OseeClient extends OseeApi {
    DatastoreEndpoint getDatastoreEndpoint();
 
    DataRightsEndpoint getDataRightsEndpoint();
+
+   /**
+    * Gets a JAX-RS proxy implementation of the {@link ExceptionRegistryEndpoint} interface for making REST API calls to
+    * the Exception Registry service.
+    *
+    * @return JAX-RS proxy implementation of the {@link ExceptionRegistryEndpoint} interface.
+    */
+
+   ExceptionRegistryEndpoint getExceptionRegistryEndpoint();
 
    OrcsWriterEndpoint getOrcsWriterEndpoint();
 

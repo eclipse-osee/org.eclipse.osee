@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.synchronization;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.client.OseeClient;
@@ -160,18 +160,34 @@ public class Permissions {
       var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
       var synchronizationArtifactType = "reqif";
 
-      try {
-         var reqIF = Permissions.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
-            synchronizationArtifactType);
-         Assert.assertNotNull(reqIF);
-      } catch (Exception e) {
-         var message = e.getMessage();
-         var pattern = Pattern.compile("User is not in the publishing group\\.");
-         var matcher = pattern.matcher(message);
+      //@formatter:off
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "javax.ws.rs.NotAuthorizedException",
+                         "org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException",
+                         "java.lang.RuntimeException",
+                         "User is not in the publishing group\\."
+                      )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var reqIF =
+               Permissions.synchronizationArtifactParser.parseTestDocument
+                  (
+                     branchId,
+                     artifactId,
+                     synchronizationArtifactType
+                  );
 
-         Assert.assertTrue(message, matcher.find());
+            exceptionLogBlocker.assertNoException();
+         } catch (Exception e) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
       }
-
+      //@formatter:on
    }
 
    @Test
@@ -186,18 +202,34 @@ public class Permissions {
       var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
       var synchronizationArtifactType = "reqif";
 
-      try {
-         var reqIF = Permissions.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
-            synchronizationArtifactType);
-         Assert.assertNotNull(reqIF);
-      } catch (Exception e) {
-         var message = e.getMessage();
-         var pattern = Pattern.compile("User is not an active user\\.");
-         var matcher = pattern.matcher(message);
+      //@formatter:off
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                        "javax.ws.rs.NotAuthorizedException",
+                        "org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException",
+                        "java.lang.RuntimeException",
+                        "User is not an active user\\."
+                      )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var reqIF =
+               Permissions.synchronizationArtifactParser.parseTestDocument
+                  (
+                     branchId,
+                     artifactId,
+                     synchronizationArtifactType
+                  );
 
-         Assert.assertTrue(message, matcher.find());
+            exceptionLogBlocker.assertNoException();
+         } catch (Exception e) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
       }
-
+      //@formatter:on
    }
 
    @Test
@@ -212,19 +244,35 @@ public class Permissions {
       var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
       var synchronizationArtifactType = "reqif";
 
-      try {
-         var reqIF = Permissions.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
-            synchronizationArtifactType);
-         Assert.assertNotNull(reqIF);
-      } catch (Exception e) {
-         var message = e.getMessage();
-         var pattern = Pattern.compile("User is not a login user\\.");
-         var matcher = pattern.matcher(message);
+      //@formatter:off
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                        "javax.ws.rs.NotAuthorizedException",
+                        "org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException",
+                        "java.lang.RuntimeException",
+                        "User is not a login user\\."
+                      )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var reqIF =
+               Permissions.synchronizationArtifactParser.parseTestDocument
+                  (
+                     branchId,
+                     artifactId,
+                     synchronizationArtifactType
+                  );
 
-         Assert.assertTrue(message, matcher.find());
+            exceptionLogBlocker.assertNoException();
+         } catch (Exception e) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
       }
+      //@formatter:on
    }
-
 }
 
 /* EOF */
