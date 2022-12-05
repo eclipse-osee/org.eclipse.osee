@@ -16,6 +16,10 @@ package org.eclipse.osee.ats.ide.search.quick;
 import java.io.File;
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -24,10 +28,12 @@ import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -176,17 +182,33 @@ public class AtsQuickSearchComposite extends Composite {
       }
       AtsQuickSearchData data =
          new AtsQuickSearchData("ATS Quick Search", searchArea.getText(), completeCancelledCheck.isChecked());
+      Job srchJob = new Job("ATS - Search by ID(s)") {
 
-      AtsQuickSearchOperation operation = new AtsQuickSearchOperation(data);
-      Collection<Artifact> artifacts = operation.performSearch();
-      if (artifacts.isEmpty()) {
-         AWorkbench.popup(data.toString(), data.toString() + "\n\nNo Results Found");
-      } else {
-         if (artifacts.size() == 1 && artifacts.iterator().next().isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            WorkflowEditor.editArtifact(artifacts.iterator().next());
-         } else {
-            WorldEditor.open(new WorldEditorSimpleProvider(data.toString(), artifacts));
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+
+            AtsQuickSearchOperation operation = new AtsQuickSearchOperation(data);
+            Collection<Artifact> artifacts = operation.performSearch();
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  if (artifacts.isEmpty()) {
+                     AWorkbench.popup(data.toString(), data.toString() + "\n\nNo Results Found");
+                  } else {
+                     if (artifacts.size() == 1 && artifacts.iterator().next().isOfType(
+                        AtsArtifactTypes.AbstractWorkflowArtifact)) {
+                        WorkflowEditor.editArtifact(artifacts.iterator().next());
+                     } else {
+                        WorldEditor.open(new WorldEditorSimpleProvider(data.toString(), artifacts));
+                     }
+                  }
+               }
+            });
+            return Status.OK_STATUS;
          }
-      }
+      };
+      Jobs.startJob(srchJob);
+
    }
 }
