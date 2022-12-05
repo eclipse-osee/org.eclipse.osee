@@ -20,11 +20,13 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -45,6 +47,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -59,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -79,6 +83,24 @@ public class ArtifactQueryTest {
 
    @Rule
    public TestInfo testInfo = new TestInfo();
+
+   @BeforeClass
+   public static void testSetup() {
+
+      /*
+       * When the test suit is run directly it will be in Database Initialization mode.
+       */
+
+      if (OseeProperties.isInDbInit()) {
+         /*
+          * Get out of database initialization mode and re-authenticate as the test user
+          */
+
+         OseeProperties.setInDbInit(false);
+         ClientSessionManager.releaseSession();
+         ClientSessionManager.getSession();
+      }
+   }
 
    @Test
    public void testGetArtifactFromGUIDDeleted() {
@@ -152,21 +174,56 @@ public class ArtifactQueryTest {
 
       criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "DemoBranches.CIS_Bld_1",
          QueryOption.TOKEN_DELIMITER__ANY));
-      // test against a couple of attributes types that are not taggable; expect exception
-      try {
-         ArtifactQuery.getArtifactListFromCriteria(DemoBranches.CIS_Bld_1, 1000, criteria);
-         Assert.fail("Should have thrown an exception as the attribute type are not taggable");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex.getMessage(), Boolean.TRUE);
-      }
 
-      try {
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.FavoriteBranch,
-            "DemoBranches.CIS_Bld_1", DemoBranches.CIS_Bld_1);
-         Assert.fail("Should have thrown an exception as the attribute type are not taggable");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex.getMessage(), Boolean.TRUE);
+      // test against a couple of attributes types that are not taggable; expect exception
+
+      //@formatter:off
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "org.eclipse.osee.framework.jdk.core.type.OseeArgumentException",
+                         null,
+                         "javax.ws.rs.InternalServerErrorException",
+                         null //"Attribute types \\[\\[[0-9]+\\]\\] is not taggable"
+                      )
+         )
+      {
+         try {
+            ArtifactQuery.getArtifactListFromCriteria(DemoBranches.CIS_Bld_1, 1000, criteria);
+            exceptionLogBlocker.assertNoException();
+         } catch (Exception e) {
+            exceptionLogBlocker.assertExpectedExceptionNoServerExceptionClassNameChecks(e);
+         }
       }
+      //@formatter:on
+
+      //@formatter:off
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "org.eclipse.osee.framework.jdk.core.type.OseeArgumentException",
+                         null,
+                         "javax.ws.rs.InternalServerErrorException",
+                         null //"Attribute types \\[\\[[0-9]+\\]\\] is not taggable"
+                      )
+         )
+      {
+         try {
+            ArtifactQuery.getArtifactListFromTypeAndAttribute
+               (
+                  CoreArtifactTypes.User,
+                  CoreAttributeTypes.FavoriteBranch,
+                  "DemoBranches.CIS_Bld_1",
+                  DemoBranches.CIS_Bld_1
+               );
+            exceptionLogBlocker.assertNoException();
+         } catch (Exception e) {
+            exceptionLogBlocker.assertExpectedExceptionNoServerExceptionClassNameChecks(e);
+         }
+      }
+      //@formatter:on
 
       // test against a couple attributes types that are taggable; do not expect exception
       criteria.clear();

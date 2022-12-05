@@ -33,7 +33,6 @@ import org.apache.cxf.feature.Feature;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxrs.JAXRSBindingFactory;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.apache.cxf.jaxrs.impl.WebApplicationExceptionMapper;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
@@ -85,13 +84,11 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
 
-      List<Object> providers = new ArrayList<>();
-      WebApplicationExceptionMapper waem = new WebApplicationExceptionMapper();
-      waem.setPrintStackTrace(true);
-      waem.setAddMessageToResponse(true);
+      var exceptionRegistryOperations = this.orcsApi.getExceptionRegistryOperations();
 
-      providers.add(waem);
-      providers.add(new GenericExceptionMapper(logger));
+      List<Object> providers = new ArrayList<>();
+      providers.add(new OseeWebApplicationExceptionMapper(exceptionRegistryOperations, logger));
+      providers.add(new GenericExceptionMapper(exceptionRegistryOperations, logger));
       providers.add(new OrcsParamConverterProvider(orcsApi.tokenService()));
       providers.add(new JacksonJaxbJsonProvider(orcsApi.jaxRsApi().getObjectMapper(),
          JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.ExceptionRegistryOperations;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -84,6 +85,13 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private OrcsApplicabilityOps applicability;
+
+   /**
+    * Saves a handle to the Exception Registry service implementation.
+    */
+
+   private ExceptionRegistryOperations exceptionRegistryOperations;
+
    private UserService userService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
@@ -174,6 +182,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule.start(getSystemSession(), tokenService());
 
       applicability = new OrcsApplicabilityOps(this, logger);
+      this.exceptionRegistryOperations = ExceptionRegistryOperationsImpl.create();
       userService = new UserServiceImpl(this);
       accessControlService = new AccessControlServiceImpl(this);
       accessControlService.bindUserService(userService);
@@ -188,6 +197,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       txCallableFactory = null;
       module = null;
       systemSession = null;
+      this.exceptionRegistryOperations = null;
    }
 
    @Override
@@ -281,5 +291,14 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public IAccessControlService getAccessControlService() {
       return accessControlService;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public ExceptionRegistryOperations getExceptionRegistryOperations() {
+      return this.exceptionRegistryOperations;
    }
 }

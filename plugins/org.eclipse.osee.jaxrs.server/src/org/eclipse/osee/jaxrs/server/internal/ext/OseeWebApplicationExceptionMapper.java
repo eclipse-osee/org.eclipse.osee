@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2014 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,24 +13,23 @@
 
 package org.eclipse.osee.jaxrs.server.internal.ext;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExceptionRegistryOperations;
 
 /**
- * Implementation of the JAX-RS {@link ExceptionMapper} interface for {@link Throwable} exceptions. This
- * {@link ExceptionMapper} provides a default {@link ExceptionMapper} for exceptions.
+ * Implementation of the JAX-RS {@link ExceptionMapper} interface for {@link WebApplicationException} exceptions. This
+ * {@link ExceptionMapper} provides a more "specific" {@link ExceptionMapper} for {@link WebApplicationException}s than
+ * the default.
  *
- * @author Roberto E. Escobar
  * @author Loren K. Ashley
  */
 
-@Provider
-public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
+public class OseeWebApplicationExceptionMapper implements ExceptionMapper<WebApplicationException> {
 
    /**
     * Saves a handle to the {@link ExceptionRegistryOperations} service.
@@ -58,7 +57,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
     * @param logger a handle to the {@link Log} service.
     */
 
-   public GenericExceptionMapper(ExceptionRegistryOperations exceptionRegistryOperations, Log logger) {
+   public OseeWebApplicationExceptionMapper(ExceptionRegistryOperations exceptionRegistryOperations, Log logger) {
       this.exceptionRegistryOperations = exceptionRegistryOperations;
       this.logger = logger;
    }
@@ -70,8 +69,10 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
     */
 
    @Override
-   public final Response toResponse(Throwable throwable) {
+   public final Response toResponse(WebApplicationException throwable) {
 
       return ThrowableToResponse.toResponse(throwable, this.uriInfo, this.exceptionRegistryOperations, this.logger);
    }
 }
+
+/* EOF */

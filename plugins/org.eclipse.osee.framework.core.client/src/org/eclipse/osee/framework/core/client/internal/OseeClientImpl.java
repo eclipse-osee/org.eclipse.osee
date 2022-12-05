@@ -44,6 +44,7 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
+import org.eclipse.osee.orcs.rest.model.ExceptionRegistryEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
@@ -124,7 +125,7 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    /**
-    * Creates a new endpoint proxy with the first url path segment of &quot;define&quot;.
+    * Creates a new endpoint proxy with the first URL path segment of &quot;define&quot;.
     *
     * @param <T> the interface class of the endpoint to create a proxy for.
     * @param clazz the {@link Class} of the interface to create a proxy for.
@@ -135,6 +136,14 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
       return jaxRsApi().newProxy("define", clazz);
    }
 
+   /**
+    * Creates a new endpoint proxy with the first URL path segment of &quot;orcs&quot;.
+    *
+    * @param <T> the interface class of the endpoint to create a proxy for.
+    * @param clazz the {@link Class} of the interface to create a proxy for.
+    * @return a proxy for the specified interface.
+    */
+
    private <T> T getOrcsEndpoint(Class<T> clazz) {
       return jaxRsApi().newProxy("orcs", clazz);
    }
@@ -142,6 +151,15 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public BranchEndpoint getBranchEndpoint() {
       return getOrcsEndpoint(BranchEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public ExceptionRegistryEndpoint getExceptionRegistryEndpoint() {
+      return this.getOrcsEndpoint(ExceptionRegistryEndpoint.class);
    }
 
    @Override

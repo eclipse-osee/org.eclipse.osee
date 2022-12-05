@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
 package org.eclipse.osee.ats.ide.integration.tests.synchronization;
 
 import java.lang.reflect.Method;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSpe
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelationshipRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
@@ -103,6 +105,7 @@ import org.junit.rules.TestRule;
  */
 
 public class SynchronizationEndpointTest {
+
    /**
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
     * The default (normal for testing) value is <code>true</code>.
@@ -1854,21 +1857,38 @@ public class SynchronizationEndpointTest {
 
    @Test
    public void testGetByBranchIdArtifactIdKoBadArtifactType() {
-      var branchId = DemoBranches.SAW_PL_Working_Branch;
-      var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
+      //@formatter:off
+      var branchId                    = DemoBranches.SAW_PL_Working_Branch;
+      var artifactId                  = CoreArtifactTokens.DefaultHierarchyRoot;
       var synchronizationArtifactType = "ZooCreatures";
-      var exceptionCought = false;
-      try {
-         @SuppressWarnings("unused")
-         var reqIf = SynchronizationEndpointTest.synchronizationArtifactParser.parseTestDocument(branchId, artifactId,
-            synchronizationArtifactType);
-      } catch (Exception exception) {
-         exceptionCought = true;
-         var message = exception.getMessage();
-         Assert.assertTrue("Message not found.",
-            message.contains("Request for a Synchronization Artifact with an unknown artifact type."));
+
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "javax.ws.rs.BadRequestException",
+                         "org.eclipse.osee.define.operations.synchronization.UnknownSynchronizationArtifactTypeException",
+                         "java.lang.RuntimeException",
+                         "Request for a Synchronization Artifact with an unknown artifact type."
+                      )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var reqIf =
+               SynchronizationEndpointTest.synchronizationArtifactParser.parseTestDocument
+                  (
+                     branchId,
+                     artifactId,
+                     synchronizationArtifactType
+                  );
+
+            exceptionLogBlocker.assertNoException();
+         } catch (Exception e) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
       }
-      Assert.assertTrue("Exception not cought.", exceptionCought);
+      //@formatter:on
    }
 
    @Test

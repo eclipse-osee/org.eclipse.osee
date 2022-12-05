@@ -685,6 +685,42 @@ public class Message {
     * <dt>indent:</dt>
     * <dd>is an indent string the message's current indent level n.</dd>
     * <dt>title:</dt>
+    * <dd>is the string from parameter <code>title</code>.</dd>
+    * <dt>block</dt>
+    * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
+    * </dl>
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>throwable</code> is <code>null</code>.
+    */
+
+   public Message reasonFollows(String title, Throwable throwable) {
+      Objects.requireNonNull(throwable, "Message::reasonFollows, parameter \"throwable\" cannot be null.");
+      var block = throwable.getMessage();
+      if (Objects.isNull(block)) {
+         block = "(null)";
+      }
+      this.title(title);
+      this.indentInc();
+      this.title(block);
+      this.indentDec();
+      return this;
+   }
+
+   /**
+    * Adds a title line with a block containing the message from the throwable. The lines will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;indent(n)&gt;   &lt;title&gt;
+    *    &lt;indent(n+1)&gt; &lt;block&gt;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>indent:</dt>
+    * <dd>is an indent string the message's current indent level n.</dd>
+    * <dt>title:</dt>
     * <dd>is the string "Reason Follows:"</dd>
     * <dt>block</dt>
     * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
@@ -696,16 +732,7 @@ public class Message {
     */
 
    public Message reasonFollows(Throwable throwable) {
-      Objects.requireNonNull(throwable, "Message::reasonFollows, parameter \"throwable\" cannot be null.");
-      var block = throwable.getMessage();
-      if (Objects.isNull(block)) {
-         block = "(null)";
-      }
-      this.title("Reason Follows:");
-      this.indentInc();
-      this.title(block);
-      this.indentDec();
-      return this;
+      return this.reasonFollows("Reason Follows", throwable);
    }
 
    /**
@@ -860,6 +887,31 @@ public class Message {
       this.lines.add(new Line(this.indent, title, valueString));
 
       return this;
+   }
+
+   /**
+    * Adds a new segment line when the <code>value</code> is not equal to the <code>notValue</code>. This method behaves
+    * as though the following method were called when <code>value</code> is not equal to the <code>notValue</code>:
+    *
+    * <pre>
+    * message.segment(&quot;title&quot;, value, Function.identity());
+    * </pre>
+    *
+    * @param <T> the type of the value.
+    * @param title the title {@link CharSequence} for the line.
+    * @param value the value to generate the value string from.
+    * @param notValue the gate value, the segment line is only added when <code>value</code> is not equal to
+    * <code>noValue</code>.
+    * @return this {@link Message}.
+    */
+   public <T> Message segmentIfNot(CharSequence title, T value, T notValue) {
+      //@formatter:off
+      return
+         (    ( Objects.isNull( value ) && Objects.isNull( notValue ) )
+           || ( Objects.nonNull( value ) ? value.equals( notValue ) : false ) )
+            ? this.segment( title, value )
+            : this;
+      //@formatter:on
    }
 
    /**

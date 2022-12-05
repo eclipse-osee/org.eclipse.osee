@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelationshipRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
@@ -574,58 +573,36 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersAUnknownBranch() {
 
-      var expectedMessagePattern = Pattern.compile("Error:\\s*Unable to locate the shared folder\\.");
-
       //@formatter:off
-      try {
-         @SuppressWarnings("unused")
-         var sharedFolders =
-            PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
-               (
-                 BranchId.valueOf( 0x1234L ),
-                 ArtifactId.SENTINEL,
-                 PublishingSharedArtifactsFolderTest.rootArtifactId,
-                 ArtifactTypeToken.SENTINEL,
-                 CoreAttributeTypes.Description,
-                 "DOC-1234"
-               );
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "javax.ws.rs.NotFoundException",
+                         "org.eclipse.osee.framework.core.exception.OseeNotFoundException",
+                         "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
+                         "Error:\\s*Unable to locate the shared folder\\."
+                      )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var sharedFolders =
+               PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
+                  (
+                    BranchId.valueOf( 0x1234L ),
+                    ArtifactId.SENTINEL,
+                    PublishingSharedArtifactsFolderTest.rootArtifactId,
+                    ArtifactTypeToken.SENTINEL,
+                    CoreAttributeTypes.Description,
+                    "DOC-1234"
+                  );
 
-         var message =
-            new StringBuilder( 1024 )
-                   .append( "Expected exception did not occur." ).append( "\n" )
-                   .append( "Expected Exception:     " ).append( "OseeCoreException" ).append( "\n" )
-                   .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                   .toString();
-
-         Assert.assertTrue( message, false );
-      }
-      catch( OseeCoreException e ) {
-         var expectedMessageMatcher = expectedMessagePattern.matcher( e.getMessage() );
-         if( expectedMessageMatcher.find() ) {
-            Assert.assertTrue( true );
+            exceptionLogBlocker.assertNoException();
          }
-         else {
-            var message =
-               new StringBuilder( 1024 )
-                      .append( "Expected exception message not found." ).append( "\n" )
-                      .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                      .append( "Actual Exception Message Follows:" ).append( "\n" )
-                      .append( e.getMessage() ).append( "\n" )
-                      .toString();
-
-            Assert.assertTrue(message,false);
+         catch( Exception e ) {
+            exceptionLogBlocker.assertExpectedException(e);
          }
-      }
-      catch( Exception ue ) {
-         var message =
-            new StringBuilder( 1024 )
-                   .append( "Unexpected Exception:" ).append( "\n" )
-                   .append( "Expected Exception:     " ).append( "OseeCoreException" ).append( "\n" )
-                   .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                   .append( ue.getMessage() ).append( "\n" )
-                   .toString();
-
-         Assert.assertTrue( message, false );
       }
       //@formatter:on
    }
@@ -633,58 +610,36 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersAUnknownArtifact() {
 
-      var expectedMessagePattern = Pattern.compile("Error:\\s*Unable to locate the shared folder\\.");
-
       //@formatter:off
-      try {
-         @SuppressWarnings("unused")
-         var sharedFolders =
-            PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
-               (
-                 PublishingSharedArtifactsFolderTest.rootBranchId,
-                 ArtifactId.SENTINEL,
-                 ArtifactId.valueOf( 0x1234L ),
-                 ArtifactTypeToken.SENTINEL,
-                 CoreAttributeTypes.Description,
-                 "DOC-1234"
-               );
+      try(
+           var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                        "javax.ws.rs.NotFoundException",
+                        "org.eclipse.osee.framework.core.exception.OseeNotFoundException",
+                        "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
+                        "Error:\\s*Unable to locate the shared folder\\."
+                      )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var sharedFolders =
+               PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
+                  (
+                    PublishingSharedArtifactsFolderTest.rootBranchId,
+                    ArtifactId.SENTINEL,
+                    ArtifactId.valueOf( 0x1234L ),
+                    ArtifactTypeToken.SENTINEL,
+                    CoreAttributeTypes.Description,
+                    "DOC-1234"
+                  );
 
-         var message =
-            new StringBuilder( 1024 )
-                   .append( "Expected exception did not occur." ).append( "\n" )
-                   .append( "Expected Exception:     " ).append( "OseeCoreException" ).append( "\n" )
-                   .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                   .toString();
-
-         Assert.assertTrue( message, false );
-      }
-      catch( OseeCoreException e ) {
-         var expectedMessageMatcher = expectedMessagePattern.matcher( e.getMessage() );
-         if( expectedMessageMatcher.find() ) {
-            Assert.assertTrue( true );
+            exceptionLogBlocker.assertNoException();
          }
-         else {
-            var message =
-               new StringBuilder( 1024 )
-                      .append( "Expected exception message not found." ).append( "\n" )
-                      .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                      .append( "Actual Exception Message Follows:" ).append( "\n" )
-                      .append( e.getMessage() ).append( "\n" )
-                      .toString();
-
-            Assert.assertTrue(message,false);
+         catch( Exception e ) {
+            exceptionLogBlocker.assertExpectedException(e);
          }
-      }
-      catch( Exception ue ) {
-         var message =
-            new StringBuilder( 1024 )
-                   .append( "Unexpected Exception:" ).append( "\n" )
-                   .append( "Expected Exception:     " ).append( "OseeCoreException" ).append( "\n" )
-                   .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                   .append( ue.getMessage() ).append( "\n" )
-                   .toString();
-
-         Assert.assertTrue( message, false );
       }
       //@formatter:on
    }
@@ -692,58 +647,36 @@ public class PublishingSharedArtifactsFolderTest {
    @Test
    public void testSharedFoldersAUnknownAttribute() {
 
-      var expectedMessagePattern = Pattern.compile("Error:\\s*Child Attribute Type Identifier is SENTINEL\\.");
-
       //@formatter:off
-      try {
-         @SuppressWarnings("unused")
-         var sharedFolders =
-            PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
-               (
-                 PublishingSharedArtifactsFolderTest.rootBranchId,
-                 ArtifactId.SENTINEL,
-                 PublishingSharedArtifactsFolderTest.rootArtifactId,
-                 ArtifactTypeToken.SENTINEL,
-                 AttributeTypeGeneric.SENTINEL,
-                 "DOC-1234"
-               );
+      try(
+           var exceptionLogBlocker =
+              new ExceptionLogBlocker
+                     (
+                       "javax.ws.rs.NotFoundException",
+                       "org.eclipse.osee.framework.core.exception.OseeNotFoundException",
+                       "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
+                       "Error:\\s*Child Attribute Type Identifier is SENTINEL\\."
+                     )
+         )
+      {
+         try {
+            @SuppressWarnings("unused")
+            var sharedFolders =
+               PublishingSharedArtifactsFolderTest.publishingEndpoint.getSharedPublishingArtifacts
+                  (
+                    PublishingSharedArtifactsFolderTest.rootBranchId,
+                    ArtifactId.SENTINEL,
+                    PublishingSharedArtifactsFolderTest.rootArtifactId,
+                    ArtifactTypeToken.SENTINEL,
+                    AttributeTypeGeneric.SENTINEL,
+                    "DOC-1234"
+                  );
 
-         var message =
-            new StringBuilder( 1024 )
-                   .append( "Expected exception did not occur." ).append( "\n" )
-                   .append( "Expected Exception:     " ).append( "OseeCoreException" ).append( "\n" )
-                   .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                   .toString();
-
-         Assert.assertTrue( message, false );
-      }
-      catch( OseeCoreException e ) {
-         var expectedMessageMatcher = expectedMessagePattern.matcher( e.getMessage() );
-         if( expectedMessageMatcher.find() ) {
-            Assert.assertTrue( true );
+            exceptionLogBlocker.assertNoException();
          }
-         else {
-            var message =
-               new StringBuilder( 1024 )
-                      .append( "Expected exception message not found." ).append( "\n" )
-                      .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                      .append( "Actual Exception Message Follows:" ).append( "\n" )
-                      .append( e.getMessage() ).append( "\n" )
-                      .toString();
-
-            Assert.assertTrue(message,false);
+         catch( Exception e ) {
+            exceptionLogBlocker.assertExpectedException(e);
          }
-      }
-      catch( Exception ue ) {
-         var message =
-            new StringBuilder( 1024 )
-                   .append( "Unexpected Exception:" ).append( "\n" )
-                   .append( "Expected Exception:     " ).append( "OseeCoreException" ).append( "\n" )
-                   .append( "Expected Message Regex: " ).append( expectedMessagePattern ).append( "\n" )
-                   .append( ue.getMessage() ).append( "\n" )
-                   .toString();
-
-         Assert.assertTrue( message, false );
       }
       //@formatter:on
    }

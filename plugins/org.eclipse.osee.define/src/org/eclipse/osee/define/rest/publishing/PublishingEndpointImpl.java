@@ -29,13 +29,12 @@ import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -46,38 +45,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 
 public class PublishingEndpointImpl implements PublishingEndpoint {
-
-   /**
-    * Verifies the threads current user is authorized to access the REST API for end points requiring Publishing Group
-    * membership.
-    *
-    * @implNote Catches the OSEE exception and wraps it into a {@link javax.ws.rs} exception.
-    * @throws NotAuthorizedException when the user is not a member of the {@link CoreUserGroups#OseeAccessAdmin}.
-    */
-
-   private static void verifyAccess() {
-      try {
-         PublishingPermissions.verify();
-      } catch (OseeAccessDeniedException e) {
-         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build());
-      }
-   }
-
-   /**
-    * Verifies the threads current user is authorized to access the REST API for end points that do not require
-    * membership in the Publishing Group.
-    *
-    * @implNote Catches the OSEE exception and wraps it into a {@link javax.ws.rs} exception.
-    * @throws NotAuthorizedException when the user is not a member of the {@link CoreUserGroups#OseeAccessAdmin}.
-    */
-
-   private static void verifyAccessNonGroup() {
-      try {
-         PublishingPermissions.verifyNonGroup();
-      } catch (OseeAccessDeniedException e) {
-         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build());
-      }
-   }
 
    /**
     * Saves a handle to the Define Service Publishing operations implementation.
@@ -109,11 +76,12 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
 
-      PublishingEndpointImpl.verifyAccess();
-
       try {
+         PublishingPermissions.verify();
          return this.defineOperations.getPublishingOperations().getSharedPublishingArtifacts(branch, view, sharedFolder,
             artifactType, attributeType, attributeValue);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (OseeNotFoundException onfe) {
@@ -127,7 +95,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    /**
     * {@inheritDoc}
     *
-    * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
+    * @throws NotAuthorizedException when the user is not an active login user.
     * @throws BadRequestException when the operation's method indicates any arguments were illegal.
     * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
     */
@@ -135,10 +103,11 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public InputStream msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
 
-      PublishingEndpointImpl.verifyAccessNonGroup();
-
       try {
+         PublishingPermissions.verifyNonGroup();
          return this.defineOperations.getPublishingOperations().msWordPreview(branch, template, headArtifact, view);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
@@ -150,7 +119,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    /**
     * {@inheritDoc}
     *
-    * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
+    * @throws NotAuthorizedException when the user is not an active login user.
     * @throws BadRequestException when the operation's method indicates any arguments were illegal.
     * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
     */
@@ -158,10 +127,11 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public InputStream msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view) {
 
-      PublishingEndpointImpl.verifyAccessNonGroup();
-
       try {
+         PublishingPermissions.verifyNonGroup();
          return this.defineOperations.getPublishingOperations().msWordPreview(branch, template, artifacts, view);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
@@ -181,10 +151,11 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public InputStream msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
 
-      PublishingEndpointImpl.verifyAccessNonGroup();
-
       try {
+         PublishingPermissions.verifyNonGroup();
          return this.defineOperations.getPublishingOperations().msWordPreview(msWordPreviewRequestData);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
@@ -204,11 +175,12 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public InputStream msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
 
-      PublishingEndpointImpl.verifyAccessNonGroup();
-
       try {
+         PublishingPermissions.verifyNonGroup();
          return this.defineOperations.getPublishingOperations().msWordTemplatePublish(branch, template, headArtifact,
             view);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
@@ -228,10 +200,11 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData wordTemplateContentData) {
 
-      PublishingEndpointImpl.verifyAccessNonGroup();
-
       try {
+         PublishingPermissions.verifyNonGroup();
          return this.defineOperations.getPublishingOperations().renderWordTemplateContent(wordTemplateContentData);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
@@ -251,10 +224,11 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    @Override
    public WordUpdateChange updateWordArtifacts(WordUpdateData wordUpdateData) {
 
-      PublishingEndpointImpl.verifyAccessNonGroup();
-
       try {
+         PublishingPermissions.verifyNonGroup();
          return this.defineOperations.getPublishingOperations().updateWordArtifacts(wordUpdateData);
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
