@@ -24,6 +24,8 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RepositoryUrl;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import java.io.File;
@@ -77,6 +79,7 @@ import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
+import org.eclipse.jgit.util.FS;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.eclipse.osee.define.api.GitOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -209,9 +212,26 @@ public final class GitOperationsImpl implements GitOperations {
                   }
                   return true;
                }
+
             };
             UserInfo userInfo = new CredentialsProviderUserInfo(session, provider);
             session.setUserInfo(userInfo);
+         }
+
+         @Override
+         protected JSch createDefaultJSch(FS fs) throws JSchException {
+            String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+            if (serverDataPath == null) {
+               serverDataPath = System.getProperty("user.home");
+            }
+            File serverApplicDir = new File(String.format("%s%s.ssh", serverDataPath, File.separator));
+            if (!serverApplicDir.exists()) {
+               serverApplicDir.mkdirs();
+            }
+
+            JSch defaultJSch = super.createDefaultJSch(fs);
+            defaultJSch.addIdentity(String.format("%s%sid_rsa", serverApplicDir.getPath(), File.separator));
+            return defaultJSch;
          }
       };
       SshSessionFactory.setInstance(sessionFactory);
