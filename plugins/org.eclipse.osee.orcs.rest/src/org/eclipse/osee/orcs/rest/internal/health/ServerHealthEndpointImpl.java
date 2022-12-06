@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.internal.health;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,7 +48,6 @@ import org.eclipse.osee.orcs.health.HealthLinks;
 import org.eclipse.osee.orcs.health.ServerStatus;
 import org.eclipse.osee.orcs.rest.internal.health.operations.BuildServerStatusOperation;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerBalancerStatusTable;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerProcesses;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusActiveMq;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusOverviewTable;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusTable;
@@ -161,7 +161,7 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTop() throws Exception {
-      Scanner s = new Scanner(Runtime.getRuntime().exec("ls -la").getInputStream()).useDelimiter("\\A");
+      Scanner s = new Scanner(Runtime.getRuntime().exec("top -n 1").getInputStream()).useDelimiter("\\A");
       String results = s.hasNext() ? s.next() : "";
       s.close();
       return AHTML.simplePage(results);
@@ -178,8 +178,11 @@ public final class ServerHealthEndpointImpl {
    @Path("processes")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String serverProcesses() {
-      return new ServerProcesses().get();
+   public String serverProcesses() throws IOException {
+      Scanner s = new Scanner(Runtime.getRuntime().exec("ps -ef").getInputStream()).useDelimiter("\\A");
+      String results = s.hasNext() ? s.next() : "";
+      s.close();
+      return AHTML.simplePage(results);
    }
 
    @Path("status/all")
