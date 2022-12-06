@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.internal.health;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ws.rs.GET;
@@ -50,7 +51,6 @@ import org.eclipse.osee.orcs.rest.internal.health.operations.ServerProcesses;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusActiveMq;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusOverviewTable;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusTable;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusTop;
 import org.eclipse.osee.orcs.rest.internal.health.operations.UsageOperations;
 
 /**
@@ -161,7 +161,11 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTop() throws Exception {
-      return (new ServerStatusTop()).get();
+      Scanner s = new Scanner(Runtime.getRuntime().exec("ls -la").getInputStream()).useDelimiter("\\A");
+      String results = s.hasNext() ? s.next() : "";
+      s.close();
+      return AHTML.simplePage(results);
+      //      return (new ServerStatusTop()).get();
    }
 
    @Path("status")
