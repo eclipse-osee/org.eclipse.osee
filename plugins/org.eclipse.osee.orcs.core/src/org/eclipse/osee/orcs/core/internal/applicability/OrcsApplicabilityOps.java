@@ -2078,13 +2078,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, blockApplicId);
       String sourceDir = String.format("%s%ssource", uniqueIdDir, File.separator);
 
-      File[] contents = new File(sourceDir + File.separator).listFiles();
-      if (contents.length == 1) {
-         try {
+      try {
+         File[] contents = new File(sourceDir + File.separator).listFiles();
+         if (contents.length == 1) {
             sourceDir = contents[0].getPath();
-         } catch (Exception ex) {
-            //DO NOTHING
          }
+      } catch (Exception ex) {
+         //DO NOTHING
       }
 
       data.setSourcePath(sourceDir);
