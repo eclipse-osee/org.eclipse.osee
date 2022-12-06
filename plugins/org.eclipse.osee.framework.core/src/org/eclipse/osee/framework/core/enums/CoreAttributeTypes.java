@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.token.FeatureValueAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FileExtensionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FunctionalGroupingAttributeType;
 import org.eclipse.osee.framework.core.enums.token.GfeCfeAttributeType;
+import org.eclipse.osee.framework.core.enums.token.GitChangeTypeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.HttpMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.IdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.InterfaceLogicalTypeAttribute;
@@ -133,6 +134,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString GitCommitSha = osee.createString(1152921504606847703L, "Git Commit SHA", MediaType.TEXT_PLAIN, "SHA-1 checksum of the Git commit's content and header");
    AttributeTypeString GitRepoName = osee.createString(1152921504606847706L, "Git Repo Name", MediaType.TEXT_PLAIN, "Name of Relevant Git Repository");
    AttributeTypeString GitBranchName = osee.createString(1152921504606847819L, "Git Branch Name", MediaType.TEXT_PLAIN, "Name of Relevant Branch on Git Repository");
+   GitChangeTypeAttributeType GitChangeType = osee.createEnum(new GitChangeTypeAttributeType());
    AttributeTypeString GraphitiDiagram = osee.createStringNoTag(1152921504606847319L, "Graphiti Diagram", MediaType.TEXT_XML, "xml definition of an Eclipse Graphiti Diagram", "diagram");
    AttributeTypeString Hazard = osee.createString(1152921504606847138L, "Hazard", MediaType.TEXT_PLAIN, "");
    AttributeTypeString HtmlContent = osee.createString(1152921504606847869L, "HTML Content", MediaType.TEXT_HTML, "HTML format text must be a valid xhtml file");

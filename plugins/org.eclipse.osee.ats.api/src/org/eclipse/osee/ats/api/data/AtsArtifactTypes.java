@@ -35,6 +35,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranchName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeType;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
@@ -288,7 +289,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TaskAutoGenVersion)
       .any(TaskAutoGenType)
       .zeroOrOne(WcafeImpact)
-      .zeroOrOne(UsesResolutionOptions));
+      .zeroOrOne(UsesResolutionOptions)
+      .zeroOrOne(GitChangeType));
 
    // Change Request
    ArtifactTypeToken AbstractChangeRequestWorkflow = osee.add(osee.artifactType(458278L, "Abstract Change Request", true, Artifact));
