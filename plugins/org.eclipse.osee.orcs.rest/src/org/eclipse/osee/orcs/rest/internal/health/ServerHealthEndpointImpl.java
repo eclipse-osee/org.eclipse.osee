@@ -179,9 +179,10 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String serverProcesses() throws IOException {
-      Scanner s = new Scanner(Runtime.getRuntime().exec("ps -ef").getInputStream()).useDelimiter("\\A");
+      Scanner s = new Scanner(Runtime.getRuntime().exec("ps -ef | grep java").getInputStream()).useDelimiter("\\A");
       String results = s.hasNext() ? s.next() : "";
       s.close();
+      results = results.replaceAll("\n", "<br/>");
       return AHTML.simplePage(results);
    }
 
