@@ -16,12 +16,12 @@ package org.eclipse.osee.define.rest;
 import static org.eclipse.osee.define.api.DefineTupleTypes.GitCommitFile;
 import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -35,6 +35,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 /**
  * This import strategy is tolerant because does not exception when unexpected state is identified. Once know cause for
@@ -191,7 +194,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    private boolean isPathRenamed(String path, String newPath) {
-      if (!path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
+      if (path.contains("/") && newPath.contains("/") && !path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
          return true;
       }
       return false;

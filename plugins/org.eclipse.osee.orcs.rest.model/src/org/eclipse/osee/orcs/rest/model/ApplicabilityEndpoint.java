@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.model;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -28,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
@@ -361,5 +363,10 @@ public interface ApplicabilityEndpoint {
    @Path("deleteBlockApplicability/{blockApplicId}")
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    XResultData deleteBlockApplicability(@PathParam("blockApplicId") String blockApplicId);
+   
+   @POST
+   @Path("uploadRunBlockApplicability")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response uploadRunBlockApplicability(@QueryParam("view") Long view, InputStream zip);
 
 }

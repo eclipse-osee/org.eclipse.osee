@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,12 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
@@ -79,6 +76,9 @@ import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 
 /**
  * @author Donald G. Dunne
@@ -2091,28 +2091,17 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       data.setStagePath(uniqueIdDir);
       data.setCustomStageDir("staging");
 
-      ExecutorService service = Executors.newFixedThreadPool(1);
-      service.submit(new Runnable() {
-         @Override
-         public void run() {
-            applyApplicabilityToFiles(data, branch);
-            try {
-               String sourceFile = String.format("%s%sstaging", uniqueIdDir, File.separator);
-               FileOutputStream fos =
-                  new FileOutputStream(String.format("%s%sstaging.zip", uniqueIdDir, File.separator));
-               ZipOutputStream zipOut = new ZipOutputStream(fos);
+      applyApplicabilityToFiles(data, branch);
+      try {
+    	  String stagingDir = String.format("%s%sstaging", uniqueIdDir, File.separator);
+    	  String stagingZip = String.format("%s%sstaging.zip", uniqueIdDir, File.separator);
 
-               File fileToZip = new File(sourceFile);
+    	  zipFolder(new File(stagingDir), new File(stagingZip));
 
-               zipFile(fileToZip, fileToZip.getName(), zipOut);
-
-               zipOut.close();
-               fos.close();
-            } catch (IOException ex) {
-               throw new OseeCoreException(ex, "Unable to zip file");
-            }
-         }
-      });
+      } catch (Exception ex) {
+    	  throw new OseeCoreException(ex, "Unable to zip file");
+      }
+         
       return results;
    }
 
@@ -2144,6 +2133,86 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
+   @Override
+   public String uploadRunBlockApplicability(Long view, InputStream zip, BranchId branch) {
+	      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+	      if (serverDataPath == null) {
+	         serverDataPath = System.getProperty("user.home");
+	      }
+	      File serverApplicDir = new File(String.format("%s%sblockApplicability", serverDataPath, File.separator));
+	      if (!serverApplicDir.exists()) {
+	         serverApplicDir.mkdirs();
+	      }
+	      String uniqueId = generateUniqueFilePath(serverApplicDir);
+	      String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
+	      String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
+	      try {
+	         new File(uniqueIdDir).mkdir();
+	         String fileZip = String.format("%s.zip", sourceNameDir);
+	         File uploadedZip = new File(fileZip);
+	         byte[] buffer = zip.readAllBytes();
+	         
+
+	         OutputStream outStream = new FileOutputStream(uploadedZip);
+	         outStream.write(buffer);
+
+	         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+	         ZipEntry zipEntry = zis.getNextEntry();
+	         File unzipLocation = new File(sourceNameDir);
+	         unzipLocation.mkdirs();
+	         while (zipEntry != null) {
+	            File uploadedDirectory = newFile(unzipLocation, zipEntry);
+	            if (zipEntry.isDirectory()) {
+	               if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+	                  throw new IOException("Failed to create directory " + uploadedDirectory);
+	               }
+	            } else {
+	               // fix for Windows-created archives
+	               File parent = uploadedDirectory.getParentFile();
+	               if (!parent.isDirectory() && !parent.mkdirs()) {
+	                  throw new IOException("Failed to create directory " + parent);
+	               }
+	               // write file content
+	               FileOutputStream fos = new FileOutputStream(uploadedDirectory);
+	               int len;
+	               while ((len = zis.read(buffer)) > 0) {
+	                  fos.write(buffer, 0, len);
+	               }
+	               fos.close();
+	            }
+	            zipEntry = zis.getNextEntry();
+	         }
+
+	         try {
+	            File[] contents = new File(sourceNameDir + File.separator).listFiles();
+	            if (contents.length == 1) {
+	            	sourceNameDir = contents[0].getPath();
+	            }
+	         } catch (Exception ex) {
+	            //DO NOTHING
+	         }
+	         
+	         Map<Long, String> views = new HashMap<>();
+	         views.put(view, "");
+	         
+	         BlockApplicabilityStageRequest data = new BlockApplicabilityStageRequest(views, false, sourceNameDir, uniqueIdDir, "staging");
+
+	         applyApplicabilityToFiles(data, branch);
+	       	  String stagingDir = String.format("%s%sstaging", uniqueIdDir, File.separator);
+	       	  String stagingZip = String.format("%s%sstaging.zip", uniqueIdDir, File.separator);
+
+	       	  zipFolder(new File(stagingDir), new File(stagingZip));
+
+	         zip.close();
+	         outStream.close();
+	         zis.closeEntry();
+	         zis.close();
+	      } catch (Exception ex) {
+	         throw new OseeCoreException(ex, "BAT Operation Failed");
+	      }
+	      return uniqueId;
+   }
+   
    private void deleteDir(File file) {
       File[] contents = file.listFiles();
       if (contents != null) {
@@ -2174,32 +2243,37 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       return uniqueId;
    }
+   
+   public void zipFolder(File srcFolder, File destZipFile) throws Exception {
+       try (FileOutputStream fileWriter = new FileOutputStream(destZipFile);
+               ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
+           addFolderToZip(srcFolder, srcFolder, zip);
+       }
+   }
+   
+   //recursive function with addFileToZip
+   private void addFolderToZip(File rootPath, File srcFolder, ZipOutputStream zip) throws Exception {
+       for (File fileName : srcFolder.listFiles()) {
+           addFileToZip(rootPath, fileName, zip);
+       }
+   }
+   
+   //recursive function with addFolderToZip
+   private void addFileToZip(File rootPath, File srcFile, ZipOutputStream zip) throws Exception {
 
-   private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-      if (fileToZip.isHidden()) {
-         return;
-      }
-      if (fileToZip.isDirectory()) {
-         if (fileName.endsWith("/")) {
-            zipOut.putNextEntry(new ZipEntry(fileName));
-            zipOut.closeEntry();
-         } else {
-            zipOut.putNextEntry(new ZipEntry(fileName + "/"));
-            zipOut.closeEntry();
-         }
-         File[] children = fileToZip.listFiles();
-         for (File childFile : children) {
-            zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
-         }
-         return;
-      }
-      FileInputStream fis = new FileInputStream(fileToZip);
-      ZipEntry zipEntry = new ZipEntry(fileName);
-      zipOut.putNextEntry(zipEntry);
-      byte[] bytes = fis.readAllBytes();
-      int length;
-      zipOut.write(bytes);
-      fis.close();
-      zipOut.close();
+       if (srcFile.isDirectory()) {
+           addFolderToZip(rootPath, srcFile, zip);
+       } else {
+           byte[] buf = new byte[1024];
+           int len;
+           try (FileInputStream in = new FileInputStream(srcFile)) {
+               String name = srcFile.getPath();
+               name = name.replace(rootPath.getPath(), "");
+               zip.putNextEntry(new ZipEntry(name));
+               while ((len = in.read(buf)) > 0) {
+                   zip.write(buf, 0, len);
+               }
+           }
+       }
    }
 }
