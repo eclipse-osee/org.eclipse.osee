@@ -85,7 +85,7 @@ public class JdbcServiceImpl implements JdbcService {
    @Activate
    void activate(Map<String, Object> props) {
       // update() eventually calls org.hsqldb.server.Server.start() which hangs under certain unknown circumstances so keep that from halting OSGi startup
-      executorAdmin.submitAndWait("Start JDBC service", () -> modified(props), 20, TimeUnit.SECONDS);
+      executorAdmin.submitAndWait("Start JDBC service", () -> modified(props), 500, TimeUnit.SECONDS);
    }
 
    @Deactivate
