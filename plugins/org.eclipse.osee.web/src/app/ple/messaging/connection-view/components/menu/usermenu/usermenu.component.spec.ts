@@ -19,6 +19,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
 import { EditAuthService } from '../../../../shared/services/edit-auth-service.service';
+import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
+import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
 import { editAuthServiceMock } from '../../../mocks/EditAuthService.mock';
 import { CurrentGraphService } from '../../../services/current-graph.service';
@@ -38,6 +40,10 @@ describe('UsermenuComponent', () => {
 			providers: [
 				{ provide: EditAuthService, useValue: editAuthServiceMock },
 				{ provide: CurrentGraphService, useValue: graphServiceMock },
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
+				},
 			],
 			declarations: [UsermenuComponent],
 		}).compileComponents();

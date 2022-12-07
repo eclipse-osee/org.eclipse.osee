@@ -25,7 +25,7 @@ import { MatTableHarness } from '@angular/material/table/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatOptionLoadingModule } from '../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
+import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
 import { applicabilityListServiceMock } from '../../mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../../mocks/enumeration.set.service.mock';
 import { MimPreferencesServiceMock } from '../../mocks/MimPreferencesService.mock';

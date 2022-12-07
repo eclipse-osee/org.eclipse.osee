@@ -63,6 +63,7 @@ export class SubElementTableRowComponent {
 		'enumLiteral',
 	];
 	@Input() filter: string = '';
+	@Input() wordWrap: boolean = false;
 	layout = this.layoutNotifier.layout;
 
 	@Output() menu = new EventEmitter<{
@@ -71,6 +72,10 @@ export class SubElementTableRowComponent {
 		field?: string | number | boolean | applic;
 	}>();
 	constructor(private layoutNotifier: LayoutNotifierService) {}
+
+	getEnumLiterals() {
+		return this.element.enumLiteral.split('\n');
+	}
 
 	openGeneralMenu(
 		event: MouseEvent,

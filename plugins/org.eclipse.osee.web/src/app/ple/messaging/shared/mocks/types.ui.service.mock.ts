@@ -23,7 +23,7 @@ import { PlatformType } from '../types/platformType';
 import { transaction } from '../../../../transactions/transaction';
 export const typesUIServiceMock: Partial<TypesUIService> = {
 	get types() {
-		return this._types;
+		return of(platformTypes1);
 	},
 	getType(typeId: string) {
 		return of(platformTypes1[0]);

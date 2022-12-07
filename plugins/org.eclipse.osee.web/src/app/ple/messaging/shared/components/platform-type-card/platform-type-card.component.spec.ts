@@ -43,11 +43,11 @@ import { typesServiceMock } from '../../mocks/types.service.mock';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
 import { applicabilityListServiceMock } from '../../mocks/ApplicabilityListService.mock';
 import { enumsServiceMock } from '../../mocks/EnumsService.mock';
 import { ApplicabilityListService } from '../../services/http/applicability-list.service';
 import { EnumsService } from '../../services/http/enums.service';
+import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
 
 let loader: HarnessLoader;
 

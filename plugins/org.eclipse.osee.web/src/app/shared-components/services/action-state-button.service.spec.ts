@@ -25,9 +25,9 @@ import {
 	testDataUser,
 	testnewActionResponse,
 } from '../../ple/plconfig/testing/mockTypes';
-import { userDataAccountServiceMock } from '../../ple/plconfig/testing/mockUserDataAccountService';
 import { PLConfigCreateAction } from '../../ple/plconfig/types/pl-config-actions';
 import { UserDataAccountService } from '../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../userdata/services/user-data-account.service.mock';
 
 import { ActionStateButtonService } from './action-state-button.service';
 import { BranchRoutedUIService } from './branch-routed-ui.service';

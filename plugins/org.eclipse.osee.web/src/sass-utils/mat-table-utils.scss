@@ -17,3 +17,15 @@ $mat-column: '.mat-column-';
 		max-width: $width;
 	}
 }
+
+@mixin common-table-classes {
+	.cursor-pointer {
+		cursor: pointer;
+	}
+
+	.nowrap {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

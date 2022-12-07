@@ -48,6 +48,7 @@ import { applic } from '../../../../../types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
 import { EnumerationUIService } from '../../../shared/services/ui/enumeration-ui.service';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { PreferencesUIService } from '../../../shared/services/ui/preferences-ui.service';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
@@ -90,7 +91,8 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		private structureService: CurrentStructureService,
 		private layoutNotifier: LayoutNotifierService,
 		private headerService: HeaderService,
-		private enumSetService: EnumerationUIService
+		private enumSetService: EnumerationUIService,
+		private preferencesService: PreferencesUIService
 	) {
 		this.subMessageHeaders = [
 			'name',
@@ -104,6 +106,11 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		];
 		this.dataSource.data = this.data;
 	}
+
+	wordWrap = this.preferencesService.globalPrefs.pipe(
+		map((prefs) => prefs.wordWrap)
+	);
+
 	ngOnChanges(changes: SimpleChanges): void {
 		if (Array.isArray(this.data)) {
 			this.dataSource.data = this.data;

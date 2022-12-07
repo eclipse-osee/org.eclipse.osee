@@ -11,8 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { user } from 'src/app/userdata/types/user-data-user';
+import { transactionResultMock } from '../../../../transactions/transaction.mock';
+import { user } from '../../../../userdata/types/user-data-user';
 import { MimPreferencesService } from '../services/http/mim-preferences.service';
+import { MimUserGlobalPreferences } from '../types/mim.preferences';
 import { MimPreferencesMock } from './MimPreferences.mock';
 
 export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {
@@ -22,4 +24,31 @@ export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {
 	getBranchPrefs(user: user) {
 		return of(['10:false', '8:true']);
 	},
+	createGlobalUserPrefs(
+		user: user,
+		prefs: Partial<MimUserGlobalPreferences>
+	) {
+		return of(transactionResultMock);
+	},
+	updateGlobalUserPrefs(
+		current: MimUserGlobalPreferences,
+		updated: MimUserGlobalPreferences
+	) {
+		return of(transactionResultMock);
+	},
 };
+
+export const MimPreferencesServiceNoGlobalPrefsMock: Partial<MimPreferencesService> =
+	{
+		...MimPreferencesServiceMock,
+		getUserPrefs(branchId: string, user: user) {
+			return of({
+				...MimPreferencesMock,
+				globalPrefs: {
+					id: '-1',
+					name: 'Global Prefs',
+					wordWrap: true,
+				},
+			});
+		},
+	};

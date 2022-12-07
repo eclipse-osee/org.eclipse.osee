@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
+import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
 import { CurrentTypesService } from '../../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../../services/pl-messaging-types-ui.service';
 
@@ -27,14 +29,19 @@ export class UsermenuComponent {
 	constructor(
 		private typesService: CurrentTypesService,
 		private uiService: PlMessagingTypesUIService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private preferencesService: PreferencesUIService
 	) {}
 
 	openSettingsDialog() {
-		combineLatest([this.typesService.inEditMode, this.uiService.BranchId])
+		combineLatest([
+			this.typesService.inEditMode,
+			this.preferencesService.globalPrefs,
+			this.uiService.BranchId,
+		])
 			.pipe(
 				take(1),
-				switchMap(([edit, id]) =>
+				switchMap(([edit, globalPrefs, id]) =>
 					this.dialog
 						.open(ColumnPreferencesDialogComponent, {
 							data: {
@@ -47,13 +54,22 @@ export class UsermenuComponent {
 								headers1Label: '',
 								headers2Label: '',
 								headersTableActive: false,
-							},
+								wordWrap: globalPrefs.wordWrap,
+							} as settingsDialogData,
 						})
 						.afterClosed()
 						.pipe(
 							take(1),
 							switchMap((result) =>
-								this.typesService.updatePreferences(result)
+								this.typesService
+									.updatePreferences(result)
+									.pipe(
+										switchMap((_) =>
+											this.preferencesService.createOrUpdateGlobalUserPrefs(
+												result
+											)
+										)
+									)
 							)
 						)
 				)

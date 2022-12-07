@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, from } from 'rxjs';
+import { combineLatest, from, Observable, of } from 'rxjs';
 import {
 	share,
 	filter,
@@ -20,9 +20,12 @@ import {
 	shareReplay,
 	map,
 	reduce,
+	take,
 } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { transactionResult } from 'src/app/types/change-report/transaction';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { settingsDialogData } from '../../types/settingsdialog';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 @Injectable({
@@ -46,6 +49,9 @@ export class PreferencesUIService {
 	);
 
 	private _inEditMode = this.preferences.pipe(map((x) => x.inEditMode));
+	private _globalPrefs = this.preferences.pipe(
+		map((prefs) => prefs.globalPrefs)
+	);
 
 	private _branchPrefs = combineLatest([
 		this.ui.id,
@@ -66,6 +72,34 @@ export class PreferencesUIService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
+
+	createOrUpdateGlobalUserPrefs(
+		result: settingsDialogData
+	): Observable<transactionResult> {
+		return combineLatest([this.userService.user, this._preferences]).pipe(
+			take(1),
+			switchMap(([user, prefs]) =>
+				of(prefs.globalPrefs).pipe(
+					switchMap((globalPrefs) =>
+						globalPrefs.id === '-1'
+							? this.preferenceService.createGlobalUserPrefs(
+									user,
+									{ wordWrap: result.wordWrap }
+							  )
+							: this.preferenceService.updateGlobalUserPrefs(
+									globalPrefs,
+									{
+										id: globalPrefs.id,
+										name: globalPrefs.name,
+										wordWrap: result.wordWrap,
+									}
+							  )
+					)
+				)
+			)
+		);
+	}
+
 	constructor(
 		private ui: UiService,
 		private userService: UserDataAccountService,
@@ -77,6 +111,9 @@ export class PreferencesUIService {
 	}
 	public get inEditMode() {
 		return this._inEditMode;
+	}
+	public get globalPrefs() {
+		return this._globalPrefs;
 	}
 	public get BranchPrefs() {
 		return this._branchPrefs;

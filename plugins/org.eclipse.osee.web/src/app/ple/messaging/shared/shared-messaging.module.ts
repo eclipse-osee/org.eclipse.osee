@@ -43,6 +43,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UniquePlatformTypeNameDirective } from './directives/validators/unique-platform-type-name.directive';
 import { UniquePlatformTypeAttributesDirective } from './directives/validators/unique-platform-type-attributes.directive';
 import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
 	declarations: [
@@ -76,6 +77,7 @@ import { MatOptionLoadingModule } from '../../../shared-components/mat-option-lo
 		MatStepperModule,
 		MatInputModule,
 		MatSlideToggleModule,
+		MatTooltipModule,
 		FormsModule,
 		MatButtonModule,
 		MatStepperModule,

@@ -19,6 +19,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
+import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
+import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { currentTypesServiceMock } from '../../../mocks/services/current.types.service.mock';
 import { CurrentTypesService } from '../../../services/current-types.service';
 
@@ -42,6 +44,10 @@ describe('UsermenuComponent', () => {
 				{
 					provide: CurrentTypesService,
 					useValue: currentTypesServiceMock,
+				},
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
 				},
 			],
 		}).compileComponents();

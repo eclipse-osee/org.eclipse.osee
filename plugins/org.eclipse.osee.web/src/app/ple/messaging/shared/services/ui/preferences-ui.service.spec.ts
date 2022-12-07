@@ -10,34 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { TestBed } from '@angular/core/testing';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { MimPreferencesServiceMock } from '../../mocks/MimPreferencesService.mock';
-import { MimPreferencesService } from '../http/mim-preferences.service';
-
-import { PreferencesUIService } from './preferences-ui.service';
+import { preferencesTest } from './preferences-ui.service-test';
 
 describe('PreferencesUIService', () => {
-	let service: PreferencesUIService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			providers: [
-				{
-					provide: MimPreferencesService,
-					useValue: MimPreferencesServiceMock,
-				},
-				{
-					provide: UserDataAccountService,
-					useValue: userDataAccountServiceMock,
-				},
-			],
-		});
-		service = TestBed.inject(PreferencesUIService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
+	preferencesTest(MimPreferencesServiceMock);
 });

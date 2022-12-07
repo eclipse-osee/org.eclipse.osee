@@ -20,6 +20,13 @@
 			cdkFocusInitial>
 			<mat-label>Edit Mode</mat-label>
 		</mat-checkbox>
+		<mat-checkbox
+			[(ngModel)]="data.wordWrap"
+			matTooltip="Turn on to view full length content in tables"
+			[matTooltipPosition]="'right'"
+			color="primary">
+			<mat-label>Word Wrap</mat-label>
+		</mat-checkbox>
 	</div>
 	<ng-container *ngIf="data.headersTableActive">
 		<div class="column-preferences-header">

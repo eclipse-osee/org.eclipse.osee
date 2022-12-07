@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,22 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
-	selector: 'osee-messaging-sub-element-table-no-edit-field-dynamic-width',
-	templateUrl:
-		'./sub-element-table-no-edit-field-dynamic-width.component.html',
-	styleUrls: [
-		'./sub-element-table-no-edit-field-dynamic-width.component.sass',
-	],
+	selector: 'osee-structure-table-long-text-field',
+	templateUrl: './structure-table-long-text-field.component.html',
+	styleUrls: ['./structure-table-long-text-field.component.sass'],
 })
-export class SubElementTableNoEditFieldDynamicWidthComponent {
-	@Input() field: string = '';
-	@Input() width: string = '';
-	@Input() filter: string = '';
+export class StructureTableLongTextFieldComponent {
+	@Input() text: string = '';
+	@Input() searchTerms: string = '';
+	@Input() width: string | undefined = '';
 	@Input() wordWrap: boolean = false;
-	constructor() {}
+	@Input() data_cy: string = '';
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;

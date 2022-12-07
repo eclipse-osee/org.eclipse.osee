@@ -28,6 +28,8 @@ import { HeaderService } from 'src/app/ple/messaging/shared/services/ui/header.s
 import { CurrentStructureService } from '../../../services/current-structure.service';
 import { element } from '../../../../shared/types/element';
 import { structure } from '../../../../shared/types/structure';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
+import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
@@ -136,6 +138,7 @@ export class UsermenuComponent {
 	settingsDialog = combineLatest([
 		this.structureService.BranchId,
 		this.isEditing,
+		this.preferencesService.globalPrefs,
 		this.currentElementHeaders,
 		this.currentStructureHeaders,
 		this.headerService.AllElementHeaders,
@@ -146,6 +149,7 @@ export class UsermenuComponent {
 			([
 				branch,
 				edit,
+				globalPrefs,
 				elements,
 				structures,
 				allElementHeaders,
@@ -163,13 +167,22 @@ export class UsermenuComponent {
 							headers1Label: 'Structure Headers',
 							headers2Label: 'Element Headers',
 							headersTableActive: true,
-						},
+							wordWrap: globalPrefs.wordWrap,
+						} as settingsDialogData,
 					})
 					.afterClosed()
 					.pipe(
 						take(1),
 						switchMap((result) =>
-							this.structureService.updatePreferences(result)
+							this.structureService
+								.updatePreferences(result)
+								.pipe(
+									switchMap((_) =>
+										this.preferencesService.createOrUpdateGlobalUserPrefs(
+											result
+										)
+									)
+								)
 						)
 					)
 		)
@@ -177,7 +190,8 @@ export class UsermenuComponent {
 	constructor(
 		public dialog: MatDialog,
 		private structureService: CurrentStructureService,
-		private headerService: HeaderService
+		private headerService: HeaderService,
+		private preferencesService: PreferencesUIService
 	) {}
 	openSettingsDialog() {
 		this.settingsDialog.subscribe();

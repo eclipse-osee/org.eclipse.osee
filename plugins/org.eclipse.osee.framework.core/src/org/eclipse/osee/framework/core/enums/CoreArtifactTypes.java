@@ -375,7 +375,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup)
       .any(Email));
-
+   ArtifactTypeToken MimUserGlobalPreferences = osee.add(osee.artifactType(5935321910901176667L, "MIM User Global Preferences", false, Artifact)
+      .exactlyOne(MimSettingWordWrap));
    ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .any(DoorsId)
       .zeroOrOne(DoorsHierarchy));

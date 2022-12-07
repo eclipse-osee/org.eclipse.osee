@@ -294,32 +294,28 @@
 										{{ element[header] }}
 									</div>
 								</ng-container>
-								<div
+								<ng-container
 									*ngIf="
 										header === 'name' ||
 										header === 'description'
-									"
-									oseeHighlightFilteredText
-									[searchTerms]="searchTerms"
-									[text]="element[header]"
-									classToApply="ple-message-element-interface-table-highlighted-text"
-									[ngStyle]="{
-										width: (layout | async)
-											?.tableRecommendations?.width,
-										'white-space': 'nowrap',
-										overflow: 'hidden',
-										'text-overflow': 'ellipsis'
-									}"
-									[attr.data-cy]="
-										'structure-table-' +
-										header +
-										'-' +
-										element.name +
-										'-' +
-										element[header]
 									">
-									{{ element[header] }}
-								</div>
+									<osee-structure-table-long-text-field
+										[text]="element[header]"
+										[searchTerms]="searchTerms"
+										[width]="
+											(layout | async)
+												?.tableRecommendations?.width
+										"
+										[wordWrap]="(wordWrap | async) || false"
+										[data_cy]="
+											'structure-table-' +
+											header +
+											'-' +
+											element.name +
+											'-' +
+											element[header]
+										"></osee-structure-table-long-text-field>
+								</ng-container>
 								<ng-container *ngIf="header === 'txRate'">
 									<ng-container
 										*ngIf="

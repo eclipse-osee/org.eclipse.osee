@@ -58,7 +58,9 @@ import { PlatformTypeQueryComponent } from './components/platform-type-query/pla
 import { MatDividerModule } from '@angular/material/divider';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
+import { EnumLiteralsFieldComponent } from './components/enum-literal-field/enum-literals-field.component';
+import { StructureTableLongTextFieldComponent } from './components/structure-table/structure-table-long-text-field/structure-table-long-text-field.component';
+import { MatOptionLoadingModule } from 'src/app/shared-components/mat-option-loading/mat-option-loading.module';
 
 @NgModule({
 	declarations: [
@@ -81,6 +83,7 @@ import { MatOptionLoadingModule } from '../../../shared-components/mat-option-lo
 		SubElementTableNoEditFieldComponent,
 		UsermenuComponent,
 		PlatformTypeQueryComponent,
+		StructureTableLongTextFieldComponent,
 	],
 	imports: [
 		CommonModule,
@@ -112,6 +115,7 @@ import { MatOptionLoadingModule } from '../../../shared-components/mat-option-lo
 		ActionStateButtonModule,
 		BranchUndoButtonModule,
 		SharedMessagingModule,
+		EnumLiteralsFieldComponent,
 	],
 })
 export class MessageElementInterfaceModule {}

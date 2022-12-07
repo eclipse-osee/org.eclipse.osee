@@ -16,10 +16,8 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
-import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { TransactionBuilderService } from '../../../../transactions/transaction-builder.service';
+import { transactionBuilderMock } from '../../../../transactions/transaction-builder.service.mock';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
@@ -40,6 +38,8 @@ import { EnumsService } from '../../shared/services/http/enums.service';
 import { enumsServiceMock } from '../../shared/mocks/EnumsService.mock';
 import { unitsMock } from '../../shared/mocks/unit.mock';
 import { transactionResultMock } from '../../../../transactions/transaction.mock';
+import { UserDataAccountService } from '../../../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../../../userdata/services/user-data-account.service.mock';
 
 describe('CurrentTypesServiceService', () => {
 	let service: CurrentTypesService;
@@ -290,6 +290,7 @@ describe('CurrentTypesServiceService', () => {
 						headers1Label: '',
 						headers2Label: '',
 						headersTableActive: false,
+						wordWrap: false,
 					})
 				)
 				.toBe(expectedMarble, expectedObservable);

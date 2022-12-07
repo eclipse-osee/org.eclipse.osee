@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,24 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, Input } from '@angular/core';
 
 @Component({
-	selector: 'osee-messaging-sub-element-table-no-edit-field-dynamic-width',
-	templateUrl:
-		'./sub-element-table-no-edit-field-dynamic-width.component.html',
-	styleUrls: [
-		'./sub-element-table-no-edit-field-dynamic-width.component.sass',
-	],
+	standalone: true,
+	selector: 'osee-enum-literals-field',
+	templateUrl: './enum-literals-field.component.html',
+	styleUrls: ['./enum-literals-field.component.sass'],
+	imports: [NgIf, NgFor],
 })
-export class SubElementTableNoEditFieldDynamicWidthComponent {
-	@Input() field: string = '';
-	@Input() width: string = '';
-	@Input() filter: string = '';
+export class EnumLiteralsFieldComponent {
+	@Input() enumLiterals: string = '';
 	@Input() wordWrap: boolean = false;
-	constructor() {}
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;
+	}
+
+	getEnumLiteralsArray() {
+		return this.enumLiterals.split('\n');
 	}
 }

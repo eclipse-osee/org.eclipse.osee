@@ -43,6 +43,7 @@ import {
 	defaultViewElementProfile,
 	defaultViewStructureProfile,
 } from '../../../constants/defaultProfiles';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 describe('ColumnPreferencesDialogComponent', () => {
 	let component: ColumnPreferencesDialogComponent;
@@ -57,6 +58,7 @@ describe('ColumnPreferencesDialogComponent', () => {
 		headers1Label: 'Headers1 Label',
 		headers2Label: 'Headers2 Label',
 		headersTableActive: true,
+		wordWrap: false,
 	};
 	let httpClient: HttpClient;
 	let httpTestingController: HttpTestingController;
@@ -73,6 +75,7 @@ describe('ColumnPreferencesDialogComponent', () => {
 				MatButtonModule,
 				MatTableModule,
 				MatCheckboxModule,
+				MatTooltipModule,
 				HttpClientTestingModule,
 			],
 			declarations: [ColumnPreferencesDialogComponent],

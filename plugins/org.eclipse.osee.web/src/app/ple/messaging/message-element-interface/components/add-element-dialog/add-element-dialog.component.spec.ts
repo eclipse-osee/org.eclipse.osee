@@ -25,10 +25,8 @@ import {
 } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatInputHarness } from '@angular/material/input/testing';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -39,7 +37,7 @@ import { MatOptionLoadingTestingModule } from '../../../../../shared-components/
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
+import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
 import { applicabilityListServiceMock } from '../../../shared/mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../../../shared/mocks/enumeration.set.service.mock';
 import { enumsServiceMock } from '../../../shared/mocks/EnumsService.mock';

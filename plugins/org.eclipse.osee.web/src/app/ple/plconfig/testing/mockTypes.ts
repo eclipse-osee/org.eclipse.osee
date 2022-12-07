@@ -26,6 +26,7 @@ import {
 	response,
 	transitionResponse,
 } from '../../../types/responses';
+import { MimUserGlobalPreferences } from '../../messaging/shared/types/mim.preferences';
 
 export const testBranchActions: action[] = [
 	{
@@ -198,4 +199,10 @@ export const testnewActionResponse: newActionResponse = {
 	results: testDataResponse,
 	teamWfs: [],
 	workingBranchId: testDataPlConfigBranchListingBranch,
+};
+
+export const testGlobalUserPrefs: MimUserGlobalPreferences = {
+	id: '1',
+	name: 'MIM Global User Preferences',
+	wordWrap: false,
 };

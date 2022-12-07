@@ -59,7 +59,6 @@ public class ServerHealthLogs {
          if (statusResults.contains("{\"data\" ")) {
             ServerStatus stat = JsonUtil.readValue(statusResults, ServerStatus.class);
             String appServerDir = stat.get(StatusKey.CodeLocation);
-            // osee_app_server_msa305vm04.msc.az.boeing.com_8015.log]
             String uri = stat.get(StatusKey.ServerUri);
             uri = uri.replaceFirst("http://", "");
             uri = uri.replaceFirst(":.*$", "");
