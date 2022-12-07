@@ -17,17 +17,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
@@ -508,4 +508,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public XResultData deleteBlockApplicability(String blockApplicId) {
       return ops.deleteBlockApplicability(blockApplicId);
    }
+   
+   @Override
+   public Response uploadRunBlockApplicability(Long view, InputStream zip) {
+	   String id = ops.uploadRunBlockApplicability(view, zip, branch);
+
+	   return downloadBlockApplicability(id);
+   }
+
 }

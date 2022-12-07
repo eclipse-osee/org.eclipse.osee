@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
@@ -137,4 +138,6 @@ public interface OrcsApplicability {
    XResultData applyBlockVisibilityOnServer(String blockApplicId, BlockApplicabilityStageRequest data, BranchId branch);
 
    XResultData deleteBlockApplicability(String blockApplicId);
+
+   String uploadRunBlockApplicability(Long view, InputStream zip, BranchId branch);
 }
