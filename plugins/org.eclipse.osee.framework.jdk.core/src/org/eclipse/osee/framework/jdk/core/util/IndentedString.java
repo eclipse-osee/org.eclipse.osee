@@ -31,7 +31,15 @@ public class IndentedString {
    private static IndentedString indentedString;
 
    /**
+    * A string with the {@link IndentedString#indentAmount} number of spaces.
+    */
+
+   private static String indentedUnitString;
+
+   /**
     * The initial number of indented strings to create during static initialization.
+    *
+    * @implNote This value must be at least 1.
     */
 
    private static int initialIndentStringCount;
@@ -45,8 +53,9 @@ public class IndentedString {
    static {
       IndentedString.initialIndentStringCount = 32;
       IndentedString.indentAmount = 3;
+      IndentedString.indentedUnitString = "   ";
       IndentedString.indentedString = new IndentedString();
-      IndentedString.indentedString.createInitialIndentStrings();
+      IndentedString.indentedString.createIndentString(IndentedString.initialIndentStringCount - 1);
    }
 
    /**
@@ -73,19 +82,11 @@ public class IndentedString {
 
    private IndentedString() {
       this.indentStrings = new ArrayList<String>(IndentedString.initialIndentStringCount);
-      this.largestIndent = -1;
-      this.indentBuffer =
-         new StringBuilder(IndentedString.indentAmount * IndentedString.initialIndentStringCount + 1 * 1024);
-   }
-
-   /**
-    * Create the initial indent strings.
-    */
-
-   private void createInitialIndentStrings() {
-      for (int i = 0; i < IndentedString.initialIndentStringCount; i++) {
-         this.createIndentString(i);
-      }
+      this.indentStrings.add("");
+      this.largestIndent = 0;
+      var size = IndentedString.indentAmount * (IndentedString.initialIndentStringCount - 1);
+      size = size > 1024 ? size : 1024;
+      this.indentBuffer = new StringBuilder(size);
    }
 
    /**
@@ -96,26 +97,24 @@ public class IndentedString {
     */
 
    private String createIndentString(int indent) {
-      if (indent > this.largestIndent) {
 
-         synchronized (IndentedString.indentedString) {
-            int start = largestIndent + 1;
-            int end = indent;
-            int newIndent;
+      indent = indent >= 0 ? indent : 0;
 
-            int spaceCount = IndentedString.indentAmount * (end - start + (this.largestIndent >= 0 ? 1 : 0));
-
-            for (int i = 0; i < spaceCount; i++) {
-               this.indentBuffer.append(" ");
-            }
-
-            for (newIndent = start; newIndent <= end; newIndent++) {
-               this.indentStrings.add(newIndent, this.indentBuffer.toString());
-            }
-
-            this.largestIndent = indent;
-         }
+      if (indent <= this.largestIndent) {
+         return this.indentStrings.get(indent);
       }
+
+      synchronized (IndentedString.indentedString) {
+         int start = largestIndent + 1;
+         int end = indent;
+
+         for (int newIndent = start; newIndent <= end; newIndent++) {
+            this.indentStrings.add(newIndent, this.indentBuffer.append(IndentedString.indentedUnitString).toString());
+         }
+
+         this.largestIndent = indent;
+      }
+
       return this.indentStrings.get(indent);
    }
 

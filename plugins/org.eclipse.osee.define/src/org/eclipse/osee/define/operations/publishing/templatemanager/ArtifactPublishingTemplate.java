@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.xml.sax.SAXParseException;
 
 /**
  * An implementation of the {@link PublishingTemplateInternal} interface for OSEE Artifact Publishing Templates.
@@ -108,9 +109,27 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
       var documentOptional = this.templateContent.getTemplateXml();
 
       if (documentOptional.isEmpty()) {
+
+         //@formatter:off
          var message =
-            this.templateContent.getTemplateXmlParseError().map((exception) -> exception.getMessage()).orElse(
-               "Template Word ML XML parsing failed.");
+            this.templateContent.getTemplateXmlParseError()
+               .map
+                  (
+                     ( exception ) ->
+                        ( exception instanceof SAXParseException )
+                           ? new Message()
+                                    .title( "Template Word ML XML parsing failed." )
+                                    .indentInc()
+                                    .title( exception.getMessage() )
+                                    .indentInc()
+                                    .segment( "LineNumber",    ((SAXParseException) exception).getLineNumber()   )
+                                    .segment( "Column Number", ((SAXParseException) exception).getColumnNumber() )
+                                    .toString()
+                            : exception.getMessage()
+                  )
+               .orElse( "Template Word ML XML parsing failed." );
+         //@formatter:on
+
          throw new InvalidWordMlTemplateException(this.identifier, this.name, message, templateXml);
       }
 
