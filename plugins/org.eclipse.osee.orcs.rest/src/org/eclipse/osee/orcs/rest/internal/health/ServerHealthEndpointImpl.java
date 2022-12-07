@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -173,6 +174,28 @@ public final class ServerHealthEndpointImpl {
    @Produces(MediaType.APPLICATION_JSON)
    public ServerStatus serverStatus() {
       return new BuildServerStatusOperation(applicationServerManager, authManager, activityLog).get();
+   }
+
+   @Path("exec")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String exec(@Context UriInfo uriInfo) throws IOException {
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
+      List<String> cmds = queryParameters.get("cmd");
+      if (cmds == null || cmds.isEmpty()) {
+         return AHTML.simplePage("Need cmd parameter.");
+      }
+      String cmd = cmds.iterator().next();
+      System.err.println(String.format("exec cmd [%s]", cmd));
+      try {
+         Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+         String results = s.hasNext() ? s.next() : "";
+         s.close();
+         results = String.format("cmd [%s]<br/><br/>%s", cmd, results.replaceAll("\n", "<br/>"));
+         return AHTML.simplePage(results);
+      } catch (Exception ex) {
+         return AHTML.simplePage(String.format("cmd [%s]<br/><br/>Exception: %s", cmd, Lib.exceptionToString(ex)));
+      }
    }
 
    @Path("processes")
