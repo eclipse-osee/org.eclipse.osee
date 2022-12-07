@@ -18,8 +18,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { UserDataAccountService } from '../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../userdata/services/user-data-account.service.mock';
 import navigationStructure from './top-level-navigation-structure';
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 

@@ -50,6 +50,7 @@
 				[editMode]="editMode"
 				[element]="element"
 				[structure]="structure"
+				[wordWrap]="(wordWrap | async) || false"
 				(menu)="
 					openGeneralMenu(
 						$event.event,

@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, iif, of } from 'rxjs';
 import { map, share, shareReplay, take, switchMap } from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
+import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
 import { CurrentGraphService } from '../../../services/current-graph.service';
 import { RouteStateService } from '../../../services/route-state-service.service';
 
@@ -33,7 +35,6 @@ export class UsermenuComponent {
 			)
 		)
 	);
-	preferences = this.graphService.preferences;
 	inEditMode = this.graphService.preferences.pipe(
 		map((r) => r.inEditMode),
 		share(),
@@ -42,13 +43,18 @@ export class UsermenuComponent {
 	constructor(
 		private routeState: RouteStateService,
 		public dialog: MatDialog,
-		private graphService: CurrentGraphService
+		private graphService: CurrentGraphService,
+		private preferencesService: PreferencesUIService
 	) {}
 	openSettingsDialog() {
-		combineLatest([this.inEditMode, this.routeState.id])
+		combineLatest([
+			this.inEditMode,
+			this.preferencesService.globalPrefs,
+			this.routeState.id,
+		])
 			.pipe(
 				take(1),
-				switchMap(([edit, id]) =>
+				switchMap(([edit, globalPrefs, id]) =>
 					this.dialog
 						.open(ColumnPreferencesDialogComponent, {
 							data: {
@@ -61,13 +67,22 @@ export class UsermenuComponent {
 								headers1Label: '',
 								headers2Label: '',
 								headersTableActive: false,
-							},
+								wordWrap: globalPrefs.wordWrap,
+							} as settingsDialogData,
 						})
 						.afterClosed()
 						.pipe(
 							take(1),
 							switchMap((result) =>
-								this.graphService.updatePreferences(result)
+								this.graphService
+									.updatePreferences(result)
+									.pipe(
+										switchMap((_) =>
+											this.preferencesService.createOrUpdateGlobalUserPrefs(
+												result
+											)
+										)
+									)
 							)
 						)
 				)

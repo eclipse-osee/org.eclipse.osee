@@ -32,11 +32,8 @@ import { PlatformType } from '../../shared/types/platformType';
 import { transaction } from 'src/app/transactions/transaction';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
-import { enumeration, enumerationSet } from '../../shared/types/enum.d';
-import { ApplicabilityListUIService } from '../../shared/services/ui/applicability-list-ui.service';
-import { EnumerationUIService } from '../../shared/services/ui/enumeration-ui.service';
+import { enumeration } from '../../shared/types/enum.d';
 import { PreferencesUIService } from '../../shared/services/ui/preferences-ui.service';
-import { EnumsService } from '../../shared/services/http/enums.service';
 import { TypesUIService } from '../../shared/services/ui/types-ui.service';
 
 @Injectable({
@@ -71,9 +68,6 @@ export class CurrentTypesService {
 		private typesService: TypesService,
 		private uiService: PlMessagingTypesUIService,
 		private preferenceService: PreferencesUIService,
-		private applicabilityService: ApplicabilityListUIService,
-		private enumSetService: EnumerationUIService,
-		private constantEnumService: EnumsService,
 		private sharedTypeService: TypesUIService
 	) {}
 

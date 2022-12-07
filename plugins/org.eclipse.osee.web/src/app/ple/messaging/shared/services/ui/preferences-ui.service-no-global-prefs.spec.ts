@@ -1,8 +1,5 @@
-import { element } from './element.d';
-import { structure } from './structure.d';
-
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,15 +10,9 @@ import { structure } from './structure.d';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface settingsDialogData {
-	branchId: string;
-	allowedHeaders1: (keyof element)[];
-	allHeaders1: (keyof element)[];
-	allHeaders2: (keyof structure)[];
-	allowedHeaders2: (keyof structure)[];
-	editable: boolean;
-	headers1Label: string;
-	headers2Label: string;
-	headersTableActive: boolean;
-	wordWrap: boolean;
-}
+import { MimPreferencesServiceNoGlobalPrefsMock } from '../../mocks/MimPreferencesService.mock';
+import { preferencesTest } from './preferences-ui.service-test';
+
+describe('PreferencesUIService', () => {
+	preferencesTest(MimPreferencesServiceNoGlobalPrefsMock);
+});

@@ -22,8 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { UserDataAccountService } from '../../../../../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../../../../../userdata/services/user-data-account.service.mock';
 import { MimPreferencesServiceMock } from '../../../mocks/MimPreferencesService.mock';
 import { MimPreferencesService } from '../../../services/http/mim-preferences.service';
 

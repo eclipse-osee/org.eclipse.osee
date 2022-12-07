@@ -66,4 +66,26 @@ describe('SubElementTableRowComponent', () => {
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
+
+	it('should get enum literals as array of strings', () => {
+		component.element = {
+			...component.element,
+			enumLiteral: '',
+		};
+		expect(component.getEnumLiterals()).toEqual(['']);
+		component.element = {
+			...component.element,
+			enumLiteral: 'test',
+		};
+		expect(component.getEnumLiterals()).toEqual(['test']);
+		component.element = {
+			...component.element,
+			enumLiteral: 'test\ntesting\ntested',
+		};
+		expect(component.getEnumLiterals()).toEqual([
+			'test',
+			'testing',
+			'tested',
+		]);
+	});
 });

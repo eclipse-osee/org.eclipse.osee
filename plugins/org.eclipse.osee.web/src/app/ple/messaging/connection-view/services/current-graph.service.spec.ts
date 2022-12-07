@@ -13,8 +13,6 @@
 import { TestBed } from '@angular/core/testing';
 import { iif, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { applicabilityListServiceMock } from '../../shared/mocks/ApplicabilityListService.mock';
 import { MimPreferencesMock } from '../../shared/mocks/MimPreferences.mock';
 import { MimPreferencesServiceMock } from '../../shared/mocks/MimPreferencesService.mock';
@@ -38,6 +36,8 @@ import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.ser
 import { DifferenceReportService } from 'src/app/ple-services/http/difference-report.service';
 import { DifferenceReportServiceMock } from 'src/app/ple-services/http/difference-report.service.mock';
 import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
+import { UserDataAccountService } from '../../../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../../../userdata/services/user-data-account.service.mock';
 
 describe('CurrentGraphService', () => {
 	let service: CurrentGraphService;
@@ -553,6 +553,7 @@ describe('CurrentGraphService', () => {
 						headers1Label: '',
 						headers2Label: '',
 						headersTableActive: false,
+						wordWrap: false,
 					})
 				)
 				.toBe(expectedMarble, expectedObservable);

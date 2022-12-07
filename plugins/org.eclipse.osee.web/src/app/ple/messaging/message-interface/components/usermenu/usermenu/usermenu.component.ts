@@ -22,7 +22,8 @@ import {
 	switchMap,
 } from 'rxjs/operators';
 import { ColumnPreferencesDialogComponent } from 'src/app/ple/messaging/shared/components/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { HeaderService } from 'src/app/ple/messaging/shared/services/ui/header.service';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
+import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
 import { CurrentMessagesService } from '../../../services/current-messages.service';
 
 @Component({
@@ -43,14 +44,18 @@ export class UsermenuComponent {
 	constructor(
 		private messageService: CurrentMessagesService,
 		public dialog: MatDialog,
-		private headerService: HeaderService
+		private preferencesService: PreferencesUIService
 	) {}
 
 	openSettingsDialog() {
-		combineLatest([this.inEditMode, this.messageService.BranchId])
+		combineLatest([
+			this.inEditMode,
+			this.preferencesService.globalPrefs,
+			this.messageService.BranchId,
+		])
 			.pipe(
 				take(1),
-				switchMap(([edit, branch]) =>
+				switchMap(([edit, globalPrefs, branch]) =>
 					this.dialog
 						.open(ColumnPreferencesDialogComponent, {
 							data: {
@@ -63,13 +68,22 @@ export class UsermenuComponent {
 								headers1Label: 'Structure Headers',
 								headers2Label: 'Element Headers',
 								headersTableActive: false,
-							},
+								wordWrap: globalPrefs.wordWrap,
+							} as settingsDialogData,
 						})
 						.afterClosed()
 						.pipe(
 							take(1),
 							switchMap((result) =>
-								this.messageService.updatePreferences(result)
+								this.messageService
+									.updatePreferences(result)
+									.pipe(
+										switchMap((_) =>
+											this.preferencesService.createOrUpdateGlobalUserPrefs(
+												result
+											)
+										)
+									)
 							)
 						)
 				)

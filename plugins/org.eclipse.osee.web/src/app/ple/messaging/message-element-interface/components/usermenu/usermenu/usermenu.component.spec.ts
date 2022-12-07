@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
+import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
+import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
 import { CurrentStructureService } from '../../../services/current-structure.service';
 
@@ -35,6 +37,10 @@ describe('UsermenuComponent', () => {
 				{
 					provide: CurrentStructureService,
 					useValue: CurrentStateServiceMock,
+				},
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
 				},
 			],
 			declarations: [UsermenuComponent],

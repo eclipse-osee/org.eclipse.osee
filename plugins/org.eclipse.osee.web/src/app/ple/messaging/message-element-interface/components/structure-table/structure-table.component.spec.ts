@@ -14,14 +14,10 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
-import {
-	TwoLayerAddButtonHarness,
-	TwoLayerAddButtonNestedButtonHarness,
-} from '../../../../generic-buttons/two-layer-add-button/two-layer-add-button.harness';
+import { TwoLayerAddButtonHarness } from '../../../../generic-buttons/two-layer-add-button/two-layer-add-button.harness';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
@@ -34,7 +30,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
 	ActivatedRoute,
-	ActivatedRouteSnapshot,
 	convertToParamMap,
 	Router,
 	UrlSegment,
@@ -42,7 +37,6 @@ import {
 } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
@@ -71,7 +65,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActionDropdownStub } from '../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { TestScheduler } from 'rxjs/testing';
 import { BranchUndoButtonTestingModule } from '../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
-import { transactionResultMock } from 'src/app/transactions/transaction.mock';
+import { PreferencesUIService } from '../../../shared/services/ui/preferences-ui.service';
+import { preferencesUiServiceMock } from '../../../shared/services/ui/preferences-ui-service.mock';
 
 describe('StructureTableComponent', () => {
 	let component: StructureTableComponent;
@@ -164,6 +159,10 @@ describe('StructureTableComponent', () => {
 				{
 					provide: CurrentStructureService,
 					useValue: CurrentStateServiceMock,
+				},
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
 				},
 			],
 		}).compileComponents();

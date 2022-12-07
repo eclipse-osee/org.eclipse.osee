@@ -36,7 +36,6 @@ import { MatTableModule } from '@angular/material/table';
 import { TransactionBuilderService } from '../../../../../../transactions/transaction-builder.service';
 import { transactionBuilderMock } from '../../../../../../transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from '../../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../plconfig/testing/mockUserDataAccountService';
 import { applicabilityListServiceMock } from '../../../mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../../../mocks/enumeration.set.service.mock';
 import { enumsServiceMock } from '../../../mocks/EnumsService.mock';
@@ -51,6 +50,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MockNewTypeForm } from '../new-type-form/new-type-form.component.mock';
 import { MockEnumSetFormUnique } from '../enum-set-form/enum-set-form.component.mock';
 import { MatOptionLoadingTestingModule } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
+import { userDataAccountServiceMock } from '../../../../../../userdata/services/user-data-account.service.mock';
 
 describe('NewTypeDialogComponent', () => {
 	let component: NewTypeDialogComponent;

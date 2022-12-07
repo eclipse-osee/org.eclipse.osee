@@ -16,9 +16,9 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { userDataAccountServiceMock } from 'src/app/ple/plconfig/testing/mockUserDataAccountService';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import { apiURL, OSEEAuthURL } from 'src/environments/environment';
+import { UserDataAccountService } from '../../userdata/services/user-data-account.service';
+import { userDataAccountServiceMock } from '../../userdata/services/user-data-account.service.mock';
 
 import { OSEEAuthHeaderInterceptor } from './oseeauth-header.interceptor';
 

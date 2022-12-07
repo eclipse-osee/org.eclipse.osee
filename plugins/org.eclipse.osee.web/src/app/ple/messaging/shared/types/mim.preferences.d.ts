@@ -16,9 +16,16 @@ export interface MimPreferences<T = { name: '' }> {
 	columnPreferences: MimColumnPreference<T>[];
 	inEditMode: boolean;
 	hasBranchPref: boolean;
+	globalPrefs: MimUserGlobalPreferences;
 }
 
 export interface MimColumnPreference<T = { name: '' }> {
 	enabled: boolean;
 	name: Extract<keyof T, string>;
+}
+
+export interface MimUserGlobalPreferences {
+	id: string;
+	name: string;
+	wordWrap: boolean;
 }

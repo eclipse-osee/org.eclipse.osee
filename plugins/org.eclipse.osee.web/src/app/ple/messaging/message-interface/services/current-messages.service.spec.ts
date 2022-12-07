@@ -283,6 +283,7 @@ describe('CurrentMessagesService', () => {
 							headers1Label: '',
 							headers2Label: '',
 							headersTableActive: false,
+							wordWrap: false,
 						})
 					)
 					.toBe(expectedMarble, expectedObservable);

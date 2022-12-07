@@ -80,6 +80,7 @@ import {
 	defaultViewElementProfile,
 	defaultViewStructureProfile,
 } from '../../../shared/constants/defaultProfiles';
+import { PreferencesUIService } from '../../../shared/services/ui/preferences-ui.service';
 
 @Component({
 	selector: 'osee-structure-table',
@@ -321,6 +322,14 @@ export class StructureTableComponent implements OnInit {
 	inDiffMode = this.structureService.isInDiff.pipe(
 		switchMap((val) => iif(() => val, of('true'), of('false')))
 	);
+	wordWrap = this.preferencesService.globalPrefs.pipe(
+		map((prefs) => prefs.wordWrap)
+	);
+
+	textExpanded: boolean = false;
+	toggleExpanded() {
+		this.textExpanded = !this.textExpanded;
+	}
 
 	private _moveView = combineLatest([
 		this.route.fragment,
@@ -375,7 +384,8 @@ export class StructureTableComponent implements OnInit {
 		private structureService: CurrentStructureService,
 		private layoutNotifier: LayoutNotifierService,
 		private headerService: HeaderService,
-		private _ui: UiService
+		private _ui: UiService,
+		private preferencesService: PreferencesUIService
 	) {}
 
 	ngOnInit(): void {

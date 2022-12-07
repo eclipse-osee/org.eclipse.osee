@@ -10,13 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="header === 'description' || header === 'notes'">
+<ng-container
+	*ngIf="
+		header === 'description' ||
+		header === 'notes' ||
+		header === 'enumLiteral'
+	">
 	<osee-messaging-sub-element-table-no-edit-field-dynamic-width
 		[filter]="filter"
 		[field]="element[header]"
-		[width]="
-			width
-		"></osee-messaging-sub-element-table-no-edit-field-dynamic-width>
+		[width]="width"
+		[wordWrap]="wordWrap">
+	</osee-messaging-sub-element-table-no-edit-field-dynamic-width>
 </ng-container>
 <ng-container
 	*ngIf="
@@ -24,7 +29,8 @@
 		header !== 'platformTypeName2' &&
 		header !== 'name' &&
 		header !== 'description' &&
-		header !== 'applicability'
+		header !== 'applicability' &&
+		header !== 'enumLiteral'
 	">
 	<osee-messaging-sub-element-table-no-edit-field-filtered
 		[field]="element[header]"

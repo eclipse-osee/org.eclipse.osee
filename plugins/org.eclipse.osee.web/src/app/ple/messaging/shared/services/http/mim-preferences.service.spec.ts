@@ -15,22 +15,46 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { testDataUser } from 'src/app/ple/plconfig/testing/mockTypes';
+import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
+import {
+	transactionInfoMock,
+	transactionResultMock,
+} from '../../../../../transactions/transaction.mock';
+import { TransactionService } from '../../../../../transactions/transaction.service';
+import { transactionServiceMock } from '../../../../../transactions/transaction.service.mock';
+import {
+	testDataUser,
+	testGlobalUserPrefs,
+} from '../../../../plconfig/testing/mockTypes';
 
 import { MimPreferencesService } from './mim-preferences.service';
 
 describe('MimPreferencesService', () => {
 	let service: MimPreferencesService;
+	let scheduler: TestScheduler;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule],
+			providers: [
+				{
+					provide: TransactionService,
+					useValue: transactionServiceMock,
+				},
+			],
 		});
 		service = TestBed.inject(MimPreferencesService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
+
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();
@@ -52,5 +76,29 @@ describe('MimPreferencesService', () => {
 		expect(req.request.method).toEqual('GET');
 		req.flush({});
 		httpTestingController.verify();
+	});
+
+	it('should create global user preferences', () => {
+		scheduler.run(({ expectObservable }) => {
+			const result = service.createGlobalUserPrefs(
+				testDataUser,
+				testGlobalUserPrefs
+			);
+			scheduler
+				.expectObservable(result)
+				.toBe('(a|)', { a: transactionResultMock });
+		});
+	});
+
+	it('should update global user preferences', () => {
+		scheduler.run(({ expectObservable }) => {
+			const result = service.updateGlobalUserPrefs(
+				testGlobalUserPrefs,
+				testGlobalUserPrefs
+			);
+			scheduler
+				.expectObservable(result)
+				.toBe('(a|)', { a: transactionResultMock });
+		});
 	});
 });

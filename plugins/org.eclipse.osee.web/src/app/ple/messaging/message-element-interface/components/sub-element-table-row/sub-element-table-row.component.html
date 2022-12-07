@@ -65,12 +65,9 @@
 		*ngIf="
 			header === 'enumLiteral' && element.logicalType === 'enumeration'
 		">
-		<div class="text-align-start">
-			<ng-container *ngFor="let item of element.enumLiteral.split('\n')">
-				{{ item }}
-				<br />
-			</ng-container>
-		</div>
+		<osee-enum-literals-field
+			[enumLiterals]="element.enumLiteral"
+			[wordWrap]="wordWrap"></osee-enum-literals-field>
 	</ng-container>
 	<ng-container
 		*ngIf="
@@ -81,6 +78,7 @@
 			[header]="header"
 			[element]="element"
 			[width]="(layout | async)?.tableRecommendations?.width || ''"
+			[wordWrap]="wordWrap"
 			[attr.data-cy]="
 				'element-table-' +
 				header +

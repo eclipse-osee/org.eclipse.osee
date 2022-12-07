@@ -21,6 +21,11 @@ export const MimPreferencesMock: MimPreferences<
 > = {
 	id: '61106791',
 	name: 'Joe Smith',
+	globalPrefs: {
+		id: '1',
+		name: 'Global Prefs',
+		wordWrap: true,
+	},
 	columnPreferences: [
 		{
 			name: 'name',

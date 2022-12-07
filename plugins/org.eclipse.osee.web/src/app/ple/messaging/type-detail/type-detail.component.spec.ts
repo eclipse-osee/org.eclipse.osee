@@ -15,7 +15,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TransactionBuilderService } from '../../../transactions/transaction-builder.service';
 import { transactionBuilderMock } from '../../../transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from '../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../plconfig/testing/mockUserDataAccountService';
+import { userDataAccountServiceMock } from '../../../userdata/services/user-data-account.service.mock';
 import { applicabilityListServiceMock } from '../shared/mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../shared/mocks/enumeration.set.service.mock';
 import { enumsServiceMock } from '../shared/mocks/EnumsService.mock';

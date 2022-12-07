@@ -37,6 +37,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceN
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfacePlatformType;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceStructure;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceSubMessage;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.MimUserGlobalPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
@@ -224,6 +225,11 @@ public interface CoreRelationTypes {
    RelationTypeToken UserGroupToContext = osee.add(6518538741815208374L, "User Group to Context", MANY_TO_MANY, UNORDERED, UserGroup, "User Group", Context, "Context");
    RelationTypeSide UserGroupToContext_UserGroup = RelationTypeSide.create(UserGroupToContext, SIDE_A);
    RelationTypeSide UserGroupToContext_Context = RelationTypeSide.create(UserGroupToContext, SIDE_B);
+
+   RelationTypeToken UserMimGlobalPreferences = osee.addNewRelationType(2600664754080134468L, "User to MIM User Global Preferences", ONE_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, User, "User", MimUserGlobalPreferences, "MIM User Global Preferences");
+   RelationTypeSide UserMimGlobalPreferences_User = RelationTypeSide.create(UserMimGlobalPreferences, SIDE_A);
+   RelationTypeSide UserMimGlobalPreferences_MimGlobalPreferences = RelationTypeSide.create(UserMimGlobalPreferences, SIDE_B);
+
 
    RelationTypeToken UserToHistory = osee.add(6360156234301395903L, "User to History", ONE_TO_ONE, UNORDERED, User, "User", ExecutedCommandHistory, "Executed Command History");
    RelationTypeSide UserToHistory_User = RelationTypeSide.create(UserToHistory, SIDE_A);

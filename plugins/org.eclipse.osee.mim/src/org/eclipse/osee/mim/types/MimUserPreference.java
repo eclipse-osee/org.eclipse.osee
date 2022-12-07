@@ -26,19 +26,17 @@ public class MimUserPreference extends PLGenericDBObject {
    public static final MimUserPreference SENTINEL = new MimUserPreference();
    private boolean isInEditMode = false;
    private boolean hasBranchPref = false;
+   private MimUserGlobalPreferences globalPrefs;
    private List<MimUserColumnPreference> columnPreferences = new LinkedList<MimUserColumnPreference>();
 
-   public MimUserPreference(ArtifactReadable artifact, BranchId branch, boolean hasWriteAccess) {
+   public MimUserPreference(ArtifactReadable artifact, MimUserGlobalPreferences globalPrefs, BranchId branch, boolean hasWriteAccess) {
       super(artifact);
       this.setHasBranchPref(
          this.hasBranchAttribute(artifact.getAttributeValues(CoreAttributeTypes.MimBranchPreferences), branch));
       this.setInEditMode(this.filterBranches(artifact.getAttributeValues(CoreAttributeTypes.MimBranchPreferences),
          branch) && hasWriteAccess);
       this.setColumnPreferences(artifact.getAttributeValues(CoreAttributeTypes.MimColumnPreferences));
-   }
-
-   public MimUserPreference(ArtifactReadable artifact, BranchId branch) {
-      this(artifact, branch, false);
+      this.setGlobalPrefs(globalPrefs);
    }
 
    public MimUserPreference() {
@@ -92,6 +90,18 @@ public class MimUserPreference extends PLGenericDBObject {
     */
    public void setHasBranchPref(boolean hasBranchPref) {
       this.hasBranchPref = hasBranchPref;
+   }
+
+   public MimUserGlobalPreferences getGlobalPrefs() {
+      return globalPrefs;
+   }
+
+   public void setGlobalPrefs(MimUserGlobalPreferences globalPrefs) {
+      this.globalPrefs = globalPrefs;
+   }
+
+   public boolean isHasGlobalPrefs() {
+      return false;
    }
 
    @JsonIgnore
