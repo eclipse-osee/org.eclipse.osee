@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,7 +36,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
@@ -76,9 +77,6 @@ import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
 
 /**
  * @author Donald G. Dunne
@@ -239,7 +237,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                         String compoundValue = "Excluded";
                         boolean f1Applic = feature1Value.equals(f1Config.getValue());
                         boolean f2Applic = feature2Value.equals(f2Config.getValue());
-                        if ((operator == '|' && (f1Applic || f2Applic)) || (operator == '&' && (f1Applic && f2Applic))) {
+                        if ((operator == '|' && (f1Applic || f2Applic))
+                           || (operator == '&' && (f1Applic && f2Applic))) {
                            compoundValue = "Included";
                         }
                         extfDef.addConfiguration(new NameValuePair(f1Config.getName(), compoundValue));
@@ -758,8 +757,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Remove Configuration product applicabilities");
          tx.deleteAttributes(ArtifactId.valueOf(editView), CoreAttributeTypes.ProductApplicability);
          tx.commit();
-      } else if (editView.getProductApplicabilities().isEmpty() || !editView.getProductApplicabilities().equals(
-         view.getProductApplicabilities())) {
+      } else if (editView.getProductApplicabilities().isEmpty()
+         || !editView.getProductApplicabilities().equals(view.getProductApplicabilities())) {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Update Configuration product applicabilities");
          tx.setAttributesFromValues(ArtifactId.valueOf(editView), CoreAttributeTypes.ProductApplicability,
             view.getProductApplicabilities());
@@ -1374,8 +1373,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
       List<ArtifactReadable> currentGroup = view.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getList();
-      if (!(currentGroup.isEmpty()) && !(currentGroup.stream().filter(o -> o.equals(cfgGroup)).collect(
-         Collectors.toList()).isEmpty())) {
+      if (!(currentGroup.isEmpty())
+         && !(currentGroup.stream().filter(o -> o.equals(cfgGroup)).collect(Collectors.toList()).isEmpty())) {
          results.errorf("View is already in the group");
          return results;
       }
@@ -1570,8 +1569,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                               resultApp = applicability;
                            } else {
                               if (!resultApp.equals(applicability)) {
-                                 results.error(
-                                    "Updating Group: " + cfgGroup.getName() + ". Applicabilities differ for non-binary feature: " + feature.getName());
+                                 results.error("Updating Group: " + cfgGroup.getName()
+                                    + ". Applicabilities differ for non-binary feature: " + feature.getName());
                               }
                            }
                         }
@@ -1918,8 +1917,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
       ProductTypeDefinition existingProductType = getProductType(productType.getIdString(), branch);
-      if (existingProductType.isValid() && existingProductType.getName().equals(
-         productType.getName()) && !existingProductType.getId().equals(productType.getId())) {
+      if (existingProductType.isValid() && existingProductType.getName().equals(productType.getName())
+         && !existingProductType.getId().equals(productType.getId())) {
          results.errorf("Product Type Name is already in use.");
          return results;
       }
@@ -2091,17 +2090,30 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       data.setStagePath(uniqueIdDir);
       data.setCustomStageDir("staging");
 
-      applyApplicabilityToFiles(data, branch);
-      try {
-    	  String stagingDir = String.format("%s%sstaging", uniqueIdDir, File.separator);
-    	  String stagingZip = String.format("%s%sstaging.zip", uniqueIdDir, File.separator);
+      results = applyApplicabilityToFiles(data, branch);
 
-    	  zipFolder(new File(stagingDir), new File(stagingZip));
+      if (!data.getViews().keySet().isEmpty()) {
+         results.logf("View: %s\nSource Directory: %s\nStage Directory: %s\nStage Directory Name: %s\n",
+            data.getViews().keySet().iterator().next().toString(), data.getSourcePath(), data.getStagePath(),
+            data.getCustomStageDir());
+      } else {
+         results.logf("Source Directory: %s\nStage Directory: %s\nStage Directory Name: %s\n", data.getSourcePath(),
+            data.getStagePath(), data.getCustomStageDir());
+      }
+
+      results.logf("Source Directory: %s\nStage Directory: %s", sourceDir, uniqueIdDir);
+      try {
+         String stagingDir = String.format("%s%s%s", data.getStagePath(), File.separator, data.getCustomStageDir());
+         String stagingZip = String.format("%s%s%s.zip", data.getStagePath(), File.separator, data.getCustomStageDir());
+
+         results.logf("Staging Directory: %s\nStaging Zip: %s\n", stagingDir, stagingZip);
+
+         zipFolder(new File(stagingDir), new File(stagingZip));
 
       } catch (Exception ex) {
-    	  throw new OseeCoreException(ex, "Unable to zip file");
+         results.error("Zipping file failed. Check if file being zipped exists.");
       }
-         
+
       return results;
    }
 
@@ -2135,84 +2147,84 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    @Override
    public String uploadRunBlockApplicability(Long view, InputStream zip, BranchId branch) {
-	      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-	      if (serverDataPath == null) {
-	         serverDataPath = System.getProperty("user.home");
-	      }
-	      File serverApplicDir = new File(String.format("%s%sblockApplicability", serverDataPath, File.separator));
-	      if (!serverApplicDir.exists()) {
-	         serverApplicDir.mkdirs();
-	      }
-	      String uniqueId = generateUniqueFilePath(serverApplicDir);
-	      String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
-	      String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
-	      try {
-	         new File(uniqueIdDir).mkdir();
-	         String fileZip = String.format("%s.zip", sourceNameDir);
-	         File uploadedZip = new File(fileZip);
-	         byte[] buffer = zip.readAllBytes();
-	         
+      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(String.format("%s%sblockApplicability", serverDataPath, File.separator));
+      if (!serverApplicDir.exists()) {
+         serverApplicDir.mkdirs();
+      }
+      String uniqueId = generateUniqueFilePath(serverApplicDir);
+      String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
+      String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
+      try {
+         new File(uniqueIdDir).mkdir();
+         String fileZip = String.format("%s.zip", sourceNameDir);
+         File uploadedZip = new File(fileZip);
+         byte[] buffer = zip.readAllBytes();
 
-	         OutputStream outStream = new FileOutputStream(uploadedZip);
-	         outStream.write(buffer);
+         OutputStream outStream = new FileOutputStream(uploadedZip);
+         outStream.write(buffer);
 
-	         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-	         ZipEntry zipEntry = zis.getNextEntry();
-	         File unzipLocation = new File(sourceNameDir);
-	         unzipLocation.mkdirs();
-	         while (zipEntry != null) {
-	            File uploadedDirectory = newFile(unzipLocation, zipEntry);
-	            if (zipEntry.isDirectory()) {
-	               if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
-	                  throw new IOException("Failed to create directory " + uploadedDirectory);
-	               }
-	            } else {
-	               // fix for Windows-created archives
-	               File parent = uploadedDirectory.getParentFile();
-	               if (!parent.isDirectory() && !parent.mkdirs()) {
-	                  throw new IOException("Failed to create directory " + parent);
-	               }
-	               // write file content
-	               FileOutputStream fos = new FileOutputStream(uploadedDirectory);
-	               int len;
-	               while ((len = zis.read(buffer)) > 0) {
-	                  fos.write(buffer, 0, len);
-	               }
-	               fos.close();
-	            }
-	            zipEntry = zis.getNextEntry();
-	         }
+         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+         ZipEntry zipEntry = zis.getNextEntry();
+         File unzipLocation = new File(sourceNameDir);
+         unzipLocation.mkdirs();
+         while (zipEntry != null) {
+            File uploadedDirectory = newFile(unzipLocation, zipEntry);
+            if (zipEntry.isDirectory()) {
+               if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+                  throw new IOException("Failed to create directory " + uploadedDirectory);
+               }
+            } else {
+               // fix for Windows-created archives
+               File parent = uploadedDirectory.getParentFile();
+               if (!parent.isDirectory() && !parent.mkdirs()) {
+                  throw new IOException("Failed to create directory " + parent);
+               }
+               // write file content
+               FileOutputStream fos = new FileOutputStream(uploadedDirectory);
+               int len;
+               while ((len = zis.read(buffer)) > 0) {
+                  fos.write(buffer, 0, len);
+               }
+               fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+         }
 
-	         try {
-	            File[] contents = new File(sourceNameDir + File.separator).listFiles();
-	            if (contents.length == 1) {
-	            	sourceNameDir = contents[0].getPath();
-	            }
-	         } catch (Exception ex) {
-	            //DO NOTHING
-	         }
-	         
-	         Map<Long, String> views = new HashMap<>();
-	         views.put(view, "");
-	         
-	         BlockApplicabilityStageRequest data = new BlockApplicabilityStageRequest(views, false, sourceNameDir, uniqueIdDir, "staging");
+         try {
+            File[] contents = new File(sourceNameDir + File.separator).listFiles();
+            if (contents.length == 1) {
+               sourceNameDir = contents[0].getPath();
+            }
+         } catch (Exception ex) {
+            //DO NOTHING
+         }
 
-	         applyApplicabilityToFiles(data, branch);
-	       	  String stagingDir = String.format("%s%sstaging", uniqueIdDir, File.separator);
-	       	  String stagingZip = String.format("%s%sstaging.zip", uniqueIdDir, File.separator);
+         Map<Long, String> views = new HashMap<>();
+         views.put(view, "");
 
-	       	  zipFolder(new File(stagingDir), new File(stagingZip));
+         BlockApplicabilityStageRequest data =
+            new BlockApplicabilityStageRequest(views, false, sourceNameDir, uniqueIdDir, "staging");
 
-	         zip.close();
-	         outStream.close();
-	         zis.closeEntry();
-	         zis.close();
-	      } catch (Exception ex) {
-	         throw new OseeCoreException(ex, "BAT Operation Failed");
-	      }
-	      return uniqueId;
+         applyApplicabilityToFiles(data, branch);
+         String stagingDir = String.format("%s%sstaging", uniqueIdDir, File.separator);
+         String stagingZip = String.format("%s%sstaging.zip", uniqueIdDir, File.separator);
+
+         zipFolder(new File(stagingDir), new File(stagingZip));
+
+         zip.close();
+         outStream.close();
+         zis.closeEntry();
+         zis.close();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "BAT Operation Failed");
+      }
+      return uniqueId;
    }
-   
+
    private void deleteDir(File file) {
       File[] contents = file.listFiles();
       if (contents != null) {
@@ -2243,37 +2255,37 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       return uniqueId;
    }
-   
+
    public void zipFolder(File srcFolder, File destZipFile) throws Exception {
-       try (FileOutputStream fileWriter = new FileOutputStream(destZipFile);
-               ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
-           addFolderToZip(srcFolder, srcFolder, zip);
-       }
+      try (FileOutputStream fileWriter = new FileOutputStream(destZipFile);
+         ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
+         addFolderToZip(srcFolder, srcFolder, zip);
+      }
    }
-   
+
    //recursive function with addFileToZip
    private void addFolderToZip(File rootPath, File srcFolder, ZipOutputStream zip) throws Exception {
-       for (File fileName : srcFolder.listFiles()) {
-           addFileToZip(rootPath, fileName, zip);
-       }
+      for (File fileName : srcFolder.listFiles()) {
+         addFileToZip(rootPath, fileName, zip);
+      }
    }
-   
+
    //recursive function with addFolderToZip
    private void addFileToZip(File rootPath, File srcFile, ZipOutputStream zip) throws Exception {
 
-       if (srcFile.isDirectory()) {
-           addFolderToZip(rootPath, srcFile, zip);
-       } else {
-           byte[] buf = new byte[1024];
-           int len;
-           try (FileInputStream in = new FileInputStream(srcFile)) {
-               String name = srcFile.getPath();
-               name = name.replace(rootPath.getPath(), "");
-               zip.putNextEntry(new ZipEntry(name));
-               while ((len = in.read(buf)) > 0) {
-                   zip.write(buf, 0, len);
-               }
-           }
-       }
+      if (srcFile.isDirectory()) {
+         addFolderToZip(rootPath, srcFile, zip);
+      } else {
+         byte[] buf = new byte[1024];
+         int len;
+         try (FileInputStream in = new FileInputStream(srcFile)) {
+            String name = srcFile.getPath();
+            name = name.replace(rootPath.getPath(), "");
+            zip.putNextEntry(new ZipEntry(name));
+            while ((len = in.read(buf)) > 0) {
+               zip.write(buf, 0, len);
+            }
+         }
+      }
    }
 }
