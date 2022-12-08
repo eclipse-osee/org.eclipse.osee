@@ -66,6 +66,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.orcs.utility,
  org.osgi.service.event
 Osee-JaxRs-Resource: OSEE-INF/web/script/*;path=/orcs/script/ui,
+ OSEE-INF/web/health/*;path=/server/health,
  OSEE-INF/web/example/*;path=/orcs/example/ui,
  OSEE-INF/web/writer/*;path=/orcs/writer/ui,
  OSEE-INF/web/config/*;path=/orcs/types/config/ui,

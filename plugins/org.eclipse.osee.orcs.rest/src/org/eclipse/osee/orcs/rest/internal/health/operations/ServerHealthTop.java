@@ -18,19 +18,19 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Donald G. Dunne
  */
-public class ServerProcesses {
+public class ServerHealthTop {
 
    public String get() {
       StringBuilder sb = new StringBuilder();
       if (Lib.isWindows()) {
-         sb.append("<h3>ps -ef is not available for windows (example below)</h3>");
-         String str = OseeInf.getResourceContents("web/health/psef.txt", ServerProcesses.class);
+         sb.append("<h3>Top is not available for windows (example below)</h3>");
+         String str = OseeInf.getResourceContents("web/health/top.txt", ServerHealthTop.class);
          str = String.format("<pre>%s</pre>", str);
          sb.append(str);
       } else {
-         sb.append("<h3>Machine \"ps -ef | grep java\" results</h3>");
+         sb.append("<h3>Machine \"top\" results</h3>");
          try {
-            ProcessBuilder pb = new ProcessBuilder("ps -ef | grep java", "-l", "1");
+            ProcessBuilder pb = new ProcessBuilder("top", "-n");
             pb.redirectError();
             Process p = pb.start();
             InputStream is = p.getInputStream();
@@ -39,7 +39,7 @@ public class ServerProcesses {
                sb.append((char) value + "</br>");
             }
             int exitCode = p.waitFor();
-            sb.append("ps -ef exited with " + exitCode);
+            sb.append("Top exited with " + exitCode);
             is.close();
          } catch (Exception ex) {
             sb.append(Lib.exceptionToString(ex));
