@@ -34,7 +34,9 @@
 	<ng-container *ngIf="header !== 'platformTypeName2'">
 		<ng-container
 			*ngIf="
-				editableElementHeaders.includes(header.toString());
+				editableElementHeaders.includes(header.toString()) &&
+					(header !== 'enumLiteral' ||
+						element.logicalType !== 'enumeration');
 				else no_edit
 			">
 			<osee-messaging-edit-element-field
@@ -57,18 +59,35 @@
 		</ng-container>
 	</ng-container>
 </ng-container>
+
 <ng-template #no_edit>
-	<osee-messaging-sub-element-table-no-edit-field
-		[filter]="filter"
-		[header]="header"
-		[element]="element"
-		[width]="(layout | async)?.tableRecommendations?.width || ''"
-		[attr.data-cy]="
-			'element-table-' +
-			header +
-			'-' +
-			element.name +
-			'-' +
-			element[header]
-		"></osee-messaging-sub-element-table-no-edit-field>
+	<ng-container
+		*ngIf="
+			header === 'enumLiteral' && element.logicalType === 'enumeration'
+		">
+		<div class="text-align-start">
+			<ng-container *ngFor="let item of element.enumLiteral.split('\n')">
+				{{ item }}
+				<br />
+			</ng-container>
+		</div>
+	</ng-container>
+	<ng-container
+		*ngIf="
+			header !== 'enumLiteral' || element.logicalType !== 'enumeration'
+		">
+		<osee-messaging-sub-element-table-no-edit-field
+			[filter]="filter"
+			[header]="header"
+			[element]="element"
+			[width]="(layout | async)?.tableRecommendations?.width || ''"
+			[attr.data-cy]="
+				'element-table-' +
+				header +
+				'-' +
+				element.name +
+				'-' +
+				element[header]
+			"></osee-messaging-sub-element-table-no-edit-field>
+	</ng-container>
 </ng-template>

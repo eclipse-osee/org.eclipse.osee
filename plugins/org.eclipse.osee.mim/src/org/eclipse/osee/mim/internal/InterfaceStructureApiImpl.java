@@ -51,7 +51,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    private final InterfaceElementApi interfaceElementApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final List<AttributeTypeId> structureAttributeList;
-   private final List<RelationTypeSide> relations;
    private final List<RelationTypeSide> affectedRelations;
 
    InterfaceStructureApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceElementApi interfaceElementApi, InterfaceMessageApi interfaceMessageApi) {
@@ -60,7 +59,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       this.interfaceElementApi = interfaceElementApi;
       this.interfaceMessageApi = interfaceMessageApi;
       this.structureAttributeList = this.createStructureAttributeList();
-      this.relations = this.createRelationTypeSideList();
       this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
@@ -73,13 +71,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
     */
    public void setAccessor(ArtifactAccessor<InterfaceStructureToken> accessor) {
       this.accessor = accessor;
-   }
-
-   private List<RelationTypeSide> createRelationTypeSideList() {
-      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
-      relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
-      return relations;
    }
 
    private List<RelationTypeSide> createAffectedRelationTypeSideList() {
@@ -399,7 +390,9 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public List<RelationTypeSide> getFollowRelationDetails() {
-      return this.relations;
+      return Arrays.asList(CoreRelationTypes.InterfaceStructureContent_DataElement,
+         CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet);
    }
 
    @Override

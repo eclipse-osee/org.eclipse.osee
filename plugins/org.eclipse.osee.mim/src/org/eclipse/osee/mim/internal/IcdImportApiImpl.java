@@ -126,22 +126,11 @@ public class IcdImportApiImpl implements MimImportApi {
       List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
 
       for (PlatformTypeToken type : existingPlatformTypes) {
-         String typeKey = "";
-         if (type.getInterfaceLogicalType().equals("enumeration")) {
-            InterfaceEnumerationSet enumSet = type.getEnumSet();
-            if (enumSet != null && enumSet.getEnumerations().size() > 0) {
-               for (InterfaceEnumeration en : enumSet.getEnumerations()) {
-                  typeKey += en.getOrdinal() + "=" + en.getName() + ";";
-               }
-            } else {
-               typeKey = type.getName();
-            }
-         } else {
-            typeKey = mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(type.getInterfaceLogicalType(),
-               type.getInterfacePlatformTypeMinval(), type.getInterfacePlatformTypeMaxval(),
-               type.getInterfacePlatformTypeValidRangeDescription(), type.getInterfacePlatformTypeUnits(),
-               Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
-         }
+         String typeKey = type.getInterfaceLogicalType().equals("enumeration") ? getEnumNameKey(
+            type.getEnumSet().getName()) : mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(
+               type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
+               type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeValidRangeDescription(),
+               type.getInterfacePlatformTypeUnits(), Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
          platformTypes.put(typeKey, new PlatformTypeImportToken(type.getId(), type.getName()));
       }
 
@@ -348,21 +337,13 @@ public class IcdImportApiImpl implements MimImportApi {
             pType = platformTypes.get("boolean");
          } else if (logicalType.equals("enumeration")) {
             String enumName = enumDesc.split("\n")[0].split(":")[0].replaceAll("[()]", "").trim();
-            enumName = name.equals("Taskfile Type") ? structure.getDescription().toLowerCase().contains(
-               "command taskfile") ? "Command Taskfiles" : "Status Taskfiles" : enumName;
+            enumName = name.equals("Taskfile Type") ? structure.getName().toLowerCase().contains(
+               "command taskfile") ? "Command Taskfile" : "Status Taskfile" : enumName;
             enumName = enumName.isEmpty() || (enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches(
                "^\\d+\\s*")) ? name : enumName;
+            enumName = enumName.matches("^C\\d+$") ? name : enumName;
 
-            String[] enumDescLines = enumDesc.split("\n");
-            String key = "";
-            for (String line : enumDescLines) {
-               if (line.trim().matches("^\\s*\\d+\\s*[-=].*")) {
-                  String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
-                  int ordinal = Integer.parseInt(splitLine[0]);
-                  String enumerationName = splitLine[1].trim();
-                  key += ordinal + "=" + enumerationName + ";";
-               }
-            }
+            String key = getEnumNameKey(enumName);
             key = key.isEmpty() ? enumName : key;
 
             if (platformTypes.containsKey(key)) {
@@ -371,18 +352,18 @@ public class IcdImportApiImpl implements MimImportApi {
                pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", "", "", "",
                   validRange);
                incrementId();
-               platformTypes.put(enumName, pType);
+               platformTypes.put(getEnumNameKey(enumName), pType);
                platformTypesToCreate.add(pType);
 
                InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(id, enumName);
                incrementId();
-               enumSet.setDescription(enumDesc);
                enumSet.setApplicability(ApplicabilityToken.BASE);
                summary.getEnumSets().add(enumSet);
                summary.getPlatformTypeEnumSetRelations().put(pType.getIdString(),
                   new LinkedList<>(Arrays.asList(enumSet.getIdString())));
 
-               for (String line : enumDescLines) {
+               String enumSetDescription = "";
+               for (String line : enumDesc.split("\n")) {
                   if (line.trim().matches("^\\s*\\d+\\s*[-=].*") || line.trim().matches("^0x.*\\s*[-=].*")) {
                      String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
                      long ordinal =
@@ -401,6 +382,7 @@ public class IcdImportApiImpl implements MimImportApi {
                      summary.getEnumSetEnumRelations().put(enumSet.getIdString(), rels);
                   }
                }
+               enumSet.setDescription(enumSetDescription.trim());
             }
          } else {
             // Transform data
@@ -464,6 +446,7 @@ public class IcdImportApiImpl implements MimImportApi {
             element.setInterfaceElementAlterable(alterable);
             element.setDescription(description);
             element.setNotes(notes);
+            element.setEnumLiteral(logicalType.equals("enumeration") ? "" : enumDesc); // Enumeration elements use the enum set description for the enum literals
             elements.put(elementKey, element);
             summary.getElements().add(element);
             summary.getElementPlatformTypeRelations().put(element.getIdString(),
@@ -499,6 +482,10 @@ public class IcdImportApiImpl implements MimImportApi {
          result = str;
       }
       return result;
+   }
+
+   private String getEnumNameKey(String enumName) {
+      return enumName.toUpperCase().replace(" ", "_");
    }
 
    private boolean compareElementsForArray(String name1, String name2, Long pTypeId1, Long pTypeId2) {

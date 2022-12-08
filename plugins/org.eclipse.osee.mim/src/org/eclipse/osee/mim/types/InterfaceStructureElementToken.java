@@ -100,6 +100,9 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
          this.setInterfacePlatformTypeDescription(pType.getDescription() != null ? pType.getDescription() : "");
          this.setApplicability(!art.getApplicabilityToken().getId().equals(
             -1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+         if (pType.getEnumSet().isValid()) {
+            this.setEnumLiteral(pType.getEnumSet().getDescription());
+         }
       } else {
          this.setPlatformType(PlatformTypeToken.SENTINEL);
          this.setInterfacePlatformTypeBitSize("0");

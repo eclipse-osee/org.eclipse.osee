@@ -51,6 +51,15 @@ public class InterfaceEnumeration extends PLGenericDBObject {
       this(Id.SENTINEL, "");
    }
 
+   @JsonIgnore
+   public String getFormattedOrdinal() {
+      if (InterfaceEnumOrdinalType.HEX.equals(getOrdinalType())) {
+         return "0x" + Long.toHexString(getOrdinal()).toUpperCase();
+      } else {
+         return getOrdinal().toString();
+      }
+   }
+
    /**
     * @return the applicability
     */
@@ -90,6 +99,11 @@ public class InterfaceEnumeration extends PLGenericDBObject {
    @JsonIgnore
    public ArtifactReadable getArtifactReadable() {
       return artifactReadable;
+   }
+
+   @Override
+   public String toString() {
+      return getFormattedOrdinal() + " = " + getName();
    }
 
 }
