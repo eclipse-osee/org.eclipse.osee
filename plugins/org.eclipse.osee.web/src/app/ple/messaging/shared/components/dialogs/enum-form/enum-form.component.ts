@@ -64,12 +64,12 @@ export class EnumFormComponent implements OnChanges {
 						filter((enumeration) => enumeration.name !== ''),
 						map(
 							(enumeration) =>
-								` ${enumeration.name}=${enumeration.ordinal} `
+								`${enumeration.ordinal} = ${enumeration.name}`
 						)
 					)
 				),
 				reduce((acc, curr) => [...acc, curr], [] as string[]),
-				map((value) => name + value.toString())
+				map((value) => value.join('\n'))
 			)
 		),
 		debounceTime(500)
