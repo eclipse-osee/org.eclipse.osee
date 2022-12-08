@@ -13,12 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.internal.health;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,30 +25,26 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
-import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.health.HealthLink;
 import org.eclipse.osee.orcs.health.HealthLinks;
 import org.eclipse.osee.orcs.health.ServerStatus;
 import org.eclipse.osee.orcs.rest.internal.health.operations.BuildServerStatusOperation;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerBalancerStatusTable;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusActiveMq;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusOverviewTable;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerStatusTable;
-import org.eclipse.osee.orcs.rest.internal.health.operations.UsageOperations;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthActiveMq;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthBalancers;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthExec;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthLinks;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthLogs;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthMain;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthOverview;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthOverviewDetails;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthProcesses;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthTypes;
+import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthUsage;
 
 /**
  * @author Donald G. Dunne
@@ -74,59 +66,26 @@ public final class ServerHealthEndpointImpl {
    }
 
    @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String get() {
+      ServerHealthMain main = new ServerHealthMain(orcsApi);
+      return main.getHtml();
+   }
+
+   @GET
    @Path("usage")
    @Produces(MediaType.TEXT_HTML)
    public String getUsage(@Context UriInfo uriInfo) {
-      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
-      String months = "1";
-      Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
-      if (!entrySet.isEmpty()) {
-         for (Entry<String, List<String>> entry : entrySet) {
-            if (entry.getKey().toLowerCase().equals("months")) {
-               months = entry.getValue().iterator().next();
-            }
-         }
-      }
-      if (!Strings.isNumeric(months)) {
-         return AHTML.simplePage("Invalid Months = " + months);
-      }
-      UsageOperations ops = new UsageOperations(orcsApi, jdbcClient);
-      return ops.getUsageHtml(months);
+      ServerHealthUsage ops = new ServerHealthUsage(uriInfo, orcsApi, jdbcClient);
+      return ops.getHtml();
    }
 
    @GET
    @Path("links")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthLinks getLinks() {
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         CoreArtifactTokens.GlobalPreferences).getArtifact();
-      String json = "";
-      List<String> values = artifact.getAttributeValues(CoreAttributeTypes.GeneralStringData);
-      for (String value : values) {
-         if (value.startsWith(OseeProperties.OSEE_HEALTH_STATUS_LINKS)) {
-            json = value.replace(OseeProperties.OSEE_HEALTH_STATUS_LINKS + "=", "");
-            break;
-         }
-      }
-      if (Strings.isInValid(json)) {
-         return new HealthLinks();
-      }
-      HealthLinks links = JsonUtil.readValue(json, HealthLinks.class);
-      return links;
-   }
-
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String get() {
-      String mainHtml = OseeInf.getResourceContents("web/health/main.html", ServerHealthEndpointImpl.class);
-      StringBuffer sb = new StringBuffer();
-      HealthLinks links = getLinks();
-      for (HealthLink link : links.getLinks()) {
-         sb.append(String.format("<li><a target=\"_blank\" title=\"%s\" href=\"%s\">%s</a></li>\n", link.getName(),
-            link.getUrl(), link.getName()));
-      }
-      mainHtml = mainHtml.replace("PUT_LI_HERE", sb.toString());
-      return mainHtml;
+      ServerHealthLinks links = new ServerHealthLinks(orcsApi);
+      return links.getLinks();
    }
 
    @GET
@@ -141,28 +100,62 @@ public final class ServerHealthEndpointImpl {
    @Path("activemq")
    @Produces(MediaType.TEXT_HTML)
    public String getActiveMq() {
-      return (new ServerStatusActiveMq(applicationServerManager, jdbcClient)).getHtml();
+      ServerHealthActiveMq amq = new ServerHealthActiveMq(applicationServerManager, jdbcClient);
+      return amq.getHtml();
    }
 
    @GET
-   @Path("server/overview")
+   @Path("overview")
    @Produces(MediaType.TEXT_HTML)
-   public String getMainStatus() {
-      return (new ServerStatusOverviewTable(jdbcClient)).getHtml();
+   public String getServerHealthOverview() {
+      ServerHealthOverview overview = new ServerHealthOverview(jdbcClient);
+      return overview.getHtml();
+   }
+
+   @Path("overview/details")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getServerHealthDetails() {
+      ServerHealthOverviewDetails details = new ServerHealthOverviewDetails(jdbcClient, false);
+      return details.getHtml();
+   }
+
+   @Path("overview/details/all")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getServerHealthDetailsAll() {
+      ServerHealthOverviewDetails detailsAll = new ServerHealthOverviewDetails(jdbcClient, true);
+      return detailsAll.getHtml();
    }
 
    @GET
-   @Path("server/balancer")
+   @Path("balancer")
    @Produces(MediaType.TEXT_HTML)
    public String getBalancerStatus() {
-      return (new ServerBalancerStatusTable(jdbcClient)).getHtml();
+      return (new ServerHealthBalancers(jdbcClient)).getHtml();
+   }
+
+   @GET
+   @Path("logs")
+   @Produces(MediaType.TEXT_HTML)
+   public String getServerLogs() {
+      return (new ServerHealthLogs(jdbcClient)).getHtml();
+   }
+
+   @GET
+   @Path("types")
+   @Produces(MediaType.TEXT_HTML)
+   public String getServerTypesHealth() {
+      return (new ServerHealthTypes(jdbcClient)).getHtml();
    }
 
    @Path("top")
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTop() throws Exception {
-      Scanner s = new Scanner(Runtime.getRuntime().exec("top -n 1").getInputStream()).useDelimiter("\\A");
+      Scanner s =
+         new Scanner(Runtime.getRuntime().exec(new String[] {"bash", "-c", "top -n 1"}).getInputStream()).useDelimiter(
+            "\\A");
       String results = s.hasNext() ? s.next() : "";
       s.close();
       return AHTML.simplePage(results);
@@ -179,48 +172,17 @@ public final class ServerHealthEndpointImpl {
    @Path("exec")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String exec(@Context UriInfo uriInfo) throws IOException {
-      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
-      List<String> cmds = queryParameters.get("cmd");
-      if (cmds == null || cmds.isEmpty()) {
-         return AHTML.simplePage("Need cmd parameter.");
-      }
-      String cmd = cmds.iterator().next();
-      System.err.println(String.format("exec cmd [%s]", cmd));
-      try {
-         Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
-         String results = s.hasNext() ? s.next() : "";
-         s.close();
-         results = String.format("cmd [%s]<br/><br/>%s", cmd, results.replaceAll("\n", "<br/>"));
-         return AHTML.simplePage(results);
-      } catch (Exception ex) {
-         return AHTML.simplePage(String.format("cmd [%s]<br/><br/>Exception: %s", cmd, Lib.exceptionToString(ex)));
-      }
+   public String exec(@Context UriInfo uriInfo) {
+      ServerHealthExec exec = new ServerHealthExec(uriInfo);
+      return exec.getHtml();
    }
 
    @Path("processes")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String serverProcesses() throws IOException {
-      Scanner s = new Scanner(Runtime.getRuntime().exec("ps -ef | grep java").getInputStream()).useDelimiter("\\A");
-      String results = s.hasNext() ? s.next() : "";
-      s.close();
-      results = results.replaceAll("\n", "<br/>");
-      return AHTML.simplePage(results);
-   }
-
-   @Path("status/all")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String serverStatusAsll() {
-      return (new ServerStatusTable(jdbcClient, false)).getHtml();
-   }
-
-   @Path("status/all/detail")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String serverStatusAsllDetails() {
-      return (new ServerStatusTable(jdbcClient, true)).getHtml();
+   public String serverProcesses() {
+      ServerHealthProcesses proc = new ServerHealthProcesses(jdbcClient);
+      return proc.getHtml();
    }
 
 }

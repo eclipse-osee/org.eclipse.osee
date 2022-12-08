@@ -17,7 +17,9 @@ package org.eclipse.osee.orcs.health;
  * @author Donald G. Dunne
  */
 public enum StatusKey {
-   ServerUri("URI", false),
+   StartTime("Start", false),
+   UpTime("UpTime", false),
+   SupportedVersions("Versions", false),
    HeapMemoryAllocated("Heap Mem Alloc", false),
    HeapMemoryUsed("Heap Mem-Used", false),
    HeapMemoryMax("Heap Mem-Max", false),
@@ -26,16 +28,14 @@ public enum StatusKey {
    NonHeapMemoryMax("Non-Heap Mem-Max", false),
    ActiveThreads("Thread Activity", true),
    ServerId("ID", true),
-   StartTime("Start", true),
    CodeLocation("Code Loc", true),
    BinaryDataPath("Binary", true),
    AuthenticationScheme("Auth-Scheme", true),
    AuthenticationSchemeSupported("Auth-Supported", true),
-   SupportedVersions("Versions", true),
    SystemLoad("SystemLoad", false),
-   Unknown("Unknown", true),
    GarbageCollector("GC", true),
-   UpTime("UpTime", false);
+   ServerUri("URI", true),
+   Unknown("Unknown", true);
 
    private final String shortName;
    private final boolean details;

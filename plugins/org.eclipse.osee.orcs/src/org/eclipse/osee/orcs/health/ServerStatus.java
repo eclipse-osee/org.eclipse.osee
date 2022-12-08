@@ -45,7 +45,7 @@ public class ServerStatus {
          // do nothing
       }
       if (key == StatusKey.Unknown) {
-         String newStr = data.get(StatusKey.Unknown);
+         String newStr = data.get(StatusKey.Unknown.name());
          if (newStr == null) {
             newStr = String.format("[%s][%s]", key.name(), value);
          } else {

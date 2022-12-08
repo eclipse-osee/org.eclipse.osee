@@ -10,44 +10,45 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
+ * Shows table of list of servers (from OSEE_INFO) and pings for server alive and database connection from that server
+ * works. Red/green icons will be shown based on ping status.
+ *
  * @author Donald G. Dunne
  */
-public class ServerProcessesOperation {
+public class ServerHealthOverview {
 
    private final JdbcClient jdbcClient;
 
-   public ServerProcessesOperation(JdbcClient jdbcClient) {
+   public ServerHealthOverview(JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
    }
 
    public String getHtml() {
       List<String> servers = ServerUtils.getServers(jdbcClient);
       if (servers.size() == 0) {
-         return AHTML.simplePage("No application.servers configured in osee.json file");
+         return AHTML.simplePage("No osee.health.servers configured in osee_info table");
       }
 
       StringBuilder sb = new StringBuilder();
-      sb.append("<h3>Server Status</h3>");
+
+      sb.append("<h3>OSEE Health - Server Health - Overview</h3>");
       sb.append(AHTML.beginMultiColumnTable(95, 3));
       List<String> headers = new LinkedList<>();
-      headers.add("Name");
-      headers.add("Alive");
+      headers.add("Server:Port (select to see server status)");
+      headers.add("Server Alive");
       headers.add("DB Alive");
       sb.append(AHTML.addHeaderRowMultiColumnTable(headers));
       for (String server : servers) {
          addServer(sb, server);
       }
       sb.append(AHTML.endMultiColumnTable());
+
       String html = AHTML.simplePage(sb.toString());
       return html;
    }
@@ -58,10 +59,8 @@ public class ServerProcessesOperation {
       values.add(AHTML.getHyperlinkNewTab(statusUrl, server));
       String urlStr = String.format("http://%s%s", server, "/ide/versions");
       try {
-         URL url = new URL(urlStr);
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
-         if (result.wasSuccessful()) {
+         String results = ServerUtils.getUrlResults(urlStr);
+         if (results.contains("\"versions\"")) {
             values.add(ServerUtils.getImage(ServerUtils.GREEN_DOT, urlStr));
          } else {
             values.add(ServerUtils.getImage(ServerUtils.RED_DOT, urlStr));
@@ -69,12 +68,10 @@ public class ServerProcessesOperation {
       } catch (Exception ex) {
          values.add(ServerUtils.getImage(ServerUtils.RED_DOT, urlStr));
       }
-      urlStr = String.format("http://%s%s", server, "/orcs/datastore/info");
+      urlStr = String.format("http://%s%s", server, "/orcs/branches");
       try {
-         URL url = new URL(urlStr);
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
-         if (result.wasSuccessful()) {
+         String results = ServerUtils.getUrlResults(urlStr);
+         if (results.contains("\"System Root Branch\"")) {
             values.add(ServerUtils.getImage(ServerUtils.GREEN_DOT, urlStr));
          } else {
             values.add(ServerUtils.getImage(ServerUtils.RED_DOT, urlStr));

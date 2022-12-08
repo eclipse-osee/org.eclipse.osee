@@ -20,11 +20,11 @@ import org.eclipse.osee.jdbc.JdbcClient;
 /**
  * @author Donald G. Dunne
  */
-public class ServerStatusActiveMq {
+public class ServerHealthActiveMq {
 
    private final JdbcClient jdbcClient;
 
-   public ServerStatusActiveMq(IApplicationServerManager appServerMgr, JdbcClient jdbcClient) {
+   public ServerHealthActiveMq(IApplicationServerManager appServerMgr, JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
    }
 
@@ -46,7 +46,9 @@ public class ServerStatusActiveMq {
                urlImage = ServerUtils.getImage(ServerUtils.RED_DOT, activeMqUrl);
                result = "ActiveMQ - Down";
             }
-            return AHTML.simplePageWithImageUrl("Active MQ Event Service", urlImage, result);
+            return AHTML.simplePageWithImageUrl(
+               String.format("<a href=\"%s\">Active MQ Event Service - Select for Dashboard</a>", activeMqUrl),
+               urlImage, result);
          } catch (Exception ex) {
             return AHTML.simplePage("Active MQ Event Service", Lib.exceptionToString(ex));
          }

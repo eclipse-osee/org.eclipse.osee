@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -23,14 +19,17 @@ import org.eclipse.osee.orcs.health.ServerStatus;
 import org.eclipse.osee.orcs.health.StatusKey;
 
 /**
+ * Shows a basic table of servers and the basic server/status results. If details==true, then all fields will be shown
+ * including threads and gc.
+ *
  * @author Donald G. Dunne
  */
-public class ServerStatusTable {
+public class ServerHealthOverviewDetails {
 
    private final JdbcClient jdbcClient;
    private final boolean details;
 
-   public ServerStatusTable(JdbcClient jdbcClient, boolean details) {
+   public ServerHealthOverviewDetails(JdbcClient jdbcClient, boolean details) {
       this.jdbcClient = jdbcClient;
       this.details = details;
    }
@@ -39,7 +38,7 @@ public class ServerStatusTable {
 
       List<String> servers = ServerUtils.getServers(jdbcClient);
       if (servers.size() == 0) {
-         return AHTML.simplePage("No application.servers configured in osee.json file");
+         return AHTML.simplePage("No osee.health.servers configured in osee_info table");
       }
 
       StringBuilder sb = new StringBuilder();
@@ -66,13 +65,11 @@ public class ServerStatusTable {
       String statusUrl = "http://" + server + "/server/health/status";
       values.add(AHTML.getHyperlink(statusUrl, server));
       try {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         URL url = new URL(String.format("http://%s%s", server, "/server/health/status"));
-         AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
-         if (result.wasSuccessful()) {
+         String urlStr = String.format("http://%s%s", server, "/server/health/status");
+         String results = ServerUtils.getUrlResults(urlStr);
+         if (results.contains("{\"data\" ")) {
             values.add("Ok");
-            String json = outputStream.toString(result.getEncoding());
-            ServerStatus stat = JsonUtil.readValue(json, ServerStatus.class);
+            ServerStatus stat = JsonUtil.readValue(results, ServerStatus.class);
             for (StatusKey key : StatusKey.values()) {
                if (details || !key.isDetails()) {
                   String value = stat.get(key);
@@ -83,7 +80,7 @@ public class ServerStatusTable {
                }
             }
          } else {
-            values.add("Not successful: " + result.getResult());
+            values.add("Not successful: " + results);
          }
       } catch (Exception ex) {
          values.add("Exception: " + ex.getMessage());

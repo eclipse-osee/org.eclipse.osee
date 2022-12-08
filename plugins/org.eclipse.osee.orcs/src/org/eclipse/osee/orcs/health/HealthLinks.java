@@ -30,4 +30,8 @@ public class HealthLinks {
       this.links = links;
    }
 
+   public void add(HealthLink link) {
+      links.add(link);
+   }
+
 }

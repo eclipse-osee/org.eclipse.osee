@@ -10,24 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
  * @author Donald G. Dunne
  */
-public class ServerBalancerStatusTable {
+public class ServerHealthBalancers {
 
    private final JdbcClient jdbcClient;
 
-   public ServerBalancerStatusTable(JdbcClient jdbcClient) {
+   public ServerHealthBalancers(JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
    }
 
@@ -62,10 +58,8 @@ public class ServerBalancerStatusTable {
             String balMgrUrl = "http://" + server + "/balancer-manager";
             values.add(AHTML.getHyperlinkNewTab(balMgrUrl, server));
             try {
-               URL url = new URL(balMgrUrl);
-               ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-               AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
-               if (result.wasSuccessful()) {
+               String results = ServerUtils.getUrlResults(balMgrUrl);
+               if (results.contains("Load Balancer Manager")) {
                   values.add(ServerUtils.getImage(ServerUtils.GREEN_DOT, balMgrUrl));
                } else {
                   values.add(ServerUtils.getImage(ServerUtils.RED_DOT, balMgrUrl));

@@ -24,12 +24,15 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityEntry;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -37,20 +40,39 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Donald G. Dunne
  */
-public class UsageOperations {
+public class ServerHealthUsage {
 
    private static final String ALL_USERS = "All Users";
    private final JdbcClient jdbcClient;
    private final OrcsApi orcsApi;
    private final Pattern verPattern = Pattern.compile("\"version\":\"(.*?)\"");
    private final HashCollectionSet<String, String> byCategory = new HashCollectionSet<>();
+   private final UriInfo uriInfo;
 
-   public UsageOperations(OrcsApi orcsApi, JdbcClient jdbcClient) {
+   public ServerHealthUsage(UriInfo uriInfo, OrcsApi orcsApi, JdbcClient jdbcClient) {
+      this.uriInfo = uriInfo;
       this.orcsApi = orcsApi;
       this.jdbcClient = jdbcClient;
    }
 
-   public String getUsageHtml(String months) {
+   public String getHtml() {
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
+      String months = "1";
+      Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
+      if (!entrySet.isEmpty()) {
+         for (Entry<String, List<String>> entry : entrySet) {
+            if (entry.getKey().toLowerCase().equals("months")) {
+               months = entry.getValue().iterator().next();
+            }
+         }
+      }
+      if (!Strings.isNumeric(months)) {
+         return AHTML.simplePage("Invalid Months = " + months);
+      }
+      return getHtml(months);
+   }
+
+   public String getHtml(String months) {
       Collection<ActivityEntry> logMsgs = getUsageLogEntries(months);
       return getHtml(String.format("OSEE usage in past %s month(s) as of %s", months, DateUtil.getDateNow()), logMsgs);
    }
