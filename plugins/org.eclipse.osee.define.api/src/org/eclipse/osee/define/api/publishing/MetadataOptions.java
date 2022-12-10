@@ -25,49 +25,50 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * following JSON schema specifies the metadata section of the renderer options in a publishing template:
  *
  * <pre>
-      "MetadataOptions": {
-         "$id": "#root/MetadataOptions",
-         "title": "Metadataoptions",
-         "type": "array",
+      "MetadataOptions":
+      {
+         "$id":     "#root/MetadataOptions",
+         "title":   "Metadataoptions",
+         "type":    "array",
          "default": [],
-         "items":{
-            "$id": "#root/MetadataOptions/items",
-            "title": "Items",
-            "type": "object",
-            "required": [
-               "Type",
-               "Format",
-               "Label"
-            ],
-            "properties": {
-               "Type": {
-                  "$id": "#root/MetadataOptions/items/Type",
-                  "title": "Type",
-                  "type": "string",
-                  "enum": ["Artifact Type", "Artifact Id", "Applicability"]
+         "items":
+         {
+            "$id":        "#root/MetadataOptions/items",
+            "title":      "Items",
+            "type":       "object",
+            "required":   [
+                            "Type",
+                            "Format",
+                            "Label"
+                          ],
+            "properties":
+            {
+               "Type":
+               {
+                  "$id":     "#root/MetadataOptions/items/Type",
+                  "title":   "Type",
+                  "type":    "string",
+                  "enum":    [ "Artifact Type", "Artifact Id", "Applicability" ]
                },
-               "Format": {
-                  "$id": "#root/MetadataOptions/items/Format",
-                  "title": "Format",
-                  "type": "string",
+               "Format":
+               {
+                  "$id":     "#root/MetadataOptions/items/Format",
+                  "title":   "Format",
+                  "type":    "string",
                   "default": "",
-                  "examples": [
-                     ""
-                  ],
                   "pattern": "^.*$"
                },
-               "Label": {
-                  "$id": "#root/MetadataOptions/items/Label",
-                  "title": "Label",
-                  "type": "string",
+               "Label":
+               {
+                  "$id":     "#root/MetadataOptions/items/Label",
+                  "title":   "Label",
+                  "type":    "string",
                   "default": "",
-                  "examples": [
-                     ""
-                  ],
                   "pattern": "^.*$"
                }
             }
          }
+      }
  * </pre>
  *
  * The "Type" enumeration has the following supported functions:
@@ -123,7 +124,7 @@ public class MetadataOptions implements ToMessage {
    private String label;
 
    /**
-    * Save the "Type" JSON enumeration specifying the pseuo attribute.
+    * Save the "Type" JSON enumeration specifying the pseudo attribute.
     */
 
    @JsonProperty("Type")

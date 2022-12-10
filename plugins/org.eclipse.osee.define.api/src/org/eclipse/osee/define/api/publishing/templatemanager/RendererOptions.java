@@ -17,11 +17,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.osee.define.api.publishing.AttributeOptions;
 import org.eclipse.osee.define.api.publishing.MetadataOptions;
 import org.eclipse.osee.define.api.publishing.OutliningOptions;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -33,35 +33,18 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 public class RendererOptions implements ToMessage {
 
-   @JsonProperty("AttributeOptions")
-   private AttributeOptions[] attributeOptions;
+   /**
+    * The allowable value for the member {@link #elementType}.
+    */
 
-   @JsonProperty("ElementType")
-   private String elementType;
-
-   @JsonProperty("MetadataOptions")
-   private MetadataOptions[] metadataOptions;
-
-   @JsonProperty("OutliningOptions")
-   private OutliningOptions[] outliningOptions;
-
-   public RendererOptions() {
-      this.attributeOptions = null;
-      this.elementType = null;
-      this.metadataOptions = null;
-      this.outliningOptions = null;
-   }
-
-   public RendererOptions(String elementType, OutliningOptions[] outliningOptions, AttributeOptions[] attributeOptions, MetadataOptions[] metadataOptions) {
-      this.attributeOptions = Objects.requireNonNull(attributeOptions,
-         "RendererOptions::new, parameter \"attributeOptions\" cannot be null.");
-      this.elementType =
-         Objects.requireNonNull(elementType, "RendererOptions::new, parameter \"elementType\" cannot be null.");
-      this.metadataOptions =
-         Objects.requireNonNull(metadataOptions, "RendererOptions::new, parameter \"metadataOptions\" cannot be null.");
-      this.outliningOptions = Objects.requireNonNull(outliningOptions,
-         "RendererOptions::new, parameter \"outliningOptions\" cannot be null.");
-   }
+   //@formatter:off
+   private static Set<String> elementTypes =
+      Set.of
+         (
+            "Artifact",
+            "NestedTemplate"
+         );
+   //@formatter:off
 
    public static RendererOptions create(String jsonRendererOptionsString) {
       try {
@@ -72,6 +55,83 @@ public class RendererOptions implements ToMessage {
       } catch (Exception e) {
          throw new InvalidRendererOptionsException(jsonRendererOptionsString, e);
       }
+   }
+
+
+   /**
+    * Validates the provided value for the member {@link #elementType}.
+    *
+    * @param elementType the value to check.
+    * @throws IllegalArgumentException when the parameter <code>elementType</code> is not one of the following strings:
+    * <ul>
+    * <li>"Artifact"</li>
+    * <li>"NestedTemplate"</li>
+    * </ul>
+    */
+
+   private static void validateElementType(String elementType) {
+      if (!RendererOptions.elementTypes.contains(elementType)) {
+         //@formatter:off
+         throw
+            new IllegalArgumentException
+                   (
+                      new Message()
+                             .title( "RendererOptions::validateElementType, parameter \"elementType\" has an invalid value." )
+                             .indentInc()
+                             .segment( "Specified elementType", elementType )
+                             .segmentIndexedArray( "Allowed Values", RendererOptions.elementTypes.toArray() )
+                             .toString()
+                   );
+         //@formatter:on
+      }
+   }
+
+   @JsonProperty("AttributeOptions")
+   private AttributeOptions[] attributeOptions;
+
+   /**
+    * Known values:
+    * <ul>
+    * <li>Artifact</li>
+    * <li>NestedTemplate</li>
+    * </ul>
+    */
+
+   @JsonProperty("ElementType")
+   private String elementType;
+
+   @JsonProperty("MetadataOptions")
+   private MetadataOptions[] metadataOptions;
+
+   @JsonProperty("NestedTemplates")
+   private NestedTemplates[] nestedTemplates;
+
+   @JsonProperty("OutliningOptions")
+   private OutliningOptions[] outliningOptions;
+
+   public RendererOptions() {
+      this.attributeOptions = null;
+      this.elementType = null;
+      this.metadataOptions = null;
+      this.nestedTemplates = null;
+      this.outliningOptions = null;
+   }
+
+   public RendererOptions(String elementType, OutliningOptions[] outliningOptions, AttributeOptions[] attributeOptions, MetadataOptions[] metadataOptions, NestedTemplates[] nestedTemplates) {
+
+      this.attributeOptions = Objects.requireNonNull(attributeOptions,
+         "RendererOptions::new, parameter \"attributeOptions\" cannot be null.");
+
+      Objects.requireNonNull(elementType, "RendererOptions::new, parameter \"elementType\" cannot be null.");
+      RendererOptions.validateElementType(elementType);
+      this.elementType = elementType;
+
+      this.metadataOptions =
+         Objects.requireNonNull(metadataOptions, "RendererOptions::new, parameter \"metadataOptions\" cannot be null.");
+      this.nestedTemplates =
+         Objects.requireNonNull(nestedTemplates, "RendererOptions::new, parameter \"nestedTemplates\" cannot be null.");
+      this.outliningOptions = Objects.requireNonNull(outliningOptions,
+         "RendererOptions::new, parameter \"outliningOptions\" cannot be null.");
    }
 
    public void defaults() {
@@ -87,6 +147,11 @@ public class RendererOptions implements ToMessage {
          this.metadataOptions = new MetadataOptions[0];
       } else {
          Arrays.stream(this.metadataOptions).forEach(MetadataOptions::defaults);
+      }
+      if (Objects.isNull(this.nestedTemplates)) {
+         this.nestedTemplates = new NestedTemplates[0];
+      } else {
+         Arrays.stream(this.nestedTemplates).forEach(NestedTemplates::defaults);
       }
       if (Objects.isNull(this.outliningOptions)) {
          this.outliningOptions = new OutliningOptions[0];
@@ -119,6 +184,14 @@ public class RendererOptions implements ToMessage {
       return this.metadataOptions;
    }
 
+   public NestedTemplates[] getNestedTemplates() {
+      if (Objects.isNull(this.nestedTemplates)) {
+         throw new IllegalStateException(
+            "RendererOptions::getNestedTemplates, the member \"nestedTemplates\" has not been set.");
+      }
+      return this.nestedTemplates;
+   }
+
    public OutliningOptions[] getOutliningOptions() {
       if (Objects.isNull(this.outliningOptions)) {
          throw new IllegalStateException(
@@ -128,16 +201,37 @@ public class RendererOptions implements ToMessage {
    }
 
    public boolean isValid() {
+
       //@formatter:off
-      return
-            Objects.nonNull( this.attributeOptions )
-         && Objects.nonNull( this.elementType )
-         && Objects.nonNull( this.metadataOptions )
-         && Objects.nonNull( this.outliningOptions )
-         && !Arrays.stream( this.attributeOptions ).anyMatch( Predicate.not( AttributeOptions::isValid ) )
-         && !Arrays.stream( this.metadataOptions  ).anyMatch( Predicate.not( MetadataOptions::isValid  ) )
-         && !Arrays.stream( this.outliningOptions ).anyMatch( Predicate.not( OutliningOptions::isValid ) );
+      if(    Objects.isNull( this.attributeOptions )
+          || Objects.isNull( this.elementType      ) || !RendererOptions.elementTypes.contains( this.elementType )
+          || Objects.isNull( this.metadataOptions  )
+          || Objects.isNull( this.nestedTemplates  )
+          || Objects.isNull( this.outliningOptions )
+        ) {
+         return false;
+      }
+
+      switch( this.elementType ) {
+         case "Artifact":
+
+            return
+                  ( this.nestedTemplates.length == 0 )
+               && !Arrays.stream( this.attributeOptions ).anyMatch( Predicate.not( AttributeOptions::isValid ) )
+               && !Arrays.stream( this.metadataOptions  ).anyMatch( Predicate.not( MetadataOptions::isValid  ) )
+               && !Arrays.stream( this.outliningOptions ).anyMatch( Predicate.not( OutliningOptions::isValid ) );
+
+         case "NestedTemplate":
+
+            return
+                  ( this.attributeOptions.length == 0 )
+               && ( this.metadataOptions.length  == 0 )
+               && ( this.outliningOptions.length == 0 )
+               && !Arrays.stream( this.nestedTemplates ).anyMatch( Predicate.not( NestedTemplates::isValid ) );
+      }
       //@formatter:on
+
+      return false;
    }
 
    public void setAttributeOptions(AttributeOptions[] attributeOptions) {
@@ -154,8 +248,9 @@ public class RendererOptions implements ToMessage {
          throw new IllegalStateException(
             "RendererOptions::setElementType, member \"elementType\" has already been set.");
       }
-      this.elementType =
-         Objects.requireNonNull(elementType, "RendererOptions::new, parameter \"elementType\" cannot be null.");
+      Objects.requireNonNull(elementType, "RendererOptions::new, parameter \"elementType\" cannot be null.");
+      RendererOptions.validateElementType(elementType);
+      this.elementType = elementType;
    }
 
    public void setMetadataOptions(MetadataOptions[] metadataOptions) {
@@ -165,6 +260,15 @@ public class RendererOptions implements ToMessage {
       }
       this.metadataOptions =
          Objects.requireNonNull(metadataOptions, "RendererOptions::new, parameter \"metadataOptions\" cannot be null.");
+   }
+
+   public void setNestedTemplates(NestedTemplates[] nestedTemplates) {
+      if (Objects.nonNull(this.nestedTemplates)) {
+         throw new IllegalStateException(
+            "RendererOptions::setNestedTemplates, member \"nestedTemplates\" has already been set.");
+      }
+      this.nestedTemplates =
+         Objects.requireNonNull(nestedTemplates, "RendererOptions::new, parameter \"nestedTemplates\" cannot be null.");
    }
 
    public void setOutliningOptions(OutliningOptions[] outliningOptions) {
@@ -190,11 +294,28 @@ public class RendererOptions implements ToMessage {
          .title( "Renderer Options" )
          .indentInc()
          .segment( "Element Type", this.elementType )
-         .segmentIndexedArray( "Attribute Options", this.attributeOptions )
-         .segmentIndexedArray( "Metadata Options",  this.metadataOptions  )
-         .segmentIndexedArray( "Outlining Options", this.outliningOptions )
+         ;
+
+      switch( this.elementType ) {
+
+         case "Artifact":
+
+            outMessage
+               .segmentIndexedArray( "Attribute Options", this.attributeOptions )
+               .segmentIndexedArray( "Metadata Options",  this.metadataOptions  )
+               .segmentIndexedArray( "Outlining Options", this.outliningOptions )
+               ;
+
+         case "NestedTemplate":
+
+            outMessage
+               .segmentIndexedArray( "NestedTemplates",   this.nestedTemplates  )
+               ;
+      }
+
+      outMessage
          .indentDec()
-      ;
+         ;
       //@formatter:on
 
       return outMessage;
