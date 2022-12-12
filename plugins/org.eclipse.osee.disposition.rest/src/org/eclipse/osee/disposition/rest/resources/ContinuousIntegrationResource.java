@@ -54,7 +54,7 @@ public class ContinuousIntegrationResource {
    @Produces(MediaType.APPLICATION_JSON)
    public HashMap<String, List<DispoAnnotationData>> getAllDispoAnnotations(CiSetData setData) {
       HashMap<String, List<DispoAnnotationData>> allDispoAnnotations = new HashMap<>();
-      if (setData != null) {
+      if (setData != null && Strings.isNumeric(setData.getDispoSetId())) {
          List<DispoItem> dispoItems =
             dispoApi.getDispoItems(BranchId.valueOf(setData.getBranchId()), setData.getDispoSetId(), false);
          for (DispoItem item : dispoItems) {
@@ -179,7 +179,6 @@ public class ContinuousIntegrationResource {
                response = notAcceptable;
                break;
             }
-
          }
       }
       return response;
