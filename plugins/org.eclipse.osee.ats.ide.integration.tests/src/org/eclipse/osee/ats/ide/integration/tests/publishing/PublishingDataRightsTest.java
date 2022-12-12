@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecor
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.core.util.Artifacts;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -76,6 +75,8 @@ public class PublishingDataRightsTest {
     * <dl>
     * <dt>Not Production Data Store Rule</dt>
     * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
     * <dt>In Publishing Group Test Rule</dt>
     * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
     * {@Link UserToken} cache has been flushed.</dd></dt>
@@ -85,9 +86,18 @@ public class PublishingDataRightsTest {
    @ClassRule
    public static TestRule classRuleChain =
       RuleChain
-         .outerRule( TestUserRules.createInPublishingGroupTestRule() )
-         .around( new NotProductionDataStoreRule() );
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
+         ;
    //@formatter:on
+
+   /**
+    * Wrap the test methods with a check to prevent execution on a production database.
+    */
+
+   @Rule
+   public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
    /**
     * A rule to get the method name of the currently running test.
@@ -602,21 +612,6 @@ public class PublishingDataRightsTest {
 
    @BeforeClass
    public static void testSetup() {
-
-      /*
-       * When the test suite is run directly it will be in Database Initialization mode.
-       */
-
-      if (OseeProperties.isInDbInit()) {
-
-         /*
-          * Get out of database initialization mode and re-authenticate as the test user
-          */
-
-         OseeProperties.setInDbInit(false);
-         ClientSessionManager.releaseSession();
-         ClientSessionManager.getSession();
-      }
 
       /*
        * Setup XML utils

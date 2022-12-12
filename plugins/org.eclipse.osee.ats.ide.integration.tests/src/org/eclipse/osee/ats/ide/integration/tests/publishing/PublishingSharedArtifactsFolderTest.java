@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLog
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -37,12 +37,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
@@ -62,6 +62,8 @@ public class PublishingSharedArtifactsFolderTest {
     * <dl>
     * <dt>Not Production Data Store Rule</dt>
     * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
     * <dt>In Publishing Group Test Rule</dt>
     * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
     * {@Link UserToken} cache has been flushed.</dd></dt>
@@ -71,9 +73,18 @@ public class PublishingSharedArtifactsFolderTest {
    @ClassRule
    public static TestRule classRuleChain =
       RuleChain
-         .outerRule( TestUserRules.createInPublishingGroupTestRule() )
-         .around( new NotProductionDataStoreRule() );
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
+         ;
    //@formatter:on
+
+   /**
+    * Wrap the test methods with a check to prevent execution on a production database.
+    */
+
+   @Rule
+   public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
    /**
     * List of {@link ArtifactInfoRecords} describing the test artifacts.
@@ -426,20 +437,6 @@ public class PublishingSharedArtifactsFolderTest {
    @SuppressWarnings("unchecked")
    @BeforeClass
    public static void testSetup() {
-
-      /*
-       * When the test suit is run directly it will be in Database Initialization mode.
-       */
-
-      if (OseeProperties.isInDbInit()) {
-         /*
-          * Get out of database initialization mode and re-authenticate as the test user
-          */
-
-         OseeProperties.setInDbInit(false);
-         ClientSessionManager.releaseSession();
-         ClientSessionManager.getSession();
-      }
 
       /*
        * Create the Test Artifacts

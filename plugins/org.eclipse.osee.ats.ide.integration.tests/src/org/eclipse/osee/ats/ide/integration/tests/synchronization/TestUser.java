@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.UserService;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -111,29 +109,13 @@ public class TestUser {
    }
 
    /**
-    * Creates a new instance of {@link TestUser} for the test user. If the database is still in initialization mode,
-    * exits database initialization mode and changes the user to the test user.
+    * Creates a new instance of {@link TestUser} for the test user.
     */
 
    static void create() {
 
       if (Objects.nonNull(TestUser.testUser)) {
          return;
-      }
-
-      /*
-       * When the test suite is run directly it will be in Database Initialization mode.
-       */
-
-      if (OseeProperties.isInDbInit()) {
-
-         /*
-          * Get out of database initialization mode and re-authenticate as the test user
-          */
-
-         OseeProperties.setInDbInit(false);
-         ClientSessionManager.releaseSession();
-         ClientSessionManager.getSession();
       }
 
       var userService = OsgiUtil.getService(DemoChoice.class, UserService.class);

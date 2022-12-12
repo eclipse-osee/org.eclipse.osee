@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.junit.Assert;
 
@@ -481,7 +480,6 @@ public class TestDocumentBuilder {
     *
     * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
     * @param relationEndpoint The REST API end point for obtaining related artifacts.
-    * @param artifactEndpoint The REST API end point for creating artifacts.
     * @param parentBranchId The identifier of the branch to get or create the test artifact on.
     * @param hierarchicalParentArtifactIdMap A map of the {@link ArtifactToken} (identifiers) of the hierarchical parent
     * artifacts by {@link ArtifactInfoRecord} identifiers. The {@link ArtifactToken} for the obtained or created
@@ -494,7 +492,6 @@ public class TestDocumentBuilder {
         (
            BuilderRecordWrapper                  builderRecordWrapper,
            RelationEndpoint                      relationEndpoint,
-           ArtifactEndpoint                      artifactEndpoint,
            BranchId                              parentBranchId,
            Map<Integer, ArtifactId>              hierarchicalParentArtifactIdMap,
            Map<ArtifactId, BuilderRecordWrapper> builderRecordWrapperByArtifactIdMap
@@ -504,7 +501,6 @@ public class TestDocumentBuilder {
          TestUtil.getOrCreateChildArtifactTokenByName
             (
                relationEndpoint,
-               artifactEndpoint,
                parentBranchId,
                hierarchicalParentArtifactIdMap.get( builderRecordWrapper.getHierarchicalParentIdentifier() ),
                builderRecordWrapper.getArtifactId(),
@@ -663,12 +659,8 @@ public class TestDocumentBuilder {
       var testBranchId = BranchId.valueOf( testBranch.getId() );
 
       /*
-       * Get ArtifactEndpoint and RelationEndpoint for the branch
+       * Get RelationEndpoint for the branch
        */
-
-      var artifactEndpoint = oseeClient.getArtifactEndpoint( testBranchId );
-
-      Assert.assertNotNull( "TestDocumentBuilder::buildDocument, Failed to get ArtifactEndpoint.", artifactEndpoint );
 
       var relationEndpoint = oseeClient.getRelationEndpoint( testBranchId );
 
@@ -727,7 +719,6 @@ public class TestDocumentBuilder {
                                                         (
                                                           builderRecordWrapper,
                                                           relationEndpoint,
-                                                          artifactEndpoint,
                                                           testBranchId,
                                                           hierarchicalParentArtifactIdMap,
                                                           builderRecordWrapperByArtifactIdMap

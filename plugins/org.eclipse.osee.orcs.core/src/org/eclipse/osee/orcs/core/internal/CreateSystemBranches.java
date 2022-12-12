@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -239,7 +240,7 @@ public class CreateSystemBranches {
             new PublishingTemplate
                    (
                       CoreArtifactTokens.DocumentTemplates,                              /* Parent Artifact Identifier */
-                      "PreviewAll",                                                      /* Name                       */
+                      RendererOption.PREVIEW_ALL_VALUE.getKey(),                         /* Name                       */
                       null,                                                              /* Renderer Options JSON      */
                       "templates/PREVIEW_ALL.xml",                                       /* Template Content File Name */
                       List.of                                                            /* Match Criteria             */
@@ -267,7 +268,7 @@ public class CreateSystemBranches {
             new PublishingTemplate
                    (
                       CoreArtifactTokens.DocumentTemplates,                               /* Parent Artifact Identifier */
-                      "PREVIEW_ALL_NO_ATTRIBUTES",                                        /* Name                       */
+                      RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey(),            /* Name                       */
                       PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS,                               /* Renderer Options JSON      */
                       "templates/PREVIEW_ALL_NO_ATTRIBUTES.xml",                          /* Template Content File Name */
                       List.of                                                             /* Match Criteria             */
@@ -289,7 +290,7 @@ public class CreateSystemBranches {
             new PublishingTemplate
                    (
                       CoreArtifactTokens.DocumentTemplates,                               /* Parent Artifact Identifier */
-                      "PREVIEW_ALL_RECURSE",                                              /* Name                       */
+                      RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey(),                  /* Name                       */
                       RECURSIVE_RENDERER_OPTIONS,                                         /* Renderer Options JSON      */
                       "templates/PREVIEW_ALL_RECURSE.xml",                                /* Template Content File Name */
                       List.of                                                             /* Match Criteria             */
@@ -305,7 +306,7 @@ public class CreateSystemBranches {
             new PublishingTemplate
                    (
                       CoreArtifactTokens.DocumentTemplates,                               /* Parent Artifact Identifier */
-                      "PREVIEW_ALL_RECURSE_NO_ATTRIBUTES",                                /* Name                       */
+                      RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),   /* Name                       */
                       RECURSIVE_NO_ATTR_RENDERER_OPTIONS,                                 /* Renderer Options JSON      */
                       "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.xml",                  /* Template Content File Name */
                       List.of                                                             /* Match Criteria             */

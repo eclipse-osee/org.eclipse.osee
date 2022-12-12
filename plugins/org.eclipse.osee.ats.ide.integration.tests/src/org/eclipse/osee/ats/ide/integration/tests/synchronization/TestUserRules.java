@@ -33,10 +33,14 @@ public class TestUserRules {
     */
 
    public static TestRule createInPublishingGroupTestRule() {
+
       return new TestRule() {
+
          @Override
          public Statement apply(Statement base, Description description) {
+
             return new Statement() {
+
                @Override
                public void evaluate() throws Throwable {
 

@@ -30,9 +30,9 @@ import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -102,7 +102,7 @@ public class PreviewAndMultiPreviewTest {
       parentArtifact.persist(getClass().getSimpleName());
 
       Map<RendererOption, Object> rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.TEMPLATE_OPTION, RendererOption.PREVIEW_WITH_RECURSE_VALUE.getKey());
+      rendererOptions.put(RendererOption.TEMPLATE_OPTION, RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey());
 
       RendererManager.open(parentArtifact, PresentationType.PREVIEW, rendererOptions);
    }

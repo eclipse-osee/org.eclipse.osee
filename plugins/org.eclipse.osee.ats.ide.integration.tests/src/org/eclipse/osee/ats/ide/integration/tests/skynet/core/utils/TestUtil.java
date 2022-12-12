@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
-import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
@@ -111,7 +111,6 @@ public final class TestUtil {
    /**
     * Creates a new artifact under the specified parent on the specified branch.
     *
-    * @param artifactEndpoint The REST API end point for artifact functions.
     * @param parentBranchId The branch to create the new artifact upon.
     * @param parentArtifactId The hierarchical parent of the artifact to be created.
     * @param childArtifactId the identifier to create the child artifact with or {@link ArtifactId#SENTINEL}.
@@ -120,16 +119,9 @@ public final class TestUtil {
     * @return The {@link ArtifactToken} (identifier) for the newly created artifact.
     */
 
-   private static ArtifactToken createChildArtifactToken(ArtifactEndpoint artifactEndpoint, BranchId parentBranchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+   private static ArtifactToken createChildArtifactToken(BranchId parentBranchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
 
-      if (ArtifactId.SENTINEL.equals(childArtifactId)) {
-         return artifactEndpoint.createArtifact(parentBranchId, childArtifactTypeToken, parentArtifactId, childName);
-      }
-
-      var transaction = TransactionManager.createTransaction(parentBranchId, childName);
-      var artifact = ArtifactTypeManager.addArtifact(childArtifactTypeToken, BranchToken.valueOf(parentBranchId),
-         childName, childArtifactId);
-
+      //@formatter:off
       Artifact parentArtifact;
 
       try {
@@ -138,11 +130,27 @@ public final class TestUtil {
          parentArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(parentBranchId);
       }
 
-      artifact.addRelation(CoreRelationTypes.DefaultHierarchical_Parent, parentArtifact);
-      transaction.addArtifact(artifact);
-      transaction.execute();
+      var childArtifact =
+         ArtifactId.SENTINEL.equals( childArtifactId )
+            ? ArtifactTypeManager.addArtifact
+                 (
+                   childArtifactTypeToken,
+                   BranchToken.valueOf( parentBranchId ),
+                   childName
+                 )
+            : ArtifactTypeManager.addArtifact
+                 (
+                   childArtifactTypeToken,
+                   BranchToken.valueOf( parentBranchId ),
+                   childName,
+                   childArtifactId
+                 );
 
-      return artifact;
+      parentArtifact.addChild(RelationSorter.USER_DEFINED, childArtifact);
+      parentArtifact.persist("TestUti::createChildArtifactToken");
+
+      return childArtifact;
+      //@formatter:on
    }
 
    /**
@@ -297,7 +305,6 @@ public final class TestUtil {
     *
     * @param relationEndpoint REST API end point for relationships used to get the hierarchical children of the parent
     * artifact.
-    * @param artifactEndpoint The REST API end point used to create the child artifact when necessary.
     * @param branchId the branch to create the artifact on, when necessary.
     * @param parentArtifactId the hierarchical parent artifact identifier.
     * @param childArtifactId the identifier to create the child artifact with or {@link ArtifactId#SENTINEL}.
@@ -306,10 +313,23 @@ public final class TestUtil {
     * @return the {@link ArtifactToken} of the existing or newly created hierarchical child with the specified name.
     */
 
-   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, ArtifactEndpoint artifactEndpoint, BranchId branchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
-      return TestUtil.getChildArtifactTokenByName(relationEndpoint, parentArtifactId, childName).orElseGet(
-         () -> TestUtil.createChildArtifactToken(artifactEndpoint, branchId, parentArtifactId, childArtifactId,
-            childArtifactTypeToken, childName));
+   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, BranchId branchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+      //@formatter:off
+      return
+         TestUtil
+            .getChildArtifactTokenByName(relationEndpoint, parentArtifactId, childName)
+            .orElseGet
+               (
+                  () -> TestUtil.createChildArtifactToken
+                           (
+                              branchId,
+                              parentArtifactId,
+                              childArtifactId,
+                              childArtifactTypeToken,
+                              childName
+                           )
+               );
+      //@formatter:on
    }
 
    private static int getTableRowCount(String tableName) {
