@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -62,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -84,23 +82,8 @@ public class ArtifactQueryTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   @BeforeClass
-   public static void testSetup() {
-
-      /*
-       * When the test suit is run directly it will be in Database Initialization mode.
-       */
-
-      if (OseeProperties.isInDbInit()) {
-         /*
-          * Get out of database initialization mode and re-authenticate as the test user
-          */
-
-         OseeProperties.setInDbInit(false);
-         ClientSessionManager.releaseSession();
-         ClientSessionManager.getSession();
-      }
-   }
+   @Rule
+   public ExitDatabaseInitializationRule exitDatabaseInitializationRule = new ExitDatabaseInitializationRule();
 
    @Test
    public void testGetArtifactFromGUIDDeleted() {

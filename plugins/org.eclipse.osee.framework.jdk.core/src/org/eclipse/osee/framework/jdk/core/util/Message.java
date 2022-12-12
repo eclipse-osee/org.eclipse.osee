@@ -197,9 +197,8 @@ public class Message {
             }
 
             case BLOCK: {
-               var indentString = IndentedString.indentString(this.getIndent());
                for (var line : this.getTitle().toString().split("\\v")) {
-                  message.append(indentString).append(line);
+                  message.append(line).append(Message.lineEnding);
                }
                return;
             }
