@@ -136,7 +136,11 @@
 				<br />
 			</div>
 			<br />
-			<ng-container *ngIf="availableTypes | async as _availableTypes">
+			<ng-container
+				*ngIf="
+					availableTypes | async as _availableTypes;
+					else loading_types
+				">
 				<mat-form-field class="width-100">
 					<mat-label>Platform Type</mat-label>
 					<mat-select
@@ -271,3 +275,14 @@
 		</mat-dialog-actions>
 	</mat-step>
 </mat-horizontal-stepper>
+
+<ng-template #loading_types>
+	<div class="loading-types">
+		<mat-spinner
+			color="primary"
+			diameter="20"
+			class="loading-spinner"
+			data-cy="types-loading-spinner"></mat-spinner>
+		<span>Loading Platform Types...</span>
+	</div>
+</ng-template>
