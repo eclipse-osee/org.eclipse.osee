@@ -57,6 +57,7 @@ import { ActionStateButtonModule } from '../../../shared-components/components/a
 import { PlatformTypeQueryComponent } from './components/platform-type-query/platform-type-query.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
 	declarations: [
@@ -96,6 +97,7 @@ import { BranchUndoButtonModule } from '../../../shared-components/components/br
 		MatSliderModule,
 		MatDividerModule,
 		MatIconModule,
+		MatProgressSpinnerModule,
 		FormsModule,
 		DiffViewsModule,
 		MatAutocompleteModule,

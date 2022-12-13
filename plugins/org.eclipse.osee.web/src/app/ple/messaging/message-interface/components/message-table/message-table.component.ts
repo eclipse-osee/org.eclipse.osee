@@ -68,11 +68,8 @@ import { AddMessageDialogComponent } from './add-message-dialog/add-message-dial
 	styleUrls: ['./message-table.component.sass'],
 	animations: [
 		trigger('detailExpand', [
-			state(
-				'collapsed',
-				style({ maxHeight: '0vh', overflowY: 'hidden' })
-			),
-			state('expanded', style({ maxHeight: '60vh', overflowY: 'auto' })),
+			state('collapsed', style({ maxHeight: '0vh' })),
+			state('expanded', style({ maxHeight: '60vh' })),
 			transition(
 				'expanded <=> collapsed',
 				animate('225ms cubic-bezier(0.42, 0.0, 0.58, 1)')
