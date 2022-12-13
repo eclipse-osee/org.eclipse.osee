@@ -23,17 +23,15 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import java.util.Objects;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.OptionType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -63,48 +61,66 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Jeff C. Phillips
  */
 public class DefaultArtifactRenderer implements IRenderer {
+
    private static final IComparator DEFAULT_COMPARATOR = new DefaultArtifactCompare();
    private static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
    private static final String OPEN_IN_GRAPH = "open.with.sky.walker";
    private static final String OPEN_IN_HISTORY = "open.with.resource.history";
    private static final String OPEN_IN_EXPLORER = "open.with.artifact.explorer";
 
-   private Map<RendererOption, Object> rendererOptions;
+   private final Map<RendererOption, Object> rendererOptions;
 
    public DefaultArtifactRenderer(Map<RendererOption, Object> rendererOptions) {
-      this.rendererOptions = rendererOptions;
+      //@formatter:off
+      this.rendererOptions =
+         Objects.nonNull( rendererOptions ) && (!rendererOptions.isEmpty())
+            ? new EnumMap<>( rendererOptions )
+            : new EnumMap<>( RendererOption.class );
+      //@formatter:on
    }
 
    public DefaultArtifactRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      this.rendererOptions = new EnumMap<>(RendererOption.class);
    }
 
    public Map<RendererOption, Object> getRendererOptions() {
-      return rendererOptions;
+      return Collections.unmodifiableMap(this.rendererOptions);
    }
 
    public Object getRendererOptionValue(RendererOption key) {
-      if (rendererOptions.containsKey(key)) {
-         return rendererOptions.get(key);
-      } else if (key.getType().equals(OptionType.Boolean)) {
-         return false;
-      } else if (key.getType().equals(OptionType.ArtifactId)) {
-         return ArtifactId.SENTINEL;
-      } else if (key.getType().equals(OptionType.BranchId)) {
-         return BranchId.SENTINEL;
-      }
 
-      return null;
+      var value = this.rendererOptions.get(key);
+
+      return Objects.nonNull(value) ? value : key.getType().getDefaultValue();
    }
 
-   // TODO: will remove. Do not like this.
+   public void clearOptions() {
+      this.rendererOptions.clear();
+   }
+
    public void updateOptions(Map<RendererOption, Object> rendererOptions) {
-      this.rendererOptions = rendererOptions;
+      if (Objects.nonNull(rendererOptions)) {
+         this.rendererOptions.putAll(rendererOptions);
+      }
+   }
+
+   public void clearOption(RendererOption key) {
+      if (Objects.nonNull(key)) {
+         this.rendererOptions.remove(key);
+      }
    }
 
    @Override
    public void updateOption(RendererOption key, Object value) {
-      rendererOptions.put(key, value);
+      if (Objects.isNull(key)) {
+         return;
+      }
+
+      if (Objects.nonNull(value)) {
+         this.rendererOptions.put(key, value);
+      } else {
+         this.rendererOptions.remove(key);
+      }
    }
 
    @Override
