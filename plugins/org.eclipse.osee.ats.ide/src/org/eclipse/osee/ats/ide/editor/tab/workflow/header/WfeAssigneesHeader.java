@@ -123,7 +123,7 @@ public class WfeAssigneesHeader extends Composite {
             IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
             if (managedForm != null && !managedForm.getForm().isDisposed()) {
                IMessageManager messageManager = managedForm.getMessageManager();
-               if (workItem.isCompletedOrCancelled()) {
+               if (workItem.isCompletedOrCancelled() || !value.contains(AtsCoreUsers.UNASSIGNED_USER.getName())) {
                   messageManager.removeMessages(link);
                } else if (value.contains(AtsCoreUsers.UNASSIGNED_USER.getName())) {
                   messageManager.addMessage(link, "Must Select Assignee", null, IMessageProvider.ERROR, link);
