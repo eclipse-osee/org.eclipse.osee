@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,29 +52,27 @@ public final class WordTemplateFileDiffer {
    }
 
    public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) {
-      Map<RendererOption, Object> rendererOptions = renderer.getRendererOptions();
-      rendererOptions.put(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
-      rendererOptions.put(RendererOption.OUTLINE_TYPE, outlineType);
-      rendererOptions.put(RendererOption.ALL_ATTRIBUTES, true);
-      rendererOptions.put(RendererOption.USE_ARTIFACT_NAMES, true);
-      rendererOptions.put(RendererOption.IN_PUBLISH_MODE, true);
-      // need to keep original value as well as reseting to false
-      rendererOptions.put(RendererOption.ORIG_PUBLISH_AS_DIFF,
-         renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
-      rendererOptions.put(RendererOption.PUBLISH_DIFF, false);
 
-      rendererOptions.put(RendererOption.RECURSE, recurseChildren);
+      this.renderer.updateOption(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
+      this.renderer.updateOption(RendererOption.OUTLINE_TYPE, outlineType);
+      this.renderer.updateOption(RendererOption.ALL_ATTRIBUTES, true);
+      this.renderer.updateOption(RendererOption.USE_ARTIFACT_NAMES, true);
+      this.renderer.updateOption(RendererOption.IN_PUBLISH_MODE, true);
+      // need to keep original value as well as reseting to false
+      this.renderer.updateOption(RendererOption.ORIG_PUBLISH_AS_DIFF,
+         renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
+      this.renderer.updateOption(RendererOption.PUBLISH_DIFF, false);
+
+      this.renderer.updateOption(RendererOption.RECURSE, recurseChildren);
       // can use this as "diff branch?"
       BranchId endBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
-      rendererOptions.put(RendererOption.WAS_BRANCH, endBranch);
+      this.renderer.updateOption(RendererOption.WAS_BRANCH, endBranch);
 
       BranchId compareBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.COMPARE_BRANCH);
 
-      renderer.updateOptions(rendererOptions);
-
       TransactionToken startTransaction;
 
-      if (compareBranch == null) {
+      if (BranchId.SENTINEL.equals(compareBranch)) {
          startTransaction = BranchManager.getBaseTransaction(endBranch);
          compareBranch = endBranch;
       } else {
