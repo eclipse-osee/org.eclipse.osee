@@ -60,7 +60,7 @@ public final class ArtifactPrompt {
       }
 
       IHandlePromptChange promptChange =
-         promptFactory.createPrompt(attributeType, attributeType.getUnqualifiedName(), artifacts, persist);
+         promptFactory.createPrompt(artifacts, attributeType, attributeType.getUnqualifiedName(), persist);
       if (promptChange.promptOk()) {
          toReturn = promptChange.store();
       }
