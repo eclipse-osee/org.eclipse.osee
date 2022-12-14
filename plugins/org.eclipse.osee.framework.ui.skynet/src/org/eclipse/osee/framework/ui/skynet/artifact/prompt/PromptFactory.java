@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public final class PromptFactory implements IPromptFactory {
 
    @Override
-   public IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist) {
+   public IHandlePromptChange createPrompt(Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType, String displayName, boolean persist) {
       IHandlePromptChange promptChange;
 
       if (attributeType.isDate()) {
@@ -46,8 +46,7 @@ public final class PromptFactory implements IPromptFactory {
       } else if (attributeType.isString()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null);
       } else if (attributeType.isArtifactId()) {
-         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getIntegerInstance());
+         promptChange = new ArtifactIdHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else {
          throw new OseeStateException("Unhandled attribute type.  Can't edit through this view");
       }
