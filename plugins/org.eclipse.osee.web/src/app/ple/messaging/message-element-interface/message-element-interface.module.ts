@@ -58,6 +58,7 @@ import { PlatformTypeQueryComponent } from './components/platform-type-query/pla
 import { MatDividerModule } from '@angular/material/divider';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
 
 @NgModule({
 	declarations: [
@@ -105,6 +106,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 		PleSharedMaterialModule,
 		OseeStringUtilsPipesModule,
 		OseeStringUtilsDirectivesModule,
+		MatOptionLoadingModule,
 		GenericButtonsModule,
 		MessageElementInterfaceRoutingModule,
 		ActionStateButtonModule,

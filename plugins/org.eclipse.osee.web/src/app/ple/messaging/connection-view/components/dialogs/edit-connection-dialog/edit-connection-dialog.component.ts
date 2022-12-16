@@ -29,9 +29,8 @@ export class EditConnectionDialogComponent implements OnDestroy {
 	private _done = new Subject();
 	title: string = '';
 	applics = this.graphService.applic;
-	transportTypes = this.transportTypeService.types.pipe(
-		takeUntil(this._done)
-	);
+	transportTypes = (pageNum: string | number) =>
+		this.transportTypeService.getPaginatedTypes(pageNum, 3);
 	constructor(
 		public dialogRef: MatDialogRef<EditConnectionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: connection,

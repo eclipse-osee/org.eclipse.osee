@@ -272,6 +272,7 @@ export class StructureTableComponent implements OnInit {
 		switchMap((submessage) =>
 			this.dialog
 				.open(AddStructureDialogComponent, {
+					minWidth: '80%',
 					data: {
 						id: submessage,
 						name: this.breadCrumb,

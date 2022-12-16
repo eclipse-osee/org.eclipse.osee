@@ -56,13 +56,13 @@
 						name="interfaceLogicalType"
 						#interfaceLogicalType="ngModel">
 						<osee-mat-option-loading
-							[options]="logicalTypes"
-							[objectName]="'Logical Types'">
-							<mat-option
-								*ngFor="let logicaltype of logicalTypes | async"
-								[value]="logicaltype.name">
-								{{ logicaltype.name }}
-							</mat-option>
+							[data]="logicalTypes"
+							objectName="Logical Types">
+							<ng-template let-option>
+								<mat-option [value]="option.name">
+									{{ option.name }}
+								</mat-option>
+							</ng-template>
 						</osee-mat-option-loading>
 					</mat-select>
 					<mat-hint align="end"
@@ -362,13 +362,13 @@
 							name="interfacePlatformTypeUnits"
 							#interfacePlatformTypeUnits="ngModel">
 							<osee-mat-option-loading
-								[options]="units"
-								[objectName]="'Units'">
-								<mat-option
-									*ngFor="let unit of units | async"
-									[value]="unit">
-									{{ unit }}
-								</mat-option>
+								[data]="units"
+								objectName="Units">
+								<ng-template let-option>
+									<mat-option [value]="option">
+										{{ option }}
+									</mat-option>
+								</ng-template>
 							</osee-mat-option-loading>
 						</mat-select>
 						<mat-hint align="end">Select a Unit</mat-hint>

@@ -194,6 +194,7 @@ export class SubMessageTableComponent implements OnChanges {
 	insertSubMessage(message: message, afterSubMessage?: string) {
 		this.dialog
 			.open(AddSubMessageDialogComponent, {
+				minWidth: '80%',
 				data: {
 					name: message.name,
 					id: message.id,

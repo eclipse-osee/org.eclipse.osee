@@ -28,9 +28,9 @@ import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
-import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
-import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
+import { enumsServiceMock } from '../../../../shared/mocks/EnumsService.mock';
+import { EnumsService } from '../../../../shared/services/http/enums.service';
+import { MatOptionLoadingTestingModule } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
 import { CurrentTransportTypeServiceMock } from '../../../../shared/mocks/current-transport-type.ui.service.mock';
 import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
 import { graphServiceMock } from '../../../mocks/CurrentGraphService.mock';
@@ -54,7 +54,7 @@ describe('CreateConnectionDialogComponent', () => {
 				MatButtonModule,
 				NoopAnimationsModule,
 				FormsModule,
-				MatOptionLoadingModule,
+				MatOptionLoadingTestingModule,
 			],
 			declarations: [CreateConnectionDialogComponent],
 			providers: [

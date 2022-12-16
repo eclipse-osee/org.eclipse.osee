@@ -14,9 +14,11 @@ import {
 	Component,
 	EventEmitter,
 	Input,
+	OnChanges,
 	OnDestroy,
 	OnInit,
 	Output,
+	SimpleChanges,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
@@ -27,6 +29,7 @@ import {
 	map,
 	scan,
 	share,
+	shareReplay,
 	switchMap,
 	takeUntil,
 	tap,
@@ -42,7 +45,7 @@ import { WarningDialogService } from '../../../../shared/services/ui/warning-dia
 	styleUrls: ['./edit-element-field.component.sass'],
 })
 export class EditElementFieldComponent<T extends keyof element = any>
-	implements OnDestroy
+	implements OnDestroy, OnChanges
 {
 	private _done = new Subject();
 	availableTypes = this.structureService.types;
@@ -56,6 +59,7 @@ export class EditElementFieldComponent<T extends keyof element = any>
 
 	@Input() platformTypeId: string = '';
 	@Output() contextMenu = new EventEmitter<MouseEvent>();
+
 	private _value: Subject<T> = new Subject();
 	private _immediateValue: Subject<T> = new Subject();
 	private _units: Subject<string> = new Subject();
@@ -66,7 +70,10 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this.structureService.branchType,
 		this.structureService.BranchId,
 	]).pipe(switchMap(([type, id]) => of({ type: type, id: id })));
-	private _typeValue: BehaviorSubject<T> = new BehaviorSubject(this.value);
+	/**
+	 * Type ahead value when editing which platform type is set for the given element
+	 */
+	private _typeValue: BehaviorSubject<string> = new BehaviorSubject('');
 	private _sendValue = this._value.pipe(
 		share(),
 		debounceTime(500),
@@ -137,23 +144,25 @@ export class EditElementFieldComponent<T extends keyof element = any>
 			)
 		)
 	);
-	filteredTypes = combineLatest([this._typeValue, this.availableTypes]).pipe(
-		switchMap((val) =>
-			from(val[1]).pipe(
-				filter((val: PlatformType) =>
-					val.name
-						.toLowerCase()
-						.includes(
-							this.isString(this.value)
-								? this.value.toLowerCase()
-								: (this.value as unknown as string)
-						)
-				),
-				scan((acc, curr) => [...acc, curr], [] as PlatformType[])
-			)
-		),
-		takeUntil(this._done)
-	);
+	/**
+	 * State of when auto complete is initial opened to defer data loading
+	 */
+	openTypeAutoComplete = new Subject<void>();
+	filteredTypes = (pageNum: string | number) =>
+		combineLatest([
+			this._typeValue.pipe(debounceTime(500)),
+			this.openTypeAutoComplete,
+		]).pipe(
+			switchMap(([typeAhead, open]) =>
+				this.structureService.getPaginatedFilteredTypes(
+					this.isString(typeAhead)
+						? typeAhead.toLowerCase()
+						: (typeAhead as unknown as string),
+					pageNum
+				)
+			),
+			takeUntil(this._done)
+		);
 	private _type: Subject<PlatformType> = new Subject();
 	private _sendType = this._type.pipe(
 		share(),
@@ -169,7 +178,7 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	);
 
 	applics = this.structureService.applic;
-	units = this.structureService.units;
+	units = () => this.structureService.units;
 	menuPosition = {
 		x: '0',
 		y: '0',
@@ -183,6 +192,9 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this._sendType.subscribe();
 		this._updateUnits.subscribe();
 	}
+	ngOnChanges(changes: SimpleChanges): void {
+		this.updateTypeAhead(this.value);
+	}
 	ngOnDestroy(): void {
 		this._done.next(true);
 	}
@@ -194,6 +206,7 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	}
 	updateType(value: PlatformType) {
 		this._type.next(value);
+		this.updateTypeAhead(value.name);
 	}
 
 	updateTypeAhead(value: any) {
@@ -216,5 +229,8 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	}
 	updateUnits(event: string) {
 		this._units.next(event);
+	}
+	autoCompleteOpened() {
+		this.openTypeAutoComplete.next();
 	}
 }

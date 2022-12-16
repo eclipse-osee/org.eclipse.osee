@@ -61,6 +61,15 @@ export class CurrentTransportTypeService {
 		return this._transportTypes;
 	}
 
+	getPaginatedTypes(pageNum: string | number, pageSize: string | number) {
+		return this.ui.id.pipe(
+			take(1),
+			switchMap((id) =>
+				this.transportTypeService.getPaginated(id, pageNum, pageSize)
+			)
+		);
+	}
+
 	getType(artId: string) {
 		return this.ui.id.pipe(
 			filter((val) => val !== '' && val !== '0'),

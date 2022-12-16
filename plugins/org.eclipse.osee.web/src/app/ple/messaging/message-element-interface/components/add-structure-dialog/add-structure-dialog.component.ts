@@ -24,7 +24,8 @@ import { structure } from '../../../shared/types/structure';
 	styleUrls: ['./add-structure-dialog.component.sass'],
 })
 export class AddStructureDialogComponent {
-	availableStructures = this.structures.availableStructures;
+	availableStructures = (pageNum: number | string) =>
+		this.structures.getPaginatedStructures(pageNum);
 	categories = this.enumService.categories;
 	storedId: string = '-1';
 	constructor(

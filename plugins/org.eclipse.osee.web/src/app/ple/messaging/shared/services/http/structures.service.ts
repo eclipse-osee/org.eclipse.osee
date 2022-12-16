@@ -20,6 +20,7 @@ import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { structure } from '../../types/structure';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../../transactions/transaction.service';
+import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,6 +35,23 @@ export class StructuresService {
 	getStructures(branchId: string) {
 		return this.http.get<Required<structure>[]>(
 			apiURL + '/mim/branch/' + branchId + '/structures/filter'
+		);
+	}
+
+	getPaginatedFilteredStructures(
+		branchId: string,
+		filter: string,
+		pageNum: string | number
+	) {
+		return this.http.get<Required<structure>[]>(
+			apiURL + '/mim/branch/' + branchId + '/structures/filter/' + filter,
+			{
+				params: {
+					count: 3,
+					pageNum: pageNum,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
 		);
 	}
 	getFilteredStructures(

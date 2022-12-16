@@ -333,6 +333,15 @@ export class CurrentStructureService {
 		);
 	}
 
+	getPaginatedStructures(pageNum: string | number) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.structure.getPaginatedFilteredStructures(id, '', pageNum)
+			)
+		);
+	}
+
 	get availableElements() {
 		return this.BranchId.pipe(
 			take(1),
@@ -347,8 +356,28 @@ export class CurrentStructureService {
 		);
 	}
 
+	getPaginatedElements(pageNum: string | number) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.elements.getPaginatedFilteredElements(
+					id,
+					'',
+					pageNum.toString()
+				)
+			)
+		);
+	}
+
 	get types() {
 		return this._types;
+	}
+
+	getPaginatedFilteredTypes(filter: string, pageNum: number | string) {
+		return this.typeService.getPaginatedFilteredTypes(
+			filter,
+			pageNum.toString()
+		);
 	}
 
 	get applic() {

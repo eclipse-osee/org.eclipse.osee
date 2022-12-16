@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -43,14 +44,8 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
    }
 
    @Override
-   public Collection<InterfaceNode> getAllNodes() {
-      try {
-         return interfaceNodeApi.getAccessor().getAll(branch, InterfaceNode.class);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return null;
+   public Collection<InterfaceNode> getAllNodes(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return interfaceNodeApi.getAll(branch, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override

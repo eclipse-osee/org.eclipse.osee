@@ -12,7 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
@@ -24,6 +26,14 @@ public interface InterfaceNodeViewApi extends QueryCapableMIMAPI<InterfaceNode>,
    ArtifactAccessor<InterfaceNode> getAccessor();
 
    InterfaceNode get(BranchId branch, ArtifactId nodeId);
+
+   Collection<InterfaceNode> getAll(BranchId branch);
+
+   Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize);
+
+   Collection<InterfaceNode> getAll(BranchId branch, AttributeTypeToken orderByAttributeType);
+
+   Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType);
 
    InterfaceNode getNodeForMessage(BranchId branch, ArtifactId message);
 }

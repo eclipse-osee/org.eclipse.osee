@@ -39,14 +39,15 @@
 			required
 			[compareWith]="compareTransportTypes">
 			<osee-mat-option-loading
-				[options]="transportTypes"
-				[objectName]="'Transport Types'">
-				<mat-option
-					*ngFor="let option of transportTypes | async"
-					[value]="option"
-					[id]="option.id">
-					{{ option.name }}
-				</mat-option>
+				[data]="transportTypes"
+				objectName="Transport Types">
+				<ng-template let-option>
+					<mat-option
+						[value]="option"
+						[id]="option.id">
+						{{ option.name }}
+					</mat-option>
+				</ng-template>
 			</osee-mat-option-loading>
 		</mat-select>
 	</mat-form-field>
@@ -57,15 +58,11 @@
 			[(ngModel)]="data.applicability"
 			[compareWith]="compareApplics"
 			required>
-			<osee-mat-option-loading
-				[options]="applics"
-				[objectName]="'applicabilities'">
-				<mat-option
-					*ngFor="let applic of applics | async"
-					[value]="applic">
-					{{ applic.name }}
-				</mat-option>
-			</osee-mat-option-loading>
+			<mat-option
+				*ngFor="let applic of applics | async"
+				[value]="applic">
+				{{ applic.name }}
+			</mat-option>
 		</mat-select>
 	</mat-form-field>
 </mat-dialog-content>

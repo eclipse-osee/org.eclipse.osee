@@ -26,14 +26,15 @@
 					(selectionChange)="setType($event.value)"
 					data-cy="logical-type-selector">
 					<osee-mat-option-loading
-						[options]="logicalTypes"
-						[objectName]="'Logical Types'">
-						<mat-option
-							*ngFor="let logicaltype of logicalTypes | async"
-							[value]="logicaltype.id"
-							[attr.data-cy]="'logical-type-' + logicaltype.name">
-							{{ logicaltype.name | titlecase }}
-						</mat-option>
+						[data]="logicalTypes"
+						objectName="Logical Types">
+						<ng-template let-option>
+							<mat-option
+								[value]="option.id"
+								[attr.data-cy]="'logical-type-' + option.name">
+								{{ option.name | titlecase }}
+							</mat-option>
+						</ng-template>
 					</osee-mat-option-loading>
 				</mat-select>
 			</mat-form-field>
@@ -68,13 +69,13 @@
 							[(ngModel)]="enumSet"
 							[compareWith]="compareEnumSet">
 							<osee-mat-option-loading
-								[options]="enumSets"
-								[objectName]="'Enumeration Sets'">
-								<mat-option
-									*ngFor="let enumset of enumSets | async"
-									[value]="enumset">
-									{{ enumset.name }}
-								</mat-option>
+								[data]="enumSets"
+								objectName="Enumeration Sets">
+								<ng-template let-option>
+									<mat-option [value]="option">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
 							</osee-mat-option-loading>
 						</mat-select>
 						<button

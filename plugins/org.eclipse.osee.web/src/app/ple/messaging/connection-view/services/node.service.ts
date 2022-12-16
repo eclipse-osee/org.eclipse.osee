@@ -20,6 +20,7 @@ import { OSEEWriteApiResponse } from '../../shared/types/ApiWriteResponse';
 import { node } from '../../shared/types/node';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../transactions/transaction.service';
+import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,6 +35,23 @@ export class NodeService {
 	getNodes(branchId: string) {
 		return this.http.get<node[]>(
 			apiURL + '/mim/branch/' + branchId + '/nodes/'
+		);
+	}
+
+	getPaginatedNodes(
+		branchId: string,
+		pageNum: string | number,
+		pageSize: number
+	) {
+		return this.http.get<node[]>(
+			apiURL + '/mim/branch/' + branchId + '/nodes/',
+			{
+				params: {
+					count: 3,
+					pageNum: pageNum,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
 		);
 	}
 

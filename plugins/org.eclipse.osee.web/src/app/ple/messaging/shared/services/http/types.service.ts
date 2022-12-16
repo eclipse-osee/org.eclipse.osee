@@ -21,6 +21,7 @@ import { logicalType, logicalTypeFormDetail } from '../../types/logicaltype';
 import { PlatformType } from '../../types/platformType';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../../transactions/transaction.service';
+import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -46,9 +47,39 @@ export class TypesService {
 			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter
 		);
 	}
+
+	getPaginatedFilteredTypes(
+		filter: string,
+		branchId: string,
+		pageNum: string
+	): Observable<PlatformType[]> {
+		return this.http.get<PlatformType[]>(
+			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter,
+			{
+				params: {
+					count: 3,
+					pageNum: pageNum,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
+		);
+	}
 	getTypes(branchId: string): Observable<PlatformType[]> {
 		return this.http.get<PlatformType[]>(
 			apiURL + '/mim/branch/' + branchId + '/types'
+		);
+	}
+
+	getPaginatedTypes(branchId: string, pageNum: string) {
+		return this.http.get<PlatformType[]>(
+			apiURL + '/mim/branch/' + branchId + '/types',
+			{
+				params: {
+					count: 3,
+					pageNum: pageNum,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
 		);
 	}
 

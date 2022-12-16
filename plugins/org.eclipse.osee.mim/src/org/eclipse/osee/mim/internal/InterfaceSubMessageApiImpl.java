@@ -84,7 +84,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter) {
       return this.getAllByFilter(branch, filter, 0L, 0L);
    }
-   
+
    @Override
    public Collection<InterfaceSubMessageToken> getAllByRelationAndFilter(BranchId branch, ArtifactId messageId, String filter) {
       try {
@@ -210,6 +210,32 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
       try {
          return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, pageNum, pageSize,
             orderByAttribute);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAll(BranchId branch) {
+      return this.getAll(branch, 0L, 0L);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize) {
+      return this.getAll(branch, pageNum, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttribute);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);

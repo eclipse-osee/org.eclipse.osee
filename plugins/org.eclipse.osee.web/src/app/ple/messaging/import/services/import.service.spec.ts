@@ -15,7 +15,6 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 import { TestScheduler } from 'rxjs/testing';
 import { transactionResultMock } from 'src/app/transactions/transaction.mock';
 import { TransactionService } from 'src/app/transactions/transaction.service';

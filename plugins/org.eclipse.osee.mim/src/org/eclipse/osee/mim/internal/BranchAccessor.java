@@ -38,6 +38,7 @@ import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
+import org.eclipse.osee.mim.InterfaceSubMessageFilterEndpoint;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
@@ -84,6 +85,12 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceSubMessageEndpoint getSubMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new InterfaceSubMessageEndpointImpl(branch, messageId, mimApi.getInterfaceSubMessageApi());
+   }
+
+   @Path("{branch}/submessages/filter")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceSubMessageFilterEndpoint getSubMessageFilterEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceSubMessageFilterEndpointImpl(branch, mimApi.getInterfaceSubMessageApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures")

@@ -87,17 +87,21 @@
 			<mat-autocomplete
 				autoActiveFirstOption
 				#auto="matAutocomplete"
-				(optionSelected)="updateType($event.option.value)">
-				<mat-option
-					*ngFor="let option of filteredTypes | async"
-					[value]="option"
-					[id]="
-						option !== undefined && option.id !== undefined
-							? option.id
-							: ''
-					">
-					{{ option.name }}
-				</mat-option>
+				(optionSelected)="updateType($event.option.value)"
+				(opened)="autoCompleteOpened()">
+				<osee-mat-option-loading
+					[data]="filteredTypes"
+					objectName="Types"
+					[paginationSize]="3"
+					paginationMode="AUTO">
+					<ng-template let-option>
+						<mat-option
+							[value]="option"
+							[id]="option.id">
+							{{ option.name }}
+						</mat-option>
+					</ng-template>
+				</osee-mat-option-loading>
 			</mat-autocomplete>
 		</ng-container>
 		<ng-container *ngIf="header === 'units'">
@@ -107,11 +111,15 @@
 				typeaheadDebounceInterval="1000"
 				[disabled]="editingDisabled"
 				class="unit-selector">
-				<mat-option
-					*ngFor="let option of units | async"
-					[value]="option">
-					{{ option }}
-				</mat-option>
+				<osee-mat-option-loading
+					[data]="units"
+					objectName="Units">
+					<ng-template let-option>
+						<mat-option [value]="option">
+							{{ option }}
+						</mat-option>
+					</ng-template>
+				</osee-mat-option-loading>
 			</mat-select>
 		</ng-container>
 	</ng-container>

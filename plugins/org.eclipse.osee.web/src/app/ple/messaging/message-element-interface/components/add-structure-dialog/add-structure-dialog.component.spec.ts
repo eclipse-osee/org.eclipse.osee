@@ -29,6 +29,7 @@ import { AddStructureDialog } from '../../types/AddStructureDialog';
 import { structure } from '../../../shared/types/structure';
 
 import { AddStructureDialogComponent } from './add-structure-dialog.component';
+import { MatOptionLoadingTestingModule } from '../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
 
 describe('AddStructureDialogComponent', () => {
 	let component: AddStructureDialogComponent;
@@ -72,6 +73,7 @@ describe('AddStructureDialogComponent', () => {
 				MatInputModule,
 				MatSlideToggleModule,
 				NoopAnimationsModule,
+				MatOptionLoadingTestingModule,
 			],
 			declarations: [AddStructureDialogComponent],
 			providers: [

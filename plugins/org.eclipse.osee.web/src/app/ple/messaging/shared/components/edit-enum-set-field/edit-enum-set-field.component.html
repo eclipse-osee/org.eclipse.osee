@@ -42,15 +42,11 @@
 							[(ngModel)]="enumerationSet.applicability"
 							(ngModelChange)="setApplicability($event)"
 							[compareWith]="compareApplics">
-							<osee-mat-option-loading
-								[options]="applic"
-								[objectName]="'Applicabilities'">
-								<mat-option
-									*ngFor="let applicability of applic | async"
-									[value]="applicability">
-									{{ applicability.name }}
-								</mat-option>
-							</osee-mat-option-loading>
+							<mat-option
+								*ngFor="let applicability of applic | async"
+								[value]="applicability">
+								{{ applicability.name }}
+							</mat-option>
 						</mat-select>
 					</mat-form-field>
 					<br />

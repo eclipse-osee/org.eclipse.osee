@@ -17,8 +17,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.mim.types.InterfaceNode;
 
 /**
@@ -34,7 +36,7 @@ public interface InterfaceNodeEndpoint {
     *
     * @return all nodes
     */
-   Collection<InterfaceNode> getAllNodes();
+   Collection<InterfaceNode> getAllNodes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")

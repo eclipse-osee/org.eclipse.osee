@@ -19,7 +19,7 @@ import { structure } from '../../../shared/types/structure';
 import { platformTypesMock } from '../../../shared/mocks/PlatformTypes.mock';
 import { elementResponseMock } from '../ReturnObjects/response.mock';
 import { structuresMock } from '../../../shared/mocks/Structures.mock';
-import { transactionToken } from 'src/app/transactions/transaction';
+import { transactionToken } from '../../../../../transactions/transaction';
 import { unitsMock } from '../../../shared/mocks/unit.mock';
 import { response } from '../../../connection-view/mocks/Response.mock';
 import { PlatformType } from '../../../shared/types/platformType';
@@ -90,6 +90,9 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	units: of(unitsMock),
 	getType(typeId: string) {
 		return of(platformTypesMock[0]);
+	},
+	getPaginatedElements(pageNum) {
+		return of([]);
 	},
 	getStructureRepeating(structureId: string) {
 		return of(structuresMock[0]);

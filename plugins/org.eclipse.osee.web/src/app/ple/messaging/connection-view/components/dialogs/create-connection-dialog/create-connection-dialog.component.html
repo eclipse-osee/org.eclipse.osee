@@ -47,16 +47,19 @@
 			data-cy="field-transport-type"
 			[compareWith]="compareTransportTypes">
 			<osee-mat-option-loading
-				[options]="transportTypes"
-				[objectName]="'Transport Types'">
-				<mat-option
-					*ngFor="let option of transportTypes | async"
-					[value]="option"
-					[attr.data-cy]="'option-' + option.name"
-					[value]="option"
-					[id]="option.id">
-					{{ option.name }}
-				</mat-option>
+				[data]="transportTypes"
+				objectName="Transport Types"
+				paginationMode="AUTO"
+				[paginationSize]="3">
+				<ng-template let-option>
+					<mat-option
+						[value]="option"
+						[attr.data-cy]="'option-' + option.name"
+						[value]="option"
+						[id]="option.id">
+						{{ option.name }}
+					</mat-option>
+				</ng-template>
 			</osee-mat-option-loading>
 		</mat-select>
 	</mat-form-field>
@@ -69,14 +72,17 @@
 			[(ngModel)]="newConnection.nodeId"
 			data-cy="field-toNode">
 			<osee-mat-option-loading
-				[options]="nodes"
-				[objectName]="'Nodes'">
-				<mat-option
-					*ngFor="let option of nodes | async"
-					[value]="option.id"
-					[attr.data-cy]="'option-' + option.name">
-					{{ option.name }}
-				</mat-option>
+				[data]="nodes"
+				objectName="Nodes"
+				paginationMode="AUTO"
+				[paginationSize]="3">
+				<ng-template let-option>
+					<mat-option
+						[value]="option.id"
+						[attr.data-cy]="'option-' + option.name">
+						{{ option.name }}
+					</mat-option>
+				</ng-template>
 			</osee-mat-option-loading>
 		</mat-select>
 	</mat-form-field>

@@ -10,22 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelect, MatSelectModule } from '@angular/material/select';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 
 import { MatOptionLoadingComponent } from './mat-option-loading.component';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 @Component({
 	selector: 'osee-outer-component',
 	template:
-		'<mat-form-field><mat-label>OuterComponent</mat-label><mat-select><osee-mat-option-loading [options]="observable$"><mat-option *ngFor="let option of (observable$ | async)"></mat-option></osee-mat-option-loading></mat-select></mat-form-field>',
+		'<mat-form-field><mat-label>OuterComponent</mat-label><mat-select><osee-mat-option-loading [data]="observable$"><ng-template let-option><mat-option>{{option}}</mat-option></ng-template></osee-mat-option-loading></mat-select></mat-form-field>',
 })
 class OuterComponent implements AfterViewInit {
 	observable$ = of(['1', '2', '3']);
@@ -37,7 +43,7 @@ class OuterComponent implements AfterViewInit {
 	}
 }
 
-describe('MatOptionLoadingComponent', () => {
+describe('MatOptionLoading2Component', async () => {
 	let component: OuterComponent;
 	let fixture: ComponentFixture<OuterComponent>;
 	let loader: HarnessLoader;
@@ -45,9 +51,15 @@ describe('MatOptionLoadingComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
-				MatSelectModule,
-				NoopAnimationsModule,
+				FormsModule,
+				MatFormFieldModule,
 				MatProgressSpinnerModule,
+				MatSelectModule,
+				MatAutocompleteModule,
+				MatListModule,
+				MatButtonModule,
+				ScrollingModule,
+				NoopAnimationsModule,
 			],
 			declarations: [MatOptionLoadingComponent, OuterComponent],
 		}).compileComponents();
@@ -56,12 +68,15 @@ describe('MatOptionLoadingComponent', () => {
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
+		await fixture.whenStable();
 	});
 
 	it('should create', async () => {
+		expect(component).toBeTruthy();
 		const select = await loader.getHarness(MatSelectHarness);
 		await select.open();
 		await select.isOpen();
+		await fixture.whenStable();
 		const options = await select.getOptions();
 		expect(options.length).toBe(3);
 	});

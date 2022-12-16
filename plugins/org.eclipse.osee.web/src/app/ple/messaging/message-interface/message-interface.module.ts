@@ -29,6 +29,7 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 import { OseeStringUtilsPipesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchUndoButtonModule } from '../../../shared-components/components/branch-undo-button/branch-undo-button.module';
+import { MatOptionLoadingModule } from '../../../shared-components/mat-option-loading/mat-option-loading.module';
 import { DiffViewsModule } from '../../diff-views/diff-views/diff-views.module';
 import { GenericButtonsModule } from '../../generic-buttons/generic-buttons.module';
 import { PleSharedMaterialModule } from '../../ple-shared-material/ple-shared-material.module';
@@ -89,6 +90,7 @@ import { ConvertSubMessageTitlesToStringPipe } from './pipes/convert-sub-message
 		DiffViewsModule,
 		ActionStateButtonModule,
 		BranchUndoButtonModule,
+		MatOptionLoadingModule,
 		MessageInterfaceRoutingModule,
 	],
 })

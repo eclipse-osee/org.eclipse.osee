@@ -25,15 +25,16 @@
 		"
 		required>
 		<osee-mat-option-loading
-			[options]="options"
-			[objectName]="'Branches'">
-			<mat-option
-				*ngFor="let option of options | async"
-				[value]="option.id"
-				[id]="option.id"
-				[attr.data-cy]="'option-' + option.name">
-				{{ option.name }}
-			</mat-option>
+			[data]="options"
+			objectName="Branches">
+			<ng-template let-option>
+				<mat-option
+					[value]="option.id"
+					[id]="option.id"
+					[attr.data-cy]="'option-' + option.name">
+					{{ option.name }}
+				</mat-option>
+			</ng-template>
 		</osee-mat-option-loading>
 	</mat-select>
 	<mat-spinner

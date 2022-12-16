@@ -13,6 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
+import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
 import { transportType } from '../../types/transportType';
 
 @Injectable({
@@ -24,6 +25,23 @@ export class TransportTypeService {
 	getAll(branchId: string) {
 		return this.http.get<Required<transportType>[]>(
 			apiURL + '/mim/branch/' + branchId + '/transportTypes'
+		);
+	}
+
+	getPaginated(
+		branchId: string,
+		pageNum: string | number,
+		pageSize: string | number
+	) {
+		return this.http.get<Required<transportType>[]>(
+			apiURL + '/mim/branch/' + branchId + '/transportTypes',
+			{
+				params: {
+					pageNum: pageNum,
+					count: pageSize,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
 		);
 	}
 

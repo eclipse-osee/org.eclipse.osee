@@ -17,14 +17,25 @@ import {
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatStepper } from '@angular/material/stepper';
-import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
+import {
+	BehaviorSubject,
+	Subject,
+	combineLatest,
+	from,
+	iif,
+	of,
+	defer,
+} from 'rxjs';
 import {
 	concatMap,
 	debounceTime,
+	distinct,
 	distinctUntilChanged,
 	filter,
 	map,
+	scan,
 	shareReplay,
+	startWith,
 	switchMap,
 	tap,
 } from 'rxjs/operators';
@@ -53,7 +64,8 @@ import {
 	styleUrls: ['./add-element-dialog.component.sass'],
 })
 export class AddElementDialogComponent implements OnInit {
-	availableElements = this.structures.availableElements;
+	availableElements = (pageNum: number | string) =>
+		this.structures.getPaginatedElements(pageNum);
 	storedId: string = '-1';
 	loadingTypes = false;
 	types = this.structures.types;

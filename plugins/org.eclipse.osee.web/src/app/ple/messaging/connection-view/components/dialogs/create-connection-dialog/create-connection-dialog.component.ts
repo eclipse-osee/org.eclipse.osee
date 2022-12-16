@@ -37,21 +37,19 @@ import { transportType } from '../../../../shared/types/transportType';
 })
 export class CreateConnectionDialogComponent implements OnDestroy {
 	private _done = new Subject();
-	nodes = this.graphService.nodeOptions.pipe(
-		take(1),
-		switchMap((nodes) =>
-			of(nodes).pipe(
-				concatMap((nodeList) =>
-					from(nodeList).pipe(
-						filter((node) => node.id !== this.data.id)
-					)
-				),
-				take(nodes.length),
-				reduce((acc, curr) => [...acc, curr], [] as node[])
+	nodes = (pageNum: string | number) =>
+		this.graphService.getPaginatedNodes(pageNum, 3).pipe(
+			switchMap((nodes) =>
+				of(nodes).pipe(
+					concatMap((n) =>
+						from(n).pipe(filter((node) => node.id !== this.data.id))
+					),
+
+					take(nodes.length),
+					reduce((acc, curr) => [...acc, curr], [] as node[])
+				)
 			)
-		),
-		share()
-	);
+		);
 	title: string = '';
 	newConnection: newConnection = {
 		nodeId: '',
@@ -60,9 +58,9 @@ export class CreateConnectionDialogComponent implements OnDestroy {
 			description: '',
 		},
 	};
-	transportTypes = this.transportTypeService.types.pipe(
-		takeUntil(this._done)
-	);
+
+	transportTypes = (pageNum: string | number) =>
+		this.transportTypeService.getPaginatedTypes(pageNum, 3);
 	constructor(
 		private graphService: CurrentGraphService,
 		private enumService: EnumsService,
