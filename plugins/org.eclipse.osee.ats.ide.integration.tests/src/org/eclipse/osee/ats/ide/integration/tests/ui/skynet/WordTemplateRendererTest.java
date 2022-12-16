@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
+import org.eclipse.osee.client.test.framework.NotForEclipseOrgRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -101,6 +102,7 @@ public class WordTemplateRendererTest {
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )
          .around( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NotForEclipseOrgRule() ) //<--ToDo: Remove with TW22315
          ;
    //@formatter:on
 
