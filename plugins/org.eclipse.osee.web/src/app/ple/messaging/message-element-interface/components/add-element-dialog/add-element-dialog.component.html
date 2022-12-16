@@ -34,16 +34,23 @@
 					<mat-select
 						[(ngModel)]="data.element"
 						(selectionChange)="storeId($event.value)">
-						<mat-option
-							*ngFor="let option of availableElements | async"
-							[value]="option"
-							[id]="
-								option !== undefined && option.id !== undefined
-									? option.id
-									: ''
-							">
-							{{ option.name }}
-						</mat-option>
+						<osee-mat-option-loading
+							[data]="availableElements"
+							paginationMode="AUTO"
+							[paginationSize]="3">
+							<ng-template let-option>
+								<mat-option
+									[value]="option"
+									[id]="
+										option !== undefined &&
+										option.id !== undefined
+											? option.id
+											: ''
+									">
+									{{ option.name }}
+								</mat-option>
+							</ng-template>
+						</osee-mat-option-loading>
 					</mat-select>
 				</mat-form-field>
 			</div>

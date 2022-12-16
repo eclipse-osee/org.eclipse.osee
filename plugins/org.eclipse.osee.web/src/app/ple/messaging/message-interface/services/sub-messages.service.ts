@@ -21,6 +21,8 @@ import { MessageApiResponse } from '../types/ApiResponse';
 import { subMessage } from '../types/sub-messages';
 import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../transactions/transaction.service';
+import { count } from 'console';
+import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -48,6 +50,27 @@ export class SubMessagesService {
 				messageId +
 				'/submessages/' +
 				subMessageId
+		);
+	}
+
+	getPaginatedFilteredSubMessages(
+		branchId: string | number,
+		filter: string,
+		pageNum: string | number
+	) {
+		return this.http.get<Required<subMessage>[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/submessages/filter/' +
+				filter,
+			{
+				params: {
+					pageNum: pageNum,
+					count: 3,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
 		);
 	}
 	createMessageRelation(

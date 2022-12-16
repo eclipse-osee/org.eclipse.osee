@@ -19,8 +19,8 @@ import { node } from '../../shared/types/node';
 import { response } from './Response.mock';
 import { settingsDialogData } from '../../shared/types/settingsdialog';
 import { applic } from '../../../../types/applicability/applic';
-import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
-import { changeInstance } from 'src/app/types/change-report/change-report';
+import { changeReportMock } from '../../../../ple-services/http/change-report.mock';
+import { changeInstance } from '../../../../types/change-report/change-report';
 import { transactionResultMock } from '../../../../transactions/transaction.mock';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
@@ -37,6 +37,12 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
 	updated: new BehaviorSubject<boolean>(true),
 	set update(value: boolean) {
 		return;
+	},
+	getPaginatedNodes(pageNum, pageSize) {
+		return of([
+			{ id: '1', name: 'First' },
+			{ id: '2', name: 'Second' },
+		]);
 	},
 	updateConnection(connection: Partial<connection>) {
 		return of(transactionResultMock);

@@ -57,6 +57,22 @@ export class TypesUIService {
 	get types() {
 		return this._types;
 	}
+
+	getPaginatedFilteredTypes(filterString: string, pageNum: string) {
+		return this._ui.id.pipe(
+			filter((id) => id !== ''),
+			share(),
+			switchMap((id) =>
+				this._typesService
+					.getPaginatedFilteredTypes(filterString, id, pageNum)
+					.pipe(
+						repeatWhen((_) => this._ui.update),
+						share()
+					)
+			),
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
 	getType(typeId: string) {
 		return this._ui.id.pipe(
 			take(1),

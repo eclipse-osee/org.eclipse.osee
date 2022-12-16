@@ -29,16 +29,17 @@ import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatOptionLoadingTestingModule } from '../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
 import { userDataAccountServiceMock } from '../../../../plconfig/testing/mockUserDataAccountService';
-import { NewTypeDialogComponent } from '../../../shared/components/dialogs/new-type-dialog/new-type-dialog.component';
 import { applicabilityListServiceMock } from '../../../shared/mocks/ApplicabilityListService.mock';
 import { enumerationSetServiceMock } from '../../../shared/mocks/enumeration.set.service.mock';
 import { enumsServiceMock } from '../../../shared/mocks/EnumsService.mock';
@@ -110,6 +111,8 @@ describe('AddElementDialogComponent', () => {
 				NoopAnimationsModule,
 				MatIconModule,
 				MatDividerModule,
+				MatProgressSpinnerModule,
+				MatOptionLoadingTestingModule,
 			],
 			declarations: [
 				AddElementDialogComponent,

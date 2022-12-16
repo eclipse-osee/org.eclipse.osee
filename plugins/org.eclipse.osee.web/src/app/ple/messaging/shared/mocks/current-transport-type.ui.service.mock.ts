@@ -23,6 +23,9 @@ export const CurrentTransportTypeServiceMock: Partial<CurrentTransportTypeServic
 		getType: function (artId: string): Observable<Required<transportType>> {
 			return of(transportTypes[0]);
 		},
+		getPaginatedTypes(pageNum, pageSize) {
+			return of(transportTypes);
+		},
 		createType: function (
 			type: transportType
 		): Observable<transactionResult> {

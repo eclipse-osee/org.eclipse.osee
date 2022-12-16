@@ -363,6 +363,7 @@ export class MessageTableComponent implements AfterViewChecked {
 	createNewSubMessage(message: message | messageWithChanges) {
 		this.dialog
 			.open(AddSubMessageDialogComponent, {
+				minWidth: '80%',
 				data: {
 					name: message.name,
 					id: message.id,

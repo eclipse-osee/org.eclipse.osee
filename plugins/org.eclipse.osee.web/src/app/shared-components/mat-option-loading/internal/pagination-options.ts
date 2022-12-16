@@ -10,21 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.option-spinner
-    display: inline-block
-    position: absolute
-    right: 25px
-
-.flex-row
-    display: flex
-    flex-direction: row
-
-.loading
-    @extend .flex-row
-
-.full-row
-    @extend .flex-row
-    align-items: center
-
-.grow
-    flex-grow: 1
+export const paginationModes = {
+	OFF: 'OFF',
+	AUTO: 'AUTO',
+	MANUAL: 'MANUAL',
+} as const;
+/**
+ * Modes used to control pagination using mat-option-loading
+ */
+export type paginationMode =
+	typeof paginationModes[keyof typeof paginationModes];

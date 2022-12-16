@@ -34,7 +34,7 @@ import { typesServiceMock } from '../../../mocks/types.service.mock';
 import { EnumsService } from '../../../services/http/enums.service';
 import { enumsServiceMock } from '../../../mocks/EnumsService.mock';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
+import { MatOptionLoadingTestingModule } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
 
 let loader: HarnessLoader;
 
@@ -73,7 +73,7 @@ describe('EditTypeDialogComponent', () => {
 				MatSlideToggleModule,
 				MatSelectModule,
 				MatStepperModule,
-				MatOptionLoadingModule,
+				MatOptionLoadingTestingModule,
 			],
 			declarations: [EditTypeDialogComponent],
 			providers: [

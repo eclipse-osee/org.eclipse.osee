@@ -199,6 +199,14 @@ export class CurrentGraphService {
 		return this.routeStateService.isInDiff;
 	}
 
+	getPaginatedNodes(pageNum: string | number, pageSize: number) {
+		return this.routeStateService.id.pipe(
+			take(1),
+			switchMap((id) =>
+				this.nodeService.getPaginatedNodes(id, pageNum, pageSize)
+			)
+		);
+	}
 	updateConnection(
 		connection: Partial<connection>,
 		oldTransportTypeId: string

@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
@@ -115,6 +116,31 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
+      }
+      return new LinkedList<InterfaceNode>();
+   }
+
+   @Override
+   public Collection<InterfaceNode> getAll(BranchId branch) {
+      return this.getAll(branch, 0L, 0L);
+   }
+
+   @Override
+   public Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize) {
+      return this.getAll(branch, pageNum, pageSize, AttributeTypeToken.SENTINEL);
+   }
+
+   @Override
+   public Collection<InterfaceNode> getAll(BranchId branch, AttributeTypeToken orderByAttributeType) {
+      return this.getAll(branch, 0L, 0L, orderByAttributeType);
+   }
+
+   @Override
+   public Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      try {
+         return this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttributeType);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
       }
       return new LinkedList<InterfaceNode>();
    }

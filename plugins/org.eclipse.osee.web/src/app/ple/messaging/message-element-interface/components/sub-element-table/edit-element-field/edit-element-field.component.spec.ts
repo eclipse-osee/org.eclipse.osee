@@ -30,10 +30,11 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
-import { unitsMock } from 'src/app/ple/messaging/shared/mocks/unit.mock';
-import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
-import { SharedMessagingModule } from 'src/app/ple/messaging/shared/shared-messaging.module';
+import { enumsServiceMock } from '../../../../shared/mocks/EnumsService.mock';
+import { unitsMock } from '../../../../shared/mocks/unit.mock';
+import { EnumsService } from '../../../../shared/services/http/enums.service';
+import { SharedMessagingModule } from '../../../../shared/shared-messaging.module';
+import { MatOptionLoadingTestingModule } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
 import { warningDialogServiceMock } from '../../../../shared/mocks/warning-dialog.ui.service.mock';
 import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
 import { CurrentStateServiceMock } from '../../../mocks/services/CurrentStateService.mock';
@@ -58,6 +59,7 @@ describe('EditElementFieldComponent', () => {
 				SharedMessagingModule,
 				MatMenuModule,
 				RouterTestingModule,
+				MatOptionLoadingTestingModule,
 			],
 			providers: [
 				{

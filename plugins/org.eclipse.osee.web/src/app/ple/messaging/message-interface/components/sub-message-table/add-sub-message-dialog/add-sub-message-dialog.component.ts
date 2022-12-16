@@ -24,30 +24,32 @@ import { subMessage } from '../../../types/sub-messages';
 	styleUrls: ['./add-sub-message-dialog.component.sass'],
 })
 export class AddSubMessageDialogComponent {
-	availableSubMessages = this.messageService.allMessages.pipe(
-		mergeMap((x) => x),
-		map((x) => x?.subMessages),
-		mergeAll(),
-		scan((acc, curr) => [...acc, curr], [] as subMessage[]),
-		map((y) =>
-			y.sort((a, b) => {
-				return a.id != undefined && b.id != undefined && a.id > b.id
-					? -1
-					: 1;
-			})
-		),
-		map((y) =>
-			y.filter((val, index, array) => {
-				return !index || val.id != array[index - 1].id;
-			})
-		),
-		map((y) =>
-			y.sort((a, b) => {
-				return a.name > b.name ? -1 : 1;
-			})
-		),
-		share()
-	);
+	// availableSubMessages = this.messageService.allMessages.pipe(
+	// 	mergeMap((x) => x),
+	// 	map((x) => x?.subMessages),
+	// 	mergeAll(),
+	// 	scan((acc, curr) => [...acc, curr], [] as subMessage[]),
+	// 	map((y) =>
+	// 		y.sort((a, b) => {
+	// 			return a.id != undefined && b.id != undefined && a.id > b.id
+	// 				? -1
+	// 				: 1;
+	// 		})
+	// 	),
+	// 	map((y) =>
+	// 		y.filter((val, index, array) => {
+	// 			return !index || val.id != array[index - 1].id;
+	// 		})
+	// 	),
+	// 	map((y) =>
+	// 		y.sort((a, b) => {
+	// 			return a.name > b.name ? -1 : 1;
+	// 		})
+	// 	),
+	// 	share()
+	// );
+	availableSubMessages = (pageNum: string | number) =>
+		this.messageService.getPaginatedSubMessages(pageNum);
 	storedId: string = '-1';
 	constructor(
 		public dialogRef: MatDialogRef<AddSubMessageDialogComponent>,

@@ -353,6 +353,19 @@ export class CurrentMessagesService {
 		this._expandedRowsDecreasing.next(true);
 	}
 
+	getPaginatedSubMessages(pageNum: string | number) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.subMessageService.getPaginatedFilteredSubMessages(
+					id,
+					'',
+					pageNum
+				)
+			)
+		);
+	}
+
 	private mergeMessages(message: messageWithChanges, parentMessage: message) {
 		message.name = parentMessage.name;
 		message.description = parentMessage.description;

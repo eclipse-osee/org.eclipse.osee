@@ -11,20 +11,60 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="_options | async as _opt; else loadingMatOptions">
-	<ng-container *ngIf="_opt.length === 0">
-		<mat-option disabled> No {{ objectName }} available. </mat-option>
-	</ng-container>
-	<ng-content></ng-content>
+	{{ disableSelect ? setDisabled(false) : '' }}
+	<!--48 is avg size for mat-option-->
+	<cdk-virtual-scroll-viewport
+		itemSize="48"
+		[minBufferPx]="48 * paginationSize"
+		[maxBufferPx]="48 * paginationSize"
+		[style.height.px]="
+			paginationMode === 'MANUAL'
+				? _opt.length > paginationSize
+					? 48 * (paginationSize + 1)
+					: 48 * _opt.length
+				: _opt.length > paginationSize
+				? 48 * paginationSize
+				: 48 * _opt.length
+		">
+		<ng-template
+			*cdkVirtualFor="let opt of _opt"
+			let-opt
+			[ngTemplateOutlet]="template"
+			[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
+		</ng-template>
+		<ng-container *ngIf="_opt.length === 0">
+			No {{ objectName }} available.
+		</ng-container>
+		<ng-container *ngIf="paginationMode === 'MANUAL' && _opt.length > 0">
+			<div
+				class="full-row"
+				*ngIf="(_paginationComplete | async) === false">
+				<button
+					mat-button
+					matListItemTitle
+					class="grow"
+					(click)="createPaginationEvent()">
+					Show More
+				</button>
+			</div>
+		</ng-container>
+	</cdk-virtual-scroll-viewport>
 </ng-container>
-
 <ng-template #loadingMatOptions>
 	{{ disableSelect ? setDisabled(true) : '' }}
-	<mat-option disabled>
-		<span style="display: inline-block"> Loading... </span>
-		<mat-spinner
-			color="primary"
-			diameter="40"
-			class="option-spinner"
-			data-cy="mat-option-loading-spinner"></mat-spinner>
-	</mat-option>
+	<ng-container *ngIf="error | async as _error; else loadInProgress">
+		<mat-option disabled>
+			{{ _error }}
+		</mat-option>
+	</ng-container>
+	<ng-template #loadInProgress>
+		<mat-option disabled>
+			<span style="display: inline-block"> Loading... </span>
+			<mat-spinner
+				color="primary"
+				diameter="40"
+				class="option-spinner"
+				data-cy="mat-option-loading-spinner"></mat-spinner>
+		</mat-option>
+	</ng-template>
 </ng-template>

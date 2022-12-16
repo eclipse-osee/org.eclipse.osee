@@ -12,6 +12,8 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatOptionLoadingComponent } from './mat-option-loading.component';
+
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,9 +21,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { MatOptionLoadingComponent } from './mat-option-loading/mat-option-loading.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
+/**
+ * Only import in *.spec.ts files
+ */
 @NgModule({
 	declarations: [MatOptionLoadingComponent],
 	imports: [
@@ -37,4 +41,4 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 	],
 	exports: [MatOptionLoadingComponent],
 })
-export class MatOptionLoadingModule {}
+export class MatOptionLoadingTestingModule {}

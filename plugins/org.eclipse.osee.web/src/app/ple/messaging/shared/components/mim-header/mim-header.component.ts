@@ -113,8 +113,6 @@ export class MimHeaderComponent {
 																				message +
 																				'/' +
 																				submessage +
-																				'/' +
-																				submessageToStructureBreadCrumbs +
 																				'/elements',
 																		},
 																		{
@@ -131,8 +129,6 @@ export class MimHeaderComponent {
 																				message +
 																				'/' +
 																				submessage +
-																				'/' +
-																				submessageToStructureBreadCrumbs +
 																				'/elements/' +
 																				singleStructureId,
 																		},
@@ -187,8 +183,6 @@ export class MimHeaderComponent {
 																	message +
 																	'/' +
 																	submessage +
-																	'/' +
-																	submessageToStructureBreadCrumbs +
 																	'/elements',
 															},
 														]) //submessage)

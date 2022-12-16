@@ -20,6 +20,7 @@ import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { element } from '../../types/element';
 import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../../transactions/transaction.service';
+import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -58,6 +59,23 @@ export class ElementService {
 	getFilteredElements(branchId: string, filter: string) {
 		return this.http.get<element[]>(
 			apiURL + `/mim/branch/${branchId}/elements/filter/${filter}`
+		);
+	}
+
+	getPaginatedFilteredElements(
+		branchId: string,
+		filter: string,
+		pageNum: string
+	) {
+		return this.http.get<element[]>(
+			apiURL + `/mim/branch/${branchId}/elements/filter/${filter}`,
+			{
+				params: {
+					count: 3,
+					pageNum: pageNum,
+					orderByAttribute: ATTRIBUTETYPEID.NAME,
+				},
+			}
 		);
 	}
 

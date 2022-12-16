@@ -30,14 +30,14 @@ import { CurrentGraphService } from '../../../services/current-graph.service';
 import { connection } from '../../../../shared/types/connection';
 
 import { EditConnectionDialogComponent } from './edit-connection-dialog.component';
-import { enumsServiceMock } from 'src/app/ple/messaging/shared/mocks/EnumsService.mock';
-import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
+import { enumsServiceMock } from '../../../../shared/mocks/EnumsService.mock';
+import { EnumsService } from '../../../../shared/services/http/enums.service';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
-import { MatOptionLoadingModule } from '../../../../../../shared-components/mat-option-loading/mat-option-loading.module';
 import { CurrentTransportTypeServiceMock } from '../../../../shared/mocks/current-transport-type.ui.service.mock';
 import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
+import { MatOptionLoadingTestingModule } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
 
 describe('EditConnectionDialogComponent', () => {
 	let component: EditConnectionDialogComponent;
@@ -66,7 +66,7 @@ describe('EditConnectionDialogComponent', () => {
 				MatButtonModule,
 				NoopAnimationsModule,
 				FormsModule,
-				MatOptionLoadingModule,
+				MatOptionLoadingTestingModule,
 			],
 			declarations: [EditConnectionDialogComponent],
 			providers: [
