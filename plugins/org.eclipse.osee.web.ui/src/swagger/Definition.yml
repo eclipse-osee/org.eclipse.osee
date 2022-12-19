@@ -1,0 +1,30 @@
+openapi: '3.0.2'
+info:
+  title: ArtifactEndpoint
+  version: '1.0'
+servers:
+  - url: http://localhost:8089
+paths:
+  /orcs/branch/{branchId}/artifact/{artifactId}/related/maps:
+    get:
+      tags:
+        - orcs
+      summary: Returns a hierarchical tree of childrent from specified artifact
+      description: Finds and displays all children and their attributes in a hierarchical fashion
+      operationId: getRelatedArtifactsTree
+      parameters:
+        - name: branchId
+          in: path
+          description: The ID of the branch the artifact resides on
+          required: true
+          schema:
+            type: object
+        - name: artifactId
+          in: path
+          description: The ID of the artifact
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: OK
