@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.ide.editor.tab.defects.WfeDefectsTab;
 import org.eclipse.osee.ats.ide.editor.tab.details.WfeDetailsTab;
 import org.eclipse.osee.ats.ide.editor.tab.journal.WfeJournalTab;
 import org.eclipse.osee.ats.ide.editor.tab.members.WfeMembersTab;
-import org.eclipse.osee.ats.ide.editor.tab.metrics.WfeMetricsTab;
 import org.eclipse.osee.ats.ide.editor.tab.relations.WfeRelationsTab;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
 import org.eclipse.osee.ats.ide.editor.tab.task.WfeTasksTab;
@@ -116,7 +115,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    private WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
-   private WfeMetricsTab metricsTab;
+
    private WfeDetailsTab detailsTab;
    private WfeBitTab bitTab;
    private final Collection<WfeAbstractTab> extTabs = new ArrayList<>();
@@ -319,9 +318,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    }
 
    public void disposeTabs() {
-      if (metricsTab != null) {
-         removePage(metricsTab.getIndex());
-      }
       if (attrTab != null) {
          removePage(attrTab.getIndex());
       }
