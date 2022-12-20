@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.Consumes;
@@ -43,6 +47,10 @@ import org.eclipse.osee.orcs.search.ArtifactTable;
 /**
  * @author Ryan D. Brooks
  */
+
+@OpenAPIDefinition(info = @Info(title = "Artifact Endpoint", description = "Artifact Endpoint definitions"), servers = {
+   @Server(description = "ArtifactEndpoint", url = "/orcs")})
+
 @Path("artifact")
 public interface ArtifactEndpoint {
    @POST
@@ -159,7 +167,9 @@ public interface ArtifactEndpoint {
    List<ArtifactToken> findArtifactTokens(ArtifactSearchOptions searchOptions);
 
    @GET
+   @SwaggerCommonOrcsAnnotations
    @Path("{artifact}/related/maps")
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Gets a hierarchy tree of Artifacts")
    List<ArtifactReadable> getRelatedArtifactsTree(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 }
