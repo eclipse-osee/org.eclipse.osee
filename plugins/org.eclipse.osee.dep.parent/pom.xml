@@ -288,7 +288,7 @@
 						<phase>package</phase>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>			
 		</plugins>
 		<pluginManagement>
 			<plugins>

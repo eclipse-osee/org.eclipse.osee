@@ -233,6 +233,47 @@
 					</execution>
 				</executions>
 			</plugin>
+		   <plugin>
+             <groupId>io.swagger.core.v3</groupId>
+             <artifactId>swagger-maven-plugin</artifactId>
+             <version>2.2.7</version>
+             <configuration>
+                 <outputFileName>${project.artifactId}</outputFileName>
+                 <outputPath>${project.build.directory}/swagger-definitions</outputPath>
+<!-- 							<outputPath>../org.eclipse.osee.web.ui/src/swagger/definitions</outputPath> -->
+                 <outputFormat>JSONANDYAML</outputFormat>
+                 <resourcePackages>
+                      <package>org.eclipse.osee.orcs.rest</package>
+                 </resourcePackages>
+                 <prettyPrint>TRUE</prettyPrint>
+                 <readAllResources>TRUE</readAllResources>
+             </configuration>
+             <executions>
+                 <execution>
+                     <phase>compile</phase>
+                     <goals>
+                         <goal>resolve</goal>
+                     </goals>
+                 </execution>
+             </executions>
+             <dependencies>
+             	 <dependency>
+		            <groupId>io.swagger.core.v3</groupId>
+		            <artifactId>swagger-jaxrs2</artifactId>
+		            <version>2.2.7</version>
+		         </dependency>			
+		         <dependency>
+		            <groupId>javax.ws.rs</groupId>
+		            <artifactId>javax.ws.rs-api</artifactId>
+		            <version>2.1</version>
+		         </dependency>
+		         <dependency>
+		            <groupId>javax.servlet</groupId>
+		            <artifactId>javax.servlet-api</artifactId>
+		            <version>3.1.0</version>
+		         </dependency>
+		      </dependencies>
+		   </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

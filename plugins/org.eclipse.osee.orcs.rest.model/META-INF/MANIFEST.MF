@@ -13,8 +13,12 @@ Export-Package: org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.writer.reader
 Import-Package: com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.annotation,
+ io.swagger.v3.oas.annotations,
+ io.swagger.v3.oas.annotations.media,
+ io.swagger.v3.oas.annotations.responses,
  jakarta.xml.bind,
  jakarta.xml.bind.annotation,
+ javax.servlet,
  javax.ws.rs,
  javax.ws.rs.core,
  org.apache.cxf.jaxrs.ext.multipart,
@@ -33,3 +37,4 @@ Import-Package: com.fasterxml.jackson.databind,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction
+Require-Bundle: swagger-annotations
