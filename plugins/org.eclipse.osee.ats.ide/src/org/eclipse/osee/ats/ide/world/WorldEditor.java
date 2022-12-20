@@ -23,7 +23,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditorProvider;
@@ -40,7 +39,6 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
@@ -144,7 +142,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
                ((IWorldEditorConsumer) provider).setWorldEditor(this);
             }
             createMainTab();
-            createMetricsTab();
             setActivePage(WorldXWidgetActionPage.ID);
          }
 
@@ -207,13 +204,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    private void createMainTab() throws PartInitException {
       worldXWidgetActionPage = new WorldXWidgetActionPage(this);
       addPage(worldXWidgetActionPage);
-   }
-
-   private void createMetricsTab() {
-      Composite comp = WorkflowEditor.createCommonPageComposite(getContainer());
-      new AtsMetricsComposite(this, comp, SWT.NONE);
-      int metricsPageIndex = addPage(comp);
-      setPageText(metricsPageIndex, "Metrics");
    }
 
    public List<Artifact> getLoadedArtifacts() {
