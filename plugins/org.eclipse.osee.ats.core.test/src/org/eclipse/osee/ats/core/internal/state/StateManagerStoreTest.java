@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.workflow.TestState;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.junit.Assert;
@@ -113,7 +112,7 @@ public class StateManagerStoreTest {
          "Analyze;<Joe><Kay>;;");
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)).thenReturn(
          StateType.Working.name());
-      WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
+      WorkState currentState = WorkState.create("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
 
       StateManagerStore.load(workItem, stateMgr, attrResolver, workStateFactory);
@@ -133,7 +132,7 @@ public class StateManagerStoreTest {
          "Analyze;<Joe><Kay>;;");
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)).thenReturn(
          StateType.Working.name());
-      WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
+      WorkState currentState = WorkState.create("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);
       when(workItem.getAtsId()).thenReturn("ATS1234");
@@ -161,7 +160,7 @@ public class StateManagerStoreTest {
          "Analyze;<Joe><Kay>;;");
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)).thenReturn(
          StateType.Working.name());
-      WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
+      WorkState currentState = WorkState.create("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);
       when(workItem.getAtsId()).thenReturn("ATS1234");

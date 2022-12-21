@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -559,18 +558,18 @@ public class StateManager implements IAtsStateManager {
    @Override
    public WorkState createStateData(String name, List<? extends AtsUser> assignees) {
       Conditions.checkNotNullOrContainNull(assignees, "assignees");
-      return new WorkStateImpl(name, assignees);
+      return WorkState.create(name, assignees);
    }
 
    @Override
    public WorkState createStateData(String name) {
-      return new WorkStateImpl(name);
+      return WorkState.create(name);
    }
 
    @Override
    public WorkState createStateData(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
       Conditions.checkNotNullOrContainNull(assignees, "assignees");
-      return new WorkStateImpl(name, assignees, hoursSpent, percentComplete);
+      return WorkState.create(name, assignees, hoursSpent, percentComplete);
    }
 
    @Override

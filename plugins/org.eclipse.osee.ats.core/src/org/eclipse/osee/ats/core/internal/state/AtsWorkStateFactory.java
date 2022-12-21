@@ -21,9 +21,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,8 +61,8 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
    }
 
    @Override
-   public WorkStateImpl fromStoreStr(String storeStr) {
-      WorkStateImpl state = new WorkStateImpl("Unknown");
+   public WorkState fromStoreStr(String storeStr) {
+      WorkState state = WorkState.create("Unknown");
       if (Strings.isValid(storeStr)) {
          Matcher m = storagePattern.matcher(storeStr);
          if (m.find()) {
