@@ -13,31 +13,88 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedBase;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
  */
-public interface WorkState extends Named {
+public class WorkState extends NamedBase {
 
-   void setHoursSpent(double hoursSpent);
+   private String name;
+   private final List<AtsUser> assignees = new LinkedList<>();
+   private double hoursSpent = 0;
+   private int percentComplete = 0;
 
-   void setPercentComplete(int percentComplete);
+   private WorkState(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
+      this.name = name;
+      this.assignees.addAll(assignees);
+      this.hoursSpent = hoursSpent;
+      this.percentComplete = percentComplete;
+   }
 
-   List<AtsUser> getAssignees();
+   public void setHoursSpent(double hoursSpent) {
+      this.hoursSpent = hoursSpent;
+   }
 
-   double getHoursSpent();
+   public void setPercentComplete(int percentComplete) {
+      this.percentComplete = percentComplete;
+   }
 
-   int getPercentComplete();
+   @Override
+   public String getName() {
+      return name;
+   }
 
-   void addAssignee(AtsUser steve);
+   public List<AtsUser> getAssignees() {
+      return assignees;
+   }
 
-   void setAssignees(List<? extends AtsUser> users);
+   public double getHoursSpent() {
+      return hoursSpent;
+   }
 
-   void setName(String name);
+   public int getPercentComplete() {
+      return percentComplete;
+   }
 
-   void removeAssignee(AtsUser assignee);
+   public void addAssignee(AtsUser user) {
+      Conditions.checkNotNull(user, "user");
+      if (!assignees.contains(user)) {
+         assignees.add(user);
+      }
+   }
+
+   public void setAssignees(List<? extends AtsUser> users) {
+      assignees.clear();
+      for (AtsUser user : users) {
+         addAssignee(user);
+      }
+   }
+
+   @Override
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void removeAssignee(AtsUser assignee) {
+      assignees.remove(assignee);
+   }
+
+   public static WorkState create(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
+      return new WorkState(name, assignees, hoursSpent, percentComplete);
+   }
+
+   public static WorkState create(String name) {
+      return new WorkState(name, Collections.emptyList(), 0, 0);
+   }
+
+   public static WorkState create(String name, List<? extends AtsUser> assignees) {
+      return new WorkState(name, assignees, 0, 0);
+   }
 
 }

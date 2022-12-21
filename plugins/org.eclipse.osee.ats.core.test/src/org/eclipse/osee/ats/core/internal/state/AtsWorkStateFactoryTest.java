@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -77,7 +77,7 @@ public class AtsWorkStateFactoryTest {
    public void testGetFromXml() {
       AtsWorkStateFactory atsWorkStateFactory = new AtsWorkStateFactory(userService);
 
-      WorkStateImpl state = atsWorkStateFactory.fromStoreStr("");
+      WorkState state = atsWorkStateFactory.fromStoreStr("");
       Assert.assertEquals("Unknown", state.getName());
       Assert.assertEquals(0, state.getHoursSpent(), 0.01);
       Assert.assertEquals(0, state.getAssignees().size());
