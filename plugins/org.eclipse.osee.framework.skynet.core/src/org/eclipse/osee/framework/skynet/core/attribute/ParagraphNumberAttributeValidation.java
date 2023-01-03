@@ -13,10 +13,9 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 
@@ -36,12 +35,12 @@ public class ParagraphNumberAttributeValidation implements IOseeValidator {
    }
 
    @Override
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
+   public XResultData validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
       if (artifact.getSoleAttributeValueAsString(attributeType, "").matches(".*[a-zA-Z].*")) {
-         return new Status(IStatus.ERROR, ParagraphNumberAttributeValidation.class.getName(),
+         return XResultData.valueOf(XResultData.Type.Severe, ParagraphNumberAttributeValidation.class.getName(),
             "Invalid Paragraph Number - letters are not allowed");
       }
-      return Status.OK_STATUS;
+      return XResultData.OK_STATUS;
    }
 
 }

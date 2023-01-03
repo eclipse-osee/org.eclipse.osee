@@ -52,6 +52,8 @@ public class XResultData {
    public static XResultData EMPTY_RD = new XResultData();
    public static final Pattern ErrorPattern = Pattern.compile("Error: ");
    public static final Pattern WarningPattern = Pattern.compile("Warning: ");
+   public static final XResultData OK_STATUS = EMPTY_RD;
+
    @JsonIgnore
    public List<IResultDataListener> listeners;
    public String title;
@@ -451,6 +453,22 @@ public class XResultData {
       int spent = Long.valueOf(now.getTime() - start.getTime()).intValue();
       keyToTimeSpentMap.put(key, spent);
       return spent;
+   }
+
+   public boolean isOK() {
+      return isSuccess();
+   }
+
+   public static XResultData valueOf(Type type, String messageId, String message, Exception ex) {
+      XResultData rd = new XResultData();
+      rd.logStr(type, "%s: %s - %s", messageId, message, Lib.exceptionToString(ex));
+      return rd;
+   }
+
+   public static XResultData valueOf(Type type, String messageId, String message) {
+      XResultData rd = new XResultData();
+      rd.logStr(type, "%s: %s", messageId, message);
+      return rd;
    }
 
 }

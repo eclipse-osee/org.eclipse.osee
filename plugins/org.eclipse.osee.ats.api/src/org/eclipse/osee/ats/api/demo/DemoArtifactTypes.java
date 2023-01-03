@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.data.computed.ComputedCharacteristicDelta
 /**
  * @author Ryan D. Brooks
  */
-public interface AtsDemoOseeTypes {
+public interface DemoArtifactTypes {
 
    // @formatter:off
    AttributeTypeString ChangeType = atsDemo.createString(1152921504606847253L, "demo.code.Change Type", MediaType.TEXT_PLAIN, "");

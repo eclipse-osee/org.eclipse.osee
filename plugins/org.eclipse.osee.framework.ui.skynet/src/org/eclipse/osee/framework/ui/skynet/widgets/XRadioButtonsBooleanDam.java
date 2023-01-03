@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -128,8 +129,11 @@ public class XRadioButtonsBooleanDam extends XRadioButtonsDam {
       if (status.isOK()) {
          try {
             if (getArtifact() != null && getAttributeType() != null) {
-               status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                  getStored());
+               XResultData rd = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(),
+                  getAttributeType(), getStored());
+               if (rd.isErrors()) {
+                  status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+               }
                if (isRequiredEntry() && getSelected() == null) {
                   return new Status(IStatus.ERROR, getClass().getName(), "Option must be selected.");
                }

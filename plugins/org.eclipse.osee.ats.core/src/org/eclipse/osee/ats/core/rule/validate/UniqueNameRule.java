@@ -48,7 +48,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    }
 
    @Override
-   public void validate(ArtifactToken artifact, XResultData results) {
+   public void validate(ArtifactToken artifact, XResultData rd) {
       if (hasArtifactType(atsApi.getStoreService().getArtifactType(artifact))) {
          // validate that no other artifact of the given Artifact Type has the same name.
          List<ArtifactToken> arts = getArtifactsOfType(artifact.getBranch(), artifact.getArtifactType());
@@ -71,7 +71,7 @@ public class UniqueNameRule extends AbstractValidationRule {
                   continue;
                }
                String errStr = "Artifacts have same name";
-               logError(artifact, errStr, results);
+               logError(artifact, errStr, rd);
 
                addIdPair(art.getId(), artifact.getId());
             }

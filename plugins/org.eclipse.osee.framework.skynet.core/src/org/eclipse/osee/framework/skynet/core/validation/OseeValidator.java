@@ -13,9 +13,8 @@
 
 package org.eclipse.osee.framework.skynet.core.validation;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -40,54 +39,69 @@ public class OseeValidator {
       return instance;
    }
 
-   public IStatus validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName, Object proposedValue) {
-      IStatus status = Status.OK_STATUS;
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName, Object proposedValue) {
+      XResultData status = XResultData.OK_STATUS;
       try {
          AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
          status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
       } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         status = XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
       }
       return status;
    }
 
-   public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType, Object proposedValue) {
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType, Object proposedValue) {
+      return validate(requiredQualityOfService, artifact, attributeType, proposedValue, new XResultData());
+   }
+
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType, Object proposedValue, XResultData rd) {
       if (artifact != null) {
          for (IOseeValidator validator : loadedObjects.getObjects()) {
-            if (requiredQualityOfService >= validator.getQualityOfService()) {
-               try {
-                  if (validator.isApplicable(artifact, attributeType)) {
-                     try {
-                        IStatus status = validator.validate(artifact, attributeType, proposedValue);
-                        if (!status.isOK()) {
-                           return status;
+            rd.logTimeStart(validator.getClass().getSimpleName());
+            try {
+               if (requiredQualityOfService >= validator.getQualityOfService()) {
+                  try {
+                     if (validator.isApplicable(artifact, attributeType)) {
+                        try {
+                           XResultData status = validator.validate(artifact, attributeType, proposedValue);
+                           if (!status.isOK()) {
+                              return status;
+                           }
+                        } catch (Exception ex) {
+                           return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID,
+                              ex.getLocalizedMessage(), ex);
                         }
-                     } catch (Exception ex) {
-                        return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
                      }
+                  } catch (Exception ex) {
+                     return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID, ex.getLocalizedMessage(),
+                        ex);
                   }
-               } catch (Exception ex) {
-                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
                }
+            } finally {
+               rd.logTimeSpent(validator.getClass().getSimpleName());
             }
          }
       }
-      return Status.OK_STATUS;
+      return XResultData.OK_STATUS;
    }
 
-   public IStatus validate(int requiredQualityOfService, Artifact artifact) {
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, XResultData rd) {
       try {
          for (AttributeTypeToken attributeType : artifact.getAttributeTypes()) {
             for (Object value : artifact.getAttributeValues(attributeType)) {
-               IStatus status = validate(requiredQualityOfService, artifact, attributeType, value);
+               XResultData status = validate(requiredQualityOfService, artifact, attributeType, value, rd);
                if (!status.isOK()) {
                   return status;
                }
             }
          }
       } catch (Exception ex) {
-         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
       }
-      return Status.OK_STATUS;
+      return XResultData.OK_STATUS;
+   }
+
+   public void clearCaches() {
+      // for subclass implementation
    }
 }

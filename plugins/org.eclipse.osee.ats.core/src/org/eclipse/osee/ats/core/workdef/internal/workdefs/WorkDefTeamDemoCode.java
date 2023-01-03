@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -46,7 +46,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
        * Artifact types used can be declared through Team Definition or Workflow Definition. This is an example of the
        * config through Work Definition.
        */
-      WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsDemoOseeTypes.DemoCodeTeamWorkflow);
+      WorkDefBuilder bld = new WorkDefBuilder(workDefToken, DemoArtifactTypes.DemoCodeTeamWorkflow);
 
       bld.andHeader() //
          .andLayout(getChangeTypeComposite()) //
@@ -100,9 +100,9 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsDemoOseeTypes.LocAffected, "XIntegerDam", WidgetOption.EDITABLE), //
-               new WidgetDefinition(AtsDemoOseeTypes.LocReviewed, "XIntegerDam", WidgetOption.EDITABLE), //
-               new WidgetDefinition(AtsDemoOseeTypes.LocRemaining, "XComputedCharacteristicWidget",
+               new WidgetDefinition(DemoArtifactTypes.LocAffected, "XIntegerDam", WidgetOption.EDITABLE), //
+               new WidgetDefinition(DemoArtifactTypes.LocReviewed, "XIntegerDam", WidgetOption.EDITABLE), //
+               new WidgetDefinition(DemoArtifactTypes.LocRemaining, "XComputedCharacteristicWidget",
                   WidgetOption.NOT_EDITABLE, WidgetOption.NO_SELECT) //
             ));
 

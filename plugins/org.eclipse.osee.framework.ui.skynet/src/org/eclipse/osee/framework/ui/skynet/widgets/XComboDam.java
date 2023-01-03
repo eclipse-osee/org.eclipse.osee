@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -136,8 +137,11 @@ public class XComboDam extends XCombo implements AttributeWidget, EditorWidget {
       if (status.isOK()) {
          try {
             if (getArtifact() != null && getAttributeType() != null && Strings.isValid(get())) {
-               status =
+               XResultData rd =
                   OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
+               if (rd.isErrors()) {
+                  status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+               }
             }
          } catch (OseeCoreException ex) {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);

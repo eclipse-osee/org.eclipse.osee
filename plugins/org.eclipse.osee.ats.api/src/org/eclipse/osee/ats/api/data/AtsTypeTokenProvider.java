@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.api.data;
 
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
@@ -34,8 +34,8 @@ public final class AtsTypeTokenProvider extends OrcsTypeTokenProviderBase {
       super(ats, atsDemo);
 
       loadClasses(AtsArtifactTypes.AtsArtifact, AtsAttributeTypes.Actionable, AtsRelationTypes.Derive_To,
-         AtsDemoOseeTypes.Action);
+         DemoArtifactTypes.Action);
       registerTokenClasses(AtsArtifactTypes.class, AtsAttributeTypes.class, AtsRelationTypes.class,
-         AtsDemoOseeTypes.class);
+         DemoArtifactTypes.class);
    }
 }

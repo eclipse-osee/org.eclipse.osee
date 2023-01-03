@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -274,8 +275,11 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
             if (page.getWidget() != null && Widgets.isAccessible(page.getWidget().getControl())) {
                status = page.getWidget().isValid();
                if (status.isOK()) {
-                  status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                     page.getWidget().getData());
+                  XResultData rd = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(),
+                     getAttributeType(), page.getWidget().getData());
+                  if (rd.isErrors()) {
+                     status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+                  }
                }
                if (!status.isOK()) {
                   break;
@@ -421,8 +425,11 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
          if (status.isOK()) {
             try {
                if (getArtifact() != null && getAttributeType() != null) {
-                  status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                     get());
+                  XResultData rd = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(),
+                     getAttributeType(), get());
+                  if (rd.isErrors()) {
+                     status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+                  }
                }
             } catch (OseeCoreException ex) {
                status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);

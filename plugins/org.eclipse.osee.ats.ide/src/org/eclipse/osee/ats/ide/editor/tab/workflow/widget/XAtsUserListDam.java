@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
@@ -255,8 +256,11 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
       if (status.isOK()) {
          try {
             if (getArtifact() != null && getAttributeType() != null) {
-               status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                  getSelectedUsers());
+               XResultData rd = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(),
+                  getAttributeType(), getSelectedUsers());
+               if (rd.isErrors()) {
+                  status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+               }
             }
          } catch (OseeCoreException ex) {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);

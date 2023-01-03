@@ -68,7 +68,8 @@ public class AgileFolders {
       ArtifactId agileFolder = atsApi.getQueryService().getArtifact(AtsArtifactToken.TopAgileFolder);
       if (agileFolder == null) {
          agileFolder = changes.createArtifact(AtsArtifactToken.TopAgileFolder);
-         ArtifactId rootArtifact = atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
+         ArtifactId rootArtifact =
+            atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot, atsApi.getAtsBranch());
          List<ArtifactId> children = new ArrayList<ArtifactId>();
          children.add(agileFolder);
          children.addAll(atsApi.getRelationResolver().getChildren(rootArtifact));

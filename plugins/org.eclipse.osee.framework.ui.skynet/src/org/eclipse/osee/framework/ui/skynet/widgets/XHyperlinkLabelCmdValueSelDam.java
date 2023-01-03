@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -93,9 +94,12 @@ public abstract class XHyperlinkLabelCmdValueSelDam extends XHyperlinkLabelCmdVa
       if (status.isOK()) {
          try {
             if (getArtifact() != null && getAttributeType() != null) {
-               status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                  getCurrentValue());
-               if (status.isOK() && isRequiredEntry() && Strings.isInValid(getCurrentValue())) {
+               XResultData rd = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(),
+                  getAttributeType(), getCurrentValue());
+               if (rd.isErrors()) {
+                  status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+               }
+               if (rd.isOK() && isRequiredEntry() && Strings.isInValid(getCurrentValue())) {
                   status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                      String.format("Must enter [%s]", attributeType.getUnqualifiedName()));
                }

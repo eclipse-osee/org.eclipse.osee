@@ -30,13 +30,13 @@ public class DeletedArtifactValidationRule extends AbstractValidationRule {
    }
 
    @Override
-   public void validate(ArtifactToken artifact, XResultData results) {
+   public void validate(ArtifactToken artifact, XResultData rd) {
       if (atsApi.getStoreService().isDeleted(artifact)) {
          ArtifactToken relatedArtifact =
             atsApi.getRelationResolver().getRelatedOrSentinel(artifact, CoreRelationTypes.DefaultHierarchical_Parent);
          if (relatedArtifact.isValid()) {
             String errStr = "is deleted but still has a parent relation.  Please delete the relation.";
-            logError(artifact, errStr, results);
+            logError(artifact, errStr, rd);
          }
       }
    }

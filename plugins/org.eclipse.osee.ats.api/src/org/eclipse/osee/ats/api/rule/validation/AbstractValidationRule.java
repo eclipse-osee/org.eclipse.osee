@@ -33,25 +33,19 @@ public abstract class AbstractValidationRule {
       this.atsApi = atsApi;
    }
 
-   /**
-    * @param artifact to validate as a collection
-    */
    public void validateAll(Collection<ArtifactToken> artifacts, XResultData results) {
       // do nothing
    }
 
-   /**
-    * @param artifact to validate individually
-    */
-   public abstract void validate(ArtifactToken artifact, XResultData results);
+   public abstract void validate(ArtifactToken artifact, XResultData rd);
 
    public abstract String getRuleDescription();
 
    public abstract String getRuleTitle();
 
-   public void logError(ArtifactToken artifact, String message, XResultData results) {
+   public void logError(ArtifactToken artifact, String message, XResultData rd) {
       String errStr = getHyperlink(artifact, message);
-      results.errorf(errStr + " \n");
+      rd.errorf(errStr + " \n");
    }
 
    /**
@@ -70,6 +64,10 @@ public abstract class AbstractValidationRule {
    public String getHyperlink(String name, String id, BranchId branch) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
          id + "(" + branch.getIdString() + ")"), name);
+   }
+
+   public void clearCaches() {
+      // for subclass implementation
    }
 
 }

@@ -11,11 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.config.program;
+package org.eclipse.osee.ats.api.program;
 
-import java.util.Collection;
-import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 
@@ -24,18 +22,18 @@ import org.eclipse.osee.framework.core.operation.IOperation;
  */
 public interface IAtsProgramManager {
 
-   public boolean isApplicable(TeamWorkFlowArtifact teamArt);
+   public boolean isApplicable(IAtsTeamWorkflow teamWf);
 
-   public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt);
+   public IOperation createValidateReqChangesOp(IAtsTeamWorkflow teamWf);
 
    public String getName();
 
-   public Collection<IAtsProgram> getPrograms();
+   default public String getXProgramComboWidgetName() {
+      return null;
+   }
 
-   public String getXProgramComboWidgetName();
-
-   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt);
-
-   public ArtifactToken getPidsReviewAssigneeUserGroup();
+   default public ArtifactToken getPidsReviewAssigneeUserGroup() {
+      return null;
+   }
 
 }

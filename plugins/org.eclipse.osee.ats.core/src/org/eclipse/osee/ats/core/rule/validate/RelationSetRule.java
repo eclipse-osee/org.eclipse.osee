@@ -46,15 +46,17 @@ public final class RelationSetRule extends AbstractValidationRule {
    }
 
    @Override
-   public void validate(ArtifactToken artifact, XResultData results) {
+   public void validate(ArtifactToken artifact, XResultData rd) {
       ArtifactTypeToken type = atsApi.getStoreService().getArtifactType(artifact);
-
+      if (atsApi.getStoreService().isHistorical(artifact)) {
+         return;
+      }
       if (!isIgnoreType(type) && hasArtifactType(type)) {
          Collection<ArtifactToken> arts = atsApi.getRelationResolver().getRelatedArtifacts(artifact, relationEnum);
          if (arts.size() < minimumRelations) {
             String errStr =
                "has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"";
-            logError(artifact, errStr, results);
+            logError(artifact, errStr, rd);
          }
       }
    }
@@ -66,7 +68,7 @@ public final class RelationSetRule extends AbstractValidationRule {
 
    @Override
    public String getRuleTitle() {
-      return "Relations Check:";
+      return "Relations Set Check:";
    }
 
    private Collection<ArtifactTypeToken> getIgnoreArtifactTypes() {

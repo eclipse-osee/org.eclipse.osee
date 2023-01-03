@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -46,14 +47,14 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
       return stopOnFirstError;
    }
 
-   private void handleStatus(Artifact itemChecked, IStatus status) throws Exception {
-      if (!status.isOK()) {
+   private void handleStatus(Artifact itemChecked, XResultData rd) throws Exception {
+      if (!rd.isOK()) {
          String link = XResultDataUI.getHyperlink(
             String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()), itemChecked,
             itemChecked.getBranch());
-         String message = String.format("%s: %s", link, status.getMessage());
-         status =
-            new Status(status.getSeverity(), status.getPlugin(), status.getCode(), message, status.getException());
+         String message = String.format("%s: %s", link, rd.toString());
+         int severity = rd.isErrors() ? IStatus.ERROR : IStatus.OK;
+         Status status = new Status(severity, ArtifactValidationCheckOperation.class, message);
          setStatus(status);
       }
    }
@@ -68,7 +69,8 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
          for (int index = 0; index < totalArts; index++) {
             monitor.setTaskName(String.format("Validating Artifact(s): [%s of %s]", index + 1, totalArts));
             Artifact itemChecked = itemsToCheck.get(index);
-            IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, itemChecked);
+            XResultData status =
+               OseeValidator.getInstance().validate(IOseeValidator.LONG, itemChecked, new XResultData());
             handleStatus(itemChecked, status);
             monitor.worked(workAmount);
             if (isStopOnFirstError()) {

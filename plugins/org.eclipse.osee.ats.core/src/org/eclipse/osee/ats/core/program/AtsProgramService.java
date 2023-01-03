@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -36,6 +37,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.program.IAtsProgramManager;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
@@ -72,6 +74,11 @@ public class AtsProgramService implements IAtsProgramService {
    private CacheLoader<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCacheLoader;
    private LoadingCache<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCache;
    AtsProgramOperations programOps;
+   private static final List<IAtsProgramManager> programMgrs = new ArrayList<>();
+
+   public AtsProgramService() {
+      // for jax-rs
+   }
 
    public AtsProgramService(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -84,6 +91,10 @@ public class AtsProgramService implements IAtsProgramService {
       teamDefToAtsProgramCache = CacheBuilder.newBuilder() //
          .expireAfterWrite(15, TimeUnit.MINUTES) //
          .build(teamDefToAtsProgramCacheLoader);
+   }
+
+   public void addProgramManager(IAtsProgramManager programMgr) {
+      programMgrs.add(programMgr);
    }
 
    private AtsProgramOperations getProgramOps() {
@@ -289,11 +300,17 @@ public class AtsProgramService implements IAtsProgramService {
 
    private IAtsProgram loadProgram(IAtsTeamDefinition teamDef) {
       IAtsProgram program = null;
-      Object object = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId, null);
-      if (object instanceof ArtifactId) {
-         program = atsApi.getProgramService().getProgramById((ArtifactId) object);
-      } else if (object instanceof String && Strings.isNumeric((String) object)) {
-         program = atsApi.getProgramService().getProgramById(ArtifactId.valueOf((String) object));
+      TeamDefinition teamDef2 = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDef.getId());
+      String progIdStr = teamDef2.getProgramId();
+      if (Strings.isNumeric(progIdStr)) {
+         program = atsApi.getProgramService().getProgramById(ArtifactId.valueOf(progIdStr));
+      }
+      if (program == null) {
+         ArtifactId art = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId,
+            ArtifactId.SENTINEL);
+         if (art.isValid()) {
+            program = atsApi.getProgramService().getProgramById(art);
+         }
       }
       if (program == null) {
          IAtsTeamDefinition topTeamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
@@ -544,5 +561,15 @@ public class AtsProgramService implements IAtsProgramService {
          return atsApi.getBranchService().getBranch(BranchId.valueOf(branchId));
       }
       return BranchToken.SENTINEL;
+   }
+
+   @Override
+   public IAtsProgramManager getProgramManager(IAtsTeamWorkflow teamWf) {
+      for (IAtsProgramManager programMgr : programMgrs) {
+         if (programMgr.isApplicable(teamWf)) {
+            return programMgr;
+         }
+      }
+      return null;
    }
 }

@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class AtsArtifactFactoryTest {
    public void test() {
       Assert.assertFalse(ArtifactTypeManager.isUserCreationAllowed(AtsArtifactTypes.TeamWorkflow));
 
-      Assert.assertFalse(ArtifactTypeManager.isUserCreationAllowed(AtsDemoOseeTypes.DemoCodeTeamWorkflow));
+      Assert.assertFalse(ArtifactTypeManager.isUserCreationAllowed(DemoArtifactTypes.DemoCodeTeamWorkflow));
 
       Assert.assertTrue(ArtifactTypeManager.isUserCreationAllowed(AtsArtifactTypes.AgileFeatureGroup));
    }

@@ -440,7 +440,11 @@ public final class BranchManager {
       // also skip commit checks if performing update from parent
       skipCommitChecksAndEvents = checkIfUpdateFromParent(conflictManager);
       if (!skipCommitChecksAndEvents) {
-         runCommitExtPointActions(conflictManager);
+         XResultData rd = new XResultData();
+         runCommitExtPointActions(conflictManager, rd);
+         if (rd.isErrors()) {
+            throw new OseeCoreException("Commit failed: %s", rd.toString());
+         }
       }
 
       CommitBranchHttpRequestOperation operation =
@@ -462,11 +466,11 @@ public final class BranchManager {
       return false;
    }
 
-   private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) {
+   private static void runCommitExtPointActions(ConflictManagerExternal conflictManager, XResultData rd) {
       ExtensionDefinedObjects<CommitAction> extensions = new ExtensionDefinedObjects<>(
          "org.eclipse.osee.framework.skynet.core.CommitActions", "CommitActions", "className");
       for (CommitAction commitAction : extensions.getObjects()) {
-         commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
+         commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch(), rd);
       }
    }
 

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Megumi Telles
@@ -29,26 +30,27 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
  */
 public class ListAndBulletRule extends AbstractValidationRule {
 
-   private static final String MORE_ON_FORMATTING =
-      "https://apache.msc.az.boeing.com/wiki/lba/index.php/OSEE/ATS/LBA/User_Guide#What_is_.22Validate_Requirement_Changes.22.2C_how_do_I_run_it_and_complete_review.3F";
    private static final Pattern NORMAL_LIST_BULLET_STYLE = Pattern.compile("<w:pPr><w:listPr>.+?</w:listPr></w:pPr>");
 
    private final WorkType workType;
 
-   public ListAndBulletRule(WorkType workType, AtsApi atsApi) {
+   private final String formattingInstructionUrl;
+
+   public ListAndBulletRule(WorkType workType, AtsApi atsApi, String formattingInstructionUrl) {
       super(atsApi);
       this.workType = workType;
+      this.formattingInstructionUrl = formattingInstructionUrl;
    }
 
    @Override
-   public void validate(ArtifactToken artifact, XResultData results) {
+   public void validate(ArtifactToken artifact, XResultData rd) {
       String wtc =
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, CoreAttributeTypes.WordTemplateContent, "");
 
       Matcher match = NORMAL_LIST_BULLET_STYLE.matcher(wtc);
       if (match.find()) {
          String errStr = "is not using lists or bullets associated with an expected style.";
-         logError(artifact, errStr, results);
+         logError(artifact, errStr, rd);
       }
    }
 
@@ -58,7 +60,10 @@ public class ListAndBulletRule extends AbstractValidationRule {
    }
 
    private String getHyperLink() {
-      return AHTML.getHyperlink("More on Formatting/Editing", MORE_ON_FORMATTING);
+      if (Strings.isValid(formattingInstructionUrl)) {
+         return AHTML.getHyperlink("More on Formatting/Editing", formattingInstructionUrl);
+      }
+      return "";
    }
 
    @Override

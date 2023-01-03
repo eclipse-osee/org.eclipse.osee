@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -303,8 +303,8 @@ public class Pdd93CreateDemoAgile {
       // Add items to backlog
       Collection<IAtsWorkItem> items = new ArrayList<>();
       for (IAtsWorkItem workItem : AtsApiService.get().getQueryService().createQuery(
-         WorkItemType.TeamWorkflow).isOfType(AtsDemoOseeTypes.DemoCodeTeamWorkflow,
-            AtsDemoOseeTypes.DemoReqTeamWorkflow, AtsDemoOseeTypes.DemoTestTeamWorkflow).getItems()) {
+         WorkItemType.TeamWorkflow).isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow,
+            DemoArtifactTypes.DemoReqTeamWorkflow, DemoArtifactTypes.DemoTestTeamWorkflow).getItems()) {
          if (!workItem.getName().equals(DemoArtifactToken.SAW_NotesAnnotations_Code_TeamWf.getName())) {
             items.add(workItem);
          }

@@ -31,22 +31,22 @@ public class OrphanAndDuplicateParentValidationRule extends AbstractValidationRu
    }
 
    @Override
-   public void validate(ArtifactToken artifact, XResultData results) {
+   public void validate(ArtifactToken artifact, XResultData rd) {
       try {
          if (!atsApi.getStoreService().isHistorical(artifact)) {
             int count =
                atsApi.getRelationResolver().getRelatedCount(artifact, CoreRelationTypes.DefaultHierarchical_Parent);
             if (count == 0) {
-               logError(artifact, "is orphaned (no parent on Default Hierarchy).", results);
+               logError(artifact, "is orphaned (no parent on Default Hierarchy).", rd);
             } else if (count > 1) {
                logError(artifact, String.format("has %s parents (duplicate parents on Default Hierarchy).", count),
-                  results);
+                  rd);
             }
          }
       } catch (Exception ex) {
          String errStr =
             String.format("had exception on orphaned and duplicate parent check: %s", Lib.exceptionToString(ex));
-         logError(artifact, errStr, results);
+         logError(artifact, errStr, rd);
       }
    }
 
