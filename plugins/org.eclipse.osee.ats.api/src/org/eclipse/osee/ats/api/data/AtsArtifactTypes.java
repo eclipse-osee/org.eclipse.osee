@@ -273,7 +273,10 @@ public interface AtsArtifactTypes {
       .zeroOrOne(WeeklyBenefit)
       .zeroOrOne(Workaround)
       .any(GitChangeId)
-      .zeroOrOne(BurnDownData));
+      .zeroOrOne(BurnDownData)
+      .zeroOrOne(ValidateChangesRanBy)
+      .zeroOrOne(ValidateChangesRanDate)
+   );
 
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType)

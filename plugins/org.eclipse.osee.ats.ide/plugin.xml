@@ -6,7 +6,6 @@
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
    <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="OSEE-INF/extensionPts/AtsWorkDefinitionSheetProvider.exsd"/>
    <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="OSEE-INF/extensionPts/AtsXWidgetValidator.exsd"/>
-   <extension-point id="AtsProgramManager" name="AtsProgramManager" schema="OSEE-INF/extensionPts/AtsProgramManager.exsd"/>
    <extension-point id="AtsReviewProvider" name="AtsReviewProvider" schema="OSEE-INF/extensionPts/AtsReviewProvider.exsd"/>
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.ide.workflow.AtsArtifactFactory"/>

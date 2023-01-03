@@ -16,13 +16,12 @@ package org.eclipse.osee.ats.ide.integration.tests.skynet.core;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
@@ -49,10 +48,10 @@ public class OseeEnumerationValidationTest {
 
    private Artifact mockArtifact;
    private final String message;
-   private final IStatus expected;
+   private final XResultData expected;
    private final Object value;
 
-   public OseeEnumerationValidationTest(String message, Object value, IStatus expected) {
+   public OseeEnumerationValidationTest(String message, Object value, XResultData expected) {
       this.message = message;
       this.value = value;
       this.expected = expected;
@@ -71,25 +70,24 @@ public class OseeEnumerationValidationTest {
 
    @Test
    public void testEnumerationData() {
-      IStatus actual =
+      XResultData actual =
          OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, CoreAttributeTypes.GfeCfe, value);
-      assertEquals(message, expected.getSeverity(), actual.getSeverity());
-      assertEquals(message, expected.getMessage(), actual.getMessage());
+      assertEquals(message, expected.toString(), actual.toString());
    }
 
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<>();
 
-      addTest(data, "Test 1: Null", null,
+      addTest(data, "Test 1: Null", "null",
          errorStatus("The enumerated value [null] is not valid for the attribute type [GFE / CFE]"));
       addTest(data, "Test 2: Empty String", "",
          errorStatus("The enumerated value [] is not valid for the attribute type [GFE / CFE]"));
       addTest(data, "Test 3: Invalid", "asbasdfasdfa",
          errorStatus("The enumerated value [asbasdfasdfa] is not valid for the attribute type [GFE / CFE]"));
-      addTest(data, "Test 4: Valid", "CFE", Status.OK_STATUS);
-      addTest(data, "Test 5: Valid", "GFE", Status.OK_STATUS);
-      addTest(data, "Test 5: Valid", "Unspecified", Status.OK_STATUS);
+      addTest(data, "Test 4: Valid", "CFE", XResultData.OK_STATUS);
+      addTest(data, "Test 5: Valid", "GFE", XResultData.OK_STATUS);
+      addTest(data, "Test 5: Valid", "Unspecified", XResultData.OK_STATUS);
       addTest(data, "Test 6: Valid", "cfe",
          errorStatus("The enumerated value [cfe] is not valid for the attribute type [GFE / CFE]"));
       addTest(data, "Test 7: Invalid Class", 0,
@@ -98,12 +96,14 @@ public class OseeEnumerationValidationTest {
       return data;
    }
 
-   private static void addTest(Collection<Object[]> data, String message, Object value, IStatus expected) {
+   private static void addTest(Collection<Object[]> data, String message, Object value, XResultData expected) {
       data.add(new Object[] {message, value, expected});
    }
 
-   private static IStatus errorStatus(String message) {
-      return new Status(IStatus.ERROR, OseeEnumerationValidationTest.class.getSimpleName(), message);
+   private static XResultData errorStatus(String message) {
+      XResultData rd = new XResultData();
+      rd.logStr(XResultData.Type.Severe, message);
+      return rd;
    }
 
 }

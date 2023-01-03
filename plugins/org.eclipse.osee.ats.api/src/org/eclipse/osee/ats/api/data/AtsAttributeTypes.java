@@ -201,6 +201,8 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean UnplannedWork = ats.createBoolean(2421093774890249189L, "ats.Unplanned Work", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean UsesResolutionOptions = ats.createBoolean(1152921504606847154L, "ats.Uses Resolution Options", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean ValidationRequired = ats.createBoolean(1152921504606847146L, "ats.Validation Required", MediaType.TEXT_PLAIN, "If selected, originator will be asked to validate the implementation.");
+   AttributeTypeString ValidateChangesRanBy = ats.createString(5308411842127935014L, "ats.LBA Validate Changes Ran By", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDate ValidateChangesRanDate = ats.createDate(5754481976934354664L, "ats.LBA Validate Changes Ran Date", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean VerificationCodeInspection = ats.createBoolean(3454966334779726518L, "ats.Verification Code Inspection", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean VersionLocked = ats.createBoolean(1152921504606847156L, "ats.Version Locked", MediaType.TEXT_PLAIN, "True if version artifact is locked.");
    AttributeTypeArtifactId VersionReference = ats.createArtifactId(3865529427237311670L, "ats.Version Reference", MediaType.TEXT_PLAIN, "");

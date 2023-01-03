@@ -43,7 +43,7 @@ public final class AttributeFormatRule extends AbstractValidationRule {
    }
 
    @Override
-   public void validate(ArtifactToken artifact, XResultData results) {
+   public void validate(ArtifactToken artifact, XResultData rd) {
       if (hasArtifactType(atsApi.getStoreService().getArtifactType(artifact))) {
          // validate attribute is set and not invalidValue
          Collection<String> attributeValues =
@@ -52,7 +52,7 @@ public final class AttributeFormatRule extends AbstractValidationRule {
          for (String attributeValue : attributeValues) {
             if (regex != null && !attributeValue.matches(regex)) {
                String errStr = "\"" + attributeValue + "\"" + " needs to be of format: (" + regex + ")";
-               logError(artifact, errStr, results);
+               logError(artifact, errStr, rd);
             } else {
                validValueFound++;
             }
@@ -60,7 +60,7 @@ public final class AttributeFormatRule extends AbstractValidationRule {
          if (validValueFound < minimumValues) {
             String errStr =
                "has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"";
-            logError(artifact, errStr, results);
+            logError(artifact, errStr, rd);
          }
       }
    }

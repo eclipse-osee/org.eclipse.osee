@@ -82,6 +82,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
+            new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //

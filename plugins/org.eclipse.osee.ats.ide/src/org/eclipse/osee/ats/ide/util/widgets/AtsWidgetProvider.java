@@ -133,6 +133,7 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
       register(XRequestedHoursApprovalWidget.class);
       register(XHyperlinkWorkDefDam.class);
       register(XDynamicAttrValuesWidget.class);
+      register(XValidateReqChangesButton.class);
    }
 
    @Override

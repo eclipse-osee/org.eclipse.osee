@@ -39,7 +39,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
    }
 
    @Override
-   public void validate(ArtifactToken artToken, XResultData results) {
+   public void validate(ArtifactToken artToken, XResultData rd) {
       Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(artToken);
       String wordml = artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
 
@@ -61,7 +61,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
             validConfigurations, validConfigurationGroups);
          if (!validationPassed) {
             String errStr = "has invalid feature values and/or mismatching start and end applicability tags";
-            logError(artifact, errStr, results);
+            logError(artifact, errStr, rd);
          }
       }
    }

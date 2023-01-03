@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.framework.skynet.core.validation;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface IOseeValidator {
@@ -27,5 +27,5 @@ public interface IOseeValidator {
 
    public boolean isApplicable(Artifact artifact, AttributeTypeToken attributeType);
 
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject);
+   public XResultData validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject);
 }

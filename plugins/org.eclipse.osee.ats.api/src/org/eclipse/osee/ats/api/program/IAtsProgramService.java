@@ -143,4 +143,7 @@ public interface IAtsProgramService {
    IAtsCountry getCountryById(ArtifactId countryId);
 
    BranchToken getProductLineBranch(IAtsProgram program);
+
+   IAtsProgramManager getProgramManager(IAtsTeamWorkflow teamWf);
+
 }

@@ -24,7 +24,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -220,12 +220,12 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    @Override
    public ArtifactTypeToken getCodeTeamWfArtType() {
-      return AtsDemoOseeTypes.DemoCodeTeamWorkflow;
+      return DemoArtifactTypes.DemoCodeTeamWorkflow;
    }
 
    @Override
    public ArtifactTypeToken getTestTeamWfArtType() {
-      return AtsDemoOseeTypes.DemoTestTeamWorkflow;
+      return DemoArtifactTypes.DemoTestTeamWorkflow;
    }
 
    @Override

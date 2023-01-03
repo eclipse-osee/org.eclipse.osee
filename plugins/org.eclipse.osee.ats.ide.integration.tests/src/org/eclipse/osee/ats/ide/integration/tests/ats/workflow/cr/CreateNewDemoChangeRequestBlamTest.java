@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -53,7 +53,7 @@ public class CreateNewDemoChangeRequestBlamTest {
       Assert.assertTrue(actionResult.getResults().isSuccess());
 
       ArtifactToken artifactByName =
-         atsApi.getQueryService().getArtifactByName(AtsDemoOseeTypes.DemoChangeRequestTeamWorkflow, TITLE);
+         atsApi.getQueryService().getArtifactByName(DemoArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
       Assert.assertNotNull(artifactByName);
 
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);

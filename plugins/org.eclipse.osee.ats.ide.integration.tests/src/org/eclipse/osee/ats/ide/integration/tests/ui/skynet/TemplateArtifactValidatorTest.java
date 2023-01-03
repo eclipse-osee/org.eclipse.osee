@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -22,6 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -84,7 +84,7 @@ public class TemplateArtifactValidatorTest {
       newTemplate.persist(testInfo.getQualifiedTestName());
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
       String templateId = GUID.create();
-      IStatus status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
+      XResultData status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
       Assert.assertTrue(status.isOK());
       newTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria, templateId);
       newTemplate.persist(testInfo.getQualifiedTestName());
@@ -103,7 +103,7 @@ public class TemplateArtifactValidatorTest {
       newTemplate.persist(testInfo.getQualifiedTestName());
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
       String templateId = GUID.create();
-      IStatus status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
+      XResultData status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
       Assert.assertTrue(status.isOK());
       newTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria, templateId);
       newTemplate.persist(testInfo.getQualifiedTestName());
@@ -129,7 +129,7 @@ public class TemplateArtifactValidatorTest {
       newTemplate.persist(testInfo.getQualifiedTestName());
 
       // since newTemplate was already persisted with templateId, this check will produce and error status
-      IStatus status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
+      XResultData status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
       Assert.assertFalse(status.isOK());
    }
 }

@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
@@ -177,8 +177,8 @@ public class AtsDeleteManagerTest {
          countMap.put(artifact.getArtifactType());
       }
       checkExpectedCount(countMap, AtsArtifactTypes.Action, expectedNumActions);
-      checkExpectedCount(countMap, AtsDemoOseeTypes.DemoCodeTeamWorkflow, expectedNumCodeWorkflows);
-      checkExpectedCount(countMap, AtsDemoOseeTypes.DemoReqTeamWorkflow, expectedNumReqWorkflows);
+      checkExpectedCount(countMap, DemoArtifactTypes.DemoCodeTeamWorkflow, expectedNumCodeWorkflows);
+      checkExpectedCount(countMap, DemoArtifactTypes.DemoReqTeamWorkflow, expectedNumReqWorkflows);
       checkExpectedCount(countMap, AtsArtifactTypes.Task, expectedNumTasks);
       checkExpectedCount(countMap, AtsArtifactTypes.DecisionReview, expectedNumReviews);
    }

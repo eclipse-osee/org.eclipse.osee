@@ -14,11 +14,10 @@
 package org.eclipse.osee.framework.ui.skynet.templates;
 
 import java.util.Collection;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -42,7 +41,7 @@ public class TemplateArtifactValidator implements IOseeValidator {
    }
 
    @Override
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
+   public XResultData validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
       if (proposedObject instanceof String) {
          String toVerify = (String) proposedObject;
          if (Strings.isValid(toVerify)) {
@@ -51,14 +50,14 @@ public class TemplateArtifactValidator implements IOseeValidator {
                   CoreAttributeTypes.TemplateMatchCriteria, toVerify, artifact.getBranch());
 
             if (templates.isEmpty()) {
-               return Status.OK_STATUS;
+               return XResultData.OK_STATUS;
             } else {
                String message = String.format("Invalid %s - unique constraint violation - value has already been used.",
                   attributeType);
-               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
+               return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID, message);
             }
          }
       }
-      return Status.OK_STATUS;
+      return XResultData.OK_STATUS;
    }
 }

@@ -14,10 +14,13 @@
 package org.eclipse.osee.framework.skynet.core.commit.actions;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Theron Virgin
  */
 public interface CommitAction {
-   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch);
+
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch, XResultData rd);
+
 }

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 public class CatchArtifactChanges implements CommitAction {
 
    @Override
-   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) {
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch, XResultData rd) {
 
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);

@@ -15,11 +15,9 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.ide.config.program.IAtsProgramManager;
-import org.eclipse.osee.ats.ide.config.program.ProgramManagers;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.SWT;
@@ -45,15 +43,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
    }
 
    public XAtsProgramComboWidget() {
-      this("ATS Program", getAllPrograms());
-   }
-
-   private static Collection<IAtsProgram> getAllPrograms() {
-      List<IAtsProgram> programs = new ArrayList<>();
-      for (IAtsProgramManager manager : ProgramManagers.getAtsProgramManagers()) {
-         programs.addAll(manager.getPrograms());
-      }
-      return programs;
+      this("ATS Program", AtsApiService.get().getProgramService().getPrograms());
    }
 
    @Override

@@ -13,11 +13,9 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 
@@ -37,13 +35,15 @@ public class OseeEnumerationValidation implements IOseeValidator {
    }
 
    @Override
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
+   public XResultData validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
       AttributeTypeEnum<?> enumType = (AttributeTypeEnum<?>) attributeType;
 
       if (proposedObject != null && enumType.isValidEnum(proposedObject.toString())) {
-         return Status.OK_STATUS;
+         return XResultData.OK_STATUS;
       }
-      throw new OseeStateException("The enumerated value [%s] is not valid for the attribute type [%s]", proposedObject,
-         enumType);
+      XResultData rd = new XResultData();
+      rd.logStr(XResultData.Type.Severe, "The enumerated value [%s] is not valid for the attribute type [%s]",
+         proposedObject.toString(), enumType);
+      return rd;
    }
 }

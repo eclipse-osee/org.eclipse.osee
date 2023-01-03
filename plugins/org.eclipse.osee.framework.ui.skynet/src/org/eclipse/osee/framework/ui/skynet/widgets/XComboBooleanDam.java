@@ -14,9 +14,11 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -106,7 +108,10 @@ public class XComboBooleanDam extends XCombo implements AttributeWidget {
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, get());
+         XResultData rd = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, get());
+         if (rd.isErrors()) {
+            status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+         }
       }
       return status;
    }

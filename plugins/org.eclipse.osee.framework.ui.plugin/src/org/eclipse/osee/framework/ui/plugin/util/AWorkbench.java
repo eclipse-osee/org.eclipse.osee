@@ -124,8 +124,12 @@ public final class AWorkbench {
       Confirm;
    }
 
-   public static void popup(final String title, final String message) {
+   public static void popup(String title, String message) {
       popup(MessageType.Informational, title, message);
+   }
+
+   public static void popup(String title, String messageFormat, Object... data) {
+      popup(MessageType.Informational, title, String.format(messageFormat, data));
    }
 
    public static void popup(final MessageType messageType, final String title, final String message) {

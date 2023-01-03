@@ -257,7 +257,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public <T extends ArtifactId> Artifact getArtifact(T artifact) {
       Artifact result;
       if (artifact instanceof Artifact) {
-         result = ArtifactQuery.getArtifactOrNull((Artifact) artifact, DeletionFlag.EXCLUDE_DELETED);
+         result = (Artifact) artifact;
+      } else if (artifact instanceof ArtifactToken) {
+         result = ArtifactQuery.getArtifactOrNull((ArtifactToken) artifact, DeletionFlag.EXCLUDE_DELETED);
       } else if (artifact instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) artifact;
          if (atsObject.getStoreObject() instanceof Artifact) {

@@ -44,32 +44,36 @@ public class ValidationReportOperation extends AbstractOperation {
 
    private final TeamWorkFlowArtifact teamArt;
    private final Set<AbstractValidationRule> rules;
-   private final XResultData results;
+   private final XResultData rd;
 
-   public ValidationReportOperation(XResultData results, TeamWorkFlowArtifact teamArt, Set<AbstractValidationRule> rules) {
+   public ValidationReportOperation(XResultData rd, TeamWorkFlowArtifact teamArt, Set<AbstractValidationRule> rules) {
       super("Validate Requirement Changes - " + teamArt.getName(), Activator.PLUGIN_ID, null);
-      this.results = results;
+      this.rd = rd;
       this.teamArt = teamArt;
       this.rules = rules;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      results.logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
+      rd.logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
 
       List<AbstractValidationRule> rulesSorted = new ArrayList<>(rules);
       Collections.sort(rulesSorted, new ValidationRuleComparator());
 
-      results.log(
+      rd.log(
          "<b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
 
       try {
-         ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(teamArt);
+         String title = "===> Generate Change Report";
+         rd.logTimeStart(title);
+         ChangeData changeData =
+            AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(teamArt);
          Collection<Artifact> changedArtifacts =
             changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.APPLICABILITY,
                ModificationType.INTRODUCED, ModificationType.MERGED, ModificationType.REPLACED_WITH_VERSION,
                ModificationType.UNDELETED, ModificationType.NEW, ModificationType.MODIFIED);
          checkForCancelledStatus(monitor);
+         rd.logTimeSpent(title);
 
          double total = changedArtifacts.size() * rules.size();
          if (total > 0) {
@@ -78,19 +82,21 @@ public class ValidationReportOperation extends AbstractOperation {
             String lastTitle = "";
             int ruleIndex = 1;
             for (AbstractValidationRule rule : rulesSorted) {
+               System.err.println(rule.getClass().getSimpleName());
                checkForCancelledStatus(monitor);
 
                //check to see if we should print a header for sorted (and grouped) rule types
                String currentTitle = rule.getRuleTitle();
+               rd.logTimeStart(currentTitle);
                if (!lastTitle.equals(currentTitle)) {
-                  processNewTitle(rule, rulesSorted, results);
+                  processNewTitle(rule, rulesSorted, rd);
                   lastTitle = rule.getRuleTitle();
                }
 
                if (isSkipRelationCheck(rule.getRuleTitle())) {
-                  results.logf("INFO: Relations Check skipped:  detected committed branches.");
+                  rd.logf("INFO: Relations Check skipped:  detected committed branches.");
                } else if (isSkipOrphanCheck(rule.getRuleTitle())) {
-                  results.logf("INFO: Orphan Check skipped");
+                  rd.logf("INFO: Orphan Check skipped");
                } else {
                   int artIndex = 1;
                   for (Artifact art : changedArtifacts) {
@@ -99,9 +105,9 @@ public class ValidationReportOperation extends AbstractOperation {
                            rules.size(), artIndex, changedArtifacts.size()));
                         checkForCancelledStatus(monitor);
 
-                        rule.validate(art, results);
+                        rule.validate(art, rd);
                      } catch (Exception ex) {
-                        results.logf("Exception processing artifact %s Exception ex: %s\n", art.toStringWithId(),
+                        rd.logf("Exception processing artifact %s Exception ex: %s\n", art.toStringWithId(),
                            ex.getMessage());
                      }
                      monitor.worked(workAmount);
@@ -109,14 +115,20 @@ public class ValidationReportOperation extends AbstractOperation {
                   }
                }
                ruleIndex++;
+               rd.logTimeSpent(currentTitle);
             }
+            for (AbstractValidationRule rule : rulesSorted) {
+               rule.clearCaches();
+            }
+
          }
 
-         results.log("\n<b>Validation Complete</b>");
+         rd.log("\n<b>Validation Complete</b>");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         results.error(Lib.exceptionToString(ex));
+         rd.error(Lib.exceptionToString(ex));
       }
+      rd.addTimeMapToResultData();
    }
 
    private void processNewTitle(AbstractValidationRule newRule, List<AbstractValidationRule> rulesSorted, XResultData results) {

@@ -14,8 +14,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -78,7 +80,11 @@ public class XCheckBoxDam extends XCheckBox implements AttributeWidget {
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, isChecked());
+         XResultData rd =
+            OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, isChecked());
+         if (rd.isErrors()) {
+            status = new Status(IStatus.ERROR, getClass().getSimpleName(), rd.toString());
+         }
       }
       return status;
    }
