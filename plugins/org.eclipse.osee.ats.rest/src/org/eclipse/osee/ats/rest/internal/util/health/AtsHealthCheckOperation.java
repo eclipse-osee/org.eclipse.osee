@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -174,9 +173,9 @@ public class AtsHealthCheckOperation {
 
          IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
 
-         handleCheckBefores(checks, changes);
-         count = handleChecks(rd, count, checks, changes);
-         handleCheckAfters(checks);
+         handleCheckBefores(checks, changes, rd);
+         count = handleChecks(count, checks, changes, rd);
+         handleCheckAfters(checks, rd);
 
          if (persist) {
             changes.executeIfNeeded();
@@ -190,26 +189,27 @@ public class AtsHealthCheckOperation {
       }
       // Log resultMap data into xResultData
       vResults.addResultsMapToResultData(rd);
-      vResults.addTestTimeMapToResultData(rd);
+      rd.addTimeMapToResultData("CheckBefore", "Load", "Test", "CheckAfter");
 
       rd.logf("Completed processing %s open work items.", count);
    }
 
-   private void handleCheckBefores(List<IAtsHealthCheck> checks, IAtsChangeSet changes) {
+   private void handleCheckBefores(List<IAtsHealthCheck> checks, IAtsChangeSet changes, XResultData rd) {
       // Run single run health checks and allow for caching queries
       for (IAtsHealthCheck check : checks) {
-         Date date = new Date();
+         String testName = "CheckBefore - " + check.getName();
+         rd.logTimeStart(testName);
          boolean done = check.checkBefore(vResults, atsApi, cache);
          if (done) {
             if (debug) {
                System.err.println(String.format("Processing CheckBefore - %s", check.getName()));
             }
-            vResults.logTestTimeSpent(date, "CheckBefore - " + check.getName());
+            rd.logTimeSpent(testName);
          }
       }
    }
 
-   private int handleChecks(XResultData rd, int count, List<IAtsHealthCheck> checks, IAtsChangeSet changes) {
+   private int handleChecks(int count, List<IAtsHealthCheck> checks, IAtsChangeSet changes, XResultData rd) {
       // Break artifacts into blocks so don't run out of memory
       List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
       // Uncomment and set ids to run singles
@@ -220,9 +220,10 @@ public class AtsHealthCheckOperation {
             System.err.println(String.format("Processing art check set %s/%s", x++, artIdLists.size()));
          }
 
-         Date date = new Date();
+         String loadStr = "Load Artifacts";
+         rd.logTimeStart(loadStr);
          Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
-         vResults.logTestTimeSpent(date, "Load Artifacts");
+         rd.logTimeSpent(loadStr);
 
          // remove all deleted/purged artifacts first
          List<ArtifactToken> artifacts = new ArrayList<>(allArtifacts.size());
@@ -242,7 +243,7 @@ public class AtsHealthCheckOperation {
          for (ArtifactToken artifact : artifacts) {
             for (IAtsHealthCheck check : checks) {
                try {
-                  date = new Date();
+                  rd.logTimeStart(check.getName());
                   if (atsApi.getStoreService().isDeleted(artifact)) {
                      continue;
                   }
@@ -252,7 +253,7 @@ public class AtsHealthCheckOperation {
                   }
                   boolean done = check.check(artifact, workItem, vResults, atsApi, (persist ? changes : null), cache);
                   if (done) {
-                     vResults.logTestTimeSpent(date, check.getName());
+                     rd.logTimeSpent(check.getName());
                   }
                } catch (Exception ex) {
                   vResults.log(artifact, check.getName(), "Error: Exception: " + Lib.exceptionToString(ex));
@@ -263,16 +264,17 @@ public class AtsHealthCheckOperation {
       return count;
    }
 
-   private void handleCheckAfters(List<IAtsHealthCheck> checks) {
+   private void handleCheckAfters(List<IAtsHealthCheck> checks, XResultData rd) {
       // Run post checks.  Good for items that need other checks to cache data for performance reasons
       for (IAtsHealthCheck check : checks) {
-         Date date = new Date();
+         String testName = "CheckAfter - " + check.getName();
+         rd.logTimeStart(testName);
          boolean done = check.checkAfter(vResults, atsApi, cache);
          if (done) {
             if (debug) {
                System.err.println(String.format("Processing CheckAfter - %s", check.getName()));
             }
-            vResults.logTestTimeSpent(date, "CheckAfter - " + check.getName());
+            rd.logTimeSpent(testName);
          }
       }
    }
@@ -707,13 +709,14 @@ public class AtsHealthCheckOperation {
    }
 
    private List<Collection<Long>> loadWorkingWorkItemIds(XResultData rd) {
-      Date date = new Date();
+      String loadArtsStr = "Load Art Ids";
+      rd.logTimeStart(loadArtsStr);
       List<Long> artIds = getCommonArtifactIds(rd);
       if (artIds.isEmpty()) {
          rd.error("Error: Artifact load returned 0 artifacts to check");
       }
       List<Collection<Long>> subDivide = Collections.subDivide(artIds, 4000);
-      vResults.logTestTimeSpent(date, "Load Art Ids");
+      rd.logTimeSpent(loadArtsStr);
       return subDivide;
    }
 
