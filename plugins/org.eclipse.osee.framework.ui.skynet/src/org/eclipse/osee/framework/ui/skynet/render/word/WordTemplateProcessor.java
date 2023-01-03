@@ -34,9 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
@@ -58,9 +57,11 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.util.PageOrientation;
+import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.core.util.ReportConstants;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -92,6 +93,7 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  * @author Branden W. Phillips
+ * @author Loren K. Ashley
  * @link WordTemplateProcessorTest
  */
 public class WordTemplateProcessor {
@@ -102,15 +104,9 @@ public class WordTemplateProcessor {
    private static final String ARTIFACT_TYPE = "Artifact Type";
    private static final Object ARTIFACT_ID = "Artifact Id";
    private static final String APPLICABILITY = "Applicability";
-   private static final String INSERT_LINK = "INSERT_LINK_HERE";
-   private static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
-
-   private static final Pattern headElementsPattern =
-      Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final Program wordApp = Program.findProgram("doc");
 
@@ -351,12 +347,12 @@ public class WordTemplateProcessor {
       ArtifactId view = (ArtifactId) renderer.getRendererOptionValue(RendererOption.VIEW);
       artifactsToExclude = getNonApplicableArtifacts(artifacts, view == null ? ArtifactId.SENTINEL : view);
 
-      WordMLProducer wordMl = null;
+      //WordMLProducer wordMl = null;
       CharBackedInputStream charBak = null;
 
       try {
          charBak = new CharBackedInputStream();
-         wordMl = new WordMLProducer(charBak);
+         var wordMl = new WordMLProducer(charBak);
 
          templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
 
@@ -364,40 +360,84 @@ public class WordTemplateProcessor {
             templateContent = templateContent.replaceAll(STYLES, templateStyles);
          }
 
+         //@formatter:off
          this.outlineNumber =
-            Strings.isInValid(outlineNumber) ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null,
-               artifacts) : outlineNumber;
+            Strings.isInValid( outlineNumber )
+               ? peekAtFirstArtifactToGetParagraphNumber( templateContent, artifacts )
+               : outlineNumber;
+         //@formatter:on
+
          templateContent = wordMl.setHeadingNumbers(this.outlineNumber, templateContent, outlineType);
 
-         Matcher matcher = headElementsPattern.matcher(templateContent);
+         var objectMapper = new ObjectMapper();
+         var jsonNode = objectMapper.readTree(templateOptions);
+         this.elementType = jsonNode.get("ElementType").asText();
 
-         int lastEndIndex = 0;
-         while (matcher.find()) {
-            wordMl.addWordMl(templateContent.substring(lastEndIndex, matcher.start()));
-            lastEndIndex = matcher.end();
+         Consumer<String> segmentProcessor;
 
-            ObjectMapper objMap = new ObjectMapper();
-            JsonNode node = objMap.readTree(templateOptions);
-            elementType = node.get("ElementType").asText();
-            if (elementType.equals(ARTIFACT)) {
-               parseOutliningOptions(templateOptions);
+         //@formatter:off
+         switch( this.elementType )
+         {
+            case WordTemplateProcessor.ARTIFACT:
+            {
+               this.parseOutliningOptions( templateOptions );
 
-               if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() == 1) {
-                  // for single edit override outlining options
-                  outlining = false;
-               }
-               processArtifactSet(templateOptions, artifacts, wordMl, outlineType, presentationType,
-                  (ArtifactId) renderer.getRendererOptionValue(RendererOption.VIEW));
-            } else if (elementType.equals(NESTED_TEMPLATE)) {
-               parseNestedTemplateOptions(templateOptions, folder, wordMl, presentationType);
-            } else {
-               throw new OseeArgumentException("Invalid input [%s]", "");
+               segmentProcessor =
+                  new Consumer<String> () {
+                     @Override
+                     public void accept( String segment ) {
+
+                        wordMl.addWordMl( segment );
+
+                        if(    ( presentationType == PresentationType.SPECIALIZED_EDIT )
+                            && ( artifacts.size() == 1 ) ) {
+                           // for single edit override outlining options
+                           WordTemplateProcessor.this.outlining = false;
+                        }
+
+                        WordTemplateProcessor.this.processArtifactSet
+                           (
+                              templateOptions,
+                              artifacts,
+                              wordMl,
+                              outlineType,
+                              presentationType,
+                              (ArtifactId) WordTemplateProcessor.this.renderer.getRendererOptionValue( RendererOption.VIEW )
+                           );
+                     }
+                  };
+            }
+            break;
+
+            case WordTemplateProcessor.NESTED_TEMPLATE:
+            {
+               segmentProcessor =
+                  new Consumer<String> () {
+                     @Override
+                     public void accept( String segment ) {
+
+                        wordMl.addWordMl( segment );
+
+                        WordTemplateProcessor.this.parseNestedTemplateOptions(templateOptions, folder, wordMl, presentationType);
+
+                     }
+                  };
+            }
+            break;
+
+            default:
+            {
+               throw new OseeArgumentException("Invalid ElementType [%s]", this.elementType );
             }
          }
 
-         String endOfTemplate = templateContent.substring(lastEndIndex);
-         // Write out the last of the template
-         wordMl.addWordMl(updateFooter(endOfTemplate));
+         WordCoreUtil.processPublishingTemplate
+            (
+               templateContent,
+               segmentProcessor,
+               ( tail ) -> wordMl.addWordMl( this.updateFooter( tail ) )
+           );
+         //@formatter:on
 
          displayNonTemplateArtifacts(nonTemplateArtifacts,
             "Only artifacts of type Word Template Content are supported in this case.");
@@ -610,25 +650,35 @@ public class WordTemplateProcessor {
       return endOfTemplate;
    }
 
-   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, List<Artifact> artifacts) {
-      String startParagraphNumber = "1";
-      if (artifacts != null) {
-         Matcher matcher = headElementsPattern.matcher(template);
+   private String peekAtFirstArtifactToGetParagraphNumber(String templateContent, List<Artifact> artifacts) {
 
-         if (matcher.find()) {
-            String elementType = matcher.group(0);
+      var startParagraphNumber = "1";
 
-            if (elementType != null && elementType.equals(INSERT_ARTIFACT_HERE) && !artifacts.isEmpty()) {
-               Artifact artifact = artifacts.iterator().next();
-               if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
-                  String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
-                  if (Strings.isValid(paragraphNum)) {
-                     startParagraphNumber = paragraphNum;
-                  }
-               }
-            }
-         }
+      //@formatter:off
+      if(    Objects.isNull(artifacts)
+          || artifacts.isEmpty()
+          || Objects.isNull( templateContent )
+          || templateContent.isEmpty() ) {
+         return startParagraphNumber;
       }
+      //@formatter:on
+
+      var firstArtifact = artifacts.get(0);
+
+      if (!firstArtifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+         return startParagraphNumber;
+      }
+
+      if (!PublishingTemplateInsertTokenType.ARTIFACT.equals(WordCoreUtil.getInsertHereTokenType(templateContent))) {
+         return startParagraphNumber;
+      }
+
+      var firstArtifactParagraphNumber = firstArtifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+
+      if (Strings.isValid(firstArtifactParagraphNumber)) {
+         startParagraphNumber = firstArtifactParagraphNumber;
+      }
+
       return startParagraphNumber;
    }
 

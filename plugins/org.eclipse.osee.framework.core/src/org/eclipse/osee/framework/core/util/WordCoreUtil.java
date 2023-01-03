@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.antlr.runtime.ANTLRStringStream;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
  * @author Megumi Telles
+ * @author Loren K. Ashley
  */
 
 public class WordCoreUtil {
@@ -123,24 +125,35 @@ public class WordCoreUtil {
    public final static int endConfigGroupBracketMatcherGroup = 75;
    public final static int endConfigBracketMatcherGroup = 117;
 
-   public static boolean containsWordAnnotations(String wordml) {
-      return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains(
-         "w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
-   }
+   /**
+    * Regular expression used to find the artifact or link insertion point in a publishing template. The Word ML for the
+    * paragraph, run, and text surrounding the "insert here token" is not desired in the published document. This
+    * pattern also will match the surrounding paragraph, run, and text tags so they can be removed as well.
+    */
 
-   public static boolean containsLists(String wordMl) {
-      return LIST_PATTERN.matcher(wordMl).find();
-   }
+   //@formatter:off
+   private static final Pattern insertHerePattern =
+      Pattern.compile
+         (
+            "(?:<w:p[^>]*>\\s*<w:r[^>]*>\\s*<w:t[^>]*>)?\\s*INSERT_(?:ARTIFACT|LINK)_HERE\\s*(?:</w:t>\\s*</w:r>\\s*</w:p>)?",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE
+         );
+   //@formatter:on
 
-   public static String removeAnnotations(String wordml) {
-      String response = wordml;
-      if (Strings.isValid(response)) {
-         response = response.replaceAll(AML_ANNOTATION, "");
-         response = response.replaceAll(AML_CONTENT, "");
-         response = response.replaceAll(DELETIONS, "");
-      }
-      return response;
-   }
+   /**
+    * Shorter regular expression used to determine if a publishing template's replacement token is for artifacts or for
+    * links.
+    */
+
+   //@formatter:off
+   private static final Pattern whichInsertHerePattern =
+      Pattern.compile
+         (
+            "INSERT_(ARTIFACT|LINK)_HERE",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE
+         );
+   //@formatter:off
+
 
    public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations, Set<String> allValidConfigurationGroups) {
 
@@ -216,70 +229,22 @@ public class WordCoreUtil {
       return false;
    }
 
-   private static boolean isValidConfigurationBracket(String beginConfig, Set<String> allValidConfigurations) {
-      beginConfig = WordCoreUtil.textOnly(beginConfig);
-      int start = beginConfig.indexOf("[") + 1;
-      int end = beginConfig.indexOf("]");
-      String applicExpText = beginConfig.substring(start, end);
-
-      String[] configs = applicExpText.split("&|\\|");
-
-      for (String config : configs) {
-         String configKey = config.split("=")[0].trim().toUpperCase();
-         if (!allValidConfigurations.contains(configKey)) {
-            return false;
+   private static boolean containsIgnoreCase(Collection<String> validValues, String val) {
+      for (String validValue : validValues) {
+         if (validValue.equalsIgnoreCase(val)) {
+            return true;
          }
       }
-
-      return true;
-   }
-
-   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup, Set<String> allValidConfigurationGroups) {
-      beginConfigGroup = WordCoreUtil.textOnly(beginConfigGroup);
-      int start = beginConfigGroup.indexOf("[") + 1;
-      int end = beginConfigGroup.indexOf("]");
-      String applicExpText = beginConfigGroup.substring(start, end);
-
-      String[] configs = applicExpText.split("&|\\|");
-
-      for (String config : configs) {
-         String configKey = config.split("=")[0].trim().toUpperCase();
-         if (!allValidConfigurationGroups.contains(configKey)) {
-            return false;
-         }
-      }
-
-      return true;
-   }
-
-   private static boolean isInvalidConfigurationBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
-      if (applicabilityBlock.getType() != ApplicabilityType.Configuration) {
-         return true;
-      }
-
       return false;
    }
 
-   private static boolean isInvalidConfigurationGroupBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
-      if (applicabilityBlock.getType() != ApplicabilityType.ConfigurationGroup) {
-         return true;
-      }
-
-      return false;
+   public static boolean containsLists(String wordMl) {
+      return LIST_PATTERN.matcher(wordMl).find();
    }
 
-   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch, HashCollection<String, String> validFeatureValues) {
-
-      if (applicabilityBlock.getType() != ApplicabilityType.Feature) {
-         return true;
-      }
-      String applicabilityExpression = applicabilityBlock.getApplicabilityExpression();
-
-      if (isExpressionInvalid(applicabilityExpression, branch, validFeatureValues)) {
-         return true;
-      }
-
-      return false;
+   public static boolean containsWordAnnotations(String wordml) {
+      return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains(
+         "w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
    }
 
    private static ApplicabilityBlock createApplicabilityBlock(ApplicabilityType applicType, String beginExpression) {
@@ -289,10 +254,52 @@ public class WordCoreUtil {
       return beginApplic;
    }
 
-   public static String textOnly(String str) {
-      str = paragraphPattern.matcher(str).replaceAll(" ");
-      str = tagKiller.matcher(str).replaceAll("").trim();
-      return Xml.unescape(str).toString();
+   public static int endIndexOf(String str, String regex) {
+      int toReturn = -1;
+
+      Pattern pattern = Pattern.compile(regex);
+      Matcher matcher = pattern.matcher(str);
+      if (matcher.find()) {
+         toReturn = matcher.end();
+      }
+
+      return toReturn;
+   }
+
+   /**
+    * Gets the {@link PublishingTemplateInsertTokenType} of the first "insert here token" in the publishing template content.
+    *
+    * @param templateContent the publishing template to be searched.
+    * @return
+    * <ul>
+    * <li>{@link PublishingTemplateInsertTokenType#ARTIFACT} when the first "insert here token" is for an artifact.</li>
+    * <li>{@link PublishingTemplateInsertTokenType#LINK} when the first "insert here token" is for a link.</li>
+    * <li>{@link PublishingTemplateInsertTokenType#NONE} when a valid "insert here token" is not found.</li>
+    * </ul>
+    */
+
+   public static PublishingTemplateInsertTokenType getInsertHereTokenType(String templateContent) {
+
+      var matcher = WordCoreUtil.whichInsertHerePattern.matcher( templateContent );
+
+      if( matcher.find() ) {
+
+         return PublishingTemplateInsertTokenType.parse( matcher.group(1) );
+      }
+
+      return PublishingTemplateInsertTokenType.NONE;
+   }
+
+   public static int indexOf(String str, String regex) {
+      int toReturn = -1;
+
+      Pattern pattern = Pattern.compile(regex);
+      Matcher matcher = pattern.matcher(str);
+      if (matcher.find()) {
+         toReturn = matcher.start();
+      }
+
+      return toReturn;
    }
 
    public static boolean isExpressionInvalid(String expression, BranchId branch, HashCollection<String, String> validFeatureValues) {
@@ -336,25 +343,70 @@ public class WordCoreUtil {
       return false;
    }
 
-   private static boolean containsIgnoreCase(Collection<String> validValues, String val) {
-      for (String validValue : validValues) {
-         if (validValue.equalsIgnoreCase(val)) {
-            return true;
-         }
+   private static boolean isInvalidConfigurationBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
+      if (applicabilityBlock.getType() != ApplicabilityType.Configuration) {
+         return true;
       }
+
       return false;
    }
 
-   public static int endIndexOf(String str, String regex) {
-      int toReturn = -1;
-
-      Pattern pattern = Pattern.compile(regex);
-      Matcher matcher = pattern.matcher(str);
-      if (matcher.find()) {
-         toReturn = matcher.end();
+   private static boolean isInvalidConfigurationGroupBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
+      if (applicabilityBlock.getType() != ApplicabilityType.ConfigurationGroup) {
+         return true;
       }
 
-      return toReturn;
+      return false;
+   }
+
+   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch, HashCollection<String, String> validFeatureValues) {
+
+      if (applicabilityBlock.getType() != ApplicabilityType.Feature) {
+         return true;
+      }
+      String applicabilityExpression = applicabilityBlock.getApplicabilityExpression();
+
+      if (isExpressionInvalid(applicabilityExpression, branch, validFeatureValues)) {
+         return true;
+      }
+
+      return false;
+   }
+
+   private static boolean isValidConfigurationBracket(String beginConfig, Set<String> allValidConfigurations) {
+      beginConfig = WordCoreUtil.textOnly(beginConfig);
+      int start = beginConfig.indexOf("[") + 1;
+      int end = beginConfig.indexOf("]");
+      String applicExpText = beginConfig.substring(start, end);
+
+      String[] configs = applicExpText.split("&|\\|");
+
+      for (String config : configs) {
+         String configKey = config.split("=")[0].trim().toUpperCase();
+         if (!allValidConfigurations.contains(configKey)) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup, Set<String> allValidConfigurationGroups) {
+      beginConfigGroup = WordCoreUtil.textOnly(beginConfigGroup);
+      int start = beginConfigGroup.indexOf("[") + 1;
+      int end = beginConfigGroup.indexOf("]");
+      String applicExpText = beginConfigGroup.substring(start, end);
+
+      String[] configs = applicExpText.split("&|\\|");
+
+      for (String config : configs) {
+         String configKey = config.split("=")[0].trim().toUpperCase();
+         if (!allValidConfigurationGroups.contains(configKey)) {
+            return false;
+         }
+      }
+
+      return true;
    }
 
    public static int lastIndexOf(String str, String regex) {
@@ -369,15 +421,42 @@ public class WordCoreUtil {
       return toReturn;
    }
 
-   public static int indexOf(String str, String regex) {
-      int toReturn = -1;
+   /**
+    * Applies the <code>segmentProcessor</code> to each section of the <code>templateContent</code> from the start of the template or the end of the last section. The
+    * <code>tailProcessor</code> is applied to the last section of the <code>templateContent</code>. The <code>templateContent</code> is split into sections using
+    * the regular expression {@link #insertHerePattern}.
+    *
+    * @param templateContent the publishing template to be processed.
+    * @param segmentProcessor a {@link Consumer} used to process sections of the <code>templateContent</code> leading up to an "insert here token".
+    * @param tailProcessor a {@link Consumer} used to process the final section of the <code>templateContent</code>.
+    */
 
-      Pattern pattern = Pattern.compile(regex);
-      Matcher matcher = pattern.matcher(str);
-      if (matcher.find()) {
-         toReturn = matcher.start();
+   public static void processPublishingTemplate(String templateContent, Consumer<String> segmentProcessor, Consumer<String> tailProcessor) {
+
+      var matcher = WordCoreUtil.insertHerePattern.matcher(templateContent);
+      int lastEndIndex = 0;
+      while (matcher.find()) {
+         var segment = templateContent.substring(lastEndIndex, matcher.start());
+         lastEndIndex = matcher.end();
+         segmentProcessor.accept(segment);
       }
+      var tail = templateContent.substring(lastEndIndex);
+      tailProcessor.accept(tail);
+   }
 
-      return toReturn;
+   public static String removeAnnotations(String wordml) {
+      String response = wordml;
+      if (Strings.isValid(response)) {
+         response = response.replaceAll(AML_ANNOTATION, "");
+         response = response.replaceAll(AML_CONTENT, "");
+         response = response.replaceAll(DELETIONS, "");
+      }
+      return response;
+   }
+
+   public static String textOnly(String str) {
+      str = paragraphPattern.matcher(str).replaceAll(" ");
+      str = tagKiller.matcher(str).replaceAll("").trim();
+      return Xml.unescape(str).toString();
    }
 }
