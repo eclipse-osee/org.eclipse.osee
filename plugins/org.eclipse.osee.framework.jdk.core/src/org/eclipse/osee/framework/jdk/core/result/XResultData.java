@@ -17,11 +17,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -62,6 +65,8 @@ public class XResultData {
    private boolean logToSysErr;
    public List<XResultTable> tables = new ArrayList<XResultTable>();
    private String txId = "";
+   private final CountingMap<String> keyToTimeSpentMap = new CountingMap<>();
+   private final Map<String, Date> keyTimeStart = new HashMap<>();
 
    public XResultData() {
       this(false);
@@ -404,6 +409,48 @@ public class XResultData {
 
    public void sortResults() {
       java.util.Collections.sort(results);
+   }
+
+   public void addTimeMapToResultData() {
+      addTimeMapToResultData("");
+   }
+
+   public void addTimeMapToResultData(String... testPrefix) {
+      log("\n\n<b>Time Spent in Tests</b>");
+      long totalTime = 0;
+      List<String> testNames = new ArrayList<>();
+      testNames.addAll(keyToTimeSpentMap.keySet());
+      java.util.Collections.sort(testNames);
+      log(AHTML.beginMultiColumnTable(70, 2));
+      // Sort tests
+      for (String prefix : testPrefix) {
+         for (String testName : testNames) {
+            if (testName.startsWith(prefix)) {
+               int testTime = keyToTimeSpentMap.get(testName);
+               totalTime += testTime;
+               logf(
+                  AHTML.addRowMultiColumnTable(testName, (testTime / 60000) + " min or " + (testTime / 1000) + " sec"));
+            }
+         }
+      }
+      log(AHTML.endMultiColumnTable());
+      log("TOTAL (Test Time) - " + (totalTime / 60000) + " min or " + (totalTime / 1000) + " sec");
+      log("\n");
+   }
+
+   public void logTimeStart(String key) {
+      keyTimeStart.put(key, new Date());
+   }
+
+   public int logTimeSpent(String key) {
+      Date now = new Date();
+      Date start = keyTimeStart.get(key);
+      if (start == null) {
+         throw new IllegalArgumentException("No Start Key: " + key);
+      }
+      int spent = Long.valueOf(now.getTime() - start.getTime()).intValue();
+      keyToTimeSpentMap.put(key, spent);
+      return spent;
    }
 
 }
