@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
+import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLWriter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -93,8 +94,6 @@ public class MSWordTemplatePublisher {
    protected static final Object ARTIFACT_ID = "Artifact Id";
    protected static final String ARTIFACT_TYPE = "Artifact Type";
    protected static final String APPLICABILITY = "Applicability";
-   protected static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
-   protected static final String INSERT_LINK = "INSERT_LINK_HERE";
    protected static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    protected static final String FONT = "Times New Roman";
    protected static final String LANDSCAPE = "Landscape";
@@ -104,11 +103,6 @@ public class MSWordTemplatePublisher {
    private static final String LABEL_EMPTY = "<w:r><w:t> </w:t></w:r>";
    private static final String LABEL_START = "<w:r><w:t>";
    private static final String LABEL_END = "</w:t></w:r>";
-
-   //Patterns
-   protected static final Pattern headElementsPattern =
-      Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    //Template
    protected PublishingTemplate publishingTemplate;
@@ -220,21 +214,35 @@ public class MSWordTemplatePublisher {
     */
 
    protected void applyContentToTemplate(List<ArtifactReadable> artifacts, String templateContent) {
+
       WordMLWriter wordMl = new WordMLWriter(writer);
 
+      //@formatter:off
       templateContent =
-         setUpTemplateContent(wordMl, artifacts.get(0), templateContent, publishingOptions.msWordHeadingDepth);
+         this.setUpTemplateContent
+            (
+               wordMl,
+               artifacts.get(0),
+               templateContent,
+               publishingOptions.msWordHeadingDepth
+            );
 
-      int lastEndIndex = 0;
-      Matcher matcher = headElementsPattern.matcher(templateContent);
-      while (matcher.find()) {
-         lastEndIndex = handleStartOfTemplate(wordMl, templateContent, matcher);
-         processContent(artifacts, wordMl);
-         addLinkNotInPublishErrors(wordMl);
-         this.publishingErrorLog.publishErrorLog(wordMl);
-      }
-
-      handleEndOfTemplate(wordMl, templateContent, lastEndIndex);
+      WordCoreUtil.processPublishingTemplate
+         (
+            templateContent,
+            ( segment ) ->
+            {
+               wordMl.addWordMl( segment );
+               this.processContent(artifacts,wordMl);
+               this.addLinkNotInPublishErrors(wordMl);
+               this.publishingErrorLog.publishErrorLog(wordMl);
+            },
+            ( tail ) ->
+            {
+               wordMl.addWordMl( this.updateFooter( tail ) );
+            }
+         );
+      //@formatter:on
    }
 
    /**
@@ -385,48 +393,30 @@ public class MSWordTemplatePublisher {
    }
 
    /**
-    * If the render template has the "insert_artifact_here" marking, the head artifacts paragraph number attribute is
-    * used as the start of the outline number. Otherwise the default is to start at 1
+    * If the render template has the insert artifact here marking, the head artifacts paragraph number attribute is used
+    * as the start of the outline number. Otherwise the default is to start at 1
     */
 
-   protected String getParagraphNumber(ArtifactReadable artifact, String templateContent) {
-      String startParagraphNumber = "1";
-      Matcher matcher = headElementsPattern.matcher(templateContent);
+   private String getParagraphNumber(ArtifactReadable artifactReadable, String templateContent) {
 
-      if (matcher.find()) {
-         String elementType = matcher.group(0);
+      var startParagraphNumber = "1";
 
-         if (elementType != null && elementType.equals(INSERT_ARTIFACT_HERE)) {
-            String paragraphNum = artifact.getSoleAttributeValue(ParagraphNumber, "");
-            if (Strings.isValid(paragraphNum)) {
-               startParagraphNumber = paragraphNum;
-            }
+      //@formatter:off
+      if(    Objects.isNull( artifactReadable )
+          || Objects.isNull( templateContent )
+          || templateContent.isEmpty()
+          || !PublishingTemplateInsertTokenType.ARTIFACT.equals(WordCoreUtil.getInsertHereTokenType(templateContent))) {
+         return startParagraphNumber;
+      }
+      //@formatter:on
 
-         }
+      var artifactParagraphNumber = artifactReadable.getSoleAttributeValue(ParagraphNumber, "");
+
+      if (Strings.isValid(artifactParagraphNumber)) {
+         startParagraphNumber = artifactParagraphNumber;
       }
 
       return startParagraphNumber;
-   }
-
-   /**
-    * Adds the beginning section of the template to our wordml builder, the end index of the matcher is returned as the
-    * lastEndIndex for the default implementation
-    */
-
-   protected int handleStartOfTemplate(WordMLWriter wordMl, String templateContent, Matcher matcher) {
-      wordMl.addWordMl(templateContent.substring(0, matcher.start()));
-      return matcher.end();
-   }
-
-   /**
-    * For the default version, now that the content has been inserted the rest of the render template's whole word
-    * content is appended to the end after the footer is updated
-    */
-
-   protected void handleEndOfTemplate(WordMLWriter wordMl, String templateContent, int lastEndIndex) {
-      String endOfTemplate = templateContent.substring(lastEndIndex);
-      // Write out the last of the template
-      wordMl.addWordMl(updateFooter(endOfTemplate));
    }
 
    /**
