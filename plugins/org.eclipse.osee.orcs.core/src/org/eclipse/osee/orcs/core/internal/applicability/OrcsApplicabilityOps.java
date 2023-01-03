@@ -238,8 +238,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                         String compoundValue = "Excluded";
                         boolean f1Applic = feature1Value.equals(f1Config.getValue());
                         boolean f2Applic = feature2Value.equals(f2Config.getValue());
-                        if ((operator == '|' && (f1Applic || f2Applic))
-                           || (operator == '&' && (f1Applic && f2Applic))) {
+                        if ((operator == '|' && (f1Applic || f2Applic)) || (operator == '&' && (f1Applic && f2Applic))) {
                            compoundValue = "Included";
                         }
                         extfDef.addConfiguration(new NameValuePair(f1Config.getName(), compoundValue));
@@ -320,6 +319,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       if (featureDef.getValues() != null && !featureDef.getValues().contains(featureDef.getDefaultValue())) {
          results.error("Default value must be in the list of values.");
       }
+
+      if (featureDef.getValues().contains("Included") && featureDef.getValues().contains(
+         "Excluded") && featureDef.getDefaultValue().equals("Excluded")) {
+         results.error("Default value must be Included for Included/Excluded feature definition");
+      }
+
       if (Strings.isInValid(featureDef.getValueType())) {
          results.error("Value type is required.");
       }
@@ -759,8 +764,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Remove Configuration product applicabilities");
          tx.deleteAttributes(ArtifactId.valueOf(editView), CoreAttributeTypes.ProductApplicability);
          tx.commit();
-      } else if (editView.getProductApplicabilities().isEmpty()
-         || !editView.getProductApplicabilities().equals(view.getProductApplicabilities())) {
+      } else if (editView.getProductApplicabilities().isEmpty() || !editView.getProductApplicabilities().equals(
+         view.getProductApplicabilities())) {
          TransactionBuilder tx = txFactory.createTransaction(branch, "Update Configuration product applicabilities");
          tx.setAttributesFromValues(ArtifactId.valueOf(editView), CoreAttributeTypes.ProductApplicability,
             view.getProductApplicabilities());
@@ -1386,8 +1391,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
       List<ArtifactReadable> currentGroup = view.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getList();
-      if (!(currentGroup.isEmpty())
-         && !(currentGroup.stream().filter(o -> o.equals(cfgGroup)).collect(Collectors.toList()).isEmpty())) {
+      if (!(currentGroup.isEmpty()) && !(currentGroup.stream().filter(o -> o.equals(cfgGroup)).collect(
+         Collectors.toList()).isEmpty())) {
          results.errorf("View is already in the group");
          return results;
       }
@@ -1582,8 +1587,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                               resultApp = applicability;
                            } else {
                               if (!resultApp.equals(applicability)) {
-                                 results.error("Updating Group: " + cfgGroup.getName()
-                                    + ". Applicabilities differ for non-binary feature: " + feature.getName());
+                                 results.error(
+                                    "Updating Group: " + cfgGroup.getName() + ". Applicabilities differ for non-binary feature: " + feature.getName());
                               }
                            }
                         }
@@ -1930,8 +1935,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          return results;
       }
       ProductTypeDefinition existingProductType = getProductType(productType.getIdString(), branch);
-      if (existingProductType.isValid() && existingProductType.getName().equals(productType.getName())
-         && !existingProductType.getId().equals(productType.getId())) {
+      if (existingProductType.isValid() && existingProductType.getName().equals(
+         productType.getName()) && !existingProductType.getId().equals(productType.getId())) {
          results.errorf("Product Type Name is already in use.");
          return results;
       }
