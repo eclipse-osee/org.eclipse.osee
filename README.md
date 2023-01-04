@@ -4,4 +4,5 @@ The Open System Engineering Environment is a tightly integrated, extensible envi
 
 ## Table of Contents
 
+- [File Validation](docs/validate-files.md)
 - [GitLab CI](docs/gitlab-ci.md)
