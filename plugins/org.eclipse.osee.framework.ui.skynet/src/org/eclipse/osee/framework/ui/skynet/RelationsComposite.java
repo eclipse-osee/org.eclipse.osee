@@ -491,11 +491,16 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    }
 
    public void refresh() {
-      if (!treeViewer.getTree().isDisposed()) {
-         treeViewer.refresh();
-         expandItemsThatHaveChildren();
-         packColumnData();
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (!treeViewer.getTree().isDisposed()) {
+               treeViewer.refresh();
+               expandItemsThatHaveChildren();
+               packColumnData();
+            }
+         }
+      });
    }
 
    public void refreshParent(Object parent) {

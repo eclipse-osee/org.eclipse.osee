@@ -33,11 +33,9 @@ import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeHistorySection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeOperationsSection;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeRelationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
@@ -85,7 +83,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public final static String ID = "ats.workflow.tab";
    private final WorkflowEditor editor;
    private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
-   private WfeRelationsSection relationsSection;
    private WfeHistorySection historySection;
 
    public WfeWorkFlowTab(WorkflowEditor editor, AbstractWorkflowArtifact awa) {
@@ -233,7 +230,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       createPageSections();
       createUndefinedStateSections();
       createHistorySection();
-      createRelationsSection();
       createOperationsSection();
 
       setEditorWidgets();
@@ -268,18 +264,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          managedForm.addPart(smaOperationsSection);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void createRelationsSection() {
-      if (!AtsApiService.get().getUserService().isAtsAdmin()) {
-         try {
-            relationsSection = new WfeRelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-            managedForm.addPart(relationsSection);
-
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
       }
    }
 
@@ -398,9 +382,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       if (historySection != null) {
          historySection.dispose();
       }
-      if (relationsSection != null) {
-         relationsSection.dispose();
-      }
       for (WfeWorkflowSection section : stateSections) {
          section.dispose();
       }
@@ -450,9 +431,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                }
                refreshExpandStates();
 
-               if (relationsSection != null) {
-                  relationsSection.refresh();
-               }
                historySection.refresh();
 
                setEditorWidgets();

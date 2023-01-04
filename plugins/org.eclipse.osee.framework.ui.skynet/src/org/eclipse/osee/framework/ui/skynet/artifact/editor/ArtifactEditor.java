@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditor
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.rel.ArtEdRelationsTab;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -55,6 +56,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    private ArtifactFormPage formPage;
    private ArtifactEditorOutlinePage outlinePage;
    private ArtEdAttrTab attrTab;
+   private ArtEdRelationsTab relTab;
 
    public IActionContributor getActionBarContributor() {
       if (actionBarContributor == null) {
@@ -194,6 +196,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       createAttributesTab();
+      createRelationsTab();
    }
 
    private void createAttributesTab() {
@@ -201,6 +204,17 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          attrTab = new ArtEdAttrTab(this, getArtifactFromEditorInput());
          try {
             addPage(attrTab);
+         } catch (PartInitException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   private void createRelationsTab() {
+      if (ServiceUtil.accessControlService().isOseeAdmin()) {
+         relTab = new ArtEdRelationsTab(this, getArtifactFromEditorInput());
+         try {
+            addPage(relTab);
          } catch (PartInitException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

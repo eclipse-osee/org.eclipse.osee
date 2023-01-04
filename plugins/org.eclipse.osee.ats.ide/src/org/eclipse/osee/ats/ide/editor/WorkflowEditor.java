@@ -457,10 +457,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    private void createRelationsTab() {
       try {
-         if (AtsApiService.get().getUserService().isAtsAdmin()) {
-            relationsTab = new WfeRelationsTab(this, workItem);
-            addPage(relationsTab);
-         }
+         relationsTab = new WfeRelationsTab(this, workItem);
+         addPage(relationsTab);
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
