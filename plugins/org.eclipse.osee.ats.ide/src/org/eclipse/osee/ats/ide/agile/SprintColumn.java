@@ -250,10 +250,12 @@ public class SprintColumn extends BackgroundLoadingPreComputedColumn implements 
          Long relTypeId = rel.getRelTypeGuid();
          if (AtsRelationTypes.AgileSprintToItem.getId().equals(relTypeId)) {
             Artifact workflow = ArtifactCache.getActive(rel.getArtB());
-            IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
-            String newValue = getValue(workItem, preComputedValueMap);
-            preComputedValueMap.put(workflow.getId(), newValue);
-            xViewer.update(workflow, null);
+            if (workflow != null) {
+               IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
+               String newValue = getValue(workItem, preComputedValueMap);
+               preComputedValueMap.put(workflow.getId(), newValue);
+               xViewer.update(workflow, null);
+            }
          }
       }
    }
