@@ -7,6 +7,7 @@
 package org.eclipse.osee.ats.rest.metrics;
 
 import java.util.Date;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
@@ -28,16 +29,12 @@ public class MetricsReportOperations {
    }
 
    public Response generateDevProgressReport(String targetVersion, Date startDate, Date endDate, int weekday, int iterationLength, boolean periodic, boolean nonPeriodic, boolean periodicTask, boolean nonPeriodicTask) {
+      StreamingOutput streamingOutput = new DevProgressMetricsReport(orcsApi, atsApi, targetVersion, startDate, endDate,
+         weekday, iterationLength, periodic, nonPeriodic, periodicTask, nonPeriodicTask);
       String fileName = String.format("DevelopmentProgressMetrics_%s_%s.xml", targetVersion, Lib.getDateTimeString());
-      StreamingOutput streamingOutput = new DevProgressMetricsReport(orcsApi, atsApi, fileName, targetVersion,
-         startDate, endDate, weekday, iterationLength, periodic, nonPeriodic, periodicTask, nonPeriodicTask);
-      return buildResponse(streamingOutput, fileName);
-   }
 
-   private Response buildResponse(StreamingOutput streamingOutput, String fileName) {
-      ResponseBuilder builder = Response.ok(streamingOutput);
-      builder.header("Content-Disposition", "attachment; filename=" + fileName);
+      ResponseBuilder builder = Response.ok(streamingOutput, MediaType.APPLICATION_OCTET_STREAM);
+      builder.header("Content-Disposition", "attachment; filename=" + fileName).header("FileName", fileName);
       return builder.build();
    }
-
 }

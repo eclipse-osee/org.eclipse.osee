@@ -35,7 +35,7 @@ public class MetricsEndpointImpl implements MetricsEndpointApi {
    @Override
    @Path("DevProgress/{targetVersion}")
    @GET
-   @Produces(MediaType.APPLICATION_XML)
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response devProgressReport(@PathParam("targetVersion") String targetVersion, @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate, @QueryParam("weekday") int weekday, @QueryParam("iterationLength") int iterationLength, @QueryParam("periodic") boolean periodic, @QueryParam("nonPeriodic") boolean nonPeriodic, @QueryParam("periodicTask") boolean periodicTask, @QueryParam("nonPeriodicTask") boolean nonPeriodicTask) {
       return (new MetricsReportOperations(atsApi, orcsApi)).generateDevProgressReport(targetVersion, startDate, endDate,
          weekday, iterationLength, periodic, nonPeriodic, periodicTask, nonPeriodicTask);
