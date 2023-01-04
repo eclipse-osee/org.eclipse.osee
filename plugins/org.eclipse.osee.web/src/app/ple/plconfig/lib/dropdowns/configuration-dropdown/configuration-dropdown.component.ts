@@ -10,29 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { iif, Observable, of, OperatorFunction } from 'rxjs';
-import {
-	filter,
-	share,
-	shareReplay,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs/operators';
-import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
-import { editConfiguration } from '../../types/pl-config-configurations';
 import {
 	PLAddConfigData,
 	PLEditConfigData,
 } from '../../types/pl-edit-config-data';
+import { EditConfigurationDialogComponent } from '../../dialogs/edit-config-dialog/edit-config-dialog.component';
+import { editConfiguration } from '../../types/pl-config-configurations';
 import { AddConfigurationDialogComponent } from '../../dialogs/add-configuration-dialog/add-configuration-dialog.component';
 import { CopyConfigurationDialogComponent } from '../../dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
-import { EditConfigurationDialogComponent } from '../../dialogs/edit-config-dialog/edit-config-dialog.component';
 
 @Component({
 	selector: 'osee-plconfig-configuration-dropdown',
@@ -43,14 +36,15 @@ export class ConfigurationDropdownComponent {
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	editable = this.currentBranchService.branchApplicEditable;
 	configs = this.currentBranchService.branchApplicViews;
+	editable = this.currentBranchService.branchApplicEditable;
+
 	constructor(
 		private uiStateService: PlConfigUIStateService,
-		private branchService: PlConfigBranchService,
 		private currentBranchService: PlConfigCurrentBranchService,
 		public dialog: MatDialog
 	) {}
+
 	deleteConfig(config: { id: string; name: string }) {
 		this.currentBranchService
 			.deleteConfiguration(config.id)
@@ -243,5 +237,15 @@ export class ConfigurationDropdownComponent {
 				)
 			)
 			.subscribe();
+	}
+
+	toggleMenu(menuTrigger: MatMenuTrigger) {
+		menuTrigger.toggleMenu();
+	}
+	closeMenu(menuTrigger: MatMenuTrigger) {
+		menuTrigger.closeMenu();
+	}
+	openMenu(menuTrigger: MatMenuTrigger) {
+		menuTrigger.openMenu();
 	}
 }

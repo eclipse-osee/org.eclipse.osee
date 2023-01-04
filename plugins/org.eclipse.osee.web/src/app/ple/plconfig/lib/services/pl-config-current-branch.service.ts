@@ -963,6 +963,43 @@ export class PlConfigCurrentBranchService {
 			)
 		);
 	}
+	public addCompoundApplicability(compApplicName: string) {
+		return this.uiStateService.branchId.pipe(
+			filter((val) => val != ''),
+			switchMap((branchId) =>
+				this.branchService
+					.addCompoundApplicability(branchId, compApplicName)
+					.pipe(
+						tap((val) => {
+							if (val.results.length > 0) {
+								this.uiStateService.error = val.results[0];
+							} else {
+								this.uiStateService.updateReqConfig = true;
+								this.uiStateService.error = '';
+							}
+						})
+					)
+			)
+		);
+	}
+	public deleteCompoundApplicability(id: string) {
+		return this.uiStateService.branchId.pipe(
+			filter((val) => val != ''),
+			switchMap((branchId) =>
+				this.branchService
+					.deleteCompoundApplicability(branchId, id)
+					.pipe(
+						tap((val) => {
+							if (val.results.length > 0) {
+								this.uiStateService.error = val.results[0];
+							} else {
+								this.uiStateService.updateReqConfig = true;
+							}
+						})
+					)
+			)
+		);
+	}
 	makeHeaderUnique(names: string[]) {
 		let newArray: string[] = [];
 		for (let name of names) {

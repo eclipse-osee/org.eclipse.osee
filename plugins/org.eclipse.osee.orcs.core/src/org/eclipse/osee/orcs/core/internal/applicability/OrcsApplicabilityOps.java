@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -1174,6 +1176,96 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             }
          }
 
+      }
+
+      return results;
+   }
+
+   @Override
+   public XResultData createCompoundApplicabilityForBranch(String applicability, BranchId branch) {
+      XResultData results = new XResultData();
+
+      if (results.isErrors()) {
+         return results;
+      }
+      /**
+       * See if the applicability string already exists in tuple2 table as e2. Lookup key value for the string. See if
+       * associated id exists on branch.
+       */
+      if (applicability.contains("|") || applicability.contains("&")) {
+         Set<Entry<Long, ApplicabilityToken>> entrySet =
+            orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).entrySet();
+
+         if (entrySet.stream().anyMatch(a -> a.getValue().getName().equals(applicability.trim()))) {
+            results.error("\"" + applicability + "\" already exists on the branch.");
+            return results;
+         }
+         ;
+         String[] splitString = (applicability.contains("|")) ? applicability.split("\\|") : applicability.split("&");
+
+         for (String value : splitString) {
+            /**
+             * loop through existing applicabilities for branch and see if new applicability exists if so, stop else
+             * check that ALL of the & separated applicability exist
+             **/
+            if (!entrySet.stream().anyMatch(a -> a.getValue().getName().equals(value.trim()))) {
+               results.error(
+                  "Invalid applicability tag. \"" + value.trim() + "\" does not match any existing applicability on the branch.");
+               return results;
+            }
+         }
+
+         TransactionBuilder tx = txFactory.createTransaction(branch, "Set applicability for view");
+
+         addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.SENTINEL, tx, applicability.trim());
+
+         tx.commit();
+         /**
+          * Once a new compound applicability tag is created, it must be evaluated whether the tag applies for each view
+          * on the branch
+          */
+         for (ArtifactId bView : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
+            updateCompoundApplicabilities(branch, bView, true);
+         }
+
+      } else {
+         results.error("Invalid applicability tag. Must contain | or &");
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData deleteCompoundApplicabilityFromBranch(ApplicabilityId compApplicId, BranchId branch) {
+      XResultData results = new XResultData();
+
+      try {
+         /**
+          * Remove compound applicability from each view. Then remove compound applicability from the entire branch.
+          */
+         TransactionBuilder tx = txFactory.createTransaction(branch, "Delete Compound Applicability");
+
+         Iterable<Long> listOfApplicsForViews = orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(
+            CoreTupleTypes.ViewApplicability, branch, compApplicId.getId());
+
+         for (Long viewId : listOfApplicsForViews) {
+            GammaId id = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2Raw(
+               CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(viewId), compApplicId.getId());
+            tx.deleteTuple2(id);
+         }
+
+         Iterable<Long> listOfApplics = orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(
+            CoreTupleTypes.ApplicabilityDefinition, branch, compApplicId.getId());
+
+         for (Long viewId : listOfApplics) {
+            GammaId id = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2Raw(
+               CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(viewId), compApplicId.getId());
+            tx.deleteTuple2(id);
+         }
+
+         tx.commit();
+
+      } catch (Exception ex) {
+         results.error(Lib.exceptionToString(ex));
       }
 
       return results;

@@ -29,11 +29,12 @@ import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { ApplicabilityTableComponent } from './lib/table/applicability-table/applicability-table.component';
+import { CompoundApplicabilityDropdownComponent } from './lib/dropdowns/compound-applicability-dropdown/compound-applicability-dropdown.component';
 import { ConfigurationDropdownComponent } from './lib/dropdowns/configuration-dropdown/configuration-dropdown.component';
 import { ConfigurationGroupDropdownComponent } from './lib/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
+import { EditDefinitionsDropdownComponent } from './lib/dropdowns/edit-definitions-dropdown/edit-definitions-dropdown.component';
 import { FeatureDropdownComponent } from './lib/dropdowns/feature-dropdown/feature-dropdown.component';
 import { ProductTypeDropDownComponent } from './lib/dropdowns/product-type-drop-down/product-type-drop-down.component';
-
 import { PlconfigComponent } from './plconfig.component';
 import {
 	ActionDropdownStub,
@@ -72,6 +73,8 @@ describe('PlconfigComponent', () => {
 				ConfigurationGroupDropdownComponent,
 				FeatureDropdownComponent,
 				ProductTypeDropDownComponent,
+				EditDefinitionsDropdownComponent,
+				CompoundApplicabilityDropdownComponent,
 			],
 			providers: [
 				{

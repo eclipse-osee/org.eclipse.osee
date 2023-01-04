@@ -23,8 +23,8 @@
 <div mat-dialog-content>
 	<div *ngIf="data.editable === true">
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Configuration Name</mat-label>
 			<input
 				matInput
@@ -39,8 +39,8 @@
 		</mat-form-field>
 		<br />
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Configuration Description</mat-label>
 			<input
 				matInput
@@ -54,11 +54,11 @@
 				" />
 		</mat-form-field>
 		<br />
-		<mat-label [style.fontSize.px]="18">Copy From:</mat-label>
+		<mat-label class="dialog-font-size">Copy From:</mat-label>
 		<br />
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Select a Configuration</mat-label>
 			<mat-select [(ngModel)]="data.copyFrom">
 				<mat-option
@@ -69,13 +69,13 @@
 			</mat-select>
 		</mat-form-field>
 		<br />
-		<mat-label [style.fontSize.px]="18"
+		<mat-label class="dialog-font-size"
 			>Change Configuration Group:</mat-label
 		>
 		<br />
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label> Select a Configuration Group </mat-label>
 			<mat-select
 				[(ngModel)]="data.group"
@@ -97,14 +97,14 @@
 		</mat-form-field>
 		<div>
 			<mat-label
-				[style.fontSize.px]="18"
+				class="dialog-font-size"
 				data-cy="product-types-selection"
 				>Select Product Types</mat-label
 			>
 			<mat-selection-list
 				[(ngModel)]="data.productApplicabilities"
 				color="primary"
-				[style.fontSize.px]="18">
+				class="dialog-font-size">
 				<mat-list-option
 					*ngFor="let type of productApplicabilities | async"
 					[value]="type.name"

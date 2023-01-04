@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>Copy Configuration</h1>
-<mat-label [style.fontSize.px]="18">Copy To:</mat-label>
+<mat-label class="dialog-font-size">Copy To:</mat-label>
 <br />
 <mat-form-field
-	[style.fontSize.px]="18"
-	class="full-width">
+	class="dialog-font-size"
+	class="dialog-full-width">
 	<mat-label>Select a Configuration</mat-label>
 	<mat-select
 		(selectionChange)="selectDestinationBranch($event)"
@@ -29,11 +29,11 @@
 	</mat-select>
 </mat-form-field>
 <br />
-<mat-label [style.fontSize.px]="18">Copy From:</mat-label>
+<mat-label class="dialog-font-size">Copy From:</mat-label>
 <br />
 <mat-form-field
-	[style.fontSize.px]="18"
-	class="full-width">
+	class="dialog-font-size"
+	class="dialog-full-width">
 	<mat-label>Select a Configuration</mat-label>
 	<mat-select
 		(selectionChange)="selectBranch($event)"

@@ -12,16 +12,13 @@
  -->
 <div class="pl-config">
 	<div class="pl-config-container">
-		<osee-branch-picker
-			category="2"
-			[actionSearch]="true"></osee-branch-picker>
-		<osee-plconfig-configuration-dropdown></osee-plconfig-configuration-dropdown>
-		<osee-plconfig-configuration-group-dropdown></osee-plconfig-configuration-group-dropdown>
-		<osee-plconfig-feature-dropdown></osee-plconfig-feature-dropdown>
-		<ng-container *ngIf="isTeamLead | async">
-			<osee-plconfig-product-type-dropdown></osee-plconfig-product-type-dropdown>
-		</ng-container>
 		<div class="left-buttons">
+			<osee-branch-picker
+				category="2"
+				[actionSearch]="true"></osee-branch-picker>
+			<osee-edit-definitions-dropdown></osee-edit-definitions-dropdown>
+		</div>
+		<div class="right-buttons">
 			<ng-container *ngIf="isAllowedToDiff | async as _diff">
 				<ng-container
 					*ngIf="(branchType | async) && (branchId | async)">

@@ -77,6 +77,8 @@ public interface TupleQuery {
 
    <E1, E2> void getTuple2GammaFromE1E2(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, E2 e2, Consumer<GammaId> consumer);
 
+   <E1, E2> GammaId getTuple2GammaFromE1E2Raw(Tuple2Type<E1, E2> tupleType, E1 e1, Long e2Raw);
+
    /**
     * Return GammaId from Tuple2 without using BranchId. TupleType,E1,E2 is a primary key (unique)
     */

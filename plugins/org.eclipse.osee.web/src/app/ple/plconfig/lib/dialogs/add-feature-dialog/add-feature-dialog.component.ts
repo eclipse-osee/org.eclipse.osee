@@ -60,7 +60,7 @@ export class AddFeatureDialogComponent {
 	selectDefaultValue(event: MatSelectChange) {
 		this.data.feature.defaultValue = event.value;
 	}
-	valueTracker(index: any, item: any) {
+	valueTracker<T>(index: number, item: T) {
 		return index;
 	}
 	clearFeatureData() {

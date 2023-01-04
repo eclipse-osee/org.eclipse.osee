@@ -22,7 +22,7 @@
 </h1>
 <div mat-dialog-content>
 	<div *ngIf="data.editable === true">
-		<mat-form-field [style.fontSize.px]="18">
+		<mat-form-field class="dialog-font-size">
 			<mat-label>Configuration Group Name</mat-label>
 			<input
 				matInput
@@ -32,7 +32,7 @@
 				required />
 		</mat-form-field>
 		<br />
-		<mat-form-field [style.fontSize.px]="18">
+		<mat-form-field class="dialog-font-size">
 			<mat-label>Configuration Group Description</mat-label>
 			<input
 				matInput
@@ -43,11 +43,11 @@
 		</mat-form-field>
 		<br />
 		<div>
-			<mat-label [style.fontSize.px]="18">Select Views</mat-label>
+			<mat-label class="dialog-font-size">Select Views</mat-label>
 			<mat-selection-list
 				[(ngModel)]="data.configGroup.views"
 				color="warn"
-				[style.fontSize.px]="18">
+				class="dialog-font-size">
 				<mat-list-option
 					*ngFor="let view of totalConfigurations"
 					[value]="view"
