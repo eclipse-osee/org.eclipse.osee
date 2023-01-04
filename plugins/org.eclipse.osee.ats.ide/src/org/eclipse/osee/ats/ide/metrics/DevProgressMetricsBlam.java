@@ -6,6 +6,11 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.metrics;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +19,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -87,7 +94,7 @@ public class DevProgressMetricsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Generates SLOC Productivity Report based on Version";
+      return "Generates Dev Progress Report based on Version";
    }
 
    @Override
@@ -123,6 +130,8 @@ public class DevProgressMetricsBlam extends AbstractBlam {
          @Override
          public void run() {
             try {
+               String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
+                  System.getProperty("user.name"), File.separator);
 
                Version selectedVersion = versionWidget.getSelectedVersion();
 
@@ -135,9 +144,27 @@ public class DevProgressMetricsBlam extends AbstractBlam {
                showPeriodicTask = variableMap.getBoolean(SHOW_PERIODIC_TASK);
                showNonPeriodicTask = variableMap.getBoolean(SHOW_NONPERIODIC_TASK);
 
-               AtsApiService.get().getServerEndpoints().getMetricsEp().devProgressReport(selectedVersion.getName(),
-                  startDate, endDate, dayOfWeek, duration, showPeriodic, showNonPeriodic, showPeriodicTask,
-                  showNonPeriodicTask);
+               Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().devProgressReport(
+                  selectedVersion.getName(), startDate, endDate, dayOfWeek, duration, showPeriodic, showNonPeriodic,
+                  showPeriodicTask, showNonPeriodicTask);
+
+               if (res == null) {
+                  return;
+               }
+
+               String filePath = String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
+               BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));
+
+               GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
+               StringBuffer sb = new StringBuffer();
+               BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));
+               String inputLine = "";
+               while ((inputLine = in.readLine()) != null) {
+                  sb.append(inputLine);
+               }
+               bwr.write(sb.toString());
+               bwr.flush();
+               bwr.close();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

@@ -12,11 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.ats.rest.metrics;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -40,7 +38,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -53,7 +50,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public final class DevProgressMetricsReport implements StreamingOutput {
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
-   private final String fileName;
    private String programVersion;
    private final String targetVersion;
    private final Date startDate;
@@ -118,10 +114,9 @@ public final class DevProgressMetricsReport implements StreamingOutput {
       DevProgressItemId.TSKComplete,
       DevProgressItemId.TSKCancelled};
 
-   public DevProgressMetricsReport(OrcsApi orcsApi, AtsApi atsApi, String fileName, String targetVersion, Date startDate, Date endDate, int dayOfWeek, int duration, boolean periodic, boolean nonPeriodic, boolean periodicTask, boolean nonPeriodicTask) {
+   public DevProgressMetricsReport(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, int dayOfWeek, int duration, boolean periodic, boolean nonPeriodic, boolean periodicTask, boolean nonPeriodicTask) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
-      this.fileName = fileName;
       this.programVersion = null;
       this.targetVersion = targetVersion;
       this.startDate = startDate;
@@ -141,11 +136,9 @@ public final class DevProgressMetricsReport implements StreamingOutput {
    @Override
    public void write(OutputStream output) {
       try {
-         File file = OseeData.getFile(fileName);
-         writer = new ExcelXmlWriter(file);
+         writer = new ExcelXmlWriter(new OutputStreamWriter(output, "UTF-8"));
          writeReport();
          writer.endWorkbook();
-         Desktop.getDesktop().open(file);
       } catch (Exception ex) {
          try {
             writer.endWorkbook();
@@ -251,8 +244,7 @@ public final class DevProgressMetricsReport implements StreamingOutput {
    }
 
    private void fillTeamWfData(Object[] buffer, Date rowDate, IAtsAction actionItem) {
-      SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-      buffer[4] = sdf.format(rowDate);
+      buffer[4] = rowDate;
 
       IAtsTeamWorkflow requirementsWorkflow = IAtsTeamWorkflow.SENTINEL;
       IAtsTeamWorkflow codeWorkflow = IAtsTeamWorkflow.SENTINEL;
@@ -436,8 +428,7 @@ public final class DevProgressMetricsReport implements StreamingOutput {
    }
 
    private void fillTaskStateData(Object[] buffer, Date rowDate, IAtsTask task) {
-      SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-      buffer[6] = sdf.format(rowDate);
+      buffer[6] = rowDate;
       buffer[7] = task.getCreatedDate();
       buffer[8] = getStateAtDate(task, rowDate);
       int i = 9;
