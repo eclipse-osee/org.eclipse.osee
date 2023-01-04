@@ -36,7 +36,6 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	branchType = this.uiStateService.viewBranchType;
 	branchId = this.uiStateService.branchId;
 	private _done = new Subject();
-	isTeamLead = this.actionStateService.isTeamLead;
 	isAllowedToDiff = combineLatest([
 		this.uiStateService.viewBranchType,
 		this.uiStateService.branchId,
@@ -59,8 +58,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	currentRoute = this.route;
 	constructor(
 		private uiStateService: PlConfigUIStateService,
-		private route: ActivatedRoute,
-		private actionStateService: ActionStateButtonService //kinda hacky, but best place for it to live for now
+		private route: ActivatedRoute
 	) {
 		this.uiStateService.branchIdNum = '';
 		this.uiStateService.viewBranchTypeString = '';

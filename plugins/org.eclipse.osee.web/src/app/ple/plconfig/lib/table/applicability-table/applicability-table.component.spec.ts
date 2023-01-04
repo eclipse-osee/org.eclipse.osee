@@ -118,6 +118,6 @@ describe('ApplicabilityTableComponent', () => {
 		expect(lines[0]).toBe('TEST1 = EXCLUDED &');
 		expect(lines[1]).toBe('TEST2 = EXCLUDED');
 		lines = component.getCompoundApplicLines('TEST1 = INCLUDED');
-		expect(lines).toBe('TEST1 = INCLUDED');
+		expect(lines[0]).toBe('TEST1 = INCLUDED');
 	});
 });

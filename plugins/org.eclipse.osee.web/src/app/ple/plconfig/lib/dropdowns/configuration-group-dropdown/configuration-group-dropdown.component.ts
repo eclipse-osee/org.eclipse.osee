@@ -17,16 +17,19 @@ import {
 	filter,
 	map,
 	mergeMap,
+	reduce,
 	scan,
+	share,
 	switchMap,
 	take,
 	tap,
 } from 'rxjs/operators';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { cfgGroup } from '../../types/pl-config-branch';
-import { addCfgGroup } from '../../types/pl-config-cfggroups';
 import { AddConfigurationGroupDialogComponent } from '../../dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
+import { addCfgGroup } from '../../types/pl-config-cfggroups';
+import { cfgGroup } from '../../types/pl-config-branch';
 
 @Component({
 	selector: 'osee-plconfig-configuration-group-dropdown',
@@ -120,5 +123,8 @@ export class ConfigurationGroupDropdownComponent {
 				() => {}
 			);
 		//silence the error by subscribing to error notification
+	}
+	toggleMenu(menuTrigger: MatMenuTrigger) {
+		menuTrigger.toggleMenu();
 	}
 }

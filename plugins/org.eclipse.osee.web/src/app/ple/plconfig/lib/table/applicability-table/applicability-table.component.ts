@@ -377,14 +377,32 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 	}
 	getCompoundApplicLines(name: string) {
 		if (!this.isCompoundApplic(name)) {
-			return name;
+			return [name];
 		}
 		const operator = name.includes('|') ? '|' : '&';
 		const names = name.split(operator);
-		return [names[0].trim() + ' ' + operator, names[1].trim()];
+		let returnedArray =
+			names.length == 2
+				? [names[0].trim() + ' ' + operator, names[1].trim()]
+				: [];
+		if (returnedArray.length == 0) {
+			//loop to split comp applic into applic array (if there are more than 2 applicabilities)
+			for (let i = 0; i < names.length; i++) {
+				//if last name, don't return operator
+				if (i == names.length - 1) {
+					returnedArray.push(names[i].trim());
+				} else {
+					returnedArray.push(names[i].trim() + ' ' + operator);
+				}
+			}
+		}
+		return returnedArray;
 	}
 	displayFeatureMenu(feature: extendedFeature) {
-		this.dialogService.displayFeatureMenu(feature).subscribe();
+		//do not display feature menu for compound applicabilities
+		if (!this.isCompoundApplic(feature.name)) {
+			this.dialogService.displayFeatureMenu(feature).subscribe();
+		}
 	}
 
 	openConfigMenu(header: string, editable: string) {

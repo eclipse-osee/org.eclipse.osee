@@ -10,16 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { filter, switchMap, take } from 'rxjs';
+import { AddProductTypeDialogComponent } from '../../dialogs/add-product-type-dialog/add-product-type-dialog.component';
+import { EditProductTypeDialogComponent } from '../../dialogs/edit-product-type-dialog/edit-product-type-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import {
 	DefaultProductType,
 	ProductType,
 } from '../../types/pl-config-product-types';
-import { AddProductTypeDialogComponent } from '../../dialogs/add-product-type-dialog/add-product-type-dialog.component';
-import { EditProductTypeDialogComponent } from '../../dialogs/edit-product-type-dialog/edit-product-type-dialog.component';
 
 @Component({
 	selector: 'osee-plconfig-product-type-dropdown',
@@ -70,5 +71,9 @@ export class ProductTypeDropDownComponent {
 
 	deleteProductType(id: string) {
 		this.currentBranchService.deleteProductType(id).subscribe();
+	}
+
+	toggleMenu(menuTrigger: MatMenuTrigger) {
+		menuTrigger.toggleMenu();
 	}
 }

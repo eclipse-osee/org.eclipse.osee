@@ -11,46 +11,54 @@
  *     Boeing - initial API and implementation
  -->
 <button
-	mat-stroked-button
+	mat-menu-item
+	#menuTrigger1="matMenuTrigger"
+	(mousedown)="toggleMenu(menuTrigger1)"
 	[matMenuTriggerFor]="mainMenu"
 	*ngIf="(editable | async) === true"
 	class="pl-config-configuration-dropdown-dd-button"
 	data-cy="change-config-dropdown-btn">
 	Change Configurations
 </button>
-<mat-menu #mainMenu="matMenu">
-	<button
-		mat-menu-item
-		(click)="addConfiguration()">
-		<mat-icon
-			color="success"
-			data-cy="add-menu-btn"
-			>create</mat-icon
-		>Add Configuration
-	</button>
-	<button
-		mat-menu-item
-		*ngIf="(editable | async) === true"
-		(click)="copyConfiguration()"
-		data-cy="copy-menu-btn">
-		<mat-icon color="success">add</mat-icon>Copy Configuration
-	</button>
-	<button
-		mat-menu-item
-		[matMenuTriggerFor]="editConfigMenu"
-		*ngIf="(editable | async) === true"
-		data-cy="edit-menu-btn">
-		<mat-icon color="primary">edit</mat-icon>Edit Configuration
-	</button>
-	<button
-		mat-menu-item
-		[matMenuTriggerFor]="deleteConfigMenu"
-		*ngIf="(editable | async) === true"
-		data-cy="delete-menu-btn">
-		<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
-	</button>
+<mat-menu
+	class="menu"
+	#mainMenu="matMenu">
+	<ng-template matMenuContent>
+		<button
+			mat-menu-item
+			(click)="addConfiguration()">
+			<mat-icon
+				color="success"
+				data-cy="add-menu-btn"
+				>add_box</mat-icon
+			>Add Configuration
+		</button>
+		<button
+			mat-menu-item
+			*ngIf="(editable | async) === true"
+			(click)="copyConfiguration()"
+			data-cy="copy-menu-btn">
+			<mat-icon>insert_drive_file</mat-icon>Copy Configuration
+		</button>
+		<button
+			mat-menu-item
+			[matMenuTriggerFor]="editConfigMenu"
+			*ngIf="(editable | async) === true"
+			data-cy="edit-menu-btn">
+			<mat-icon color="primary">edit</mat-icon>Edit Configuration
+		</button>
+		<button
+			mat-menu-item
+			[matMenuTriggerFor]="deleteConfigMenu"
+			*ngIf="(editable | async) === true"
+			data-cy="delete-menu-btn">
+			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
+		</button>
+	</ng-template>
 </mat-menu>
-<mat-menu #deleteConfigMenu="matMenu">
+<mat-menu
+	class="menu"
+	#deleteConfigMenu="matMenu">
 	<button
 		*ngFor="let configuration of configs | async"
 		mat-menu-item
@@ -59,7 +67,9 @@
 		{{ configuration.name }}
 	</button>
 </mat-menu>
-<mat-menu #editConfigMenu="matMenu">
+<mat-menu
+	class="menu"
+	#editConfigMenu="matMenu">
 	<button
 		*ngFor="let configuration of configs | async"
 		mat-menu-item

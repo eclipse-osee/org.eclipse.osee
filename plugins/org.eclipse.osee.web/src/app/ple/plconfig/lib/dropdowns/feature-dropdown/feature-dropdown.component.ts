@@ -10,23 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, OperatorFunction } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { trackableFeature } from '../../types/features/base';
 import { defaultBaseFeature } from '../../types/features/feature';
 import {
 	modifyFeature,
-	PLAddFeatureData,
 	PLEditFeatureData,
 	writeFeature,
+	PLAddFeatureData,
 } from '../../types/pl-config-features';
 import { response } from '@osee/shared/types';
 import { AddFeatureDialogComponent } from '../../dialogs/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from '../../dialogs/edit-feature-dialog/edit-feature-dialog.component';
+import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
@@ -129,5 +130,14 @@ export class FeatureDropdownComponent {
 				)
 			)
 			.subscribe();
+	}
+	toggleMenu(menuTrigger: MatMenuTrigger) {
+		menuTrigger.toggleMenu();
+	}
+	isCompoundApplic(name: string) {
+		if (name.includes(' | ') || name.includes(' & ')) {
+			return false;
+		}
+		return true;
 	}
 }

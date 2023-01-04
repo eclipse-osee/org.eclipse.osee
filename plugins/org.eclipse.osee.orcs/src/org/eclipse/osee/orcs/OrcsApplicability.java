@@ -16,10 +16,10 @@ package org.eclipse.osee.orcs;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -140,4 +140,8 @@ public interface OrcsApplicability {
    XResultData deleteBlockApplicability(String blockApplicId);
 
    String uploadRunBlockApplicability(Long view, InputStream zip, BranchId branch);
+
+   XResultData createCompoundApplicabilityForBranch(String applicability, BranchId branch);
+
+   XResultData deleteCompoundApplicabilityFromBranch(ApplicabilityId compApplicId, BranchId branch);
 }

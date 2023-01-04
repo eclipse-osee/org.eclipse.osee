@@ -23,8 +23,8 @@
 <div mat-dialog-content>
 	<div *ngIf="(editable | async) === 'true'">
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Title</mat-label>
 			<input
 				matInput
@@ -37,8 +37,8 @@
 		</mat-form-field>
 		<br />
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Description</mat-label>
 			<input
 				matInput
@@ -53,8 +53,8 @@
 		</mat-form-field>
 		<br />
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Select a Value Type</mat-label>
 			<mat-select
 				[(ngModel)]="data.feature.valueType"
@@ -77,7 +77,7 @@
 			labelPosition="before"
 			(change)="selectMultiValued()"
 			[disabled]="(editable | async) === 'false'"
-			[style.fontSize.px]="18"
+			class="font-size"
 			data-cy="field-multiValued"
 			[attr.data-cy-value]="
 				'field-multiValued-' + data.feature.multiValued
@@ -91,8 +91,8 @@
 				index as i;
 				trackBy: valueTracker
 			"
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Value</mat-label>
 			<input
 				matInput
@@ -112,16 +112,16 @@
 				mat-stroked-button
 				(click)="increaseValueArray()"
 				[disabled]="(editable | async) === 'false'"
-				[style.fontSize.px]="18"
+				class="dialog-font-size"
 				data-cy="add-value-btn"
-				class="full-width">
+				class="dialog-full-width">
 				Add a Value
 			</button>
 			<br />
 		</div>
 		<mat-form-field
-			[style.fontSize.px]="18"
-			class="full-width">
+			class="dialog-font-size"
+			class="dialog-full-width">
 			<mat-label>Select a Default Value</mat-label>
 			<mat-select
 				[(ngModel)]="data.feature.defaultValue"
@@ -141,14 +141,14 @@
 		<br />
 		<div>
 			<mat-label
-				[style.fontSize.px]="18"
+				class="dialog-font-size"
 				data-cy="product-types-selection"
 				>Select Product Types</mat-label
 			>
 			<mat-selection-list
 				[(ngModel)]="data.feature.productApplicabilities"
 				color="primary"
-				[style.fontSize.px]="18">
+				class="dialog-font-size">
 				<mat-list-option
 					*ngFor="let type of productApplicabilities | async"
 					[value]="type.name"

@@ -1,0 +1,35 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<button
+	mat-stroked-button
+	[matMenuTriggerFor]="mainMenu"
+	class="pl-config-feature-dropdown-dd-button"
+	data-cy="change-feature-dropdown-btn">
+	Edit Definitions
+</button>
+<mat-menu
+	class="edit-def-menu"
+	#mainMenu="matMenu">
+	<!-- config dropdown -->
+	<osee-plconfig-configuration-dropdown></osee-plconfig-configuration-dropdown>
+	<!-- config group dropdown -->
+	<osee-plconfig-configuration-group-dropdown></osee-plconfig-configuration-group-dropdown>
+	<!-- feature dropdown -->
+	<osee-plconfig-feature-dropdown></osee-plconfig-feature-dropdown>
+	<!-- product type dropdown -->
+	<ng-container *ngIf="isTeamLead | async">
+		<osee-plconfig-product-type-dropdown></osee-plconfig-product-type-dropdown>
+	</ng-container>
+	<!-- compound applicability dropdown -->
+	<osee-compound-applicability-dropdown></osee-compound-applicability-dropdown>
+</mat-menu>

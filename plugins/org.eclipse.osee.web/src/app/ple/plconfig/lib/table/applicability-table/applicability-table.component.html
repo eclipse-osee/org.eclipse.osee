@@ -234,9 +234,15 @@
 						"
 						[attr.data-cy]="'feature-' + element['name']">
 						<ng-container *ngIf="isCompoundApplic(element['name'])">
-							{{ getCompoundApplicLines(element['name'])[0] }}
-							<br />
-							{{ getCompoundApplicLines(element['name'])[1] }}
+							<ng-container
+								*ngFor="
+									let name of getCompoundApplicLines(
+										element['name']
+									)
+								">
+								{{ name }}
+								<br />
+							</ng-container>
 						</ng-container>
 						<ng-container
 							*ngIf="!isCompoundApplic(element['name'])">

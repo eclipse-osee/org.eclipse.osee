@@ -11,38 +11,46 @@
  *     Boeing - initial API and implementation
  -->
 <button
-	mat-stroked-button
+	mat-menu-item
+	#menuTrigger1="matMenuTrigger"
+	(mousedown)="toggleMenu(menuTrigger1)"
 	[matMenuTriggerFor]="mainMenu"
 	*ngIf="(editable | async) === true"
 	class="pl-config-configuration-group-dropdown-dd-button"
 	data-cy="change-config-group-dropdown-btn">
 	Change Configuration Groups
 </button>
-<mat-menu #mainMenu="matMenu">
-	<button
-		mat-menu-item
-		(click)="addConfigurationGroup()"
-		data-cy="add-config-group-btn">
-		<mat-icon color="success">create</mat-icon>Add Configuration Group
-	</button>
-	<div *ngIf="cfgGroups | async as groups">
+<mat-menu
+	class="menu"
+	#mainMenu="matMenu">
+	<ng-template matMenuContent>
 		<button
 			mat-menu-item
-			(click)="synchronizeGroups(groups)"
-			data-cy="sync-config-group-btn">
-			<mat-icon color="primary">sync</mat-icon>Synchronize Groups
+			(click)="addConfigurationGroup()"
+			data-cy="add-config-group-btn">
+			<mat-icon color="success">add_box</mat-icon>Add Configuration Group
 		</button>
-	</div>
-	<button
-		mat-menu-item
-		[matMenuTriggerFor]="deleteConfigGroupMenu"
-		*ngIf="(editable | async) === true"
-		data-cy="delete-config-group-btn">
-		<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
-		Group
-	</button>
+		<div *ngIf="cfgGroups | async as groups">
+			<button
+				mat-menu-item
+				(click)="synchronizeGroups(groups)"
+				data-cy="sync-config-group-btn">
+				<mat-icon color="primary">sync</mat-icon>Synchronize Groups
+			</button>
+		</div>
+		<button
+			mat-menu-item
+			[matMenuTriggerFor]="deleteConfigGroupMenu"
+			*ngIf="(editable | async) === true"
+			data-cy="delete-config-group-btn">
+			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
+			Group
+		</button>
+	</ng-template>
 </mat-menu>
-<mat-menu #deleteConfigGroupMenu="matMenu">
+<mat-menu
+	class="menu"
+	#deleteConfigGroupMenu="matMenu">
 	<button
 		*ngFor="let group of cfgGroups | async"
 		mat-menu-item

@@ -121,6 +121,27 @@ export class PlConfigBranchService {
 			apiURL + '/orcs/branch/' + branchId + '/applic/feature/' + featureId
 		);
 	}
+	public addCompoundApplicability(
+		branchId: string | number | undefined,
+		compApplicName: string
+	) {
+		return this.http.post<response>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/compound',
+			compApplicName
+		);
+	}
+	public deleteCompoundApplicability(
+		branchId: string | number | undefined,
+		compApplicId: number | string
+	) {
+		return this.http.delete<response>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/applic/compound/' +
+				compApplicId
+		);
+	}
 	public modifyConfiguration(
 		branchId: string | number | undefined,
 		featureId: string,

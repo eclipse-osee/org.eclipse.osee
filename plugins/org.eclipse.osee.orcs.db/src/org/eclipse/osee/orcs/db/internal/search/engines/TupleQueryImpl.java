@@ -211,6 +211,12 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
+   public <E1, E2> GammaId getTuple2GammaFromE1E2Raw(Tuple2Type<E1, E2> tupleType, E1 e1, Long e2Raw) {
+      return GammaId.valueOf(
+         jdbcClient.fetch(0L, SELECT_TUPLE2_GAMMA_ANY_BRANCH_FROM_E1_E2, tupleType, toLong(e1), e2Raw));
+   }
+
+   @Override
    public <E1, E2, E3, E4> void getTuple4GammaFromE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1, E2 e2, Consumer<GammaId> consumer) {
 
       runQuery(consumer, SELECT_TUPLE4_GAMMA_FROM_E1_E2, tupleType, toLong(e1), toLong(e2), branchId);

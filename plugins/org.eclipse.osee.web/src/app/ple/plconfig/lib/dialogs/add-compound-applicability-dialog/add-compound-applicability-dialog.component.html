@@ -1,0 +1,164 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #compApplicForm="ngForm">
+	<h1 mat-dialog-title>Add Compound Applicablility</h1>
+	<div mat-dialog-content>
+		<!-- Feature 1 -->
+		<div class="feature">
+			<mat-label>Feature 1</mat-label>
+			<mat-form-field
+				class="dialog-font-size"
+				class="dialog-full-width">
+				<mat-label>Select a Feature</mat-label>
+				<mat-select
+					name="firstfeaturename"
+					[(ngModel)]="
+						data.compoundApplicability.applicabilities[0]
+							.featureName
+					"
+					required>
+					<ng-container *ngFor="let feature of features | async">
+						<mat-option
+							*ngIf="!isCompoundApplic(feature.name)"
+							[value]="feature.name">
+							{{ feature.name }}
+						</mat-option>
+					</ng-container>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field
+				class="dialog-font-size"
+				class="dialog-full-width">
+				<mat-label>Select a Value</mat-label>
+				<mat-select
+					name="firstfeaturevalue"
+					[(ngModel)]="
+						data.compoundApplicability.applicabilities[0]
+							.featureValue
+					"
+					required>
+					<mat-option
+						*ngFor="let inclusionOption of inclusionOptions"
+						[value]="inclusionOption">
+						{{ inclusionOption }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+
+		<!-- Print section based on number of desired applicabilities (starts at 1) -->
+		<ng-container
+			*ngFor="
+				let relationship of data.compoundApplicability.relationships;
+				index as x;
+				trackBy: valueTracker
+			">
+			<!-- Relationship options -->
+			<div class="relationship">
+				<mat-label>Relationship</mat-label>
+				<mat-form-field
+					class="dialog-font-size"
+					class="dialog-full-width">
+					<mat-label>Select a Relationship</mat-label>
+					<mat-select
+						[name]="'relationship' + x"
+						[(ngModel)]="
+							data.compoundApplicability.relationships[x]
+						"
+						required>
+						<mat-option
+							*ngFor="let relationship of relationships"
+							[value]="relationship.symbol">
+							{{ relationship.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+			<!-- Feature 2 -->
+			<div class="feature">
+				<mat-label>Feature {{ x + 2 }}</mat-label>
+				<mat-form-field
+					class="dialog-font-size"
+					class="dialog-full-width">
+					<mat-label>Select a Feature</mat-label>
+					<mat-select
+						[(ngModel)]="
+							data.compoundApplicability.applicabilities[x + 1]
+								.featureName
+						"
+						[name]="'feature' + x + 'name'"
+						required>
+						<ng-container *ngFor="let feature of features | async">
+							<mat-option
+								*ngIf="!isCompoundApplic(feature.name)"
+								[value]="feature.name">
+								{{ feature.name }}
+							</mat-option>
+						</ng-container>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field
+					class="dialog-font-size"
+					class="dialog-full-width">
+					<mat-label>Select a Value</mat-label>
+					<mat-select
+						[(ngModel)]="
+							data.compoundApplicability.applicabilities[x + 1]
+								.featureValue
+						"
+						[name]="'feature' + x + 'value'"
+						required>
+						<mat-option
+							*ngFor="let inclusionOption of inclusionOptions"
+							[value]="inclusionOption">
+							{{ inclusionOption }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</ng-container>
+
+		<!-- Button to add more applicabilities -->
+		<button
+			mat-stroked-button
+			(click)="addApplicabilitySection()"
+			class="dialog-font-size"
+			data-cy="add-value-btn"
+			class="dialog-full-width">
+			Add Additional Applicability
+		</button>
+	</div>
+	<!-- Action Buttons -->
+	<div mat-dialog-actions>
+		<button
+			mat-button
+			(click)="onNoClick()">
+			Cancel
+		</button>
+		<button
+			mat-raised-button
+			[disabled]="compApplicForm.invalid"
+			[mat-dialog-close]="data"
+			color="primary">
+			Confirm
+		</button>
+
+		<div class="name-check">
+			<!-- Constructed name -->
+			<mat-label [hidden]="compApplicForm.invalid"
+				>Name: {{ constructName() }}</mat-label
+			>
+		</div>
+	</div>
+</form>
