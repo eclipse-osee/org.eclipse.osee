@@ -28,9 +28,17 @@
 						</goals>
 						<configuration>
 							<excludes>
-							
-  						      <plugin id="com.sun.xml.txw2"/>
-                        <plugin id="com.sun.istack.commons-runtime"/>
+							        <plugin id="swagger-models"/>
+                			                        <plugin id="swagger-integration"/>
+                			                        <plugin id="jackson-datatype-jsr310"/>
+                			                        <plugin id="jackson-annotations"/>
+                			                        <plugin id="jackson-core"/>
+                			                        <plugin id="jackson-databind"/>
+                		 	                        <plugin id="swagger-annotations"/>
+								<plugin id="swagger-core"/>
+								<plugin id="swagger-jaxrs2"/>
+  						                <plugin id="com.sun.xml.txw2"/>
+                                                                <plugin id="com.sun.istack.commons-runtime"/>
 								<plugin id="org.glassfish.jaxb.core"/>
 								<plugin id="org.glassfish.jaxb.runtime"/>
 								<plugin id="jakarta.activation-api"/>
@@ -52,10 +60,10 @@
 								<plugin id="org.apache.cxf.cxf-core" />
 								<plugin id="org.apache.cxf.cxf-rt-security" />
 								<plugin id="org.apache.cxf.cxf-rt-transports-http" />
-							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
+							        <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
 							  	<plugin id="org.apache.cxf.cxf-rt-rs-security-oauth" />
-							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
-							   <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
+							        <plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
+							        <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-client" />
 								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
 								<plugin id="org.apache.poi.ooxml.schemas" />
@@ -73,7 +81,7 @@
 								<plugin id="org.bouncycastle.bcpg" />
 								<plugin id= "org.bouncycastle.bcpkix" />
 								<plugin id= "org.bouncycastle.bcprov" />
-							   <plugin id="org.apache.sshd.client.subsystem.sftp" />
+							        <plugin id="org.apache.sshd.client.subsystem.sftp" />
 								<feature id="org.eclipse.cdt.sdk" />
 								<feature id="org.eclipse.jgit.gpg.bc" />
 								<feature id="org.eclipse.jgit.ssh.apache" />
@@ -89,9 +97,9 @@
 								<feature id="org.eclipse.launchbar" />
 								<feature id="org.eclipse.tm.terminal.control.feature" />
 								<plugin id="javax.xml" />
-							   <plugin id="com.fasterxml.jackson.core.jackson-core" />
-							   <plugin id="com.fasterxml.jackson.core.jackson-annotations" />
-							   <plugin id="com.fasterxml.jackson.core.jackson-databind" />
+							        <plugin id="com.fasterxml.jackson.core.jackson-core" />
+							        <plugin id="com.fasterxml.jackson.core.jackson-annotations" />
+							        <plugin id="com.fasterxml.jackson.core.jackson-databind" />
 								<plugin id="com.google.guava" />
 								<plugin id="org.eclipse.xwt" />
 								<plugin id="org.eclipse.mylyn.commons.net" />
@@ -157,7 +165,7 @@
 								<plugin id="org.eclipse.gmf.runtime.emf.type.core" />
 								<plugin id="org.eclipse.gmf.runtime.emf.ui" />
 								<plugin id="org.eclipse.uml2.uml" />
-							   <plugin id="org.apache.wsil4j" />
+							        <plugin id="org.apache.wsil4j" />
 								<plugin id="org.eclipse.uml2.uml.resources" />
 								<plugin id="org.eclipse.uml2.uml.edit" />
 								<plugin id="org.eclipse.uml2.uml.editor" />
@@ -188,14 +196,14 @@
 								<feature id="org.eclipse.xtext.ui" />
 								<feature id="org.eclipse.wst.common_core.feature" />
 								<feature id="org.eclipse.wst.xml.xpath2.processor.feature" />
-							   <feature id="org.eclipse.wst.ws_core.feature" />
+							        <feature id="org.eclipse.wst.ws_core.feature" />
 							  	<feature id="org.eclipse.wst.server_userdoc.feature" />
 								<feature id="org.eclipse.wst.xsl.feature" />
-							   <plugin id="java_cup.runtime" />
+							        <plugin id="java_cup.runtime" />
 								<feature id="org.eclipse.wst.server_core.feature" />		
-							   <feature id="org.eclipse.wst.server_adapters.feature" />	
-							   <feature id="org.eclipse.m2e.feature" />	
-							   <feature id="org.eclipse.wst.server_ui.feature" />																					
+							        <feature id="org.eclipse.wst.server_adapters.feature" />	
+							        <feature id="org.eclipse.m2e.feature" />	
+					              	        <feature id="org.eclipse.wst.server_ui.feature" />																					
 								<feature id="org.eclipse.jgit.lfs" />
 								<feature id="org.eclipse.wst.xml_userdoc.feature" />
 								<feature id="org.eclipse.wst.web_ui.feature" />
