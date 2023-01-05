@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IArtifactEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -233,8 +232,6 @@ public class ArtifactFormPage extends FormPage {
          sectionParts.put(SectionEnum.Relations, new RelationsFormSection(getEditor(), form.getBody(), toolkit,
             sectionStyle | ExpandableComposite.EXPANDED, true));
       }
-      sectionParts.put(SectionEnum.Details,
-         new DetailsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED));
 
       for (SectionPart part : sectionParts.values()) {
          managedForm.addPart(part);
