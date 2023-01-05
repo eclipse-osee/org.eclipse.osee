@@ -22,7 +22,7 @@ def main(argv):
                 findings.append("Found keyword \"" + fileNameResults[0] + "\" in file name of " + file)
             # Do not check contents of binary files such as images
             if re.search("(png|jpeg|jpg|gif)$", file) is None:
-                with open(file, 'r') as f:
+                with open(file, 'r', encoding="utf-8", errors="ignore") as f:
                     lines = f.readlines()
                     requireDistStatement = re.search("(java|html|js|ts|sass|scss)$", file) is not None
                     distStatementFound = False
