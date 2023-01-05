@@ -683,6 +683,11 @@
 	<plugin id="org.eclipse.jetty.security" version="9.4.48.v20220622"/>
 	<plugin id="org.eclipse.jetty.io" version="9.4.48.v20220622"/>
 	<plugin id="org.eclipse.jetty.http" version="9.4.48.v20220622"/>
+<plugin id="swagger-annotations"/>
+<plugin id="swagger-jaxrs2"/>
+<plugin id="swagger-models"/>
+<plugin id="swagger-integration"/>
+<plugin id="swagger-core"/>
 </includeBundles>
 <environment>
 <os>win32</os>
