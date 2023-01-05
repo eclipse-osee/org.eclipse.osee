@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_HARD_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
@@ -241,8 +242,8 @@ public class RelationManagerImpl implements RelationManager {
 
       // Check we can create the type on other side of each node
       checkMultiplicityCanAdd(type, aNode, bNode, txData);
-
-      Relation relation = getRelation(aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
+      DeletionFlag delFlag = (type.isNewRelationTable()) ? INCLUDE_HARD_DELETED : INCLUDE_DELETED;
+      Relation relation = getRelation(aNode, type, bNode, delFlag).getOneOrNull();
       boolean updated = false;
       if (relation == null) {
          relation = relationFactory.createRelation(aNode, type, bNode, rationale);

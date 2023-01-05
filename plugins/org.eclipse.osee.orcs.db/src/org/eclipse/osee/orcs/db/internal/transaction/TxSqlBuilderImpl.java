@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -264,8 +265,25 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void visit(RelationData data) {
+
       if (!isNewAndDeleted(data)) {
+
          boolean reuseGamma = reuseGamma(data);
+
+         if (!reuseGamma && data.getType().isNewRelationTable()) {
+            if (data.getVersion().getGammaId().isValid()) {
+               reuseGamma = true;
+            } else {
+               GammaId gId = GammaId.valueOf(
+                  jdbcClient.fetch(0L, OseeSql.SELECT_RELATION_GAMMA_RT_A_ART_B_ART_ORDER_REL_ART.getSql(),
+                     data.getType().getId(), data.getArtifactIdA().getId(), data.getArtifactIdB().getId(),
+                     data.getRelOrder(), data.getRelationArtifact().getId()));
+               if (gId.isValid()) {
+                  data.getVersion().setGammaId(gId);
+                  reuseGamma = true;
+               }
+            }
+         }
          updateTxValues(data);
          if (!reuseGamma && !data.getDirtyState().isApplicOnly()) {
             updateGamma(data);
