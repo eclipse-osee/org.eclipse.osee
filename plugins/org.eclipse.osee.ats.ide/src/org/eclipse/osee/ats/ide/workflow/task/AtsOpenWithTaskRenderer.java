@@ -1,8 +1,15 @@
-/*
- * Created on Feb 3, 2012
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 package org.eclipse.osee.ats.ide.workflow.task;
 
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
