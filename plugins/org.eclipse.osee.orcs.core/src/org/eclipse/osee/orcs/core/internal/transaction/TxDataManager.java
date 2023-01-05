@@ -434,7 +434,7 @@ public class TxDataManager {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, Strings.EMPTY_STRING, sortType,
-         relOrder, relatedArtifact, null);
+         relOrder, relatedArtifact, txData);
    }
 
    public void setRelations(TxData txData, ArtifactId artA, RelationTypeToken type, Iterable<? extends ArtifactId> artBs) {
