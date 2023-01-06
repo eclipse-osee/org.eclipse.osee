@@ -46,7 +46,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //         OseeInf.getResourceContents("atsConfig/convert/JavaTemplate.java", WorkDefinitionSheet.class);
       //      String stateTemplate = OseeInf.getResourceContents("atsConfig/convert/StateDef.txt", WorkDefinitionSheet.class);
       //
-      //      //      List<String> workDefs = Arrays.asList("WorkDef_Team_F18_Requirements.ats", "WorkDef_Team_F18.ats");
+      //      //      List<String> workDefs = Arrays.asList("WorkDef_Team_Requirements.ats", "WorkDef_Team.ats");
       //      //      for (String workDef : workDefs) {
       //      for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.WorkDefinition)) {
       //

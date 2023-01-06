@@ -25,6 +25,6 @@ import org.junit.Test;
 public class CountryResourceTest extends AbstractRestTest {
    @Test
    public void testAtsCountryRestCall() {
-      testUrl("/ats/country/" + DemoCountry.usg.getIdString(), "USG");
+      testUrl("/ats/country/" + DemoCountry.demo.getIdString(), "DEMO");
    }
 }

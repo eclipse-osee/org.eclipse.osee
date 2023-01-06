@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.api.program.JaxProgram;
 public class DemoProgram extends JaxProgram {
 
    public static DemoProgram sawProgram =
-      new DemoProgram(DemoCountry.usg, DemoArtifactToken.SAW_Program, "SAW Program description");
+      new DemoProgram(DemoCountry.demo, DemoArtifactToken.SAW_Program, "SAW Program description");
    public static DemoProgram cisProgram =
-      new DemoProgram(DemoCountry.usg, DemoArtifactToken.CIS_Program, "CIS Program description");
+      new DemoProgram(DemoCountry.demo, DemoArtifactToken.CIS_Program, "CIS Program description");
 
    public static DemoProgram ver1 =
       new DemoProgram(DemoCountry.cntry, "Cntry V1", 888L, "CNTRY Ver1 Program description");

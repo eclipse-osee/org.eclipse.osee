@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class Pdd95CreateDemoEVConfigAndWorkPackages {
 
    public void run() {
-      createUsgCountryConfig();
+      createCountryConfig();
       createCntryCountryConfig();
       createAndSetWorkPackages();
       setWorkPacakgeForWfs();
@@ -131,8 +131,8 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       return workPkg1;
    }
 
-   // configure USG for country, program, insertion, activity and work package
-   private void createUsgCountryConfig() {
+   // configure country, program, insertion, activity and work package
+   private void createCountryConfig() {
       try {
          CountryEndpointApi countryEp = AtsApiService.get().getServerEndpoints().getCountryEp();
          InsertionEndpointApi insertionEp = AtsApiService.get().getServerEndpoints().getInsertionEp();
@@ -140,13 +140,13 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
             AtsApiService.get().getServerEndpoints().getInsertionActivityEp();
 
          // create country
-         createCountry(countryEp, DemoCountry.usg);
+         createCountry(countryEp, DemoCountry.demo);
 
          // relate country to programs
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Create USG Country Config");
+            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Create Demo Country Config");
          Artifact country =
-            ArtifactQuery.getArtifactFromId(DemoCountry.usg.getId(), AtsApiService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoCountry.demo.getId(), AtsApiService.get().getAtsBranch());
          Artifact program =
             ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getId(), AtsApiService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
@@ -161,7 +161,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          // create and relate insertion and insertion activities
          DemoInsertion.getInsertions();
          DemoInsertionActivity.getActivities();
-         for (DemoProgram demoProg : DemoCountry.usg.getPrograms()) {
+         for (DemoProgram demoProg : DemoCountry.demo.getPrograms()) {
             createInsertions(insertionEp, insertionActivityEp, demoProg);
          }
 

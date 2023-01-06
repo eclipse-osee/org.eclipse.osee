@@ -52,5 +52,5 @@ public interface IAtsConfigTx {
 
    CreateTasksDefinitionBuilder createTaskDefinitionBuilder(Long id, String name);
 
-   IAtsConfigTxProgram createProgram(ArtifactId parent, IAtsProgramArtifactToken f18_Program);
+   IAtsConfigTxProgram createProgram(ArtifactId parent, IAtsProgramArtifactToken program);
 }

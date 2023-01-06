@@ -40,8 +40,8 @@ public class WorkPackageProgramUtilityTest extends AbstractWorkPackageUtilityTes
       when(workPkg.getWorkPackageProgram()).thenReturn("");
       Assert.assertEquals("", util.getColumnText(workItem));
 
-      when(workPkg.getWorkPackageProgram()).thenReturn("USG");
-      Assert.assertEquals("USG", util.getColumnText(workItem));
+      when(workPkg.getWorkPackageProgram()).thenReturn("ABC");
+      Assert.assertEquals("ABC", util.getColumnText(workItem));
    }
 
    @Override

@@ -1,6 +1,6 @@
 = BlockApplicabilityTool =
 
-Branden W. Phillips<branden.w.phillips@boeing.com>
+Branden W. Phillips
 
 The BlockApplicabilityTool is used for instrumenting applicability tags on non Microsoft Word based documents, primarily code files such as Java/C++/C# etc.  The tool is utilized by launching a local runtime of the OSEE server on the users machine, which can then be interacted with via a REST API.  Because this tool is not included with the normal installation of OSEE and is distributed to individual developers, it must also be updated differently from the rest of OSEE.  The tool is compiled using a modified version of an OSEE runtime server and its' updates start by taking new build artifacts of that zip file on Jenkins.  
 

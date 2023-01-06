@@ -1,5 +1,5 @@
 = Design
-Stephen Molaro <stephen.j.molaro@boeing.com>
+Stephen Molaro
 
 == Computed Characteristic Purpose and Use
 

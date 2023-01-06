@@ -46,7 +46,6 @@ import org.junit.runners.Suite;
    CreateBranchOperationTest.class,
    CrossBranchRelationLinkTest.class,
    CsvArtifactTest.class,
-   DoorsArtifactExtractorTest.class,
    EnumAttributeMultiplicityTest.class,
    IntegerAttributeTest.class,
    FrameworkEventToRemoteEventListenerTest.class,

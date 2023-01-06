@@ -1,5 +1,5 @@
 = Design
-Ryan Brooks <ryan.d.brooks@boeing.com>
+Ryan Brooks
 
 == Relations
 

@@ -1,5 +1,5 @@
 = Design
-David Miller <david.w.miller6@boeing.com>
+David Miller
 
 == Notes on interaction between OSEE and Cameo
 

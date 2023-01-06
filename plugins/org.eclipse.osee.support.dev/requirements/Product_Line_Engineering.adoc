@@ -1,9 +1,9 @@
 = Interface Management Tool Requirements - DRAFT
 
-Ryan Brooks - <ryan.d.brooks@boeing.com> +
-Audrey Denk - <audrey.e.denk@boeing.com> +
-Branden Philips - <branden.w.phillips@boeing.com> +
-Rico Vaglienti - <rico.vaglienti@boeing.com> +
+Ryan Brooks +
+Audrey Denk +
+Branden Philips +
+Rico Vaglienti +
 
 
 [TIP]

@@ -27,7 +27,7 @@ public class TisTestCategoryAttributeType extends AttributeTypeEnum<TisTestCateg
 
    public final TisTestCategoryEnum SPEC_COMP = new TisTestCategoryEnum(0, "SPEC_COMP");
    public final TisTestCategoryEnum DEV = new TisTestCategoryEnum(1, "DEV");
-   public final TisTestCategoryEnum USG = new TisTestCategoryEnum(2, "USG");
+   public final TisTestCategoryEnum TEST = new TisTestCategoryEnum(2, "TEST");
 
    public TisTestCategoryAttributeType(NamespaceToken namespace, int enumCount) {
       super(1152921504606847119L, namespace, "TIS Test Category", MediaType.TEXT_PLAIN, "TIS Test Category",
