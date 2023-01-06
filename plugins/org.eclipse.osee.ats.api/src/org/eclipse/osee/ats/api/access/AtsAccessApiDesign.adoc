@@ -1,5 +1,5 @@
 = Design
-Donald G. Dunne<donald.g.dunne@boeing.com>
+Donald G. Dunne
 
 Provides the classes necessary to answer Framwork calls to compute access for branch objects like artifacts, attributes and relations
 

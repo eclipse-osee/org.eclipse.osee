@@ -1,6 +1,6 @@
 = Design
-David Miller <david.w.miller6@boeing.com>
-Stephen Molaro <stephen.j.molaro@boeing.com>
+David Miller
+Stephen Molaro
 
 == Software Safety Criticality Matrix:
 

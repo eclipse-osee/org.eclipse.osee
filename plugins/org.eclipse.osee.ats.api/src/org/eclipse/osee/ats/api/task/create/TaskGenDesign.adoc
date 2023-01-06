@@ -1,5 +1,5 @@
 = Design
-Donald G. Dunne<donald.g.dunne@boeing.com>
+Donald G. Dunne
 
 Provides the classes necessary to create tasks for different cases and design of task builder use cases, configuration and code classes.
 

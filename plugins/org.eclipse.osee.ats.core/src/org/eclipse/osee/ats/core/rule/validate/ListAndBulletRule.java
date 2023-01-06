@@ -21,8 +21,6 @@ import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Megumi Telles
@@ -56,14 +54,7 @@ public class ListAndBulletRule extends AbstractValidationRule {
 
    @Override
    public String getRuleDescription() {
-      return "Ensure lists and bullets use an expected style (" + getHyperLink() + ")" + " in the artifact(s)";
-   }
-
-   private String getHyperLink() {
-      if (Strings.isValid(formattingInstructionUrl)) {
-         return AHTML.getHyperlink("More on Formatting/Editing", formattingInstructionUrl);
-      }
-      return "";
+      return "Ensure lists and bullets use an expected style in the artifact(s)";
    }
 
    @Override

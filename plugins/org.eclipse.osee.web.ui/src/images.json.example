@@ -8,7 +8,7 @@
 {
 	"images": [
 	{
-		"imageUrl": "http://osee.msc.az.boeing.com/libs/images/my_image.gif",
+		"imageUrl": "<url>/my_image.gif",
 		"artifactTypeName": "Implementation Details Procedure",
 		"artifactTypeUuid": "69914"
 	}

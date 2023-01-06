@@ -1,5 +1,5 @@
 = OSEE Access Control Design
-Donald G. Dunne<donald.g.dunne@boeing.com>
+Donald G. Dunne
 
 Provides the design that makes up the OSEE Access Control.
 

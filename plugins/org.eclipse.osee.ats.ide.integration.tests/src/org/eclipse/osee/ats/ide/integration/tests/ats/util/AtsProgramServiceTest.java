@@ -64,10 +64,10 @@ public class AtsProgramServiceTest {
       Collection<IAtsProgram> programs2 = programService.getPrograms(AtsArtifactTypes.Program);
       assertEquals(6, programs2.size());
 
-      IAtsCountry usgCountry = programService.getCountry(sawProgram);
+      IAtsCountry country = programService.getCountry(sawProgram);
 
-      if (usgCountry != null) {
-         List<IAtsProgram> programs3 = programService.getPrograms(usgCountry);
+      if (country != null) {
+         List<IAtsProgram> programs3 = programService.getPrograms(country);
          assertEquals(2, programs3.size());
       }
 

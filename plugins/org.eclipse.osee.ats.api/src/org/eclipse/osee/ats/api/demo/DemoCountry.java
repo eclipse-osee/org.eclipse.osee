@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.country.JaxCountry;
  */
 public class DemoCountry extends JaxCountry {
 
-   public static DemoCountry usg = new DemoCountry("USG", 7777L, "ATS Configuration is support of US Govt");
+   public static DemoCountry demo = new DemoCountry("DEMO", 7777L, "ATS Configuration is support of DEMO Govt");
 
    public static DemoCountry cntry = new DemoCountry("CNTRY", 77771L, "ATS Configuration is support of Country");
 

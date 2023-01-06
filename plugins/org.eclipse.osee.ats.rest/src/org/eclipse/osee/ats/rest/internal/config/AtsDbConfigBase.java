@@ -139,7 +139,7 @@ public class AtsDbConfigBase {
       IAtsChangeSet changes = atsApi.createChangeSet("Create Peer Review User Group", COMMON);
       ArtifactToken userGroupArt = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups, COMMON);
       ArtifactToken artifact = changes.createArtifact(userGroupArt, AtsUserGroups.peerReviewCreationNotify);
-      changes.addAttribute(artifact, CoreAttributeTypes.Email, "testemail@boeing.com");
+      changes.addAttribute(artifact, CoreAttributeTypes.Email, "testemail@google.com");
       changes.execute();
    }
 

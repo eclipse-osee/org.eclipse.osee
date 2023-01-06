@@ -73,7 +73,7 @@ public class SyncJiraAndOseeByEpicBlam extends AbstractBlam {
    public String getDescriptionUsage() {
       return "Copy/Paste JIRA report by epic and team from exported Excel spreadsheet.\n" //
          + "Returns differences between JIRA and OSEE for resulting entries.\n" //
-         + "Report should have Summary, AMS id, Epic Link, Description, Status, Story Points columns";
+         + "Report should have Summary, ID, Epic Link, Description, Status, Story Points columns";
    }
 
 }

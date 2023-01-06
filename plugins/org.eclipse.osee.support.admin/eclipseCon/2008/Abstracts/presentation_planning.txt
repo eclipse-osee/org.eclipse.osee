@@ -1,8 +1,5 @@
 See ../EclipseCon 2008.txt for more information
 
-jeff.c.phillips@boeing.com
-donald.g.dunne@boeing.com
-andrew.m.finkbeiner@boeing.com
 <a href="http://www.eclipse.org/osee">Open System Engineering Environment</a>
 
 422 submittions
