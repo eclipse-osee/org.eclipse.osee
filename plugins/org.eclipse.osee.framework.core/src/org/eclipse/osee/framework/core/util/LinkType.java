@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api.publishing;
+package org.eclipse.osee.framework.core.util;
 
 /**
  * @author Roberto E. Escobar
@@ -22,4 +22,22 @@ public enum LinkType {
    INTERNAL_DOC_REFERENCE_USE_NAME,
    INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER,
    INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+
+   public boolean isArtifactNameRequired() {
+      //@formatter:off
+      return
+            this == LinkType.OSEE_SERVER_LINK
+         || this == LinkType.INTERNAL_DOC_REFERENCE_USE_NAME
+         || this == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+      //@formatter:on
+   }
+
+   public boolean isParagraphRequired() {
+      //@formatter:off
+      return
+            this == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER
+         || this == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+      //@formatter:on
+   }
+
 }

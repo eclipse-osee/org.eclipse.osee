@@ -21,10 +21,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.define.api.publishing.LinkType;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -135,7 +136,7 @@ public class WordMlLinkHandler {
       }
       if (linkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
-         modified = linkBuilder.getWordMlBookmark(source) + modified;
+         modified = WordCoreUtil.getWordMlBookmark(source.getId()) + modified;
       }
       return modified;
    }
@@ -249,7 +250,7 @@ public class WordMlLinkHandler {
             for (String guid : unknownGuids) {
                Collection<MatchRange> matches = matchMap.getValues(guid);
                for (MatchRange match : matches) {
-                  String replaceWith = linkBuilder.getOseeLinkMarker(guid);
+                  String replaceWith = WordCoreUtil.getOseeLinkMarker(guid);
                   changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }
@@ -259,7 +260,7 @@ public class WordMlLinkHandler {
                unknown.addAll(unknownGuids);
                for (String guid : unknownGuids) {
                   for (MatchRange match : matchMap.getValues(guid)) {
-                     String link = linkBuilder.getUnknownArtifactLink(guid, branch);
+                     String link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
                      changeSet.replace(match.start(), match.end(), link);
                   }
                }
@@ -271,7 +272,7 @@ public class WordMlLinkHandler {
          for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
             String replaceWith = null;
             if (isUnliking) {
-               replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
+               replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getGuid());
             } else {
                replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, presentationType);
             }

@@ -48,10 +48,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.ArtifactUrlServer;
 import org.eclipse.osee.define.api.AttributeAlphabeticalComparator;
 import org.eclipse.osee.define.api.OseeHierarchyComparator;
-import org.eclipse.osee.define.api.OseeLinkBuilder;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.publishing.AttributeOptions;
-import org.eclipse.osee.define.api.publishing.LinkType;
 import org.eclipse.osee.define.api.publishing.MetadataOptions;
 import org.eclipse.osee.define.api.publishing.PublishingOptions;
 import org.eclipse.osee.define.api.publishing.TemplatePublishingData;
@@ -72,6 +70,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLWriter;
@@ -98,7 +97,6 @@ public class MSWordTemplatePublisher {
    protected static final String FONT = "Times New Roman";
    protected static final String LANDSCAPE = "Landscape";
    protected static final String CHANGE_TAG = WordUtilities.CHANGE_TAG;
-   protected static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
    private static final String LABEL_EMPTY = "<w:r><w:t> </w:t></w:r>";
    private static final String LABEL_START = "<w:r><w:t>";
@@ -1135,7 +1133,7 @@ public class MSWordTemplatePublisher {
     * bookmark/hyperlink storages to reflect that the given artifact has a bookmark.
     */
    protected String getWordMlBookmark(ArtifactReadable artifact) {
-      String bookmark = linkBuilder.getWordMlBookmark(artifact);
+      String bookmark = WordCoreUtil.getWordMlBookmark(artifact.getId());
       bookmark = WordUtilities.reassignBookMarkID(bookmark);
 
       String guid = artifact.getGuid();
@@ -1191,7 +1189,7 @@ public class MSWordTemplatePublisher {
          referenceText = Xml.escape(referenceText).toString(); // Re-escaping characters such as &, <, >, and "
          boolean isHeader = headerGuids.contains(guid);
 
-         String newReference = linkBuilder.getWordMlReference(guid, isHeader, referenceText);
+         String newReference = WordCoreUtil.getWordMlReference(guid, isHeader, referenceText);
 
          data = data.replace(matcher.group(0), newReference);
          matcherIndex = matcher.start() + newReference.length();

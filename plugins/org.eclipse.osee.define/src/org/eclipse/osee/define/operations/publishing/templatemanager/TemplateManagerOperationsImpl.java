@@ -204,7 +204,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
       boolean isNoTags = Boolean.valueOf(OseeInfo.getValue(this.jdbcService.getClient(), "osee.publish.no.tags"));
 
       //@formatter:off
-      return
+      var publishingTemplate =
          this.publishingTemplateProviders.stream()
             .max
                (
@@ -218,6 +218,8 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
             .map( PublishingTemplateInternal::getBean )
             .orElse( PublishingTemplate.SENTINEL );
       //@formatter:on
+
+      return publishingTemplate;
    }
 
    /**

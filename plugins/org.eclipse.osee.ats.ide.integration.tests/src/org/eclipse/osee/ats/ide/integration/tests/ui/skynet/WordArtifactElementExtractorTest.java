@@ -22,11 +22,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordExtractorData;
@@ -88,9 +88,8 @@ public class WordArtifactElementExtractorTest {
 
    @Test
    public void test2007SimpleChange() throws Exception {
-      OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor = new WordImageArtifactElementExtractor(
-         getDocumentWrapTags(createTestString(builder, START_2007, END_2007, SIMPLE_2007_CHANGE)));
+         getDocumentWrapTags(createTestString(START_2007, END_2007, SIMPLE_2007_CHANGE)));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
@@ -102,9 +101,8 @@ public class WordArtifactElementExtractorTest {
 
    @Test
    public void test2007StartChange() throws Exception {
-      OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor = new WordImageArtifactElementExtractor(
-         getDocumentWrapTags(createTestString(builder, START_2007, END_2007, START_2007_CHANGE)));
+         getDocumentWrapTags(createTestString(START_2007, END_2007, START_2007_CHANGE)));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
@@ -115,9 +113,8 @@ public class WordArtifactElementExtractorTest {
 
    @Test
    public void test2007EndChange() throws Exception {
-      OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor = new WordImageArtifactElementExtractor(
-         getDocumentWrapTags(createTestString(builder, START_2007, END_2007, END_2007_CHANGE)));
+         getDocumentWrapTags(createTestString(START_2007, END_2007, END_2007_CHANGE)));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
@@ -138,10 +135,8 @@ public class WordArtifactElementExtractorTest {
 
    @Test
    public void test2003Change() throws Exception {
-      OseeLinkBuilder builder = new OseeLinkBuilder();
-      WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2003, END_2003,
-            "</w:p><w:p><w:r><w:t>This is a test-x</w:t></w:r></w:p><w:p>")));
+      WordImageArtifactElementExtractor extractor = new WordImageArtifactElementExtractor(getDocumentWrapTags(
+         createTestString(START_2003, END_2003, "</w:p><w:p><w:r><w:t>This is a test-x</w:t></w:r></w:p><w:p>")));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
@@ -151,9 +146,8 @@ public class WordArtifactElementExtractorTest {
 
    @Test
    public void test2003StartChange() throws Exception {
-      OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor = new WordImageArtifactElementExtractor(getDocumentWrapTags(
-         createTestString(builder, START_2003, END_2003, "<w:r><w:t>this This is a test that</w:t></w:r></w:p><w:p>")));
+         createTestString(START_2003, END_2003, "<w:r><w:t>this This is a test that</w:t></w:r></w:p><w:p>")));
 
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
@@ -184,13 +178,13 @@ public class WordArtifactElementExtractorTest {
       artifactElementExtractor.extractElements();
    }
 
-   private String createTestString(OseeLinkBuilder linkBuilder, String start, String end, String... datas) {
+   private String createTestString(String start, String end, String... datas) {
       StringBuilder stringBuilder = new StringBuilder(start);
       for (String data : datas) {
          String guid = GUID.create();
-         stringBuilder.append(linkBuilder.getStartEditImage(guid));
+         stringBuilder.append(WordCoreUtil.getStartEditImage(guid));
          stringBuilder.append(data);
-         stringBuilder.append(linkBuilder.getEndEditImage(guid));
+         stringBuilder.append(WordCoreUtil.getEndEditImage(guid));
       }
       stringBuilder.append(end);
       return stringBuilder.toString();
@@ -198,8 +192,8 @@ public class WordArtifactElementExtractorTest {
 
    private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected) throws IOException, XMLStreamException {
       for (int i = 0; i < actuals.size(); i++) {
-         String artContent = WordUtil.textOnly(Lib.inputStreamToString(
-            new ByteArrayInputStream(MSWordTemplateClientRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
+         String artContent = WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
+            MSWordTemplateClientRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
          Assert.assertTrue("expected:*" + expected.get(i) + "* got:*" + artContent + "*",
             expected.get(i).equals(artContent));
       }

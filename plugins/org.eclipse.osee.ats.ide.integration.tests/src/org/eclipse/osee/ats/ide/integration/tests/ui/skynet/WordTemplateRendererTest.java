@@ -44,7 +44,6 @@ import org.eclipse.osee.client.test.framework.NotForEclipseOrgRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.define.api.publishing.LinkType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -52,8 +51,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -136,18 +137,12 @@ public class WordTemplateRendererTest {
    private static String MASTER_TEMPLATE_STRING_IDANDNAME;
    private static String SLAVE_TEMPLATE_STRING;
 
-   private static String RECURSIVE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
-   private static String SINGLE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
-   private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
-   private static String MASTER_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Communication Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Navigation Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Aircraft Systems Management Subsystem Crew Interface\"}]}";
-   private static String MASTER_ID_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"249\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"250\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"251\"}]}";
-   private static String SLAVE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"00D60E72\\\"><w:rPr><w:b/></w:rPr><w:t>Partition</w:t></w:r>\", \"FormatPre\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"0004616A\\\"><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Legacy DAL\", \"Label\" : \"<w:r wsp:rsidR=\\\"00E16D7B\\\"><w:rPr><w:rFonts w:cs=\\\"Arial\\\"/><w:b/><w:sz-cs w:val=\\\"22\\\"/></w:rPr><w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"0004616A\\\"><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
+   private static String MASTER_ID_RENDERER_OPTIONS;
+   private static String MASTER_RENDERER_OPTIONS;
+   private static String RECURSIVE_RENDERER_OPTIONS;
+   private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS;
+   private static String SINGLE_RENDERER_OPTIONS;
+   private static String SLAVE_RENDERER_OPTIONS;
 
    private BranchToken rootBranch;
    private BranchToken updateBranch;
@@ -164,6 +159,49 @@ public class WordTemplateRendererTest {
 
    private MSWordTemplateClientRenderer renderer;
 
+   interface ErrorTitleSupplier {
+      String apply(String testName);
+   }
+
+   interface CheckStringSupplier {
+      String apply(String period, String altString, String pubString);
+   }
+
+   interface CheckFilter {
+      Boolean apply(Boolean mergeFlag, Boolean fieldcodeFlag);
+   };
+
+   private static class Check {
+      ErrorTitleSupplier errorTitleSupplier;
+      CheckStringSupplier checkStringSupplier;
+      CheckFilter checkFilter;
+
+      Check(ErrorTitleSupplier errorTitleSupplier, CheckStringSupplier checkStringSupplier, CheckFilter checkFilter) {
+         this.errorTitleSupplier = errorTitleSupplier;
+         this.checkStringSupplier = checkStringSupplier;
+         this.checkFilter = checkFilter;
+      }
+
+      void perform(String testName, String document, String period, String altString, String pubString, Boolean mergeFlag, Boolean fieldcodeFlag) {
+
+         if (this.checkFilter.apply(mergeFlag, fieldcodeFlag)) {
+
+            var checkString = this.checkStringSupplier.apply(period, altString, pubString);
+
+            var result = document.contains(checkString);
+
+            if (!result) {
+               var message =
+                  new Message().title(this.errorTitleSupplier.apply(testName)).indentInc().segment("Check String",
+                     checkString).follows("Document", document).toString();
+
+               Assert.assertTrue(message, false);
+            }
+
+         }
+      }
+   };
+
    @BeforeClass
    public static void loadTemplateInfo() throws Exception {
       RECURSE_TEMPLATE_STRING = getResourceData("wordrenderer_recurse.xml");
@@ -173,6 +211,13 @@ public class WordTemplateRendererTest {
       MASTER_TEMPLATE_STRING_IDONLY = getResourceData("wordrenderer_master-idonly.xml");
       MASTER_TEMPLATE_STRING_IDANDNAME = getResourceData("wordrenderer_master-idandname.xml");
       SLAVE_TEMPLATE_STRING = getResourceData("wordrenderer_slave.xml");
+
+      MASTER_ID_RENDERER_OPTIONS = getResourceData("MasterIdRendererOptions.json");
+      MASTER_RENDERER_OPTIONS = getResourceData("MasterRendererOptions.json");
+      RECURSIVE_RENDERER_OPTIONS = getResourceData("RecursiveRendererOptions.json");
+      SINGLE_ATTRIBUTE_RENDERER_OPTIONS = getResourceData("SingleAttributeRendererOptions.json");
+      SINGLE_RENDERER_OPTIONS = getResourceData("SingleRendererOptions.json");
+      SLAVE_RENDERER_OPTIONS = getResourceData("SlaveRendererOptions.json");
    }
 
    @Before
@@ -236,58 +281,139 @@ public class WordTemplateRendererTest {
       }
    }
 
+   //@formatter:off
+   private final List<Check> testBlankWordTemplateContentChecks =
+      List.of
+         (
+            new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 1. Volume 4", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4 [MERGED]</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+            new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 2.", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Intro</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   )
+         );
+   //@formatter:on
+
    @Test
    public void testBlankWordTemplateContent() {
-      BranchToken rootBr = BranchManager.createTopLevelBranch("Root Branch");
-      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-         rootBr, PermissionEnum.FULLACCESS);
 
-      SkynetTransaction tx =
-         TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));
-      Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBr, "Volume 4");
-      vol4.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
-      vol4.persist(tx);
-      Artifact introArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBr, "Intro");
-      introArt.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "blah");
+      /*
+       * Create "Root Branch"
+       */
 
-      vol4.addChild(introArt);
-      introArt.persist(tx);
-      tx.execute();
+      BranchToken rootBranch = BranchManager.createTopLevelBranch("Root Branch");
+      Artifact volume4ArtifactRootBranch = null;
 
-      BranchId middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
-      Artifact middleVol4 = ArtifactQuery.getArtifactFromId(vol4, middleBr);
-      middleVol4.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, " ");
-      middleVol4.persist("added blank content");
+      {
+         //@formatter:off
+         /*
+          * Create the following artifact structure:
+          *
+          * +- "Volume 4" (HeadingMsWord)
+          *    |
+          *    +- "Intro" (HeadingMsWord)
+          */
+         //@formatter:on
 
-      BranchId childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
-      vol4 = ArtifactQuery.getArtifactFromId(vol4, childBr);
+         ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+            rootBranch, PermissionEnum.FULLACCESS);
 
-      modifyOption(BRANCH, childBr);
-      modifyOption(PUBLISH_DIFF, true);
-      modifyOption(COMPARE_BRANCH, rootBr);
+         SkynetTransaction tx = TransactionManager.createTransaction(rootBranch, method.getQualifiedTestName());
 
-      renderer.publish(singleTemplate, null, Collections.singletonList(vol4));
+         volume4ArtifactRootBranch =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBranch, "Volume 4");
+         volume4ArtifactRootBranch.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
+         volume4ArtifactRootBranch.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
+            "<w:p><w:r><w:t>Volume 4 on the Root Branch.</w:t></w:r></w:p>");
+
+         volume4ArtifactRootBranch.persist(tx);
+
+         Artifact introArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBranch, "Intro");
+         introArt.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
+            "<w:p><w:r><w:t>Intro on the Root Branch.</w:t></w:r></w:p>");
+
+         volume4ArtifactRootBranch.addChild(introArt);
+         introArt.persist(tx);
+         tx.execute();
+      }
+
+      /*
+       * Create "Middle Branch"
+       */
+
+      BranchId middleBranch = BranchManager.createWorkingBranch(rootBranch, "Middle Branch");
+
+      {
+         /*
+          * Get the "Volume 4" artifact on the "Middle Branch" and set the WordTemplateContent to a space.
+          */
+
+         Artifact volume4ArtifactMiddleBranch =
+            ArtifactQuery.getArtifactFromId(volume4ArtifactRootBranch, middleBranch);
+
+         volume4ArtifactMiddleBranch.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
+            "<w:p><w:r><w:t>Volume 4 on the Middle Branch.</w:t></w:r></w:p>");
+         volume4ArtifactMiddleBranch.persist("Added Volume 4 artifact on the Middle Branch.");
+      }
+
+      /*
+       * Create "Child Branch"
+       */
+
+      BranchId childBranch = BranchManager.createWorkingBranch(middleBranch, "Child Branch");
+
+      Artifact volume4ArtifactChildBranch = ArtifactQuery.getArtifactFromId(volume4ArtifactRootBranch, childBranch);
+
+      {
+         volume4ArtifactChildBranch.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
+            "<w:p><w:r><w:t>Volume 4 on the Child Branch.</w:t></w:r></w:p>");
+         volume4ArtifactChildBranch.persist("Added Volume 4 artifact on the Child Branch.");
+      }
+
+      /*
+       * Setup comparison publish between the root and child branches
+       */
+
+      this.renderer.updateOption(BRANCH, childBranch);
+      this.renderer.updateOption(PUBLISH_DIFF, true);
+      this.renderer.updateOption(COMPARE_BRANCH, rootBranch);
+
+      this.renderer.publish(singleTemplate, null, Collections.singletonList(volume4ArtifactChildBranch));
+
+      /*
+       * Check publish results
+       */
 
       String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
+
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
+
+      String documentContent = null;
+
       try {
-         String document = getFileAsString(resultPath);
-         String testName = method.getQualifiedTestName();
-         String altString = "  \"";
-         String period = ".";
-
-         Assert.assertTrue(String.format("%s, Expected 1. Volume 4", testName), document.contains(
-            "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4</w:t></w:r>"));
-
-         Assert.assertTrue(String.format("%s, Expected 2.", testName), document.contains(
-            "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r>"));
-
-         // This is a separate check due to the wordMl.resetListValue(); function injecting extra wordML that resets the list numbering
-         Assert.assertTrue(String.format("%s, Expected Intro", testName), document.contains("<w:t>Intro</w:t></w:r>"));
-      } catch (IOException ex) {
-         // Do nothing - test failed
+         documentContent = getFileAsString(resultPath);
+      } catch (Exception e) {
+         Assert.assertTrue(e.getMessage(), false);
       }
+
+      //@formatter:off
+      var document = documentContent;
+      var testName = method.getQualifiedTestName();
+      var altString = "  \"";
+      var period = ".";
+
+      testBlankWordTemplateContentChecks.forEach
+         (
+            ( check ) -> check.perform(testName, document, period, altString, "", false, false )
+         );
    }
 
    @Test
@@ -386,13 +512,23 @@ public class WordTemplateRendererTest {
       try {
          contents = getFileAsString(resultPath);
 
-         // either one of these strings could be correct depending on word preferences
-         String mergeContent1 =
-            "<aml:content><w:r><w:t>paragraph describes</w:t></w:r><w:r><w:t>is</w:t></w:r></aml:content>";
-         String mergeContent2 =
-            "<aml:content><w:r><w:t>paragraph </w:t></w:r><w:proofErr w:type=\"spellStart\"/><w:r><w:t>describes</w:t></w:r><w:r><w:t>is</w:t></w:r></aml:content>";
-         Assert.assertTrue("Merge content not found",
-            contents.contains(mergeContent1) || contents.contains(mergeContent2));
+
+         String testString;
+
+         testString = "<aml:content><w:r><w:t>paragraph describes</w:t></w:r></aml:content>";
+         Assert.assertTrue("Merge content \"paragraph describes\" added not found.", contents.contains(testString));
+
+         testString = "<aml:content><w:r><w:delText>is</w:delText></w:r></aml:content>";
+         Assert.assertTrue("Merge content \"is\" deleted not found.", contents.contains(testString));
+
+         testString = "</aml:annotation><w:r><w:t> the background of the </w:t></w:r><aml:annotation";
+         Assert.assertTrue("Merge content \" the background of the \" not changed not found.", contents.contains(testString));
+
+         testString = "<aml:content><w:r><w:t>doc</w:t></w:r></aml:content>";
+         Assert.assertTrue("Merge content \"doc\" added not found.", contents.contains(testString));
+
+         testString = "<aml:content><w:r><w:delText>document</w:delText></w:r></aml:content>";
+         Assert.assertTrue("Merge content \"document\" deleted not found.", contents.contains(testString));
 
          Assert.assertTrue("Paragraph Number only Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1</w:t></w:r>"));
@@ -678,30 +814,36 @@ public class WordTemplateRendererTest {
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
       recurseTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
+
       singleTemplate =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single Template");
       singleTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, SINGLE_TEMPLATE_STRING);
       singleTemplate.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_RENDERER_OPTIONS);
+
       singleTemplateAttrib =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single With Attributes");
       singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent,
          SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING);
       singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_ATTRIBUTE_RENDERER_OPTIONS);
+
       masterTemplate =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsMaster Template");
       masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, MASTER_TEMPLATE_STRING);
       masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_RENDERER_OPTIONS);
+
       masterTemplate_idOnly = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch,
          "srsMaster Template ID only");
       masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDONLY);
       masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_ID_RENDERER_OPTIONS);
+
       masterTemplate_idAndName = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch,
          "srsMaster Template ID and name");
       masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDANDNAME);
       masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions,
          MASTER_ID_RENDERER_OPTIONS);
+
       slaveTemplate =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsSlave Template");
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, SLAVE_TEMPLATE_STRING);
@@ -911,37 +1053,96 @@ public class WordTemplateRendererTest {
       this.renderer.updateOption(optName, optValue);
    }
 
+   //@formatter:off
+
+
+   private final List<Check> basicDocumentChecks =
+      List.of
+         (
+            new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 1. Introduction", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 1.1 Background", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> !mergeFlag
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 1.2 Scope", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 2. Notes", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 2.1 More Notes", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 3. Subsystem", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 3.1 Hardware", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> !fieldcodeFlag
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 3.1.1 Hardware Functions", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 3.2 Software", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   ),
+
+             new Check
+                   (
+                      ( testName )                     -> String.format( "%s, Expected 3.2.1 Software Functions", testName ),
+                      ( period, altString, pubString ) -> "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
+                      ( mergeFlag, fieldcodeFlag )     -> true
+                   )
+         );
+
+   //@formatter:on
+
    private void basicDocumentCheck(String document, String pubString, boolean merge, boolean fieldcode) {
-      String testName = method.getQualifiedTestName();
-      String altString = "\" ";
-      String period = "";
-      if (pubString.isEmpty()) {
-         altString = "  \"";
-         period = ".";
-      }
-      Assert.assertTrue(String.format("%s, Expected 1. Introduction", testName), document.contains(
-         "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>"));
-      if (!merge) {
-         Assert.assertTrue(String.format("%s, Expected 1.1 Background", testName), document.contains(
-            "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>"));
-      }
-      Assert.assertTrue(String.format("%s, Expected 1.2 Scope", testName), document.contains(
-         "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>"));
-      Assert.assertTrue(String.format("%s, Expected 2. Notes", testName), document.contains(
-         "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>"));
-      Assert.assertTrue(String.format("%s, Expected 2.1 More Notes", testName), document.contains(
-         "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>"));
-      Assert.assertTrue(String.format("%s, Expected 3. Subsystem", testName), document.contains(
-         "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>"));
-      if (!fieldcode) {
-         Assert.assertTrue(String.format("%s, Expected 3.1 Hardware", testName), document.contains(
-            "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>"));
-      }
-      Assert.assertTrue(String.format("%s, Expected 3.1.1 Hardware Functions", testName), document.contains(
-         "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>"));
-      Assert.assertTrue(String.format("%s, Expected 3.2 Software", testName), document.contains(
-         "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>"));
-      Assert.assertTrue(String.format("%s, Expected 3.2.1 Software Functions", testName), document.contains(
-         "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>"));
+
+      //@formatter:off
+      var testName  = method.getQualifiedTestName();
+      var altString = pubString.isEmpty() ? "  \"" : "\" ";
+      var period    = pubString.isEmpty() ? "."    : "";
+
+      basicDocumentChecks.forEach
+         (
+            ( check ) -> check.perform(testName, document, period, altString, pubString, merge, fieldcode )
+         );
+      //@formatter:on
    }
 }

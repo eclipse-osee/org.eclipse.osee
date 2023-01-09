@@ -1,0 +1,40 @@
+{
+   "ElementType"      : "Artifact",
+   "OutliningOptions" :
+   [
+      {
+         "Outlining"            : true,
+         "RecurseChildren"      : false,
+         "HeadingAttributeType" : "Name",
+         "ArtifactName"         : "Default",
+         "OutlineNumber"        : "" 
+      }
+   ],
+   "AttributeOptions" :
+   [
+      {
+         "AttrType"   : "*",
+         "Label"      : "",
+         "FormatPre"  : "",
+         "FormatPost" : ""
+      }
+   ],
+   "MetadataOptions" :
+   [
+      {
+         "Type"   : "Applicability",
+         "Format" : "",
+         "Label"  : ""
+      },
+      {
+         "Type"   : "Artifact Type",
+         "Format" : "",
+         "Label"  : ""
+      },
+      {
+         "Type"   : "Artifact Id",
+         "Format" : "",
+         "Label"  : ""
+      }
+   ]
+}
