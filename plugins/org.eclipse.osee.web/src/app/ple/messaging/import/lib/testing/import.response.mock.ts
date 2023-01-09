@@ -67,6 +67,7 @@ export const importSummaryMock: ImportSummary = {
 			interfaceElementIndexStart: 0,
 			interfaceElementIndexEnd: 0,
 			interfaceElementAlterable: false,
+			interfaceDefaultValue: '',
 		},
 	],
 	platformTypes: [
@@ -74,7 +75,7 @@ export const importSummaryMock: ImportSummary = {
 			id: '7',
 			name: 'Enumeration Type 1',
 			description: '',
-			interfacePlatformTypeDefaultValue: '',
+			interfaceDefaultValue: '',
 			interfacePlatformTypeMaxval: '',
 			interfacePlatformTypeMinval: '',
 			interfacePlatformTypeBitSize: '32',

@@ -76,7 +76,7 @@ export class PlatformTypeQueryComponent {
 					value.interfacePlatformTypeMsbValue
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMaxval
@@ -102,7 +102,7 @@ export class PlatformTypeQueryComponent {
 					value.interfacePlatformTypeMsbValue
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMaxval
@@ -145,7 +145,7 @@ export class PlatformTypeQueryComponent {
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase())
 			)
-			.map((type) => type.interfacePlatformTypeDefaultValue)
+			.map((type) => type.interfaceDefaultValue)
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 
@@ -159,7 +159,7 @@ export class PlatformTypeQueryComponent {
 					value.interfacePlatformTypeMsbValue
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMinval
@@ -183,7 +183,7 @@ export class PlatformTypeQueryComponent {
 					value.interfacePlatformTypeMsbValue
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMaxval
@@ -204,7 +204,7 @@ export class PlatformTypeQueryComponent {
 					value.interfaceLogicalType
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMaxval
@@ -235,7 +235,7 @@ export class PlatformTypeQueryComponent {
 					value.interfacePlatformTypeMsbValue
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMaxval
@@ -265,7 +265,7 @@ export class PlatformTypeQueryComponent {
 					value.interfacePlatformTypeMsbValue
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeDefaultValue
+					value.interfaceDefaultValue
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
 					value.interfacePlatformTypeMaxval

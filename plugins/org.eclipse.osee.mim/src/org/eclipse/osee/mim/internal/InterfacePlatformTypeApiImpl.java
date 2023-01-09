@@ -159,7 +159,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitSize);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeBitsResolution);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeCompRate);
-      attributes.add(CoreAttributeTypes.InterfacePlatformTypeDefaultValue);
+      attributes.add(CoreAttributeTypes.InterfaceDefaultValue);
       attributes.add(CoreAttributeTypes.InterfaceElementEnumLiteral);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeMaxval);
       attributes.add(CoreAttributeTypes.InterfacePlatformTypeMinval);
@@ -338,7 +338,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units, int bytes) {
+   public String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units, String defaultValue, int bytes) {
       if (logicalType.equals("boolean")) {
          return "boolean";
       }
@@ -384,6 +384,9 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       }
       if (!validRange.isEmpty()) {
          identifier += "_" + validRange;
+      }
+      if (!defaultValue.isEmpty()) {
+         identifier += "_" + defaultValue;
       }
       identifier += "_" + bytes;
 

@@ -10,14 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
 import {
 	changeInstance,
 	changeTypeEnum,
 	changeTypeNumber,
 	ignoreType,
 	ModificationType,
-} from 'src/app/types/change-report/change-report';
-import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
+} from '../../types/change-report/change-report';
+import { RelationTypeId } from '../../types/constants/RelationTypeId.enum';
 
 export const changeReportMock: changeInstance[] = [
 	{

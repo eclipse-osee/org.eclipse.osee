@@ -24,6 +24,7 @@ export interface element {
 	interfaceElementIndexEnd: number;
 	interfaceElementIndexStart: number;
 	interfaceElementAlterable: boolean;
+	interfaceDefaultValue: string;
 	units: string;
 	enumLiteral: string;
 	platformTypeName2?: string;
@@ -55,6 +56,7 @@ export interface elementImportToken
 		| 'description'
 		| 'notes'
 		| 'enumLiteral'
+		| 'interfaceDefaultValue'
 		| 'interfaceElementAlterable'
 		| 'interfaceElementIndexEnd'
 		| 'interfaceElementIndexStart'

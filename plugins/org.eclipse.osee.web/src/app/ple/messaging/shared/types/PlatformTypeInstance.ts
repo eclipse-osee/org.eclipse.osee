@@ -22,7 +22,7 @@ export class PlatformTypeSentinel implements PlatformType {
 	interfacePlatformTypeBitsResolution: string = '';
 	interfacePlatformTypeBitSize: string = '';
 	interfacePlatformTypeCompRate: string = '';
-	interfacePlatformTypeDefaultValue: string = '';
+	interfaceDefaultValue: string = '';
 	interfacePlatformTypeEnumLiteral: string = '';
 	interfacePlatformTypeMaxval: string = '';
 	interfacePlatformTypeMinval: string = '';

@@ -42,6 +42,7 @@ export class SubElementTableNoEditFieldComponent implements OnInit {
 		name: '',
 		description: '',
 		notes: '',
+		interfaceDefaultValue: '',
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		applicability: {

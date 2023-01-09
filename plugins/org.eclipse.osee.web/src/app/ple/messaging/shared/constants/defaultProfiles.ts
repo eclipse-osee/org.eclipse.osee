@@ -17,7 +17,7 @@ export const defaultEditElementProfile = [
 	'interfaceElementIndexStart',
 	'interfaceElementIndexEnd',
 	'logicalType',
-	'interfacePlatformTypeDefaultValue',
+	'interfaceDefaultValue',
 	'interfacePlatformTypeMinval',
 	'interfacePlatformTypeMaxval',
 	'beginWord',

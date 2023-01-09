@@ -25,7 +25,7 @@ export interface PlatformType {
 	interfacePlatformTypeBitsResolution: string;
 	interfacePlatformTypeBitSize: string;
 	interfacePlatformTypeCompRate: string;
-	interfacePlatformTypeDefaultValue: string;
+	interfaceDefaultValue: string;
 	enumSet?: enumerationSet; //typically unavailable, only present on query
 	interfacePlatformTypeMaxval: string;
 	interfacePlatformTypeMinval: string;
@@ -41,7 +41,7 @@ export interface platformTypeImportToken
 		| 'id'
 		| 'name'
 		| 'description'
-		| 'interfacePlatformTypeDefaultValue'
+		| 'interfaceDefaultValue'
 		| 'interfacePlatformTypeMinval'
 		| 'interfacePlatformTypeMaxval'
 		| 'interfacePlatformTypeBitSize'

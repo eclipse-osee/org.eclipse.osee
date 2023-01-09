@@ -117,13 +117,13 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 				)
 			);
 		if (
-			control.value.interfacePlatformTypeDefaultValue !== '' &&
-			control.value.interfacePlatformTypeDefaultValue !== undefined
+			control.value.interfaceDefaultValue !== '' &&
+			control.value.interfaceDefaultValue !== undefined
 		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL,
-					control.value.interfacePlatformTypeDefaultValue
+					ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL,
+					control.value.interfaceDefaultValue
 				)
 			);
 		if (

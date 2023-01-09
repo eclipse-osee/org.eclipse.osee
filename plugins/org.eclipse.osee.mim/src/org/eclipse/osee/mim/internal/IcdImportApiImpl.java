@@ -130,7 +130,8 @@ public class IcdImportApiImpl implements MimImportApi {
             type.getEnumSet().getName()) : mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(
                type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
                type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeValidRangeDescription(),
-               type.getInterfacePlatformTypeUnits(), Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
+               type.getInterfacePlatformTypeUnits(), type.getInterfaceDefaultValue(),
+               Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
          platformTypes.put(typeKey, new PlatformTypeImportToken(type.getId(), type.getName()));
       }
 
@@ -325,6 +326,7 @@ public class IcdImportApiImpl implements MimImportApi {
          String description = reader.getCellStringValue(rowIndex, 10);
          String enumDesc = reader.getCellStringValue(rowIndex, 11);
          String notes = reader.getCellStringValue(rowIndex, 12);
+         String defaultValue = reader.getCellStringValue(rowIndex, 13);
 
          // Instrumentation message elements don't have names which will cause issues, so we set a name here.
          // The merged cells containing the instrumentation message text begin on the logicalType cell.
@@ -349,8 +351,8 @@ public class IcdImportApiImpl implements MimImportApi {
             if (platformTypes.containsKey(key)) {
                pType = platformTypes.get(key);
             } else {
-               pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", "", "", "",
-                  validRange);
+               pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", "", "",
+                  defaultValue, validRange);
                incrementId();
                platformTypes.put(getEnumNameKey(enumName), pType);
                platformTypesToCreate.add(pType);
@@ -402,12 +404,12 @@ public class IcdImportApiImpl implements MimImportApi {
             }
 
             String pTypeName = mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(logicalType, minVal, maxVal,
-               validRange, units, numBytes);
+               validRange, units, defaultValue, numBytes);
             if (platformTypes.containsKey(pTypeName)) {
                pType = platformTypes.get(pTypeName);
             } else {
                pType = new PlatformTypeImportToken(id, pTypeName, logicalType, (numBytes * 8) + "", minVal, maxVal,
-                  units, "", "", validRange);
+                  units, "", defaultValue, validRange);
                incrementId();
                platformTypes.put(pTypeName, pType);
                platformTypesToCreate.add(pType);
@@ -446,6 +448,7 @@ public class IcdImportApiImpl implements MimImportApi {
             element.setInterfaceElementAlterable(alterable);
             element.setDescription(description);
             element.setNotes(notes);
+            element.setInterfaceDefaultValue(defaultValue);
             element.setEnumLiteral(logicalType.equals("enumeration") ? "" : enumDesc); // Enumeration elements use the enum set description for the enum literals
             elements.put(elementKey, element);
             summary.getElements().add(element);

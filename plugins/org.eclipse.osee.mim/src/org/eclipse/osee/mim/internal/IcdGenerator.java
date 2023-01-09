@@ -621,7 +621,8 @@ public class IcdGenerator {
          "Alterable After Creation",
          "Description",
          "Enumerated Literals",
-         "Notes"};
+         "Notes",
+         "Default Value"};
       for (InterfaceSubMessageToken subMessage : subMessages) {
 
          List<InterfaceStructureToken> structs = new LinkedList<>();
@@ -730,7 +731,7 @@ public class IcdGenerator {
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
-      String enumLiterals = "";
+      String enumLiterals = elementToken.getEnumLiteral();
       String elementName = elementToken.getName();
       String dataType = elementToken.getLogicalType().isEmpty() ? "n/a" : elementToken.getLogicalType();
       dataType = dataType.replace("unsigned long", "uLong").replace("unsigned short", "uShort").replace("short",
@@ -757,6 +758,7 @@ public class IcdGenerator {
 
       String description = elementToken.getDescription().isEmpty() ? "n/a" : elementToken.getDescription();
       String notes = elementToken.getNotes().isEmpty() ? "" : elementToken.getNotes();
+      String defaultValue = elementToken.getInterfaceDefaultValue();
       boolean enumChanged = false;
 
       if (platformType != null && dataType.equals("enumeration")) {
@@ -771,10 +773,6 @@ public class IcdGenerator {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "\n";
             enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumState.getId()));
-         }
-      } else {
-         if (platformType != null && enumLiterals.equals(" ")) {
-            enumLiterals = platformType.getDescription();
          }
       }
 
@@ -809,6 +807,7 @@ public class IcdGenerator {
             writer.writeCell(rowIndex.get(), 10, description, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
             writer.writeCell(rowIndex.get(), 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
             writer.writeCell(rowIndex.get(), 12, notes, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 13, defaultValue, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId()));
             //@formatter:on
 
             byteLocation = byteLocation + byteSize;
@@ -835,6 +834,7 @@ public class IcdGenerator {
          writer.writeCell(rowIndex.get(), 10, description, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
          writer.writeCell(rowIndex.get(), 11, enumLiterals.trim(), enumStyle, CELLSTYLE.WRAP);
          writer.writeCell(rowIndex.get(), 12, notes, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId()), CELLSTYLE.WRAP);
+         writer.writeCell(rowIndex.get(), 13, defaultValue, getCellColor(elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId()));
          //@formatter:on
          rowIndex.getAndAdd(1);
       }

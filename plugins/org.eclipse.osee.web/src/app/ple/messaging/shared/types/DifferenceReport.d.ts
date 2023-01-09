@@ -109,7 +109,7 @@ export interface elementDiffItem {
 	units: string;
 	description: string;
 	interfacePlatformTypeDescription: string;
-	interfacePlatformTypeDefaultValue: string;
+	interfaceDefaultValue: string;
 	endByte: number;
 	platformTypeId: number;
 	endWord: number;
@@ -133,7 +133,7 @@ export interface platformTypeDiffItem {
 	description: string;
 	interfaceLogicalType: string;
 	interfacePlatformTypeBitSize: string;
-	interfacePlatformTypeDefaultValue: string;
+	interfaceDefaultValue: string;
 	interfacePlatformTypeMaxval: string;
 	interfacePlatformTypeMinval: string;
 	interfacePlatformTypeUnits: string;

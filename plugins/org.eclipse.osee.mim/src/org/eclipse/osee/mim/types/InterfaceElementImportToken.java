@@ -21,6 +21,7 @@ public class InterfaceElementImportToken extends PLGenericDBObject {
    private String Notes;
    private String Description;
    private String enumLiteral;
+   private String InterfaceDefaultValue;
    private Integer InterfaceElementIndexStart;
    private Integer InterfaceElementIndexEnd;
 
@@ -32,6 +33,7 @@ public class InterfaceElementImportToken extends PLGenericDBObject {
       setInterfaceElementIndexStart(0);
       setInterfaceElementIndexEnd(0);
       setInterfaceElementAlterable(false);
+      setInterfaceDefaultValue("");
    }
 
    public InterfaceElementImportToken() {
@@ -114,6 +116,14 @@ public class InterfaceElementImportToken extends PLGenericDBObject {
     */
    public void setInterfaceElementIndexEnd(Integer interfaceElementIndexEnd) {
       InterfaceElementIndexEnd = interfaceElementIndexEnd;
+   }
+
+   public String getInterfaceDefaultValue() {
+      return InterfaceDefaultValue;
+   }
+
+   public void setInterfaceDefaultValue(String interfaceDefaultValue) {
+      InterfaceDefaultValue = interfaceDefaultValue;
    }
 
 }

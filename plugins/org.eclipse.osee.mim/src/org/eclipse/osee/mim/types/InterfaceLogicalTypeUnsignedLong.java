@@ -39,7 +39,7 @@ public class InterfaceLogicalTypeUnsignedLong extends InterfaceLogicalTypeGeneri
       fields.add(new InterfaceLogicalTypeField("Units", "InterfacePlatformTypeUnits", false, true,
          CoreAttributeTypes.InterfacePlatformTypeUnits));
       fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true,
-         CoreAttributeTypes.InterfacePlatformTypeDefaultValue));
+         CoreAttributeTypes.InterfaceDefaultValue));
       this.setFields(fields);
    }
 

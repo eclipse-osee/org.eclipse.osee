@@ -68,7 +68,7 @@ export class andMaxValQuery extends andQuery {
 }
 export class andDefaultValQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL, value);
 	}
 }
 export class andMsbValQuery extends andQuery {

@@ -43,6 +43,7 @@ export class SubElementTableFieldComponent {
 		name: '',
 		description: '',
 		notes: '',
+		interfaceDefaultValue: '',
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		applicability: {
@@ -74,6 +75,7 @@ export class SubElementTableFieldComponent {
 		'interfaceElementIndexStart',
 		'interfaceElementIndexEnd',
 		'enumLiteral',
+		'interfaceDefaultValue',
 	];
 	@Input() filter: string = '';
 	@Input() wordWrap: boolean = false;

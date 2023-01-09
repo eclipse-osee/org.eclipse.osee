@@ -50,7 +50,7 @@ export class StructureDiffsComponent {
 		'elementSizeInBits',
 		'interfacePlatformTypeMinval',
 		'interfacePlatformTypeMaxval',
-		'interfacePlatformTypeDefaultValue',
+		'interfaceDefaultValue',
 		'units',
 		'enumeration',
 		'interfaceElementAlterable',
