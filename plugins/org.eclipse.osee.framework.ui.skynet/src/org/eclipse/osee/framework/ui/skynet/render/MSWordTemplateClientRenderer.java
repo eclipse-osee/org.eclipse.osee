@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.api.WordTemplateContentData;
-import org.eclipse.osee.define.api.publishing.LinkType;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -42,6 +41,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
@@ -496,9 +496,9 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
-            wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditImage(artifact.getGuid()));
+            wordMl.addEditParagraphNoEscape(WordCoreUtil.getStartEditImage(artifact.getGuid()));
             wordMl.addWordMl(data);
-            wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditImage(artifact.getGuid()));
+            wordMl.addEditParagraphNoEscape(WordCoreUtil.getEndEditImage(artifact.getGuid()));
 
          } else if (data != null) {
             wordMl.addWordMl(data);

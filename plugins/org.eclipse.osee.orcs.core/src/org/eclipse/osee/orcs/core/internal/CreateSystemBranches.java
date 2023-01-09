@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.core.internal.access.BootstrapUsers.getBoostrapUsers;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -29,13 +28,10 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.util.OseeInf;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -52,281 +48,6 @@ public class CreateSystemBranches {
    private final TransactionFactory txFactory;
    private final QueryBuilder query;
 
-   private static String RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT =
-      "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer";
-
-   private static String RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD_EDIT =
-      "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer";
-
-   private static String RENDERER_IDENTIFIER_TIS = "org.eclipse.osee.framework.ui.skynet.render.TisRenderer";
-
-   private static String RENDERER_IDENTIFIER_WORD = "org.eclipse.osee.framework.ui.skynet.word";
-
-   private static String EDIT_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String MERGE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : false, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String RECURSIVE_NO_ATTR_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String RECURSIVE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-
-   /**
-    * Defines a Publishing Template Match Criterion for the creation of Publishing Template.
-    */
-
-   private static class PublishingTemplateMatchCriterion {
-
-      private final String rendererIdentifier;
-      private final String matchString;
-
-      /**
-       * Creates a new {@link PublishingTemplateMatchCriterion} with the specified parameters.
-       *
-       * @param rendererIdentifier the identifier as returned by {@link IRenderer#getIdentifier} of the renderer.
-       * @param matchCriteria the remainder of the match criteria string. The space between the
-       * <code>rendererIdentifier</code> and the remainder of the match criteria string will be added by this class.
-       */
-
-      public PublishingTemplateMatchCriterion(String rendererIdentifier, String matchString) {
-         this.rendererIdentifier = rendererIdentifier;
-         this.matchString = matchString;
-      }
-
-      /**
-       * Adds a {@link CoreAttributeTypes#TemplateMatchCritera} value to the publishing template artifact.
-       *
-       * @param tx the {@link TransactionBuilder} used to modify the artifact.
-       * @param templateArtifact the identifier of the publishing template artifact.
-       */
-
-      public void setTemplateMatchCriteria(TransactionBuilder tx, ArtifactId templateArtifact) {
-         tx.createAttribute(templateArtifact, CoreAttributeTypes.TemplateMatchCriteria,
-            this.rendererIdentifier + " " + this.matchString);
-      }
-
-   }
-
-   /**
-    * Defines the parameters for the creation of a Publishing Template.
-    */
-
-   private static class PublishingTemplate {
-
-      private final ArtifactToken parentArtifactToken;
-      private final String name;
-      private final String rendererOptionsJson;
-      private final String templateContentFileName;
-      private final List<PublishingTemplateMatchCriterion> matchCriteria;
-
-      /**
-       * Creates a new {@link PublishingTemplate} with the specified parameters.
-       *
-       * @param parentArtifactToken the hierarchical parent of the publishing template artifact.
-       * @param name the name of the publishing template artifact.
-       * @param rendererOptionsJson the publishing template renderer options as a JSON string.
-       * @param templateContentFileName the filename of a file containing the Word ML publishing template content.
-       * @param matchCriteria a list of {@link PublishingTemplateMatchCriterion} for the publishing template.
-       */
-
-      public PublishingTemplate(ArtifactToken parentArtifactToken, String name, String rendererOptionsJson, String templateContentFileName, List<PublishingTemplateMatchCriterion> matchCriteria) {
-         this.parentArtifactToken = parentArtifactToken;
-         this.name = name;
-         this.rendererOptionsJson = rendererOptionsJson;
-         this.templateContentFileName = templateContentFileName;
-         this.matchCriteria = matchCriteria;
-      }
-
-      /**
-       * Creates a new publishing template artifact.
-       *
-       * @param tx the {@link TransactionBuilder} used to create an modify the publishing template artifact.
-       */
-
-      public void createPublishingTemplate(TransactionBuilder tx) {
-
-         var publishingTemplateArtifact =
-            tx.createArtifact(this.parentArtifactToken, CoreArtifactTypes.RendererTemplateWholeWord, this.name);
-
-         if (Objects.nonNull(this.rendererOptionsJson)) {
-            tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.RendererOptions,
-               this.rendererOptionsJson);
-         }
-
-         if (Objects.nonNull(this.templateContentFileName)) {
-            tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.WholeWordContent,
-               OseeInf.getResourceContents(this.templateContentFileName, getClass()));
-         }
-
-         if (Objects.nonNull(this.matchCriteria)) {
-            this.matchCriteria.forEach(
-               (matchCriterion) -> matchCriterion.setTemplateMatchCriteria(tx, publishingTemplateArtifact));
-         }
-      }
-   }
-
-   /**
-    * Definitions for Publishing Templates to be created on the Common branch during initialization.
-    */
-
-   //@formatter:off
-   private static List<PublishingTemplate> publishingTempaltes =
-      List.of
-         (
-            new PublishingTemplate
-                   (
-                      CoreArtifactTokens.DocumentTemplates,                              /* Parent Artifact Identifier */
-                      "WordEditTemplate",                                                /* Name                       */
-                      EDIT_RENDERER_OPTIONS,                                             /* Renderer Options JSON      */
-                      "templates/Word Edit Template.xml",                                /* Template Content File Name */
-                      List.of                                                            /* Match Criteria             */
-                         (
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "SPECIALIZED_EDIT"                                 /* Match String        */
-                                   ),
-
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_TIS,                           /* Renderer Identifier */
-                                      "SPECIALIZED_EDIT"                                 /* Match String        */
-                                   )
-                         )
-                   ),
-
-            new PublishingTemplate
-                   (
-                      CoreArtifactTokens.DocumentTemplates,                              /* Parent Artifact Identifier */
-                      "WordMergeTemplate",                                               /* Name                       */
-                      MERGE_RENDERER_OPTIONS,                                            /* Renderer Options JSON      */
-                      "templates/PREVIEW_ALL.xml",                                       /* Template Content File Name */
-                      List.of                                                            /* Match Criteria             */
-                         (
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_WORD,                          /* Renderer Identifier */
-                                      "MERGE_EDIT"                                       /* Match String        */
-                                   ),
-
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_WORD,                          /* Renderer Identifier */
-                                      "MERGE"                                            /* Match String        */
-                                   ),
-
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "MERGE"                                            /* Match String        */
-                                   ),
-
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "MERGE_EDIT"                                       /* Match String        */
-                                   ),
-
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "DIFF THREE_WAY_MERGE"                             /* Match String        */
-                                   )
-                         )
-                   ),
-
-            new PublishingTemplate
-                   (
-                      CoreArtifactTokens.DocumentTemplates,                              /* Parent Artifact Identifier */
-                      RendererOption.PREVIEW_ALL_VALUE.getKey(),                         /* Name                       */
-                      null,                                                              /* Renderer Options JSON      */
-                      "templates/PREVIEW_ALL.xml",                                       /* Template Content File Name */
-                      List.of                                                            /* Match Criteria             */
-                         (
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "PREVIEW PREVIEW_ARTIFACT"                         /* Match String        */
-                                   ),
-
-                                   new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "PREVIEW"                                          /* Match String        */
-                                   ),
-
-                                   new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,      /* Renderer Identifier */
-                                      "DIFF"                                             /* Match String        */
-                                   )
-                         )
-                   ),
-
-            new PublishingTemplate
-                   (
-                      CoreArtifactTokens.DocumentTemplates,                               /* Parent Artifact Identifier */
-                      RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey(),            /* Name                       */
-                      PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS,                               /* Renderer Options JSON      */
-                      "templates/PREVIEW_ALL_NO_ATTRIBUTES.xml",                          /* Template Content File Name */
-                      List.of                                                             /* Match Criteria             */
-                         (
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,       /* Renderer Identifier */
-                                      "PREVIEW PREVIEW_ALL_NO_ATTRIBUTES"                 /* Match String        */
-                                   ),
-
-                                   new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,       /* Renderer Identifier */
-                                      "DIFF_NO_ATTRIBUTES"                                /* Match String        */
-                                   )
-                         )
-                   ),
-
-            new PublishingTemplate
-                   (
-                      CoreArtifactTokens.DocumentTemplates,                               /* Parent Artifact Identifier */
-                      RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey(),                  /* Name                       */
-                      RECURSIVE_RENDERER_OPTIONS,                                         /* Renderer Options JSON      */
-                      "templates/PREVIEW_ALL_RECURSE.xml",                                /* Template Content File Name */
-                      List.of                                                             /* Match Criteria             */
-                         (
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,       /* Renderer Identifier */
-                                      "PREVIEW PREVIEW_WITH_RECURSE"                      /* Match String        */
-                                   )
-                         )
-                   ),
-
-            new PublishingTemplate
-                   (
-                      CoreArtifactTokens.DocumentTemplates,                               /* Parent Artifact Identifier */
-                      RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),   /* Name                       */
-                      RECURSIVE_NO_ATTR_RENDERER_OPTIONS,                                 /* Renderer Options JSON      */
-                      "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.xml",                  /* Template Content File Name */
-                      List.of                                                             /* Match Criteria             */
-                         (
-                            new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD_EDIT,       /* Renderer Identifier */
-                                      "PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES"        /* Match String        */
-                                   ),
-
-                                   new PublishingTemplateMatchCriterion
-                                   (
-                                      RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD_EDIT,       /* Renderer Identifier */
-                                      "PREVIEW_SERVER PREVIEW_WITH_RECURSE_NO_ATTRIBUTES" /* Match String        */
-                                   )
-                         )
-                   )
-         );
-   //@formatter:on
-
    public CreateSystemBranches(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       txFactory = orcsApi.getTransactionFactory();
@@ -335,6 +56,8 @@ public class CreateSystemBranches {
 
    public TransactionId create(UserToken superUser) {
       orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
+
+      SetupPublishing.setupConfiguration(orcsApi);
 
       populateSystemBranch();
 
@@ -380,9 +103,8 @@ public class CreateSystemBranches {
 
       tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 
-      ArtifactId documentTemplateFolder = tx.createArtifact(oseeConfig, CoreArtifactTokens.DocumentTemplates);
-      createWordTemplates(tx);
-      createDataRights(tx, documentTemplateFolder);
+      tx.createArtifact(oseeConfig, CoreArtifactTokens.DocumentTemplates);
+      SetupPublishing.setup(tx);
       tx.commit();
 
       List<IUserGroupArtifactToken> roles = superUser.getRoles();
@@ -414,23 +136,6 @@ public class CreateSystemBranches {
       TransactionId txId = userService.createUsers(users, "Create System Users");
       OseeProperties.setIsInTest(false);
       return txId;
-   }
-
-   private void createWordTemplates(TransactionBuilder tx) {
-      CreateSystemBranches.publishingTempaltes.forEach(
-         (publishingTemplate) -> publishingTemplate.createPublishingTemplate(tx));
-   }
-
-   private void createDataRights(TransactionBuilder tx, ArtifactId documentTemplateFolder) {
-      ArtifactId dataRightsArt = tx.createArtifact(documentTemplateFolder, CoreArtifactTokens.DataRightsFooters);
-      tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
-         OseeInf.getResourceContents("Unspecified.xml", getClass()));
-      tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
-         OseeInf.getResourceContents("Default.xml", getClass()));
-      tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
-         OseeInf.getResourceContents("GovernmentPurposeRights.xml", getClass()));
-      tx.createAttribute(dataRightsArt, CoreAttributeTypes.GeneralStringData,
-         OseeInf.getResourceContents("RestrictedRights.xml", getClass()));
    }
 
    private static final String JSON_ATTR_VALUE = "{ \"WCAFE\" : [" + //

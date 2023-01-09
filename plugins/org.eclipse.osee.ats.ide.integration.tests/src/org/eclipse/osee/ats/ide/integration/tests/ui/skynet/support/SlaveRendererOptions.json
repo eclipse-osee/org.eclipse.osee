@@ -1,0 +1,52 @@
+{
+   "ElementType"      : "Artifact",
+   "OutliningOptions" :
+   [
+      {
+         "Outlining"            : true,
+         "RecurseChildren"      : true,
+         "HeadingAttributeType" : "Name",
+         "ArtifactName"         : "srsProducer.objects",
+         "OutlineNumber"        : "" 
+      }
+   ],
+   "AttributeOptions" :
+   [
+      {
+         "AttrType"   : "Partition",
+         "Label"      : "<w:r><w:rPr><w:b/></w:rPr><w:t>Partition</w:t></w:r>",
+         "FormatPre"  : "<w:r><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>",
+         "FormatPost" : ""
+      },
+      {
+         "AttrType"   : "Legacy DAL",
+         "Label"      : "<w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:b/><w:sz-cs w:val=\"22\"/></w:rPr><w:t>Development Assurance Level:</w:t></w:r>",
+         "FormatPre"  : "<w:r><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>",
+         "FormatPost" : ""
+      },
+      {
+         "AttrType"   : "Word Template Content",
+         "Label"      : "",
+         "FormatPre"  : "",
+         "FormatPost" : ""
+      }
+   ],
+   "MetadataOptions"  : 
+   [
+      {
+         "Type"   : "Applicability",
+         "Format" : "",
+         "Label"  : ""
+      },
+      {
+         "Type"   : "Artifact Type",
+         "Format" : "",
+         "Label"  : ""
+      },
+      {
+         "Type"   : "Artifact Id",
+         "Format" : "",
+         "Label"  : ""
+      }
+   ]
+}

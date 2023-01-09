@@ -1,0 +1,23 @@
+{
+   "ElementType"      : "Artifact",
+   "OutliningOptions" :
+   [
+	   {
+         "ArtifactName"         : "Default",
+		   "Outlining"            : true,
+         "RecurseChildren"      : false,
+         "HeadingAttributeType" : "Name",
+         "OutlineNumber"        : ""
+      }
+   ],
+   "AttributeOptions" : 
+   [
+	   {
+		   "AttrType"   : "Word Template Content",
+         "Label"      : "",
+         "FormatPre"  : "",
+         "FormatPost" : ""
+      }
+   ]
+}
+

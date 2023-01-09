@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -35,13 +36,35 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 /**
  * @author Megumi Telles
  */
 public class PreviewAndMultiPreviewTest {
+
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         ;
+   //@formatter:on
 
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
@@ -71,7 +94,8 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer(new HashMap<RendererOption, Object>());
+      MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer();
+      renderer.updateOption(RendererOption.TEMPLATE_OPTION, RendererOption.PREVIEW_ALL_VALUE.getKey());
       renderer.open(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
    }
 
@@ -149,6 +173,7 @@ public class PreviewAndMultiPreviewTest {
       multiArt3.persist(getClass().getSimpleName());
 
       MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer();
+      renderer.updateOption(RendererOption.TEMPLATE_OPTION, RendererOption.PREVIEW_ALL_VALUE.getKey());
       List<Artifact> newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
       renderer.open(newMultiArts, PresentationType.PREVIEW);
    }
@@ -169,7 +194,8 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      RendererManager.open(parentArtifact, PresentationType.PREVIEW);
+      RendererManager.open(parentArtifact, PresentationType.PREVIEW,
+         Map.of(RendererOption.TEMPLATE_OPTION, RendererOption.PREVIEW_ALL_VALUE.getKey()));
    }
 
    /**

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -88,8 +89,22 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       } else {
          return template;
       }
-      throw new OseeArgumentException("Unable to find a valid template match for [%s, %s, %s, %s].",
-         renderer.toString(), artifact.toString(), presentationType, option);
+
+      //@formatter:off
+      throw
+         new OseeArgumentException
+                (
+                   new Message()
+                      .title( "Unable to find a valid template match." )
+                      .indentInc()
+                      .segment( "Renderer Name",       renderer.getName()       )
+                      .segment( "Renderer Identifier", renderer.getIdentifier() )
+                      .segment( "Artifact",            artifact.toString()      )
+                      .segment( "Presentation Type",   presentationType         )
+                      .segment( "Option",              option                   )
+                      .toString()
+                );
+      //@formatter:on
    }
 
    private Artifact getArtifactFromOptionName(String name) {

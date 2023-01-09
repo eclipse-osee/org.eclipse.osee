@@ -1,0 +1,27 @@
+{
+   "ElementType"     : "NestedTemplate",
+   "NestedTemplates" :
+   [
+      {
+         "OutlineType"   : "",
+         "SectionNumber" : "3.2.1",
+         "SubDocName"    : "Communication Subsystem Crew Interface",
+         "Key"           : "Name",
+         "Value"         : "Communication Subsystem Crew Interface"
+      },
+      {
+         "OutlineType"   : "",
+         "SectionNumber" : "3.2.2",
+         "SubDocName"    : "Navigation Subsystem Crew Interface",
+         "Key"           : "Name",
+         "Value"         : "Navigation Subsystem Crew Interface"
+      },
+      {
+         "OutlineType"   : "",
+         "SectionNumber" : "3.2.3",
+         "SubDocName"    : "Aircraft Systems Management Subsystem Crew Interface",
+         "Key"           : "Name",
+         "Value"         : "Aircraft Systems Management Subsystem Crew Interface"
+      }
+   ]
+}

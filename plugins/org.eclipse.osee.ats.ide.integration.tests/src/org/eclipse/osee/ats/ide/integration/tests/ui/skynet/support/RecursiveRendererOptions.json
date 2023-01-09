@@ -1,0 +1,40 @@
+{ 
+   "ElementType"      : "Artifact",
+   "OutliningOptions" : 
+   [
+      {
+         "Outlining"            : true,
+         "RecurseChildren"      : true,
+         "HeadingAttributeType" : "Name",
+         "ArtifactName"         : "Default",
+         "OutlineNumber"        : ""
+      }
+   ],
+   "AttributeOptions" :
+   [
+      {
+         "AttrType"   : "Word Template Content",
+         "Label"      : "",
+         "FormatPre"  : "",
+         "FormatPost" : ""
+      }
+   ],
+   "MetadataOptions"  :
+   [
+      {
+         "Type"   : "Applicability",
+         "Format" : "",
+         "Label"  : ""
+      },
+      {
+         "Type"   : "Artifact Type",
+         "Format" : "",
+         "Label"  : ""
+      },
+      {
+         "Type"   : "Artifact Id",
+         "Format" : "",
+         "Label"  : ""
+      }
+   ]
+}

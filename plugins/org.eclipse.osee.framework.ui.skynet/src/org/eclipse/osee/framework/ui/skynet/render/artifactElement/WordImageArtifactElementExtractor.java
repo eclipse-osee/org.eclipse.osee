@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.w3c.dom.DOMException;
@@ -268,14 +269,14 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       int imageCheckSum;
 
       if (lookingForStart) {
-         binData = OseeLinkBuilder.START_BIN_DATA;
+         binData = WordCoreUtil.START_BIN_DATA;
 
          if (START_IMAGE_CHECKSUM == -1) {
             START_IMAGE_CHECKSUM = getCheckSum(binData);
          }
          imageCheckSum = START_IMAGE_CHECKSUM;
       } else {
-         binData = OseeLinkBuilder.END_BIN_DATA;
+         binData = WordCoreUtil.END_BIN_DATA;
 
          if (END_IMAGE_CHECKSUM == -1) {
             END_IMAGE_CHECKSUM = getCheckSum(binData);
