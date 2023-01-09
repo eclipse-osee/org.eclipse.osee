@@ -500,13 +500,12 @@ export class DiffReportService {
 										pTypeDiffItem.interfacePlatformTypeBitSize;
 								}
 								if (
-									item.interfacePlatformTypeDefaultValue !==
-									pTypeDiffItem.interfacePlatformTypeDefaultValue
+									item.interfaceDefaultValue !==
+									pTypeDiffItem.interfaceDefaultValue
 								) {
 									item.diffInfo!.fieldsChanged[
-										'interfacePlatformTypeDefaultValue'
-									] =
-										pTypeDiffItem.interfacePlatformTypeDefaultValue;
+										'interfaceDefaultValue'
+									] = pTypeDiffItem.interfaceDefaultValue;
 								}
 								if (
 									item.interfacePlatformTypeMaxval !==
@@ -584,10 +583,10 @@ export class DiffReportService {
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL
+								ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
 							) {
 								item.diffInfo!.fieldsChanged[
-									'interfacePlatformTypeDefaultValue'
+									'interfaceDefaultValue'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId === ATTRIBUTETYPEIDENUM.NOTES

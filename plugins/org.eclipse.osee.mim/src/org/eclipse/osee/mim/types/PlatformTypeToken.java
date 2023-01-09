@@ -41,7 +41,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
 
    private String InterfacePlatformTypeBitSize; //required
 
-   private String InterfacePlatformTypeDefaultValue;
+   private String InterfaceDefaultValue;
 
    private String InterfacePlatformTypeMsbValue;
 
@@ -78,8 +78,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeBitsResolution, ""));
       this.setInterfacePlatformTypeCompRate(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeCompRate, ""));
-      this.setInterfacePlatformTypeDefaultValue(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeDefaultValue, ""));
+      this.setInterfaceDefaultValue(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceDefaultValue, ""));
       this.setInterfacePlatformTypeMaxval(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeMaxval, ""));
       this.setInterfacePlatformTypeMinval(
@@ -198,15 +197,15 @@ public class PlatformTypeToken extends PLGenericDBObject {
    /**
     * @return the interfacePlatformTypeDefaultValue
     */
-   public String getInterfacePlatformTypeDefaultValue() {
-      return InterfacePlatformTypeDefaultValue;
+   public String getInterfaceDefaultValue() {
+      return this.InterfaceDefaultValue;
    }
 
    /**
     * @param interfacePlatformTypeDefaultValue the interfacePlatformTypeDefaultValue to set
     */
-   public void setInterfacePlatformTypeDefaultValue(String interfacePlatformTypeDefaultValue) {
-      InterfacePlatformTypeDefaultValue = interfacePlatformTypeDefaultValue;
+   public void setInterfaceDefaultValue(String interfaceDefaultValue) {
+      this.InterfaceDefaultValue = interfaceDefaultValue;
    }
 
    /**

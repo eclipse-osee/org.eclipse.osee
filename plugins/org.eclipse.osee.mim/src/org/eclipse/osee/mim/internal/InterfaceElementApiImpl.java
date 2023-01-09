@@ -163,8 +163,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
             platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
          element.setInterfacePlatformTypeMaxval(
             platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
-         element.setInterfacePlatformTypeDefaultValue(
-            platformType.getInterfacePlatformTypeDefaultValue() != null ? platformType.getInterfacePlatformTypeDefaultValue() : "");
+         element.setInterfaceDefaultValue(
+            platformType.getInterfaceDefaultValue() != null ? platformType.getInterfaceDefaultValue() : "");
          element.setUnits(
             platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
          element.setInterfacePlatformTypeDescription(

@@ -34,6 +34,7 @@ export class SubElementTableRowComponentMock {
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		interfaceElementAlterable: false,
+		interfaceDefaultValue: '',
 		enumLiteral: '',
 		units: 'Hertz',
 	};

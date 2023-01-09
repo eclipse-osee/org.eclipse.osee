@@ -153,29 +153,27 @@
 						>
 					</mat-form-field>
 					<mat-form-field>
-						<mat-label for="interfacePlatformTypeDefaultValue"
+						<mat-label for="interfaceDefaultValue"
 							>Default Value</mat-label
 						>
 						<input
 							matInput
 							type="text"
-							[(ngModel)]="
-								data.type.interfacePlatformTypeDefaultValue
-							"
+							[(ngModel)]="data.type.interfaceDefaultValue"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(defaultValRequired | async) || false"
 							[max]="data.type.interfacePlatformTypeMaxval"
 							[min]="data.type.interfacePlatformTypeMinval"
 							[ngModelOptions]="{ updateOn: 'blur' }"
-							id="interfacePlatformTypeDefaultValue"
-							name="interfacePlatformTypeDefaultValue"
-							#interfacePlatformTypeDefaultValue="ngModel" />
+							id="interfaceDefaultValue"
+							name="interfaceDefaultValue"
+							#interfaceDefaultValue="ngModel" />
 						<mat-hint align="end"
 							>Default Value for Platform Type</mat-hint
 						>
 						<mat-error
-							id="interfacePlatformTypeDefaultValue"
+							id="interfaceDefaultValue"
 							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
 							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
 							matches.</mat-error

@@ -37,7 +37,7 @@ public class InterfaceLogicalTypeEnumeration extends InterfaceLogicalTypeGeneric
       fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", false, true,
          CoreAttributeTypes.InterfacePlatformTypeMaxval));
       fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true,
-         CoreAttributeTypes.InterfacePlatformTypeDefaultValue));
+         CoreAttributeTypes.InterfaceDefaultValue));
       this.setFields(fields);
    }
 

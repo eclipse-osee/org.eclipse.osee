@@ -85,7 +85,7 @@ export class HeaderService {
 			humanReadable: 'Logical Type',
 		},
 		{
-			header: 'interfacePlatformTypeDefaultValue',
+			header: 'interfaceDefaultValue',
 			description: 'Default value of Element or Element Array',
 			humanReadable: 'Default',
 		},
@@ -494,7 +494,7 @@ export class HeaderService {
 			humanReadable: 'Max. Val',
 		},
 		{
-			header: 'interfacePlatformTypeDefaultValue',
+			header: 'interfaceDefaultValue',
 			description: 'Default value of element',
 			humanReadable: 'Default Val',
 		},

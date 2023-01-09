@@ -31,7 +31,7 @@ public class PlatformTypeImportToken extends PLGenericDBObject {
 
    private String InterfacePlatformTypeBitSize;
 
-   private String InterfacePlatformTypeDefaultValue;
+   private String InterfaceDefaultValue;
 
    private String Description;
 
@@ -41,7 +41,7 @@ public class PlatformTypeImportToken extends PLGenericDBObject {
 
    public PlatformTypeImportToken(Long id, String name) {
       super(id, name);
-      setInterfacePlatformTypeDefaultValue("");
+      setInterfaceDefaultValue("");
    }
 
    public PlatformTypeImportToken(Long id, String name, String logicalType, String bitSize, String minVal, String maxVal, String units, String description, String defaultValue, String validRange) {
@@ -51,7 +51,7 @@ public class PlatformTypeImportToken extends PLGenericDBObject {
       setInterfacePlatformTypeMinval(minVal);
       setInterfacePlatformTypeMaxval(maxVal);
       setInterfacePlatformTypeUnits(units);
-      setInterfacePlatformTypeDefaultValue(defaultValue);
+      setInterfaceDefaultValue(defaultValue);
       setDescription(description);
       setInterfacePlatformTypeValidRangeDescription(validRange);
    }
@@ -120,15 +120,15 @@ public class PlatformTypeImportToken extends PLGenericDBObject {
    /**
     * @return the interfacePlatformTypeDefaultValue
     */
-   public String getInterfacePlatformTypeDefaultValue() {
-      return InterfacePlatformTypeDefaultValue;
+   public String getInterfaceDefaultValue() {
+      return InterfaceDefaultValue;
    }
 
    /**
     * @param interfacePlatformTypeDefaultValue the interfacePlatformTypeDefaultValue to set
     */
-   public void setInterfacePlatformTypeDefaultValue(String interfacePlatformTypeDefaultValue) {
-      InterfacePlatformTypeDefaultValue = interfacePlatformTypeDefaultValue;
+   public void setInterfaceDefaultValue(String interfaceDefaultValue) {
+      InterfaceDefaultValue = interfaceDefaultValue;
    }
 
    /**

@@ -238,8 +238,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                   currentPlatformType.getInterfacePlatformTypeMinval() != null ? currentPlatformType.getInterfacePlatformTypeMinval() : "");
                element.setInterfacePlatformTypeMaxval(
                   currentPlatformType.getInterfacePlatformTypeMaxval() != null ? currentPlatformType.getInterfacePlatformTypeMaxval() : "");
-               element.setInterfacePlatformTypeDefaultValue(
-                  currentPlatformType.getInterfacePlatformTypeDefaultValue() != null ? currentPlatformType.getInterfacePlatformTypeDefaultValue() : "");
+               element.setInterfaceDefaultValue(
+                  currentPlatformType.getInterfaceDefaultValue() != null ? currentPlatformType.getInterfaceDefaultValue() : "");
                element.setUnits(
                   currentPlatformType.getInterfacePlatformTypeUnits() != null ? currentPlatformType.getInterfacePlatformTypeUnits() : "");
                lastElement = element;

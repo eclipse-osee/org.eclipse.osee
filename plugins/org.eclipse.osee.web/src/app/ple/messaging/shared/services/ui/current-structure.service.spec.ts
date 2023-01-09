@@ -223,7 +223,7 @@ servicesUnderTest.forEach((testCase) => {
 							interfacePlatformTypeBitsResolution: '',
 							interfacePlatformTypeBitSize: '',
 							interfacePlatformTypeCompRate: '',
-							interfacePlatformTypeDefaultValue: '',
+							interfaceDefaultValue: '',
 							interfacePlatformTypeMaxval: '',
 							interfacePlatformTypeMinval: '',
 							interfacePlatformTypeMsbValue: '',

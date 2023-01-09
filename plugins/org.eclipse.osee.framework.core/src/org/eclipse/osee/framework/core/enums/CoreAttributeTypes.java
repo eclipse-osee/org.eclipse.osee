@@ -170,7 +170,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString InterfacePlatformTypeMaxval = osee.createString(3899709087455064783L, "Interface Platform Type Maxval", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeBitSize = osee.createString(2455059983007225786L, "Interface Platform Type Bit Size", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfacePlatformType2sComplement = osee.createBoolean(3899709087455064784L, "Interface Platform Type 2sComplement", MediaType.TEXT_PLAIN, "Platform Type is 2's Complement");
-   AttributeTypeString InterfacePlatformTypeDefaultValue = osee.createString(2886273464685805413L, "Interface Platform Type Default Value", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString InterfaceDefaultValue = osee.createString(2886273464685805413L, "Interface Default Value", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeMsbValue = osee.createString(3899709087455064785L, "Interface Platform Type Msb Value", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeBitsResolution = osee.createString(3899709087455064786L, "Interface Platform Type Bits Resolution", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeCompRate = osee.createString(3899709087455064787L, "Interface Platform Type Comp Rate", MediaType.TEXT_PLAIN, "");

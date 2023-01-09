@@ -115,7 +115,7 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
             }
 
             String ident = mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(logicalType, minVal, maxVal,
-               validRange, units, bitSize);
+               validRange, units, defaultVal, bitSize);
             if (!suggestedName.isEmpty() && !platformTypes.containsKey(ident)) {
                if (usedNames.contains(suggestedName)) {
                   suggestedName += "_" + id;

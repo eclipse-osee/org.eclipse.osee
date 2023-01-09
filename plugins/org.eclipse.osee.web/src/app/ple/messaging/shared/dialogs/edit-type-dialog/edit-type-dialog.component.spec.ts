@@ -59,7 +59,7 @@ describe('EditTypeDialogComponent', () => {
 			interfacePlatformTypeBitsResolution: 'N/A',
 			interfacePlatformTypeCompRate: '50Hz',
 			interfacePlatformTypeBitSize: '8',
-			interfacePlatformTypeDefaultValue: '0',
+			interfaceDefaultValue: '0',
 			interfacePlatformTypeMinval: '0',
 			interfacePlatformTypeMsbValue: '0',
 			interfacePlatformTypeMaxval: '1',

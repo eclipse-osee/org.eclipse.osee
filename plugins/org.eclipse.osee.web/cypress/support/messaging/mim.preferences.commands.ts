@@ -109,7 +109,7 @@ Cypress.Commands.add(
 			'interfaceElementIndexStart',
 			'interfaceElementIndexEnd',
 			'logicalType',
-			'interfacePlatformTypeDefaultValue',
+			'interfaceDefaultValue',
 			'interfacePlatformTypeMinval',
 			'interfacePlatformTypeMaxval',
 			'interfacePlatformTypeDescription',

@@ -249,6 +249,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceTaskFileType)
       .zeroOrOne(GeneralStringData));
    ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, InterfaceArtifact)
+      .zeroOrOne(InterfaceDefaultValue)
       .zeroOrOne(InterfaceElementAlterable)
       .zeroOrOne(Notes)
       .zeroOrOne(InterfaceElementEnumLiteral));
@@ -262,7 +263,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfacePlatformTypeMinval)
       .zeroOrOne(InterfacePlatformTypeMaxval)
       .zeroOrOne(InterfacePlatformTypeUnits)
-      .zeroOrOne(InterfacePlatformTypeDefaultValue)
+      .zeroOrOne(InterfaceDefaultValue)
       .zeroOrOne(InterfacePlatformTypeMsbValue)
       .zeroOrOne(InterfacePlatformTypeBitsResolution)
       .zeroOrOne(InterfacePlatformTypeCompRate)

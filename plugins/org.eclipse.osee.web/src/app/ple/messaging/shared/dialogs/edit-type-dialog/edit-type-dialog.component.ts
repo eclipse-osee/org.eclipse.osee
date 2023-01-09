@@ -208,9 +208,7 @@ export class EditTypeDialogComponent implements OnDestroy {
 
 	defaultValRequired = this._fieldInfo.pipe(
 		filter(
-			(v) =>
-				v.attributeTypeId ===
-				ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL
+			(v) => v.attributeTypeId === ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
 		),
 		map((v) => v.required)
 	);
