@@ -11,3 +11,5 @@ plugins/*/utf8_input_copy.xml
 target/
 #Ignore workspace folders
 workspace/
+#Ignore Python cache
+__pycache__/
