@@ -49,7 +49,7 @@ export class NodeService {
 				params: {
 					count: 3,
 					pageNum: pageNum,
-					orderByAttribute: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEID.NAME,
 				},
 			}
 		);

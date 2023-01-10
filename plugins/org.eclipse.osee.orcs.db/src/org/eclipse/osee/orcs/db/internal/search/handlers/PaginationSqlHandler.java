@@ -59,12 +59,14 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
             writer.write(writer.getFirstAlias(OseeDb.ATTRIBUTE_TABLE));
             writer.write(".value");
             if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
-               writer.write(", ");
                String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
-               writer.write(relTable);
-               writer.write(".rel_type, ");
-               writer.write(relTable);
-               writer.write(".rel_order ");
+               if (relTable != null) {
+                  writer.write(", ");
+                  writer.write(relTable);
+                  writer.write(".rel_type, ");
+                  writer.write(relTable);
+                  writer.write(".rel_order ");
+               }
             }
          } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
             writer.write(", ");
