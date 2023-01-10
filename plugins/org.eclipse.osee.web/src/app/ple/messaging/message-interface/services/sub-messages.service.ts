@@ -68,7 +68,7 @@ export class SubMessagesService {
 				params: {
 					pageNum: pageNum,
 					count: 3,
-					orderByAttribute: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEID.NAME,
 				},
 			}
 		);

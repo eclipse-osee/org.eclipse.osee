@@ -59,7 +59,7 @@ export class TypesService {
 				params: {
 					count: 3,
 					pageNum: pageNum,
-					orderByAttribute: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEID.NAME,
 				},
 			}
 		);
@@ -77,7 +77,7 @@ export class TypesService {
 				params: {
 					count: 3,
 					pageNum: pageNum,
-					orderByAttribute: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEID.NAME,
 				},
 			}
 		);

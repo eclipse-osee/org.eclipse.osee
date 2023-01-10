@@ -39,7 +39,7 @@ export class TransportTypeService {
 				params: {
 					pageNum: pageNum,
 					count: pageSize,
-					orderByAttribute: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEID.NAME,
 				},
 			}
 		);
