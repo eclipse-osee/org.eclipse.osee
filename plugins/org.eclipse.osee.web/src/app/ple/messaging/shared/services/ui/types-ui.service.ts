@@ -40,14 +40,14 @@ import { EnumerationUIService } from './enumeration-ui.service';
 export class TypesUIService {
 	private _types = this._ui.id.pipe(
 		filter((id) => id !== ''),
-		share(),
+		//share(),
 		switchMap((x) =>
 			this._typesService.getTypes(x).pipe(
-				repeatWhen((_) => this._ui.update),
-				share()
+				repeatWhen((_) => this._ui.update)
+				//share()
 			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
+		)
+		//shareReplay({ bufferSize: 1, refCount: true })
 	);
 	constructor(
 		private _ui: UiService,

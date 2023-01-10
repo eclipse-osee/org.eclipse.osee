@@ -33,8 +33,8 @@ import { TransportTypeService } from '../http/transport-type.service';
 export class CurrentTransportTypeService {
 	private _types = this.ui.id.pipe(
 		filter((val) => val !== '' && val !== '0'),
-		switchMap((id) => this.transportTypeService.getAll(id)),
-		shareReplay({ bufferSize: 1, refCount: true })
+		switchMap((id) => this.transportTypeService.getAll(id))
+		//shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	private _transportTypes = this.ui.id.pipe(
