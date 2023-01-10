@@ -59,8 +59,9 @@ export class CreateConnectionDialogComponent implements OnDestroy {
 		},
 	};
 
-	transportTypes = (pageNum: string | number) =>
-		this.transportTypeService.getPaginatedTypes(pageNum, 3);
+	// transportTypes = (pageNum: string | number) =>
+	// 	this.transportTypeService.getPaginatedTypes(pageNum, 3);
+	transportTypes = this.transportTypeService.types;
 	constructor(
 		private graphService: CurrentGraphService,
 		private enumService: EnumsService,
