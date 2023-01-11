@@ -16,11 +16,11 @@ import { TransactionBuilderService } from '../../../transactions/transaction-bui
 import { transactionBuilderMock } from '../../../transactions/transaction-builder.service.mock';
 import { UserDataAccountService } from '../../../userdata/services/user-data-account.service';
 import { userDataAccountServiceMock } from '../../../userdata/services/user-data-account.service.mock';
-import { applicabilityListServiceMock } from '../shared/mocks/ApplicabilityListService.mock';
-import { enumerationSetServiceMock } from '../shared/mocks/enumeration.set.service.mock';
-import { enumsServiceMock } from '../shared/mocks/EnumsService.mock';
-import { MimPreferencesServiceMock } from '../shared/mocks/MimPreferencesService.mock';
-import { typesServiceMock } from '../shared/mocks/types.service.mock';
+import { applicabilityListServiceMock } from '../shared/testing/applicability-list.service.mock';
+import { enumerationSetServiceMock } from '../shared/testing/enumeration-set.service.mock';
+import { enumsServiceMock } from '../shared/testing/enums.service.mock';
+import { MimPreferencesServiceMock } from '../shared/testing/mim-preferences.service.mock';
+import { typesServiceMock } from '../shared/testing/types.service.mock';
 import { ApplicabilityListService } from '../shared/services/http/applicability-list.service';
 import { EnumerationSetService } from '../shared/services/http/enumeration-set.service';
 import { EnumsService } from '../shared/services/http/enums.service';
@@ -35,7 +35,7 @@ describe('TypeDetailComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule],
+			imports: [RouterTestingModule, TypeDetailComponent],
 			providers: [
 				{ provide: TypesService, useValue: typesServiceMock },
 				{
@@ -60,7 +60,7 @@ describe('TypeDetailComponent', () => {
 					useValue: applicabilityListServiceMock,
 				},
 			],
-			declarations: [TypeDetailComponent],
+			declarations: [],
 		}).compileComponents();
 	});
 

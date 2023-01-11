@@ -15,5 +15,6 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'osee-undo-button-branch',
 	template: '<p>Dummy</p>',
+	standalone: true,
 })
 export class UndoButtonBranchMockComponent {}

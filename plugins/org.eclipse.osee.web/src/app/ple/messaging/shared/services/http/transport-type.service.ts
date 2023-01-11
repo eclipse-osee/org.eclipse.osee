@@ -13,7 +13,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
-import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from '../../../../../types/constants/AttributeTypeId.enum';
 import { transportType } from '../../types/transportType';
 
 @Injectable({
@@ -39,7 +42,7 @@ export class TransportTypeService {
 				params: {
 					pageNum: pageNum,
 					count: pageSize,
-					orderByAttributeType: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
 			}
 		);

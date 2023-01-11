@@ -18,12 +18,12 @@ import {
 } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { subMessage } from '../../../message-interface/types/sub-messages';
-import { AffectedArtifactDialogComponent } from '../../components/dialogs/affected-artifact-dialog/affected-artifact-dialog.component';
+import { subMessage } from '../../types/sub-messages';
+import { AffectedArtifactDialogComponent } from '../../dialogs/affected-artifact-dialog/affected-artifact-dialog.component';
 import { affectedArtifactWarning } from '../../types/affectedArtifact';
 import { element } from '../../types/element';
 import { structure } from '../../types/structure';
-import { BranchedAffectedArtifactService } from './branched-affected-artifact.service';
+import { BranchedAffectedArtifactService } from '../ui/branched-affected-artifact.service';
 
 @Injectable({
 	providedIn: 'any',

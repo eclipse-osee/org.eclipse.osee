@@ -17,8 +17,7 @@ import { relation, transaction } from 'src/app/transactions/transaction';
 import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { TransactionService } from '../../../../../transactions/transaction.service';
-import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
-import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 
 @Injectable({
@@ -40,7 +39,7 @@ export class EnumerationSetService {
 		return of<transaction>(
 			this.builder.createArtifact(
 				type,
-				ARTIFACTTYPEID.ENUMSET,
+				ARTIFACTTYPEIDENUM.ENUMSET,
 				relations,
 				transaction,
 				branchId,
@@ -75,7 +74,7 @@ export class EnumerationSetService {
 		return of<transaction>(
 			this.builder.createArtifact(
 				type,
-				ARTIFACTTYPEID.ENUM,
+				ARTIFACTTYPEIDENUM.ENUM,
 				relations,
 				transaction,
 				branchId,

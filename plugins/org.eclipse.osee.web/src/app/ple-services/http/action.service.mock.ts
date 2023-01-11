@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { user } from 'src/app/userdata/types/user-data-user';
+import { user } from '../../userdata/types/user-data-user';
 import { ActionService } from './action.service';
 import {
 	newActionInterface,

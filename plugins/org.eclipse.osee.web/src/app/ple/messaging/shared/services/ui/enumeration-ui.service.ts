@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { from, iif, of } from 'rxjs';
+import { from, iif, Observable, of } from 'rxjs';
 import {
 	share,
 	switchMap,
@@ -75,7 +75,8 @@ export class EnumerationUIService {
 			transaction
 		);
 	}
-	get enumSets() {
+	// type inference is failing here
+	get enumSets(): Observable<enumerationSet[]> {
 		return this._enumSets;
 	}
 	getEnumSet(platformTypeId: string) {

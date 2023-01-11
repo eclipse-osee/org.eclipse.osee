@@ -12,8 +12,9 @@
  **********************************************************************/
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BranchPickerStub } from 'src/app/shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 
 import { ReportsComponent } from './reports.component';
 
@@ -23,8 +24,14 @@ describe('ReportsComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule, HttpClientTestingModule],
-			declarations: [ReportsComponent, BranchPickerStub],
+			imports: [
+				RouterTestingModule,
+				NoopAnimationsModule,
+				BranchPickerStub,
+				HttpClientTestingModule,
+				ReportsComponent,
+			],
+			declarations: [],
 		}).compileComponents();
 	});
 

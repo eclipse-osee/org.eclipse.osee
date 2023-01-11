@@ -12,6 +12,7 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,11 +21,24 @@ import { UserDataAccountService } from '../../userdata/services/user-data-accoun
 import { userDataAccountServiceMock } from '../../userdata/services/user-data-account.service.mock';
 
 import { MessagingComponent } from './messaging.component';
-import {
-	MessagingHelpDummy,
-	MessagingMainMock,
-	MessagingTypeSearchMock,
-} from './mocks/components/navigation-components.mock';
+
+@Component({
+	selector: 'osee-mock-help',
+	template: '<p>Dummy</p>',
+})
+class MessagingHelpDummyComponent {}
+
+@Component({
+	selector: 'osee-mock-main',
+	template: '<p>Dummy</p>',
+})
+class MessagingMainMockComponent {}
+
+@Component({
+	selector: 'osee-mock-type-search',
+	template: '<p>Dummy</p>',
+})
+class MessagingTypeSearchMockComponent {}
 
 describe('MessagingComponent', () => {
 	let component: MessagingComponent;
@@ -34,10 +48,17 @@ describe('MessagingComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
+				MessagingComponent,
 				RouterTestingModule.withRoutes([
-					{ path: 'connections', component: MessagingMainMock },
-					{ path: 'typeSearch', component: MessagingTypeSearchMock },
-					{ path: 'help', component: MessagingHelpDummy },
+					{
+						path: 'connections',
+						component: MessagingMainMockComponent,
+					},
+					{
+						path: 'typeSearch',
+						component: MessagingTypeSearchMockComponent,
+					},
+					{ path: 'help', component: MessagingHelpDummyComponent },
 				]),
 				MatIconModule,
 			],
@@ -48,10 +69,9 @@ describe('MessagingComponent', () => {
 				},
 			],
 			declarations: [
-				MessagingComponent,
-				MessagingMainMock,
-				MessagingTypeSearchMock,
-				MessagingHelpDummy,
+				MessagingMainMockComponent,
+				MessagingTypeSearchMockComponent,
+				MessagingHelpDummyComponent,
 			],
 		}).compileComponents();
 	});

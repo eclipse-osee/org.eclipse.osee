@@ -18,38 +18,25 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { httpInterceptorProviders } from './interceptors/http/interceptor-provider';
 
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 //Sub-component imports
-import { DisplayUserComponent } from './userdata/components/display-user/display-user.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../environments/environment';
 import { UserHeaderService } from './userdata/services/user-header.service';
-import { NavigationModule } from './navigation/navigation.module';
 import { UrlSerializer } from '@angular/router';
 import { OseeUrlSerializer } from './UrlSerializer';
+import { NavContainerComponent } from './layout/lib/containers/nav-container.component';
 
 @NgModule({
-	declarations: [AppComponent, DisplayUserComponent],
+	declarations: [AppComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
-		MatSidenavModule,
-		MatToolbarModule,
-		MatButtonModule,
-		MatMenuModule,
-		MatIconModule,
-		MatProgressBarModule,
 		BrowserAnimationsModule,
-		NavigationModule,
+		NavContainerComponent,
 		MarkdownModule.forRoot({
 			markedOptions: {
 				provide: MarkedOptions,

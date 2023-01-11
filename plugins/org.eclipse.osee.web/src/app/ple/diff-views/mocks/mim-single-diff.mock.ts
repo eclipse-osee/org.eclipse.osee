@@ -15,6 +15,7 @@ import { Component, Input } from '@angular/core';
 @Component({
 	selector: 'osee-single-diff',
 	template: '<div>Dummy</div>',
+	standalone: true,
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class MimSingleDiffDummy {

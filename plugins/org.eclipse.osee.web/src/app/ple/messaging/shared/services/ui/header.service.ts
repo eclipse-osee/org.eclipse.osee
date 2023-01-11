@@ -15,8 +15,8 @@ import { BehaviorSubject, from, iif, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
 import { element } from '../../types/element';
 import { structure } from '../../types/structure';
-import { message } from '../../../message-interface/types/messages';
-import { subMessage } from '../../../message-interface/types/sub-messages';
+import { message } from '../../types/messages';
+import { subMessage } from '../../types/sub-messages';
 import {
 	branchSummaryHeaderDetail,
 	connectionDiffHeaderDetail,

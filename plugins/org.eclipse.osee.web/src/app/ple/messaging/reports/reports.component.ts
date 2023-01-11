@@ -11,28 +11,48 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
-import { ActivatedRoute } from '@angular/router';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { from, iif, of } from 'rxjs';
 import { filter, scan, startWith, switchMap, tap } from 'rxjs/operators';
 import { applic } from 'src/app/types/applicability/applic';
-import { ConnectionService } from '../connection-view/services/connection.service';
-import { RouteStateService } from '../connection-view/services/route-state-service.service';
+import { ConnectionService } from '../shared/services/http/connection.service';
 import { ApplicabilityListService } from '../shared/services/http/applicability-list.service';
 import { ReportsService } from '../shared/services/ui/reports.service';
 import { connection } from '../shared/types/connection';
 import { MimReport } from '../shared/types/Reports';
-import { transportType } from '../shared/types/transportType';
+import { UiService } from '../../../ple-services/ui/ui.service';
+import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-messaging-reports',
 	templateUrl: './reports.component.html',
 	styleUrls: ['./reports.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		AsyncPipe,
+		RouterLink,
+		NgFor,
+		FormsModule,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatOptionModule,
+		MatCheckboxModule,
+		MatButtonModule,
+		BranchPickerComponent,
+	],
 })
 export class ReportsComponent implements OnInit {
 	constructor(
 		private route: ActivatedRoute,
-		private routerState: RouteStateService,
+		private routerState: UiService,
 		private reportsService: ReportsService,
 		private connectionService: ConnectionService,
 		private applicService: ApplicabilityListService
@@ -40,8 +60,8 @@ export class ReportsComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
-			this.routerState.branchId = params.get('branchId') || '';
-			this.routerState.branchType = params.get('branchType') || '';
+			this.routerState.idValue = params.get('branchId') || '';
+			this.routerState.typeValue = params.get('branchType') || '';
 		});
 	}
 
@@ -141,3 +161,5 @@ export class ReportsComponent implements OnInit {
 		this.reportsService.IncludeDiff = value;
 	}
 }
+
+export default ReportsComponent;

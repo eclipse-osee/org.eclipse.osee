@@ -11,12 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CurrentBranchTransactionService } from '../../../../ple-services/httpui/current-branch-transaction.service';
 
 @Component({
 	selector: 'osee-undo-button-branch',
 	templateUrl: './undo-button-branch.component.html',
 	styleUrls: ['./undo-button-branch.component.sass'],
+	standalone: true,
+	imports: [MatButtonModule, MatTooltipModule, MatIconModule],
 })
 export class UndoButtonBranchComponent {
 	private _undoLatest = this._undoService.undoLatest;

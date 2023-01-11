@@ -10,15 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CurrentTypesService } from './services/current-types.service';
-import { PlMessagingTypesUIService } from './services/pl-messaging-types-ui.service';
+import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
+import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
+import { UndoButtonBranchComponent } from '../../../shared-components/components/branch-undo-button/undo-button-branch/undo-button-branch.component';
+import { CurrentTypesService } from './lib/services/current-types.service';
+import { PlMessagingTypesUIService } from './lib/services/pl-messaging-types-ui.service';
+import { TypeGridComponent } from './lib/type-grid/type-grid/type-grid.component';
 
 @Component({
 	selector: 'osee-messaging-types-interface',
 	templateUrl: './types-interface.component.html',
 	styleUrls: ['./types-interface.component.sass'],
+	standalone: true,
+	imports: [
+		BranchPickerComponent,
+		NgIf,
+		AsyncPipe,
+		UndoButtonBranchComponent,
+		ActionDropDownComponent,
+		TypeGridComponent,
+	],
 })
 export class TypesInterfaceComponent implements OnInit {
 	filterValue: string = '';
@@ -37,3 +51,5 @@ export class TypesInterfaceComponent implements OnInit {
 		});
 	}
 }
+
+export default TypesInterfaceComponent;

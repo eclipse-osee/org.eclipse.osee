@@ -13,7 +13,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { RouteStateService } from '../messaging/connection-view/services/route-state-service.service';
 
 @Component({
 	selector: 'osee-change-report',
@@ -21,16 +20,12 @@ import { RouteStateService } from '../messaging/connection-view/services/route-s
 	styleUrls: ['./change-report.component.sass'],
 })
 export class ChangeReportComponent implements OnInit {
-	constructor(
-		private route: ActivatedRoute,
-		private routerState: RouteStateService,
-		private uiService: UiService
-	) {}
+	constructor(private route: ActivatedRoute, private uiService: UiService) {}
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
-			this.routerState.branchId = params.get('branchId') || '';
-			this.routerState.branchType = params.get('branchType') || '';
+			this.uiService.idValue = params.get('branchId') || '';
+			this.uiService.typeValue = params.get('branchType') || '';
 		});
 	}
 

@@ -13,7 +13,7 @@
 import { of } from 'rxjs';
 import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 import { testGlobalUserPrefs } from '../../../../plconfig/testing/mockTypes';
-import { MimPreferencesMock } from '../../mocks/MimPreferences.mock';
+import { MimPreferencesMock } from '../../testing/mim-preferences.response.mock';
 import { PreferencesUIService } from './preferences-ui.service';
 
 export const preferencesUiServiceMock: Partial<PreferencesUIService> = {

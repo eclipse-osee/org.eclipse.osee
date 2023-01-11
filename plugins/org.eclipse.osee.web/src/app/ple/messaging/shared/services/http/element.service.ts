@@ -12,15 +12,14 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { relation, transaction } from '../../../../../transactions/transaction';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
-import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { element } from '../../types/element';
-import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../../transactions/transaction.service';
-import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -73,7 +72,7 @@ export class ElementService {
 				params: {
 					count: 3,
 					pageNum: pageNum,
-					orderByAttributeType: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
 			}
 		);
@@ -116,7 +115,7 @@ export class ElementService {
 			return of(
 				this.builder.createArtifact(
 					body,
-					ARTIFACTTYPEID.ELEMENT,
+					ARTIFACTTYPEIDENUM.ELEMENT,
 					relations,
 					transaction,
 					branchId,
@@ -129,7 +128,7 @@ export class ElementService {
 			return of(
 				this.builder.createArtifact(
 					body,
-					ARTIFACTTYPEID.ELEMENT_ARRAY,
+					ARTIFACTTYPEIDENUM.ELEMENT_ARRAY,
 					relations,
 					transaction,
 					branchId,

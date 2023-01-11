@@ -20,7 +20,7 @@ import {
 	affectedArtifactHttpServiceMock,
 	affectedArtifactHttpServiceWithWarningResultsMock,
 	warningArtifacts,
-} from '../../mocks/affected-artifact.http.service.mock';
+} from '../../testing/affected-artifact.service.mock';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { WarningDialogService } from './warning-dialog.service';

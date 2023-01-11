@@ -10,30 +10,44 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
 import { iif, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { RouteStateService } from '../connection-view/services/route-state-service.service';
-import { ImportService } from './services/import.service';
+import { UiService } from '../../../ple-services/ui/ui.service';
+import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
+import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
+import { ImportService } from './lib/services/import.service';
 
 @Component({
 	selector: 'osee-import',
 	templateUrl: './import.component.html',
 	styleUrls: ['./import.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		NgFor,
+		AsyncPipe,
+		MatButtonModule,
+		MatSelectModule,
+		ActionStateButtonModule,
+		BranchPickerModule,
+	],
 })
 export class ImportComponent implements OnInit, OnDestroy {
 	constructor(
 		private route: ActivatedRoute,
-		private routerState: RouteStateService,
+		private routerState: UiService,
 		private importService: ImportService
 	) {}
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
-			this.routerState.branchId = params.get('branchId') || '';
-			this.routerState.branchType = params.get('branchType') || '';
+			this.routerState.idValue = params.get('branchId') || '';
+			this.routerState.typeValue = params.get('branchType') || '';
 		});
 	}
 
@@ -83,3 +97,5 @@ export class ImportComponent implements OnInit, OnDestroy {
 		this.importService.performImport();
 	}
 }
+
+export default ImportComponent;

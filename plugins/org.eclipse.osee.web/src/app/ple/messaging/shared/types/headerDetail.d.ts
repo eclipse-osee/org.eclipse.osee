@@ -12,8 +12,8 @@
  **********************************************************************/
 import { element } from './element';
 import { structure } from './structure';
-import { message } from '../../message-interface/types/messages';
-import { subMessage } from '../../message-interface/types/sub-messages';
+import { message } from './messages';
+import { subMessage } from './sub-messages';
 import {
 	branchSummary,
 	connectionDiffItem,

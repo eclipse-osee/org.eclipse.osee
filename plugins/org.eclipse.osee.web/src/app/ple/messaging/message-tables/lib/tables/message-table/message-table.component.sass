@@ -1,0 +1,82 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use "../../../../../../../sass-utils/mat-table-utils" as utils
+@use '../../../../../../../modern-ple-theme'
+@use '../../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
+
+:host-context(.light-theme)
+  @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+  @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+
+.full-width
+  width: 100%
+table
+  @extend .full-width
+.message-interface-table-view-width-100
+  @extend .full-width
+.mat-header-cell
+  font-size: 14px
+.message-sub-detail-row:not(.message-sub-detail-row-expanded)
+  display: none
+tr.message-expanded-detail-row
+  height: 0
+.message-detail-row td
+  border-bottom-width: 0
+.sub-message-table-message-table-detail
+  overflow: hidden
+  display: flex
+  flex-direction: column
+.message-interface-table-filter-padding
+  padding-bottom: 1em
+.message-interface-table-view-message-header
+  font-weight: bold
+  padding: 0 2px 0 2px
+.flex-cell
+  display: flex
+  align-items: center
+  width: 95%
+.new-message-button
+  z-index: 10
+  position: fixed
+  bottom: 3%
+  right: 2%
+
+@include utils.table-column-width('name', 200px)
+@include utils.table-column-width('interfaceMessageNumber', 50px)
+@include utils.table-column-width('interfaceMessagePeriodicity', 120px)
+@include utils.table-column-width('interfaceMessageRate', 50px)
+@include utils.table-column-width('interfaceMessageWriteAccess ', 90px)
+@include utils.table-column-width('interfaceMessageType', 120px)
+
+.mat-column-interfaceMessageNumber .mat-column-interfaceMessageRate
+  padding-right: 1em
+
+.connections-button
+  margin: 1em 0 0 1em
+
+.message-interface-header
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  padding: 0 1em
+  .grouped-buttons
+    display: flex
+    flex-direction: row
+    align-items: center
+    margin-top: 1em
+    gap: 5px
+.message-attribute-cell
+  padding: 0 2px 0 2px
+.message-interface
+  padding-bottom: 0.5em

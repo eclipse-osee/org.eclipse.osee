@@ -13,12 +13,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { RouterStateService } from './services/router/router-state.service';
+import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
+import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
+import { RouterStateService } from './lib/services/router-state.service';
+import { ElementTableComponent } from './lib/tables/element-table/element-table.component';
 
 @Component({
 	selector: 'osee-typesearch-type-element-search',
 	templateUrl: './type-element-search.component.html',
 	styleUrls: ['./type-element-search.component.sass'],
+	standalone: true,
+	imports: [
+		BranchPickerComponent,
+		ActionDropDownComponent,
+		ElementTableComponent,
+	],
 })
 export class TypeElementSearchComponent implements OnInit {
 	constructor(
@@ -44,3 +53,4 @@ export class TypeElementSearchComponent implements OnInit {
 			.subscribe();
 	}
 }
+export default TypeElementSearchComponent;

@@ -14,6 +14,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
 	name: 'displayTruncatedStringWithFieldOverflow',
+	standalone: true,
 })
 export class DisplayTruncatedStringWithFieldOverflowPipe
 	implements PipeTransform

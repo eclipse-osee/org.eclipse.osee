@@ -37,8 +37,9 @@ describe('DisplayUserComponent', () => {
 				MatButtonModule,
 				RouterTestingModule,
 				NoopAnimationsModule,
+				DisplayUserComponent,
 			],
-			declarations: [DisplayUserComponent],
+			declarations: [],
 		}).compileComponents();
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});

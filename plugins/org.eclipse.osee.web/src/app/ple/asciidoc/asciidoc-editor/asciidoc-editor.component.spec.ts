@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MarkdownModule } from 'ngx-markdown';
-import { BranchPickerStub } from 'src/app/shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 import { currentTextEditorServiceMock } from '../mocks/current-text-editor-service.mock';
 import { ResizableSplitPaneCodeComponent } from '../resizable-split-pane-code/resizable-split-pane-code.component';
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
@@ -43,11 +43,11 @@ describe('AsciidocEditorComponent', () => {
 				MarkdownModule.forRoot(),
 				NoopAnimationsModule,
 				FormsModule,
+				BranchPickerStub,
 			],
 			declarations: [
 				AsciidocEditorComponent,
 				ResizableSplitPaneCodeComponent,
-				BranchPickerStub,
 			],
 			providers: [
 				{

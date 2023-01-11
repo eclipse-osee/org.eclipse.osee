@@ -1,5 +1,5 @@
-import { messageToken } from '../../message-interface/types/messages';
-import { subMessage } from '../../message-interface/types/sub-messages';
+import { messageToken } from './messages';
+import { subMessage } from './sub-messages';
 import { elementImportToken } from './element';
 import { enumeration, enumSet } from './enum';
 import { nodeToken } from './node';

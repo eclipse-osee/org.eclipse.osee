@@ -18,11 +18,15 @@ import {
 	SimpleChanges,
 } from '@angular/core';
 import { BranchCategoryService } from '../../../../shared-services/ui/branch-category.service';
+import { BranchSelectorComponent } from '../branch-selector/branch-selector.component';
+import { BranchTypeSelectorComponent } from '../branch-type-selector/branch-type-selector.component';
 
 @Component({
 	selector: 'osee-branch-picker',
 	templateUrl: './branch-picker.component.html',
 	styleUrls: ['./branch-picker.component.sass'],
+	standalone: true,
+	imports: [BranchTypeSelectorComponent, BranchSelectorComponent],
 })
 export class BranchPickerComponent implements OnChanges {
 	@Input() category: string = '0';

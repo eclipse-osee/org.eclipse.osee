@@ -12,10 +12,17 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { DisplayTruncatedStringWithFieldOverflowPipe } from './display-truncated-string-with-field-overflow.pipe';
+import { FirstLetterLowerPipe } from './first-letter-lower.pipe';
 
 @NgModule({
-	declarations: [DisplayTruncatedStringWithFieldOverflowPipe],
-	imports: [],
-	exports: [DisplayTruncatedStringWithFieldOverflowPipe],
+	declarations: [],
+	imports: [
+		FirstLetterLowerPipe,
+		DisplayTruncatedStringWithFieldOverflowPipe,
+	],
+	exports: [
+		DisplayTruncatedStringWithFieldOverflowPipe,
+		FirstLetterLowerPipe,
+	],
 })
 export class OseeStringUtilsPipesModule {}

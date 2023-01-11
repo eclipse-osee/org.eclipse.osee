@@ -10,14 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-messaging-help',
 	templateUrl: './messaging-help.component.html',
 	styleUrls: ['./messaging-help.component.sass'],
+	standalone: true,
+	imports: [MatButtonModule, RouterLink],
 })
 export class MessagingHelpComponent {
-	constructor(private route: ActivatedRoute, private router: Router) {}
+	constructor() {}
 }
+export default MessagingHelpComponent;

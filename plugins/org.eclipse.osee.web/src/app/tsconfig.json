@@ -12,5 +12,5 @@
  **********************************************************************/
 /* Note this file serves just to keep angular language service from crashing. */
 {
-	"extends": "../../tsconfig.app.json"
+	"extends": "../../tsconfig.editor.json"
 }

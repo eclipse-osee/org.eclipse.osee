@@ -43,7 +43,7 @@ class OuterComponent implements AfterViewInit {
 	}
 }
 
-describe('MatOptionLoading2Component', async () => {
+describe('MatOptionLoadingComponent', async () => {
 	let component: OuterComponent;
 	let fixture: ComponentFixture<OuterComponent>;
 	let loader: HarnessLoader;
@@ -60,8 +60,9 @@ describe('MatOptionLoading2Component', async () => {
 				MatButtonModule,
 				ScrollingModule,
 				NoopAnimationsModule,
+				MatOptionLoadingComponent,
 			],
-			declarations: [MatOptionLoadingComponent, OuterComponent],
+			declarations: [OuterComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(OuterComponent);

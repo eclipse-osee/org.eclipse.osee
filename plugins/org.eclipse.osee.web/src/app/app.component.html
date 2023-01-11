@@ -12,72 +12,10 @@
  -->
 <div
 	class="light-theme"
-	(keydown.escape)="topLevelNav.close(); closeTopLevelNavIcon()">
-	<mat-toolbar class="top-toolbar-container">
-		<div class="top-toolbar">
-			<!-- Top Level Nav - Button -->
-			<button
-				mat-icon-button
-				(click)="topLevelNav.toggle(); toggleTopLevelNavIcon()">
-				<mat-icon>{{ topLevelNavIcon }}</mat-icon>
-			</button>
-
-			<img
-				src="favicon.ico"
-				width="48"
-				height="47" />
-			<router-outlet
-				name="title"
-				(click)="
-					topLevelNav.close(); closeTopLevelNavIcon()
-				"></router-outlet>
-			<router-outlet
-				name="navigationHeader"
-				(click)="
-					topLevelNav.close(); closeTopLevelNavIcon()
-				"></router-outlet>
-		</div>
-		<osee-display-user
-			(click)="
-				topLevelNav.close(); closeTopLevelNavIcon()
-			"></osee-display-user>
-	</mat-toolbar>
-	<ng-container *ngIf="(isLoading | async) === 'true'">
-		<mat-progress-bar mode="indeterminate"></mat-progress-bar>
-	</ng-container>
+	(keydown.escape)="closeTopLevelNavIcon()">
+	<router-outlet name="toolbar"></router-outlet>
 	<a
 		id="app-top"
 		aria-hidden="true"></a>
-	<mat-sidenav-container
-		hasBackdrop="false"
-		(keydown.escape)="closeTopLevelNavIcon()">
-		<mat-sidenav-content
-			class="sidenav-content"
-			(click)="topLevelNav.close(); closeTopLevelNavIcon()">
-			<router-outlet></router-outlet>
-		</mat-sidenav-content>
-		<mat-sidenav
-			position="end"
-			mode="side"
-			[opened]="opened | async"
-			class="mat-elevation-z9"
-			[fixedInViewport]="true"
-			[fixedTopGap]="64"
-			[fixedBottomGap]="0">
-			<router-outlet name="rightSideNav"></router-outlet>
-		</mat-sidenav>
-		<!-- Top Level Nav - Left -->
-		<mat-sidenav
-			position="start"
-			mode="side"
-			class="mat-elevation-z9"
-			[fixedInViewport]="true"
-			[fixedTopGap]="64"
-			[fixedBottomGap]="0"
-			#topLevelNav>
-			<nav class="side-nav">
-				<router-outlet name="TopLevelNav"></router-outlet>
-			</nav>
-		</mat-sidenav>
-	</mat-sidenav-container>
+	<osee-nav-container></osee-nav-container>
 </div>

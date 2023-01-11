@@ -1,0 +1,41 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #logicalTypeSelector="ngForm">
+	<mat-form-field
+		class="wide-form"
+		required>
+		<mat-label>Logical Type</mat-label>
+		<mat-select
+			[(ngModel)]="type"
+			(ngModelChange)="setType($event)"
+			data-cy="logical-type-selector"
+			name="logicalType"
+			required
+			oseeHasValidId
+			[errorStateMatcher]="parentMatcher"
+			[compareWith]="compareIds">
+			<osee-mat-option-loading
+				[data]="logicalTypes"
+				objectName="Logical Types"
+				[paginationSize]="10">
+				<ng-template let-option>
+					<mat-option
+						[value]="option"
+						[attr.data-cy]="'logical-type-' + option.name">
+						{{ option.name | titlecase }}
+					</mat-option>
+				</ng-template>
+			</osee-mat-option-loading>
+		</mat-select>
+	</mat-form-field>
+</form>

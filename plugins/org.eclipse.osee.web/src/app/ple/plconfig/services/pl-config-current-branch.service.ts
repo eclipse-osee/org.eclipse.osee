@@ -51,7 +51,10 @@ import {
 	ignoreType,
 	ModificationType,
 } from 'src/app/types/change-report/change-report.d';
-import { ARTIFACTTYPEID } from 'src/app/types/constants/ArtifactTypeId.enum';
+import {
+	ARTIFACTTYPEID,
+	ARTIFACTTYPEIDENUM,
+} from 'src/app/types/constants/ArtifactTypeId.enum';
 import {
 	action,
 	actionImpl,
@@ -80,7 +83,10 @@ import {
 	ExtendedNameValuePair,
 	ExtendedNameValuePairWithChanges,
 } from '../types/base-types/ExtendedNameValuePair';
-import { ATTRIBUTETYPEID } from 'src/app/types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from 'src/app/types/constants/AttributeTypeId.enum';
 import {
 	extendedFeature,
 	extendedFeatureWithChanges,
@@ -556,7 +562,7 @@ export class PlConfigCurrentBranchService {
 		user?: string;
 		date?: string;
 	}) {
-		this.sideNavService.sideNav = value;
+		this.sideNavService.rightSideNav = value;
 	}
 	public get cfgGroups() {
 		return this.uiStateService.branchId.pipe(
@@ -1083,7 +1089,7 @@ export class PlConfigCurrentBranchService {
 			previousValue: change.baselineVersion.value,
 			transactionToken: change.currentVersion.transactionToken,
 		};
-		if (change.itemTypeId === ATTRIBUTETYPEID.NAME) {
+		if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 			if (
 				feature.name === (change.currentVersion.value as string) &&
 				!feature.deleted
@@ -1098,7 +1104,7 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
 			if (
 				feature.description ===
 					(change.currentVersion.value as string) &&
@@ -1114,7 +1120,7 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.PRODUCT_TYPE) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE) {
 			if (feature.productApplicabilities === undefined) {
 				feature.productApplicabilities = [];
 			}
@@ -1158,7 +1164,7 @@ export class PlConfigCurrentBranchService {
 					});
 				}
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.MULTIVALUED) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.MULTIVALUED) {
 			if (
 				feature.multiValued ===
 					((change.currentVersion.value as string) === 'true') &&
@@ -1183,7 +1189,7 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.FEATUREVALUE) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.FEATUREVALUE) {
 			if (
 				feature.valueType === (change.currentVersion.value as string) &&
 				!feature.deleted
@@ -1198,7 +1204,7 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.DEFAULTVALUE) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE) {
 			if (
 				feature.defaultValue ===
 					(change.currentVersion.value as string) &&
@@ -1214,7 +1220,7 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.VALUE) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.VALUE) {
 			if (feature.changes.values === undefined) {
 				feature.changes.values = [];
 			}
@@ -1267,7 +1273,7 @@ export class PlConfigCurrentBranchService {
 			previousValue: change.baselineVersion.value,
 			transactionToken: change.currentVersion.transactionToken,
 		};
-		if (change.itemTypeId === ATTRIBUTETYPEID.NAME) {
+		if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 			if (
 				group.name === (change.currentVersion.value as string) &&
 				!group.deleted
@@ -1294,7 +1300,7 @@ export class PlConfigCurrentBranchService {
 			previousValue: change.baselineVersion.value,
 			transactionToken: change.currentVersion.transactionToken,
 		};
-		if (change.itemTypeId === ATTRIBUTETYPEID.NAME) {
+		if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 			if (
 				view.name === (change.currentVersion.value as string) &&
 				!view.deleted
@@ -1309,7 +1315,7 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else if (change.itemTypeId === ATTRIBUTETYPEID.PRODUCT_TYPE) {
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE) {
 			if (view.changes.productApplicabilities === undefined) {
 				view.changes.productApplicabilities = [];
 			}
@@ -2314,7 +2320,7 @@ export class PlConfigCurrentBranchService {
 									iif(
 										() =>
 											change.itemTypeId ===
-												ARTIFACTTYPEID.CONFIGURATION &&
+												ARTIFACTTYPEIDENUM.CONFIGURATION &&
 											change.currentVersion
 												.transactionToken.id !== '-1',
 										iif(
@@ -2506,7 +2512,8 @@ export class PlConfigCurrentBranchService {
 																			val.id ===
 																			change.artId
 																	) as viewWithChanges
-																).deleted = true;
+																).deleted =
+																	true;
 															})
 														),
 														of()
@@ -2517,7 +2524,7 @@ export class PlConfigCurrentBranchService {
 										iif(
 											() =>
 												change.itemTypeId ===
-													ARTIFACTTYPEID.CONFIGURATION_GROUP &&
+													ARTIFACTTYPEIDENUM.CONFIGURATION_GROUP &&
 												change.currentVersion
 													.transactionToken.id !==
 													'-1',
@@ -2624,7 +2631,7 @@ export class PlConfigCurrentBranchService {
 											iif(
 												() =>
 													change.itemTypeId ===
-														ARTIFACTTYPEID.FEATURE &&
+														ARTIFACTTYPEIDENUM.FEATURE &&
 													change.currentVersion
 														.transactionToken.id !==
 														'-1',
@@ -2716,7 +2723,8 @@ export class PlConfigCurrentBranchService {
 																				val.id ===
 																				change.artId
 																		) as extendedFeatureWithChanges
-																	).added = true;
+																	).added =
+																		true;
 																}
 															})
 														),
@@ -2801,7 +2809,7 @@ export class PlConfigCurrentBranchService {
 													);
 													if (
 														change.itemTypeId ===
-														ATTRIBUTETYPEID.DEFAULTVALUE
+														ATTRIBUTETYPEIDENUM.DEFAULTVALUE
 													) {
 														(
 															applic.features.find(
@@ -2868,7 +2876,7 @@ export class PlConfigCurrentBranchService {
 														if (
 															change.deleted &&
 															change.itemTypeId ===
-																ATTRIBUTETYPEID.NAME
+																ATTRIBUTETYPEIDENUM.NAME
 														) {
 															applic.features.forEach(
 																(feature) => {
@@ -2938,7 +2946,7 @@ export class PlConfigCurrentBranchService {
 															if (
 																change.deleted &&
 																change.itemTypeId ===
-																	ATTRIBUTETYPEID.NAME
+																	ATTRIBUTETYPEIDENUM.NAME
 															) {
 																applic.features.forEach(
 																	(

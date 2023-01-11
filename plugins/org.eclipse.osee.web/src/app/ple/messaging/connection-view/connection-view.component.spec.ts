@@ -14,23 +14,36 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ConnectionViewComponent } from './connection-view.component';
-import { graphServiceMock } from './mocks/CurrentGraphService.mock';
-import { CurrentGraphService } from './services/current-graph.service';
-import { BaseDummy } from './testing/MockComponents/Base.mock';
-import { GraphDummy } from './testing/MockComponents/Graph.mock';
+import { graphServiceMock } from './lib/testing/current-graph.service.mock';
+import { CurrentGraphService } from './lib/services/current-graph.service';
+import { MockHostComponent } from './lib/testing/host.component.mock';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('ConnectionViewComponent', () => {
 	let component: ConnectionViewComponent;
 	let fixture: ComponentFixture<ConnectionViewComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule],
-			providers: [
-				{ provide: CurrentGraphService, useValue: graphServiceMock },
-			],
-			declarations: [ConnectionViewComponent, BaseDummy, GraphDummy],
-		}).compileComponents();
+		await TestBed.overrideComponent(ConnectionViewComponent, {
+			set: {
+				imports: [MockHostComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					RouterTestingModule,
+					MatDialogModule,
+					MockHostComponent,
+				],
+				providers: [
+					{
+						provide: CurrentGraphService,
+						useValue: graphServiceMock,
+					},
+				],
+				declarations: [],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

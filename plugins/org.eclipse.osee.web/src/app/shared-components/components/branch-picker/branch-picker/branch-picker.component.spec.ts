@@ -21,13 +21,19 @@ describe('BranchPickerComponent', () => {
 	let fixture: ComponentFixture<BranchPickerComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [
-				BranchPickerComponent,
-				BranchDummySelector,
-				BranchTypeDummySelector,
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(BranchPickerComponent, {
+			set: {
+				imports: [BranchDummySelector, BranchTypeDummySelector],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					BranchPickerComponent,
+					BranchDummySelector,
+					BranchTypeDummySelector,
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

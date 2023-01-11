@@ -15,6 +15,16 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
 	{
+		path: '',
+		loadChildren: () => import('./layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+	},
+	{
+		path: '',
+		loadChildren: () => import('./layout/lib/navigation/navigation.routes'),
+		outlet: 'TopLevelNav',
+	},
+	{
 		path: 'ple',
 		loadChildren: () => import('./ple/ple.module').then((m) => m.PleModule),
 	},
@@ -38,13 +48,6 @@ const routes: Routes = [
 	{
 		path: '**',
 		redirectTo: '404',
-	},
-	{
-		path: '',
-		loadChildren: () =>
-			import('./navigation/navigation.module').then(
-				(m) => m.NavigationModule
-			),
 	},
 ];
 

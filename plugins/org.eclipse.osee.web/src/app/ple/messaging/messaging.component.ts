@@ -14,8 +14,12 @@ import { Component } from '@angular/core';
 import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
 import navigationStructure, {
 	navigationElement,
-} from 'src/app/navigation/top-level-navigation/top-level-navigation-structure';
+} from '../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
 import { concatMap, from, iif, of, reduce, skip, switchMap } from 'rxjs';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 const _navItems = navigationStructure[0].children.filter(
 	(c) => c.label === 'Messaging Configuration'
@@ -24,6 +28,8 @@ const _navItems = navigationStructure[0].children.filter(
 	selector: 'osee-messaging',
 	templateUrl: './messaging.component.html',
 	styleUrls: ['./messaging.component.sass'],
+	standalone: true,
+	imports: [NgFor, AsyncPipe, RouterLink, MatButtonModule, MatIconModule],
 })
 export class MessagingComponent {
 	constructor(private userService: UserDataAccountService) {}
@@ -50,3 +56,5 @@ export class MessagingComponent {
 		return this._filteredNavItems;
 	}
 }
+
+export default MessagingComponent;

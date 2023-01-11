@@ -1,0 +1,70 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	ngModelGroup="enumSetForm"
+	#enumSetCtrl="ngModelGroup"
+	[oseeEnumSetUniqueDescription]="enumSet">
+	<mat-form-field class="wide-form">
+		<mat-label>Enter Enum Set Name</mat-label>
+		<input
+			matInput
+			name="enumSetName"
+			[(ngModel)]="enumSet.name"
+			required
+			(ngModelChange)="updateEnumSet()" />
+		<button
+			mat-icon-button
+			matSuffix
+			(click)="closeForm()">
+			<mat-icon>remove</mat-icon>
+		</button>
+		<ng-container *ngIf="enumSetCtrl.errors?.['attributesNotUnique']">
+			<mat-error> Enumerations Not Unique </mat-error>
+		</ng-container>
+	</mat-form-field>
+	<br />
+	<mat-form-field class="wide-form">
+		<mat-label>Enter Enum Set Description</mat-label>
+		<textarea
+			cdkTextareaAutosize
+			matInput
+			name="enumSetDescription"
+			[(ngModel)]="enumSet.description"
+			required
+			disabled
+			(ngModelChange)="updateEnumSet()"></textarea>
+	</mat-form-field>
+	<br />
+	<mat-form-field
+		id="connection-applicability-selector"
+		class="wide-form">
+		<mat-label>Select an Applicability</mat-label>
+		<mat-select
+			[(ngModel)]="enumSet.applicability"
+			name="enumSetApplicability"
+			(ngModelChange)="updateEnumSet()"
+			[compareWith]="compareApplics"
+			required>
+			<mat-option
+				*ngFor="let applic of applics | async"
+				[value]="applic">
+				{{ applic.name }}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<osee-enum-form
+		[bitSize]="bitSize"
+		[enumSetName]="enumSet.name"
+		(enumSetString)="updateDescription($event)"
+		(enums)="updateEnums($event)"></osee-enum-form>
+</div>

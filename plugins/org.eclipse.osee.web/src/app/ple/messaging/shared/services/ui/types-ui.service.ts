@@ -105,6 +105,10 @@ export class TypesUIService {
 		);
 	}
 
+	/**
+	 *
+	 * @TODO replace enumSetData with actual enumerationSet
+	 */
 	createType(
 		body: PlatformType | Partial<PlatformType>,
 		isNewEnumSet: boolean,

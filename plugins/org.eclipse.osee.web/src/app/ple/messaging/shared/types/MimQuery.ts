@@ -10,8 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ARTIFACTTYPEID } from '../../../../types/constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEID } from '../../../../types/constants/AttributeTypeId.enum';
+import {
+	ARTIFACTTYPEID,
+	ARTIFACTTYPEIDENUM,
+} from '../../../../types/constants/ArtifactTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../types/constants/AttributeTypeId.enum';
+import { MIMATTRIBUTETYPEID } from './MimAttributes';
 import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
 import { enumerationSet } from './enum';
 import { PlatformType } from './platformType';
@@ -26,61 +30,61 @@ interface _mimQuery<T> {
 	queries?: _andQuery[];
 }
 interface _andQuery {
-	attributeId: ATTRIBUTETYPEID;
+	attributeId: MIMATTRIBUTETYPEID;
 	value: string;
 }
 export class andQuery implements _andQuery {
-	constructor(attributeTypeId: ATTRIBUTETYPEID, value: string) {
+	constructor(attributeTypeId: MIMATTRIBUTETYPEID, value: string) {
 		this.attributeId = attributeTypeId;
 		this.value = value;
 	}
-	attributeId: ATTRIBUTETYPEID;
+	attributeId: MIMATTRIBUTETYPEID;
 	value: string;
 }
 export class andUnitQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEUNITS, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS, value);
 	}
 }
 export class andBitSizeQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEBITSIZE, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE, value);
 	}
 }
 export class andLogicalTypeQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.LOGICALTYPE, value);
+		super(ATTRIBUTETYPEIDENUM.LOGICALTYPE, value);
 	}
 }
 export class andMinValQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMINVAL, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL, value);
 	}
 }
 export class andMaxValQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMAXVAL, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL, value);
 	}
 }
 export class andDefaultValQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEDEFAULTVAL, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL, value);
 	}
 }
 export class andMsbValQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMSBVAL, value);
+		super(ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL, value);
 	}
 }
 export class andNameQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.NAME, value);
+		super(ATTRIBUTETYPEIDENUM.NAME, value);
 	}
 }
 
 export class andDescriptionQuery extends andQuery {
 	constructor(value: string) {
-		super(ATTRIBUTETYPEID.DESCRIPTION, value);
+		super(ATTRIBUTETYPEIDENUM.DESCRIPTION, value);
 	}
 }
 export class MimQuery<T = unknown> implements _mimQuery<T> {
@@ -116,7 +120,7 @@ export class PlatformTypeQuery extends MimQuery<PlatformType> {
 		},
 		queries?: _andQuery[]
 	) {
-		super(ARTIFACTTYPEID.PLATFORMTYPE, related, queries);
+		super(ARTIFACTTYPEIDENUM.PLATFORMTYPE, related, queries);
 	}
 }
 
@@ -129,6 +133,6 @@ export class EnumerationSetQuery extends MimQuery<enumerationSet> {
 		},
 		queries?: _andQuery[]
 	) {
-		super(ARTIFACTTYPEID.ENUMSET, related, queries);
+		super(ARTIFACTTYPEIDENUM.ENUMSET, related, queries);
 	}
 }

@@ -7,10 +7,14 @@
 			"projectType": "application",
 			"schematics": {
 				"@schematics/angular:component": {
-					"style": "sass"
+					"style": "sass",
+					"standalone": true
 				},
 				"@schematics/angular:application": {
 					"strict": true
+				},
+				"@schematics/angular:directive": {
+					"standalone": true
 				}
 			},
 			"root": "",

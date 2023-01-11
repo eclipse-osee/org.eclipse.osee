@@ -11,28 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ActionDropDownComponent } from './action-drop-down/action-drop-down.component';
 import { CreateActionDialogComponent } from './create-action-dialog/create-action-dialog.component';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { TransitionActionToReviewDialogComponent } from './transition-action-to-review-dialog/transition-action-to-review-dialog.component';
 
 @NgModule({
-	declarations: [ActionDropDownComponent, CreateActionDialogComponent],
+	declarations: [],
 	imports: [
-		CommonModule,
-		MatDialogModule,
-		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatInputModule,
-		MatButtonModule,
-		MatIconModule,
+		ActionDropDownComponent,
+		CreateActionDialogComponent,
+		TransitionActionToReviewDialogComponent,
 	],
 	exports: [ActionDropDownComponent],
 })

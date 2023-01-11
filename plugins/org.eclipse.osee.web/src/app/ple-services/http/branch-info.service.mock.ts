@@ -14,8 +14,7 @@ import { of } from 'rxjs';
 import {
 	testBranchInfo,
 	testBranchListing,
-} from 'src/app/ple/plconfig/testing/mockBranchService';
-import { response } from '../../ple/messaging/connection-view/mocks/Response.mock';
+} from '../../ple/plconfig/testing/mockBranchService';
 import {
 	testCommitResponse,
 	testDataResponse,

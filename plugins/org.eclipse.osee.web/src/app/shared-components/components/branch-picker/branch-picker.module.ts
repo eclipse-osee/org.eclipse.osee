@@ -20,19 +20,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { BranchSelectorComponent } from './branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from './branch-type-selector/branch-type-selector.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatOptionLoadingModule } from '../../mat-option-loading/mat-option-loading.module';
+import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 
 @NgModule({
-	declarations: [
-		BranchTypeSelectorComponent,
-		BranchSelectorComponent,
-		BranchPickerComponent,
-	],
 	imports: [
+		BranchPickerComponent,
+		BranchSelectorComponent,
+		BranchTypeSelectorComponent,
 		CommonModule,
 		MatRadioModule,
 		MatFormFieldModule,
-		MatOptionLoadingModule,
+		MatOptionLoadingComponent,
 		FormsModule,
 		MatProgressSpinnerModule,
 		MatSelectModule,

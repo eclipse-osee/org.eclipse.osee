@@ -10,13 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgClass, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { NewTransportTypeDialogComponent } from '../shared/components/dialogs/new-transport-type-dialog/new-transport-type-dialog.component';
+import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
+import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
+import { NewTransportTypeDialogComponent } from '../shared/dialogs/new-transport-type-dialog/new-transport-type-dialog.component';
 import { CurrentTransportTypeService } from '../shared/services/ui/current-transport-type.service';
 import { HeaderService } from '../shared/services/ui/header.service';
 import { transportType } from '../shared/types/transportType';
@@ -25,6 +32,19 @@ import { transportType } from '../shared/types/transportType';
 	selector: 'osee-transports',
 	templateUrl: './transports.component.html',
 	styleUrls: ['./transports.component.sass'],
+	standalone: true,
+	imports: [
+		AsyncPipe,
+		NgFor,
+		NgClass,
+		MatTableModule,
+		MatTooltipModule,
+		MatButtonModule,
+		MatIconModule,
+		MatDialogModule,
+		BranchPickerComponent,
+		ActionDropDownComponent,
+	],
 })
 export class TransportsComponent implements OnInit, OnDestroy {
 	private _done = new Subject();
@@ -75,3 +95,5 @@ export class TransportsComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 }
+
+export default TransportsComponent;

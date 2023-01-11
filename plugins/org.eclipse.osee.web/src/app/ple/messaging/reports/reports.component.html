@@ -22,13 +22,13 @@
 					">
 					<h2 class="mat-headline-6">Web-Based Reports</h2>
 					<div class="reports-view-web-based">
-						<button
+						<a
 							mat-raised-button
 							color="primary"
 							[routerLink]="diffRoute"
 							class="diff-report-button">
 							View Difference Report
-						</button>
+						</a>
 					</div>
 				</ng-container>
 				<ng-container *ngIf="reports | async as _reports">

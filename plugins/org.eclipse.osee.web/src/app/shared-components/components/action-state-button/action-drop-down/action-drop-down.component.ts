@@ -17,11 +17,14 @@ import {
 	OnInit,
 	SimpleChanges,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { ActionStateButtonService } from '../../../services/action-state-button.service';
 import { PLConfigCreateAction } from '../../../../ple/plconfig/types/pl-config-actions';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 /**
  * Allows users to create and manage the state of a branch from within a page.
@@ -30,6 +33,15 @@ import { CreateActionDialogComponent } from '../create-action-dialog/create-acti
 	selector: 'osee-action-dropdown',
 	templateUrl: './action-drop-down.component.html',
 	styleUrls: ['./action-drop-down.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		AsyncPipe,
+		MatButtonModule,
+		MatIconModule,
+		MatDialogModule,
+		CreateActionDialogComponent,
+	],
 })
 export class ActionDropDownComponent implements OnChanges {
 	@Input() category: string = '0';

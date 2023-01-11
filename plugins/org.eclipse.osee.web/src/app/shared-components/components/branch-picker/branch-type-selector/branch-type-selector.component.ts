@@ -10,14 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { LowerCasePipe, NgClass, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatRadioChange } from '@angular/material/radio';
+import { FormsModule } from '@angular/forms';
+import { MatRadioChange, MatRadioModule } from '@angular/material/radio';
 import { BranchRoutedUIService } from '../../../services/branch-routed-ui.service';
 
 @Component({
 	selector: 'osee-branch-type-selector',
 	templateUrl: './branch-type-selector.component.html',
 	styleUrls: ['./branch-type-selector.component.sass'],
+	standalone: true,
+	imports: [MatRadioModule, FormsModule, NgFor, NgClass, LowerCasePipe],
 })
 export class BranchTypeSelectorComponent implements OnInit {
 	branchTypes: string[] = ['Product Line', 'Working'];

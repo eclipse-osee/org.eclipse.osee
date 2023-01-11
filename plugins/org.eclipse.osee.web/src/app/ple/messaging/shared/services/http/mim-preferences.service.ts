@@ -16,16 +16,18 @@ import { user } from 'src/app/userdata/types/user-data-user';
 import { apiURL } from 'src/environments/environment';
 import { element } from '../../types/element';
 import { structure } from '../../types/structure';
-import { message } from '../../../message-interface/types/messages';
-import { subMessage } from '../../../message-interface/types/sub-messages';
+import { message } from '../../types/messages';
+import { subMessage } from '../../types/sub-messages';
 import {
 	MimPreferences,
 	MimUserGlobalPreferences,
 } from '../../types/mim.preferences';
-import { TransactionService } from 'src/app/transactions/transaction.service';
-import { attributeType, transaction } from 'src/app/transactions/transaction.d';
-import { ARTIFACTTYPEID } from 'src/app/types/constants/ArtifactTypeId.enum';
-
+import {
+	attributeType,
+	transaction,
+} from '../../../../../transactions/transaction';
+import { TransactionService } from '../../../../../transactions/transaction.service';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 @Injectable({
 	providedIn: 'root',
 })
@@ -54,7 +56,7 @@ export class MimPreferencesService {
 			txComment: 'Create MIM User Global Preferences',
 			createArtifacts: [
 				{
-					typeId: ARTIFACTTYPEID.GLOBALUSERPREFERENCES,
+					typeId: ARTIFACTTYPEIDENUM.GLOBALUSERPREFERENCES,
 					name: 'MIM Global User Preferences',
 					key: 'globalPrefs',
 					attributes: [

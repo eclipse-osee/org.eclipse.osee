@@ -16,12 +16,11 @@ import { Observable, of } from 'rxjs';
 import { relation, transaction } from '../../../../../transactions/transaction';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { apiURL } from '../../../../../../environments/environment';
-import { OSEEWriteApiResponse } from '../../types/ApiWriteResponse';
 import { logicalType, logicalTypeFormDetail } from '../../types/logicaltype';
 import { PlatformType } from '../../types/platformType';
-import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { TransactionService } from '../../../../../transactions/transaction.service';
-import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -59,7 +58,7 @@ export class TypesService {
 				params: {
 					count: 3,
 					pageNum: pageNum,
-					orderByAttributeType: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
 			}
 		);
@@ -77,7 +76,7 @@ export class TypesService {
 				params: {
 					count: 3,
 					pageNum: pageNum,
-					orderByAttributeType: ATTRIBUTETYPEID.NAME,
+					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
 			}
 		);
@@ -99,7 +98,7 @@ export class TypesService {
 		return of<transaction>(
 			this.builder.createArtifact(
 				type,
-				ARTIFACTTYPEID.PLATFORMTYPE,
+				ARTIFACTTYPEIDENUM.PLATFORMTYPE,
 				relations,
 				transaction,
 				branchId,

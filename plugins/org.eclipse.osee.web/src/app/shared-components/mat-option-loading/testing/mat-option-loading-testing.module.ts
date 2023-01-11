@@ -12,7 +12,7 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatOptionLoadingComponent } from './mat-option-loading.component';
+import { MockMatOptionLoadingComponent } from './mat-option-loading.component';
 
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -27,8 +27,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
  * Only import in *.spec.ts files
  */
 @NgModule({
-	declarations: [MatOptionLoadingComponent],
+	declarations: [],
 	imports: [
+		MockMatOptionLoadingComponent,
 		CommonModule,
 		FormsModule,
 		MatFormFieldModule,
@@ -39,6 +40,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 		MatButtonModule,
 		ScrollingModule,
 	],
-	exports: [MatOptionLoadingComponent],
+	exports: [MockMatOptionLoadingComponent],
 })
 export class MatOptionLoadingTestingModule {}

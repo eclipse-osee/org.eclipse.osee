@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -17,10 +18,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
 import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { structuresNameServiceMock } from '../shared/mocks/structuresNamesService.mock';
+import { structuresNameServiceMock } from '../shared/testing/structure-names.service.mock';
 import { StructureNamesService } from '../shared/services/http/structure-names.service';
 
 import { StructureNamesComponent } from './structure-names.component';
@@ -30,24 +32,43 @@ describe('StructureNamesComponent', () => {
 	let fixture: ComponentFixture<StructureNamesComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				RouterTestingModule,
-				MatExpansionModule,
-				MatFormFieldModule,
-				FormsModule,
-				MatIconModule,
-				MatInputModule,
-				NoopAnimationsModule,
-			],
-			providers: [
-				{
-					provide: StructureNamesService,
-					useValue: structuresNameServiceMock,
-				},
-			],
-			declarations: [StructureNamesComponent, BranchPickerStub],
-		}).compileComponents();
+		await TestBed.overrideComponent(StructureNamesComponent, {
+			set: {
+				imports: [
+					NgIf,
+					NgFor,
+					RouterLink,
+					AsyncPipe,
+					FormsModule,
+					MatInputModule,
+					MatFormFieldModule,
+					MatIconModule,
+					MatExpansionModule,
+					BranchPickerStub,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					RouterTestingModule,
+					MatExpansionModule,
+					MatFormFieldModule,
+					FormsModule,
+					MatIconModule,
+					MatInputModule,
+					NoopAnimationsModule,
+					BranchPickerStub,
+					StructureNamesComponent,
+				],
+				providers: [
+					{
+						provide: StructureNamesService,
+						useValue: structuresNameServiceMock,
+					},
+				],
+				declarations: [],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

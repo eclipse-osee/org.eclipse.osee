@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject } from 'rxjs';
 import {
 	addButtonHoverIconTransition,
@@ -27,6 +30,8 @@ import {
 		addButtonIconTransition,
 		addButtonHoverIconTransition,
 	],
+	standalone: true,
+	imports: [NgFor, AsyncPipe, MatIconModule, MatButtonModule, NgIf],
 })
 export class TwoLayerAddButtonComponent<
 	T extends string = any,

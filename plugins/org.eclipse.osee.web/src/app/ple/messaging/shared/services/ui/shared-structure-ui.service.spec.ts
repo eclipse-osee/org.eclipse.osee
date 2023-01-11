@@ -12,8 +12,8 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { structureServiceMock } from '../../../message-element-interface/mocks/services/structure.service.mock';
-import { structuresMock } from '../../mocks/structure.mock';
+import { structureServiceMock } from '../../testing/structure.service.mock';
+import { structuresMock } from '../../testing/structure.mock';
 import { StructuresService } from '../http/structures.service';
 import { MimRouteService } from './mim-route.service';
 

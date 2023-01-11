@@ -1,0 +1,46 @@
+/*********************************************************************
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use '../../../../../../../modern-ple-theme'
+@use '../../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
+
+:host-context(.light-theme)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+
+table
+    width: 100%
+    margin-bottom: 2em
+
+.diff-table-cell
+    padding: 0.5em 1em 0.5em 1em
+    position: relative
+
+.diff-table-title-header
+    text-align: center
+    font-size: 1em
+
+.diff-table-no-change
+    display: none
+
+.diff-table-changed-from-to
+    display: flex
+    flex-direction: row
+    align-items: center
+    .mat-icon
+        padding-right: 0.25em
+
+.diff-table-row-anchor
+    position: absolute
+    top: -45px
+    left: 0

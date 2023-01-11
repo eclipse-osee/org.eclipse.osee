@@ -1,0 +1,127 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #platformTypeForm="ngForm">
+	<ng-container *ngIf="logicalTypeSubject | async as __logicalType">
+		<ng-container
+			*ngIf="__logicalType.id !== '' && __logicalType.id !== '-1'">
+			<mat-dialog-content>
+				<osee-new-platform-type-form
+					[logicalType]="__logicalType"
+					(attributes)="
+						attributesUpdate($event)
+					"></osee-new-platform-type-form>
+				<ng-container *ngIf="__logicalType.name === 'enumeration'">
+					<ng-container *ngIf="(createNewEnum | async) !== true">
+						<mat-form-field class="wide-form">
+							<mat-label>Select an Enumeration Set</mat-label>
+							<mat-select
+								[ngModel]="enumSetState | async"
+								name="enumSetSelect"
+								(ngModelChange)="updateEnumSet($event)"
+								[compareWith]="compareEnumSet">
+								<osee-mat-option-loading
+									[data]="enumSets"
+									objectName="Enumeration Sets">
+									<ng-template let-option>
+										<mat-option [value]="option">
+											{{ option.name }}
+										</mat-option>
+									</ng-template>
+								</osee-mat-option-loading>
+							</mat-select>
+							<button
+								mat-icon-button
+								matSuffix
+								(click)="toggleEnumCreationState($event)">
+								<mat-icon>{{
+									(createNewEnum | async) !== true
+										? 'add'
+										: 'remove'
+								}}</mat-icon>
+							</button>
+						</mat-form-field>
+					</ng-container>
+					<div
+						[@detailExpand]="
+							(createNewEnum | async) === true &&
+							__logicalType.name === 'enumeration'
+								? 'expanded'
+								: 'collapsed'
+						">
+						<ng-container *ngIf="(createNewEnum | async) === true">
+							<ng-container
+								*ngIf="
+									platformType | async as attrs;
+									else NoBitSize
+								">
+								<ng-container
+									*ngIf="
+										attrs.interfacePlatformTypeBitSize !==
+											undefined &&
+											attrs.interfacePlatformTypeBitSize !==
+												'0';
+										else NoBitSize
+									">
+									<osee-enum-set-form
+										[bitSize]="
+											attrs.interfacePlatformTypeBitSize ||
+											'0'
+										"
+										(enumSet)="updateEnumSet($event)"
+										(closed)="
+											toggleEnumCreationState()
+										"></osee-enum-set-form>
+								</ng-container>
+							</ng-container>
+							<ng-template #NoBitSize>
+								No Bit Size defined, please select a bit size
+								above.
+							</ng-template>
+						</ng-container>
+					</div>
+				</ng-container>
+			</mat-dialog-content>
+		</ng-container>
+		<mat-dialog-actions align="end">
+			<button
+				mat-button
+				matStepperPrevious>
+				Back
+			</button>
+			<button
+				mat-raised-button
+				matStepperNext
+				[disabled]="
+					platformTypeForm.pending ||
+					platformTypeForm.invalid ||
+					platformTypeForm.disabled
+				"
+				[color]="
+					platformTypeForm.pending ||
+					platformTypeForm.invalid ||
+					platformTypeForm.disabled
+						? ''
+						: 'primary'
+				"
+				[attr.data-cy]="
+					platformTypeForm.pending ||
+					platformTypeForm.invalid ||
+					platformTypeForm.disabled
+						? 'stepper-next-2-disabled'
+						: 'stepper-next-2'
+				">
+				Next
+			</button>
+		</mat-dialog-actions>
+	</ng-container>
+</form>

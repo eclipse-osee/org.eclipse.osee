@@ -1,0 +1,155 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use "../../../../../../../sass-utils/mat-table-utils" as utils
+@use '../../../../../../../modern-ple-theme'
+@use '../../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
+
+:host-context(.light-theme)
+  @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+  @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+
+table
+  width: 100%
+
+tr.message-expanded-detail-row
+  height: 0
+  flex-wrap: nowrap
+
+.message-detail-row td
+  border-bottom-width: 0
+  flex-wrap: nowrap
+
+.sub-message-detail
+  overflow: hidden
+  display: flex
+  flex-direction: column
+
+.message-element-interface-table-view-width-100
+  width: 100%
+
+.message-element-interface-table-view-row-display
+  display: flex
+  flex-direction: row
+
+.message-element-interface-table-view-message-header
+  padding: 0 2px 0 2px
+  font:
+    weight: bold
+
+.message-element-interface-table-sub-message-element
+  display: flex
+  flex-direction: row
+  justify:
+    content: space-around
+  width: 100%
+
+.no-pad:first-of-type
+  padding-left: 1%
+
+.message-element-interface-table-filter-padding
+  padding-bottom: 1em
+
+.mat-hint
+  font:
+    size: 1.2em
+
+.message-element-interface-table-view-sub-message-header
+  font:
+    weight: 500
+  text:
+    align: center
+
+.message-element-interface-breadcrumbs
+  text-align: center
+  &:hover
+    cursor: pointer
+
+.message-element-interface-table-center
+  @extend .message-element-interface-breadcrumbs
+
+.mat-header-cell
+  font:
+    size: 14px
+.flex-row
+  display: flex
+  align-items: baseline
+  flex:
+    direction: row
+    wrap: nowrap
+
+.new-structure-button
+  z-index: 999
+  position: fixed
+  bottom: 3%
+  right: 2%
+td th
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+.mat-column--
+  flex: 0 0 5%
+  width: 5%
+.mat-column
+  flex: 1 1 auto
+.mat-column-name
+  flex: 2 2 10%
+  max-width: 10%
+.mat-column-description
+  flex: 3 1 50%
+.mat-column-interfaceMaxSimultaneity
+  flex: 0 0 5%
+  width: 5%
+.mat-column-interfaceMinSimultaneity
+  flex: 0 0 5%
+  width: 5%
+.mat-column-interfaceTaskFileType
+  flex: 0 0 8%
+  width: 8%
+
+.connections-button
+  margin: 1% 0 0 1%
+.action-button
+  margin: 1% 0 0 1%
+.message-element-interface
+  padding-bottom: 5px
+.message-element-interface-header
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  padding-right: 0.5em
+  .grouped-buttons
+    display: flex
+    flex-direction: row
+    align-items: center
+    margin-top: 1em
+    gap: 5px
+.message-structure-attribute-cell
+  padding: 0 2px 0 2px
+.fit-buttons
+  min-width: max-content
+@include utils.table-column-width('name ', 200px)
+@include utils.table-column-width('interfaceMinSimultaneity ', 100px)
+@include utils.table-column-width('interfaceMaxSimultaneity ', 100px)
+@include utils.table-column-width('interfaceTaskFileType', 100px)
+@include utils.table-column-width('bytesPerSecondMinimum',75px)
+@include utils.table-column-width('bytesPerSecondMaximum',75px)
+@include utils.table-column-width('sizeInBytes',75px)
+@include utils.table-column-width('numElements',75px)
+@include utils.table-column-width('interfaceStructureCategory', 120px)
+@include utils.table-column-width('numElements', 100px)
+@include utils.table-column-width('sizeInBytes', 100px)
+@include utils.table-column-width('txRate',75px)
+@include utils.table-column-width('applicability', 175px)
+
+@include utils.common-table-classes

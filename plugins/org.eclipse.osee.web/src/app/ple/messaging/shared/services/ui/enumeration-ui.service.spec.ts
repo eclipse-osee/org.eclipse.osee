@@ -14,7 +14,7 @@ import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { transactionResultMock } from '../../../../../transactions/transaction.mock';
-import { enumerationSetServiceMock } from '../../mocks/enumeration.set.service.mock';
+import { enumerationSetServiceMock } from '../../testing/enumeration-set.service.mock';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 
 import { EnumerationUIService } from './enumeration-ui.service';

@@ -24,7 +24,10 @@ import {
 import { AttributeService } from 'src/app/ple-services/http/attribute.service';
 import { transaction } from '../../../transactions/transaction';
 import { TransactionService } from '../../../transactions/transaction.service';
-import { ATTRIBUTETYPEID } from '../../../types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from '../../../types/constants/AttributeTypeId.enum';
 import { TextEditorUiService } from './text-editor-ui.service';
 
 @Injectable({
@@ -59,7 +62,7 @@ export class CurrentTextEditorService {
 				.getMarkDownContent(
 					branchId,
 					artifactID,
-					ATTRIBUTETYPEID.MARKDOWNCONTENT
+					ATTRIBUTETYPEIDENUM.MARKDOWNCONTENT
 				)
 				.pipe(repeatWhen((_) => this.txtEditServe.update))
 		)
@@ -90,7 +93,7 @@ export class CurrentTextEditorService {
 						id: artifactID,
 						setAttributes: [
 							{
-								typeId: ATTRIBUTETYPEID.MARKDOWNCONTENT,
+								typeId: ATTRIBUTETYPEIDENUM.MARKDOWNCONTENT,
 								value: userInput,
 							},
 						],
