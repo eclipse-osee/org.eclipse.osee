@@ -12,7 +12,7 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import navigationStructure from '../navigation/top-level-navigation/top-level-navigation-structure';
+import navigationStructure from '../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
 import { PleComponent } from './ple.component';
 
 const ple = navigationStructure[0].children.find(
@@ -43,10 +43,7 @@ const routes: Routes = [
 	{
 		path: 'messaging',
 		title: messaging?.pageTitle,
-		loadChildren: () =>
-			import('./messaging/messaging.module').then(
-				(m) => m.MessagingModule
-			),
+		loadChildren: () => import('./messaging/messaging.routes'),
 	},
 	{
 		path: 'asciidoc',

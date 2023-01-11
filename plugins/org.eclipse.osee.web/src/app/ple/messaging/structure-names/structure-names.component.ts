@@ -10,18 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
 import { HttpLoadingService } from '../../../services/http-loading.service';
+import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
 import { CurrentStructureNamesService } from '../shared/services/ui/current-structure-names.service';
 
 @Component({
 	selector: 'osee-messaging-structure-names',
 	templateUrl: './structure-names.component.html',
 	styleUrls: ['./structure-names.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		NgFor,
+		RouterLink,
+		AsyncPipe,
+		FormsModule,
+		MatInputModule,
+		MatFormFieldModule,
+		MatIconModule,
+		MatExpansionModule,
+		BranchPickerComponent,
+	],
 })
 export class StructureNamesComponent implements OnInit {
 	_filter = new BehaviorSubject<string>('');
@@ -67,3 +87,5 @@ export class StructureNamesComponent implements OnInit {
 		);
 	}
 }
+
+export default StructureNamesComponent;

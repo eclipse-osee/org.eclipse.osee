@@ -10,7 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import {
+	CdkVirtualScrollViewport,
+	ScrollingModule,
+} from '@angular/cdk/scrolling';
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	OnChanges,
@@ -32,7 +36,8 @@ import {
 	ViewChildren,
 } from '@angular/core';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-import { MatOption } from '@angular/material/core';
+import { MatOption, MatOptionModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelect } from '@angular/material/select';
 import {
 	auditTime,
@@ -40,9 +45,11 @@ import {
 	catchError,
 	combineLatest,
 	concatMap,
+	distinct,
 	filter,
 	from,
 	ignoreElements,
+	map,
 	Observable,
 	of,
 	scan,
@@ -61,6 +68,16 @@ import { paginationMode } from '../internal/pagination-options';
 	selector: 'osee-mat-option-loading',
 	templateUrl: './mat-option-loading.component.html',
 	styleUrls: ['./mat-option-loading.component.sass'],
+	standalone: true,
+	imports: [
+		MatOptionModule,
+		NgIf,
+		NgFor,
+		AsyncPipe,
+		ScrollingModule,
+		MatProgressSpinnerModule,
+		NgTemplateOutlet,
+	],
 	changeDetection: ChangeDetectionStrategy.OnPush, //lessen the amount of redrawing necessary to cause less "bounciness"
 })
 export class MatOptionLoadingComponent<T>
@@ -191,7 +208,17 @@ export class MatOptionLoadingComponent<T>
 				);
 			}),
 			concatMap((elements) => from(elements)),
-			scan((acc, curr) => [...acc, curr], [] as T[])
+			distinct(),
+			scan((acc, curr) => [...acc, curr], [] as T[]),
+			map((valueArray) =>
+				valueArray.filter(
+					(value, index, array) =>
+						array.findIndex(
+							(value2) =>
+								JSON.stringify(value) === JSON.stringify(value2)
+						) === index
+				)
+			)
 		);
 		this.error = this._options.pipe(
 			ignoreElements(),
@@ -202,29 +229,40 @@ export class MatOptionLoadingComponent<T>
 	}
 	ngAfterViewInit(): void {
 		if (this._parentSelect !== undefined && this._parentSelect !== null) {
+			/**leaving disabled for now, will need to figure out test fix. 
+			/However, this needs to remain on for autocomplete since the most common pattern for autocomplete
+			involves something like (pageNum)=>this.opened.pipe(switchMap(v=>this.filter.pipe(PAGINATED_OBSERVABLE_HERE)))
+			*/
+			//this.registerSelectOptions(this._parentSelect, this.options);
 			combineLatest([
 				this.resolvedOptions.changes,
 				this.options.changes,
 			]).subscribe(([changes]) => {
-				this.registerSelectOptions(this._parentSelect, changes);
-				this.cdkVirtualScrollViewPort.scrollToIndex(0);
-				this.cdkVirtualScrollViewPort.checkViewportSize();
+				this.registerSelectOptions(this._parentSelect, this.options);
+				if (this.cdkVirtualScrollViewPort !== undefined) {
+					this.cdkVirtualScrollViewPort.scrollToIndex(0);
+					this.cdkVirtualScrollViewPort.checkViewportSize();
+				}
 			});
-			this.registerSelectOptions(this._parentSelect, this.options);
 		}
 		if (
 			this._parentAutoComplete !== undefined &&
 			this._parentAutoComplete !== null
 		) {
+			this.registerSelectOptions(this._parentAutoComplete, this.options);
 			combineLatest([
 				this.resolvedOptions.changes,
 				this.options.changes,
 			]).subscribe(([changes]) => {
-				this.registerSelectOptions(this._parentAutoComplete, changes);
-				this.cdkVirtualScrollViewPort.scrollToIndex(0);
-				this.cdkVirtualScrollViewPort.checkViewportSize();
+				this.registerSelectOptions(
+					this._parentAutoComplete,
+					this.options
+				);
+				if (this.cdkVirtualScrollViewPort !== undefined) {
+					this.cdkVirtualScrollViewPort.scrollToIndex(0);
+					this.cdkVirtualScrollViewPort.checkViewportSize();
+				}
 			});
-			this.registerSelectOptions(this._parentAutoComplete, this.options);
 		}
 	}
 
@@ -232,10 +270,18 @@ export class MatOptionLoadingComponent<T>
 		select: MatSelect | MatAutocomplete,
 		options: QueryList<MatOption>
 	): void {
-		select.options.reset([
-			...select.options.toArray(),
-			...options.toArray(),
-		]);
+		const _options = [
+			...new Map(
+				[...select.options.toArray(), ...options.toArray()].map((m) => [
+					m.id,
+					m,
+				])
+			).values(),
+		];
+		const __options = _options.filter(
+			(v, i) => _options.map((a) => a.value).indexOf(v.value) === i
+		);
+		select.options.reset([...__options]);
 		select.options.notifyOnChanges();
 	}
 

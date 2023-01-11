@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { applic } from '../../../../types/applicability/applic';
-import { enumeration } from '../../shared/types/enum';
+import { enumeration, enumerationSet } from '../../shared/types/enum';
+import { PlatformType } from './platformType';
 
 export interface newTypeDialogData {
 	fields: logicalTypefieldValue[];
@@ -21,8 +22,9 @@ export interface logicalTypefieldValue {
 	value: string;
 }
 export interface newPlatformTypeDialogReturnData {
-	fields: logicalTypefieldValue[];
+	platformType: Partial<PlatformType>;
 	createEnum: boolean;
+	enumSet?: enumerationSet;
 	enumSetId: string;
 	enumSetName: string;
 	enumSetDescription: string;

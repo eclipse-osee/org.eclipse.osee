@@ -1,3 +1,6 @@
+import { MIMATTRIBUTETYPEID } from './MimAttributes';
+import { PlatformType } from './platformType';
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -21,8 +24,15 @@ export interface logicalTypeFormDetail extends logicalType {
 	fields: logicalTypeFieldInfo[];
 }
 interface logicalTypeFieldInfo {
-	attributeType: string;
-	attributeTypeId: string;
+	attributeType: Capitalize<
+		Readonly<
+			Exclude<
+				Extract<keyof PlatformType, string>,
+				'enumSet' | 'interfacePlatform2sComplement'
+			>
+		>
+	>; //note: this isn't actually valid typing, but it shuts up typescript about string|undefined !== undefined due to the types of enumSet and 2s complement not being string
+	attributeTypeId: MIMATTRIBUTETYPEID;
 	editable: boolean;
 	name: string;
 	required: boolean;

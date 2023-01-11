@@ -23,12 +23,13 @@ import { of } from 'rxjs';
 import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 import { BranchUndoButtonTestingModule } from '../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
-import { PlatformTypeCardComponent } from '../shared/components/platform-type-card/platform-type-card.component';
-import { MockPlatformTypeCard } from '../shared/mocks/platform-type-card.component.mock';
-import { TypeGridComponent } from './components/type-grid/type-grid.component';
-import { CurrentTypesService } from './services/current-types.service';
+import { MockPlatformTypeCardComponent } from '../shared/testing/platform-type-card.component.mock';
+import { CurrentTypesService } from './lib/services/current-types.service';
 
 import { TypesInterfaceComponent } from './types-interface.component';
+import { MockTypeGridComponent } from './lib/testing/type-grid.component.mock';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { UndoButtonBranchMockComponent } from '../../../shared-components/components/branch-undo-button/branch-undo-button.component.mock';
 
 describe('TypesInterfaceComponent', () => {
 	let component: TypesInterfaceComponent;
@@ -73,29 +74,30 @@ describe('TypesInterfaceComponent', () => {
 	};
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatCardModule,
-				MatFormFieldModule,
-				NoopAnimationsModule,
-				MatInputModule,
-				MatGridListModule,
-				MatDialogModule,
-				FormsModule,
-				BranchUndoButtonTestingModule,
-				RouterTestingModule,
-			],
-			declarations: [
-				TypesInterfaceComponent,
-				TypeGridComponent,
-				MockPlatformTypeCard,
-				BranchPickerStub,
-				ActionDropdownStub,
-			],
-			providers: [
-				{ provide: CurrentTypesService, useValue: typesService },
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(TypesInterfaceComponent, {
+			set: {
+				imports: [
+					BranchPickerStub,
+					NgIf,
+					AsyncPipe,
+					UndoButtonBranchMockComponent,
+					ActionDropdownStub,
+					MockTypeGridComponent,
+				],
+				providers: [
+					{ provide: CurrentTypesService, useValue: typesService },
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					NoopAnimationsModule,
+					RouterTestingModule,
+					TypesInterfaceComponent,
+				],
+				declarations: [],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

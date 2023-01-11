@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TransactionService } from '../../../../../transactions/transaction.service';
 import { transactionServiceMock } from '../../../../../transactions/transaction.service.mock';
-import { transportTypeServiceMock } from '../../mocks/transport-type.http.service.mock';
+import { transportTypeServiceMock } from '../../testing/transport-type.service.mock';
 import { TransportTypeService } from '../http/transport-type.service';
 
 import { CurrentTransportTypeService } from './current-transport-type.service';

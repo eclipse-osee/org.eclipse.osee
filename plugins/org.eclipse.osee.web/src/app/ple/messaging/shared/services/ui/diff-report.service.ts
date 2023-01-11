@@ -46,7 +46,10 @@ import {
 	structureDiffItem,
 	submessageDiffItem,
 } from '../../types/DifferenceReport';
-import { ATTRIBUTETYPEID } from 'src/app/types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from 'src/app/types/constants/AttributeTypeId.enum';
 import { ActionService } from 'src/app/ple-services/http/action.service';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
@@ -127,22 +130,24 @@ export class DiffReportService {
 						) {
 							if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACENODEADDRESS
+								ATTRIBUTETYPEIDENUM.INTERFACENODEADDRESS
 							) {
 								item.diffInfo!.fieldsChanged['address'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACENODEBGCOLOR
+								ATTRIBUTETYPEIDENUM.INTERFACENODEBGCOLOR
 							) {
 								item.diffInfo!.fieldsChanged['color'] =
 									c.baselineVersion.value || 'Default';
 							} else if (
-								c.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =
 									c.baselineVersion.value || '';
-							} else if (c.itemTypeId === ATTRIBUTETYPEID.NAME) {
+							} else if (
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME
+							) {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							}
@@ -195,17 +200,17 @@ export class DiffReportService {
 						if (
 							c.changeType.id != changeTypeNumber.ARTIFACT_CHANGE
 						) {
-							if (c.itemTypeId === ATTRIBUTETYPEID.NAME) {
+							if (c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							} else if (
-								c.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACETRANSPORTTYPE
+								ATTRIBUTETYPEIDENUM.INTERFACETRANSPORTTYPE
 							) {
 								item.diffInfo!.fieldsChanged['transportType'] =
 									c.baselineVersion.value;
@@ -261,45 +266,45 @@ export class DiffReportService {
 						if (
 							c.changeType.id != changeTypeNumber.ARTIFACT_CHANGE
 						) {
-							if (c.itemTypeId === ATTRIBUTETYPEID.NAME) {
+							if (c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							} else if (
-								c.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMESSAGENUMBER
+								ATTRIBUTETYPEIDENUM.INTERFACEMESSAGENUMBER
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMessageNumber'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMESSAGEPERIODICITY
+								ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPERIODICITY
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMessagePeriodicity'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMESSAGERATE
+								ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATE
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMessageRate'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMESSAGEWRITEACCESS
+								ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEWRITEACCESS
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMessageWriteAccess'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMESSAGETYPE
+								ATTRIBUTETYPEIDENUM.INTERFACEMESSAGETYPE
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMessageType'
@@ -353,17 +358,17 @@ export class DiffReportService {
 						if (
 							c.changeType.id != changeTypeNumber.ARTIFACT_CHANGE
 						) {
-							if (c.itemTypeId === ATTRIBUTETYPEID.NAME) {
+							if (c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							} else if (
-								c.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACESUBMESSAGENUMBER
+								ATTRIBUTETYPEIDENUM.INTERFACESUBMESSAGENUMBER
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceSubMessageNumber'
@@ -418,7 +423,7 @@ export class DiffReportService {
 							c.changeType.id != changeTypeNumber.ARTIFACT_CHANGE
 						) {
 							if (
-								c.itemTypeId === ATTRIBUTETYPEID.NAME &&
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME &&
 								item.enumerations.some((e) => e.id === c.artId)
 							) {
 								item.diffInfo!.fieldsChanged['name'] =
@@ -533,77 +538,79 @@ export class DiffReportService {
 							c.changeType.id !== changeTypeNumber.ARTIFACT_CHANGE
 						) {
 							if (
-								c.itemTypeId === ATTRIBUTETYPEID.NAME &&
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME &&
 								c.artId === element
 							) {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							} else if (
-								c.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEELEMENTALTERABLE
+								ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceElementAlterable'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEUNITS
+								ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS
 							) {
 								item.diffInfo!.fieldsChanged['units'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEBITSIZE
+								ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE
 							) {
 								item.diffInfo!.fieldsChanged[
 									'elementSizeInBits'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMINVAL
+								ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfacePlatformTypeMinval'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMAXVAL
+								ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfacePlatformTypeMaxval'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEDEFAULTVAL
+								ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfacePlatformTypeDefaultValue'
 								] = c.baselineVersion.value;
-							} else if (c.itemTypeId === ATTRIBUTETYPEID.NOTES) {
+							} else if (
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.NOTES
+							) {
 								item.diffInfo!.fieldsChanged['notes'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEELEMENTSTART
+								ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceElementIndexStart'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEELEMENTEND
+								ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceElementIndexEnd'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEENUMLITERAL
+								ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL
 							) {
 								item.diffInfo!.fieldsChanged['enumLiteral'] =
 									c.baselineVersion.value;
@@ -696,38 +703,38 @@ export class DiffReportService {
 						} else if (
 							c.changeType.id != changeTypeNumber.ARTIFACT_CHANGE
 						) {
-							if (c.itemTypeId === ATTRIBUTETYPEID.NAME) {
+							if (c.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							} else if (
-								c.itemTypeId === ATTRIBUTETYPEID.DESCRIPTION
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMINSIMULTANEITY
+								ATTRIBUTETYPEIDENUM.INTERFACEMINSIMULTANEITY
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMinSimultaneity'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACEMAXSIMULTANEITY
+								ATTRIBUTETYPEIDENUM.INTERFACEMAXSIMULTANEITY
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceMaxSimultaneity'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACETASKFILETYPE
+								ATTRIBUTETYPEIDENUM.INTERFACETASKFILETYPE
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceTaskFileType'
 								] = c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEID.INTERFACESTRUCTURECATEGORY
+								ATTRIBUTETYPEIDENUM.INTERFACESTRUCTURECATEGORY
 							) {
 								item.diffInfo!.fieldsChanged[
 									'interfaceStructureCategory'

@@ -1,0 +1,43 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-toolbar class="top-toolbar-container">
+	<div class="top-toolbar">
+		<!-- Top Level Nav - Button -->
+		<span class="left-icon">
+			<button
+				mat-icon-button
+				(click)="toggleTopLevelNavIcon()">
+				<mat-icon>{{ topLevelNavIcon | async }}</mat-icon>
+			</button>
+
+			<img
+				src="favicon.ico"
+				width="48"
+				height="47" />
+		</span>
+		<router-outlet
+			name="title"
+			(click)="closeTopLevelNavIcon()"></router-outlet>
+		<router-outlet
+			name="navigationHeader"
+			(click)="closeTopLevelNavIcon()"></router-outlet>
+	</div>
+	<span class="right-icon">
+		<ng-container *ngIf="(isLoading | async) === 'true'">
+			<mat-progress-spinner
+				mode="indeterminate"
+				diameter="40"></mat-progress-spinner>
+		</ng-container>
+		<osee-display-user (click)="closeTopLevelNavIcon()"></osee-display-user>
+	</span>
+</mat-toolbar>

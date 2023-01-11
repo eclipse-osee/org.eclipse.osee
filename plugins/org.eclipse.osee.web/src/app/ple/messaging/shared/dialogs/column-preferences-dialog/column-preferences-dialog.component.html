@@ -1,0 +1,104 @@
+<!--
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Settings</h1>
+<mat-dialog-content>
+	<div class="checkboxes">
+		<mat-checkbox
+			[(ngModel)]="data.editable"
+			[disabled]="(editability | async) === false || false"
+			color="primary">
+			<mat-label>Edit Mode</mat-label>
+		</mat-checkbox>
+		<mat-checkbox
+			[(ngModel)]="data.wordWrap"
+			matTooltip="Turn on to view full length content in tables"
+			[matTooltipPosition]="'right'"
+			color="primary">
+			<mat-label>Word Wrap</mat-label>
+		</mat-checkbox>
+	</div>
+	<ng-container *ngIf="data.headersTableActive">
+		<div class="column-preferences-header">
+			<h2>Column Preferences</h2>
+			<button
+				mat-stroked-button
+				(click)="resetToDefaultHeaders($event)"
+				data-cy="reset-default-btn">
+				Reset to Defaults
+			</button>
+		</div>
+		<table class="mat-table mat-elevation-z8">
+			<tr class="mat-header-row">
+				<th class="mat-header-cell">
+					<mat-label>{{ data.headers1Label }}:</mat-label>
+				</th>
+				<th class="mat-header-cell">
+					<mat-label>{{ data.headers2Label }}:</mat-label>
+				</th>
+			</tr>
+			<tr class="mat-row">
+				<td class="mat-cell column-preferences-align-top">
+					<mat-selection-list
+						[(ngModel)]="data.allowedHeaders1"
+						color="primary">
+						<mat-list-option
+							*ngFor="let header of data.allHeaders1"
+							[value]="header"
+							[attr.data-cy]="'header-' + header"
+							[attr.data-cy-checked]="
+								'selection-' + isChecked(0, header)
+							">
+							{{
+								(getHeaderByName(header, 'structure') | async)
+									?.humanReadable
+							}}
+						</mat-list-option>
+					</mat-selection-list>
+				</td>
+				<td class="mat-cell column-preferences-align-top">
+					<mat-selection-list
+						[(ngModel)]="data.allowedHeaders2"
+						color="primary">
+						<mat-list-option
+							*ngFor="let header of data.allHeaders2"
+							[value]="header"
+							[attr.data-cy]="'header-' + header"
+							[attr.data-cy-checked]="
+								'selection-' + isChecked(1, header)
+							">
+							{{
+								(getHeaderByName(header, 'element') | async)
+									?.humanReadable
+							}}
+						</mat-list-option>
+					</mat-selection-list>
+				</td>
+			</tr>
+		</table>
+	</ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+	<button
+		mat-button
+		(click)="onNoClick()"
+		data-cy="cancel-btn">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="data"
+		color="primary"
+		data-cy="submit-btn">
+		Ok
+	</button>
+</mat-dialog-actions>

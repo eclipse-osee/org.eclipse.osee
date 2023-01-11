@@ -14,12 +14,11 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { MessagingHelpComponent } from './messaging-help.component';
-import { ColumnDescriptionsMessageHelpComponentMock } from './mocks/components/column-descriptions-message-help.mock';
+import { MockColumnDescriptionsMessageHelpComponent } from './lib/testing/column-descriptions-message-help.component.mock';
 
 describe('MessagingHelpComponent', () => {
 	let component: MessagingHelpComponent;
@@ -32,16 +31,14 @@ describe('MessagingHelpComponent', () => {
 				RouterTestingModule.withRoutes([
 					{
 						path: 'columnDescriptions',
-						component: ColumnDescriptionsMessageHelpComponentMock,
+						component: MockColumnDescriptionsMessageHelpComponent,
 					},
 				]),
 				MatButtonModule,
 				NoopAnimationsModule,
-			],
-			declarations: [
 				MessagingHelpComponent,
-				ColumnDescriptionsMessageHelpComponentMock,
 			],
+			declarations: [MockColumnDescriptionsMessageHelpComponent],
 		}).compileComponents();
 	});
 

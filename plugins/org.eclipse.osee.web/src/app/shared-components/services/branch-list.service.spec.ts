@@ -15,23 +15,23 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '../../../environments/environment';
 import { messageBranch } from '../../ple/messaging/shared/types/branches';
 
 import { BranchListService } from './branch-list.service';
-import { RouteStateService } from '../../ple/messaging/connection-view/services/route-state-service.service';
 import { BranchCategoryService } from '../../shared-services/ui/branch-category.service';
+import { UiService } from '../../ple-services/ui/ui.service';
 
 describe('BranchListService', () => {
 	let service: BranchListService;
-	let routeService: RouteStateService;
+	let routeService: UiService;
 	let categoryService: BranchCategoryService;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
 		service = TestBed.inject(BranchListService);
-		routeService = TestBed.inject(RouteStateService);
+		routeService = TestBed.inject(UiService);
 		categoryService = TestBed.inject(BranchCategoryService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
@@ -43,7 +43,7 @@ describe('BranchListService', () => {
 		describe('branches observable', () => {
 			it('should call for baseline branches when set to product line', () => {
 				let testData: messageBranch[] = [];
-				routeService.branchType = 'product line';
+				routeService.typeValue = 'product line';
 				categoryService.category = '3';
 				service.branches.subscribe();
 				const req = httpTestingController.expectOne(
@@ -56,7 +56,7 @@ describe('BranchListService', () => {
 
 			it('should call for working branches when set to working', () => {
 				let testData: messageBranch[] = [];
-				routeService.branchType = 'working';
+				routeService.typeValue = 'working';
 				categoryService.category = '3';
 				service.branches.subscribe();
 				const req = httpTestingController.expectOne(

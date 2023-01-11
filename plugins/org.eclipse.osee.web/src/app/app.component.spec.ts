@@ -18,7 +18,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { DisplayUserComponent } from './userdata/components/display-user/display-user.component';
+import { NavContainerComponent } from './layout/lib/containers/nav-container.component';
 
 @Component({
 	selector: 'osee-display-user',
@@ -35,6 +35,7 @@ describe('AppComponent', () => {
 				NoopAnimationsModule,
 				MatIconModule,
 				MatToolbarModule,
+				NavContainerComponent,
 			],
 			declarations: [AppComponent, MockOseeUserComponent],
 		}).compileComponents();

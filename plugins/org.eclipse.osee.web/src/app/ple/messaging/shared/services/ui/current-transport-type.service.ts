@@ -23,7 +23,10 @@ import {
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { TransactionService } from '../../../../../transactions/transaction.service';
-import { ARTIFACTTYPEID } from '../../../../../types/constants/ArtifactTypeId.enum';
+import {
+	ARTIFACTTYPEID,
+	ARTIFACTTYPEIDENUM,
+} from '../../../../../types/constants/ArtifactTypeId.enum';
 import { transportType } from '../../types/transportType';
 import { TransportTypeService } from '../http/transport-type.service';
 
@@ -85,7 +88,7 @@ export class CurrentTransportTypeService {
 				of(
 					this.transactionBuilder.createArtifact(
 						type,
-						ARTIFACTTYPEID.TRANSPORTTYPE,
+						ARTIFACTTYPEIDENUM.TRANSPORTTYPE,
 						[],
 						undefined,
 						id,

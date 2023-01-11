@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { affectedArtifactHttpServiceMock } from '../../mocks/affected-artifact.http.service.mock';
+import { affectedArtifactHttpServiceMock } from '../../testing/affected-artifact.service.mock';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { BranchedAffectedArtifactService } from './branched-affected-artifact.service';

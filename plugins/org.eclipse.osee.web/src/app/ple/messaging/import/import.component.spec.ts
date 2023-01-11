@@ -10,41 +10,58 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgIf, AsyncPipe, NgFor } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActionDropdownStub } from 'src/app/shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
-import { BranchPickerStub } from 'src/app/shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
+import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 
 import { ImportComponent } from './import.component';
-import { ImportService } from './services/import.service';
-import { importServiceMock } from './services/import.service.mock';
+import { ImportService } from './lib/services/import.service';
+import { importServiceMock } from './lib/services/import.service.mock';
 
 describe('ImportComponent', () => {
 	let component: ImportComponent;
 	let fixture: ComponentFixture<ImportComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatButtonModule,
-				MatFormFieldModule,
-				MatSelectModule,
-				NoopAnimationsModule,
-				RouterTestingModule,
-			],
-			providers: [
-				{ provide: ImportService, useValue: importServiceMock },
-			],
-			declarations: [
-				ImportComponent,
-				ActionDropdownStub,
-				BranchPickerStub,
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(ImportComponent, {
+			set: {
+				imports: [
+					NgIf,
+					NgFor,
+					AsyncPipe,
+					MatButtonModule,
+					MatSelectModule,
+					ActionDropdownStub,
+					BranchPickerStub,
+				],
+				providers: [
+					{ provide: ImportService, useValue: importServiceMock },
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatButtonModule,
+					MatFormFieldModule,
+					MatSelectModule,
+					NoopAnimationsModule,
+					RouterTestingModule,
+					ActionDropdownStub,
+					BranchPickerStub,
+					ImportComponent,
+				],
+				providers: [
+					{ provide: ImportService, useValue: importServiceMock },
+				],
+				declarations: [],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

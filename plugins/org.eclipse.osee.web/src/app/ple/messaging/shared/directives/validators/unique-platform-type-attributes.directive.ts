@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive } from '@angular/core';
+import { Directive, Input, Optional } from '@angular/core';
 import {
 	AbstractControl,
 	AsyncValidator,
@@ -18,13 +18,18 @@ import {
 	ValidationErrors,
 } from '@angular/forms';
 import { Observable, of, switchMap, take } from 'rxjs';
-import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from '../../../../../types/constants/AttributeTypeId.enum';
 import { CurrentQueryService } from '../../services/ui/current-query.service';
+import { logicalTypeFormDetail } from '../../types/logicaltype';
 import { andQuery, MimQuery, PlatformTypeQuery } from '../../types/MimQuery';
 import { PlatformType } from '../../types/platformType';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeAttributes]',
+	standalone: true,
 	providers: [
 		{
 			provide: NG_ASYNC_VALIDATORS,
@@ -32,90 +37,151 @@ import { PlatformType } from '../../types/platformType';
 			multi: true,
 		},
 	],
+	exportAs: 'oseeUniquePlatformTypeAttributes',
 })
 export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
+	@Optional()
+	@Input('oseeUniquePlatformTypeAttributes')
+	inputField?: logicalTypeFormDetail = {
+		id: '',
+		name: '',
+		idString: '',
+		idIntValue: 0,
+		fields: [],
+	};
 	constructor(private queryService: CurrentQueryService) {}
 	validate(
 		control: AbstractControl<PlatformType, any>
 	): Observable<ValidationErrors | null> {
+		const nonEditableFields =
+			this.inputField?.fields?.filter((field) => !field.editable) || [];
 		const queries: andQuery[] = [];
-		if (control.value.description !== '')
+		if (
+			control.value.description !== '' &&
+			control.value.description !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.DESCRIPTION,
+					ATTRIBUTETYPEIDENUM.DESCRIPTION,
 					control.value.description
 				)
 			);
-		if (control.value.interfaceLogicalType !== '')
+		if (
+			control.value.interfaceLogicalType !== '' &&
+			control.value.interfaceLogicalType !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.LOGICALTYPE,
+					ATTRIBUTETYPEIDENUM.LOGICALTYPE,
 					control.value.interfaceLogicalType
 				)
 			);
-		if (control.value.interfacePlatformTypeAnalogAccuracy !== '')
+		if (
+			control.value.interfacePlatformTypeAnalogAccuracy !== '' &&
+			control.value.interfacePlatformTypeAnalogAccuracy
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEANALOGACCURACY,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY,
 					control.value.interfacePlatformTypeAnalogAccuracy
 				)
 			);
-		if (control.value.interfacePlatformTypeBitSize !== '')
+		if (
+			control.value.interfacePlatformTypeBitSize !== '' &&
+			control.value.interfacePlatformTypeBitSize !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEBITSIZE,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
 					control.value.interfacePlatformTypeBitSize
 				)
 			);
-		if (control.value.interfacePlatformTypeBitsResolution !== '')
+		if (
+			control.value.interfacePlatformTypeBitsResolution !== '' &&
+			control.value.interfacePlatformTypeBitsResolution !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEBITSRESOLUTION,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION,
 					control.value.interfacePlatformTypeBitsResolution
 				)
 			);
-		if (control.value.interfacePlatformTypeCompRate !== '')
+		if (
+			control.value.interfacePlatformTypeCompRate !== '' &&
+			control.value.interfacePlatformTypeCompRate !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPECOMPRATE,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE,
 					control.value.interfacePlatformTypeCompRate
 				)
 			);
-		if (control.value.interfacePlatformTypeDefaultValue !== '')
+		if (
+			control.value.interfacePlatformTypeDefaultValue !== '' &&
+			control.value.interfacePlatformTypeDefaultValue !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEDEFAULTVAL,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEDEFAULTVAL,
 					control.value.interfacePlatformTypeDefaultValue
 				)
 			);
-		if (control.value.interfacePlatformTypeMaxval !== '')
+		if (
+			control.value.interfacePlatformTypeMaxval !== '' &&
+			control.value.interfacePlatformTypeMaxval !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMAXVAL,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL,
 					control.value.interfacePlatformTypeMaxval
 				)
 			);
-		if (control.value.interfacePlatformTypeMinval !== '')
+		if (
+			control.value.interfacePlatformTypeMinval !== '' &&
+			control.value.interfacePlatformTypeMinval !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMINVAL,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL,
 					control.value.interfacePlatformTypeMinval
 				)
 			);
-		if (control.value.interfacePlatformTypeMsbValue !== '')
+		if (
+			control.value.interfacePlatformTypeMsbValue !== '' &&
+			control.value.interfacePlatformTypeMsbValue !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEMSBVAL,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL,
 					control.value.interfacePlatformTypeMsbValue
 				)
 			);
-		if (control.value.interfacePlatformTypeUnits !== '')
+		if (
+			control.value.interfacePlatformTypeUnits !== '' &&
+			control.value.interfacePlatformTypeUnits !== undefined
+		)
 			queries.push(
 				new andQuery(
-					ATTRIBUTETYPEID.INTERFACEPLATFORMTYPEUNITS,
+					ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
 					control.value.interfacePlatformTypeUnits
 				)
 			);
+		nonEditableFields.forEach((field) => {
+			queries.push(
+				new andQuery(field.attributeTypeId, field.defaultValue)
+			);
+		});
+		if (
+			this.inputField?.name !== '' &&
+			this.inputField?.name !== undefined
+		) {
+			queries.push(
+				new andQuery(
+					ATTRIBUTETYPEIDENUM.LOGICALTYPE,
+					this.inputField.name
+				)
+			);
+		}
 		const query = new PlatformTypeQuery(undefined, queries);
 		return this.queryService
 			.queryExact(query as MimQuery<PlatformType>)

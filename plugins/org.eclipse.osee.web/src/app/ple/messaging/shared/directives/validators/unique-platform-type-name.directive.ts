@@ -29,13 +29,17 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { ATTRIBUTETYPEID } from '../../../../../types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from '../../../../../types/constants/AttributeTypeId.enum';
 import { CurrentQueryService } from '../../services/ui/current-query.service';
 import { andQuery, MimQuery, PlatformTypeQuery } from '../../types/MimQuery';
 import { PlatformType } from '../../types/platformType';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeName]',
+	standalone: true,
 	providers: [
 		{
 			provide: NG_ASYNC_VALIDATORS,
@@ -53,7 +57,7 @@ export class UniquePlatformTypeNameDirective implements AsyncValidator {
 		return of(control.value).pipe(
 			debounceTime(500),
 			switchMap((name) =>
-				of(new andQuery(ATTRIBUTETYPEID.NAME, name)).pipe(
+				of(new andQuery(ATTRIBUTETYPEIDENUM.NAME, name)).pipe(
 					map(
 						(nameQuery) =>
 							new PlatformTypeQuery(undefined, [nameQuery])

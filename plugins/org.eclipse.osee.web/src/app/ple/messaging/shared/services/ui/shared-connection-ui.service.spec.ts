@@ -12,8 +12,8 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { connectionMock } from '../../mocks/connection.mock';
-import { sharedConnectionServiceMock } from '../../mocks/SharedConnection.service.mock';
+import { connectionMock } from '../../testing/connection.response.mock';
+import { sharedConnectionServiceMock } from '../../testing/shared-connection.service.mock';
 import { SharedConnectionService } from '../http/shared-connection.service';
 import { MimRouteService } from './mim-route.service';
 

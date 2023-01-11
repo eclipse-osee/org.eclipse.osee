@@ -10,12 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { ActionService } from '../../../../ple-services/http/action.service';
-import { PlConfigUserService } from '../../../../ple/plconfig/services/pl-config-user.service';
+import { ActionUserService } from '../../../services/action-user.service';
 import {
 	actionableItem,
 	PLConfigCreateAction,
@@ -30,6 +41,19 @@ import { ActionStateButtonService } from '../../../services/action-state-button.
 	selector: 'osee-create-action-dialog',
 	templateUrl: './create-action-dialog.component.html',
 	styleUrls: ['./create-action-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		NgFor,
+		AsyncPipe,
+		FormsModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatOptionModule,
+		MatInputModule,
+		MatButtonModule,
+	],
 })
 export class CreateActionDialogComponent {
 	users = this.userService.usersSorted;
@@ -49,7 +73,7 @@ export class CreateActionDialogComponent {
 		public dialogRef: MatDialogRef<CreateActionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLConfigCreateAction,
 		public actionService: ActionStateButtonService,
-		public userService: PlConfigUserService
+		public userService: ActionUserService
 	) {}
 
 	onNoClick(): void {

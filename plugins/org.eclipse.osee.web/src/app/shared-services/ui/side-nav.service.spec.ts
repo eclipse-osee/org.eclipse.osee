@@ -35,7 +35,7 @@ describe('SideNavService', () => {
 
 	it('should open the sidenav', () => {
 		scheduler.run(({ expectObservable }) => {
-			service.sideNav = {
+			service.rightSideNav = {
 				opened: true,
 				field: '',
 				currentValue: '',
@@ -44,7 +44,7 @@ describe('SideNavService', () => {
 				user: '',
 				date: '',
 			};
-			expectObservable(service.opened).toBe('a', { a: true });
+			expectObservable(service.rightSideNavOpened).toBe('a', { a: true });
 		});
 	});
 });

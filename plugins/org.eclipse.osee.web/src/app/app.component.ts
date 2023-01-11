@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
+import { map } from 'rxjs';
 import { HttpLoadingService } from './services/http-loading.service';
 import { SideNavService } from './shared-services/ui/side-nav.service';
 
@@ -20,25 +21,19 @@ import { SideNavService } from './shared-services/ui/side-nav.service';
 	styleUrls: ['./app.component.sass'],
 })
 export class AppComponent {
-	opened = this.sideNavService.opened;
-	isLoading = this.loadingService.isLoading;
+	rightSideNavOpened = this.sideNavService.rightSideNavOpened;
+	leftSideNavOpened = this.sideNavService.leftSideNav.pipe(
+		map((v) => v.opened)
+	);
 
-	// Top Level Navigation icon - change when opened/closed
-	topLevelNavIconOpen = false;
-	topLevelNavIcon = 'menu';
 	toggleTopLevelNavIcon() {
-		this.topLevelNavIconOpen = !this.topLevelNavIconOpen;
-		this.topLevelNavIcon = this.topLevelNavIconOpen ? 'close' : 'menu';
+		this.sideNavService.toggleLeftSideNav = '';
 	}
 
 	closeTopLevelNavIcon() {
-		this.topLevelNavIconOpen = false;
-		this.topLevelNavIcon = 'menu';
+		this.sideNavService.closeLeftSideNav = '';
 	}
 
-	constructor(
-		private sideNavService: SideNavService,
-		private loadingService: HttpLoadingService
-	) {}
+	constructor(private sideNavService: SideNavService) {}
 	title = 'OSEE';
 }

@@ -17,9 +17,9 @@ import {
 	transactionResultMock,
 } from 'src/app/transactions/transaction.mock';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { enumerationSetServiceMock } from '../../mocks/enumeration.set.service.mock';
-import { enumsServiceMock } from '../../mocks/EnumsService.mock';
-import { typesServiceMock } from '../../mocks/types.service.mock';
+import { enumerationSetServiceMock } from '../../testing/enumeration-set.service.mock';
+import { enumsServiceMock } from '../../testing/enums.service.mock';
+import { typesServiceMock } from '../../testing/types.service.mock';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 import { EnumsService } from '../http/enums.service';
 import { TypesService } from '../http/types.service';

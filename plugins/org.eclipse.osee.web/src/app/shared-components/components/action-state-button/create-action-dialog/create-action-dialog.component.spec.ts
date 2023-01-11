@@ -26,6 +26,8 @@ import { of } from 'rxjs';
 import { ActionService } from '../../../../ple-services/http/action.service';
 import { ActionStateButtonService } from '../../../services/action-state-button.service';
 import { actionStateButtonServiceMock } from '../../../services/action-state-button.service.mock';
+import { ActionUserService } from '../../../services/action-user.service';
+import { MockActionUserService } from '../../../services/action-user.service.mock';
 
 import { CreateActionDialogComponent } from './create-action-dialog.component';
 
@@ -43,9 +45,14 @@ describe('CreateActionDialogComponent', () => {
 				MatDialogModule,
 				NoopAnimationsModule,
 				FormsModule,
+				CreateActionDialogComponent,
 			],
-			declarations: [CreateActionDialogComponent],
+			declarations: [],
 			providers: [
+				{
+					provide: ActionUserService,
+					useValue: MockActionUserService,
+				},
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,

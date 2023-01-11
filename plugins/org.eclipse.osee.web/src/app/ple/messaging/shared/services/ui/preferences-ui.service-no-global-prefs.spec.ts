@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MimPreferencesServiceNoGlobalPrefsMock } from '../../mocks/MimPreferencesService.mock';
+import { MimPreferencesServiceNoGlobalPrefsMock } from '../../testing/mim-preferences.service.mock';
 import { preferencesTest } from './preferences-ui.service-test';
 
 describe('PreferencesUIService', () => {

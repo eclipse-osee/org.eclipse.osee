@@ -13,21 +13,52 @@
 <ng-container *ngIf="_options | async as _opt; else loadingMatOptions">
 	{{ disableSelect ? setDisabled(false) : '' }}
 	<!--48 is avg size for mat-option-->
-	<cdk-virtual-scroll-viewport
-		itemSize="48"
-		[minBufferPx]="48 * paginationSize"
-		[maxBufferPx]="48 * paginationSize"
-		[style.height.px]="
-			paginationMode === 'MANUAL'
-				? _opt.length > paginationSize
-					? 48 * (paginationSize + 1)
-					: 48 * _opt.length
-				: _opt.length > paginationSize
-				? 48 * paginationSize
-				: 48 * _opt.length
+	<ng-container
+		*ngIf="
+			paginationMode === 'AUTO' || paginationMode === 'MANUAL';
+			else nonPaginated
 		">
+		<cdk-virtual-scroll-viewport
+			itemSize="48"
+			[minBufferPx]="48 * paginationSize"
+			[maxBufferPx]="48 * paginationSize"
+			[style.height.px]="
+				paginationMode === 'MANUAL'
+					? _opt.length > paginationSize
+						? 48 * (paginationSize + 1)
+						: 48 * _opt.length
+					: _opt.length > paginationSize
+					? 48 * paginationSize
+					: 48 * _opt.length
+			">
+			<ng-template
+				*cdkVirtualFor="let opt of _opt"
+				let-opt
+				[ngTemplateOutlet]="template"
+				[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
+			</ng-template>
+			<ng-container *ngIf="_opt.length === 0">
+				No {{ objectName }} available.
+			</ng-container>
+			<ng-container
+				*ngIf="paginationMode === 'MANUAL' && _opt.length > 0">
+				<div
+					class="full-row"
+					*ngIf="(_paginationComplete | async) === false">
+					<button
+						mat-button
+						matListItemTitle
+						class="grow"
+						(click)="createPaginationEvent()">
+						Show More
+					</button>
+				</div>
+			</ng-container>
+		</cdk-virtual-scroll-viewport>
+	</ng-container>
+	<ng-template #nonPaginated>
 		<ng-template
-			*cdkVirtualFor="let opt of _opt"
+			*ngFor="let opt of _opt"
 			let-opt
 			[ngTemplateOutlet]="template"
 			[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
@@ -35,20 +66,7 @@
 		<ng-container *ngIf="_opt.length === 0">
 			No {{ objectName }} available.
 		</ng-container>
-		<ng-container *ngIf="paginationMode === 'MANUAL' && _opt.length > 0">
-			<div
-				class="full-row"
-				*ngIf="(_paginationComplete | async) === false">
-				<button
-					mat-button
-					matListItemTitle
-					class="grow"
-					(click)="createPaginationEvent()">
-					Show More
-				</button>
-			</div>
-		</ng-container>
-	</cdk-virtual-scroll-viewport>
+	</ng-template>
 </ng-container>
 <ng-template #loadingMatOptions>
 	{{ disableSelect ? setDisabled(true) : '' }}

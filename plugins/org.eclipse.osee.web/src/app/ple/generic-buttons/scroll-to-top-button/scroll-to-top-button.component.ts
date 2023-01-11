@@ -11,11 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-scroll-to-top-button',
 	templateUrl: './scroll-to-top-button.component.html',
 	styleUrls: ['./scroll-to-top-button.component.sass'],
+	standalone: true,
+	imports: [MatButtonModule, MatIconModule],
 })
 export class ScrollToTopButtonComponent {
 	constructor() {}

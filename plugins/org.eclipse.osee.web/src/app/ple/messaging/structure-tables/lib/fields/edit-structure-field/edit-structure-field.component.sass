@@ -1,0 +1,23 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use '../../../../../../../sass-utils/mdc-migration/_form-field'
+@use '../../../../../../../modern-ple-theme'
+:host-context(.light-theme)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'wide-form')
+:host-context(.dark-theme)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'wide-form')
+:host
+    display: block
+    width: 100%
+.wide-form
+    width: 90%

@@ -23,8 +23,9 @@ import { MatOptionLoadingComponent } from './mat-option-loading/mat-option-loadi
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
-	declarations: [MatOptionLoadingComponent],
+	declarations: [],
 	imports: [
+		MatOptionLoadingComponent,
 		CommonModule,
 		FormsModule,
 		MatFormFieldModule,

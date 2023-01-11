@@ -17,7 +17,12 @@ import {
 	transition,
 	animate,
 } from '@angular/animations';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { iif, Observable, of, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
@@ -30,6 +35,15 @@ import { applic } from '../../../types/applicability/applic';
 	selector: 'osee-single-diff',
 	templateUrl: './single-diff.component.html',
 	styleUrls: ['./single-diff.component.sass'],
+	standalone: true,
+	imports: [
+		MatButtonModule,
+		MatIconModule,
+		MatFormFieldModule,
+		FormsModule,
+		NgIf,
+		AsyncPipe,
+	],
 	animations: [
 		trigger('expandButton', [
 			state('closed', style({ transform: 'rotate(180deg)' })),
@@ -46,7 +60,7 @@ import { applic } from '../../../types/applicability/applic';
 	],
 })
 export class SingleDiffComponent {
-	contents = this.sideNavService.sideNavContent.pipe(
+	contents = this.sideNavService.rightSideNavContent.pipe(
 		switchMap((content) =>
 			of(content).pipe(
 				switchMap((val) =>
@@ -67,7 +81,7 @@ export class SingleDiffComponent {
 	);
 
 	transactionInfo!: Observable<transactionInfo>;
-	opened = this.sideNavService.opened;
+	opened = this.sideNavService.rightSideNavOpened;
 	constructor(
 		private transactionService: TransactionService,
 		private sideNavService: SideNavService
@@ -80,10 +94,12 @@ export class SingleDiffComponent {
 	}
 
 	viewDiff(open: boolean, value: string | number | applic, header: string) {
-		this.sideNavService.sideNav = {
+		this.sideNavService.rightSideNav = {
 			opened: open,
 			field: header,
 			currentValue: value,
 		};
 	}
 }
+
+export default SingleDiffComponent;

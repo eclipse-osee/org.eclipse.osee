@@ -18,12 +18,11 @@
  *
  */
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { UndoButtonBranchMockComponent } from './branch-undo-button.component.mock';
 
 @NgModule({
-	declarations: [UndoButtonBranchMockComponent],
-	imports: [CommonModule],
+	declarations: [],
+	imports: [UndoButtonBranchMockComponent],
 	exports: [UndoButtonBranchMockComponent],
 })
 export class BranchUndoButtonTestingModule {}

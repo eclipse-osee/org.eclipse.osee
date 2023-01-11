@@ -21,6 +21,7 @@ import {
 
 @Directive({
 	selector: '[oseeHighlightFilteredText]',
+	standalone: true,
 })
 export class HighlightFilteredTextDirective implements OnChanges {
 	@Input() searchTerms: string = '';

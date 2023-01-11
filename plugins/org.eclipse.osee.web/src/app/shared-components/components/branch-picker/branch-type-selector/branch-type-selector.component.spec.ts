@@ -47,8 +47,9 @@ describe('BranchTypeSelectorComponent', () => {
 				]),
 				MatRadioModule,
 				FormsModule,
+				BranchTypeSelectorComponent,
 			],
-			declarations: [BranchTypeSelectorComponent],
+			declarations: [],
 		}).compileComponents();
 	});
 

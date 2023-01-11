@@ -46,14 +46,12 @@ import { AddConfigurationDialogComponent } from './components/add-configuration-
 import { FeatureDropdownComponent } from './components/dropdowns/feature-dropdown/feature-dropdown.component';
 import { AddFeatureDialogComponent } from './components/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from './components/edit-feature-dialog/edit-feature-dialog.component';
-import { TransitionActionToReviewDialogComponent } from './components/transition-action-to-review-dialog/transition-action-to-review-dialog.component';
 import { CopyConfigurationDialogComponent } from './components/copy-configuration-dialog/copy-configuration-dialog.component';
 import { ConfigurationGroupDropdownComponent } from './components/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
 import { AddConfigurationGroupDialogComponent } from './components/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { ConfigGroupDialogComponent } from './components/config-group-dialog/config-group-dialog.component';
 
 import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module';
-import { DiffViewsModule } from '../diff-views/diff-views/diff-views.module';
 import { FeatureMenuComponent } from './components/menus/feature-menu/feature-menu.component';
 import { ArrayDiffMenuComponent } from './components/menus/array-diff-menu/array-diff-menu.component';
 import { ConfigMenuComponent } from './components/menus/config-menu/config-menu.component';
@@ -75,7 +73,6 @@ import { EditProductTypeDialogComponent } from './components/edit-product-type-d
 		FeatureDropdownComponent,
 		AddFeatureDialogComponent,
 		EditFeatureDialogComponent,
-		TransitionActionToReviewDialogComponent,
 		CopyConfigurationDialogComponent,
 		ConfigurationGroupDropdownComponent,
 		AddConfigurationGroupDialogComponent,
@@ -107,7 +104,6 @@ import { EditProductTypeDialogComponent } from './components/edit-product-type-d
 		MatIconModule,
 		MatProgressSpinnerModule,
 		MatListModule,
-		DiffViewsModule,
 		ActionStateButtonModule,
 		PlconfigRoutingModule,
 	],

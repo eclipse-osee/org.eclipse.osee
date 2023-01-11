@@ -25,7 +25,7 @@ import { TransactionBuilderService } from 'src/app/transactions/transaction-buil
 import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
 import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { relation } from 'src/app/transactions/transaction';
-import { structuresMock } from '../../mocks/structure.mock';
+import { structuresMock } from '../../testing/structure.mock';
 
 describe('StructuresService', () => {
 	let service: StructuresService;

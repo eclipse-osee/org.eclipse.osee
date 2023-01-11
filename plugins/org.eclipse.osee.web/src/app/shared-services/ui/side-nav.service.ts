@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { transactionToken } from 'src/app/transactions/transaction';
 import { applic } from 'src/app/types/applicability/applic';
@@ -20,7 +20,7 @@ import { applic } from 'src/app/types/applicability/applic';
 	providedIn: 'root',
 })
 export class SideNavService {
-	private _sideNavContent = new ReplaySubject<{
+	private _rightSideNavContent = new ReplaySubject<{
 		opened: boolean;
 		field: string;
 		currentValue: string | number | applic | boolean;
@@ -29,12 +29,20 @@ export class SideNavService {
 		user?: string;
 		date?: string;
 	}>();
+	private _leftSideNavContent = new BehaviorSubject<{
+		opened: boolean;
+		icon: 'close' | 'menu';
+	}>({
+		opened: false,
+		icon: 'menu',
+	});
+	private _leftSideNavContent$ = this._leftSideNavContent.asObservable();
 	constructor() {}
 
-	get sideNavContent() {
-		return this._sideNavContent;
+	get rightSideNavContent() {
+		return this._rightSideNavContent;
 	}
-	set sideNav(value: {
+	set rightSideNav(value: {
 		opened: boolean;
 		field: string;
 		currentValue: string | number | applic | boolean;
@@ -43,10 +51,34 @@ export class SideNavService {
 		user?: string;
 		date?: string;
 	}) {
-		this._sideNavContent.next(value);
+		this._rightSideNavContent.next(value);
 	}
 
-	get opened() {
-		return this.sideNavContent.pipe(map((val) => val.opened));
+	get rightSideNavOpened() {
+		return this.rightSideNavContent.pipe(map((val) => val.opened));
+	}
+
+	set toggleLeftSideNav(value: unknown) {
+		const currentState = this._leftSideNavContent.getValue();
+		this.leftSideNavState = { opened: !currentState.opened };
+	}
+
+	set leftSideNavState(value: { opened: boolean }) {
+		this._leftSideNavContent.next({
+			opened: value.opened,
+			icon: value.opened ? 'close' : 'menu',
+		});
+	}
+
+	set openLeftSideNav(value: unknown) {
+		this.leftSideNavState = { opened: true };
+	}
+
+	set closeLeftSideNav(value: unknown) {
+		this.leftSideNavState = { opened: false };
+	}
+
+	get leftSideNav() {
+		return this._leftSideNavContent$;
 	}
 }

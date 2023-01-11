@@ -11,16 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, iif, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { CurrentGraphService } from './services/current-graph.service';
-import { RouteStateService } from './services/route-state-service.service';
+import { HostComponent } from './lib/layout/host/host.component';
+import { CurrentGraphService } from './lib/services/current-graph.service';
+import { RouteStateService } from './lib/services/route-state-service.service';
 
 @Component({
 	selector: 'osee-messaging-connection-view',
 	templateUrl: './connection-view.component.html',
 	styleUrls: ['./connection-view.component.sass'],
+	standalone: true,
+	imports: [HostComponent],
 })
 export class ConnectionViewComponent implements OnInit {
 	constructor(
@@ -60,3 +62,4 @@ export class ConnectionViewComponent implements OnInit {
 		});
 	}
 }
+export default ConnectionViewComponent;

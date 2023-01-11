@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgClass } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -21,7 +22,7 @@ import { ActivatedRoute, convertToParamMap, Params } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { CurrentTransportTypeServiceMock } from '../shared/mocks/current-transport-type.ui.service.mock';
+import { CurrentTransportTypeServiceMock } from '../shared/testing/current-transport-type.service.mock';
 import { CurrentTransportTypeService } from '../shared/services/ui/current-transport-type.service';
 
 import { TransportsComponent } from './transports.component';
@@ -31,58 +32,73 @@ describe('TransportsComponent', () => {
 	let fixture: ComponentFixture<TransportsComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatTableModule,
-				MatButtonModule,
-				MatDialogModule,
-				MatTooltipModule,
-				MatIconModule,
-				NoopAnimationsModule,
-			],
-			providers: [
-				{
-					provide: CurrentTransportTypeService,
-					useValue: CurrentTransportTypeServiceMock,
-				},
-				{
-					provide: ActivatedRoute,
-					useValue: {
-						paramMap: of(
-							convertToParamMap({
-								branchType: 'working',
-								branchId: '10',
-							})
-						),
+		await TestBed.overrideComponent(TransportsComponent, {
+			set: {
+				imports: [
+					AsyncPipe,
+					NgFor,
+					NgClass,
+					MatTableModule,
+					MatTooltipModule,
+					MatButtonModule,
+					MatIconModule,
+					ActionDropdownStub,
+					BranchPickerStub,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatTableModule,
+					MatButtonModule,
+					MatDialogModule,
+					MatTooltipModule,
+					MatIconModule,
+					NoopAnimationsModule,
+					ActionDropdownStub,
+					BranchPickerStub,
+					TransportsComponent,
+				],
+				providers: [
+					{
+						provide: CurrentTransportTypeService,
+						useValue: CurrentTransportTypeServiceMock,
 					},
-				},
-				{
-					provide: MatDialog,
-					useValue: {
-						open() {
-							return {
-								afterClosed() {
-									return of({
-										name: 'ETHERNET',
-										byteAlignValidation: false,
-										byteAlignValidationSize: 0,
-										messageGeneration: false,
-										messageGenerationPosition: '',
-										messageGenerationType: '',
-									});
-								},
-								close: null,
-							};
+					{
+						provide: ActivatedRoute,
+						useValue: {
+							paramMap: of(
+								convertToParamMap({
+									branchType: 'working',
+									branchId: '10',
+								})
+							),
 						},
 					},
-				},
-			],
-			declarations: [
-				TransportsComponent,
-				ActionDropdownStub,
-				BranchPickerStub,
-			],
-		}).compileComponents();
+					{
+						provide: MatDialog,
+						useValue: {
+							open() {
+								return {
+									afterClosed() {
+										return of({
+											name: 'ETHERNET',
+											byteAlignValidation: false,
+											byteAlignValidationSize: 0,
+											messageGeneration: false,
+											messageGenerationPosition: '',
+											messageGenerationType: '',
+										});
+									},
+									close: null,
+								};
+							},
+						},
+					},
+				],
+				declarations: [],
+			})
+			.compileComponents();
 
 		let dialogRefSpy = jasmine.createSpyObj({
 			afterClosed: of({

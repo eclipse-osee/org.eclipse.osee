@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BranchPickerStub } from 'src/app/shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import { BranchPickerStub } from '../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
 
 import { ChangeReportComponent } from './change-report.component';
 import { MockChangeReportTableComponent } from './mocks/change-report-table.component.mock';
@@ -23,10 +23,9 @@ describe('ChangeReportComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule],
+			imports: [RouterTestingModule, BranchPickerStub],
 			declarations: [
 				ChangeReportComponent,
-				BranchPickerStub,
 				MockChangeReportTableComponent,
 			],
 		}).compileComponents();

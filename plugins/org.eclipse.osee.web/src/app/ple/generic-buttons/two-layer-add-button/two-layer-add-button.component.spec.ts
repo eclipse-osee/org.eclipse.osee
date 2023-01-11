@@ -23,8 +23,13 @@ describe('TwoLayerAddButtonComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [NoopAnimationsModule, MatButtonModule, MatIconModule],
-			declarations: [TwoLayerAddButtonComponent],
+			imports: [
+				NoopAnimationsModule,
+				MatButtonModule,
+				MatIconModule,
+				TwoLayerAddButtonComponent,
+			],
+			declarations: [],
 		}).compileComponents();
 	});
 

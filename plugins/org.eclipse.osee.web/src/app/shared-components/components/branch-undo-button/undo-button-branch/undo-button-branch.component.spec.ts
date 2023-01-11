@@ -29,8 +29,13 @@ describe('UndoButtonBranchComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MatIconModule, MatButtonModule, MatTooltipModule],
-			declarations: [UndoButtonBranchComponent],
+			imports: [
+				MatIconModule,
+				MatButtonModule,
+				MatTooltipModule,
+				UndoButtonBranchComponent,
+			],
+			declarations: [],
 			providers: [
 				{
 					provide: CurrentBranchTransactionService,

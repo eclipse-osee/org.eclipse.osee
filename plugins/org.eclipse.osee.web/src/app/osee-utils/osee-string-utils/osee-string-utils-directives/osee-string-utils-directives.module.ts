@@ -15,8 +15,8 @@ import { CommonModule } from '@angular/common';
 import { HighlightFilteredTextDirective } from './highlight-filtered-text.directive';
 
 @NgModule({
-	declarations: [HighlightFilteredTextDirective],
-	imports: [CommonModule],
+	declarations: [],
+	imports: [CommonModule, HighlightFilteredTextDirective],
 	exports: [HighlightFilteredTextDirective],
 })
 export class OseeStringUtilsDirectivesModule {}

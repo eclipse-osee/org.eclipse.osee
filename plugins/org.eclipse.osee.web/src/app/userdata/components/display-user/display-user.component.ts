@@ -21,6 +21,10 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterOutlet } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-display-user',
@@ -40,6 +44,8 @@ import {
 			),
 		]),
 	],
+	standalone: true,
+	imports: [MatMenuModule, MatIconModule, RouterOutlet, AsyncPipe],
 })
 export class DisplayUserComponent {
 	userInfo: Observable<user> = this.accountService.user;

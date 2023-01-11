@@ -19,4 +19,4 @@ export const paginationModes = {
  * Modes used to control pagination using mat-option-loading
  */
 export type paginationMode =
-	typeof paginationModes[keyof typeof paginationModes];
+	(typeof paginationModes)[keyof typeof paginationModes];

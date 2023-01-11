@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatOptionLoadingModule } from '../../../mat-option-loading/mat-option-loading.module';
+import { MockMatOptionLoadingComponent } from '../../../mat-option-loading/testing/mat-option-loading.component';
 
 import { BranchSelectorComponent } from './branch-selector.component';
 
@@ -34,9 +34,10 @@ describe('BranchSelectorComponent', () => {
 				FormsModule,
 				MatSelectModule,
 				NoopAnimationsModule,
-				MatOptionLoadingModule,
+				MockMatOptionLoadingComponent,
+				BranchSelectorComponent,
 			],
-			declarations: [BranchSelectorComponent],
+			declarations: [],
 		}).compileComponents();
 	});
 

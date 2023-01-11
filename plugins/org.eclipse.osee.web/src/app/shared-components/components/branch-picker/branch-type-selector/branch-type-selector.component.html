@@ -16,12 +16,12 @@
 	<div class="branch-types">
 		<mat-radio-button
 			*ngFor="let type of branchTypes"
-			[attr.data-cy]="normalizeType(type.toLowerCase())"
-			[value]="normalizeType(type.toLowerCase())"
-			[id]="normalizeType(type.toLowerCase())"
-			[name]="type.toLowerCase()"
+			[attr.data-cy]="normalizeType(type | lowercase)"
+			[value]="normalizeType(type | lowercase)"
+			[id]="normalizeType(type | lowercase)"
+			[name]="type | lowercase"
 			[ngClass]="
-				branchType === type.toLowerCase()
+				branchType === (type | lowercase)
 					? 'messaging-type-search-radio-option-selected'
 					: 'messaging-type-search-radio-option'
 			"
