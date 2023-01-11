@@ -55,28 +55,47 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
             "ATTRIBUTE") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
             writer.write("ORDER BY ");
          }
+         boolean firstOrderBy = true;
          if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("ATTRIBUTE")) {
-            writer.write(writer.getFirstAlias(OseeDb.ATTRIBUTE_TABLE));
-            writer.write(".value");
+            String attrTable = writer.getFirstAlias(OseeDb.ATTRIBUTE_TABLE);
+            if (attrTable != null) {
+               writer.write(attrTable);
+               writer.write(".value");
+               firstOrderBy = false;
+            }
             if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
                String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
                if (relTable != null) {
-                  writer.write(", ");
+                  if (!firstOrderBy) {
+                     writer.write(", ");
+                  }
                   writer.write(relTable);
                   writer.write(".rel_type, ");
                   writer.write(relTable);
                   writer.write(".rel_order ");
+                  firstOrderBy = false;
                }
             }
          } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
-            writer.write(", ");
+
             String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
-            writer.write(relTable);
-            writer.write(".rel_type, ");
-            writer.write(relTable);
-            writer.write(".rel_order ");
+            if (relTable != null) {
+               if (!firstOrderBy) {
+                  writer.write(", ");
+
+               }
+               writer.write(relTable);
+               writer.write(".rel_type, ");
+               writer.write(relTable);
+               writer.write(".rel_order ");
+               firstOrderBy = false;
+            }
+         }
+         if (firstOrderBy) {
+            writer.write("1");
          }
       }
+
       writer.write(") rn");
    }
 

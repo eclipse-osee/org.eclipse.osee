@@ -394,18 +394,20 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeSelectFields(getMainTableAlias(OseeDb.ARTIFACT_TABLE), "art_id");
       } else {
          writeSelectFields();
+         if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
+            CriteriaAttributeSort.class)) {
+            write(", '' AS order_value");
+         }
+         if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
+            CriteriaPagination.class)) {
+            write(", 0 as rn");
+         }
          for (SqlHandler<?> handler : handlers) {
             handler.writeSelectFields(this);
          }
+
       }
-      if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
-         CriteriaAttributeSort.class)) {
-         write(", '' AS order_value");
-      }
-      if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
-         CriteriaPagination.class)) {
-         write(", 0 as rn");
-      }
+
    }
 
    @Override

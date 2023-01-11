@@ -257,7 +257,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    @Override
    public List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
-         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, pageNum, pageSize);
+         return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttribute);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          return new LinkedList<>();
