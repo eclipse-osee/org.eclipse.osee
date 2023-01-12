@@ -6,12 +6,15 @@
 include: 
   - project: 'OSEE-developers/ci-cd-templates'
     ref: dev
-    file: 'ORG-Templates/build-OSEE-dev-template.yml'
+    file: 
+      - 'ORG-Templates/build-OSEE-dev-template.yml'
+      - 'ORG-Templates/test-OSEE-dev-template.yml'
 
 stages:
   - prepare
   - validate
   - build_OSEE_dev
+  - test_OSEE_dev
 
 variables:
   VARIABLES_FILE: ./variables.txt
@@ -45,4 +48,8 @@ Validate files:
 
 Build_Org_Eclipse_OSEE_Dev:
   stage: build_OSEE_dev 
+  when: manual
+
+Test_Org_Eclipse_OSEE_Dev:
+  stage: test_OSEE_dev
   when: manual
