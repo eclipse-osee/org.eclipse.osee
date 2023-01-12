@@ -171,7 +171,7 @@ public class CreateSiblingOffTaskEstOperation {
 
       changes.relate(task, AtsRelationTypes.Derive_To, newTeamWf);
 
-      changes.addAttribute(newTeamWf, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      changes.addAttribute(task, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
       return newTeamWf;
    }
 

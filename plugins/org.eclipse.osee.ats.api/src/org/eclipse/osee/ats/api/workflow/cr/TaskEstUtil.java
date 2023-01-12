@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -78,7 +79,9 @@ public class TaskEstUtil {
       IAtsTask foundTask = null;
       for (ArtifactToken derivedFrom : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_From)) {
          if (atsApi.getAttributeResolver().hasTag(derivedFrom, TaskEstUtil.TASK_EST_STATIC_ID)) {
-            foundTask = atsApi.getWorkItemService().getTask(derivedFrom);
+            if (derivedFrom.isOfType(AtsArtifactTypes.Task)) {
+               foundTask = atsApi.getWorkItemService().getTask(derivedFrom);
+            }
             break;
          }
       }
