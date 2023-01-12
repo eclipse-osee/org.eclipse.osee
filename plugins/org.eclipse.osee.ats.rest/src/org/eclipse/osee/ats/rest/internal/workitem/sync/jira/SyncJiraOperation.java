@@ -169,9 +169,7 @@ public class SyncJiraOperation {
       IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(syncTeam.getAgileTeamId());
       syncTeam.setAgileTeam(aTeam);
       for (IAgileSprint sprint : atsApi.getAgileService().getAgileSprints(aTeam)) {
-         if (sprint.getName().contains("AMS")) {
-            syncTeam.getOrCreateSyncSprint(sprint);
-         }
+         syncTeam.getOrCreateSyncSprint(sprint);
       }
 
       for (IAtsTeamDefinition teamDef : atsApi.getAgileService().getAtsTeams(aTeam)) {
@@ -195,8 +193,8 @@ public class SyncJiraOperation {
       results.logf("================================================================");
       results.log("Ignoring non OSEE Workflows (spot check): ");
       results.logf("");
-      for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactsFromAttributeValues(
-         AtsAttributeTypes.AtsId, atsIds, 500)) {
+      for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactsFromAttributeValues(AtsAttributeTypes.AtsId,
+         atsIds, 500)) {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
          if (teamWf != null && !skipJiraSync(teamWf)) {
             syncTeam.addJiraTeamWf(teamWf);
