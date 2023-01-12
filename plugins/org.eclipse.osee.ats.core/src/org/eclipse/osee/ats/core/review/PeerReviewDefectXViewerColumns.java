@@ -19,6 +19,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
  */
 public class PeerReviewDefectXViewerColumns {
 
+   public static XViewerColumn DefectId_Col =
+      new XViewerColumn("osee.defect.id", "Defect Id", 150, XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Severity_Col = new XViewerColumn("osee.defect.severity", "Severity", 85,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Disposition_Col = new XViewerColumn("osee.defect.disposition", "Disposition", 70,
@@ -37,8 +39,6 @@ public class PeerReviewDefectXViewerColumns {
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
    public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 200,
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
-   public static XViewerColumn DefectId_Col =
-      new XViewerColumn("osee.defect.id", "Defect Id", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
    public static XViewerColumn Notes_Col = new XViewerColumn("osee.defect.notes", "Notes", 200, XViewerAlign.Left, true,
       SortDataType.String_MultiLine, false, null);
 }
