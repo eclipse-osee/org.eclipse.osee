@@ -20,7 +20,8 @@ public enum AtsConfigKey {
 
    AJaxBasePath("Controls what is put on front of /ajax/... paths in html files when they are snapshots or save to file."),
    // Remove after 26.0 and convert peer defects guid tag to id; convert guid values to long (if want)
-   PeerDefectAsGuid("True if store id as guid tag");
+   PeerDefectAsGuid("True if store id as guid tag"),
+   NoReplyEmail("Must be set for ATS email notifications");
 
    private final String description;
 
