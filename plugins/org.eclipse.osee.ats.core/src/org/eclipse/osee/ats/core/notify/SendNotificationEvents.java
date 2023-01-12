@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -181,10 +183,11 @@ public class SendNotificationEvents {
       } else {
 
          String useEmail = isTesting() ? testingUserEmail : email;
-         String useFromEmail = Strings.isValid(fromUserEmail) ? fromUserEmail : "no-reply@boeing.com";
-
-         System.out.println(String.format("useEmail [%s]", useEmail));
-         System.out.println(String.format("useFromEmail [%s]", useFromEmail));
+         String useFromEmail =
+            Strings.isValid(fromUserEmail) ? fromUserEmail : atsApi.getConfigValue(AtsConfigKey.NoReplyEmail, "");
+         if (!EmailUtil.isEmailValid(useFromEmail)) {
+            return;
+         }
 
          try {
             OseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
