@@ -39,8 +39,8 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
    public DefectXViewerFactory(IOseeTreeReportProvider reportProvider, List<XViewerColumn> defectCols) {
       super(NAMESPACE, reportProvider);
       if (defectCols.isEmpty()) {
-         registerColumns(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
-            Description_Col, Location_Col, Resolution_Col, DefectId_Col, Notes_Col);
+         registerColumns(DefectId_Col, Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col,
+            Injection_Activity_Col, Description_Col, Location_Col, Resolution_Col, Notes_Col);
       } else {
          registerColumns(defectCols);
       }
