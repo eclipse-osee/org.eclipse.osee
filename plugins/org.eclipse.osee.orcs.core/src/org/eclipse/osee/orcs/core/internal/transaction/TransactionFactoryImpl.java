@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -99,7 +100,13 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public TransactionBuilder createTransaction(BranchId branch, UserId author, String comment) {
-      return createTransaction(branch, comment);
+      TxData txData = txDataManager.createTxData(session, branch);
+      TransactionBuilderImpl orcsTxn =
+         new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
+      orcsTxn.setComment(comment);
+      UserToken user = orcsApi.userService().getUser(author.getId());
+      orcsTxn.setAuthor(user);
+      return orcsTxn;
    }
 
    @Override

@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
@@ -85,7 +86,7 @@ public class AtsHealthCheckOperation {
    private final AtsApi atsApi;
    private final JdbcService jdbcService;
    boolean inTest = false;
-   boolean persist = false;
+   boolean persist = true;
    boolean debug = false; // Set to true to enable debugging; false for commit/production
    private Set<Long> aiIds;
    private IAtsOperationCache cache;
@@ -163,6 +164,7 @@ public class AtsHealthCheckOperation {
 
       int count = 0;
       vResults = new HealthCheckResults();
+      vResults.setPersist(persist);
       if (inTest) {
          vResults.log("testMap1", "blah blah");
          vResults.log("testMap2", "blah blah");
@@ -171,7 +173,10 @@ public class AtsHealthCheckOperation {
       } else {
          List<IAtsHealthCheck> checks = getHealthChecks();
 
-         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+         IAtsChangeSet changes = null;
+         if (persist) {
+            changes = atsApi.createChangeSet(getClass().getSimpleName(), AtsCoreUsers.SYSTEM_USER);
+         }
 
          handleCheckBefores(checks, changes, rd);
          count = handleChecks(count, checks, changes, rd);
@@ -179,6 +184,7 @@ public class AtsHealthCheckOperation {
 
          if (persist) {
             changes.executeIfNeeded();
+            rd.log("Changes Persisted\n");
          }
          // Throw away any caches
          checks = null;
