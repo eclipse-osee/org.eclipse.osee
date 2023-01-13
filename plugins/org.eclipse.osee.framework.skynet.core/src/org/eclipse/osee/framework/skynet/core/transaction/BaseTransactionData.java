@@ -14,14 +14,17 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -44,6 +47,7 @@ public abstract class BaseTransactionData {
    private static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?, ?, ?, ?, ?, ?)";
+   public static boolean USE_LONG_IDS = ArtifactToken.USE_LONG_IDS;
 
    private final Id itemId;
    private ModificationType modificationType;
@@ -160,6 +164,10 @@ public abstract class BaseTransactionData {
    protected abstract void internalAddToEvents(ArtifactTopicEvent artifactTopicEvent);
 
    protected GammaId getNextGammaIdFromSequence() {
-      return GammaId.valueOf(ConnectionHandler.getNextSequence(GAMMA_ID_SEQ, true));
+	   if (USE_LONG_IDS) {
+	         return GammaId.valueOf(Lib.generateUuid());
+	      } else {
+	         return GammaId.valueOf(ConnectionHandler.getNextSequence(OseeData.GAMMA_ID_SEQ, true));
+	      }
    }
 }
