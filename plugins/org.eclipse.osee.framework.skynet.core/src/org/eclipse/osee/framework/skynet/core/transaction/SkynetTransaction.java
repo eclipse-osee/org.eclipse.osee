@@ -20,12 +20,14 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -54,6 +57,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -81,6 +85,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 public final class SkynetTransaction extends TransactionOperation<BranchId> {
    private static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
    private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
+   public static boolean USE_LONG_IDS = ArtifactToken.USE_LONG_IDS;
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Id, BaseTransactionData> transactionDataItems =
       new CompositeKeyHashMap<>();
@@ -104,11 +109,19 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private AttributeId getNewAttributeId(Artifact artifact, Attribute<?> attribute) {
-      return AttributeId.valueOf(ConnectionHandler.getNextSequence(ATTR_ID_SEQ, true));
+	   if (USE_LONG_IDS) {
+	         return AttributeId.valueOf(Lib.generateUuid());
+	      } else {
+	         return AttributeId.valueOf(ConnectionHandler.getNextSequence(OseeData.ATTR_ID_SEQ, true));
+	      }
    }
 
    private RelationId getNewRelationId() {
-      return RelationId.valueOf(ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true));
+	   if (USE_LONG_IDS) {
+	         return RelationId.valueOf(Lib.generateUuid());
+	      } else {
+	         return RelationId.valueOf(ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true));
+	      }
    }
 
    private User getAuthor() {
