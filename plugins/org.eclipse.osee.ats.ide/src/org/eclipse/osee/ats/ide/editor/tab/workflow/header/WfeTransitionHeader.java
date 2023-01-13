@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -104,6 +105,7 @@ public class WfeTransitionHeader extends Composite {
                editor.doSave(null);
             }
             transitionLabelLink.setEnabled(false);
+            stateLabelLink.setEnabled(false);
             handleTransitionButtonSelection();
          }
       });
@@ -124,6 +126,7 @@ public class WfeTransitionHeader extends Composite {
                if (selState != null) {
                   userSelectedTransitionToState = selState;
                   transitionLabelLink.setEnabled(false);
+                  stateLabelLink.setEnabled(false);
                   handleTransitionButtonSelection();
                }
             } catch (Exception ex) {
@@ -181,14 +184,30 @@ public class WfeTransitionHeader extends Composite {
             "Select Transition-To State", null, "Select the state to transition to.\n\n" //
                + "Transition will happen upon selection and Transition button.\n\n" //
                + "Double-click will select, close and transition.",
-            2, new String[] {"Transition", "Cancel"}, 0);
-
+            2, new String[] {"Transition", "Cancel"}, 0, new StateListLabelProvider());
       if (dialog.open() == Window.OK) {
          Object obj = dialog.getSelected();
          return (StateDefinition) obj;
       }
-
       return null;
+   }
+
+   public static class StateListLabelProvider extends LabelProvider {
+      @Override
+      public String getText(Object element) {
+         if (element instanceof StateDefinition) {
+            StateDefinition stateDef = (StateDefinition) element;
+            Integer recPercent = ((StateDefinition) element).getRecommendedPercentComplete();
+            if (recPercent != null && recPercent > 0) {
+               String stateStr = String.format("%s%s", stateDef.toString(), " - " + recPercent + "%");
+               return stateStr;
+            } else {
+               return stateDef.toString();
+            }
+         }
+         return element.toString();
+      }
+
    }
 
    public void handleTransitionButtonSelection() {
@@ -398,6 +417,7 @@ public class WfeTransitionHeader extends Composite {
                stateLabelLink.getParent().layout();
 
                transitionLabelLink.setEnabled(true);
+               stateLabelLink.setEnabled(true);
 
                transitionAssigneesLabel.setText(workItem.getTransitionAssigneesStr());
                transitionAssigneesLabel.getParent().layout();

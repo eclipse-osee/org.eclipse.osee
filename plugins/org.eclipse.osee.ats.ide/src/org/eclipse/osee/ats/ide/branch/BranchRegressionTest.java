@@ -902,15 +902,9 @@ public abstract class BranchRegressionTest {
 
    public abstract List<String> getBranchNames();
 
+   // Override to provide additional checks
    protected void testTaskWorkDefinition(StringBuffer sb, IAtsTask taskArt) {
-      String taskWorkDefName = taskArt.getWorkDefinition().getName();
-      boolean isTest = taskWorkDefName.contains("Test");
-      if (isTest && !taskWorkDefName.equals("WorkDef_Task_Lba_Test_ForRpcr")) {
-         sb.append(
-            "Error: Test " + taskArt + " work definition should be WorkDef_Task_Lba_Test_ForRpcr and not " + taskWorkDefName + "\n");
-      } else if (!isTest && !taskWorkDefName.equals("WorkDef_Task_Lba_Code_ForRpcr")) {
-         sb.append(
-            "Error: Code " + taskArt + " work definition should be WorkDef_Task_Lba_Code_ForRpcr and not " + taskWorkDefName + "\n");
-      }
+      // do nothing
    }
+
 }

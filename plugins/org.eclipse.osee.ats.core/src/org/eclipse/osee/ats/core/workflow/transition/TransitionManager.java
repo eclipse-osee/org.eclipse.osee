@@ -329,6 +329,7 @@ public class TransitionManager implements IExecuteListener {
                   } else if (toState.getStateType().isCompletedState()) {
                      logWorkflowCompletedEvent(workItem, fromState, toState, transitionDate, transitionUser, changes);
                   } else {
+                     updatePercentComplete(workItem, toState, changes);
                      logStateCompletedEvent(workItem, workItem.getStateMgr().getCurrentStateName(), transitionDate,
                         transitionUser);
                   }
@@ -565,6 +566,21 @@ public class TransitionManager implements IExecuteListener {
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState, changes);
       }
       validateUpdatePercentComplete(workItem, toState, changes);
+   }
+
+   private void updatePercentComplete(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes) {
+      IAtsStateManager stateMgr = workItem.getStateMgr();
+      Integer percent = stateMgr.getPercentCompleteValue();
+      if (percent == null) {
+         percent = 0;
+      }
+      if (toState.getStateType().isWorkingState()) {
+         Integer recPercent = toState.getRecommendedPercentComplete();
+         if (recPercent != null && recPercent > 0) {
+            stateMgr.setPercentCompleteValue(recPercent);
+         }
+         changes.add(workItem);
+      }
    }
 
    private static void validateUpdatePercentComplete(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes) {
