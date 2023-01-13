@@ -29,6 +29,7 @@ public class HealthCheckResults {
 
    private final HashCollection<String, String> testNameToResultsMap = new HashCollection<>(50);
    private final HashCollection<String, String> testNameToIdMap = new HashCollection<>(50);
+   private boolean persist = false;
 
    public void log(ArtifactId artifact, String testName, String message) {
       if (artifact != null) {
@@ -57,6 +58,14 @@ public class HealthCheckResults {
          }
          xResultData.logf("<b>" + testName + "</b> Ids: " + Collections.toString(",", idStrs) + "\n\n");
       }
+   }
+
+   public boolean isPersist() {
+      return persist;
+   }
+
+   public void setPersist(boolean persist) {
+      this.persist = persist;
    }
 
 }
