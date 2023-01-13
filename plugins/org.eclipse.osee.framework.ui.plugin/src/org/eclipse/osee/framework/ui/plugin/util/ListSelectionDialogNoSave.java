@@ -14,6 +14,9 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -23,7 +26,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -31,14 +33,21 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ListSelectionDialogNoSave extends MessageDialog {
 
-   private List selectionList;
+   private ListViewer selectionList;
    private final java.util.List<Object> options;
-   private int selectionIndex;
+   private Object selected;
+   private final IBaseLabelProvider labelProvider;
 
    public ListSelectionDialogNoSave(java.util.List<Object> options, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+      this(options, parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
+         defaultIndex, new StringLabelProvider());
+   }
+
+   public ListSelectionDialogNoSave(java.util.List<Object> options, Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex, IBaseLabelProvider labelProvider) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
          defaultIndex);
       this.options = options;
+      this.labelProvider = labelProvider;
    }
 
    @Override
@@ -49,41 +58,38 @@ public class ListSelectionDialogNoSave extends MessageDialog {
       GridData gd = new GridData(SWT.CENTER, SWT.NONE, true, false);
       comp.setLayoutData(gd);
 
-      selectionList = new List(comp, SWT.SINGLE | SWT.BORDER);
-      for (Object option : options) {
-         selectionList.add(option.toString());
-      }
-
-      selectionList.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
+      selectionList = new ListViewer(comp);
+      selectionList.setLabelProvider(labelProvider);
+      selectionList.setContentProvider(new ArrayContentProvider());
+      //   TBD   selectionList.getList().setSingleSelection??
+      selectionList.setInput(options);
+      selectionList.getList().addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
 
          @Override
          public void mouseDoubleClick(MouseEvent e) {
             super.mouseDoubleClick(e);
-            selectionIndex = selectionList.getSelectionIndex();
+            selected = selectionList.getStructuredSelection().getFirstElement();
             setReturnCode(OK);
             close();
          }
 
       });
 
-      selectionList.addSelectionListener(new SelectionAdapter() {
+      selectionList.getList().addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            selectionIndex = selectionList.getSelectionIndex();
+            selected = selectionList.getStructuredSelection().getFirstElement();
          }
 
       });
 
-      selectionList.select(0);
+      selectionList.getList().select(0);
       return parent;
    }
 
    public Object getSelected() {
-      return options.get(getSelectionIndex());
+      return selected;
    }
 
-   public int getSelectionIndex() {
-      return selectionIndex;
-   }
 }

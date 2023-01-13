@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
@@ -79,7 +78,6 @@ import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -87,7 +85,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.osgi.service.event.EventAdmin;
@@ -97,10 +94,6 @@ import org.osgi.service.event.EventAdmin;
  */
 public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
-   private static final Object lock = new Object();
-   private volatile static BranchToken atsBranch;
-   private static final String ATS_BRANCH_NAME = "ats.branch.name";
-   private static final String ATS_BRANCH_ID = "ats.branch.id";
    private final List<IAtsSearchDataProvider> searchDataProviders;
    protected Log logger;
    protected JdbcService jdbcService;
@@ -295,46 +288,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    @Override
    public BranchToken getAtsBranch() {
-      synchronized (lock) {
-         if (atsBranch == null) {
-            // Preference store overrides all
-            if (AtsPreferencesService.isAvailable()) {
-               try {
-                  String atsBranchId = AtsPreferencesService.get(ATS_BRANCH_ID);
-                  setConfig(atsBranchId, AtsPreferencesService.get(ATS_BRANCH_NAME));
-               } catch (Exception ex) {
-                  OseeLog.log(AtsUtil.class, Level.SEVERE, "Error processing stored ATS Branch.", ex);
-               }
-            }
-            // osee.ini -D option overrides default
-            if (atsBranch == null) {
-               String atsBranchId = System.getProperty(ATS_BRANCH_ID);
-               if (Strings.isValid(atsBranchId)) {
-                  setConfig(atsBranchId, System.getProperty(ATS_BRANCH_NAME));
-               }
-            }
-            // default is always common
-            if (atsBranch == null) {
-               atsBranch = CoreBranches.COMMON;
-            }
-         }
-      }
-      return atsBranch;
-   }
-
-   private void setConfig(String branchId, String name) {
-      if (!Strings.isValid(name)) {
-         name = "unknown";
-      }
-      if (Strings.isValid(branchId) && branchId.matches("\\d+")) {
-         atsBranch = BranchToken.create(Long.valueOf(branchId), name);
-      }
-   }
-
-   @Override
-   public void storeAtsBranch(BranchId branch, String name) {
-      AtsPreferencesService.get().put(ATS_BRANCH_ID, branch.getIdString());
-      AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
+      return CoreBranches.COMMON;
    }
 
    @Override

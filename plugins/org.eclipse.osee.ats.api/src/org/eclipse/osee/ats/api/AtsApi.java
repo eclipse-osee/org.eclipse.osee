@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -132,8 +131,6 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    IAtsChangeSet createChangeSet(String comment);
 
    IAtsChangeSet createChangeSet(String comment, AtsUser user);
-
-   void storeAtsBranch(BranchId branch, String name);
 
    IAtsSearchDataProvider getSearchDataProvider(String namespace);
 
