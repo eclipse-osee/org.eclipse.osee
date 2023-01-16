@@ -1,7 +1,7 @@
-include: 
+include:
   - project: $TEMPLATE_PROJECT_LOCATION
     ref: dev
-    file: 
+    file:
       - $BUILD_OSEE_TEMPLATE
       - $BUILD_AND_TEST_OSEE_TEMPLATE
       - $VALIDATE_OSEE_BUILD_TEMPLATE
@@ -15,6 +15,7 @@ stages:
 
 variables:
   VARIABLES_FILE: ./variables.txt
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
 Get file list:
   stage: prepare
@@ -43,8 +44,36 @@ Validate files:
   only:
     - merge_requests
 
+Angular Tests:
+  stage: validate
+  image: $DOCKER_IMAGE_NODE_CHROME
+  before_script:
+    - cd plugins/org.eclipse.osee.web
+    - npm -v
+    - node -v
+    - npm config set strict-ssl false
+    - npm config list
+    - npm ci --cache $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/.npm/ --prefer-offline
+  script:
+    - npx -p @angular/cli ng lint
+    - npx prettier --check .
+    - npx stylelint '**/*.scss'
+    - npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false
+    - npx -p @angular/cli ng build -c production
+  cache:
+    key:
+      files:
+        - $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/package-lock.json
+    paths:
+      - $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/.npm/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        paths:
+          - plugins/org.eclipse.osee.web/**/*
+
 Build_Org_Eclipse_OSEE:
-  stage: build_OSEE 
+  stage: build_OSEE
   when: manual
 
 Build_And_Test_Org_Eclipse_OSEE:
