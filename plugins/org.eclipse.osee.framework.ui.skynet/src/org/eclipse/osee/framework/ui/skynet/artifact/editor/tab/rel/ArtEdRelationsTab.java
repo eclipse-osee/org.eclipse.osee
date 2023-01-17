@@ -36,6 +36,8 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
@@ -60,12 +62,14 @@ public class ArtEdRelationsTab extends FormPage implements IRefreshActionHandler
    private Composite bodyComp;
    private final FormEditor editor;
    private ArtEdRelToolbar toolBar;
+   private final ArtEdRelationsTab rTab;
 
    public ArtEdRelationsTab(FormEditor editor, Artifact artifact) {
       super(editor, ID, "Relations");
       this.editor = editor;
       this.artifact = artifact;
       this.toolkit = editor.getToolkit();
+      this.rTab = this;
       OseeEventManager.addListener(this);
    }
 
@@ -77,6 +81,13 @@ public class ArtEdRelationsTab extends FormPage implements IRefreshActionHandler
       bodyComp = scrolledForm.getBody();
       bodyComp.setLayout(new GridLayout(1, true));
       bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
+      bodyComp.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            OseeEventManager.removeListener(rTab);
+         }
+      });
 
       Label dragDropLabel = new Label(bodyComp, SWT.BORDER);
       dragDropLabel.setText("Click here to drag this \"" + artifact.getArtifactTypeName() + "\"");
@@ -160,6 +171,10 @@ public class ArtEdRelationsTab extends FormPage implements IRefreshActionHandler
       if (artifactTopicEvent.isHasEvent(artifact)) {
          relationComposite.refresh();
       }
+   }
+
+   public void refresh() {
+      relationComposite.refresh();
    }
 
 }
