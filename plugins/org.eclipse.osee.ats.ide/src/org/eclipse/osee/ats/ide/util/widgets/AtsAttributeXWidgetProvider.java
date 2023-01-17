@@ -50,6 +50,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       xFlatAttributeTypes.add(AtsAttributeTypes.BitConfig);
       xFlatAttributeTypes.add(AtsAttributeTypes.CSCI);
       xFlatAttributeTypes.add(AtsAttributeTypes.WorkType);
+      xFlatAttributeTypes.add(AtsAttributeTypes.JournalSubscriber);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.ActionableItemReference, AtsArtifactTypes.ActionableItem);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TeamDefinitionReference, AtsArtifactTypes.TeamDefinition);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkPackageReference, AtsArtifactTypes.WorkPackage);
