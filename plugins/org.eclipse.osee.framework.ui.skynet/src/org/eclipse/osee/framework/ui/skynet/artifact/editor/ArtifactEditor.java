@@ -313,6 +313,15 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       if (formPage != null) {
          formPage.refresh();
       }
+      if (attrTab != null) {
+         attrTab.refresh();
+      }
+      if (relTab != null) {
+         relTab.refresh();
+      }
+      if (detailsTab != null) {
+         detailsTab.refresh();
+      }
    }
 
    public static ArtifactEditor getArtifactEditor(Artifact fArtifact) {

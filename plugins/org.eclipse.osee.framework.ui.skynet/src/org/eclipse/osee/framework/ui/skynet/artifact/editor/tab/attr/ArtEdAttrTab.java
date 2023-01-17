@@ -129,6 +129,10 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
       }
    }
 
+   public void refresh() {
+      xViewer.loadTable(artifact);
+   }
+
    @Override
    public void refreshActionHandler() {
       artifact = artifact.reloadAttributesAndRelations();
