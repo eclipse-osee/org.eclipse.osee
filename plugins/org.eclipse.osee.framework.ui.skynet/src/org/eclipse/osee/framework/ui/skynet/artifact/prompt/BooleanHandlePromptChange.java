@@ -60,9 +60,9 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
       }
       if (triStateBoolean) {
          buttonLabels.add("Clear");
-         cancelButtonNum = 4;
-      } else {
          cancelButtonNum = 3;
+      } else {
+         cancelButtonNum = 2;
       }
       buttonLabels.add("Cancel");
 
