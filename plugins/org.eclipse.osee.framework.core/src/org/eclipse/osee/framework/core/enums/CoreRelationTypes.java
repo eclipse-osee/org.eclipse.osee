@@ -178,6 +178,10 @@ public interface CoreRelationTypes {
    RelationTypeSide InterfaceConnectionTransportType_InterfaceConnection = RelationTypeSide.create(InterfaceConnectionTransportType, SIDE_A);
    RelationTypeSide InterfaceConnectionTransportType_TransportType = RelationTypeSide.create(InterfaceConnectionTransportType, SIDE_B);
 
+   RelationTypeToken RequirementsToInterface = osee.addNewRelationType(9109538440842134345L, "Requirements to Interface", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, Artifact, "Requirement Artifact", InterfaceArtifact, "Artifact");
+   RelationTypeSide RequirementsToInterface_Artifact = RelationTypeSide.create(RequirementsToInterface, SIDE_A);
+   RelationTypeSide RequirementsToInterface_InterfaceArtifact = RelationTypeSide.create(RequirementsToInterface, SIDE_B);
+
    RelationTypeToken PlConfigurationGroup = osee.add(674505523757332017L, "Product Line Configuration Group", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, GroupArtifact, "Group", BranchView, "BranchView");
    RelationTypeSide PlConfigurationGroup_Group = RelationTypeSide.create(PlConfigurationGroup, SIDE_A);
    RelationTypeSide PlConfigurationGroup_BranchView = RelationTypeSide.create(PlConfigurationGroup, SIDE_B);
