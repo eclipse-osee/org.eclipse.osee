@@ -235,7 +235,6 @@ public final class FrameworkXWidgetProvider {
          }
       }
 
-
       @SuppressWarnings("unchecked")
       Class<XWidget> clazz = (Class<XWidget>) getNameToClass().get(xWidgetName);
       if (clazz != null) {
@@ -490,6 +489,9 @@ public final class FrameworkXWidgetProvider {
                return new XComputedCharacteristicWidget(ComputedCharacteristicToken.SENTINEL);
             }
             return new XComputedCharacteristicWidget(xWidgetLayoutData.getComputedCharacteristic());
+         } else if (xWidgetName.equals("XListDropViewWithSave")) {
+            XListDropViewWithSave xList = new XListDropViewWithSave(name);
+            xWidget = xList;
          } else if (xWidgetName.startsWith("XList")) {
             String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
