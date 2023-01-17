@@ -81,7 +81,14 @@ public class PageCreatorTest {
    public void readSubstitutions_include() {
       PageCreator page = new PageCreator(registry);
       page.readKeyValuePairs(TestValues_IncludeHtml);
-      Assert.assertEquals("<!-- testHeaderPage.html -->\n\n<b>header</b>\n", page.getValue("header"));
+
+      String expected = "<!-- testHeaderPage.html -->\n\n<b>header</b>\n";
+      String actual = page.getValue("header");
+
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+
+      Assert.assertEquals(expected, actual);
    }
 
    @Test
@@ -90,15 +97,19 @@ public class PageCreatorTest {
       page.readKeyValuePairs(RealizePage_ValuesHtml);
 
       String expected = "<!-- header.html -->\n\nmy header\n\n<h1>heading1</h1>\n\n   <h2>heading2</h2>\n";
-      String results = page.realizePage(RealizePage_MainPageHtml);
-      Assert.assertEquals(expected, results);
+      String actual = page.realizePage(RealizePage_MainPageHtml);
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+      Assert.assertEquals(expected, actual);
 
       page = PageFactory.newPageCreator(registry, RealizePage_ValuesHtml);
-      results = page.realizePage(RealizePage_MainPageHtml);
-      Assert.assertEquals(expected, results);
+      actual = page.realizePage(RealizePage_MainPageHtml);
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+      Assert.assertEquals(expected, actual);
 
-      results = PageFactory.realizePage(registry, RealizePage_MainPageHtml, RealizePage_ValuesHtml);
-      Assert.assertEquals(expected, results);
+      actual = PageFactory.realizePage(registry, RealizePage_MainPageHtml, RealizePage_ValuesHtml);
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+      Assert.assertEquals(expected, actual);
    }
 
    @Test
@@ -125,9 +136,13 @@ public class PageCreatorTest {
    @Test
    public void realizePage__KeyValues() {
       String expected = "headerA\n\nvalue1\n\nvalue2\n";
-      String results = PageFactory.realizePage(registry, RealizePage_MainPageHtml, "header", "headerA", "key1",
-         "value1", "key2", "value2");
-      Assert.assertEquals(expected, results);
+      String actual = PageFactory.realizePage(registry, RealizePage_MainPageHtml, "header", "headerA", "key1", "value1",
+         "key2", "value2");
+
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+
+      Assert.assertEquals(expected, actual);
    }
 
    @Test
@@ -147,21 +162,24 @@ public class PageCreatorTest {
          + "<a href=\"http://www.google.com\">Google!</a>\n\n" //
          + "<a href=\"http://www.eclipse.org\">Eclipse</a>\n";
       String actual = page.realizePage(RealizePage_MainPageHtml);
+
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+
       Assert.assertEquals(expected, actual);
    }
 
    @Test
    public void testListItemRule() {
       PageCreator page = new PageCreator(registry);
-      page.addSubstitution(new ListItemRule<>("key1",
-         new HyperLinkRule("ruleNameDoesntMatter", "http://www.eclipse.org", "Eclipse")));
-      CompositeRule<Pair<CharSequence, CharSequence>> listItemsComposite =
-         new CompositeRule<>("key2");
+      page.addSubstitution(
+         new ListItemRule<>("key1", new HyperLinkRule("ruleNameDoesntMatter", "http://www.eclipse.org", "Eclipse")));
+      CompositeRule<Pair<CharSequence, CharSequence>> listItemsComposite = new CompositeRule<>("key2");
 
-      ListItemRule<Pair<CharSequence, CharSequence>> li1 = new ListItemRule<>(
-         "keyDoesntMatter", new HyperLinkRule("keyDoesntMatter", "http://www.stackoverflow.com", "Stack Overflow"));
-      ListItemRule<Pair<CharSequence, CharSequence>> li2 = new ListItemRule<>(
-         "keyDoesntMatter", new HyperLinkRule("keyDoesntMatter", "http://www.google.com", "Google!"));
+      ListItemRule<Pair<CharSequence, CharSequence>> li1 = new ListItemRule<>("keyDoesntMatter",
+         new HyperLinkRule("keyDoesntMatter", "http://www.stackoverflow.com", "Stack Overflow"));
+      ListItemRule<Pair<CharSequence, CharSequence>> li2 = new ListItemRule<>("keyDoesntMatter",
+         new HyperLinkRule("keyDoesntMatter", "http://www.google.com", "Google!"));
 
       listItemsComposite.addRule(li1);
       listItemsComposite.addRule(li2);
@@ -171,6 +189,10 @@ public class PageCreatorTest {
          + "<ul>\n<li><a href=\"http://www.stackoverflow.com\">Stack Overflow</a></li>\n" //
          + "<li><a href=\"http://www.google.com\">Google!</a></li>\n\n</ul>";
       String actual = page.realizePage(RealizePage_ListItems);
+
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+
       Assert.assertEquals(expected, actual);
    }
 
@@ -183,6 +205,10 @@ public class PageCreatorTest {
       page.addSubstitution(rule);
       String actual = page.realizePage(ArtifactSelect);
       String expected = page.realizePage(ArtifactSelectExpected);
+
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+
       Assert.assertEquals(expected, actual);
    }
 
@@ -194,6 +220,10 @@ public class PageCreatorTest {
       PageCreator page = PageFactory.newPageCreatorWithRules(registry, ArtifactSelect, rule);
       String actual = page.realizePage(ArtifactSelect);
       String expected = page.realizePage(ArtifactSelectExpected);
+
+      expected = expected.strip().replaceAll("\\R", System.lineSeparator());
+      actual = actual.strip().replaceAll("\\R", System.lineSeparator());
+
       Assert.assertEquals(expected, actual);
    }
 

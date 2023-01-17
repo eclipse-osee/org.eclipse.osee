@@ -138,6 +138,10 @@ public class HtmlRendererTest {
       String expectedSecondHalf = EXPECTED_HTML.substring(expectedSecondHalfIndex);
       String ForcedInputExtraction = inputFirstHalf + inputSecondHalf;
       String TheExpectedExtraction = expectedFirstHalf + expectedSecondHalf;
+
+      TheExpectedExtraction = TheExpectedExtraction.strip().replaceAll("\\R", System.lineSeparator());
+      ForcedInputExtraction = ForcedInputExtraction.strip().replaceAll("\\R", System.lineSeparator());
+
       Assert.assertEquals("Expected HTMl does not equal rendered HTML even after extraction", TheExpectedExtraction,
          ForcedInputExtraction);
    }

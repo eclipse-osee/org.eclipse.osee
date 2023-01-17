@@ -59,6 +59,10 @@ public class VbaWordDiffGeneratorTest {
       String actualVbs = Lib.fileToString(scriptFile);
       String expectedVbs =
          getExpectedVbs(tmpFile1.getAbsolutePath(), tmpFile2.getAbsolutePath(), diffFile.getAbsolutePath());
+
+      expectedVbs = expectedVbs.strip().replaceAll("\\R", System.lineSeparator());
+      actualVbs = actualVbs.strip().replaceAll("\\R", System.lineSeparator());
+
       Assert.assertEquals(expectedVbs, actualVbs);
 
       if (executeVbs) {
@@ -66,6 +70,10 @@ public class VbaWordDiffGeneratorTest {
          actualWordDiff = removeDynamicInformation(actualWordDiff);
 
          String expectedWordDiff = getContent(EXPECTED_WORD_DIFF_FILE_NAME);
+
+         expectedWordDiff = expectedWordDiff.strip().replaceAll("\\R", System.lineSeparator());
+         actualWordDiff = actualWordDiff.strip().replaceAll("\\R", System.lineSeparator());
+
          Assert.assertEquals(expectedWordDiff, actualWordDiff);
       }
    }
