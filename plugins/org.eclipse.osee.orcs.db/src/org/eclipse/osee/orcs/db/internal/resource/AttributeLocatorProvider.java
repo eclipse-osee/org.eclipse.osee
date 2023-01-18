@@ -68,10 +68,11 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
       try {
          char[] buffer = new char[3];
          int cnt = -1;
-         Reader in = new StringReader(seed);
-         while ((cnt = in.read(buffer)) != -1) {
-            builder.append(buffer, 0, cnt);
-            builder.append("/");
+         try (Reader in = new StringReader(seed)) {
+            while ((cnt = in.read(buffer)) != -1) {
+               builder.append(buffer, 0, cnt);
+               builder.append("/");
+            }
          }
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
