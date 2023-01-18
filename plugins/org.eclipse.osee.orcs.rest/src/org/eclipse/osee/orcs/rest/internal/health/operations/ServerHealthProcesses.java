@@ -45,9 +45,9 @@ public class ServerHealthProcesses {
             }
          } else {
             sb.append("<h3>Machine processes with java in cmd</h3>");
-            Scanner s = new Scanner(Runtime.getRuntime().exec("ps -ef").getInputStream()).useDelimiter("\\A");
-            psResults = s.hasNext() ? s.next() : "";
-            s.close();
+            try (Scanner s = new Scanner(Runtime.getRuntime().exec("ps -ef").getInputStream()).useDelimiter("\\A")) {
+               psResults = s.hasNext() ? s.next() : "";
+            }
          }
          for (String line : psResults.split("<br/>")) {
             if (line.contains("java")) {
