@@ -80,7 +80,7 @@ public class ChangeReportTasksUtil {
          crtd.setWorkOrParentBranch(workOrParentBranch.getIdString());
       }
       if (changeItems == null || changeItems.isEmpty()) {
-         crtd.getResults().log("No Change Items (Working Branch or Commit) Found");
+         crtd.getResults().error("No Change Items (Working Branch or Commit) Found");
          return;
       } else {
          crtd.setChangeItems(changeItems);

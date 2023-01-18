@@ -142,11 +142,18 @@ public class CreateChangeReportTasksOperation {
             IAtsTeamDefinition fromSiblingTeamD = getFromSiblingTeamDef(setDef, program, rd);
             Collection<IAtsTeamWorkflow> siblings =
                atsApi.getWorkItemService().getSiblings(hostTeamWf, fromSiblingTeamD);
-            if (siblings.size() > 1 || siblings.isEmpty()) {
-               rd.errorf("Expeceted one source sibling workflow, found %s\n", siblings);
-               return crtd;
+            if (siblings.size() > 1) {
+               if (siblings.contains(hostTeamWf)) {
+                  chgRptTeamWf = hostTeamWf;
+               }
             }
-            chgRptTeamWf = siblings.iterator().next();
+            if (chgRptTeamWf == null) {
+               if (siblings.size() > 1 || siblings.isEmpty()) {
+                  rd.errorf("Expected one source sibling workflow, found %s\n", siblings);
+                  return crtd;
+               }
+               chgRptTeamWf = siblings.iterator().next();
+            }
          }
          rd.logf("Using Change Report Team Wf %s\n", chgRptTeamWf.toStringWithId());
          crtd.getIdToTeamWf().put(chgRptTeamWf.getId(), chgRptTeamWf);
