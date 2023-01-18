@@ -1,20 +1,17 @@
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-
 include: 
-  - project: 'OSEE-developers/ci-cd-templates'
+  - project: $TEMPLATE_PROJECT_LOCATION
     ref: dev
     file: 
-      - 'ORG-Templates/build-OSEE-dev-template.yml'
-      - 'ORG-Templates/test-OSEE-dev-template.yml'
+      - $BUILD_OSEE_TEMPLATE
+      - $BUILD_AND_TEST_OSEE_TEMPLATE
+      - $VALIDATE_OSEE_BUILD_TEMPLATE
 
 stages:
   - prepare
   - validate
-  - build_OSEE_dev
-  - test_OSEE_dev
+  - build_OSEE
+  - build_and_test_OSEE
+  - validate_OSEE_build
 
 variables:
   VARIABLES_FILE: ./variables.txt
@@ -46,10 +43,15 @@ Validate files:
   only:
     - merge_requests
 
-Build_Org_Eclipse_OSEE_Dev:
-  stage: build_OSEE_dev 
+Build_Org_Eclipse_OSEE:
+  stage: build_OSEE 
   when: manual
 
-Test_Org_Eclipse_OSEE_Dev:
-  stage: test_OSEE_dev
+Build_And_Test_Org_Eclipse_OSEE:
+  stage: build_and_test_OSEE
   when: manual
+
+Validate_Org_Eclipse_OSEE_Build:
+  stage: validate_OSEE_build
+  only:
+    - merge_requests
