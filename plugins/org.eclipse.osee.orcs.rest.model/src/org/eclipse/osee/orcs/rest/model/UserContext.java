@@ -28,12 +28,16 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  * @author Christopher Rebuck
  */
 
-public class UserContexts extends NamedIdBase {
+public class UserContext extends NamedIdBase {
 
    private Map<String, String> attributes;
    private List<CommandsRelatedToContext> commands;
 
-   public UserContexts(ArtifactReadable context) {
+   public UserContext() {
+      super();
+   }
+
+   public UserContext(ArtifactReadable context) {
       super(context.getId(), context.getName());
       this.setAttributes(createAttributeMap(context));
       this.setCommands(
@@ -47,7 +51,7 @@ public class UserContexts extends NamedIdBase {
    }
 
    public Map<String, String> getAttributes() {
-      return attributes;
+      return this.attributes;
    }
 
    public void setCommands(List<CommandsRelatedToContext> commands) {
@@ -55,7 +59,7 @@ public class UserContexts extends NamedIdBase {
    }
 
    public List<CommandsRelatedToContext> getCommands() {
-      return commands;
+      return this.commands;
    }
 
    private Map<String, String> createAttributeMap(ArtifactReadable context) {

@@ -12,10 +12,6 @@
  **********************************************************************/
 import { NameValuePair } from '../../../ple/plconfig/types/base-types/NameValuePair';
 
-export interface gridCommanderUser extends NameValuePair {
-	usersContexts: UsersContext[];
-}
-
 export interface UsersContext extends NameValuePair {
 	commands: Command[];
 	attributes?: ContextAttributes[];

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { map, shareReplay } from 'rxjs';
+import { map, shareReplay, tap } from 'rxjs';
 import { GetUserContextRelations } from '../fetch-data-services/get-user-context-relations.service';
 
 @Injectable({
@@ -23,7 +23,6 @@ export class UserContextRelationsService {
 	constructor(private getUserContextRelations: GetUserContextRelations) {}
 
 	private _commands = this.contextData$.pipe(
-		map((user) => user.usersContexts),
 		map((contexts) => contexts.map((context) => context.commands).flat()),
 		shareReplay()
 	);

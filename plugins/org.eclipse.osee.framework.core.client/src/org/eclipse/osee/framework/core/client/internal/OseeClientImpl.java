@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.ExceptionRegistryEndpoint;
+import org.eclipse.osee.orcs.rest.model.GridCommanderEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
@@ -256,6 +257,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public GitEndpoint getGitEndpoint() {
       return this.getDefineEndpoint(GitEndpoint.class);
+   }
+
+   @Override
+   public GridCommanderEndpoint getGridCommanderEndpoint(BranchId branch) {
+      return getOrcsBranchEndpoint(GridCommanderEndpoint.class, branch);
    }
 
    /**

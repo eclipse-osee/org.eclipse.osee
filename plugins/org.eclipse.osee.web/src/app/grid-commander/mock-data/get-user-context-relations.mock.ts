@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Observable, of } from 'rxjs';
-import { gridCommanderUser } from '../types/grid-commander-types/gc-user-and-contexts-relationships';
+import { UsersContext } from '../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { GetUserContextRelations } from '../services/fetch-data-services/get-user-context-relations.service';
 
 export const GetUserContextRelationsMock: Partial<GetUserContextRelations> = {
-	getResponseUserContextData: function (): Observable<gridCommanderUser> {
+	getResponseUserContextData: function (): Observable<UsersContext[]> {
 		return of();
 	},
 };

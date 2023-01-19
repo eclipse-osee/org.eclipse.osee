@@ -418,7 +418,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DefaultValue)
       .zeroOrOne(Description, "", "A description of valid parameter inputs")
       .zeroOrOne(UseValidator, false, "Is a validator used for this parameter")
-      .any(ValidatorType, "", "Type of validator")
+      .zeroOrOne(ValidatorType, "", "Type of validator")
       );
    ArtifactTypeToken ParameterInteger = osee.add(osee.artifactType(3007766441141267760L, "ParameterInteger", false, Parameter));
    ArtifactTypeToken ParameterBranch = osee.add(osee.artifactType(4683538775178036503L, "ParameterBranch", false, Parameter));

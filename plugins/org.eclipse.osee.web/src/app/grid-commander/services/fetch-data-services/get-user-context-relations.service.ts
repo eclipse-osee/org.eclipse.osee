@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from '../../../../environments/environment';
-import { gridCommanderUser } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
+import { UsersContext } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { GCBranchIdService } from './gc-branch-id.service';
 
 @Injectable({
@@ -28,9 +28,9 @@ export class GetUserContextRelations {
 		private branchIdService: GCBranchIdService
 	) {}
 
-	getResponseUserContextData(): Observable<gridCommanderUser> {
-		return this.http.get<gridCommanderUser>(
-			apiURL + `/orcs/branch/${this.defaultBranchId}/gc/user/commands`
+	getResponseUserContextData(): Observable<UsersContext[]> {
+		return this.http.get<UsersContext[]>(
+			`${apiURL}/orcs/branch/${this.defaultBranchId}/gc/user/commands`
 		);
 	}
 }

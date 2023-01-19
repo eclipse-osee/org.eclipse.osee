@@ -96,8 +96,7 @@ public class BranchesResource {
    }
 
    @Path("{branch}/gc")
-   @Produces({MediaType.APPLICATION_JSON})
-   public GridCommanderEndpoint getUserCommands(@PathParam("branch") BranchId branch) {
+   public GridCommanderEndpoint getGridCommander(@PathParam("branch") BranchId branch) {
       return new GridCommanderEndpointImpl(orcsApi, branch, uriInfo);
    }
 }
