@@ -11,17 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgModule } from '@angular/core';
-import { BranchPickerModule } from './components/branch-picker/branch-picker.module';
-import { ActionStateButtonModule } from './components/action-state-button/action-state-button.module';
-import { MatOptionLoadingModule } from './mat-option-loading/mat-option-loading.module';
-import { MatCardModule } from '@angular/material/card';
+import { RouterModule, Routes } from '@angular/router';
+import { GridCommanderComponent } from './grid-commander.component';
+
+const routes: Routes = [{ path: '', component: GridCommanderComponent }];
 
 @NgModule({
-	imports: [
-		MatCardModule,
-		BranchPickerModule,
-		MatOptionLoadingModule,
-		ActionStateButtonModule,
-	],
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
-export class SharedComponentsModule {}
+export class GridCommanderRoutingModule {}

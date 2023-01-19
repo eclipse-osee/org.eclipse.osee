@@ -1,0 +1,31 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../../../modern-ple-theme.scss' as theme;
+
+@mixin density($config-or-theme) {
+	$density: mat.get-density-config($config-or-theme);
+
+	.parameter-integer-container {
+		width: calc(15.5em + 0.5em * $density);
+	}
+}
+
+@mixin theme($theme, $typography) {
+	$density: mat.get-density-config($theme);
+
+	@if $density {
+		@include density($density);
+	}
+}

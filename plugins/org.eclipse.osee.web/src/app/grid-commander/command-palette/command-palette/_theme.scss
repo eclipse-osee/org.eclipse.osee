@@ -1,0 +1,104 @@
+/*********************************************************************
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../../../modern-ple-theme.scss' as theme;
+
+@mixin color($config-or-theme) {
+	// Extract the color configuration in case a theme has been passed.
+	// This allows consumers to either pass a theme object or a color configuration.
+	$config: mat.get-color-config($config-or-theme);
+
+	// Extract the palettes you need from the theme definition.
+	$primary: map.get($config, primary);
+	$accent: map.get($config, accent);
+	$warn: map.get($config, warn);
+	$background: map.get($config, background);
+	$foreground: map.get($config, foreground);
+	$success: map.get($config, success);
+
+	// Define any styles affected by the theme.
+	.input-form-submit-btn {
+		color: mat.get-color-from-palette($primary, 'A400');
+		background-color: mat.get-color-from-palette($background, app-bar);
+	}
+
+	.suggestion {
+		color: mat.get-color-from-palette(
+			$background,
+			selected-disabled-button
+		);
+	}
+
+	.input-form-submit-btn:hover {
+		background-color: mat.get-color-from-palette($primary, 'A400');
+		color: mat.get-color-from-palette($background, card);
+	}
+
+	.input-form-submit-btn:focus {
+		background-color: mat.get-color-from-palette($primary, 'A400');
+		color: mat.get-color-from-palette($background, card);
+	}
+
+	.input-form-helper-button-icon {
+		color: mat.get-color-from-palette(
+			$background,
+			selected-disabled-button
+		);
+	}
+
+	.input-form-helper-button-tooltip {
+		color: mat.get-color-from-palette(
+			$background,
+			selected-disabled-button
+		);
+	}
+}
+
+@mixin density($config-or-theme) {
+	$density: mat.get-density-config($config-or-theme);
+
+	.auto-complete-and-helper-button {
+		width: calc(17.5em + 0.25em * $density);
+	}
+
+	.input-container {
+		padding-left: calc(1em + 0.5em * $density);
+	}
+
+	.args-container {
+		margin-left: calc(5em + 1em * $density);
+	}
+}
+
+@mixin typography($config-or-theme) {
+	$config: mat.get-typography-config($config-or-theme);
+}
+
+@mixin theme($theme, $typography) {
+	$color: mat.get-color-config($theme);
+	$typography: mat.get-typography-config($theme);
+	$density: mat.get-density-config($theme);
+
+	@if $typography {
+		@include typography($theme);
+	}
+
+	@if $color {
+		@include color($color);
+	}
+
+	@if $density {
+		@include density($density);
+	}
+}

@@ -1,0 +1,22 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	matTooltip="If checked, the command will be cleared after submission. If unchecked the command it will not be cleared"
+	matTooltipClass="tooltip-checkbox">
+	<mat-checkbox
+		color="primary"
+		[(ngModel)]="checked"
+		(change)="onChanged($event)">
+	</mat-checkbox>
+	<mat-label> Clear on submit </mat-label>
+</div>

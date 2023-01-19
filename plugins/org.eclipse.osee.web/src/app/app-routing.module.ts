@@ -46,6 +46,13 @@ const routes: Routes = [
 			import('./about/about.module').then((m) => m.AboutModule),
 	},
 	{
+		path: 'gc',
+		loadChildren: () =>
+			import('./grid-commander/grid-commander.module').then(
+				(m) => m.GridCommanderModule
+			),
+	},
+	{
 		path: '**',
 		redirectTo: '404',
 	},

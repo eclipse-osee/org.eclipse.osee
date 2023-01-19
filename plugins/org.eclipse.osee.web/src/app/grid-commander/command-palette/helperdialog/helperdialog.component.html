@@ -1,0 +1,55 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div>
+	<div class="dialog-title-container">
+		<p class="dialog-title">List of available commands:</p>
+	</div>
+	<div mat-dialog-content>
+		<ng-container *ngIf="allCommands | async as commands">
+			<ng-container *ngFor="let command of commands">
+				<table>
+					<thead>
+						<th class="helper-dialog-component-command-groups">
+							{{ command.contextGroup + ':' }}
+						</th>
+					</thead>
+					<tbody>
+						<ng-container
+							*ngFor="let cmd of command.commands; let i = index">
+							<tr>
+								<div>
+									<td class="helper-dialog-component-command">
+										<span
+											class="helper-dialog-component-property"
+											>{{ 'Name: ' }}</span
+										>
+										{{ cmd.name }}
+									</td>
+								</div>
+								<td
+									class="helper-dialog-component-command-description">
+									<span
+										class="helper-dialog-component-property"
+										>{{ 'Description: ' }}</span
+									>
+									{{ cmd.attributes.description }}
+								</td>
+							</tr>
+						</ng-container>
+					</tbody>
+				</table>
+				<br />
+			</ng-container>
+		</ng-container>
+	</div>
+</div>
