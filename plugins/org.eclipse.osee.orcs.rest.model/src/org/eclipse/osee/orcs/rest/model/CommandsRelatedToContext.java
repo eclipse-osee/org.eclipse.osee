@@ -33,6 +33,11 @@ public class CommandsRelatedToContext extends NamedIdBase {
    private Map<String, String> attributes;
    private CommandParameter parameter;
 
+   public CommandsRelatedToContext() {
+      super();
+      this.contextGroup = "";
+   }
+
    public CommandsRelatedToContext(ArtifactReadable command, ArtifactReadable context) {
       super(command.getId(), command.getName());
       this.contextGroup = context.getName();
@@ -41,15 +46,15 @@ public class CommandsRelatedToContext extends NamedIdBase {
    }
 
    public String getContextGroup() {
-      return contextGroup;
+      return this.contextGroup;
    }
 
    public Map<String, String> getAttributes() {
-      return attributes;
+      return this.attributes;
    }
 
    public CommandParameter getParameter() {
-      return parameter;
+      return this.parameter;
    }
 
    public void setAttributes(Map<String, String> attributes) {

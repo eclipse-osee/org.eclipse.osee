@@ -28,28 +28,26 @@ public class CommandParameter extends NamedIdBase {
 
    public static final CommandParameter SENTINEL = new CommandParameter();
 
-   private final String type;
+   public String type;
    private Map<String, String> attributes;
    //logic to determine Parameter type
 
-   public CommandParameter(ArtifactReadable parameter) {
-      super(parameter.getId(), parameter.getName());
-      this.type = parameter.getArtifactType().getName();
-      this.setAttributes(createAttributeMap(parameter));
-
-   }
-
    public CommandParameter() {
       super();
-      this.type = "";
+   }
+
+   public CommandParameter(ArtifactReadable parameter) {
+      super(parameter.getId(), parameter.getName());
+      this.type = parameter.getArtifactType().toString();
+      this.setAttributes(createAttributeMap(parameter));
    }
 
    public String getTypeAsString() {
-      return type;
+      return this.type;
    }
 
    public Map<String, String> getAttributes() {
-      return attributes;
+      return this.attributes;
    }
 
    public void setAttributes(Map<String, String> attributes) {

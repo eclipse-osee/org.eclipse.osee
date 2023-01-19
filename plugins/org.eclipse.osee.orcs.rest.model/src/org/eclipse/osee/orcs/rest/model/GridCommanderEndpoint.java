@@ -13,10 +13,13 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import java.util.List;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 
 /**
  * @author Christopher Rebuck
@@ -25,12 +28,17 @@ import javax.ws.rs.core.MediaType;
 public interface GridCommanderEndpoint {
    @GET
    @Path("user/commands")
-   @Produces(MediaType.APPLICATION_JSON)
-   UserWithContexts getUserCommands();
+   @Produces(APPLICATION_JSON)
+   List<UserContext> getUserCommands();
 
    @GET
    @Path("user/history")
-   @Produces(MediaType.APPLICATION_JSON)
+   @Produces(APPLICATION_JSON)
    ExecutedCommandHistory asExecutedCommandHistoryTable();
+
+   @POST
+   @Path("context")
+   @Produces(APPLICATION_JSON)
+   TransactionToken createDefaultContext();
 
 }

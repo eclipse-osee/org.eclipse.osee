@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.ExceptionRegistryEndpoint;
+import org.eclipse.osee.orcs.rest.model.GridCommanderEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
@@ -95,6 +96,8 @@ public interface OseeClient extends OseeApi {
    ImportEndpoint getImportEndpoint();
 
    GitEndpoint getGitEndpoint();
+
+   GridCommanderEndpoint getGridCommanderEndpoint(BranchId branch);
 
    /**
     * Obtains an object that implements the {@link PublishingEndpoint} to process REST API requests for publishing
