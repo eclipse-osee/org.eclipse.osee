@@ -1,0 +1,42 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div>
+	<h2 mat-dialog-title>
+		<span class="dialog-component-warning-text">{{ data.action }} </span>
+		Row Globally?
+	</h2>
+	<mat-dialog-content>
+		Action will permanently
+		<span class="dialog-component-warning-text">{{ data.action }}</span>
+		artifact
+		{{ data.object['Artifact Id'].toString() }}
+	</mat-dialog-content>
+	<br />
+	<div
+		mat-dialog-actions
+		align="end">
+		<button
+			mat-raised-button
+			color="basic"
+			mat-dialog-close
+			(click)="closeDialog('Cancel')">
+			Cancel
+		</button>
+		<button
+			mat-raised-button
+			color="warn"
+			(click)="doAction(data.action, data.object)">
+			{{ data.action }}
+		</button>
+	</div>
+</div>

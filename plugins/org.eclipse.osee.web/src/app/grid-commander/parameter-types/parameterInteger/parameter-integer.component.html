@@ -1,0 +1,28 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="userPrompt$ | async as prompt">
+	<div class="paramater-integer-container">
+		<mat-form-field
+			class="full-width"
+			appearance="outline">
+			<mat-label>{{ prompt }}</mat-label>
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="value"
+				min="1"
+				max="50"
+				placeholder="0" />
+		</mat-form-field>
+	</div>
+</ng-container>

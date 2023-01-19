@@ -19,6 +19,7 @@
 // @use 'themes/ple/plconfig/lib' as plconfig;
 // @use 'themes/ple/messages/lib' as plmessages;
 @use 'themes/ple/lib' as ple;
+@use 'themes/gc/lib' as gc;
 @import 'modern-ple-theme';
 
 // Plus imports for other components in your app.
@@ -35,7 +36,6 @@
 // that you are using.
 
 @include mat.all-component-themes($modern-ple-light-theme);
-
 @include ple.plconfig-main-theme($modern-ple-light-theme);
 @include ple.plconfig-dropdown-configuration-theme($modern-ple-light-theme);
 @include ple.plconfig-dropdown-feature-theme($modern-ple-light-theme);
@@ -66,11 +66,11 @@
 	$modern-ple-light-theme,
 	$modern-ple-typography
 );
-@include ple.top-level-navigation-theme(
+@include gc.components-dialogbox-theme(
 	$modern-ple-light-theme,
 	$modern-ple-typography
 );
-@include ple.generic-material-divider-vertical-theme(
+@include gc.components-helper-dialog-theme(
 	$modern-ple-light-theme,
 	$modern-ple-typography
 );

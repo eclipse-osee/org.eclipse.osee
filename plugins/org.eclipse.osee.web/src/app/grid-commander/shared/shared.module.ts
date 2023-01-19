@@ -11,17 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgModule } from '@angular/core';
-import { BranchPickerModule } from './components/branch-picker/branch-picker.module';
-import { ActionStateButtonModule } from './components/action-state-button/action-state-button.module';
-import { MatOptionLoadingModule } from './mat-option-loading/mat-option-loading.module';
-import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
+import { InputControlModule } from './input-control/input-control.module';
+import { HelperdialogComponent } from '../command-palette/helperdialog/helperdialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-	imports: [
-		MatCardModule,
-		BranchPickerModule,
-		MatOptionLoadingModule,
-		ActionStateButtonModule,
-	],
+	declarations: [HelperdialogComponent],
+	imports: [CommonModule, MatDialogModule, InputControlModule],
+	exports: [InputControlModule],
 })
-export class SharedComponentsModule {}
+export class SharedModule {}

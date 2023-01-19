@@ -1,0 +1,46 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div>
+	<div class="input-container">
+		<div class="auto-complete-and-helper-button">
+			<ng-container>
+				<ng-container
+					*ngIf="filteredCommandGroups$ | async as optionGroup">
+					<osee-input-control
+						class="full-width"
+						[placeHolder]="'Command Name'"
+						[label]="'Enter a Command'"
+						[displayHelpIcon]="true"
+						[usePredictiveText]="true"
+						[commandPaletteUse]="true"
+						[input]="_commandNameInput | async"
+						[data]="optionGroup">
+					</osee-input-control>
+				</ng-container>
+			</ng-container>
+		</div>
+
+		<div class="args-container">
+			<ng-container *ngIf="isFilterDisabled$ | async">
+				<osee-table-filter-component></osee-table-filter-component>
+			</ng-container>
+			<ng-container
+				*ngIf="
+					(isFilterDisabled$ | async) === false &&
+					(isParamDefined$ | async)
+				">
+				<osee-parameter-types></osee-parameter-types>
+			</ng-container>
+		</div>
+	</div>
+</div>

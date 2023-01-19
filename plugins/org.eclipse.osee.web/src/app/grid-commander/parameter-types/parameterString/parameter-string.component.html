@@ -1,0 +1,32 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	class="parameter-string-container"
+	*ngIf="displayInParamStringComponent$ | async as parameter">
+	<ng-container *ngIf="parameter.parameter.name === 'URL'">
+		<osee-input-control
+			class="full-width"
+			[input]="parameterValueFromHistory | async"
+			[placeHolder]="parameter.placeholder"
+			[label]="parameter.prompt"
+			[displayHelpIcon]="false"
+			[floatLabelControl]="'always'"
+			[type]="'url'"
+			[patternValidator]="parameter.patternValidator"
+			[required]="true"
+			[error]="'Please enter a valid URL'"
+			(update)="_onInput($event)"
+			(submitInput)="_onSubmit($event)">
+		</osee-input-control>
+	</ng-container>
+</div>

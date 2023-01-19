@@ -1,0 +1,45 @@
+<!--
+ * Copyright (c) 2022 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="multi-select-div">
+	<ng-container *ngIf="columnOptions | async as columnOptions">
+		<ng-container *ngIf="commandDescription$ | async as description">
+			<mat-form-field
+				class="full-width"
+				appearance="outline">
+				<mat-label>{{ description + ':' }}</mat-label>
+				<mat-select
+					[ngModel]="hideColumnsControl | async"
+					multiple
+					(selectionChange)="onSelectColToHide($event)">
+					<mat-select-trigger>
+						<mat-chip-listbox>
+							<mat-chip-option
+								*ngFor="let col of hideColumnsControl.value"
+								[removable]="true"
+								(removed)="unhideCol(col)">
+								{{ col | titlecase }}
+								<mat-icon matChipRemove>cancel</mat-icon>
+							</mat-chip-option>
+						</mat-chip-listbox>
+					</mat-select-trigger>
+
+					<mat-option
+						*ngFor="let colOpts of columnOptions; let i = index"
+						[value]="colOpts">
+						{{ colOpts | titlecase }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</ng-container>
+	</ng-container>
+</div>
