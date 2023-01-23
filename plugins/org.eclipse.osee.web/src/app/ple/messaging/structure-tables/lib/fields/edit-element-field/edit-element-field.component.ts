@@ -46,6 +46,7 @@ import {
 	scan,
 	iif,
 	takeUntil,
+	ReplaySubject,
 } from 'rxjs';
 import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
@@ -179,25 +180,23 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	/**
 	 * State of when auto complete is initial opened to defer data loading
 	 */
-	openTypeAutoComplete = new Subject<void>();
+	openTypeAutoComplete = new ReplaySubject<void>();
 	filteredTypes = (pageNum: string | number) =>
 		this.openTypeAutoComplete.pipe(
 			distinctUntilChanged(),
-			switchMap((v) =>
-				this._typeValue
-					.pipe(debounceTime(500))
-					.pipe(
-						switchMap((typeAhead) =>
-							this.structureService.getPaginatedFilteredTypes(
-								this.isString(typeAhead)
-									? typeAhead.toLowerCase()
-									: (typeAhead as unknown as string),
-								pageNum
-							)
+			switchMap((_) =>
+				this._typeValue.pipe(
+					debounceTime(500),
+					switchMap((typeAhead) =>
+						this.structureService.getPaginatedFilteredTypes(
+							this.isString(typeAhead)
+								? typeAhead.toLowerCase()
+								: (typeAhead as unknown as string),
+							pageNum
 						)
 					)
-			),
-			takeUntil(this._done)
+				)
+			)
 		);
 	private _type: Subject<PlatformType> = new Subject();
 	private _sendType = this._type.pipe(
@@ -248,6 +247,23 @@ export class EditElementFieldComponent<T extends keyof element = any>
 
 	updateTypeAhead(value: any) {
 		this._typeValue.next(value);
+		this.filteredTypes = (pageNum: string | number) =>
+			this.openTypeAutoComplete.pipe(
+				distinctUntilChanged(),
+				switchMap((_) =>
+					this._typeValue.pipe(
+						debounceTime(500),
+						switchMap((typeAhead) =>
+							this.structureService.getPaginatedFilteredTypes(
+								this.isString(typeAhead)
+									? typeAhead.toLowerCase()
+									: (typeAhead as unknown as string),
+								pageNum
+							)
+						)
+					)
+				)
+			);
 	}
 
 	compareApplics(o1: any, o2: any) {

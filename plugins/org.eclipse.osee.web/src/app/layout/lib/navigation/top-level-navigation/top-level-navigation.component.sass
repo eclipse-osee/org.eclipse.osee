@@ -10,8 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../../modern-ple-theme'
+@use './_theme' as t
+
+@media (prefers-color-scheme: light)
+  @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
+
+@media (prefers-color-scheme: dark)
+  @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
+
 // Sidenav header
-.mat-toolbar 
+.mat-toolbar
   height: 3.25rem
   font: inherit
   font-size: 1.3rem
@@ -26,7 +35,7 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0rem 0.1rem 0.6rem 0rem
   .highlight
     box-shadow: rgba(0, 0, 0, 0.35) 0rem 0.1rem 0.6rem 0rem
-  ul  
+  ul
     margin-top: 0
 
 .nav-icon

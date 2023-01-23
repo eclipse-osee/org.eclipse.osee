@@ -282,7 +282,7 @@
 										oseeHighlightFilteredText
 										[searchTerms]="searchTerms"
 										[text]="element[header]"
-										classToApply="ple-message-element-interface-table-highlighted-text"
+										classToApply="message-element-interface-table-highlighted-text"
 										[attr.data-cy]="
 											'structure-table-' +
 											header +
@@ -335,7 +335,7 @@
 									oseeHighlightFilteredText
 									[searchTerms]="searchTerms"
 									[text]="element[header]"
-									classToApply="ple-message-element-interface-table-highlighted-text"
+									classToApply="message-element-interface-table-highlighted-text"
 									[attr.data-cy]="
 										'structure-table-' +
 										header +
@@ -391,12 +391,17 @@
 					*matHeaderRowDef="currentHeaders; sticky: true"></tr>
 				<tr
 					mat-row
-					*matRowDef="let row; columns: currentHeaders"
+					*matRowDef="let row; columns: currentHeaders; let k = index"
 					class="message-detail-row"
 					[class.message-expanded-detail-row]="
 						(rowIsExpanded(row.id) | async) || false
 					"
-					[class.message-element-structure-added]="row.added"
+					[class.message-element-structure-added-even]="
+						row.added && k % 2 === 0
+					"
+					[class.message-element-structure-added-odd]="
+						row.added && k % 2 === 1
+					"
 					[class.message-element-structure-deleted]="row.deleted"
 					[attr.data-cy]="'structure-table-row-' + row.name"></tr>
 				<tr

@@ -24,13 +24,13 @@
 				src="favicon.ico"
 				width="48"
 				height="47" />
+			<router-outlet
+				name="title"
+				(click)="closeTopLevelNavIcon()"></router-outlet>
+			<router-outlet
+				name="navigationHeader"
+				(click)="closeTopLevelNavIcon()"></router-outlet>
 		</span>
-		<router-outlet
-			name="title"
-			(click)="closeTopLevelNavIcon()"></router-outlet>
-		<router-outlet
-			name="navigationHeader"
-			(click)="closeTopLevelNavIcon()"></router-outlet>
 	</div>
 	<span class="right-icon">
 		<ng-container *ngIf="(isLoading | async) === 'true'">

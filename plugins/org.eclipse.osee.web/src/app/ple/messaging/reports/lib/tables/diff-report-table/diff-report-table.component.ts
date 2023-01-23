@@ -23,7 +23,7 @@ import {
 @Component({
 	selector: 'osee-messaging-diff-report-table',
 	templateUrl: './diff-report-table.component.html',
-	styleUrls: ['./diff-report-table.component.sass'],
+	styleUrls: ['./diff-report-table.component.scss'],
 	standalone: true,
 	imports: [NgIf, NgFor, AsyncPipe, NgClass, MatTableModule, MatIconModule],
 })

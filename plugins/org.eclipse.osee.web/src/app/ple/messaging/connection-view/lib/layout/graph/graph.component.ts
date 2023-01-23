@@ -35,6 +35,7 @@ import { GraphLinkMenuComponent } from '../../menu/graph-link-menu/graph-link-me
 import { GraphNodeMenuComponent } from '../../menu/graph-node-menu/graph-node-menu.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-connection-view-graph',
@@ -53,6 +54,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 		MatFormFieldModule,
 		GraphLinkMenuComponent,
 		GraphNodeMenuComponent,
+		MatTooltipModule,
 	],
 })
 export class GraphComponent implements OnInit, OnDestroy {

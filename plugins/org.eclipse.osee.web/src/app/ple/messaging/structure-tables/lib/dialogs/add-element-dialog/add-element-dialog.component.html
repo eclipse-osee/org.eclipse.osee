@@ -167,7 +167,8 @@
 						[compareWith]="compareTypes">
 						<mat-option
 							*ngFor="let selectableType of _availableTypes"
-							[value]="selectableType">
+							[value]="selectableType"
+							[matTooltip]="selectableType.description">
 							{{ selectableType.name }}
 						</mat-option>
 					</mat-select>

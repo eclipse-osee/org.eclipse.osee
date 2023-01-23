@@ -291,7 +291,6 @@ export class SubElementTableDropdownComponent {
 			.afterClosed()
 			.pipe(
 				take(1),
-				tap((v) => console.log(v)),
 				switchMap((response: EditViewFreeTextDialog | string) =>
 					iif(
 						() =>

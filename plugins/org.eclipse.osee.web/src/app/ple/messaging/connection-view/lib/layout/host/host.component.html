@@ -12,7 +12,9 @@
  -->
 <div class="connection-view">
 	<div class="controls-container">
-		<osee-branch-picker category="3"></osee-branch-picker>
+		<osee-branch-picker
+			category="3"
+			class="controls-left"></osee-branch-picker>
 		<div class="controls-right">
 			<ng-container *ngIf="(inEditMode | async) === true">
 				<osee-undo-button-branch></osee-undo-button-branch>
@@ -21,6 +23,7 @@
 				<a
 					mat-raised-button
 					[routerLink]="_diff === 'false' ? 'diff' : '../'"
+					matTooltip="Show differences between current branch and product line"
 					><mat-icon *ngIf="_diff === 'false'"
 						>change_history</mat-icon
 					><mat-icon *ngIf="_diff === 'true'">visibility_off</mat-icon

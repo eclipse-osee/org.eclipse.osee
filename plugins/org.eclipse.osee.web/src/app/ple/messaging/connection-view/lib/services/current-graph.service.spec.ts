@@ -789,6 +789,7 @@ describe('CurrentGraphService', () => {
 										},
 									},
 								},
+								added: true,
 							},
 						},
 						{
@@ -811,6 +812,7 @@ describe('CurrentGraphService', () => {
 								},
 								name: '',
 								transportType: {},
+								added: false,
 							},
 						},
 						{
@@ -842,6 +844,7 @@ describe('CurrentGraphService', () => {
 								name: 'T7_TC',
 								transportType: {},
 								applicability: { id: '1', name: 'Base' },
+								added: false,
 							},
 							label: 'T7_TC',
 						},

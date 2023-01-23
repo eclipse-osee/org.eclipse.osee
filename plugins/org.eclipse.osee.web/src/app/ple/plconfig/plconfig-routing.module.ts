@@ -17,6 +17,11 @@ import { SingleDiffComponent } from '../diff-views/single-diff/single-diff.compo
 import { PlconfigComponent } from './plconfig.component';
 
 const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+	},
 	{ path: '', component: PlconfigComponent },
 	{ path: ':branchType', component: PlconfigComponent },
 	{

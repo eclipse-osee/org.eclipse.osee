@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -25,74 +25,57 @@
 	$background: map.get($config, background);
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
 
 	// Define any styles affected by the theme.
 	.message-element-interface-table-view-sub-message-header {
 		color: mat.get-color-from-palette($primary);
 	}
 
-	.message-element-interface-table-view-message-header {
-		color: mat.get-color-from-palette($primary, 600);
-	}
-
-	.message-table-row-even {
-		background-color: mat.get-color-from-palette($background, background);
-	}
-
-	.message-table-row-odd {
-		background-color: mat.get-color-from-palette(
-			$background,
-			selected-button
-		);
-	}
-
-	tr.message-detail-row:not(.message-expanded-detail-row):hover {
-		background: mat.get-color-from-palette($background, app-bar);
-	}
-
-	tr.message-detail-row:not(.message-expanded-detail-row):active {
-		background: mat.get-color-from-palette($background, unselected-chip);
-	}
-
 	.message-table-sub-element-row-even {
-		background-color: mat.get-color-from-palette($primary, 100);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($primary, 100);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($primary, 600);
+		}
 	}
 
 	.message-table-sub-element-row-odd {
-		background-color: mat.get-color-from-palette($primary, 200);
-	}
-
-	.message-element-interface-table-view-element {
-		border-bottom: 0.5em solid
-			mat.get-color-from-palette($background, disabled-button-toggle);
-	}
-
-	.message-element-interface-table-sub-message-element-computed {
-		color: mat.get-color-from-palette($foreground, secondary-text);
-	}
-
-	.ple-message-element-interface-table-highlighted-text {
-		color: mat.get-color-from-palette($accent, 900);
-	}
-
-	.message-element-structure-added-even {
-		background-color: mat.get-color-from-palette($success, 100);
-	}
-
-	.message-element-structure-added-odd {
-		background-color: mat.get-color-from-palette($success, 300);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($primary, 200);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($primary, 700);
+		}
 	}
 
 	.message-table-sub-element-row-even-added {
-		background-color: mat.get-color-from-palette($success, 100);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($primary, 100);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($primary, 600);
+		}
 	}
 
 	.message-table-sub-element-row-odd-added {
-		background-color: mat.get-color-from-palette($success, 200);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($primary, 200);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($primary, 700);
+		}
 	}
 
 	.message-table-sub-element-row-odd-autogen {
-		background-color: mat.get-color-from-palette($accent, 50);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($accent, 50);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($accent, 600);
+			color: mat.get-color-from-palette($foreground, elevation);
+		}
 	}
 
 	.message-table-sub-element-row-even-deleted {
@@ -100,32 +83,41 @@
 	}
 
 	.message-table-sub-element-row-even-autogen {
-		background-color: mat.get-color-from-palette($accent, 100);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($accent, 100);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($accent, 700);
+			text-shadow: 1px
+				1px
+				2px
+				mat.get-color-from-palette($foreground, elevation);
+		}
 	}
 
 	.message-table-sub-element-row-odd-deleted {
-		background-color: mat.get-color-from-palette($warn, 200);
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette($warn, 800);
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette($warn, 900);
+		}
 	}
 
 	.message-element-table-element-attribute-changed {
 		background-color: mat.get-color-from-palette($accent, 100);
+		@if $is-dark == true {
+			color: mat.get-color-from-palette($background, app-bar);
+		}
 	}
-
-	.attribute-wrong {
-		background-color: mat.get-color-from-palette($warn, 100);
-	}
-}
-/* stylelint-disable block-no-empty */
-@mixin typography($config-or-theme) {
 }
 @mixin typography-themed($config-or-theme) {
 	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography) {
+@mixin theme($theme) {
 	$color: mat.get-color-config($theme);
-	$typography: mat.get-typography-config($typography);
-	@include typography($theme);
+	$typography: mat.get-typography-config($theme);
 
 	@if $color {
 		@include color($color);

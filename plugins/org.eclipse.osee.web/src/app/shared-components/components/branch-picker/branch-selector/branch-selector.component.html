@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field appearance="fill">
+<mat-form-field
+	appearance="fill"
+	[ngClass]="(loading | async) === 'true' ? '' : 'full-width'">
 	<mat-label>Select a Branch</mat-label>
 	<mat-select
 		(selectionChange)="selectBranch($event)"

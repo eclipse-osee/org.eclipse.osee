@@ -14,6 +14,11 @@ import { Routes } from '@angular/router';
 import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
 
 const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('./toolbar.routes'),
+		outlet: 'toolbar',
+	},
 	{ path: '', loadComponent: () => import('./connection-view.component') },
 	{
 		path: ':branchType',

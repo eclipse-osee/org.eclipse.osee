@@ -25,6 +25,8 @@ import { CreateActionDialogComponent } from '../create-action-dialog/create-acti
 import { MatButtonModule } from '@angular/material/button';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 /**
  * Allows users to create and manage the state of a branch from within a page.
@@ -41,6 +43,8 @@ import { MatIconModule } from '@angular/material/icon';
 		MatIconModule,
 		MatDialogModule,
 		CreateActionDialogComponent,
+		MatTooltipModule,
+		MatFormFieldModule,
 	],
 })
 export class ActionDropDownComponent implements OnChanges {

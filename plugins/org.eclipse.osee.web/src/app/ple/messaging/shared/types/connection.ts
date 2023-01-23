@@ -31,6 +31,7 @@ interface connectionRelations {
 }
 export interface connectionWithChanges extends connection {
 	deleted: boolean;
+	added: boolean;
 	changes: {
 		name?: difference;
 		description?: difference;
