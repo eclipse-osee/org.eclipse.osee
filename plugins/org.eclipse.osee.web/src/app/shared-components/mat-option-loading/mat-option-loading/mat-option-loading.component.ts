@@ -52,6 +52,7 @@ import {
 	map,
 	Observable,
 	of,
+	pipe,
 	scan,
 	Subject,
 	Subscription,
@@ -207,18 +208,24 @@ export class MatOptionLoadingComponent<T>
 					})
 				);
 			}),
-			concatMap((elements) => from(elements)),
-			distinct(),
-			scan((acc, curr) => [...acc, curr], [] as T[]),
-			map((valueArray) =>
-				valueArray.filter(
-					(value, index, array) =>
-						array.findIndex(
-							(value2) =>
-								JSON.stringify(value) === JSON.stringify(value2)
-						) === index
-				)
-			)
+			this._isNotObservable(this.data) &&
+				!this._isNotPaginatedFunctionObservable(this.data)
+				? pipe(
+						concatMap((elements) => from(elements)),
+						distinct(),
+						scan((acc, curr) => [...acc, curr], [] as T[]),
+						map((valueArray) =>
+							valueArray.filter(
+								(value, index, array) =>
+									array.findIndex(
+										(value2) =>
+											JSON.stringify(value) ===
+											JSON.stringify(value2)
+									) === index
+							)
+						)
+				  )
+				: pipe()
 		);
 		this.error = this._options.pipe(
 			ignoreElements(),
