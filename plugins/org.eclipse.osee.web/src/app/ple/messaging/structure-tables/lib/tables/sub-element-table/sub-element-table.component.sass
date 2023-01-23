@@ -12,12 +12,12 @@
  **********************************************************************/
 @use '../../../../../../../sass-utils/mdc-migration/_form-field'
 @use '../../../../../../../modern-ple-theme'
-@use '../../../../../../../themes/ple/messages/messaging/message-interface/elements/_lib' as msg
+@use './_theme' as msg
 
-:host-context(.light-theme)
-  @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
-:host-context(.dark-theme)
-  @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+@media (prefers-color-scheme:light)
+  @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme)
+@media (prefers-color-scheme:dark)
+  @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 
 .message-element-interface-table-view-sub-message-header
   font:

@@ -189,6 +189,7 @@ describe('GraphComponent', () => {
 								messageGenerationType: '',
 							},
 							deleted: false,
+							added: false,
 							changes: {
 								name: {
 									previousValue: 'abcdef',
@@ -301,6 +302,7 @@ describe('GraphComponent', () => {
 								messageGenerationType: '',
 							},
 							deleted: false,
+							added: false,
 							changes: {},
 						},
 					},
@@ -319,6 +321,7 @@ describe('GraphComponent', () => {
 								messageGenerationType: '',
 							},
 							deleted: false,
+							added: false,
 							changes: {},
 						},
 					},

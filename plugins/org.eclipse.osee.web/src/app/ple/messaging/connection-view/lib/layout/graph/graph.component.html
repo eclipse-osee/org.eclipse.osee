@@ -155,12 +155,16 @@
 							" />
 					</ng-container>
 					<ng-template #noBgColor>
-						<!--Default to @swimlane/ngx-graph's handling of color-->
+						<!--Use user's selected colors, default to @swimlane/ngx-graph's handling of color-->
 						<svg:rect
 							[attr.width]="node.dimension.width"
 							[attr.height]="node.dimension.height"
 							[attr.fill]="
-								node.data.color ? node.data.color : ''
+								node.data.interfaceNodeBgColor
+									? node.data.interfaceNodeBgColor
+									: node.data.color
+									? node.data.color
+									: ''
 							" />
 					</ng-template>
 					<svg:text
@@ -187,7 +191,8 @@
 					(contextmenu)="
 						openLinkDialog($event, link, graphData.nodes)
 					"
-					[attr.data-cy]="'link-' + link.label">
+					[attr.data-cy]="'link-' + link.label"
+					[matTooltip]="'Open connection ' + link.label">
 					<ng-template #linkView>
 						<ng-container *ngIf="link.data.dashed">
 							<svg:path
@@ -208,10 +213,10 @@
 							text-anchor="middle"
 							[ngClass]="
 								link.data.deleted
-									? 'link-text-path-deleted'
+									? 'link-label path-deleted'
 									: link.data.added
-									? 'link-text-path-added'
-									: 'edge-label'
+									? 'link-label path-added'
+									: 'link-label'
 							">
 							<textPath
 								class="text-path"
@@ -234,7 +239,7 @@
                     Labels to denote what transport type is in use
                   -->
 						<svg:text
-							class="edge-label"
+							class="link-label"
 							text-anchor="middle">
 							<textPath
 								class="text-path"

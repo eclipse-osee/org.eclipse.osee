@@ -28,14 +28,34 @@
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 
-@include mat.all-component-typographies($modern-ple-typography);
 @include mat.core;
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 
+// @include mat.all-component-themes($modern-ple-light-theme);
+
+@include mat.all-component-typographies($modern-ple-light-theme);
 @include mat.all-component-themes($modern-ple-light-theme);
+@media (prefers-color-scheme: light) {
+	.mat-success {
+		color: mat.get-color-from-palette(
+			map.get(mat.get-color-config($modern-ple-light-theme), success)
+		) !important; // hate having to use this
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	@include mat.all-component-colors($modern-ple-dark-theme);
+
+	.mat-success {
+		color: mat.get-color-from-palette(
+			map.get(mat.get-color-config($modern-ple-light-theme), success)
+		) !important; // hate having to use this
+	}
+}
+
 @include ple.plconfig-main-theme($modern-ple-light-theme);
 @include ple.plconfig-dropdown-configuration-theme($modern-ple-light-theme);
 @include ple.plconfig-dropdown-feature-theme($modern-ple-light-theme);
@@ -43,26 +63,7 @@
 	$modern-ple-light-theme
 );
 @include ple.plconfig-branch-selector-radio-theme($modern-ple-light-theme);
-@include ple.messages-messaging-message-interface-elements-theme(
-	$modern-ple-light-theme,
-	$modern-ple-typography
-);
-@include ple.messages-messaging-message-interface-interface-theme(
-	$modern-ple-light-theme,
-	$modern-ple-typography
-);
-@include ple.messages-messaging-message-interface-types-theme(
-	$modern-ple-light-theme,
-	$modern-ple-typography
-);
-@include ple.messages-messaging-message-interface-graph-theme(
-	$modern-ple-light-theme,
-	$modern-ple-typography
-);
-@include ple.messages-messaging-message-typeSearch-theme(
-	$modern-ple-light-theme
-);
-@include ple.messages-messaging-message-reports-diffReport-theme(
+@include ple.generic-material-divider-vertical-theme(
 	$modern-ple-light-theme,
 	$modern-ple-typography
 );
@@ -75,14 +76,7 @@
 	$modern-ple-typography
 );
 
-.mat-success {
-	color: mat.get-color-from-palette(
-		map.get(mat.get-color-config($modern-ple-light-theme), success)
-	) !important; // hate having to use this
-}
-
 .dark-theme {
-	@include mat.all-component-colors($modern-ple-dark-theme);
 	@include ple.plconfig-main-color($modern-ple-dark-theme);
 	@include ple.plconfig-dropdown-configuration-color($modern-ple-dark-theme);
 	@include ple.plconfig-dropdown-feature-color($modern-ple-dark-theme);
@@ -90,9 +84,6 @@
 		$modern-ple-dark-theme
 	);
 	@include ple.plconfig-branch-selector-radio-color($modern-ple-dark-theme);
-	@include ple.messages-messaging-message-typeSearch-theme(
-		$modern-ple-dark-theme
-	);
 }
 
 html,

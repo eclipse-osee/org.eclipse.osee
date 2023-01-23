@@ -31,6 +31,12 @@ const asciidoc = navigationStructure[0].children.find(
 const routes: Routes = [
 	{
 		path: '',
+		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+		pathMatch: 'full',
+	},
+	{
+		path: '',
 		title: ple?.pageTitle,
 		component: PleComponent,
 	},

@@ -62,21 +62,28 @@
 						else edit_Mode
 					">
 					<ng-container *ngIf="header === 'description'">
-						<div
-							oseeHighlightFilteredText
-							[searchTerms]="filter"
-							[text]="
-								value[header]
-									| displayTruncatedStringWithFieldOverflow
-										: 75
-							"
-							classToApply="ple-message-interface-table-highlighted-text">
-							{{
-								value[header]
-									| displayTruncatedStringWithFieldOverflow
-										: 75
-							}}
-						</div>
+						<ng-container
+							*ngIf="
+								value[header] !== null &&
+								value[header] !== undefined &&
+								value[header].length !== undefined
+							">
+							<div
+								oseeHighlightFilteredText
+								[searchTerms]="filter"
+								[text]="
+									value[header]
+										| displayTruncatedStringWithFieldOverflow
+											: 75
+								"
+								classToApply="message-interface-table-highlighted-text">
+								{{
+									value[header]
+										| displayTruncatedStringWithFieldOverflow
+											: 75
+								}}
+							</div>
+						</ng-container>
 					</ng-container>
 					<ng-container
 						*ngIf="
@@ -88,7 +95,7 @@
 							oseeHighlightFilteredText
 							[searchTerms]="filter"
 							[text]="value[header]"
-							classToApply="ple-message-interface-table-highlighted-text">
+							classToApply="message-interface-table-highlighted-text">
 							{{ value[header] }}
 						</div>
 					</ng-container>
@@ -106,22 +113,28 @@
 						>
 					</ng-container>
 					<ng-container *ngIf="header === 'applicability'">
-						<ng-container *ngIf="value[header].name !== 'Base'">
-							<div
-								oseeHighlightFilteredText
-								[searchTerms]="filter"
-								[text]="value[header].name"
-								classToApply="ple-message-interface-table-highlighted-text"
-								[attr.data-cy]="
-									'submessage-table-' +
-									header +
-									'-' +
-									value.name +
-									'-' +
-									value[header]
-								">
-								{{ value[header] }}
-							</div>
+						<ng-container
+							*ngIf="
+								value[header] !== undefined &&
+								value[header] !== null
+							">
+							<ng-container *ngIf="value[header].name !== 'Base'">
+								<div
+									oseeHighlightFilteredText
+									[searchTerms]="filter"
+									[text]="value[header].name"
+									classToApply="message-interface-table-highlighted-text"
+									[attr.data-cy]="
+										'submessage-table-' +
+										header +
+										'-' +
+										value.name +
+										'-' +
+										value[header]
+									">
+									{{ value[header] }}
+								</div>
+							</ng-container>
 						</ng-container>
 					</ng-container>
 				</ng-container>

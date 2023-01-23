@@ -59,6 +59,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { newPlatformTypeDialogReturnData } from '../../../../shared/types/newTypeDialogDialogData';
 import { NewTypeFormComponent } from '../../../../shared/forms/new-type-form/new-type-form.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
@@ -81,6 +82,7 @@ import { NewTypeFormComponent } from '../../../../shared/forms/new-type-form/new
 		NewTypeFormComponent,
 		MatSelectModule,
 		MatOptionModule,
+		MatTooltipModule,
 		AsyncPipe,
 		NgIf,
 		NgFor,

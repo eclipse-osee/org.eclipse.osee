@@ -44,6 +44,12 @@ const help = navigationStructure[0].children
 const routes: Routes = [
 	{
 		path: '',
+		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+		pathMatch: 'full',
+	},
+	{
+		path: '',
 		title: messaging?.pageTitle,
 		loadComponent: () => import('./messaging.component'),
 	},

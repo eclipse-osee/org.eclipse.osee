@@ -14,7 +14,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GridCommanderComponent } from './grid-commander.component';
 
-const routes: Routes = [{ path: '', component: GridCommanderComponent }];
+const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+	},
+	{ path: '', component: GridCommanderComponent },
+];
 
 @NgModule({
 	imports: [RouterModule.forChild(routes)],

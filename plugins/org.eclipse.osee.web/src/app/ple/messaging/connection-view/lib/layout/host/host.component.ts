@@ -24,6 +24,7 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ActionDropDownComponent } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
 import { GraphComponent } from '../graph/graph.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-connection-view-host',
@@ -40,6 +41,7 @@ import { GraphComponent } from '../graph/graph.component';
 		ActionDropDownComponent,
 		GraphComponent,
 		BranchPickerComponent,
+		MatTooltipModule,
 	],
 })
 export class HostComponent {

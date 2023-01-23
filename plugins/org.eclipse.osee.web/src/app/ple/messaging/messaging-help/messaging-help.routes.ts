@@ -18,6 +18,12 @@ const columnDescriptions = navigationStructure[0].children
 	.children.find((page) => page.label === 'Help')
 	?.children.find((page) => page.label === 'Column Descriptions');
 const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () =>
+			import('../../../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+	},
 	{ path: '', loadComponent: () => import('./messaging-help.component') },
 	{
 		path: 'columnDescriptions',

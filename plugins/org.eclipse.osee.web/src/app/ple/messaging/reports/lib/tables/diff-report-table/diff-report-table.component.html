@@ -42,12 +42,12 @@
 					class="diff-table-cell"
 					[ngClass]="
 						item.diffInfo.added
-							? 'message-table-row-even-added'
+							? 'diff-report-row-even-added'
 							: item.diffInfo.deleted
-							? 'message-table-row-even-deleted'
+							? 'diff-report-row-even-deleted'
 							: item.diffInfo.fieldsChanged.hasOwnProperty(header)
-							? 'message-table-row-changed'
-							: 'message-table-row-even'
+							? 'diff-report-row-changed'
+							: 'diff-report-row-even'
 					">
 					<a
 						id="{{ item.id }}"

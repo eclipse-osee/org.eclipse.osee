@@ -5,5 +5,6 @@ B([tables]) --> A([lib]);
 C([fields]) --> A([lib]);
 D([dialogs]) --> A([lib]);
 E([menus]) --> A([lib]);
+E([menus]) --> B([tables]);
 D([dialogs]) --> B([tables]);
 C([fields]) --> B([tables]);

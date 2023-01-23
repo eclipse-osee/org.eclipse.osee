@@ -18,6 +18,11 @@ import { SINGLE_STRUCTURE_SERVICE } from '../shared/tokens/injection/structure/s
 const routes: Route[] = [
 	{
 		path: '',
+		loadChildren: () => import('./toolbar.routes'),
+		outlet: 'toolbar',
+	},
+	{
+		path: '',
 		providers: [MULTI_STRUCTURE_SERVICE],
 		children: [
 			{

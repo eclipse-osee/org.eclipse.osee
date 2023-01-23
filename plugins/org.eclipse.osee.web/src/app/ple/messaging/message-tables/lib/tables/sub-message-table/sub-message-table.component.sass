@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 @use '../../../../../../../modern-ple-theme'
-@use '../../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
+@use './_theme' as msg
 
-:host-context(.light-theme)
-    @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
-:host-context(.dark-theme)
-    @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+@media (prefers-color-scheme:light)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme)
+@media (prefers-color-scheme:dark)
+    @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 
 .message-interface-table-view-width-100
     width: 100%

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,15 +11,30 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-
-const routes: Routes = [
+export const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () =>
-			import('../../../layout/lib/toolbar/toolbar.routes'),
-		outlet: 'toolbar',
+		loadComponent: () =>
+			import('../../../layout/lib/toolbar/toolbar.component'),
+		children: [
+			{
+				path: '',
+				loadComponent: () =>
+					import('./lib/menu/usermenu/usermenu.component'),
+				outlet: 'userMenu',
+			},
+			{
+				path: '',
+				loadComponent: () =>
+					import('../shared/headers/mim-header/mim-header.component'),
+				outlet: 'navigationHeader',
+			},
+		],
 	},
-	{ path: '', loadComponent: () => import('./type-detail.component') },
+	{
+		path: '**',
+		redirectTo: '',
+	},
 ];
 
 export default routes;

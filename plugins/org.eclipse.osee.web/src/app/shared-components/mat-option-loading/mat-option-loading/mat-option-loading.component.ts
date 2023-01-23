@@ -53,6 +53,7 @@ import {
 	Observable,
 	of,
 	pipe,
+	ReplaySubject,
 	scan,
 	Subject,
 	Subscription,
@@ -61,6 +62,7 @@ import {
 	tap,
 	timer,
 } from 'rxjs';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { paginationMode } from '../internal/pagination-options';
 /**
  * Component that handles loading, pagination and error states for mat-options
@@ -153,6 +155,11 @@ export class MatOptionLoadingComponent<T>
 		takeUntil(this._done)
 	);
 	private _autoPaginateSubscription: Subscription | undefined = undefined;
+	private _dataSubject = new ReplaySubject<
+		| (() => Observable<T[]>)
+		| ((pageNum: number | string) => Observable<T[]>)
+		| Observable<T[]>
+	>();
 	constructor(
 		@Host()
 		@Optional()
@@ -175,6 +182,7 @@ export class MatOptionLoadingComponent<T>
 			this._autoPaginateSubscription.unsubscribe();
 			this._autoPaginateSubscription = undefined;
 		}
+		this._dataSubject.next(changes.data.currentValue);
 	}
 	ngOnDestroy(): void {
 		this._done.next();
@@ -184,48 +192,91 @@ export class MatOptionLoadingComponent<T>
 	 * @TODO shareReplay observables need to be handled, or mat-select with delayed values needs to be handled
 	 */
 	ngOnInit(): void {
-		this._options = this._paginationSubject.pipe(
-			switchMap((pageNum) => {
-				if (this._isNotObservable(this.data)) {
-					if (this._isNotPaginatedFunctionObservable(this.data)) {
-						return this.data.call(this).pipe(
+		this._options = this._dataSubject.pipe(
+			debounceTime(500),
+			switchMap((query) =>
+				this._paginationSubject.pipe(
+					switchMap((pageNum) => {
+						if (this._isNotObservable(query)) {
+							if (this._isNotPaginatedFunctionObservable(query)) {
+								return query.call(this).pipe(
+									tap(() => {
+										this._paginationComplete.next(true);
+									})
+								);
+							}
+							return query.call(this, pageNum).pipe(
+								tap((results) => {
+									if (results.length < this.paginationSize) {
+										this._paginationComplete.next(true);
+									}
+								})
+							);
+						}
+						return query.pipe(
 							tap(() => {
 								this._paginationComplete.next(true);
 							})
 						);
-					}
-					return this.data.call(this, pageNum).pipe(
-						tap((results) => {
-							if (results.length < this.paginationSize) {
-								this._paginationComplete.next(true);
-							}
-						})
-					);
-				}
-				return this.data.pipe(
-					tap(() => {
-						this._paginationComplete.next(true);
-					})
-				);
-			}),
-			this._isNotObservable(this.data) &&
-				!this._isNotPaginatedFunctionObservable(this.data)
-				? pipe(
-						concatMap((elements) => from(elements)),
-						distinct(),
-						scan((acc, curr) => [...acc, curr], [] as T[]),
-						map((valueArray) =>
-							valueArray.filter(
-								(value, index, array) =>
-									array.findIndex(
-										(value2) =>
-											JSON.stringify(value) ===
-											JSON.stringify(value2)
-									) === index
-							)
-						)
-				  )
-				: pipe()
+					}),
+					this._isNotObservable(query) &&
+						!this._isNotPaginatedFunctionObservable(query)
+						? pipe(
+								concatMap((elements) => from(elements)),
+								scan((acc, curr) => {
+									if (acc.length === 0) {
+										return [curr];
+									}
+									const deDupedArr = acc.filter(
+										(value, index, array) =>
+											array.findIndex(
+												(value2) =>
+													JSON.stringify(value) ===
+													JSON.stringify(value2)
+											) === index
+									);
+									if (
+										(acc.length / this.paginationSize >
+											this._paginationSubject.getValue() ||
+											acc.length / this.paginationSize <
+												this._paginationSubject.getValue()) &&
+										Number.isInteger(
+											acc.length / this.paginationSize
+										)
+									) {
+										//reset the pagination
+										this._paginationSubject.next(1);
+										this._paginationComplete.next(false);
+										return [];
+									} else if (
+										deDupedArr.length !== acc.length
+									) {
+										//reset the pagination
+										const split = acc.slice(
+											this._getDuplicatedIndex(acc) - 1,
+											acc.length
+										);
+										this._paginationSubject.next(1);
+										this._paginationComplete.next(false);
+										return split;
+									}
+
+									return [...acc, curr];
+								}, [] as T[]),
+								map((valueArray) =>
+									valueArray.filter(
+										(value, index, array) =>
+											array.findIndex(
+												(value2) =>
+													JSON.stringify(value) ===
+													JSON.stringify(value2)
+											) === index
+									)
+								)
+						  )
+						: pipe()
+				)
+			)
 		);
 		this.error = this._options.pipe(
 			ignoreElements(),
@@ -234,6 +285,18 @@ export class MatOptionLoadingComponent<T>
 			)
 		);
 	}
+
+	private _getDuplicatedIndex(value: T[]) {
+		let found: any = {}; //yuck
+		for (let i = 0; i < value.length; i++) {
+			if (found[value[i]]) {
+				return i;
+			}
+			found[value[i]] = i;
+		}
+		return -1;
+	}
+
 	ngAfterViewInit(): void {
 		if (this._parentSelect !== undefined && this._parentSelect !== null) {
 			/**leaving disabled for now, will need to figure out test fix. 

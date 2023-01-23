@@ -34,7 +34,7 @@
 					mat-cell
 					*matCellDef="let item"
 					class="diff-table-cell"
-					[ngClass]="'message-table-row-even'">
+					[ngClass]="'diff-report-row-even'">
 					<ng-container *ngIf="header === 'reportDate'; else other">
 						{{ date | date : 'medium' }}
 					</ng-container>
@@ -74,7 +74,7 @@
 					mat-cell
 					*matCellDef="let item"
 					class="diff-table-cell"
-					[ngClass]="'message-table-row-even'">
+					[ngClass]="'diff-report-row-even'">
 					<ng-container *ngIf="header === 'details'; else other">
 						<ng-container *ngFor="let detail of item[header]">
 							<span>{{ detail }}; </span>

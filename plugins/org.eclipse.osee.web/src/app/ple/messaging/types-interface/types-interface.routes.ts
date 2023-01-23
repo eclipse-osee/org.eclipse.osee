@@ -13,6 +13,11 @@
 import { Routes } from '@angular/router';
 
 const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('./toolbar.routes'),
+		outlet: 'toolbar',
+	},
 	{ path: '', loadComponent: () => import('./types-interface.component') },
 	{
 		path: ':branchType',

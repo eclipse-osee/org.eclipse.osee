@@ -18,6 +18,7 @@ const routes: Routes = [
 		path: '',
 		loadChildren: () => import('./layout/lib/toolbar/toolbar.routes'),
 		outlet: 'toolbar',
+		pathMatch: 'full',
 	},
 	{
 		path: '',
@@ -51,6 +52,11 @@ const routes: Routes = [
 			import('./grid-commander/grid-commander.module').then(
 				(m) => m.GridCommanderModule
 			),
+	},
+	{
+		path: '**',
+		loadChildren: () => import('./layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
 	},
 	{
 		path: '**',

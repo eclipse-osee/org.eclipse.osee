@@ -15,6 +15,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChangeReportComponent } from './change-report.component';
 
 const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+	},
 	{ path: '', component: ChangeReportComponent },
 	{ path: ':branchType', component: ChangeReportComponent },
 	{ path: ':branchType/:branchId', component: ChangeReportComponent },

@@ -764,6 +764,13 @@ export class CurrentGraphService {
 				edge.data.changes.transportType = changes;
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
+			if (
+				change.destinationVersion.modType === '-1' &&
+				change.baselineVersion.modType === '-1' &&
+				change.currentVersion.modType === '1'
+			) {
+				edge.data.added = true;
+			}
 			if (change.currentVersion.transactionToken.id !== '-1') {
 				edge.data.changes.applicability = {
 					previousValue: change.baselineVersion.applicabilityToken,
@@ -869,6 +876,7 @@ export class CurrentGraphService {
 			source: '',
 			target: '',
 			data: {
+				added: false,
 				deleted: true,
 				dashed: false,
 				changes: {},
@@ -889,6 +897,7 @@ export class CurrentGraphService {
 		edge.id = 'a' + change.artId;
 		if (edge.data === undefined) {
 			edge.data = {
+				added: false,
 				deleted: true,
 				dashed: false,
 				changes: {},

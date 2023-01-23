@@ -38,9 +38,17 @@
 		<button
 			mat-raised-button
 			(click)="approveBranch()"
-			color="primary">
-			<mat-icon>check</mat-icon>Approve Working Branch
-			{{ (branchInfo | async)?.name }}
+			color="primary"
+			[matTooltip]="
+				'Approve Working Branch ' +
+				((branchInfo | async)?.name || '') +
+				' for merging into Baseline'
+			">
+			<mat-icon color="accent">check</mat-icon>
+			<mat-label>
+				Approve
+				{{ (branchInfo | async)?.name }}
+			</mat-label>
 		</button>
 	</ng-container>
 </ng-container>

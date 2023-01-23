@@ -16,6 +16,11 @@ import { DiffReportResolver } from '../../../resolvers/diff-report-resolver.reso
 const routes: Routes = [
 	{
 		path: '',
+		loadChildren: () => import('./toolbar.routes'),
+		outlet: 'toolbar',
+	},
+	{
+		path: '',
 		loadComponent: () => import('./message-page.component'),
 		children: [],
 	},
