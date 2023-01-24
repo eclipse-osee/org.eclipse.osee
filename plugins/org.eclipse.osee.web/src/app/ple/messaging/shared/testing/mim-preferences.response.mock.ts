@@ -14,7 +14,10 @@ import { element } from '../types/element';
 import { structure } from '../types/structure';
 import { message } from '../types/messages';
 import { subMessage } from '../types/sub-messages';
-import { MimPreferences } from '../types/mim.preferences';
+import {
+	MimPreferences,
+	MimUserGlobalPreferences,
+} from '../types/mim.preferences';
 
 export const MimPreferencesMock: MimPreferences<
 	structure & message & subMessage & element
@@ -106,4 +109,10 @@ export const MimPreferencesMock: MimPreferences<
 	],
 	inEditMode: true,
 	hasBranchPref: true,
+};
+
+export const testGlobalUserPrefs: MimUserGlobalPreferences = {
+	id: '1',
+	name: 'MIM Global User Preferences',
+	wordWrap: false,
 };

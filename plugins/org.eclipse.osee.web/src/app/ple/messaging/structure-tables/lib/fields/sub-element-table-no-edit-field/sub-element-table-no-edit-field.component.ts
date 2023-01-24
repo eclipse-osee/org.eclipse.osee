@@ -55,7 +55,6 @@ export class SubElementTableNoEditFieldComponent implements OnInit {
 	};
 	@Input() header: string = '';
 	@Input() width: string = '';
-	@Input() wordWrap: boolean = false;
 	_branchId: string = '';
 	_branchType: string = '';
 

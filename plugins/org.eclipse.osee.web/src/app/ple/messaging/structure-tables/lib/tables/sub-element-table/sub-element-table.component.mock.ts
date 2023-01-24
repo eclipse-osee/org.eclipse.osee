@@ -31,7 +31,6 @@ export class SubElementTableComponentMock {
 	@Output() expandRow = new EventEmitter();
 	@Input() subMessageHeaders: string[] = [];
 	@Input() editMode: boolean = false;
-	@Input() wordWrap: boolean = false;
 	@Input() structure: structure = {
 		id: '',
 		name: '',

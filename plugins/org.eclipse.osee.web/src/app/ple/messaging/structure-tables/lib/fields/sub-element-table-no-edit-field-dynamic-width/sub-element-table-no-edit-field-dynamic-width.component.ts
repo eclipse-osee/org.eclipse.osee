@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass, NgStyle } from '@angular/common';
+import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { tap } from 'rxjs';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
 import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 
 @Component({
@@ -22,14 +24,25 @@ import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/os
 		'./sub-element-table-no-edit-field-dynamic-width.component.sass',
 	],
 	standalone: true,
-	imports: [OseeStringUtilsDirectivesModule, NgStyle, NgClass],
+	imports: [
+		OseeStringUtilsDirectivesModule,
+		NgIf,
+		NgStyle,
+		NgClass,
+		AsyncPipe,
+	],
 })
 export class SubElementTableNoEditFieldDynamicWidthComponent {
 	@Input() field: string = '';
 	@Input() width: string = '';
 	@Input() filter: string = '';
-	@Input() wordWrap: boolean = false;
-	constructor() {}
+
+	wordWrap: boolean = false;
+	globalPrefs = this.preferencesService.globalPrefs.pipe(
+		tap((prefs) => (this.wordWrap = prefs.wordWrap))
+	);
+
+	constructor(private preferencesService: PreferencesUIService) {}
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;

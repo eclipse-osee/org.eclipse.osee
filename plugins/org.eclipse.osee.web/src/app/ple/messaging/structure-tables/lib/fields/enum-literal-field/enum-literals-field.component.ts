@@ -10,19 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { map, tap } from 'rxjs';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
 
 @Component({
 	standalone: true,
 	selector: 'osee-enum-literals-field',
 	templateUrl: './enum-literals-field.component.html',
 	styleUrls: ['./enum-literals-field.component.sass'],
-	imports: [NgIf, NgFor],
+	imports: [NgIf, NgFor, AsyncPipe],
 })
 export class EnumLiteralsFieldComponent {
 	@Input() enumLiterals: string = '';
-	@Input() wordWrap: boolean = false;
+
+	wordWrap: boolean = false;
+	globalPrefs = this.preferencesService.globalPrefs.pipe(
+		tap((prefs) => (this.wordWrap = prefs.wordWrap))
+	);
+
+	constructor(private preferencesService: PreferencesUIService) {}
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;

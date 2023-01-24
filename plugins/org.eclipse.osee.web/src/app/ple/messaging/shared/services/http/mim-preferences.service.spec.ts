@@ -23,10 +23,8 @@ import {
 } from '../../../../../transactions/transaction.mock';
 import { TransactionService } from '../../../../../transactions/transaction.service';
 import { transactionServiceMock } from '../../../../../transactions/transaction.service.mock';
-import {
-	testDataUser,
-	testGlobalUserPrefs,
-} from '../../../../plconfig/testing/mockTypes';
+import { testDataUser } from '../../../../plconfig/testing/mockTypes';
+import { testGlobalUserPrefs } from '../../testing/mim-preferences.response.mock';
 
 import { MimPreferencesService } from './mim-preferences.service';
 

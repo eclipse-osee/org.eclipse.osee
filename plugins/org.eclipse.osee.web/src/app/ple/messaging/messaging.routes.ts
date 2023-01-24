@@ -22,7 +22,7 @@ const transports = navigationStructure[0].children
 	.children.find((page) => page.label === 'Transport Type Manager');
 const imports = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Import Page');
+	.children.find((page) => page.label === 'Import');
 const reports = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
 	.children.find((page) => page.label === 'Reports');

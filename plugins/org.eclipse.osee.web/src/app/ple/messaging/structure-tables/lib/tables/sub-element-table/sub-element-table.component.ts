@@ -129,9 +129,6 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		this.dataSource.data = this.data;
 	}
 
-	wordWrap = this.preferencesService.globalPrefs.pipe(
-		map((prefs) => prefs.wordWrap)
-	);
 	ngOnChanges(changes: SimpleChanges): void {
 		if (Array.isArray(this.data)) {
 			this.dataSource.data = this.data;

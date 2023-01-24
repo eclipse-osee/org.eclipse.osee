@@ -78,7 +78,6 @@ export class SubElementTableFieldComponent {
 		'interfaceDefaultValue',
 	];
 	@Input() filter: string = '';
-	@Input() wordWrap: boolean = false;
 	layout = this.layoutNotifier.layout;
 
 	@Output() menu = new EventEmitter<{
