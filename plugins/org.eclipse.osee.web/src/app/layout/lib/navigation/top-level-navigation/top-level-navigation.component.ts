@@ -25,6 +25,7 @@ import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 
 @Component({
 	selector: 'osee-top-level-navigation',
@@ -47,7 +48,8 @@ import { MatDividerModule } from '@angular/material/divider';
 export class TopLevelNavigationComponent {
 	constructor(
 		public router: Router,
-		private userService: UserDataAccountService
+		private userService: UserDataAccountService,
+		public sideNavService: SideNavService
 	) {}
 
 	navElements = navigationStructure; // structure that stores the navigation elements
@@ -65,6 +67,10 @@ export class TopLevelNavigationComponent {
 			),
 			reduce((acc, curr) => [...acc, curr], [] as navigationElement[])
 		);
+	}
+
+	closeTopLevelNav() {
+		this.sideNavService.closeLeftSideNav = '';
 	}
 }
 

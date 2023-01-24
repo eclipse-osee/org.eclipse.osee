@@ -352,10 +352,6 @@ export class StructureTableComponent implements OnInit {
 		switchMap((val) => iif(() => val, of('true'), of('false')))
 	);
 
-	wordWrap = this.preferencesService.globalPrefs.pipe(
-		map((prefs) => prefs.wordWrap)
-	);
-
 	textExpanded: boolean = false;
 	toggleExpanded() {
 		this.textExpanded = !this.textExpanded;

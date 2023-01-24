@@ -52,6 +52,7 @@
 			<a
 				mat-list-item
 				*ngIf="!element.isDropdown"
+				(click)="closeTopLevelNav()"
 				routerLink="{{ element.routerLink }}"
 				class="top-navigation top-navigation-link"
 				[class.onpage]="router.url === element.routerLink">

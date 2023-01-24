@@ -200,9 +200,3 @@ export const testnewActionResponse: newActionResponse = {
 	teamWfs: [],
 	workingBranchId: testDataPlConfigBranchListingBranch,
 };
-
-export const testGlobalUserPrefs: MimUserGlobalPreferences = {
-	id: '1',
-	name: 'MIM Global User Preferences',
-	wordWrap: false,
-};

@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { preferencesUiServiceMock } from 'src/app/ple/messaging/shared/services/ui/preferences-ui-service.mock';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
 
 import { StructureTableLongTextFieldComponent } from './structure-table-long-text-field.component';
 
@@ -22,6 +24,12 @@ describe('StructureTableLongTextFieldComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [StructureTableLongTextFieldComponent],
 			declarations: [],
+			providers: [
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
+				},
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(StructureTableLongTextFieldComponent);

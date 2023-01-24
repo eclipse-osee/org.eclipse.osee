@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { preferencesUiServiceMock } from 'src/app/ple/messaging/shared/services/ui/preferences-ui-service.mock';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
 
 import { EnumLiteralsFieldComponent } from './enum-literals-field.component';
 
@@ -21,6 +23,12 @@ describe('EnumLiteralFieldComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [EnumLiteralsFieldComponent],
+			providers: [
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
+				},
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(EnumLiteralsFieldComponent);

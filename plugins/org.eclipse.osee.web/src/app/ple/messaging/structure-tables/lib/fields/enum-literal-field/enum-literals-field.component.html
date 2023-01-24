@@ -10,36 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div
-	class="text-align-start cursor-pointer"
-	(click)="toggleExpanded()">
-	<ng-container *ngIf="getEnumLiteralsArray() as enumLiterals">
-		<ng-container *ngIf="wordWrap === false">
-			<ng-container *ngIf="enumLiterals.length > 0">
-				{{ enumLiterals[0] }}
+<ng-container *ngIf="globalPrefs | async">
+	<div
+		class="text-align-start cursor-pointer"
+		(click)="toggleExpanded()">
+		<ng-container *ngIf="getEnumLiteralsArray() as enumLiterals">
+			<ng-container *ngIf="wordWrap === false">
+				<ng-container *ngIf="enumLiterals.length > 0">
+					{{ enumLiterals[0] }}
+				</ng-container>
+				<ng-container *ngIf="enumLiterals.length > 3">
+					<br />
+					...
+					<br />
+					{{ enumLiterals[enumLiterals.length - 1] }}
+				</ng-container>
+				<ng-container *ngIf="enumLiterals.length === 2">
+					<br />
+					{{ enumLiterals[1] }}
+				</ng-container>
+				<ng-container *ngIf="enumLiterals.length === 3">
+					<br />
+					{{ enumLiterals[1] }}
+					<br />
+					{{ enumLiterals[2] }}
+				</ng-container>
 			</ng-container>
-			<ng-container *ngIf="enumLiterals.length > 3">
-				<br />
-				...
-				<br />
-				{{ enumLiterals[enumLiterals.length - 1] }}
-			</ng-container>
-			<ng-container *ngIf="enumLiterals.length === 2">
-				<br />
-				{{ enumLiterals[1] }}
-			</ng-container>
-			<ng-container *ngIf="enumLiterals.length === 3">
-				<br />
-				{{ enumLiterals[1] }}
-				<br />
-				{{ enumLiterals[2] }}
+			<ng-container *ngIf="wordWrap === true">
+				<ng-container *ngFor="let item of enumLiterals">
+					{{ item }}
+					<br />
+				</ng-container>
 			</ng-container>
 		</ng-container>
-		<ng-container *ngIf="wordWrap === true">
-			<ng-container *ngFor="let item of enumLiterals">
-				{{ item }}
-				<br />
-			</ng-container>
-		</ng-container>
-	</ng-container>
-</div>
+	</div>
+</ng-container>

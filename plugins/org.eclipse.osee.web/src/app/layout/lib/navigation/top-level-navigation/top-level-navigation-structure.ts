@@ -202,7 +202,7 @@ const navigationStructure: navigationElement[] = [
 						children: [],
 					},
 					{
-						label: 'Import Page',
+						label: 'Import',
 						cypressLabel: 'mimimport-nav-button',
 						pageTitle: 'OSEE - MIM - Importer',
 						isDropdown: false,

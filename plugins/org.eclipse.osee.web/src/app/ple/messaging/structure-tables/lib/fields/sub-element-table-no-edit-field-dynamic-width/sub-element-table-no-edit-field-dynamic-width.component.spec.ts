@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { preferencesUiServiceMock } from 'src/app/ple/messaging/shared/services/ui/preferences-ui-service.mock';
+import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
 
 import { SubElementTableNoEditFieldDynamicWidthComponent } from './sub-element-table-no-edit-field-dynamic-width.component';
 
@@ -21,6 +23,12 @@ describe('SubElementTableNoEditFieldDynamicWidthComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			declarations: [],
+			providers: [
+				{
+					provide: PreferencesUIService,
+					useValue: preferencesUiServiceMock,
+				},
+			],
 		}).compileComponents();
 	});
 

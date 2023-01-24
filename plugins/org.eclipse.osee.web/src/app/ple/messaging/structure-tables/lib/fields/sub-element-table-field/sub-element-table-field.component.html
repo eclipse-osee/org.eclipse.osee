@@ -66,8 +66,7 @@
 			header === 'enumLiteral' && element.logicalType === 'enumeration'
 		">
 		<osee-enum-literals-field
-			[enumLiterals]="element.enumLiteral"
-			[wordWrap]="wordWrap"></osee-enum-literals-field>
+			[enumLiterals]="element.enumLiteral"></osee-enum-literals-field>
 	</ng-container>
 	<ng-container
 		*ngIf="
@@ -78,7 +77,6 @@
 			[header]="header"
 			[element]="element"
 			[width]="(layout | async)?.tableRecommendations?.width || ''"
-			[wordWrap]="wordWrap"
 			[attr.data-cy]="
 				'element-table-' +
 				header +

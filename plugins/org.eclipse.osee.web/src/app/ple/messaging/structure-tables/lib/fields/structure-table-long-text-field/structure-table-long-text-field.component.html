@@ -10,19 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div
-	oseeHighlightFilteredText
-	[searchTerms]="searchTerms"
-	[text]="text"
-	(click)="toggleExpanded()"
-	classToApply="ple-message-element-interface-table-highlighted-text"
-	[ngStyle]="{
-		width: width
-	}"
-	[ngClass]="{
-		'cursor-pointer': true,
-		nowrap: !wordWrap
-	}"
-	[attr.data-cy]="data_cy">
-	{{ text }}
-</div>
+<ng-container *ngIf="globalPrefs | async">
+	<div
+		oseeHighlightFilteredText
+		[searchTerms]="searchTerms"
+		[text]="text"
+		(click)="toggleExpanded()"
+		classToApply="ple-message-element-interface-table-highlighted-text"
+		[ngStyle]="{
+			width: width
+		}"
+		[ngClass]="{
+			'cursor-pointer': true,
+			nowrap: !wordWrap
+		}"
+		[attr.data-cy]="data_cy">
+		{{ text }}
+	</div>
+</ng-container>

@@ -25,7 +25,6 @@ import { structure } from '../../../../shared/types/structure';
 export class SubElementTableRowComponentMock {
 	@Input() header: string = '';
 	@Input() editMode: boolean = false;
-	@Input() wordWrap: boolean = false;
 	@Input() element: element = {
 		id: '',
 		name: '',
