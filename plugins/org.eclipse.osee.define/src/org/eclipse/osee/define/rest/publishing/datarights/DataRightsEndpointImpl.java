@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2014 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,30 +11,32 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest.publishing.templatemanager;
+package org.eclipse.osee.define.rest.publishing.datarights;
 
+import java.util.List;
 import java.util.Objects;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateSafeNames;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightResult;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.rest.DefineApplication;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
- * Implementation of the {@link TemplateManagerEndpoint} interface contains the methods that are invoked when a REST API
- * call has been made for a publishing template.
+ * Implementation of the {@link DataRightsEndpoint} interface contains the methods that are invoked when a REST API call
+ * has been made for artifact data rights.
  *
+ * @author Angel Avila
  * @author Loren K. Ashley
  */
 
-public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
+public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
    /**
     * Saves a handle to the {@link DefineOperations} service.
@@ -43,15 +45,15 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
    private final DefineOperations defineOperations;
 
    /**
-    * Creates an instance of the {@link TemplateManagerEndpointImpl} class.
+    * Creates an instance of the {@link DataRightsEndpointImpl} class.
     *
     * @implNote Only one instance of this class should be instantiated and only by the {@link DefineApplication} class.
     * @param defineOperations a handle to the {@link DefineOperations} service.
     */
 
-   public TemplateManagerEndpointImpl(DefineOperations defineOperations) {
+   public DataRightsEndpointImpl(DefineOperations defineOperations) {
       this.defineOperations = Objects.requireNonNull(defineOperations,
-         "TemplateManagerEndpointImpl::new, parameter \"defineOperations\" cannot be null.");
+         "DataRightsEndpointImpl::new, parameter \"defineOperaions\" cannot be null.");
    }
 
    /**
@@ -66,7 +68,7 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
 
       try {
          PublishingPermissions.verify();
-         this.defineOperations.getTemplateManagerOperations().deleteCache();
+         this.defineOperations.getDataRightsOperations().deleteCache();
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (Exception e) {
@@ -78,41 +80,17 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
    /**
     * {@inheritDoc}
     *
-    * @throws NotAuthorizedException when the user is not an active login user.
+    * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
     * @throws BadRequestException when the operation's method indicates any arguments were illegal.
     * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
     */
 
    @Override
-   public PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest) {
+   public DataRightResult getDataRights(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(publishingTemplateRequest);
-      } catch (UserNotAuthorizedForPublishingException e) {
-         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
-      } catch (IllegalArgumentException iae) {
-         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
-      } catch (Exception e) {
-         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
-            e);
-      }
-   }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws NotAuthorizedException when the user is not an active login user.
-    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
-    * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
-    */
-
-   @Override
-   public PublishingTemplate getPublishingTemplate(String primaryKey, String secondaryKey) {
-
-      try {
-         PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(primaryKey, secondaryKey);
+         return defineOperations.getDataRightsOperations().getDataRights(artifactIdentifiers, branchIdentifier);
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -127,22 +105,27 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
     * {@inheritDoc}
     *
     * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
+    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
     * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
     */
 
    @Override
-   public PublishingTemplateSafeNames getPublishingTemplateSafeNames() {
+   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers) {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplateSafeNames();
+         return defineOperations.getDataRightsOperations().getDataRights(artifactIdentifiers, branchIdentifier,
+            overrideClassification);
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
       } catch (Exception e) {
          throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
             e);
       }
    }
+
 }
 
 /* EOF */

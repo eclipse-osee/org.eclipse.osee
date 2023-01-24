@@ -14,7 +14,9 @@
 package org.eclipse.osee.define.util;
 
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
 /**
@@ -71,7 +73,7 @@ public class Validation {
 
          //@formatter:off
          message
-            .title( "Parameter \"" ).append( parameterName ).append( "\" cannont be null or " ).append( predicateText ).append( "." )
+            .title( "Parameter \"" ).append( parameterName ).append( "\" cannot be null or " ).append( predicateText ).append( "." )
             .indentInc()
             .segment( parameterName, parameter )
             .indentDec()
@@ -82,6 +84,53 @@ public class Validation {
 
       return message;
    }
+
+   //@formatter:off
+   public static <T,E> Message
+      verifyStreamableParameter
+         (
+            T                     parameter,
+            Function<T,Stream<E>> streamFunction,
+            String                parameterName,
+            Message               message,
+            String                predicateText,
+            Predicate<T>          isKo,
+            String                elementPredicateText,
+            Predicate<E>          elementIsKo
+         ) {
+
+      if(    Objects.isNull( parameter )
+          || isKo.test( parameter ) ) {
+
+         message = Objects.nonNull( message ) ? message : new Message();
+
+         message
+            .title( "Parameter \"" ).append( parameterName ).append( "\" cannot be null or " ).append( predicateText ).append( "." )
+            .indentInc()
+            .segment( parameterName, parameter )
+            .indentDec()
+            .blank()
+            ;
+
+         return message;
+      }
+
+      if( streamFunction.apply( parameter ).anyMatch( elementIsKo ) ) {
+
+         message = Objects.nonNull( message ) ? message : new Message();
+
+         message
+            .title( "An element of paramter \"" ).append( parameterName ).append( "\" cannot be ").append( elementPredicateText ).append( "." )
+            .indentInc()
+            .segment( parameterName, parameter )
+            .indentDec()
+            .blank()
+            ;
+      }
+
+      return message;
+   }
+   //@formatter:on
 
    /**
     * Verifies a parameter is not <code>null</code>. When the parameter does not pass the tests a detail message of the
@@ -104,7 +153,7 @@ public class Validation {
 
          //@formatter:off
          message
-            .title( "Parameter \"" ).append( parameterName ).append( "\" cannont be null." )
+            .title( "Parameter \"" ).append( parameterName ).append( "\" cannot be null." )
             .blank()
             ;
          //@formatter:on

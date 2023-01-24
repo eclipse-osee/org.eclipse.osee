@@ -73,7 +73,7 @@ class ThrowableToResponse {
       String message = url + "\n" + Lib.exceptionToString(throwable);
 
       if (exceptionRegistryOperations.okToLog(throwable)) {
-         logger.error(throwable, url);
+         logger.errorNoFormat(throwable, url);
       }
 
       //@formatter:off

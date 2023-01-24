@@ -15,6 +15,7 @@ package org.eclipse.osee.define.api;
 
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.api.publishing.PublishingOperations;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.api.synchronization.SynchronizationOperations;
 

@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api;
+package org.eclipse.osee.define.api.publishing.datarights;
 
 import java.util.List;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,8 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.datarights.DataRightAnchor;
-import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
 /**
  * The interface defines the REST API end points for obtaining the data rights for a sequence of artifacts.
@@ -37,14 +35,30 @@ import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 public interface DataRightsEndpoint {
 
    /**
-    * Calling this method is functionally the same as calling:
+    * Empties any caches of Data Right footers that maybe held by the Data Rights Manager.
     *
-    * <pre>
-    *    dataRightAnchorsResult = {@link #getDataRights(List, BranchId, String) getDataRights}( artifactIdentifiers, branchIdentifier, "" );
-    * </pre>
+    * @implSpec This entry point requires the user has Publishing Group permissions.
+    */
+
+   @DELETE
+   void deleteCache();
+
+   /**
+    * Creates a map supplier for maps of {@link DataRightAnchor} objects by {@link ArtifactId}. The map will contain one
+    * {@link DataRightAnchor} for each artifact that was retrieved from the OSEE database for the artifacts listed on
+    * the <code>artifactIdentifiers</code> list. Each {@link DataRightAnchor} contains the following data for it's
+    * associated artifact:
+    * <ul>
+    * <li>A flag to indicated if this artifact is the first in a subsequence of artifacts with the same data rights
+    * classification.</li>
+    * <li>A flag to indicate if this artifact is the last in a subsequence of artifacts with the same data rights Word
+    * ML footer.</li>
+    * <li>The artifact's data rights classification.</li>
+    * <li>The Word ML for the artifact's data right footer.</li>
+    * </ul>
     *
-    * @param branch the branch to obtain the artifacts from.
-    * @param artifacts an ordered list of the artifacts by identifier to analyze.
+    * @param branchIdentifier the branch to obtain the artifacts from.
+    * @param artifactIdentifiers an ordered list of the artifacts by identifier to analyze.
     * @return a {@link DataRightAnchor} map supplier.
     */
 
@@ -56,8 +70,8 @@ public interface DataRightsEndpoint {
    public DataRightResult
       getDataRights
          (
-            @PathParam("branch") BranchId         branch,
-                                 List<ArtifactId> artifacts
+            @PathParam("branch") BranchId         branchIdentifier,
+                                 List<ArtifactId> artifactIdentifiers
          );
    //@formatter:on
 
@@ -75,10 +89,10 @@ public interface DataRightsEndpoint {
     * <li>The Word ML for the artifact's data right footer.</li>
     * </ul>
     *
-    * @param branch the branch to obtain the artifacts from.
+    * @param branchIdentifier the branch to obtain the artifacts from.
     * @param overrideClassification when specified, this will be used as each artifact's data right classification
     * instead of the classification specified by the artifacts data rights attributes.
-    * @param artifacts an ordered list of the artifacts by identifier to analyze.
+    * @param artifactIdentifiers an ordered list of the artifacts by identifier to analyze.
     * @return a {@link DataRightAnchor} map supplier.
     */
 
@@ -90,10 +104,12 @@ public interface DataRightsEndpoint {
    public DataRightResult
       getDataRights
          (
-            @PathParam("branch")                                  BranchId         branch,
-            @PathParam("classification") @DefaultValue("invalid") String           overrideClassification,
-                                                                  List<ArtifactId> artifacts
+            @PathParam("branch")         BranchId         branchIdentifier,
+            @PathParam("classification") String           overrideClassification,
+                                         List<ArtifactId> artifactIdentifiers
          );
    //@formatter:on
 
 }
+
+/* EOF */

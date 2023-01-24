@@ -25,6 +25,7 @@ import org.eclipse.osee.define.rest.internal.DataRightsSwReqAndCodeResource;
 import org.eclipse.osee.define.rest.internal.DefineBranchEndpointImpl;
 import org.eclipse.osee.define.rest.internal.SystemSafetyResource;
 import org.eclipse.osee.define.rest.publishing.PublishingEndpointImpl;
+import org.eclipse.osee.define.rest.publishing.datarights.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.templatemanager.TemplateManagerEndpointImpl;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;

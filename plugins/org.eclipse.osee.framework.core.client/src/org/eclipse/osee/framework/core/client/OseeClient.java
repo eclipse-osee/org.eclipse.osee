@@ -15,11 +15,11 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
-import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
@@ -67,6 +67,13 @@ public interface OseeClient extends OseeApi {
    ResourcesEndpoint getResourcesEndpoint();
 
    DatastoreEndpoint getDatastoreEndpoint();
+
+   /**
+    * Obtains an object that implements the {@link DataRightsEndpoint} to process REST API requests to analyze the data
+    * rights for a sequence of artifacts.
+    *
+    * @return an implementation of the {@link DataRightsEndpoint} interface.
+    */
 
    DataRightsEndpoint getDataRightsEndpoint();
 

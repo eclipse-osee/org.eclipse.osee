@@ -41,6 +41,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.define.api.publishing.AttributeOptions;
 import org.eclipse.osee.define.api.publishing.MetadataOptions;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightContentBuilder;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -55,7 +57,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.RendererOption;
@@ -743,12 +744,18 @@ public class WordTemplateProcessor {
             allArtifacts.addAll(artifacts);
          }
 
-         DataRightResult response = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(branch,
-            overrideClassification, allArtifacts);
+         if (!allArtifacts.isEmpty()) {
 
-         for (Artifact artifact : artifacts) {
-            processObjectArtifact(artifact, wordMl, outlineType, presentationType, response);
+            DataRightResult dataRightResult = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(branch,
+               overrideClassification, allArtifacts);
+
+            var dataRightContentBuilder = new DataRightContentBuilder(dataRightResult);
+
+            for (Artifact artifact : artifacts) {
+               processObjectArtifact(artifact, wordMl, outlineType, presentationType, dataRightContentBuilder);
+            }
          }
+
          WordUiUtil.getStoredResultData();
       }
       // maintain a list of artifacts that have been processed so we do not
@@ -773,7 +780,7 @@ public class WordTemplateProcessor {
       return toReturn;
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, DataRightResult data) {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, DataRightContentBuilder dataRightContentBuilder) {
       if (isWordTemplateContentValid(artifact)) {
          // If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
@@ -833,7 +840,7 @@ public class WordTemplateProcessor {
                String footer = "";
                if (!templateFooter) {
                   PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
-                  footer = data.getContent(artifact, orientation);
+                  footer = dataRightContentBuilder.getContent(artifact, orientation);
                }
 
                processMetadata(artifact, wordMl);
@@ -846,7 +853,7 @@ public class WordTemplateProcessor {
 
             if (recurseChildren && !recurse || recurse && !origDiff) {
                for (Artifact childArtifact : artifact.getChildren()) {
-                  processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, data);
+                  processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, dataRightContentBuilder);
                }
             }
 

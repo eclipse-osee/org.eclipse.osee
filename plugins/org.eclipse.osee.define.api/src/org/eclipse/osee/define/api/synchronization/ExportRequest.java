@@ -183,7 +183,7 @@ public class ExportRequest implements ToMessage {
     * Sets the requested Synchronization Artifact type. Used for deserialization.
     *
     * @param synchronizationArtifactType the requested Synchronization Artifact type.
-    * @throws NullPointerException when the parameters <code>synchronizationArtifactType</code> is <code>null</code>.
+    * @throws NullPointerException when the parameter <code>synchronizationArtifactType</code> is <code>null</code>.
     * @throws IllegalStateException when an attempt is made to set the {@link #synchronizationArtifactType} description
     * for an {@link ExportRequest} that already has a descriptor.
     */

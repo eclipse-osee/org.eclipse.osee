@@ -67,7 +67,7 @@ public final class JaxRsExceptions {
          message = message + ".  HTTP Reason: " + response.getStatusInfo().getReasonPhrase();
          httpStatus = response.getStatusInfo().getReasonPhrase();
       }
-      return new OseeCoreException(message + ". HTTP Status: " + httpStatus);
+      return new OseeCoreException(message + ". HTTP Status: " + httpStatus, (Throwable) null);
    }
 
    private static String getResponseString(Response response) {

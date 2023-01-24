@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.logger.slf4j.internal;
 
+import java.util.Objects;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.ComponentContext;
@@ -55,33 +56,34 @@ public class Sfl4jLogImpl implements Log {
       marker = null;
    }
 
-   private Logger getLogger() {
-      return logger;
-   }
-
    @Override
    public boolean isTraceEnabled() {
-      return isEnabled(LOG_TRACE);
+      return this.isEnabled(LOG_TRACE);
    }
 
    @Override
    public void trace(String format, Object... args) {
-      trace(null, format, args);
+      this.logHelper(LOG_TRACE, null, format, args);
    }
 
    @Override
    public void trace(Throwable th, String format, Object... args) {
-      logHelper(LOG_TRACE, th, format, args);
+      this.logHelper(LOG_TRACE, th, format, args);
+   }
+
+   @Override
+   public void traceNoFormat(Throwable throwable, CharSequence message) {
+      this.logHelperNoFormat(LOG_TRACE, throwable, message);
    }
 
    @Override
    public boolean isDebugEnabled() {
-      return isEnabled(LOG_DEBUG);
+      return this.isEnabled(LOG_DEBUG);
    }
 
    @Override
    public void debug(String format, Object... args) {
-      debug(null, format, args);
+      this.logHelper(LOG_DEBUG, null, format, args);
    }
 
    @Override
@@ -90,103 +92,139 @@ public class Sfl4jLogImpl implements Log {
    }
 
    @Override
+   public void debugNoFormat(Throwable throwable, CharSequence message) {
+      this.logHelperNoFormat(LOG_DEBUG, throwable, message);
+   }
+
+   @Override
    public boolean isInfoEnabled() {
-      return isEnabled(LOG_INFO);
+      return this.isEnabled(LOG_INFO);
    }
 
    @Override
    public void info(String format, Object... args) {
-      info(null, format, args);
+      this.logHelper(LOG_INFO, null, format, args);
    }
 
    @Override
    public void info(Throwable th, String format, Object... args) {
-      logHelper(LOG_INFO, th, format, args);
+      this.logHelper(LOG_INFO, th, format, args);
+   }
+
+   @Override
+   public void infoNoFormat(Throwable throwable, CharSequence message) {
+      this.logHelperNoFormat(LOG_INFO, throwable, message);
    }
 
    @Override
    public boolean isWarnEnabled() {
-      return isEnabled(LOG_WARNING);
+      return this.isEnabled(LOG_WARNING);
    }
 
    @Override
    public void warn(String format, Object... args) {
-      warn(null, format, args);
+      this.logHelper(LOG_WARNING, null, format, args);
    }
 
    @Override
    public void warn(Throwable th, String format, Object... args) {
-      logHelper(LOG_WARNING, th, format, args);
+      this.logHelper(LOG_WARNING, th, format, args);
+   }
+
+   @Override
+   public void warnNoFormat(Throwable throwable, CharSequence message) {
+      this.logHelperNoFormat(LOG_WARNING, throwable, message);
    }
 
    @Override
    public boolean isErrorEnabled() {
-      return isEnabled(LOG_ERROR);
+      return this.isEnabled(LOG_ERROR);
    }
 
    @Override
    public void error(String format, Object... args) {
-      error(null, format, args);
+      this.logHelper(LOG_ERROR, null, format, args);
    }
 
    @Override
    public void error(Throwable th, String format, Object... args) {
-      logHelper(LOG_ERROR, th, format, args);
+      this.logHelper(LOG_ERROR, th, format, args);
+   }
+
+   @Override
+   public void errorNoFormat(Throwable throwable, CharSequence message) {
+      this.logHelperNoFormat(LOG_ERROR, throwable, message);
    }
 
    private boolean isEnabled(int level) {
-      boolean result = false;
-      final Logger logger = getLogger();
-      if (logger != null) {
-         switch (level) {
-            case LOG_DEBUG:
-               result = logger.isDebugEnabled();
-               break;
-            case LOG_ERROR:
-               result = logger.isErrorEnabled();
-               break;
-            case LOG_WARNING:
-               result = logger.isWarnEnabled();
-               break;
-            case LOG_INFO:
-               result = logger.isInfoEnabled();
-               break;
-            default:
-               result = logger.isTraceEnabled();
-               break;
-         }
+
+      if (Objects.isNull(this.logger)) {
+         return false;
       }
-      return result;
+
+      switch (level) {
+         case LOG_DEBUG:
+            return this.logger.isDebugEnabled();
+         case LOG_ERROR:
+            return this.logger.isErrorEnabled();
+         case LOG_WARNING:
+            return this.logger.isWarnEnabled();
+         case LOG_INFO:
+            return this.logger.isInfoEnabled();
+         default:
+            return this.logger.isTraceEnabled();
+      }
+   }
+
+   private void logAtLevel(int level, Throwable throwable, CharSequence message) {
+
+      if (Objects.isNull(this.logger)) {
+         return;
+      }
+
+      switch (level) {
+         case LOG_DEBUG:
+            this.logger.debug(this.marker, message.toString(), throwable);
+            break;
+         case LOG_ERROR:
+            this.logger.error(this.marker, message.toString(), throwable);
+            break;
+         case LOG_WARNING:
+            this.logger.warn(this.marker, message.toString(), throwable);
+            break;
+         case LOG_INFO:
+            this.logger.info(this.marker, message.toString(), throwable);
+            break;
+         default:
+            this.logger.trace(this.marker, message.toString(), throwable);
+            break;
+      }
    }
 
    private void logHelper(int level, Throwable th, String format, Object... args) {
-      logHelper(null, level, th, format, args);
+
+      if (!this.isEnabled(level)) {
+         return;
+      }
+
+      String message = safeFormat(format, args);
+
+      if (Objects.isNull(message)) {
+         return;
+      }
+
+      this.logAtLevel(level, th, message);
    }
 
-   private void logHelper(Object context, int level, Throwable th, String format, Object... args) {
-      final Logger logger = getLogger();
-      if (isEnabled(level)) {
-         String message = safeFormat(format, args);
-         if (message != null) {
-            switch (level) {
-               case LOG_DEBUG:
-                  logger.debug(marker, message, th);
-                  break;
-               case LOG_ERROR:
-                  logger.error(marker, message, th);
-                  break;
-               case LOG_WARNING:
-                  logger.warn(marker, message, th);
-                  break;
-               case LOG_INFO:
-                  logger.info(marker, message, th);
-                  break;
-               default:
-                  logger.trace(marker, message, th);
-                  break;
-            }
-         }
+   private void logHelperNoFormat(int level, Throwable throwable, CharSequence message) {
+
+      if (!this.isEnabled(level)) {
+         return;
       }
+
+      message = Objects.nonNull(message) ? message : "";
+
+      this.logAtLevel(level, throwable, message);
    }
 
    private static String safeFormat(String message, Object... args) {
