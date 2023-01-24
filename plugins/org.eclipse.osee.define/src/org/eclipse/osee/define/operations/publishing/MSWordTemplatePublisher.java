@@ -53,8 +53,9 @@ import org.eclipse.osee.define.api.publishing.AttributeOptions;
 import org.eclipse.osee.define.api.publishing.MetadataOptions;
 import org.eclipse.osee.define.api.publishing.PublishingOptions;
 import org.eclipse.osee.define.api.publishing.TemplatePublishingData;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightResult;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
-import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
+import org.eclipse.osee.define.operations.publishing.datarights.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -69,7 +70,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
@@ -490,7 +490,7 @@ public class MSWordTemplatePublisher {
       @SuppressWarnings("unchecked")
       var allArtifactIds = (List<ArtifactId>) (Object) this.getArtifactsAndDescendants(artifacts);
 
-      DataRightsOperationsImpl dataRightsOps = new DataRightsOperationsImpl(this.orcsApi);
+      DataRightsOperationsImpl dataRightsOps = DataRightsOperationsImpl.create(this.orcsApi);
 
       this.response =
          dataRightsOps.getDataRights(allArtifactIds, this.publishingOptions.branch, this.overrideClassification);

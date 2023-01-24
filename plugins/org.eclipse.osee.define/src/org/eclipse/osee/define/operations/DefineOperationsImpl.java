@@ -15,19 +15,19 @@ package org.eclipse.osee.define.operations;
 
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.define.api.DataRightsOperations;
 import org.eclipse.osee.define.api.DefineOperations;
 import org.eclipse.osee.define.api.GitOperations;
 import org.eclipse.osee.define.api.ImportOperations;
 import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.define.api.publishing.PublishingOperations;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.api.synchronization.SynchronizationOperations;
 import org.eclipse.osee.define.operations.publishing.PublishingOperationsImpl;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publishing.datarights.DataRightsOperationsImpl;
 import org.eclipse.osee.define.operations.publishing.templatemanager.TemplateManagerOperationsImpl;
 import org.eclipse.osee.define.operations.synchronization.SynchronizationOperationsImpl;
-import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.GitOperationsImpl;
 import org.eclipse.osee.define.rest.ImportOperationsImpl;
 import org.eclipse.osee.define.rest.TraceabilityOperationsImpl;
@@ -79,7 +79,7 @@ public class DefineOperationsImpl implements DefineOperations {
       PublishingPermissions.create(this.orcsApi);
 
       //@formatter:off
-      this.dataRightsOperations      = new DataRightsOperationsImpl(this.orcsApi);
+      this.dataRightsOperations      = DataRightsOperationsImpl.create(this.orcsApi);
       this.gitOperations             = new GitOperationsImpl(this.orcsApi, this.orcsApi.getSystemProperties());
       this.traceabilityOperations    = new TraceabilityOperationsImpl(this.orcsApi, this.gitOperations);
       this.importOperations          = new ImportOperationsImpl(this.orcsApi, this.activityLog);

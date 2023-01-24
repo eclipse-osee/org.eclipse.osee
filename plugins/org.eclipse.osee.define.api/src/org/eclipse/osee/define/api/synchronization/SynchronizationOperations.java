@@ -16,7 +16,7 @@ package org.eclipse.osee.define.api.synchronization;
 import java.io.InputStream;
 
 /**
- * This interface defiens the methods for importing and exporting synchronization artifacts.
+ * This interface defines the methods for importing and exporting synchronization artifacts.
  *
  * @author Loren K. Ashley
  */

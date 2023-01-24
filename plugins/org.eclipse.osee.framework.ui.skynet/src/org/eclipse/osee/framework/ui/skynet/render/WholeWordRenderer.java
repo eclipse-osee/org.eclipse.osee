@@ -33,13 +33,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.define.api.publishing.datarights.DataRightContentBuilder;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.PageOrientation;
@@ -163,10 +163,12 @@ public class WholeWordRenderer extends WordRenderer {
       String toReturn = content;
       PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
 
-      DataRightResult dataRights = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
+      var dataRightAnchorsResult = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
          artifact.getBranch(), classification, Collections.singletonList(ArtifactId.create(artifact)));
 
-      String footer = dataRights.getContent(artifact, orientation);
+      var dataRightContentBuilder = new DataRightContentBuilder(dataRightAnchorsResult);
+
+      String footer = dataRightContentBuilder.getContent(artifact, orientation);
 
       Matcher startFtr = START_PATTERN.matcher(footer);
       Matcher endFtr = END_PATTERN.matcher(footer);

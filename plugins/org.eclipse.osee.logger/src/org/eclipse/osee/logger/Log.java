@@ -24,11 +24,15 @@ public interface Log {
 
    void trace(Throwable th, String format, Object... args);
 
+   void traceNoFormat(Throwable throwable, CharSequence message);
+
    boolean isDebugEnabled();
 
    void debug(String format, Object... args);
 
    void debug(Throwable th, String format, Object... args);
+
+   void debugNoFormat(Throwable throwable, CharSequence message);
 
    boolean isInfoEnabled();
 
@@ -36,15 +40,21 @@ public interface Log {
 
    void info(Throwable th, String format, Object... args);
 
+   void infoNoFormat(Throwable throwable, CharSequence message);
+
    boolean isWarnEnabled();
 
    void warn(String format, Object... args);
 
    void warn(Throwable th, String format, Object... args);
 
+   void warnNoFormat(Throwable throwable, CharSequence message);
+
    boolean isErrorEnabled();
 
    void error(String format, Object... args);
 
    void error(Throwable th, String format, Object... args);
+
+   void errorNoFormat(Throwable throwable, CharSequence message);
 }

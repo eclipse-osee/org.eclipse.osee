@@ -19,8 +19,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.publishing.PublishingOptions;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.WordMLWriter;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -80,28 +78,6 @@ public class MSWordPreviewPublisher extends MSWordTemplatePublisher {
 
       return super.checkIncluded(artifactReadable) && !emptyFolders.contains(artifactReadable);
 
-   }
-
-   /**
-    * The super class footer is an empty string. This creates a footer with the appropriate data rights message for the
-    * artifact.
-    */
-
-   @Override
-   protected String getArtifactFooter(ArtifactReadable artifactReadable) {
-      //@formatter:off
-      return
-         this.response.getContent
-            (
-               artifactReadable,
-               PageOrientation.fromString
-                  (
-                     artifactReadable.isAttributeTypeValid( CoreAttributeTypes.PageOrientation )
-                        ? artifactReadable.getSoleAttributeValue( CoreAttributeTypes.PageOrientation, "Portrait" )
-                        : "Portrait"
-                  )
-            );
-      //@formatter:on
    }
 
 }

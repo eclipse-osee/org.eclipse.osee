@@ -279,8 +279,8 @@ public class PublishingTemplate implements ToMessage {
          throw new IllegalStateException(
             "PublishingTemplate::setIdentifier, member \"identifier\" has already been set.");
       }
-      this.identifier =
-         Objects.requireNonNull(identifier, "PublishingTemplate::new, parameter \"identifier\" cannot be null.");
+      this.identifier = Objects.requireNonNull(identifier,
+         "PublishingTemplate::setIdentifier, parameter \"identifier\" cannot be null.");
    }
 
    /**
@@ -295,7 +295,7 @@ public class PublishingTemplate implements ToMessage {
       if (Objects.nonNull(this.name)) {
          throw new IllegalStateException("PublishingTemplate::setName, member \"name\" has already been set.");
       }
-      this.name = Objects.requireNonNull(name, "PublishingTemplate::new, parameter \"name\" cannot be null.");
+      this.name = Objects.requireNonNull(name, "PublishingTemplate::setName, parameter \"name\" cannot be null.");
    }
 
    /**
@@ -312,7 +312,7 @@ public class PublishingTemplate implements ToMessage {
             "PublishingTemplate::setRendererOptions, member \"rendererOptions\" has already been set.");
       }
       this.rendererOptions = Objects.requireNonNull(rendererOptions,
-         "PublishingTemplate::new, parameter \"rendererOptions\" cannot be null.");
+         "PublishingTemplate::setRendererOptions, parameter \"rendererOptions\" cannot be null.");
    }
 
    /**
@@ -327,7 +327,7 @@ public class PublishingTemplate implements ToMessage {
       if (Objects.nonNull(this.style)) {
          throw new IllegalStateException("PublishingTemplate::setStyle, member \"style\" has already been set.");
       }
-      this.style = Objects.requireNonNull(style, "PublishingTemplate::new, parameter \"style\" cannot be null.");
+      this.style = Objects.requireNonNull(style, "PublishingTemplate::setStyle, parameter \"style\" cannot be null.");
    }
 
    /**
@@ -344,7 +344,7 @@ public class PublishingTemplate implements ToMessage {
             "PublishingTemplate::setTemplateContent, member \"templateContent\" has already been set.");
       }
       this.templateContent = Objects.requireNonNull(templateContent,
-         "PublishingTemplate::new, parameter \"templateContent\" cannot be null.");
+         "PublishingTemplate::setTemplateContent, parameter \"templateContent\" cannot be null.");
    }
 
    /**
@@ -378,7 +378,7 @@ public class PublishingTemplate implements ToMessage {
 
    @Override
    public String toString() {
-      return this.toMessage(0, (Message) null).toString();
+      return this.toMessage(0, null).toString();
    }
 }
 

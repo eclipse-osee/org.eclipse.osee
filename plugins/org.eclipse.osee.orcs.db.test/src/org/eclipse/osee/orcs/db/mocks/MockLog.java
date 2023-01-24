@@ -36,6 +36,11 @@ public class MockLog implements Log {
    }
 
    @Override
+   public void traceNoFormat(Throwable throwable, CharSequence message) {
+      commonOut(throwable, message);
+   }
+
+   @Override
    public boolean isDebugEnabled() {
       return true;
    }
@@ -48,6 +53,11 @@ public class MockLog implements Log {
    @Override
    public void debug(Throwable th, String format, Object... args) {
       commonOut(th, format, args);
+   }
+
+   @Override
+   public void debugNoFormat(Throwable throwable, CharSequence message) {
+      commonOut(throwable, message);
    }
 
    @Override
@@ -66,6 +76,11 @@ public class MockLog implements Log {
    }
 
    @Override
+   public void infoNoFormat(Throwable throwable, CharSequence message) {
+      commonOut(throwable, message);
+   }
+
+   @Override
    public boolean isWarnEnabled() {
       return true;
    }
@@ -78,6 +93,11 @@ public class MockLog implements Log {
    @Override
    public void warn(Throwable th, String format, Object... args) {
       commonOut(th, format, args);
+   }
+
+   @Override
+   public void warnNoFormat(Throwable throwable, CharSequence message) {
+      commonOut(throwable, message);
    }
 
    @Override
@@ -95,6 +115,11 @@ public class MockLog implements Log {
       commonOut(th, format, args);
    }
 
+   @Override
+   public void errorNoFormat(Throwable throwable, CharSequence message) {
+      commonOut(throwable, message);
+   }
+
    private void commonOut(String format, Object... args) {
       System.out.printf(format, args);
       System.out.println();
@@ -103,6 +128,11 @@ public class MockLog implements Log {
    private void commonOut(Throwable th, String format, Object... args) {
       commonOut(format, args);
       th.printStackTrace();
+   }
+
+   private void commonOut(Throwable throwable, CharSequence message) {
+      System.out.println(message);
+      throwable.printStackTrace();
    }
 
 }

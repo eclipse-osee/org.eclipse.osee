@@ -279,7 +279,7 @@ public class MetadataOptions implements ToMessage {
    }
 
    /**
-    * Sets the pseduo attribute type. Used for deserialization.
+    * Sets the pseudo attribute type. Used for deserialization.
     *
     * @param type the pseudo attribute type.
     * @throws NullPointerException when the parameter <code>label</code> is <code>null</code>.

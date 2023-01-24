@@ -12,8 +12,8 @@
  **********************************************************************/
 
 /**
- * This is a private package of the <code>org.eclipse.osee.define.rest</code> OSGi bundle which implements the
- * "synchronization" REST API end point for the {@link DefineApplication} JAX-RS {@link javax.ws.rs.core.Application}.
+ * This is a private package of the <code>org.eclipse.osee.define</code> OSGi bundle which implements the
+ * "synchronization" operations service.
  * <p>
  * The Synchronization Artifact REST API end point is primarily designed to produce ReqIF artifacts. ReqIF is an OMG
  * industry standard for the exchange of requirements data. The package is designed for creating the necessary parts of
