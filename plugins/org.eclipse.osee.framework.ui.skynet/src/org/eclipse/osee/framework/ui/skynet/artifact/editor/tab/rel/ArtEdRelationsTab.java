@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -146,7 +147,9 @@ public class ArtEdRelationsTab extends FormPage implements IRefreshActionHandler
    @Override
    public void refreshActionHandler() {
       artifact.reloadAttributesAndRelations();
-      relationComposite.refresh();
+      if (Widgets.isAccessible(relationComposite)) {
+         relationComposite.refresh();
+      }
    }
 
    @Override
@@ -161,20 +164,22 @@ public class ArtEdRelationsTab extends FormPage implements IRefreshActionHandler
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isHasEvent(artifact)) {
+      if (Widgets.isAccessible(relationComposite) && artifactEvent.isHasEvent(artifact)) {
          relationComposite.refresh();
       }
    }
 
    @Override
    public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
-      if (artifactTopicEvent.isHasEvent(artifact)) {
+      if (Widgets.isAccessible(relationComposite) && artifactTopicEvent.isHasEvent(artifact)) {
          relationComposite.refresh();
       }
    }
 
    public void refresh() {
-      relationComposite.refresh();
+      if (Widgets.isAccessible(relationComposite)) {
+         relationComposite.refresh();
+      }
    }
 
 }
