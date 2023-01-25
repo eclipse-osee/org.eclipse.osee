@@ -1,3 +1,0 @@
-"Eclipse IDE for Java and Report Developers" is available from http://www.eclipse.org/downloads/
-
-

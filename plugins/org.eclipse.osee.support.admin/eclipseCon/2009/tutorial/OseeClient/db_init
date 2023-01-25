@@ -1,1 +1,0 @@
-eclipsec -application org.eclipse.osee.framework.database.configClient -vmargs -Xmx512m -Dosee.log.default=INFO -Dosee.application.server=http://localhost:8089 -Dosee.authentication.protocol=trustAll -Dosee.prompt.on.db.init=false -Dosee.choice.on.db.init="OSEE Demo Database"

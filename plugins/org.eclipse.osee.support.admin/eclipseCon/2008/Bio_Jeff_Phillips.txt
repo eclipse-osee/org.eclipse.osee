@@ -1,1 +1,0 @@
-Jeff Phillips is a software engineer at Boeing working on the OSEE project.  He contributed as an architect and developer in the creation of the OSEE Application Framework.  His recent efforts included working on Define, an Eclipse open source requirements management solution.  He earned a Bachelor of Science in Computer Science from Arizona State University.

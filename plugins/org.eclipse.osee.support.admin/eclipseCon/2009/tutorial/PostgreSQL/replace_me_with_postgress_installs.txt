@@ -1,2 +1,0 @@
-http://www.postgresql.org/download/
-for linux, mac, windows

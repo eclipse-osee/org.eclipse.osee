@@ -1,5 +1,0 @@
-Windows: 
-eclipse -vmargs -Xmx512m -Dosee.application.server=http://localhost:8089 -Dosee.authentication.protocol=demo
-
-Mac:
-./Eclipse -vmargs -Xmx512m -Dosee.application.server=http://localhost:8089 -Dosee.authentication.protocol=demo -vm /System/Library/Frameworks/JavaVM.framework/Versions/1.6.0

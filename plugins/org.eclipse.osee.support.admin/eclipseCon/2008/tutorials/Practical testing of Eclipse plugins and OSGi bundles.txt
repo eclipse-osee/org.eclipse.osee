@@ -1,6 +1,0 @@
-
-create test bundles as fragments (same class loader, separates code and test)
-Run an application:  [No Application]
-Use test suite (helps with command line test running)
-in the test launch: clear the workspace and clear configuration area
-use RCP Robot

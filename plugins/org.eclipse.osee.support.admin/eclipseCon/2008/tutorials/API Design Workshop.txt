@@ -1,5 +1,0 @@
-Read through the presentation slides at http://www.eclipsecon.org/2008/?page=sub/&id=65
-very good slides (look at the slides on listeners)
-
-if you care about compatibility, do not have subclasses extend interfaces rather use abstract classes
-this means extension points should require abstract classes and not interfaces
