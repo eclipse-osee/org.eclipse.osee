@@ -145,7 +145,7 @@ public final class FrameworkEventUtil {
    public static RemoteArtifactTopicEvent getRemotePersistTopicEvent(ArtifactTopicEvent artifactTopicEvent) {
       RemoteArtifactTopicEvent event = new RemoteArtifactTopicEvent();
       event.setTopic(artifactTopicEvent.getTopic());
-      event.setTransactionId(artifactTopicEvent.getTransaction());
+      event.setTransactionId(artifactTopicEvent.getTransaction().getId());
       event.setNetworkSender(getRemoteNetworkSender(artifactTopicEvent.getNetworkSender()));
       Map<String, String> properties = new HashMap<>();
       properties.put(RemoteArtifactTopicEvent.BRANCH_ID, JsonUtil.toJson(artifactTopicEvent.getBranch()));

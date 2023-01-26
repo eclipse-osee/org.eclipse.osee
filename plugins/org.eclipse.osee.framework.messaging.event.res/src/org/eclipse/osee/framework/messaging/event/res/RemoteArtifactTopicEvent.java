@@ -19,14 +19,13 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 
 /**
  * @author Hugo Trejo, David Miller, Torin Grenda
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RemoteArtifactTopicEvent", propOrder = {"topic", "properties", "networkSender"})
+@XmlType(name = "RemoteArtifactTopicEvent", propOrder = {"topic", "properties", "networkSender", "transactionId"})
 public class RemoteArtifactTopicEvent extends RemoteEvent {
    public static final String BRANCH_ID = "branch";
    public static final String ARTIFACTS = "artifacts";
@@ -39,7 +38,7 @@ public class RemoteArtifactTopicEvent extends RemoteEvent {
    protected Map<String, String> properties = new HashMap<>();
    @XmlElement(required = true)
    protected RemoteNetworkSender1 networkSender;
-   protected TransactionId transactionId;
+   protected Long transactionId;
 
    @Override
    public RemoteNetworkSender1 getNetworkSender() {
@@ -50,11 +49,11 @@ public class RemoteArtifactTopicEvent extends RemoteEvent {
       this.networkSender = value;
    }
 
-   public TransactionId getTransactionId() {
+   public Long getTransactionId() {
       return transactionId;
    }
 
-   public void setTransactionId(TransactionId transactionId) {
+   public void setTransactionId(Long transactionId) {
       this.transactionId = transactionId;
    }
 

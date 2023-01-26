@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.messaging.event.res.internal;
 
 import org.eclipse.osee.framework.messaging.MessageID;
+import org.eclipse.osee.framework.messaging.event.res.RemoteArtifactTopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
@@ -29,7 +30,8 @@ public enum ResMessages implements MessageID {
    RemoteBroadcastEvent1(true, "Aylfa1y3ZBSIGbVU3JgA", "topic:org.eclipse.osee.coverage.msgs.RemoteBroadcastEvent1", RemoteBroadcastEvent1.class, false),
    RemotePersistEvent1(true, "AISIbRj0KGBv62x2pMAA", "topic:org.eclipse.osee.coverage.msgs.RemotePersistEvent1", RemotePersistEvent1.class, false),
    RemoteTopicEvent1(true, "ARqNVjHQVAGmszjGOhwA", "topic:org.eclipse.osee.coverage.msgs.RemoteTopicEvent1", RemoteTopicEvent1.class, false),
-   RemoteTransactionEvent1(true, "AAn_QHkqUhz3vJKwp8QA", "topic:org.eclipse.osee.coverage.msgs.RemoteTransactionEvent1", RemoteTransactionEvent1.class, false);
+   RemoteTransactionEvent1(true, "AAn_QHkqUhz3vJKwp8QA", "topic:org.eclipse.osee.coverage.msgs.RemoteTransactionEvent1", RemoteTransactionEvent1.class, false),
+   RemoteTopicArtifactEvent(true, "ArqnvjHQVAGmszzgohwA", "topic:artifact.topic.event", RemoteArtifactTopicEvent.class, false);
 
    private String name;
    private Class<? extends RemoteEvent> clazz;

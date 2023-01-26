@@ -46,6 +46,8 @@ public class OseeCoreModelEventServiceProxy implements IOseeCoreModelEventServic
       eventMessageConfig.put(ResMessages.RemotePersistEvent1, Boolean.FALSE);
       eventMessageConfig.put(ResMessages.RemoteTopicEvent1, Boolean.FALSE);
       eventMessageConfig.put(ResMessages.RemoteTransactionEvent1, Boolean.TRUE);
+      eventMessageConfig.put(ResMessages.RemoteTopicArtifactEvent, Boolean.TRUE);
+      // the boolean value in the eventMessageConfig tells whether it is verbose - i.e. it logs when it is received
 
       proxiedService = new OseeCoreModelEventServiceImpl(messageService, eventMessageConfig);
    }
