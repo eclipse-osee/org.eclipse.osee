@@ -190,7 +190,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    public void performLoad() {
-      formPage = new ArtifactFormPage(this, "ArtifactFormPage", null);
+      formPage = new ArtifactFormPage(this, "ArtifactFormPage", "Attributes");
       try {
          addPage(formPage);
          setPartName(getEditorInput().getName());
