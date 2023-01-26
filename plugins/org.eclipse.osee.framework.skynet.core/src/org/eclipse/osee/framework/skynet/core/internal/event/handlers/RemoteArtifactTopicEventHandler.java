@@ -61,7 +61,7 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
    public void handle(Transport transport, Sender sender, RemoteArtifactTopicEvent remoteEvent) {
       RemoteArtifactTopicEvent event1 = remoteEvent;
       ArtifactTopicEvent transEvent = FrameworkEventUtil.getPersistTopicEvent(event1, tokenService);
-      updateArtifacts(sender, transEvent.getArtifacts(), remoteEvent.getTransactionId());
+      updateArtifacts(sender, transEvent.getArtifacts(), TransactionId.valueOf(remoteEvent.getTransactionId()));
       updateRelations(sender, transEvent.getRelations());
       transport.send(sender, transEvent);
    }
