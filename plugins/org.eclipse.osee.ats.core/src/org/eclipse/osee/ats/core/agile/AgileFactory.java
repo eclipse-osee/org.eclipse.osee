@@ -268,7 +268,9 @@ public class AgileFactory {
       created.setId(agileTeam.getId());
       created.setActive(agileTeam.isActive());
       created.getAtsTeamIds().addAll(agileTeam.getAtsTeamIds());
-      created.setBacklogId(agileTeam.getBacklogId());
+      if (agileTeam.getBacklogId() != null) {
+         created.setBacklogId(ArtifactId.valueOf(agileTeam.getBacklogId().getId()));
+      }
       created.setSprintId(agileTeam.getSprintId());
       created.setDescription(agileTeam.getDescription());
       return created;

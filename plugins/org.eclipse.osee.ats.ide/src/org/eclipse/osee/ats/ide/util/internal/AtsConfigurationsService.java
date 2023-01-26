@@ -54,6 +54,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    private void invalidate() {
+      atsConfigurations = null;
       configurationsCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 30, TimeUnit.MINUTES);
    }
 

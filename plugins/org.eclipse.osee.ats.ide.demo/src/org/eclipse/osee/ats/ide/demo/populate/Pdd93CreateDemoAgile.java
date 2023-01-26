@@ -44,8 +44,8 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -283,7 +283,7 @@ public class Pdd93CreateDemoAgile {
          AtsAttributeTypes.Points.getName());
       changes.execute();
 
-      // Assigne ATS Team to Agile Team
+      // Assign ATS Team to Agile Team
       Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(newTeam.getId());
       for (ArtifactToken tok : Arrays.asList(DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW,
          DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_SW_Design,
