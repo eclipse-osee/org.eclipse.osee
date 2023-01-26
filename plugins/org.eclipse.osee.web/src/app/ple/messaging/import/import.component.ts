@@ -14,12 +14,21 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { iif, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { from, iif, of, OperatorFunction } from 'rxjs';
+import { concatMap, filter, map, reduce, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
 import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
 import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
+import { HeaderKeysEnum } from '../shared/services/ui/header.service';
+import { elementImportToken } from '../shared/types/element';
+import { enumeration } from '../shared/types/enum';
+import { ImportEnumSet, ImportSummary } from '../shared/types/Import';
+import { messageToken } from '../shared/types/messages';
+import { platformTypeImportToken } from '../shared/types/platformType';
+import { subMessage } from '../shared/types/sub-messages';
+import { ImportTableComponent } from './lib/components/import-table/import-table.component';
 import { ImportService } from './lib/services/import.service';
 
 @Component({
@@ -35,6 +44,8 @@ import { ImportService } from './lib/services/import.service';
 		MatSelectModule,
 		ActionStateButtonModule,
 		BranchPickerModule,
+		MatTableModule,
+		ImportTableComponent,
 	],
 })
 export class ImportComponent implements OnInit, OnDestroy {
@@ -96,6 +107,148 @@ export class ImportComponent implements OnInit, OnDestroy {
 	performImport() {
 		this.importService.performImport();
 	}
+
+	enumSets = this.importSummary.pipe(
+		filter((v) => v !== undefined) as OperatorFunction<
+			ImportSummary | undefined,
+			ImportSummary
+		>,
+		switchMap((summary) =>
+			of(summary?.enumSetEnumRelations).pipe(
+				switchMap((relations) =>
+					of(summary?.enums).pipe(
+						concatMap((enums) =>
+							from(summary?.enumSets).pipe(
+								concatMap((enumSet) =>
+									of(enumSet.id).pipe(
+										filter(
+											(enumSetId) =>
+												enumSetId !== undefined
+										) as OperatorFunction<
+											string | undefined,
+											string
+										>,
+										concatMap((enumSetId) =>
+											of(relations[enumSetId]).pipe(
+												filter(
+													(v) => v !== undefined
+												) as OperatorFunction<
+													string[] | undefined,
+													string[]
+												>,
+												concatMap((enumRels) =>
+													from(enumRels).pipe(
+														map((rel) =>
+															enums.find(
+																(e) =>
+																	e.id === rel
+															)
+														),
+														filter(
+															(v) =>
+																v !== undefined
+														) as OperatorFunction<
+															| enumeration
+															| undefined,
+															enumeration
+														>,
+														map(
+															(enumeration) =>
+																enumeration.ordinal +
+																' = ' +
+																enumeration.name
+														)
+													)
+												),
+												reduce(
+													(acc, curr) => [
+														...acc,
+														curr,
+													],
+													[] as string[]
+												),
+												concatMap((enumerations) =>
+													of({
+														name: enumSet.name,
+														enums: enumerations,
+														applicability:
+															enumSet.applicability,
+													} as ImportEnumSet)
+												)
+											)
+										)
+									)
+								)
+							)
+						),
+						reduce(
+							(acc, curr) => [...acc, curr],
+							[] as ImportEnumSet[]
+						)
+					)
+				)
+			)
+		)
+	);
+
+	headerKeys = HeaderKeysEnum;
+
+	messageHeaders: (keyof messageToken)[] = [
+		'name',
+		'description',
+		'interfaceMessageRate',
+		'interfaceMessagePeriodicity',
+		'interfaceMessageWriteAccess',
+		'interfaceMessageType',
+		'interfaceMessageNumber',
+		'applicability',
+	];
+
+	submessageHeaders: (keyof subMessage)[] = [
+		'name',
+		'description',
+		'interfaceSubMessageNumber',
+		'applicability',
+	];
+
+	structureHeaders: string[] = [
+		'name',
+		'description',
+		'interfaceMaxSimultaneity',
+		'interfaceMinSimultaneity',
+		'interfaceTaskFileType',
+		'interfaceStructureCategory',
+		'applicability',
+	];
+
+	elementHeaders: (keyof elementImportToken)[] = [
+		'name',
+		'description',
+		'interfaceElementAlterable',
+		'interfaceElementIndexStart',
+		'interfaceElementIndexEnd',
+		'notes',
+		'enumLiteral',
+		'interfaceDefaultValue',
+	];
+
+	platformTypeHeaders: (keyof platformTypeImportToken)[] = [
+		'name',
+		'description',
+		'interfaceLogicalType',
+		'interfacePlatformTypeBitSize',
+		'interfacePlatformTypeMinval',
+		'interfacePlatformTypeMaxval',
+		'interfacePlatformTypeValidRangeDescription',
+		'interfacePlatformTypeUnits',
+		'interfaceDefaultValue',
+	];
+
+	enumSetHeaders: (keyof ImportEnumSet)[] = [
+		'name',
+		'enums',
+		'applicability',
+	];
 }
 
 export default ImportComponent;

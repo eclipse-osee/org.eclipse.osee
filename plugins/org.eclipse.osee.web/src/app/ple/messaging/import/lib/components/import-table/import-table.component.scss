@@ -1,0 +1,35 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+.show-table {
+	display: table-row;
+}
+
+.hide-table {
+	display: none;
+}
+
+.table-height {
+	width: 100%;
+	max-height: 40vh;
+	overflow: scroll;
+
+	table {
+		width: 100%;
+	}
+}
+
+.table-title-row {
+	&:hover {
+		cursor: pointer;
+	}
+}
