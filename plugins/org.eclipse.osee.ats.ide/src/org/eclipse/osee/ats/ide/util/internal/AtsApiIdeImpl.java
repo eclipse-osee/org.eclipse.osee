@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -129,6 +130,11 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {
       this.attributeResolverService = attributeResolverService;
+   }
+
+   @Override
+   public AtsConfigurations clearCachesServerWithPend() {
+      return getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
    }
 
    @Override

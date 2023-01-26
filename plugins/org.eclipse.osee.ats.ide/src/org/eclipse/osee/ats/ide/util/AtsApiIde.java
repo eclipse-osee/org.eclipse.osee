@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.util;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
@@ -40,5 +41,7 @@ public interface AtsApiIde extends AtsApi {
    IAtsWorkItemServiceIde getWorkItemServiceIde();
 
    AtsBranchServiceIde getBranchServiceIde();
+
+   AtsConfigurations clearCachesServerWithPend();
 
 }

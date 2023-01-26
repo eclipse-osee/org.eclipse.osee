@@ -81,6 +81,11 @@ public interface AtsConfigEndpointApi {
    public String requestCacheReload();
 
    @GET
+   @Path("clearcachewithpend")
+   @Produces(MediaType.APPLICATION_JSON)
+   public AtsConfigurations clearCachesWithPend();
+
+   @GET
    @Path("ui/NewAtsBranchConfig")
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getNewSource();

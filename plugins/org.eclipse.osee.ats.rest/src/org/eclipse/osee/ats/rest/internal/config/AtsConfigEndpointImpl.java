@@ -79,6 +79,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
+   public AtsConfigurations clearCachesWithPend() {
+      return atsApi.getConfigService().getConfigurationsWithPend();
+   }
+
+   @Override
    public String requestCacheReload() {
       executorAdmin.submit("REST requested ATS configuration cache reload", getConfigService);
       return "ATS configuration cache reload request submitted.";
