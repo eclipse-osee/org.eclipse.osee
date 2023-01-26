@@ -77,7 +77,9 @@
 									<div class="import-summary">
 										<h3>
 											The following will be imported from
-											{{ selectedImportFileName | async }}
+											<span class="font-bold">{{
+												selectedImportFileName | async
+											}}</span>
 										</h3>
 										<ul>
 											<ng-container
@@ -110,83 +112,103 @@
 													}}
 												</li>
 											</ng-container>
-											<li
-												*ngIf="
-													_importSummary.messages
-														.length > 0
-												">
-												Messages:
-												{{
-													_importSummary.messages
-														.length
-												}}
-											</li>
-											<li
-												*ngIf="
-													_importSummary.subMessages
-														.length > 0
-												">
-												SubMessages:
-												{{
-													_importSummary.subMessages
-														.length
-												}}
-											</li>
-											<li
-												*ngIf="
-													_importSummary.structures
-														.length > 0
-												">
-												Structures:
-												{{
-													_importSummary.structures
-														.length
-												}}
-											</li>
-											<li
-												*ngIf="
-													_importSummary.elements
-														.length > 0
-												">
-												Elements:
-												{{
-													_importSummary.elements
-														.length
-												}}
-											</li>
-											<li
-												*ngIf="
-													_importSummary.platformTypes
-														.length > 0
-												">
-												Platform Types:
-												{{
-													_importSummary.platformTypes
-														.length
-												}}
-											</li>
-											<li
-												*ngIf="
-													_importSummary.enumSets
-														.length > 0
-												">
-												Enum Sets:
-												{{
-													_importSummary.enumSets
-														.length
-												}}
-											</li>
-											<li
-												*ngIf="
-													_importSummary.enums
-														.length > 0
-												">
-												Enums:
-												{{
-													_importSummary.enums.length
-												}}
-											</li>
 										</ul>
+										<ng-container
+											*ngIf="
+												_importSummary.messages.length >
+												0
+											">
+											<osee-import-table
+												[data]="_importSummary.messages"
+												[headers]="messageHeaders"
+												[headerKey]="
+													headerKeys.IMPORT_MESSAGE
+												"
+												[tableTitle]="
+													'Messages'
+												"></osee-import-table>
+										</ng-container>
+										<ng-container
+											*ngIf="
+												_importSummary.subMessages
+													.length > 0
+											">
+											<osee-import-table
+												[data]="
+													_importSummary.subMessages
+												"
+												[headers]="submessageHeaders"
+												[headerKey]="
+													headerKeys.SUBMESSAGE
+												"
+												[tableTitle]="
+													'SubMessages'
+												"></osee-import-table>
+										</ng-container>
+										<ng-container
+											*ngIf="
+												_importSummary.structures
+													.length > 0
+											">
+											<osee-import-table
+												[data]="
+													_importSummary.structures
+												"
+												[headers]="structureHeaders"
+												[headerKey]="
+													headerKeys.STRUCTURE
+												"
+												[tableTitle]="
+													'Structures'
+												"></osee-import-table>
+										</ng-container>
+										<ng-container
+											*ngIf="
+												_importSummary.elements.length >
+												0
+											">
+											<osee-import-table
+												[data]="_importSummary.elements"
+												[headers]="elementHeaders"
+												[headerKey]="headerKeys.ELEMENT"
+												[tableTitle]="
+													'Elements'
+												"></osee-import-table>
+										</ng-container>
+										<ng-container
+											*ngIf="
+												_importSummary.platformTypes
+													.length > 0
+											">
+											<osee-import-table
+												[data]="
+													_importSummary.platformTypes
+												"
+												[headers]="platformTypeHeaders"
+												[headerKey]="
+													headerKeys.IMPORT_PLATFORM_TYPE
+												"
+												[tableTitle]="
+													'Platform Types'
+												"></osee-import-table>
+										</ng-container>
+										<ng-container
+											*ngIf="
+												_importSummary.enumSets.length >
+												0
+											">
+											<osee-import-table
+												[data]="
+													(enumSets | async) || []
+												"
+												[headers]="enumSetHeaders"
+												[headerKey]="
+													headerKeys.IMPORT_ENUM_SET
+												"
+												[tableTitle]="
+													'Enum Sets'
+												"></osee-import-table>
+										</ng-container>
 									</div>
 									<button
 										mat-raised-button

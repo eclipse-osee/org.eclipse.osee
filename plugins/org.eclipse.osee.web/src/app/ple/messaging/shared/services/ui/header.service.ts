@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, iif, of } from 'rxjs';
+import { BehaviorSubject, from, iif, Observable, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
 import { element } from '../../types/element';
 import { structure } from '../../types/structure';
-import { message } from '../../types/messages';
+import { message, messageToken } from '../../types/messages';
 import { subMessage } from '../../types/sub-messages';
 import {
 	branchSummaryHeaderDetail,
@@ -46,18 +46,75 @@ import {
 } from '../../types/DifferenceReport.d';
 import { transportType } from '../../types/transportType';
 import { changeReportRow } from 'src/app/types/change-report/change-report';
+import { platformTypeImportToken } from '../../types/platformType';
+import { ImportEnumSet } from '../../types/Import';
 
-export const enum HeaderKeys {
-	'changeReportRow',
-	'message',
-	'structure',
-	'subMessage',
-}
+export const HeaderKeysEnum = {
+	NONE: '',
+	CHANGE_REPORT_ROW: 'changeReportRow',
+	ELEMENT: 'element',
+	IMPORT_ENUM_SET: 'importEnumSet',
+	IMPORT_MESSAGE: 'importMessage',
+	IMPORT_PLATFORM_TYPE: 'importPlatformType',
+	MESSAGE: 'message',
+	STRUCTURE: 'structure',
+	SUBMESSAGE: 'submessage',
+} as const;
+
+export type HeaderKeys = (typeof HeaderKeysEnum)[keyof typeof HeaderKeysEnum];
 
 @Injectable({
 	providedIn: 'root',
 })
 export class HeaderService {
+	getTableHeaderByName<
+		T extends changeReportRow &
+			element &
+			ImportEnumSet &
+			messageToken &
+			platformTypeImportToken &
+			structure &
+			subMessage
+	>(
+		value: keyof T,
+		headerKey: HeaderKeys
+	): Observable<headerDetail<T> | undefined> {
+		switch (headerKey) {
+			case HeaderKeysEnum.CHANGE_REPORT_ROW:
+				return of(
+					this._changeReportRowHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.ELEMENT:
+				return of(
+					this._elementRowHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.IMPORT_ENUM_SET:
+				return of(
+					this._importEnumSetHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.IMPORT_MESSAGE:
+				return of(
+					this._importMessageHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.IMPORT_PLATFORM_TYPE:
+				return of(
+					this._importPlatformTypeHeaders.find(
+						(h) => h.header === value
+					)
+				);
+			case HeaderKeysEnum.STRUCTURE:
+				return of(
+					this._structureHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.SUBMESSAGE:
+				return of(
+					this._subMessageHeaders.find((h) => h.header === value)
+				);
+			default:
+				return of();
+		}
+	}
+
 	private _allElements = new BehaviorSubject<elementHeaderDetail[]>([
 		{
 			header: 'name',
@@ -620,6 +677,106 @@ export class HeaderService {
 		},
 	]);
 
+	private _elementRowHeaders: headerDetail<element>[] = [
+		{
+			header: 'name',
+			description: 'Name of element',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'platformTypeName2',
+			description: 'Platform Type of Element',
+			humanReadable: 'Type',
+		},
+		{
+			header: 'interfaceElementIndexStart',
+			description: 'Starting Index of Element Array',
+			humanReadable: 'Start Index',
+		},
+		{
+			header: 'interfaceElementIndexEnd',
+			description: 'End Index of Element Array',
+			humanReadable: 'End Index',
+		},
+		{
+			header: 'logicalType',
+			description: 'Primitive Type of Element',
+			humanReadable: 'Logical Type',
+		},
+		{
+			header: 'interfaceDefaultValue',
+			description: 'Default value of Element or Element Array',
+			humanReadable: 'Default',
+		},
+		{
+			header: 'interfacePlatformTypeMinval',
+			description: 'Minimum Value of Element',
+			humanReadable: 'Min',
+		},
+		{
+			header: 'interfacePlatformTypeMaxval',
+			description: 'Maximum Value of Element',
+			humanReadable: 'Max',
+		},
+		{
+			header: 'interfacePlatformTypeDescription',
+			description: 'Description of the Type',
+			humanReadable: 'Type Description',
+		},
+		{
+			header: 'beginWord',
+			description: '(Computed) Beginning Word of Element/Element Array',
+			humanReadable: 'Begin Word',
+		},
+		{
+			header: 'endWord',
+			description: '(Computed) Ending Word of Element/Element Array',
+			humanReadable: 'End Word',
+		},
+		{
+			header: 'beginByte',
+			description: '(Computed) Beginning Byte of Element/Element Array',
+			humanReadable: 'Begin Byte',
+		},
+		{
+			header: 'endByte',
+			description: '(Computed) Ending Byte of Element/Element Array',
+			humanReadable: 'End Byte',
+		},
+		{
+			header: 'interfaceElementAlterable',
+			description: 'Whether or not a given Element is alterable',
+			humanReadable: 'Alterable',
+		},
+		{
+			header: 'description',
+			description: 'Description of a given element',
+			humanReadable: 'Description',
+		},
+		{
+			header: 'notes',
+			description:
+				'Notes corresponding to a given element, for example, specific enum literal descriptions for a given element',
+			humanReadable: 'Notes',
+		},
+		{
+			header: 'applicability',
+			description: 'Applicability of a given element',
+			humanReadable: 'Applicability',
+		},
+		{
+			header: 'units',
+			description:
+				'Units of the platform type associated with the given element',
+			humanReadable: 'Units',
+		},
+		{
+			header: 'enumLiteral',
+			description: 'Enumerated Literals of Element',
+			humanReadable: 'Enumerated Literals',
+		},
+	];
+
 	private _changeReportRowHeaders: headerDetail<changeReportRow>[] = [
 		{
 			header: 'ids',
@@ -655,6 +812,177 @@ export class HeaderService {
 			header: 'wasValue',
 			description: 'Previous value',
 			humanReadable: 'Was Value',
+		},
+	];
+
+	private _importMessageHeaders: headerDetail<messageToken>[] = [
+		{
+			header: 'name',
+			description: 'Name of message',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'description',
+			description: 'Description of message',
+			humanReadable: 'Description',
+		},
+		{
+			header: 'interfaceMessageNumber',
+			description: 'Message Number',
+			humanReadable: 'Message Number',
+		},
+		{
+			header: 'interfaceMessagePeriodicity',
+			description: 'Periodicity of message',
+			humanReadable: 'Periodicity',
+		},
+		{
+			header: 'interfaceMessageRate',
+			description: 'Transmission rate of message',
+			humanReadable: 'TxRate',
+		},
+		{
+			header: 'interfaceMessageWriteAccess',
+			description: 'Write access of message',
+			humanReadable: 'Write Access',
+		},
+		{
+			header: 'interfaceMessageType',
+			description: 'Type of message',
+			humanReadable: 'Type',
+		},
+		{
+			header: 'applicability',
+			description: 'Applicability of message',
+			humanReadable: 'Applicability',
+		},
+	];
+
+	private _subMessageHeaders: headerDetail<subMessage>[] = [
+		{
+			header: 'name',
+			description: 'Name of submessage',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'description',
+			description: 'Description of submessage',
+			humanReadable: 'Description',
+		},
+		{
+			header: 'interfaceSubMessageNumber',
+			description: 'Submessage number',
+			humanReadable: 'SubMessage Number',
+		},
+		{
+			header: 'applicability',
+			description: 'Applicability of submessage',
+			humanReadable: 'Applicability',
+		},
+	];
+
+	private _structureHeaders: headerDetail<structure>[] = [
+		{
+			header: 'name',
+			description: 'Name of structure',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'description',
+			description: 'Description of structure',
+			humanReadable: 'Description',
+		},
+		{
+			header: 'interfaceMinSimultaneity',
+			description: 'Minimum simultaneity of structure',
+			humanReadable: 'Min Simult.',
+		},
+		{
+			header: 'interfaceMaxSimultaneity',
+			description: 'Maximum simultaneity of structure',
+			humanReadable: 'Max Simult.',
+		},
+		{
+			header: 'interfaceTaskFileType',
+			description: 'Task file type of structure',
+			humanReadable: 'Task File Type',
+		},
+		{
+			header: 'interfaceStructureCategory',
+			description: 'Category of structure',
+			humanReadable: 'Category',
+		},
+		{
+			header: 'applicability',
+			description: 'Applicability of the structure',
+			humanReadable: 'Applicability',
+		},
+	];
+
+	private _importPlatformTypeHeaders: headerDetail<platformTypeImportToken>[] =
+		[
+			{
+				header: 'name',
+				description: 'Platform Type name',
+				humanReadable: 'Name',
+			},
+			{
+				header: 'description',
+				description: 'Description of the platform type',
+				humanReadable: 'Description',
+			},
+			{
+				header: 'interfaceDefaultValue',
+				description: 'Default value of the platform type',
+				humanReadable: 'Default Value',
+			},
+			{
+				header: 'interfacePlatformTypeMinval',
+				description: 'Minimum value of the platform type',
+				humanReadable: 'Min. Val',
+			},
+			{
+				header: 'interfacePlatformTypeMaxval',
+				description: 'Maximum value of the platform type',
+				humanReadable: 'Max. Val',
+			},
+			{
+				header: 'interfacePlatformTypeBitSize',
+				description: 'Size of the platform type in bits',
+				humanReadable: 'Size (b)',
+			},
+			{
+				header: 'interfacePlatformTypeUnits',
+				description: 'Platform type units',
+				humanReadable: 'Units',
+			},
+			{
+				header: 'interfacePlatformTypeValidRangeDescription',
+				description: 'Platform type valid range description',
+				humanReadable: 'Valid Range Description',
+			},
+			{
+				header: 'interfaceLogicalType',
+				description: 'Logical type of the platform type',
+				humanReadable: 'Logical Type',
+			},
+		];
+
+	private _importEnumSetHeaders: headerDetail<ImportEnumSet>[] = [
+		{
+			header: 'name',
+			description: 'Enum Set name',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'enums',
+			description: 'Enumerated Literals',
+			humanReadable: 'Enums',
+		},
+		{
+			header: 'applicability',
+			description: 'Enum Set applicability',
+			humanReadable: 'Applicability',
 		},
 	];
 
@@ -927,17 +1255,6 @@ export class HeaderService {
 
 	get AllTransportTypeHeaders() {
 		return this._allTransportTypeHeaders;
-	}
-
-	getTableHeaderByName<T>(value: keyof T, headerKey: HeaderKeys) {
-		switch (headerKey) {
-			case HeaderKeys.changeReportRow:
-				return of(
-					this._changeReportRowHeaders.find((h) => h.header === value)
-				);
-			default:
-				return of();
-		}
 	}
 
 	/**

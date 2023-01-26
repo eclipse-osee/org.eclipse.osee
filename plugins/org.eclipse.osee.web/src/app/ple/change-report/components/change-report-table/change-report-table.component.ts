@@ -22,6 +22,7 @@ import {
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import {
 	HeaderKeys,
+	HeaderKeysEnum,
 	HeaderService,
 } from 'src/app/ple/messaging/shared/services/ui/header.service';
 import { changeReportRow } from 'src/app/types/change-report/change-report';
@@ -60,7 +61,7 @@ export class ChangeReportTableComponent implements OnChanges {
 	getHeaderByName(value: keyof changeReportRow) {
 		return this.headerService.getTableHeaderByName(
 			value,
-			HeaderKeys.changeReportRow
+			HeaderKeysEnum.CHANGE_REPORT_ROW
 		);
 	}
 

@@ -46,3 +46,7 @@ export interface ImportOption {
 	url: string;
 	transportType: string;
 }
+
+export interface ImportEnumSet extends enumSet {
+	enums: string[];
+}
