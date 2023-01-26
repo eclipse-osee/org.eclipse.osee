@@ -60,7 +60,7 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
    private final ArtEdAttrTab fTab;
 
    public ArtEdAttrTab(FormEditor editor, Artifact artifact) {
-      super(editor, ID, "Attributes");
+      super(editor, ID, "Attributes (Adm)");
       this.artifact = artifact;
       fTab = this;
       OseeEventManager.addListener(this);
