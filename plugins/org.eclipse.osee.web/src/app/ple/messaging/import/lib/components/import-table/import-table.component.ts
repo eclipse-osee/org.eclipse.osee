@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import {
 	HeaderKeys,
@@ -18,26 +18,77 @@ import {
 	HeaderService,
 } from 'src/app/ple/messaging/shared/services/ui/header.service';
 import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { applic } from 'src/app/types/applicability/applic';
+import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 
 @Component({
 	selector: 'osee-import-table',
 	standalone: true,
-	imports: [AsyncPipe, NgClass, NgIf, NgFor, MatTableModule],
+	imports: [
+		AsyncPipe,
+		HighlightFilteredTextDirective,
+		NgClass,
+		NgIf,
+		NgFor,
+		MatFormFieldModule,
+		MatInputModule,
+		MatIconModule,
+		MatTableModule,
+	],
 	templateUrl: './import-table.component.html',
 	styleUrls: ['./import-table.component.scss'],
 })
-export class ImportTableComponent<T> {
+export class ImportTableComponent<T extends { [key: string]: any }>
+	implements OnChanges
+{
 	@Input() data: T[] = [];
 	@Input() headers: string[] = [];
 	@Input() headerKey: HeaderKeys = HeaderKeysEnum.NONE;
 	@Input() tableTitle: string = '';
 
+	filteredData: T[] = [];
+	filterText: string = '';
 	showTableContents: boolean = false;
 
 	constructor(private headerService: HeaderService) {}
 
+	ngOnChanges(changes: SimpleChanges) {
+		this.filteredData = this.data;
+	}
+
 	getTableHeaderByName(header: string) {
 		return this.headerService.getTableHeaderByName(header, this.headerKey);
+	}
+
+	applyFilter(event: Event) {
+		const filterValue = (event.target as HTMLInputElement).value;
+		this.filterText = filterValue;
+		if (filterValue === '') {
+			this.filteredData = this.data;
+			return;
+		}
+		this.filteredData = [];
+		this.data.forEach((d) => {
+			this.headers.forEach((header) => {
+				if (header === 'applicability') {
+					if (
+						(d[header] as applic).name
+							.toLowerCase()
+							.includes(filterValue.toLowerCase())
+					) {
+						this.filteredData = [...this.filteredData, d];
+					}
+				} else {
+					const val = '' + d[header];
+					if (val.toLowerCase().includes(filterValue.toLowerCase())) {
+						this.filteredData = [...this.filteredData, d];
+					}
+				}
+			});
+		});
 	}
 
 	toggleTableContents() {

@@ -81,21 +81,21 @@
 												selectedImportFileName | async
 											}}</span>
 										</h3>
-										<ul>
-											<ng-container
-												*ngIf="
-													_importSummary.primaryNode &&
-													_importSummary.secondaryNode
-												">
+										<ng-container
+											*ngIf="
+												_importSummary.primaryNode &&
+												_importSummary.secondaryNode
+											">
+											<ul>
 												<li>
-													Node:
+													Primary Node:
 													{{
 														_importSummary
 															.primaryNode.name
 													}}
 												</li>
 												<li>
-													Node:
+													Secondary Node:
 													{{
 														_importSummary
 															.secondaryNode.name
@@ -111,8 +111,26 @@
 															.secondaryNode.name
 													}}
 												</li>
+											</ul>
+											<ng-container
+												*ngIf="nodes | async as _nodes">
+												<ng-container
+													*ngIf="_nodes.length > 0">
+													<osee-import-table
+														[data]="[
+															_importSummary.primaryNode,
+															_importSummary.secondaryNode
+														]"
+														[headers]="nodeHeaders"
+														[headerKey]="
+															headerKeys.IMPORT_NODE
+														"
+														[tableTitle]="
+															'Nodes'
+														"></osee-import-table>
+												</ng-container>
 											</ng-container>
-										</ul>
+										</ng-container>
 										<ng-container
 											*ngIf="
 												_importSummary.messages.length >

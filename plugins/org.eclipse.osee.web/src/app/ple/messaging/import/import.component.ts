@@ -26,6 +26,7 @@ import { elementImportToken } from '../shared/types/element';
 import { enumeration } from '../shared/types/enum';
 import { ImportEnumSet, ImportSummary } from '../shared/types/Import';
 import { messageToken } from '../shared/types/messages';
+import { nodeToken } from '../shared/types/node';
 import { platformTypeImportToken } from '../shared/types/platformType';
 import { subMessage } from '../shared/types/sub-messages';
 import { ImportTableComponent } from './lib/components/import-table/import-table.component';
@@ -107,6 +108,23 @@ export class ImportComponent implements OnInit, OnDestroy {
 	performImport() {
 		this.importService.performImport();
 	}
+
+	nodes = this.importSummary.pipe(
+		filter((v) => v !== undefined) as OperatorFunction<
+			ImportSummary | undefined,
+			ImportSummary
+		>,
+		switchMap((summary) => {
+			let nodes: nodeToken[] = [];
+			if (summary.createPrimaryNode) {
+				nodes = [summary.primaryNode];
+			}
+			if (summary.createSecondaryNode) {
+				nodes = [...nodes, summary.secondaryNode];
+			}
+			return of(nodes);
+		})
+	);
 
 	enumSets = this.importSummary.pipe(
 		filter((v) => v !== undefined) as OperatorFunction<
@@ -192,6 +210,8 @@ export class ImportComponent implements OnInit, OnDestroy {
 	);
 
 	headerKeys = HeaderKeysEnum;
+
+	nodeHeaders: (keyof nodeToken)[] = ['name', 'description', 'applicability'];
 
 	messageHeaders: (keyof messageToken)[] = [
 		'name',

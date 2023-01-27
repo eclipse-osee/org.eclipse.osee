@@ -10,6 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../../../../modern-ple-theme';
+@use './_theme' as t;
+
+@media (prefers-color-scheme: light) {
+	@include t.theme($theme: modern-ple-theme.$modern-ple-light-theme);
+}
+@media (prefers-color-scheme: dark) {
+	@include t.theme($theme: modern-ple-theme.$modern-ple-dark-theme);
+}
+
 .show-table {
 	display: table-row;
 }
@@ -18,7 +28,20 @@
 	display: none;
 }
 
-.table-height {
+.show-filter {
+	display: block;
+}
+
+.table-label {
+	display: flex;
+	align-items: center;
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.table-container {
 	width: 100%;
 	max-height: 40vh;
 	overflow: scroll;
@@ -28,8 +51,19 @@
 	}
 }
 
-.table-title-row {
-	&:hover {
-		cursor: pointer;
-	}
+.header-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	height: 50px;
+}
+
+.import-table-filter {
+	position: relative;
+}
+
+.import-table-filter-field {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
 }

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MimImportSummary {
+   private boolean createPrimaryNode;
+   private boolean createSecondaryNode;
    private InterfaceNode primaryNode;
    private InterfaceNode secondaryNode;
    private final List<InterfaceMessageToken> messages;
@@ -35,6 +37,8 @@ public class MimImportSummary {
    private final Map<String, List<String>> enumSetEnumRelations;
 
    public MimImportSummary() {
+      createPrimaryNode = false;
+      createSecondaryNode = false;
       messages = new LinkedList<>();
       subMessages = new LinkedList<>();
       structures = new LinkedList<>();
@@ -48,6 +52,22 @@ public class MimImportSummary {
       elementPlatformTypeRelations = new HashMap<>();
       platformTypeEnumSetRelations = new HashMap<>();
       enumSetEnumRelations = new HashMap<>();
+   }
+
+   public boolean isCreatePrimaryNode() {
+      return createPrimaryNode;
+   }
+
+   public void setCreatePrimaryNode(boolean createPrimaryNode) {
+      this.createPrimaryNode = createPrimaryNode;
+   }
+
+   public boolean isCreateSecondaryNode() {
+      return createSecondaryNode;
+   }
+
+   public void setCreateSecondaryNode(boolean createSecondaryNode) {
+      this.createSecondaryNode = createSecondaryNode;
    }
 
    public InterfaceNode getPrimaryNode() {
