@@ -48,6 +48,7 @@ import { transportType } from '../../types/transportType';
 import { changeReportRow } from 'src/app/types/change-report/change-report';
 import { platformTypeImportToken } from '../../types/platformType';
 import { ImportEnumSet } from '../../types/Import';
+import { nodeToken } from '../../types/node';
 
 export const HeaderKeysEnum = {
 	NONE: '',
@@ -55,6 +56,7 @@ export const HeaderKeysEnum = {
 	ELEMENT: 'element',
 	IMPORT_ENUM_SET: 'importEnumSet',
 	IMPORT_MESSAGE: 'importMessage',
+	IMPORT_NODE: 'importNode',
 	IMPORT_PLATFORM_TYPE: 'importPlatformType',
 	MESSAGE: 'message',
 	STRUCTURE: 'structure',
@@ -95,6 +97,10 @@ export class HeaderService {
 			case HeaderKeysEnum.IMPORT_MESSAGE:
 				return of(
 					this._importMessageHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.IMPORT_NODE:
+				return of(
+					this._importNodeHeaders.find((h) => h.header === value)
 				);
 			case HeaderKeysEnum.IMPORT_PLATFORM_TYPE:
 				return of(
@@ -812,6 +818,24 @@ export class HeaderService {
 			header: 'wasValue',
 			description: 'Previous value',
 			humanReadable: 'Was Value',
+		},
+	];
+
+	private _importNodeHeaders: headerDetail<nodeToken>[] = [
+		{
+			header: 'name',
+			description: 'Name of the node',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'description',
+			description: 'Description of the node',
+			humanReadable: 'Description',
+		},
+		{
+			header: 'applicability',
+			description: 'Applicability of the node',
+			humanReadable: 'Applicability',
 		},
 	];
 

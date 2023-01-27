@@ -10,18 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="table-height">
+<div class="table-container">
 	<table
 		mat-table
-		[dataSource]="data"
+		[dataSource]="filteredData"
 		class="mat-elevation-z1">
 		<ng-container [matColumnDef]="'TableHeader'">
 			<th
 				mat-header-cell
 				*matHeaderCellDef
 				[attr.colspan]="headers.length"
-				class="diff-table-title-header diff-report-base-color">
-				{{ tableTitle }}: {{ data.length }}
+				class="import-base-color">
+				<div class="header-container">
+					<div
+						class="table-label"
+						(click)="toggleTableContents()">
+						<span>{{ tableTitle }}: {{ data.length }}</span>
+					</div>
+					<div class="import-table-filter">
+						<mat-form-field
+							class="import-table-filter-field"
+							[ngClass]="
+								showTableContents ? 'show-filter' : 'hide-table'
+							">
+							<mat-label
+								>Filter
+								{{ tableTitle.toLowerCase() }}</mat-label
+							>
+							<input
+								matInput
+								(keyup)="applyFilter($event)"
+								#input />
+							<mat-icon matPrefix>filter_list</mat-icon>
+						</mat-form-field>
+					</div>
+				</div>
 			</th>
 		</ng-container>
 		<ng-container
@@ -30,7 +53,7 @@
 			<th
 				mat-header-cell
 				*matHeaderCellDef
-				class="diff-table-cell message-element-interface-table-view-message-header">
+				class="import-table-header">
 				{{
 					(getTableHeaderByName(header) | async)?.humanReadable || ''
 				}}
@@ -39,20 +62,29 @@
 				mat-cell
 				*matCellDef="let item; let i = index">
 				<ng-container *ngIf="header !== 'applicability'">
-					{{ item[header] }}
+					<div
+						oseeHighlightFilteredText
+						[searchTerms]="filterText"
+						[text]="item[header]"
+						classToApply="import-table-highlighted-text">
+						{{ item[header] }}
+					</div>
 				</ng-container>
 				<ng-container *ngIf="header === 'applicability'">
-					{{ item[header].name }}
+					<div
+						oseeHighlightFilteredText
+						[searchTerms]="filterText"
+						[text]="item[header].name"
+						classToApply="import-table-highlighted-text">
+						{{ item[header].name }}
+					</div>
 				</ng-container>
 			</td>
 		</ng-container>
 		<tr
 			mat-header-row
 			*matHeaderRowDef="['TableHeader']; sticky: true"
-			(click)="toggleTableContents()"
-			class="table-title-row">
-			SubMessages
-		</tr>
+			class="table-title-row"></tr>
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers; sticky: true"

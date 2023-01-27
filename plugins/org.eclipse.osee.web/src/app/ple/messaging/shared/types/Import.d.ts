@@ -19,6 +19,8 @@ import { structure } from './structure';
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface ImportSummary {
+	createPrimaryNode: boolean;
+	createSecondaryNode: boolean;
 	primaryNode: nodeToken;
 	secondaryNode: nodeToken;
 	messages: messageToken[];

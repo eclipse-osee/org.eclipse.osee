@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { messageToken } from 'src/app/ple/messaging/shared/types/messages';
 
 import { ImportTableComponent } from './import-table.component';
@@ -21,7 +22,7 @@ describe('ImportTableComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ImportTableComponent],
+			imports: [ImportTableComponent, NoopAnimationsModule],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ImportTableComponent<messageToken>);
