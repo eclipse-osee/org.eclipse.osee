@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gui Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.skynet;singleton:=true
+Automatic-Module-Name: org.eclipse.osee.framework.ui.skynet
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Eclipse-ExtensibleAPI: true
@@ -88,7 +89,6 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.core.model.access,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.change,
- org.eclipse.osee.framework.core.model.datarights,
  org.eclipse.osee.framework.core.model.event,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.operation,
