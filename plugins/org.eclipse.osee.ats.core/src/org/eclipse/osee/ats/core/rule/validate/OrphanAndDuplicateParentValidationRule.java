@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.rule.validate;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,11 +37,10 @@ public class OrphanAndDuplicateParentValidationRule extends AbstractValidationRu
          if (!atsApi.getStoreService().isHistorical(artifact)) {
             int count =
                atsApi.getRelationResolver().getRelatedCount(artifact, CoreRelationTypes.DefaultHierarchical_Parent);
-            if (count == 0) {
+            if (count == 0 && !CoreArtifactTokens.DefaultHierarchyRoot.equals(artifact)) {
                logError(artifact, "is orphaned (no parent on Default Hierarchy).", rd);
             } else if (count > 1) {
-               logError(artifact, String.format("has %s parents (duplicate parents on Default Hierarchy).", count),
-                  rd);
+               logError(artifact, String.format("has %s parents (duplicate parents on Default Hierarchy).", count), rd);
             }
          }
       } catch (Exception ex) {
