@@ -21,6 +21,7 @@ sed -i 's/'"$FROM_VERSION"'.qualifier/'"$TO_VERSION"'.qualifier/g' */*/feature.x
 sed -i 's#<version>'"$FROM_VERSION"'-SNAPSHOT</version>#<version>'"$TO_VERSION"'-SNAPSHOT</version>#g' */*/pom.xml
 sed -i 's/'"$FROM_VERSION"'.qualifier/'"$TO_VERSION"'.qualifier/g' */*/category.xml
 sed -i 's/'"$FROM_VERSION"'.qualifier/'"$TO_VERSION"'.qualifier/g' */*/*.product
+sed -i 's/'$FROM_VERSION'-SNAPSHOT/'$TO_VERSION'-SNAPSHOT/g' plugins/org.eclipse.osee.server.parent/pom.xml
 
 git add -A
 if [ ! -z "$1" ]; then
