@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -32,5 +33,10 @@ public class Program extends AtsConfigObject implements IAtsProgram {
    @Override
    public Long getId() {
       return artifact.getId();
+   }
+
+   @Override
+   public String getClosureState() {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ClosureState, "Open");
    }
 }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public class JaxProgram extends JaxNewAtsConfigObject implements IAtsProgram {
 
    long countryId;
+   String closureState;
 
    public long getCountryId() {
       return countryId;
@@ -42,11 +43,21 @@ public class JaxProgram extends JaxNewAtsConfigObject implements IAtsProgram {
       jaxProgram.setActive(program.isActive());
       jaxProgram.setDescription(program.getDescription());
       jaxProgram.setStoreObject(artifact);
+      jaxProgram.setClosureState(program.getClosureState());
       return jaxProgram;
    }
 
    @Override
    public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.Program;
+   }
+
+   @Override
+   public String getClosureState() {
+      return closureState;
+   }
+
+   public void setClosureState(String closureState) {
+      this.closureState = closureState;
    }
 }

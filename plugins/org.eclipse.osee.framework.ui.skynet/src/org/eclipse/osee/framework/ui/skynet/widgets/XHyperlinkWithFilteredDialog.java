@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,9 +44,15 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    public final String NOT_SET = Widgets.NOT_SET;
    protected T selected = null;
+   private ILabelProvider labelProvider;
 
    public XHyperlinkWithFilteredDialog(String label) {
+      this(label, new StringLabelProvider());
+   }
+
+   public XHyperlinkWithFilteredDialog(String label, ILabelProvider labelProvider) {
       super(label);
+      this.labelProvider = labelProvider;
       setUseLabelFont(false);
    }
 
@@ -90,7 +97,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
             return false;
          }
          FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + label, "Select " + label,
-            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
+            new ArrayTreeContentProvider(), labelProvider, new StringNameComparator());
          dialog.setInput(getSelectable());
          dialog.setMultiSelect(false);
          T defaultSelected = getDefaultSelected();
