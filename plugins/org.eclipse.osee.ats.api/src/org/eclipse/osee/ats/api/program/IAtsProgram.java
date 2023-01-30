@@ -28,6 +28,8 @@ public interface IAtsProgram extends IAtsConfigObject {
 
    IAtsProgram SENTINEL = createSentinel();
 
+   public String getClosureState();
+
    public static IAtsProgram createSentinel() {
       final class IAtsProgramSentinel extends NamedIdBase implements IAtsProgram {
 
@@ -64,6 +66,11 @@ public interface IAtsProgram extends IAtsConfigObject {
          @Override
          public boolean hasTag(String tag) {
             return false;
+         }
+
+         @Override
+         public String getClosureState() {
+            return "";
          }
 
       }

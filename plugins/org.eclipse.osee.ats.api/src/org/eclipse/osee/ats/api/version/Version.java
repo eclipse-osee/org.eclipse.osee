@@ -45,6 +45,7 @@ public class Version extends JaxAtsConfigObject implements IAtsVersion {
    boolean locked = false;
    boolean nextVersion = false;
    BranchId baselineBranch = BranchId.SENTINEL;
+   String closureState = "";
 
    public Long getTeamDefId() {
       return teamDefId;
@@ -111,6 +112,15 @@ public class Version extends JaxAtsConfigObject implements IAtsVersion {
 
    public void setBaselineBranch(BranchId baselineBranch) {
       this.baselineBranch = baselineBranch;
+   }
+
+   @Override
+   public String getClosureState() {
+      return closureState;
+   }
+
+   public void setClosureState(String closureState) {
+      this.closureState = closureState;
    }
 
 }

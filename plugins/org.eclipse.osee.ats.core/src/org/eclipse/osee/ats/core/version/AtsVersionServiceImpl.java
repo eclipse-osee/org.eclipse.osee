@@ -111,6 +111,8 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       version.setId(verArt.getId());
       version.setGuid(verArt.getGuid());
       version.setActive(atsApi.getAttributeResolver().getSoleAttributeValue(verArt, Active, true));
+      version.setClosureState(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.ClosureState, ""));
       version.setAllowCreateBranch(
          atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.AllowCreateBranch, false));
       version.setAllowCommitBranch(

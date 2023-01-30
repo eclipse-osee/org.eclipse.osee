@@ -88,7 +88,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
          art = getArtifact((ArtifactId) atsObject);
       }
       if (art == null) {
-         art = getArtifact(atsObject.getStoreObject());
+         if (atsObject.getStoreObject() == null) {
+            art = getArtifact(atsObject.getArtifactId());
+         } else {
+            art = getArtifact(atsObject.getStoreObject());
+         }
       }
       return art;
    }

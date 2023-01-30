@@ -41,4 +41,6 @@ public interface IAtsVersion extends IAtsConfigObject {
       return getBaselineBranch().isInvalid();
    }
 
+   String getClosureState();
+
 }
