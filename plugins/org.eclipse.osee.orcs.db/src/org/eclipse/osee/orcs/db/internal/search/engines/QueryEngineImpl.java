@@ -248,7 +248,8 @@ public class QueryEngineImpl implements QueryEngine {
             // Check if the attribute value has been added already to the artifact to prevent duplicate values.
             // This can happen when the same object is returned multiple times when following relations.
             if (queryData.hasCriteriaType(CriteriaRelationTypeFollow.class)) {
-               if (artifact.getSoleAttributeId(attributeType, -1L) == -1L) {
+               if (!artifact.getAttributeList(attributeType).stream().anyMatch(a -> a.getId() == attribute.getId())) {
+
                   artifact.putAttributeValue(attributeType, attribute);
                }
             } else {
