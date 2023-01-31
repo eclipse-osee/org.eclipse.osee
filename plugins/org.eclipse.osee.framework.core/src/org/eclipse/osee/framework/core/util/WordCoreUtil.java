@@ -16,11 +16,14 @@ package org.eclipse.osee.framework.core.util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -39,6 +42,513 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
  */
 
 public class WordCoreUtil {
+
+   /**
+    * Factory for creating {@link TokenMatcher} objects for finding "insert thing here" tokens in a publishing template.
+    */
+
+   private static class TokenMatcherPattern {
+
+      /**
+       * The regular expression {@link Pattern} options to be used.
+       */
+
+      private static final int regexOptions = Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE;
+
+      /**
+       * The first character of the optional "insert thing here" token prefix.
+       */
+
+      private final char prefixStartChar;
+
+      /**
+       * A regular expression that can identify the starting character sequence of an "insert thing here" token prefix.
+       */
+
+      private final Pattern prefixStartTokenPattern;
+
+      /**
+       * A regular expression than can verify the prefix start token and everything between the prefix start token and
+       * the core-token composes a valid prefix.
+       */
+
+      private final Pattern prefixPattern;
+
+      /**
+       * A regular expression for finding occurrences of the core-token in the publishing template.
+       */
+
+      private final Pattern coreTokenPattern;
+
+      /**
+       * A regular expression used to determine if a suffix is present after the core-token.
+       */
+
+      private final Pattern suffixPattern;
+
+      /**
+       * Private constructor is used to create all {@link TokenMatcherPattern} objects with compiled regular expressions
+       * ({@link Pattern}s).
+       *
+       * @param prefixStartChar the first character of the prefix.
+       * @param prefixStartTokenPattern pattern for the initial portion of the prefix.
+       * @param prefixPattern pattern to verify the entire prefix.
+       * @param coreTokenPattern pattern for the core-token.
+       * @param suffixPattern pattern used to determine the presence of a suffix.
+       */
+
+      //@formatter:off
+      private
+         TokenMatcherPattern
+            (
+               char prefixStartChar,
+               Pattern prefixStartTokenPattern,
+               Pattern prefixPattern,
+               Pattern coreTokenPattern,
+               Pattern suffixPattern
+            )
+      {
+         this.prefixStartChar         = prefixStartChar;
+         this.prefixStartTokenPattern = prefixStartTokenPattern;
+         this.prefixPattern           = prefixPattern;
+         this.coreTokenPattern        = coreTokenPattern;
+         this.suffixPattern           = suffixPattern;
+      }
+      //@formatter:on
+
+      /**
+       * Creates a new {@link TokenMatcherPattern} with the search criteria.
+       *
+       * @param prefixStartChar the first character of the prefix.
+       * @param prefixStartTokenRegexp a regular expression to identify the starting portion of the prefix.
+       * @param prefixRegexp a regular expression to verify the entire prefix.
+       * @param coreTokenRegexp a regular expression to find the core-token.
+       * @param suffixRegexp a regular expression to determine if a suffix is present after the core-token.
+       * @throws NullPointerException if any of the provided regular expressions are <code>null</code>.
+       * @throws PatternSyntaxException if any of the provided regular expression fail to compile.
+       */
+
+      //@formatter:off
+      static TokenMatcherPattern
+         compile
+         (
+            char prefixStartChar,
+            String prefixStartTokenRegexp,
+            String prefixRegexp,
+            String coreTokenRegexp,
+            String suffixRegexp
+         )
+      {
+         Objects.requireNonNull( prefixStartTokenRegexp, "TokenMatcher::new, parameter \"prefixStartTokenRegexp\" cannot be null." );
+         Objects.requireNonNull( prefixRegexp,           "TokenMatcher::new, parameter \"prefixRegexp\" cannot be null."           );
+         Objects.requireNonNull( coreTokenRegexp,        "TokenMatcher::new, parameter \"coreTokenRegexp\" cannot be null."        );
+         Objects.requireNonNull( suffixRegexp,           "TokenMatcher::new, parameter \"suffixRegexp\" cannot be null."           );
+
+         var prefixStartTokenPattern = TokenMatcherPattern.compilePattern( prefixStartTokenRegexp );
+         var prefixPattern           = TokenMatcherPattern.compilePattern( prefixRegexp           );
+         var coreTokenPattern        = TokenMatcherPattern.compilePattern( coreTokenRegexp        );
+         var suffixPattern           = TokenMatcherPattern.compilePattern( suffixRegexp           );
+
+         return
+            new TokenMatcherPattern
+                   (
+                      prefixStartChar,
+                      prefixStartTokenPattern,
+                      prefixPattern,
+                      coreTokenPattern,
+                      suffixPattern
+                   );
+      }
+      //@formatter:on
+
+      /**
+       * Compiles the provided regular expression with the required options.
+       *
+       * @param regexp the regular expression to compile
+       * @return the compiled regular expression as a {@link Pattern}.
+       * @throws PatternSyntaxException if the regular expression fails to compile.
+       */
+
+      private static Pattern compilePattern(String regexp) {
+         return Pattern.compile(regexp, TokenMatcherPattern.regexOptions);
+      }
+
+      /**
+       * Creates a {@link TokenMatcher} that will match the "insert thing here" token patterns against the given input
+       * {@link String}.
+       *
+       * @param string the input to be matched.
+       * @return a {@link TokenMatcher} for these patterns and the given input.
+       */
+
+      TokenMatcher tokenMatcher(String string) {
+         //@formatter:off
+         return
+            new TokenMatcher
+                   (
+                     string,
+                     this.prefixStartChar,
+                     new Function<CharSequence,Matcher>() {
+                        @Override
+                        public Matcher apply(CharSequence CharSequence) {
+                           return TokenMatcherPattern.this.prefixStartTokenPattern.matcher( CharSequence );
+                        }
+                     },
+                     new Function<CharSequence,Matcher>() {
+                        @Override
+                        public Matcher apply(CharSequence CharSequence) {
+                           return TokenMatcherPattern.this.prefixPattern.matcher( CharSequence );
+                        }
+                     },
+                     new Function<CharSequence,Matcher>() {
+                        @Override
+                        public Matcher apply(CharSequence CharSequence) {
+                           return TokenMatcherPattern.this.coreTokenPattern.matcher( CharSequence );
+                        }
+                     },
+                     new Function<CharSequence,Matcher>() {
+                        @Override
+                        public Matcher apply(CharSequence CharSequence) {
+                           return TokenMatcherPattern.this.suffixPattern.matcher( CharSequence );
+                        }
+                     }
+                   );
+         //@formatter:on
+      }
+   }
+
+   /**
+    * A matcher to find occurrences of the "insert thing here" token in a publishing template string. The "insert thing
+    * here" tokens consist of the following parts:
+    *
+    * <pre>
+    *    [ &lt;prefix&gt; ] &lt;core-token&gt; [ &lt;suffix&gt; ]
+    * </pre>
+    * <dl>
+    * <dt>core-token:
+    * <dt>
+    * <dd>The core-token is the "INSERT_ARTIFACT_HERE" or "INSERT_LINK_HERE" marker in a publishing template. The
+    * core-token and its prefix and suffix are replaced in the publishing template with the content to be
+    * published.</dd>
+    * <dt>prefix:</dt>
+    * <dd>When the core-token is placed into a publishing template without a prefix and suffix, the core-token is not
+    * visible when the publishing template is opened in Word. Saving such a template from Word will cause the core-token
+    * to be lost. The prefix is the Word ML paragraph tag, optional paragraph presentation, run tag, and text tag at the
+    * start of a Word ML paragraph.</dd>
+    * <dt>suffix:</dt>
+    * <dd>The suffix is the Word ML closing text tag, closing run tag, and closing paragraph tag at the end of a Word ML
+    * paragraph.</dd>
+    * </dl>
+    * The {@link TokenMatcher} will indicate the starting and ending indices of the "insert thing here" token as
+    * follows:
+    * <dl>
+    * <dt>The prefix, core-token, and suffix are found:
+    * <dt>
+    * <dd>The starting index will be the starting index of the prefix. The ending index will be the index of the first
+    * character after the end of the suffix.</dd>
+    * <dt>The core-token is found, but either or both of the prefix and suffix are not found:
+    * <dt>
+    * <dd>The starting index will be the starting index of the core-token. The ending index will be the index of the
+    * first character after the end of the core-token.</dd>
+    * </dl>
+    *
+    * @implNote The use of a single regular expression to find the optional prefix, core-token, and optional suffix
+    * performs very poorly. The following sequence is used to find the next token:
+    * <ul>
+    * <li>The next core-token is found in the publishing template using a much simpler regular expression with good
+    * performance.</li>
+    * <li>The suffix regular expression is then used in an anchored search just after the core-token to determine if the
+    * suffix is present.</li>
+    * <li>When the suffix is present, the publishing template string is searched backwards to find the prefix.</li>
+    * </ul>
+    */
+
+   private static class TokenMatcher {
+
+      String string;
+      char prefixStartChar;
+      Function<CharSequence, Matcher> prefixStartTokenMatcherFunction;
+      Function<CharSequence, Matcher> prefixMatcherFunction;
+      Function<CharSequence, Matcher> coreTokenMatcherFunction;
+      Function<CharSequence, Matcher> suffixMatcherFunction;
+      Matcher tokenMatcher;
+      int start;
+      int end;
+      boolean started = false;
+      boolean done = false;
+
+      //@formatter:off
+      TokenMatcher
+         (
+            String                          string,
+            char                            preambleStartChar,
+            Function<CharSequence, Matcher> prefixStartTokenMatcherFunction,
+            Function<CharSequence, Matcher> prefixMatcherFunction,
+            Function<CharSequence, Matcher> coreTokenMatcherFunction,
+            Function<CharSequence, Matcher> suffixMatcherFunction
+         )
+      {
+         //@formatter:on
+         this.string = string;
+         this.prefixStartChar = preambleStartChar;
+         this.prefixStartTokenMatcherFunction = prefixStartTokenMatcherFunction;
+         this.prefixMatcherFunction = prefixMatcherFunction;
+         this.coreTokenMatcherFunction = coreTokenMatcherFunction;
+         this.suffixMatcherFunction = suffixMatcherFunction;
+
+         this.tokenMatcher = this.coreTokenMatcherFunction.apply(string);
+
+         this.start = 0;
+         this.end = -1;
+         this.started = false;
+         this.done = false;
+      }
+
+      /**
+       * Returns the string index of the first character in the last found "insert here token".
+       *
+       * @return the string index of the first character in the last found "insert here token".
+       * @throws IllegalStateException when a {@link #find} operation has not yet been performed or a prior
+       * {@link #find} operation returned <code>false</code>/
+       */
+
+      int start() {
+         if (!this.started || this.done) {
+            throw new IllegalStateException();
+         }
+         return this.start;
+      }
+
+      /**
+       * Returns the string index of the first character after the last found "insert here token".
+       *
+       * @return the string index of the first character after the last found "insert here token".
+       * @throws IllegalStateException when a {@link #find} operation has not yet been performed or a prior
+       * {@link #find} operation returned <code>false</code>.
+       */
+
+      int end() {
+         if (!this.started || this.done) {
+            throw new IllegalStateException();
+         }
+         return this.end;
+      }
+
+      /**
+       * Searches the string backwards for the "insert thing here" token prefix.
+       *
+       * @param index the position in the input to start searching backwards for the prefix from.
+       * @return when prefix is found, the character index in the search string where the prefix was found; otherwise,
+       * -1.
+       */
+
+      private int backMatch(int index) {
+
+         var s = index;
+         var safety = index - 2048;
+         safety = safety > 0 ? safety : 0;
+         char c;
+         do {
+
+            //back up looking for the prefix start char
+            do {
+               s--;
+               c = this.string.charAt(s);
+            } while ((c != this.prefixStartChar) && (s >= safety));
+
+            if (c != this.prefixStartChar) {
+               //safety expired, the prefix start char was not found
+               return -1;
+            }
+
+            //the prefix start char was found, check for paragraph tag
+            var checkStringWindow = new StringWindow(this.string, s);
+            var matcher = this.prefixStartTokenMatcherFunction.apply(checkStringWindow);
+
+            if (matcher.lookingAt()) {
+               //paragraph tag found, check for full pattern
+               var bigMatcher = this.prefixMatcherFunction.apply(checkStringWindow);
+               if (bigMatcher.lookingAt()) {
+                  //leading paragraph tags verified
+                  return s;
+               } else {
+                  //tag found but leading paragraph is not correct
+                  return -1;
+               }
+            }
+            //was not paragraph tag, keep looking
+         } while (s > safety);
+
+         //safety expired
+         return -1;
+      }
+
+      /**
+       * Attempts to find the next occurrence of the "insert thing here" token within the provided string. This method
+       * starts at the beginning of the provided string, or, if a previous invocation of the method was successful, at
+       * the first character after the last found "insert thing here" token. When a match is found, the location of the
+       * matched "insert thing here" token can be obtained via the {@link #start} and {@link #end} methods.
+       *
+       * @return <code>true</code>, when an "insert thing here" token is found; otherwise, <code>false</code>.
+       */
+
+      boolean find() {
+
+         if (this.done) {
+            //a prior invocation determined there are none or no-more "insert here tokens".
+            throw new IllegalStateException();
+         }
+
+         if (!this.tokenMatcher.find()) {
+            //there are no-more "insert here tokens".
+            this.start = -1;
+            this.end = -1;
+            this.started = true;
+            this.done = true;
+            return false;
+         }
+
+         //the next "insert here token" was found
+         var tokenStart = this.tokenMatcher.start();
+         var tokenEnd = this.tokenMatcher.end();
+
+         //check for trailing paragraph tags at end of the token
+         var tailStringWindow = new StringWindow(this.string, tokenEnd);
+         var tailMatcher = this.suffixMatcherFunction.apply(tailStringWindow);
+
+         if (!tailMatcher.lookingAt()) {
+            //trailing paragraph tags are NOT present
+            this.start = tokenStart;
+            this.end = tokenEnd;
+            this.started = true;
+            this.done = false;
+            return true;
+         }
+
+         //trailing paragraph tags are present
+         var tailEnd = tailMatcher.end();
+
+         //look backwards for the opening paragraph tags
+         var backMatch = this.backMatch(tokenStart);
+
+         if (backMatch == -1) {
+            //opening paragraph tags were NOT found, never mind the trailing tags
+            this.start = tokenStart;
+            this.end = tokenEnd;
+            this.started = true;
+            this.done = false;
+            return true;
+         }
+
+         //opening paragraph tags were found
+         this.start = backMatch;
+         this.end = tokenEnd + tailEnd;
+         this.started = true;
+         this.done = false;
+         return true;
+      }
+   }
+
+   /**
+    * Provides a {@link CharSequence} implementation for a portion of a {@link String}.
+    */
+
+   private static class StringWindow implements CharSequence {
+
+      /**
+       * The {@link String} to have a portion be windowed as a {@link CharSequence}.
+       */
+
+      private final String string;
+
+      /**
+       * The starting index of the portion to be windowed.
+       */
+
+      private final int start;
+
+      /**
+       * The ending index plus one of the portion to be windowed.
+       */
+
+      private final int end;
+
+      /**
+       * Creates a {@link CharSequence} {@link StringWindow} implementation for a portion of the provided
+       * {@link String}.
+       *
+       * @param string the {@link String} to create a window for.
+       * @param start the starting character position of the {@link CharSequence} {@link StringWindow} within the
+       * provided {@link String}.
+       */
+
+      StringWindow(String string, int start) {
+         this.string = string;
+         this.start = start;
+         this.end = string.length();
+      }
+
+      /**
+       * Creates a {@link CharSequence} {@link StringWindow} implementation for a portion of the provided
+       * {@link String}.
+       *
+       * @param string the {@link String} to create a window for.
+       * @param start the starting character position of the {@link CharSequence} {@link StringWindow} within the
+       * provided {@link String}.
+       * @param end the character position plus one of the end of the {@link CharSequence} {@link StringWindow} within
+       * the provided {@link String}.
+       */
+
+      StringWindow(String string, int start, int end) {
+         this.string = string;
+         this.start = start;
+         this.end = end;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public int length() {
+         return this.end - this.start;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws IndexOutOfBoundsException {@inheritDoc}
+       */
+
+      @Override
+      public char charAt(int index) {
+         //@formatter:off
+         if(    ( index < 0 )
+             || ( start + index >= end ) ) {
+            throw new IndexOutOfBoundsException();
+         }
+         return this.string.charAt(start + index);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public CharSequence subSequence(int start, int end) {
+         return new StringWindow(this.string, this.start + start, this.start + end);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public String toString() {
+         return this.string.substring( this.start, this.end );
+      }
+   }
+
    public static String FEATUREAPP = "feature";
    public static String CONFIGAPP = "configuration";
    public static String CONFIGGRPAPP = "configurationgroup";
@@ -214,18 +724,20 @@ public class WordCoreUtil {
    public final static int endConfigBracketMatcherGroup = 117;
 
    /**
-    * Regular expression used to find the artifact or link insertion point in a publishing template. The Word ML for the
-    * paragraph, run, and text surrounding the "insert here token" is not desired in the published document. This
-    * pattern also will match the surrounding paragraph, run, and text tags so they can be removed as well.
+    * {@link TokenMatcherPattern} used to produce {@link TokenMatcher} objects for finding the "insert thing here"
+    * tokens in a publishing template.
     */
 
    //@formatter:off
-   private static final Pattern insertHerePattern =
-      Pattern.compile
-         (
-            "(?:<w:p[^>]*>\\s*<w:r[^>]*>\\s*<w:t[^>]*>)?\\s*INSERT_(?:ARTIFACT|LINK)_HERE\\s*(?:</w:t>\\s*</w:r>\\s*</w:p>)?",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE
-         );
+   private static final TokenMatcherPattern tokenMatcherPattern =
+      TokenMatcherPattern.compile
+             (
+               '<',                                                                                  /* prefix start char  */
+               "<w:p(?:>|\\s)",                                                                      /* prefix start token */
+               "<w:p[^>]*>\\s*(?:<w:pPr[^>]*>.*?</w:pPr>\\s*)?<w:r[^>]*>\\s*<w:t[^>]*>\\s*INSERT_",  /* prefix             */
+               "INSERT_(ARTIFACT|LINK)_HERE",                                                        /* core token         */
+               "\\s*</w:t>\\s*</w:r>\\s*</w:p>"                                                      /* suffix             */
+             );
    //@formatter:on
 
    /**
@@ -241,6 +753,8 @@ public class WordCoreUtil {
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE
          );
    //@formatter:off
+
+
 
 
    public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations, Set<String> allValidConfigurationGroups) {
@@ -556,9 +1070,9 @@ public class WordCoreUtil {
 
    /**
     * Applies the <code>segmentProcessor</code> to each section of the <code>templateContent</code> from the start of
-    * the template or the end of the last section. The <code>tailProcessor</code> is applied to the last section of the
-    * <code>templateContent</code>. The <code>templateContent</code> is split into sections using the regular expression
-    * {@link #insertHerePattern}.
+    * <code>templateContent</code> or the end of the last section. The <code>tailProcessor</code> is applied to the last
+    * section of the <code>templateContent</code>. The <code>templateContent</code> is split into sections using a
+    * {@link WordCoreUtil#TokenMatcher} produced by the {@link WordCoreUtil#tokenMatcherPattern}.
     *
     * @param templateContent the publishing template to be processed.
     * @param segmentProcessor a {@link Consumer} used to process sections of the <code>templateContent</code> leading up
@@ -568,13 +1082,20 @@ public class WordCoreUtil {
 
    public static void processPublishingTemplate(String templateContent, Consumer<String> segmentProcessor, Consumer<String> tailProcessor) {
 
-      var matcher = WordCoreUtil.insertHerePattern.matcher(templateContent);
+      var tokenMatcher = WordCoreUtil.tokenMatcherPattern.tokenMatcher(templateContent);
       int lastEndIndex = 0;
-      while (matcher.find()) {
-         var segment = templateContent.substring(lastEndIndex, matcher.start());
-         lastEndIndex = matcher.end();
+
+      while (tokenMatcher.find()) {
+
+         var tokenStart = tokenMatcher.start();
+         var tokenEnd = tokenMatcher.end();
+
+         var segment = templateContent.substring(lastEndIndex, tokenStart);
+
+         lastEndIndex = tokenEnd;
          segmentProcessor.accept(segment);
       }
+
       var tail = templateContent.substring(lastEndIndex);
       tailProcessor.accept(tail);
    }
