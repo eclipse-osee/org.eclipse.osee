@@ -117,10 +117,7 @@
 												<ng-container
 													*ngIf="_nodes.length > 0">
 													<osee-import-table
-														[data]="[
-															_importSummary.primaryNode,
-															_importSummary.secondaryNode
-														]"
+														[data]="_nodes"
 														[headers]="nodeHeaders"
 														[headerKey]="
 															headerKeys.IMPORT_NODE

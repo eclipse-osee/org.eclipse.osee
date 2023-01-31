@@ -22,12 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
+import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceElementImportToken;
 import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
@@ -64,25 +66,47 @@ public class IcdImportApiImpl implements MimImportApi {
 
       reader.setActiveSheet("Message and Submessage Summary");
 
-      // Primary Node
-      String nodeName = reader.getCellStringValue(0, 0).split(" ")[0];
-      InterfaceNode primaryNode = new InterfaceNode(id, nodeName);
-      primaryNode.setApplicability(ApplicabilityToken.BASE);
-      primaryNode.setAddress("");
-      primaryNode.setColor("");
-      primaryNode.setDescription("");
-      summary.setPrimaryNode(primaryNode);
-      incrementId();
+      String primaryNodeName = reader.getCellStringValue(0, 0).split(" ")[0];
+      String secondaryNodeName = reader.getCellStringValue(0, 5).split(" ")[0];
 
-      // Secondary Node
-      nodeName = reader.getCellStringValue(0, 5).split(" ")[0];
-      InterfaceNode secondaryNode = new InterfaceNode(id, nodeName);
-      secondaryNode.setApplicability(ApplicabilityToken.BASE);
-      secondaryNode.setAddress("");
-      secondaryNode.setColor("");
-      secondaryNode.setDescription("");
+      List<InterfaceNode> existingNodes = (List<InterfaceNode>) mimApi.getInterfaceNodeViewApi().getAll(branch);
+      InterfaceNode existingPrimaryNode =
+         existingNodes.stream().filter(node -> node.getName().equals(primaryNodeName)).findFirst().orElse(
+            InterfaceNode.SENTINEL);
+      InterfaceNode existingSecondaryNode =
+         existingNodes.stream().filter(node -> node.getName().equals(secondaryNodeName)).findFirst().orElse(
+            InterfaceNode.SENTINEL);
+      InterfaceNode primaryNode;
+      InterfaceNode secondaryNode;
+      if (existingPrimaryNode.isValid()) {
+         primaryNode = existingPrimaryNode;
+      } else {
+         primaryNode = new InterfaceNode(id, primaryNodeName);
+         primaryNode.setApplicability(ApplicabilityToken.BASE);
+         primaryNode.setAddress("");
+         primaryNode.setColor("");
+         primaryNode.setDescription("");
+         incrementId();
+      }
+      if (existingSecondaryNode.isValid()) {
+         secondaryNode = existingSecondaryNode;
+      } else {
+         secondaryNode = new InterfaceNode(id, secondaryNodeName);
+         secondaryNode.setApplicability(ApplicabilityToken.BASE);
+         secondaryNode.setAddress("");
+         secondaryNode.setColor("");
+         secondaryNode.setDescription("");
+         incrementId();
+      }
+      summary.setPrimaryNode(primaryNode);
       summary.setSecondaryNode(secondaryNode);
-      incrementId();
+      summary.setCreatePrimaryNode(!existingPrimaryNode.isValid());
+      summary.setCreateSecondaryNode(!existingSecondaryNode.isValid());
+
+      InterfaceConnection existingConnection = mimApi.getInterfaceConnectionViewApi().getAll(branch).stream().filter(
+         c -> c.getPrimaryNode().equals(existingPrimaryNode.getId()) && c.getSecondaryNode().equals(
+            existingSecondaryNode.getId())).findFirst().orElse(InterfaceConnection.SENTINEL);
+      summary.setConnectionId(ArtifactId.valueOf(existingConnection.getId()));
 
       // Messages and SubMessages
       List<String> primaryRegions = reader.getMergedRegions().stream().filter(
