@@ -16,6 +16,7 @@
 @media (prefers-color-scheme: light) {
 	@include t.theme($theme: modern-ple-theme.$modern-ple-light-theme);
 }
+
 @media (prefers-color-scheme: dark) {
 	@include t.theme($theme: modern-ple-theme.$modern-ple-dark-theme);
 }
@@ -26,6 +27,7 @@
 
 .hide-table {
 	display: none;
+	overflow: hidden;
 }
 
 .show-filter {
@@ -41,10 +43,21 @@
 	}
 }
 
-.table-container {
+%table-container {
 	width: 100%;
 	max-height: 40vh;
 	overflow: scroll;
+}
+
+.table-container {
+	@extend %table-container;
+
+	&--hidden {
+		@extend %table-container;
+
+		overflow: hidden;
+		padding: 0.25em;
+	}
 
 	table {
 		width: 100%;

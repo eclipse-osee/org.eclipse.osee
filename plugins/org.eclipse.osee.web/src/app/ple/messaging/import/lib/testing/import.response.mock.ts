@@ -15,6 +15,7 @@ import { ImportOption, ImportSummary } from '../../../shared/types/Import';
 export const importSummaryMock: ImportSummary = {
 	createPrimaryNode: true,
 	createSecondaryNode: true,
+	connectionId: '1234',
 	primaryNode: {
 		id: '1',
 		name: 'Node 1',

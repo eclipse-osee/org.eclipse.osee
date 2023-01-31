@@ -21,6 +21,7 @@ import { structure } from './structure';
 export interface ImportSummary {
 	createPrimaryNode: boolean;
 	createSecondaryNode: boolean;
+	connectionId: string;
 	primaryNode: nodeToken;
 	secondaryNode: nodeToken;
 	messages: messageToken[];

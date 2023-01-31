@@ -104,6 +104,10 @@ export class ImportService {
 				of(undefined)
 			)
 		),
+		filter((v) => v !== undefined) as OperatorFunction<
+			ImportSummary | undefined,
+			ImportSummary
+		>,
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
@@ -118,8 +122,15 @@ export class ImportService {
 		)
 	);
 
+	private _connectionId$ = this._importSummary$.pipe(
+		switchMap((summary) =>
+			summary.connectionId === '-1'
+				? of('connection')
+				: of(summary.connectionId)
+		)
+	);
+
 	private _nodes$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined),
 		switchMap((summary) =>
 			iif(
 				() =>
@@ -132,115 +143,65 @@ export class ImportService {
 	);
 
 	private _messages$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.messages))
 	);
 
 	private _subMessages$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.subMessages))
 	);
 
 	private _structures$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.structures))
 	);
 
 	private _elements$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.elements))
 	);
 
 	private _platformTypes$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.platformTypes))
 	);
 
 	private _enumSets$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.enumSets))
 	);
 
 	private _enums$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.enums))
 	);
 
 	private _messageSubMessageRelations$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.messageSubmessageRelations))
 	);
 
 	private _subMessageStructureRelations$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.subMessageStructureRelations))
 	);
 
 	private _structureElementRelations$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.structureElementRelations))
 	);
 
 	private _elementPlatformTypeRelations$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.elementPlatformTypeRelations))
 	);
 
 	private _platformTypeEnumSetRelations$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.platformTypeEnumSetRelations))
 	);
 
 	private _enumSetEnumRelations$ = this._importSummary$.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			ImportSummary | undefined,
-			ImportSummary
-		>,
 		switchMap((summary) => of(summary.enumSetEnumRelations))
 	);
 
 	private _nodesTx$ = combineLatest([
+		this._importSummary$,
 		this._importTx$,
 		this._nodes$,
+		this._connectionId$,
 		this.branchId,
 	]).pipe(
-		switchMap(([tx, nodes, branchId]) =>
+		switchMap(([summary, tx, nodes, connectionId, branchId]) =>
 			of(nodes).pipe(
 				switchMap((nodes) =>
 					from(nodes).pipe(
@@ -248,29 +209,37 @@ export class ImportService {
 							of(node).pipe(
 								filter((n) => n.name !== ''),
 								tap((node) =>
-									this.nodeService.createNode(
-										branchId,
-										{ name: node.name } as node,
-										tx,
-										node.id
-									)
+									(index % 2 === 1 &&
+										summary.createSecondaryNode) ||
+									(index % 2 === 0 &&
+										summary.createPrimaryNode)
+										? this.nodeService.createNode(
+												branchId,
+												{ name: node.name } as node,
+												tx,
+												node.id
+										  )
+										: ''
 								),
 								switchMap((node) =>
-									this.connectionService
-										.createNodeRelation(
-											node.id!,
-											index % 2 === 1,
-											'connection'
-										)
-										.pipe(
-											switchMap((nodeRelation) =>
-												this.connectionService.addRelation(
-													branchId,
-													nodeRelation,
-													tx
+									summary.createPrimaryNode ||
+									summary.createSecondaryNode
+										? this.connectionService
+												.createNodeRelation(
+													node.id!,
+													index % 2 === 1,
+													connectionId
 												)
-											)
-										)
+												.pipe(
+													switchMap((nodeRelation) =>
+														this.connectionService.addRelation(
+															branchId,
+															nodeRelation,
+															tx
+														)
+													)
+												)
+										: ''
 								)
 							)
 						)
@@ -286,14 +255,16 @@ export class ImportService {
 		this._importTx$,
 		this.selectedImportOption,
 		this._nodes$,
+		this._connectionId$,
 		this.branchId,
 	]).pipe(
-		switchMap(([tx, option, nodes, branchId]) =>
+		switchMap(([tx, option, nodes, connectionId, branchId]) =>
 			of(nodes).pipe(
 				switchMap((nodes) =>
 					nodes.length === 2 &&
 					nodes[0].name !== '' &&
-					nodes[1].name !== ''
+					nodes[1].name !== '' &&
+					connectionId === 'connection'
 						? this.connectionService
 								.createConnectionNoRelations(
 									branchId,
@@ -303,7 +274,7 @@ export class ImportService {
 										description: '',
 									},
 									tx,
-									'connection'
+									connectionId
 								)
 								.pipe(
 									switchMap((connectionTx) =>
@@ -315,7 +286,7 @@ export class ImportService {
 											this.connectionService
 												.createTransportTypeRelation(
 													option?.transportType || '',
-													'connection'
+													connectionId
 												)
 												.pipe(
 													switchMap((rel) =>
@@ -339,9 +310,10 @@ export class ImportService {
 	private _messagesTx$ = combineLatest([
 		this._importTx$,
 		this._messages$,
+		this._connectionId$,
 		this.branchId,
 	]).pipe(
-		switchMap(([tx, messages, branchId]) =>
+		switchMap(([tx, messages, connectionId, branchId]) =>
 			of(messages).pipe(
 				switchMap((msgs) =>
 					from(msgs).pipe(
@@ -377,7 +349,7 @@ export class ImportService {
 								switchMap((_) =>
 									this.messagesService
 										.createConnectionRelation(
-											'connection',
+											connectionId,
 											message.id
 										)
 										.pipe(

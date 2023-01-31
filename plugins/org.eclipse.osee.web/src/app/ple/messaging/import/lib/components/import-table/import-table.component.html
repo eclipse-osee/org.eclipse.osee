@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="table-container">
+<div
+	[ngClass]="
+		showTableContents ? 'table-container' : 'table-container--hidden'
+	">
 	<table
 		mat-table
 		[dataSource]="filteredData"

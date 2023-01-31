@@ -16,10 +16,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 public class MimImportSummary {
    private boolean createPrimaryNode;
    private boolean createSecondaryNode;
+   private ArtifactId connectionId;
    private InterfaceNode primaryNode;
    private InterfaceNode secondaryNode;
    private final List<InterfaceMessageToken> messages;
@@ -39,6 +41,7 @@ public class MimImportSummary {
    public MimImportSummary() {
       createPrimaryNode = false;
       createSecondaryNode = false;
+      connectionId = ArtifactId.SENTINEL;
       messages = new LinkedList<>();
       subMessages = new LinkedList<>();
       structures = new LinkedList<>();
@@ -68,6 +71,14 @@ public class MimImportSummary {
 
    public void setCreateSecondaryNode(boolean createSecondaryNode) {
       this.createSecondaryNode = createSecondaryNode;
+   }
+
+   public ArtifactId getConnectionId() {
+      return connectionId;
+   }
+
+   public void setConnectionId(ArtifactId connectionId) {
+      this.connectionId = connectionId;
    }
 
    public InterfaceNode getPrimaryNode() {
