@@ -385,6 +385,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
             TOP_ADMIN));
          items.add(new XNavigateItemAction(new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR, TOP_ADMIN));
          items.add(new XNavigateItemAction(new PurgeTransactionAction(), FrameworkImage.PURGE, TOP_ADMIN));
+         items.add(new AtsRemoteEventTestItem());
          items.add(new CleanupOseeSystemAssignedWorkflows());
       }
       time.end();
