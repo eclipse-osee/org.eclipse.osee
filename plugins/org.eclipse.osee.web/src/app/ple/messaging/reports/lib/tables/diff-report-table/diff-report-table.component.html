@@ -67,7 +67,11 @@
 										header
 									)
 								">
-								<mat-icon color="warn">remove</mat-icon>
+								<mat-icon
+									class="diff-icon"
+									color="warn"
+									>remove</mat-icon
+								>
 							</ng-container>
 							<ng-container
 								*ngIf="
@@ -103,7 +107,11 @@
 									!item.diffInfo.added &&
 									!item.diffInfo.deleted
 								">
-								<mat-icon color="success">add</mat-icon>
+								<mat-icon
+									class="diff-icon"
+									color="success"
+									>add</mat-icon
+								>
 							</ng-container>
 							<span>{{ item.applicability?.name }}</span>
 						</div>
@@ -118,7 +126,11 @@
 									!item.diffInfo.added &&
 									!item.diffInfo.deleted
 								">
-								<mat-icon color="success">add</mat-icon>
+								<mat-icon
+									class="diff-icon"
+									color="success"
+									>add</mat-icon
+								>
 							</ng-container>
 							<span>{{ item[header] }}</span>
 						</div>
