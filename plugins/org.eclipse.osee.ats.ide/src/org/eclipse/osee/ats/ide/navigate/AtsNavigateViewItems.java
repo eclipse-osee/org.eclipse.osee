@@ -85,6 +85,7 @@ import org.eclipse.osee.ats.ide.world.search.MyReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
+import org.eclipse.osee.ats.ide.world.search.SearchReleaseArtifacts;
 import org.eclipse.osee.ats.ide.world.search.SearchTeamWorkflowsByProgramSearchItem;
 import org.eclipse.osee.ats.ide.world.search.ShowOpenWorkflowsByReviewType;
 import org.eclipse.osee.ats.ide.world.search.UserRelatedToAtsObjectSearch;
@@ -139,6 +140,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
 
    public static final XNavItemCat ATS_VERSIONS = new XNavItemCat("ATS.Versions");
    public static final XNavItemCat ATS_VERSIONS_ADMIN = new XNavItemCat("ATS.Versions.Admin");
+
+   public static final XNavItemCat ATS_RELEASES = new XNavItemCat("ATS.Releases");
 
    public static final XNavItemCat ATS_WORK_DEFINITION = new XNavItemCat("ATS.Work Definition");
    public static final XNavItemCat ATS_WORK_DEFINITION_ADMIN = new XNavItemCat("ATS.Work Definition.Admin");
@@ -277,9 +280,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, ATS_ADMIN, SUBCAT, OSEE_ADMIN));
 
       items.add(new AtsConfigResultsEditorNavigateItem());
-
       items.add(new XNavigateItemAction(new AtsExportAction(), FrameworkImage.EXPORT, ATS_UTIL));
-
       // Admin
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());
@@ -291,6 +292,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          new XNavigateItemAction(new RevertDuplicateAtsTransitionsAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(new DuplicateArtifactReport());
 
+      addReleasesItems();
       addVersionsItems();
       addWorkDefinitionsItems();
       addHealthItems();
@@ -486,6 +488,19 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Versions section");
+      }
+      time.end();
+   }
+
+   private void addReleasesItems() {
+      ElapsedTime time = new ElapsedTime("NVI - release", debug);
+      try {
+
+         items.add(new XNavigateItemFolder("Releases", AtsImage.RELEASED, ATS_RELEASES, SUBCAT));
+         items.add(new SearchReleaseArtifacts());
+
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Releases section");
       }
       time.end();
    }
