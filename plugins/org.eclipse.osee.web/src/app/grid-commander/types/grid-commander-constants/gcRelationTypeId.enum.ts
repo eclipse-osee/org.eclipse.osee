@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-const _gcRelationTypeId = {
+export const GCRELATIONTYPEID = {
 	RELATION_ORDER: '1152921504606847089',
 	DEFAULT_HIERARCHICAL: '2305843009213694292',
 	USER_TO_CONTEXT: '3588536741885708579',
@@ -18,5 +18,5 @@ const _gcRelationTypeId = {
 	USER_TO_HISTORY: '6360156234301395903',
 	CONTEXT_TO_COMMAND: '3568736811283748971',
 } as const;
-type gcRelationTypeId =
-	(typeof _gcRelationTypeId)[keyof typeof _gcRelationTypeId];
+export type GCRELATIONTYPEID =
+	(typeof GCRELATIONTYPEID)[keyof typeof GCRELATIONTYPEID];

@@ -12,7 +12,10 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { combineLatest, iif, map, of, switchMap, take } from 'rxjs';
-import { CommandGroupOptionsService } from '../data-services/command-group-options.service';
+import { CommandGroupOptionsService } from '../data-services/commands/command-group-options.service';
+import { ExecutedCommandsService } from '../data-services/execution-services/executed-commands.service';
+import { ParameterDataService } from '../data-services/selected-command-data/parameter-data/parameter-data.service';
+import { SelectedCommandDataService } from '../data-services/selected-command-data/selected-command-data.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -20,12 +23,10 @@ import { CommandGroupOptionsService } from '../data-services/command-group-optio
 export class CommandPaletteInputService {
 	filterString = this.commandGroupOptService.stringThatFiltersCommands;
 	filteredCommandGroups$ = this.commandGroupOptService.filteredCommandGroups;
-	isParamDefined$ = this.commandGroupOptService.isParameterTypeDefined;
-
 	private _predictiveText = combineLatest([
 		this.filteredCommandGroups$,
 		this.filterString,
-		this.commandGroupOptService.selectedCommandObject,
+		this.selectedCommandDataService.selectedCommandObject,
 	]).pipe(
 		switchMap(([filteredCommands, filterValue]) =>
 			filterValue.length >= 2 && filteredCommands.length > 0
@@ -53,7 +54,7 @@ export class CommandPaletteInputService {
 	);
 
 	private _commandName = combineLatest([
-		this.commandGroupOptService.selectedCommandObject,
+		this.selectedCommandDataService.selectedCommandObject,
 		this.filterString,
 	]).pipe(
 		switchMap(([commandObj, filterString]) =>
@@ -65,7 +66,18 @@ export class CommandPaletteInputService {
 		)
 	);
 
-	constructor(private commandGroupOptService: CommandGroupOptionsService) {}
+	openCustomCommandUrl(contentUrl: URL) {
+		this.parameterDataService.updateParameterStringInput(contentUrl.host);
+		window.open(contentUrl.origin, '_blank');
+		this.executedCommandsService.updateCommand.subscribe();
+	}
+
+	constructor(
+		private commandGroupOptService: CommandGroupOptionsService,
+		private selectedCommandDataService: SelectedCommandDataService,
+		private parameterDataService: ParameterDataService,
+		private executedCommandsService: ExecutedCommandsService
+	) {}
 
 	public get predictiveText() {
 		return this._predictiveText;

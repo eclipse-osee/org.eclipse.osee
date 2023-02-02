@@ -402,6 +402,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Description, "", "A context hint that will be visible in the UI")
       );
    ArtifactTypeToken Command = osee.add(osee.artifactType(3605711044364389729L, "Command", false, Artifact)
+      .exactlyOne(CustomCommand, false, "This is a custom command")
       .zeroOrOne(Description, "", "A description of the command")
       .zeroOrOne(ContentUrl, "", "A Rest Call endpoint to call to execute templated with parameters")
       .zeroOrOne(HttpMethod, HttpMethod.Get, "HTTP method for request")

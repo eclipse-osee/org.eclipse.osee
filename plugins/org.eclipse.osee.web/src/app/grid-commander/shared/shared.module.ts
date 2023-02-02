@@ -18,7 +18,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
 	declarations: [HelperdialogComponent],
-	imports: [CommonModule, MatDialogModule, InputControlModule],
+	imports: [CommonModule, MatDialogModule],
 	exports: [InputControlModule],
 })
 export class SharedModule {}

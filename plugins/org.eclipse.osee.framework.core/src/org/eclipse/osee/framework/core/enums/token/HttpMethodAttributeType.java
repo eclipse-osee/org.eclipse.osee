@@ -33,7 +33,7 @@ public class HttpMethodAttributeType extends AttributeTypeEnum<HttpMethodEnum> {
    public final HttpMethodEnum Delete = new HttpMethodEnum(4, "DELETE");
 
    public HttpMethodAttributeType(NamespaceToken namespace, int enumCount) {
-      super(2412383418964323219L, namespace, "HTTP Method", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+      super(2412383418964323219L, namespace, "Http Method", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
          enumCount);
    }
 

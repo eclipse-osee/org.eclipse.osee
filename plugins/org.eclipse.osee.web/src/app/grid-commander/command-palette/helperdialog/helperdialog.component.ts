@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommandGroupOptionsService } from '../../services/data-services/command-group-options.service';
+import { CommandGroupOptionsService } from '../../services/data-services/commands/command-group-options.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({

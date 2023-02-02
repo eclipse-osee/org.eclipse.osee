@@ -68,7 +68,7 @@ public class GridCommanderEndpointTest {
       Assert.assertEquals(contexts.get(0).getName(), "Default User Context");
 
       List<CommandsRelatedToContext> commandsRelatedToContext = contexts.get(0).getCommands();
-      Assert.assertEquals(commandsRelatedToContext.size(), 5);
+      Assert.assertEquals(commandsRelatedToContext.size(), 6);
 
       List<CommandsRelatedToContext> testFilteredCommandArray =
          commandsRelatedToContext.stream().filter(command -> command.getName().matches("Open URL")).collect(

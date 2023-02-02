@@ -10,34 +10,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
+import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import {
 	BehaviorSubject,
 	combineLatest,
-	iif,
-	of,
-	map,
-	switchMap,
-	tap,
-	take,
 	filter,
+	iif,
+	map,
 	mergeMap,
+	of,
+	switchMap,
+	take,
+	tap,
 } from 'rxjs';
-import { RowObj } from '../types/grid-commander-types/table-data-types';
-import { commandHistoryObject } from '../types/grid-commander-types/executedCommand';
-import { DeleteRowDialogComponent } from './delete-row-dialog/delete-row-dialog.component';
+import { CommandGroupOptionsService } from '../services/data-services/commands/command-group-options.service';
+import { CommandFromUserHistoryService } from '../services/data-services/selected-command-data/command-from-history/command-from-user-history.service';
+import { ColumnSortingService } from '../services/datatable-services/column-sorting/column-sorting.service';
 import { DataTableService } from '../services/datatable-services/datatable.service';
-import { FilterService } from '../services/datatable-services/filter.service';
-import { CommandGroupOptionsService } from '../services/data-services/command-group-options.service';
-import { ParameterStringActionService } from '../services/parameter-services/parameter-string-action.service';
-import { RowObjectActionsService } from '../services/datatable-services/row-object-actions.service';
-import { ColumnSortingService } from '../services/datatable-services/column-sorting.service';
-import { DeleteRowService } from '../services/datatable-services/delete-row.service';
+import { DeleteRowService } from '../services/datatable-services/row-actions/delete-row.service';
+import { FilterService } from '../services/datatable-services/filter/filter.service';
+import { RowObjectActionsService } from '../services/datatable-services/row-actions/row-object-actions.service';
+import { commandHistoryObject } from '../types/grid-commander-types/executedCommand';
+import { RowObj } from '../types/grid-commander-types/table-data-types';
+import { DeleteRowDialogComponent } from './delete-row-dialog/delete-row-dialog.component';
 
 @Component({
 	selector: 'osee-gc-datatable',
@@ -192,7 +192,7 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 		private filterService: FilterService,
 		public dialog: MatDialog,
 		private commandGroupOptService: CommandGroupOptionsService,
-		private parameterStringActionService: ParameterStringActionService,
+		private commandFromUserHistoryService: CommandFromUserHistoryService,
 		private rowObjectActionService: RowObjectActionsService,
 		private columnSortingService: ColumnSortingService,
 		private deleteRowService: DeleteRowService
@@ -263,9 +263,9 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 
 	onRowClicked(rowData: commandHistoryObject) {
 		this.commandGroupOptService.stringToFilterCommandsBy = rowData.Command;
-		this.parameterStringActionService.selectedCommandId =
+		this.commandFromUserHistoryService.selectedCommandFromHistoryTableId =
 			rowData['Artifact Id'];
-		this.parameterStringActionService.fromHistory.next(true);
+		this.commandFromUserHistoryService.fromHistory = true;
 	}
 
 	toggleFavorite(rowData: commandHistoryObject) {
@@ -292,6 +292,7 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 			.pipe(
 				filter(
 					(dialogresponse) =>
+						dialogresponse !== undefined &&
 						dialogresponse.event !== undefined &&
 						dialogresponse.data !== undefined
 				),

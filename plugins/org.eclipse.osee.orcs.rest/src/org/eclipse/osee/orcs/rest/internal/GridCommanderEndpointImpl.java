@@ -92,6 +92,9 @@ public class GridCommanderEndpointImpl implements GridCommanderEndpoint {
       tx.setSoleAttributeValue(defaultUserContext, Description,
          "Context containing all default commands available to users");
 
+      ArtifactToken createNewCommand = tx.createArtifact(Command, "Create New Command", BASE);
+      tx.setSoleAttributeValue(createNewCommand, Description, "Add a new command to this Context");
+
       ArtifactToken openURLCommand = tx.createArtifact(Command, "Open URL", BASE);
       tx.setSoleAttributeValue(openURLCommand, Description, "Opens a URL provided by user in new tab");
 
@@ -109,6 +112,11 @@ public class GridCommanderEndpointImpl implements GridCommanderEndpoint {
       tx.setSoleAttributeValue(findArtifactCommand, HttpMethod, "GET");
 
       //Create Parameters For Commands:
+      ArtifactToken createNewCommandParameter =
+         tx.createArtifact(CoreArtifactTypes.ParameterSingleSelect, "Command Action Options", BASE);
+      tx.setSoleAttributeValue(createNewCommandParameter, Description, "Command creation options");
+      tx.setSoleAttributeValue(createNewCommandParameter, DefaultValue, "Open a URL");
+
       ArtifactToken urlParameter = tx.createArtifact(CoreArtifactTypes.ParameterString, "URL", BASE);
       tx.setSoleAttributeValue(urlParameter, Description, "URL to open in new browser tab");
       tx.setSoleAttributeValue(urlParameter, DefaultValue, "www.example.com");
@@ -130,12 +138,14 @@ public class GridCommanderEndpointImpl implements GridCommanderEndpoint {
       tx.setSoleAttributeValue(columnOptionsParameter, Description, "Select Column(s) to hide");
 
       //Establish Command to Parameter Relationship
+      tx.relate(createNewCommand, DefaultHierarchical, createNewCommandParameter);
       tx.relate(openURLCommand, DefaultHierarchical, urlParameter);
       tx.relate(hideColumnCommand, DefaultHierarchical, columnOptionsParameter);
       tx.relate(filterCommand, DefaultHierarchical, searchTermParameter);
       tx.relate(findArtifactCommand, DefaultHierarchical, searchParamParameter);
 
       //Establish Context to Command Relationship
+      tx.relate(defaultUserContext, ContextToCommand, createNewCommand);
       tx.relate(defaultUserContext, ContextToCommand, openURLCommand);
       tx.relate(defaultUserContext, ContextToCommand, helpCommand);
       tx.relate(defaultUserContext, ContextToCommand, filterCommand);

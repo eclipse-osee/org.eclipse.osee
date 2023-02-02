@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { CommandGroupOptionsService } from '../../services/data-services/command-group-options.service';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 
 @Component({
 	selector: 'osee-parameter-branch',
@@ -20,11 +20,11 @@ import { CommandGroupOptionsService } from '../../services/data-services/command
 	styleUrls: ['./parameter-branch.component.sass'],
 })
 export class ParameterBranchComponent {
-	parameter$ = this.commandGroupOptService.commandsParameter;
+	parameter$ = this.parameterDataService.parameter$;
 	paramString = '';
 	userPrompt$ = this.parameter$.pipe(
 		map((param) => param?.attributes.description)
 	);
 
-	constructor(private commandGroupOptService: CommandGroupOptionsService) {}
+	constructor(private parameterDataService: ParameterDataService) {}
 }

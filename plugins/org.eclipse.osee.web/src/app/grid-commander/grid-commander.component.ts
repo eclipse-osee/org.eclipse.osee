@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnDestroy } from '@angular/core';
+import { CommandGroupOptionsService } from './services/data-services/commands/command-group-options.service';
+import { SelectedCommandDataService } from './services/data-services/selected-command-data/selected-command-data.service';
 import { DataTableService } from './services/datatable-services/datatable.service';
 
 @Component({
@@ -21,7 +23,13 @@ import { DataTableService } from './services/datatable-services/datatable.servic
 })
 export class GridCommanderComponent implements OnDestroy {
 	tableData = this.dataTableService.displayedTableData;
-	constructor(private dataTableService: DataTableService) {}
+	displayCreateArtifactForm =
+		this.selectedCommandDataService.displayCreateNewCommandform;
+
+	constructor(
+		private dataTableService: DataTableService,
+		private selectedCommandDataService: SelectedCommandDataService
+	) {}
 
 	ngOnDestroy(): void {
 		this.dataTableService.doneFx = '';

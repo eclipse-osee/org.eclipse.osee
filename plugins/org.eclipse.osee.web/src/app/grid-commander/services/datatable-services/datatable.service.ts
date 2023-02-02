@@ -27,7 +27,7 @@ import {
 	switchMap,
 	takeUntil,
 } from 'rxjs/operators';
-import { HistoryTableService } from './history-table.service';
+import { HistoryTableService } from './history/history-table.service';
 
 @Injectable({
 	providedIn: 'root',

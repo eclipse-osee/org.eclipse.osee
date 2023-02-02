@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommandGroupOptionsService } from '../services/data-services/command-group-options.service';
+import { ParameterDataService } from '../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 
 @Component({
 	selector: 'osee-parameter-types',
@@ -19,7 +19,7 @@ import { CommandGroupOptionsService } from '../services/data-services/command-gr
 	styleUrls: ['./parameter-types.component.sass'],
 })
 export class ParameterTypesComponent {
-	parameter$ = this.commandGroupOptService.commandsParameter;
+	parameter$ = this.parameterDataService.parameter$;
 
-	constructor(private commandGroupOptService: CommandGroupOptionsService) {}
+	constructor(private parameterDataService: ParameterDataService) {}
 }

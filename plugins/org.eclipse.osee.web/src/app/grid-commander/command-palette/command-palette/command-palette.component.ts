@@ -11,8 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommandGroupOptionsService } from '../../services/data-services/command-group-options.service';
+import { NgForm } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { tap } from 'rxjs';
 import { CommandPaletteInputService } from '../../services/command-palette-services/command-palette-input.service';
+import { CommandGroupOptionsService } from '../../services/data-services/commands/command-group-options.service';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
+import { Command } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
+import { HelperdialogComponent } from '../helperdialog/helperdialog.component';
 
 @Component({
 	selector: 'osee-command-palette',
@@ -20,15 +27,60 @@ import { CommandPaletteInputService } from '../../services/command-palette-servi
 	styleUrls: ['./command-palette.component.sass'],
 })
 export class CommandPaletteComponent {
-	inputValue = this.commandGroupOptService.stringThatFiltersCommands;
 	filteredCommandGroups$ =
 		this.commandPaletteInputService.filteredCommandGroups$;
-	isFilterDisabled$ = this.commandGroupOptService.isFilterDisabled;
+	isFilterEnabled$ = this.selectedCommandDataService.isFilterEnabled;
 	_commandNameInput = this.commandPaletteInputService.commandName;
-	isParamDefined$ = this.commandPaletteInputService.isParamDefined$;
+	isParamDefined$ = this.parameterDataService.isParameterTypeDefined;
+	helperDialogRef: MatDialogRef<HelperdialogComponent> | undefined;
 
 	constructor(
-		private commandGroupOptService: CommandGroupOptionsService,
+		private dialogModel: MatDialog,
+		private commandGroupOptionsService: CommandGroupOptionsService,
+		private selectedCommandDataService: SelectedCommandDataService,
+		private parameterDataService: ParameterDataService,
 		private commandPaletteInputService: CommandPaletteInputService
 	) {}
+
+	_dialog(e?: Event) {
+		e?.stopPropagation();
+		this.dialogModel
+			.open(HelperdialogComponent)
+			.afterClosed()
+			.pipe(tap(() => this.clearInput()))
+			.subscribe();
+	}
+
+	_onInput(e: { input: string }) {
+		this.commandGroupOptionsService.stringToFilterCommandsBy = e.input;
+	}
+
+	_onCommandObjSelected(e: { selectedCommandObj: Command; form: NgForm }) {
+		if (e.selectedCommandObj.name === 'Help') {
+			this._dialog();
+			e.form.reset();
+			return;
+		}
+		this.commandGroupOptionsService.stringToFilterCommandsBy =
+			e.selectedCommandObj.name;
+
+		if (
+			e.selectedCommandObj.attributes['custom command'] &&
+			e.selectedCommandObj.attributes['content url']
+		) {
+			this.commandPaletteInputService.openCustomCommandUrl(
+				new URL(
+					e.selectedCommandObj.attributes['content url'].trim(),
+					`https://${e.selectedCommandObj.attributes[
+						'content url'
+					].trim()}`
+				)
+			);
+			e.form.reset();
+		}
+	}
+
+	clearInput() {
+		this.commandGroupOptionsService.stringToFilterCommandsBy = '';
+	}
 }

@@ -13,13 +13,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
 
 import { CommandPaletteModule } from './command-palette/command-palette.module';
 import { GcDatatableModule } from './gc-datatable/gc-datatable.module';
 import { GridCommanderComponent } from './grid-commander.component';
 import { GridCommanderRoutingModule } from './grid-commander-routing.module';
 import { ParameterTypesModule } from './parameter-types/parameter-types.module';
+import { CreateCommandFormComponent } from './create-form/create-command-form/create-command-form.component';
 
 @NgModule({
 	declarations: [GridCommanderComponent],
@@ -30,6 +30,7 @@ import { ParameterTypesModule } from './parameter-types/parameter-types.module';
 		GridCommanderRoutingModule,
 		GcDatatableModule,
 		ParameterTypesModule,
+		CreateCommandFormComponent,
 	],
 	providers: [],
 })

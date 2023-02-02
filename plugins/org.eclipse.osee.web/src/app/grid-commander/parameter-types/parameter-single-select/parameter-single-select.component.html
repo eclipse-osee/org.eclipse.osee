@@ -10,4 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<p>parameter-single-select works!</p>
+<div class="container">
+	<div class="parameter-select-container">
+		<mat-form-field
+			class="full-width"
+			appearance="outline">
+			<mat-label>{{ label }}</mat-label>
+			<mat-select (selectionChange)="onSelectionChange($event)">
+				<mat-option
+					*ngFor="let option of options"
+					[value]="option">
+					{{ option }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+</div>

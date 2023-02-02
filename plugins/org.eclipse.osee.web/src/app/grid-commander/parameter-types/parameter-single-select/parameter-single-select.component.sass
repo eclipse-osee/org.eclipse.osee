@@ -10,3 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../modern-ple-theme.scss'
+@use '_theme.scss' as t
+:host-context(.light-theme)
+    @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
+:host-context(.dark-theme)
+    @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
+
+.full-width
+  width: 100%
