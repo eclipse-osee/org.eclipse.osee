@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { combineLatest, iif, map, of, switchMap } from 'rxjs';
-import { FilterService } from '../../services/datatable-services/filter.service';
+import { FilterService } from '../../services/datatable-services/filter/filter.service';
 import { MatSelectChange } from '@angular/material/select';
 
 @Component({
@@ -20,7 +20,7 @@ import { MatSelectChange } from '@angular/material/select';
 	templateUrl: './table-filter.component.html',
 	styleUrls: ['./table-filter.component.sass'],
 })
-export class TableFilterComponent {
+export class TableFilterComponent implements OnDestroy {
 	selectedColsToFilter = this.filterService.selectedColumnsToFilter;
 	indiciesOfSelectedColumns$ = this.filterService.indicesOfSelectedColumns;
 	filterColumnOptions = this.filterService.columnOptionsForFilter;
@@ -60,6 +60,9 @@ export class TableFilterComponent {
 
 	constructor(private filterService: FilterService) {}
 
+	ngOnDestroy(): void {
+		this.filterService.updateColumnsToFilter([]);
+	}
 	onSelectColumnToFilterBy(event: MatSelectChange) {
 		event.value.length === 0
 			? this.filterService.updateColumnsToFilter([])

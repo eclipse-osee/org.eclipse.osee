@@ -10,23 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
-	MatFormFieldControl,
 	FloatLabelType,
+	MatFormFieldControl,
 } from '@angular/material/form-field';
 import { tap } from 'rxjs';
 import { HelperdialogComponent } from '../../command-palette/helperdialog/helperdialog.component';
+import { CommandPaletteInputService } from '../../services/command-palette-services/command-palette-input.service';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { CommandFromUserHistoryService } from '../../services/data-services/selected-command-data/command-from-history/command-from-user-history.service';
 import {
 	Command,
 	CommandGroups,
 } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
-import { CommandPaletteInputService } from '../../services/command-palette-services/command-palette-input.service';
-import { CommandGroupOptionsService } from '../../services/data-services/command-group-options.service';
-import { ParameterStringActionService } from '../../services/parameter-services/parameter-string-action.service';
 
 @Component({
 	selector: 'osee-input-control',
@@ -50,91 +49,77 @@ export class InputControlComponent<T extends CommandGroups> {
 	@Input() patternValidator!: string;
 	@Input() required: boolean = false;
 	@Input() error!: string;
-
 	@Input() commandPaletteUse!: boolean;
 	@Input() usePredictiveText!: boolean;
+	@Input() data!: T[];
 
 	predictiveText = this.commandPaletteInputService.predictiveText;
-	isParamDefined$ = this.commandPaletteInputService.isParamDefined$;
+	isParamDefined$ = this.parameterDataService.isParameterTypeDefined;
+
+	fromHistory = this.commandFromUserHistoryService.fromHistory;
 
 	helperDialogRef: MatDialogRef<HelperdialogComponent> | undefined;
 
+	@Output('autocompleteCommandSelection')
+	selectedCommandViaAutocomplete: EventEmitter<{
+		selectedCommandObj: Command;
+		form: NgForm;
+	}> = new EventEmitter<{ selectedCommandObj: Command; form: NgForm }>();
 	@Output('update') updateInput: EventEmitter<{
 		input: string;
 	}> = new EventEmitter<{ input: string }>();
 
 	@Output('submitInput') submitInput: EventEmitter<{
 		input: string;
-	}> = new EventEmitter<{ input: string }>();
-
-	@Input() data!: T[];
+		type: string;
+	}> = new EventEmitter<{ input: string; type: string }>();
 
 	constructor(
 		private dialogModel: MatDialog,
 		private commandPaletteInputService: CommandPaletteInputService,
-		private commandGroupOptionsService: CommandGroupOptionsService,
-		private parameterStringActionService: ParameterStringActionService
+		private parameterDataService: ParameterDataService,
+
+		private commandFromUserHistoryService: CommandFromUserHistoryService
 	) {}
 
 	_onInput(e: Event) {
 		let inputVal = (e.target as HTMLInputElement).value;
 		if (inputVal[0] === undefined || inputVal === '') inputVal = '';
+		this.input = inputVal;
 
 		this.commandPaletteUse
-			? (this.commandGroupOptionsService.stringToFilterCommandsBy =
-					this.formatInputText(inputVal))
-			: this.update(inputVal);
-	}
-
-	formatInputText(input: string) {
-		return input
-			.split(' ')
-			.map((val) => {
-				if (!val[0]) return '';
-				return val[0]?.toUpperCase() + val?.slice(1).toLowerCase();
-			})
-			.join(' ');
-	}
-
-	update(value: string) {
-		this.input = value;
-		this.updateInput.emit({
-			input: this.input,
-		});
-	}
-
-	clearInput() {
-		this.commandPaletteUse
-			? (this.commandGroupOptionsService.stringToFilterCommandsBy = '')
-			: this.update('');
-		this.parameterStringActionService.fromHistory.next(false);
+			? this.updateInput.emit({
+					input: this.formatInputText(inputVal),
+			  })
+			: this.updateInput.emit({
+					input: inputVal,
+			  });
 	}
 
 	_onSubmit(form: NgForm) {
 		if (
 			this.input === null ||
-			this.input[0] === undefined ||
+			this.input === undefined ||
 			this.input === ''
 		)
 			return;
-		if (form.status === 'INVALID') return;
-		if (this.type === 'url') {
-			if (!this.isValidUrl(`https://${this.input.trim()}`)) {
-				return;
-			}
-		}
+		if (form.form.status === 'INVALID') return;
+
 		this.submitInput.emit({
 			input: this.input,
+			type: this.type,
 		});
 	}
 
-	isValidUrl(url: string) {
-		try {
-			new URL(url);
-			return true;
-		} catch (err) {
-			return false;
-		}
+	_onCommandObjSelected(commandObj: Command, inputForm: NgForm) {
+		this.commandPaletteUse
+			? this.selectedCommandViaAutocomplete.emit({
+					selectedCommandObj: commandObj,
+					form: inputForm,
+			  })
+			: this.updateInput.emit({
+					input: commandObj.name,
+			  });
 	}
 
 	_dialog(e?: Event) {
@@ -146,14 +131,21 @@ export class InputControlComponent<T extends CommandGroups> {
 			.subscribe();
 	}
 
-	_onCommandObjSelected(commandObj: Command) {
-		if (commandObj.name === 'Help') {
-			this._dialog();
-		}
+	clearInput() {
+		this.updateInput.emit({
+			input: '',
+		});
+		this.commandFromUserHistoryService.fromHistory = false;
+		this.input = '';
+	}
 
-		this.commandPaletteUse
-			? (this.commandGroupOptionsService.stringToFilterCommandsBy =
-					commandObj.name)
-			: this.update(commandObj.name);
+	formatInputText(input: string) {
+		return input
+			.split(' ')
+			.map((val) => {
+				if (!val[0]) return '';
+				return val[0]?.toUpperCase() + val?.slice(1).toLowerCase();
+			})
+			.join(' ');
 	}
 }

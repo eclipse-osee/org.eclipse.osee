@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FilterService } from '../../services/datatable-services/filter.service';
+import { FilterService } from '../../services/datatable-services/filter/filter.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TableFilterComponent } from './table-filter.component';
 import { MatFormFieldModule } from '@angular/material/form-field';

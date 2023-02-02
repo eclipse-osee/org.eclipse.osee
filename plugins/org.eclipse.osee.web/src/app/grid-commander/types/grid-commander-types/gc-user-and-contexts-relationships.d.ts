@@ -44,11 +44,12 @@ export interface CommandAttributes {
 	description?: string;
 	'content url'?: string;
 	'http method'?: string;
+	'custom command'?: boolean;
 }
 
 export interface Parameter extends NamedId {
-	idIntValue: number;
-	idString: string;
+	idIntValue?: number;
+	idString?: string;
 	typeAsString: string;
 	attributes: ParameterAttributes;
 }

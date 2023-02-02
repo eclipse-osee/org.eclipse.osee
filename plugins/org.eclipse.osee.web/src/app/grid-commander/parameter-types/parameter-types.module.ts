@@ -58,6 +58,6 @@ import {
 		MatSelectModule,
 		SharedModule,
 	],
-	exports: [ParameterTypesComponent],
+	exports: [ParameterTypesComponent, ParameterSingleSelectComponent],
 })
 export class ParameterTypesModule {}

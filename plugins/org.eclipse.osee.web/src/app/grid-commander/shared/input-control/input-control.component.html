@@ -53,7 +53,7 @@
 					">
 					<mat-option
 						(onSelectionChange)="
-							_onCommandObjSelected(commandObject)
+							_onCommandObjSelected(commandObject, f)
 						"
 						*ngFor="let commandObject of command.commands"
 						[value]="commandObject.name">
@@ -82,7 +82,7 @@
 		</button>
 		<button
 			type="button"
-			*ngIf="input !== undefined && input"
+			*ngIf="input !== undefined && input && !fromHistory"
 			matSuffix
 			mat-icon-button
 			aria-label="Clear"

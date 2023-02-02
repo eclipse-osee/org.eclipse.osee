@@ -10,10 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { map } from 'rxjs';
-import { CommandGroupOptionsService } from '../../services/data-services/command-group-options.service';
-import { DataTableService } from '../../services/datatable-services/datatable.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
 	selector: 'osee-parameter-single-select',
@@ -22,16 +20,16 @@ import { DataTableService } from '../../services/datatable-services/datatable.se
 })
 export class ParameterSingleSelectComponent {
 	//TODO: Determine how to dynamically render options in template based on command -- paramater attribute?
-	colOptions = this.dataTableService.displayedCols;
+	@Input() options!: string[];
+	@Input() label!: string;
 
-	parameter$ = this.commandGroupOptService.commandsParameter;
-	paramString = '';
-	userPrompt$ = this.parameter$.pipe(
-		map((param) => param?.attributes.description)
-	);
+	@Output('selectionChange') selectionChange: EventEmitter<{
+		selectedOption: string;
+	}> = new EventEmitter<{ selectedOption: string }>();
 
-	constructor(
-		private dataTableService: DataTableService,
-		private commandGroupOptService: CommandGroupOptionsService
-	) {}
+	constructor() {}
+
+	onSelectionChange(e: MatSelectChange) {
+		this.selectionChange.emit({ selectedOption: e.value });
+	}
 }

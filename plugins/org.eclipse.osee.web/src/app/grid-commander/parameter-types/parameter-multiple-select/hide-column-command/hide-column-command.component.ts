@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { CommandGroupOptionsService } from '../../../services/data-services/command-group-options.service';
+import { SelectedCommandDataService } from '../../../services/data-services/selected-command-data/selected-command-data.service';
 import { DataTableService } from '../../../services/datatable-services/datatable.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class HideColumnCommandComponent {
 	hideColumnsControl = this.dataTableService.hiddenColumns;
 
 	commandDescription$ =
-		this.commandGroupOptService.selectedCommandObject.pipe(
+		this.selectedCommandDataService.selectedCommandObject.pipe(
 			switchMap((commandObj) =>
 				of(commandObj).pipe(
 					map((command) => command.attributes.description)
@@ -37,7 +37,7 @@ export class HideColumnCommandComponent {
 
 	constructor(
 		private dataTableService: DataTableService,
-		private commandGroupOptService: CommandGroupOptionsService
+		private selectedCommandDataService: SelectedCommandDataService
 	) {}
 
 	onSelectColToHide(event: MatSelectChange) {

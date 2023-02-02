@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommandGroupOptionsService } from '../../services/data-services/command-group-options.service';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
 
 @Component({
 	selector: 'osee-parameter-multiple-select',
@@ -19,8 +20,11 @@ import { CommandGroupOptionsService } from '../../services/data-services/command
 	styleUrls: ['./parameter-multiple-select.component.sass'],
 })
 export class ParameterMultipleSelectComponent {
-	command$ = this.commandGroupOptService.selectedCommandObject;
-	parameter$ = this.commandGroupOptService.commandsParameter;
+	command$ = this.selectedCommandDataService.selectedCommandObject;
+	parameter$ = this.parameterDataService.parameter$;
 
-	constructor(private commandGroupOptService: CommandGroupOptionsService) {}
+	constructor(
+		private selectedCommandDataService: SelectedCommandDataService,
+		private parameterDataService: ParameterDataService
+	) {}
 }

@@ -11,11 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnDestroy } from '@angular/core';
-import { combineLatest, switchMap, iif, of } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ExecutedCommandsService } from '../../services/data-services/executed-commands.service';
-import { ParameterStringActionService } from '../../services/parameter-services/parameter-string-action.service';
-import { ParameterTemplateService } from '../../services/parameter-services/parameter-template.service';
+import { ExecutedCommandsService } from '../../services/data-services/execution-services/executed-commands.service';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { CommandFromUserHistoryService } from '../../services/data-services/selected-command-data/command-from-history/command-from-user-history.service';
+import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
 
 @Component({
 	selector: 'osee-parameter-string',
@@ -23,11 +24,12 @@ import { ParameterTemplateService } from '../../services/parameter-services/para
 	styleUrls: ['./parameter-string.component.sass'],
 })
 export class ParameterStringComponent implements OnDestroy {
-	parameter$ = this.paramTemplateService.parameter$;
-	userPrompt$ = this.paramTemplateService.userPrompt$;
-	inputPlaceholder$ = this.paramTemplateService.inputPlaceholder$;
-	isValidatorUsed$ = this.paramTemplateService.isValidatorUsed$;
-	patternValidator$ = this.paramTemplateService.patternValidator$;
+	isCustomCommand$ = this.selectedCommandDataService.isCustomCommand;
+	parameter$ = this.parameterDataService.parameter$;
+	userPrompt$ = this.parameterDataService.userPrompt$;
+	inputPlaceholder$ = this.parameterDataService.inputPlaceholder$;
+	isValidatorUsed$ = this.parameterDataService.isValidatorUsed$;
+	patternValidator$ = this.parameterDataService.patternValidator$;
 
 	displayInParamStringComponent$ = combineLatest([
 		this.parameter$,
@@ -35,6 +37,7 @@ export class ParameterStringComponent implements OnDestroy {
 		this.inputPlaceholder$,
 		this.isValidatorUsed$,
 		this.patternValidator$,
+		this.isCustomCommand$,
 	]).pipe(
 		map(
 			([
@@ -43,59 +46,51 @@ export class ParameterStringComponent implements OnDestroy {
 				placeholder,
 				validatorUsed,
 				patternValidator,
+				isCustomCommand,
 			]) => ({
 				parameter,
 				prompt,
 				placeholder,
 				validatorUsed,
 				patternValidator,
+				isCustomCommand,
 			})
 		)
 	);
 
-	parameterValueFromHistory = combineLatest([
-		this.parameterStringActionService.selectedExecutedCommandObject,
-		this.parameterStringActionService.fromHistory,
-	]).pipe(
-		switchMap(([commandHistoryObj, fromHistory]) =>
-			iif(
-				() => fromHistory === true,
-				of(commandHistoryObj).pipe(
-					map((commandFromHistory) =>
-						commandFromHistory.parameterizedCommand
-							.split('Value:')[1]
-							.trim()
-					)
-				),
-				of('').pipe()
-			)
-		)
-	);
+	parameterValueFromHistory =
+		this.commandFromUserHistoryService.parameterValueFromHistory$;
 
 	constructor(
-		private parameterStringActionService: ParameterStringActionService,
-		private paramTemplateService: ParameterTemplateService,
-		private executedCommandService: ExecutedCommandsService
+		private commandFromUserHistoryService: CommandFromUserHistoryService,
+		private parameterDataService: ParameterDataService,
+		private selectedCommandDataService: SelectedCommandDataService,
+		private executedCommandsService: ExecutedCommandsService
 	) {}
 
 	ngOnDestroy(): void {
-		this.executedCommandService.doneFx = '';
+		this.executedCommandsService.doneFx = '';
 	}
 
-	//Other checks if the command is from the history?
 	_onInput(e: { input: string }) {
 		let inputVal = e.input;
 		if (inputVal[0] === undefined || inputVal === '') {
-			this.parameterStringActionService.fromHistory.next(false);
-			this.parameterStringActionService.selectedCommandId = '';
+			this.commandFromUserHistoryService.fromHistory = false;
+			this.commandFromUserHistoryService.selectedCommandFromHistoryTableId =
+				'';
 			return;
 		}
 	}
 
-	_onSubmit(e: { input: string }) {
-		const url = new URL(e.input.trim(), `https://${e.input.trim()}`);
-		this.paramTemplateService.updateParameterStringInput(url.host);
-		this.executedCommandService.updateCommand.subscribe();
-		window.open(url.origin, '_blank');
+	_onSubmit(e: { input: string; type: string }) {
+		if (e.type === 'url') {
+			const url: URL = new URL(
+				e.input.trim(),
+				`https://${e.input.trim()}`
+			);
+			this.parameterDataService.updateParameterStringInput(url.host);
+			this.executedCommandsService.updateCommand.subscribe();
+			window.open(url.origin, '_blank');
+		}
 	}
 }

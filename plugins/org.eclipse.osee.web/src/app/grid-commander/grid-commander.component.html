@@ -11,10 +11,11 @@
  *     Boeing - initial API and implementation
  -->
 <div class="gc-card">
-	<ng-container>
+	<div class="command-palette-div">
 		<osee-command-palette></osee-command-palette>
+	</div>
+	<ng-container *ngIf="displayCreateArtifactForm | async">
+		<osee-create-command-form></osee-create-command-form>
 	</ng-container>
-	<ng-container>
-		<osee-gc-datatable></osee-gc-datatable>
-	</ng-container>
+	<osee-gc-datatable></osee-gc-datatable>
 </div>
