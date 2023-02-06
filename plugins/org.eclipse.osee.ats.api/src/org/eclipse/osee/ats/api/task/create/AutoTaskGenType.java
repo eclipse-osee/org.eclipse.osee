@@ -23,10 +23,11 @@ public class AutoTaskGenType extends OseeEnum {
 
    private static final Long ENUM_ID = 436296943332L;
 
-   public static AutoTaskGenType ChgRptAddMod = new AutoTaskGenType(111L, "ChgRptAddMod");
-   public static AutoTaskGenType ChgRptDelete = new AutoTaskGenType(222L, "ChgRptDelete");
-   public static AutoTaskGenType Static = new AutoTaskGenType(333L, "Static");
-   public static AutoTaskGenType None = new AutoTaskGenType(444L, "None");
+   public static AutoTaskGenType ChgRptAdd = new AutoTaskGenType(111L, "ChgRptAdd");
+   public static AutoTaskGenType ChgRptMod = new AutoTaskGenType(222L, "ChgRptMod");
+   public static AutoTaskGenType ChgRptDelete = new AutoTaskGenType(333L, "ChgRptDelete");
+   public static AutoTaskGenType Static = new AutoTaskGenType(444L, "Static");
+   public static AutoTaskGenType None = new AutoTaskGenType(555L, "None");
 
    public AutoTaskGenType(long id, String name) {
       super(ENUM_ID, id, name);

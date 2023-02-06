@@ -24,8 +24,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -232,13 +232,13 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    protected Collection<String> getFinalTaskNames() {
       if (taskNames == null) {
          taskNames = Arrays.asList( //
-            "Handle AddMod change to [Fifth Artifact - Unspecified CSCI]", //
-            "Handle AddMod change to [First Artifact]", //
-            "Handle AddMod change to [Fourth Artifact - No CSCI]", //
-            "Handle AddMod change to [In-Branch Artifact to Delete Changed]", //
-            "Handle AddMod change to [In-Branch Artifact to Delete]", //
-            "Handle AddMod change to [Second Artifact]", //
-            "Handle AddMod change to [Third Artifact]", //
+            "Handle Add change to [Fifth Artifact - Unspecified CSCI]", //
+            "Handle Add change to [First Artifact]", //
+            "Handle Add change to [Fourth Artifact - No CSCI]", //
+            "Handle Add change to [In-Branch Artifact to Delete Changed]", //
+            "Handle Add change to [In-Branch Artifact to Delete]", //
+            "Handle Add change to [Second Artifact]", //
+            "Handle Add change to [Third Artifact]", //
             "Handle Deleted change to [Pre-Branch Artifact to Delete] (Deleted)", //
             "Handle Relation change to [Fifth Artifact - Unspecified CSCI]", //
             "Handle Relation change to [First Artifact]", //
@@ -296,8 +296,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    public void testCodeTaskCreationAfterFirstAndSecond() {
       firstSecondExpected = new ArrayList<String>();
       firstSecondExpected.addAll(Arrays.asList( //
-         "Handle AddMod change to [First Artifact]", //
-         "Handle AddMod change to [Second Artifact]", //
+         "Handle Add change to [First Artifact]", //
+         "Handle Add change to [Second Artifact]", //
          "Handle Relation change to [First Artifact]", //
          "Handle Relation change to [Second Artifact]", //
          "Handle Relation change to [Software Requirements]", //
@@ -310,11 +310,11 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    public void testCodeTaskCreationAfterThirdFourthFifth() {
       thirdFourthFifthExpected = new ArrayList<>();
       thirdFourthFifthExpected.addAll(Arrays.asList( //
-         "Handle AddMod change to [Third Artifact]", //
+         "Handle Add change to [Third Artifact]", //
          "Handle Relation change to [Third Artifact]", //
-         "Handle AddMod change to [Fifth Artifact - Unspecified CSCI]",
+         "Handle Add change to [Fifth Artifact - Unspecified CSCI]",
          "Handle Relation change to [Fifth Artifact - Unspecified CSCI]",
-         "Handle AddMod change to [Fourth Artifact - No CSCI]",
+         "Handle Add change to [Fourth Artifact - No CSCI]", //
          "Handle Relation change to [Fourth Artifact - No CSCI]"));
       thirdFourthFifthExpected.addAll(firstSecondExpected);
 
@@ -325,7 +325,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    public void testCodeTaskCreationAfterCreateReqArtToDelete() {
       createReqArtToDelExpected = new ArrayList<>();
       createReqArtToDelExpected.addAll(Arrays.asList( //
-         "Handle AddMod change to [In-Branch Artifact to Delete]",
+         "Handle Add change to [In-Branch Artifact to Delete]",
          "Handle Relation change to [In-Branch Artifact to Delete]"));
       createReqArtToDelExpected.addAll(thirdFourthFifthExpected);
 
@@ -340,7 +340,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
        * name generated.
        */
       changeNameToReqArtToDelExpected.addAll(Arrays.asList( //
-         "Handle AddMod change to [In-Branch Artifact to Delete Changed]",
+         "Handle Add change to [In-Branch Artifact to Delete Changed]",
          "Handle Relation change to [In-Branch Artifact to Delete Changed]"));
       changeNameToReqArtToDelExpected.addAll(createReqArtToDelExpected);
       testTasksAgainstExpected(changeNameToReqArtToDelExpected);
@@ -362,9 +362,9 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       deleteReqArtToDelExpected = new HashSet<>();
       deleteReqArtToDelExpected.addAll(createReqArtToDelExpected);
       deleteReqArtToDelExpected.addAll(Arrays.asList( //
-         "Handle AddMod change to [In-Branch Artifact to Delete]",
+         "Handle Add change to [In-Branch Artifact to Delete]",
          "Handle Relation change to [In-Branch Artifact to Delete]",
-         "Handle AddMod change to [In-Branch Artifact to Delete Changed]",
+         "Handle Add change to [In-Branch Artifact to Delete Changed]",
          "Handle Relation change to [In-Branch Artifact to Delete Changed]"));
 
       IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();

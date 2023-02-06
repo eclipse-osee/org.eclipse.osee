@@ -37,4 +37,15 @@ public class MetricsReportOperations {
       builder.header("Content-Disposition", "attachment; filename=" + fileName).header("FileName", fileName);
       return builder.build();
    }
+
+   public Response generateSoftwareReqVolatility(String targetVersion, boolean includeUnchangedCode) {
+      StreamingOutput streamingOutput =
+         new SoftwareReqVolatilityMetrics(orcsApi, atsApi, targetVersion, includeUnchangedCode);
+      String fileName =
+         String.format("SoftwareRequirementsVolatilityMetrics_%s_%s.xml", targetVersion, Lib.getDateTimeString());
+
+      ResponseBuilder builder = Response.ok(streamingOutput, MediaType.APPLICATION_OCTET_STREAM);
+      builder.header("Content-Disposition", "attachment; filename=" + fileName).header("FileName", fileName);
+      return builder.build();
+   }
 }

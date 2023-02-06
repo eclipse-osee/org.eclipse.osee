@@ -41,4 +41,13 @@ public class MetricsEndpointImpl implements MetricsEndpointApi {
          weekday, iterationLength, periodic, nonPeriodic, periodicTask, nonPeriodicTask);
    }
 
+   @Override
+   @Path("SoftwareReqVolatility/{targetVersion}")
+   @GET
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   public Response softwareReqVolatility(@PathParam("targetVersion") String targetVersion, @QueryParam("includeUnchangedCode") boolean includeUnchangedCode) {
+      return (new MetricsReportOperations(atsApi, orcsApi)).generateSoftwareReqVolatility(targetVersion,
+         includeUnchangedCode);
+   }
+
 }
