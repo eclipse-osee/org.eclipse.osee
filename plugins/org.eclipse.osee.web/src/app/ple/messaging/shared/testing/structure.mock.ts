@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure } from '../types/structure';
+import { structure } from '@osee/messaging/shared/types';
 import { elementsMock } from './element.response.mock';
 
-export const structuresMock: Required<structure>[] = [
+export const structuresMock3: Required<structure>[] = [
 	{
 		id: '1',
 		name: 'hello',

@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { affectedArtifact } from '@osee/messaging/shared/types';
 import { iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { affectedArtifact } from '../../types/affectedArtifact';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 @Injectable({

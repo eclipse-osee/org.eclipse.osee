@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { transportType } from '../types/transportType';
+import { transportType } from '@osee/messaging/shared/types';
 
 export const ethernet: Required<transportType> = {
 	id: '1233456',

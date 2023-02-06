@@ -19,7 +19,7 @@ import {
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { affectedArtifactWarning } from '../../types/affectedArtifact';
+import { affectedArtifactWarning } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-affected-artifact-dialog',

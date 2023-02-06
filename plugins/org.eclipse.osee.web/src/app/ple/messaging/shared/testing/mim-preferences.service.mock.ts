@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { of } from 'rxjs';
-import { transactionResultMock } from '../../../../transactions/transaction.mock';
-import { user } from '../../../../userdata/types/user-data-user';
+import { user } from '../../../../types/user';
 import { MimPreferencesService } from '../services/http/mim-preferences.service';
-import { MimUserGlobalPreferences } from '../types/mim.preferences';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
 
 export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {

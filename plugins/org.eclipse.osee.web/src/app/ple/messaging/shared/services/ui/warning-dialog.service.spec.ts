@@ -13,14 +13,14 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
-import { TestScheduler } from 'rxjs/testing';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
 import {
 	affectedArtifactHttpServiceMock,
 	affectedArtifactHttpServiceWithWarningResultsMock,
 	warningArtifacts,
-} from '../../testing/affected-artifact.service.mock';
+} from '@osee/messaging/shared/testing';
+import { of } from 'rxjs';
+import { TestScheduler } from 'rxjs/testing';
+import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { WarningDialogService } from './warning-dialog.service';

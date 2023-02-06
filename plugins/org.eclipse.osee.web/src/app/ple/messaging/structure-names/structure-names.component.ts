@@ -18,13 +18,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CurrentStructureNamesService } from '@osee/messaging/shared';
+import { BranchPickerComponent } from '@osee/shared/components';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
 import { HttpLoadingService } from '../../../services/http-loading.service';
-import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
-import { CurrentStructureNamesService } from '../shared/services/ui/current-structure-names.service';
-
 @Component({
 	selector: 'osee-messaging-structure-names',
 	templateUrl: './structure-names.component.html',

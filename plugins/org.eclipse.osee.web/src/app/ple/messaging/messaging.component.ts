@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
+import { UserDataAccountService } from 'src/app/auth/user-data-account.service';
 import navigationStructure, {
 	navigationElement,
 } from '../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';

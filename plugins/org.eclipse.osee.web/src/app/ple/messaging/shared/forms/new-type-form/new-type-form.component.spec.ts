@@ -28,26 +28,29 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
-import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { applicabilityListUIServiceMock } from '../../testing/applicability-list-ui.service.mock';
-import { enumerationUiServiceMock } from '../../testing/enumeration-ui.service.mock';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { EnumsService } from '../../services/http/enums.service';
-import { MimPreferencesService } from '../../services/http/mim-preferences.service';
-import { TypesService } from '../../services/http/types.service';
-import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
-import { MockEnumSetFormUnique } from '../../forms/enum-set-form/enum-set-form.component.mock';
-import { MockLogicalTypeSelectorComponent } from '../../testing/logical-type-selector.component.mock';
-import { MockNewPlatformTypeFormPage2Component } from '../../testing/new-platform-type-form-page2.component.mock';
+import { MockEnumSetFormUniqueComponent } from '../../forms/enum-set-form/enum-set-form.component.mock';
 
 import { NewTypeFormComponent } from './new-type-form.component';
+import {
+	MockLogicalTypeSelectorComponent,
+	MockNewPlatformTypeFormPage2Component,
+	MimPreferencesServiceMock,
+	typesServiceMock,
+	enumsServiceMock,
+	enumerationUiServiceMock,
+	applicabilityListUIServiceMock,
+} from '@osee/messaging/shared/testing';
+import {
+	MimPreferencesService,
+	TypesService,
+	EnumsService,
+	EnumerationUIService,
+	ApplicabilityListUIService,
+} from '@osee/messaging/shared/services';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 
 describe('NewTypeFormComponent', () => {
 	let component: NewTypeFormComponent;
@@ -70,7 +73,7 @@ describe('NewTypeFormComponent', () => {
 						MatTableModule,
 						MatIconModule,
 						MatOptionLoadingComponent,
-						MockEnumSetFormUnique,
+						MockEnumSetFormUniqueComponent,
 						MockLogicalTypeSelectorComponent,
 						MockNewPlatformTypeFormPage2Component,
 						NgIf,

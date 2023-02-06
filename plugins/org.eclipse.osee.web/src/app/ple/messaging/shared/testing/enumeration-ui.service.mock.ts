@@ -11,15 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { relation } from '../../../../transactions/transaction';
+import { enumerationSetMock } from './enumeration-set.response.mock';
+import { EnumerationUIService } from '../services/ui/enumeration-ui.service';
+import {
+	enumSet,
+	enumeration,
+	enumerationSet,
+} from '@osee/messaging/shared/types';
+import { relation, transaction } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
-import { enumerationSetMock } from './enumeration-set.response.mock';
-import { EnumerationUIService } from '../services/ui/enumeration-ui.service';
-import { enumSet, enumeration, enumerationSet } from '../types/enum';
-import { transaction } from '../../../../transactions/transaction';
+} from '@osee/shared/transactions/testing';
 
 export const enumerationUiServiceMock: Partial<EnumerationUIService> = {
 	createEnumSetToPlatformTypeRelation(sideA?: string) {

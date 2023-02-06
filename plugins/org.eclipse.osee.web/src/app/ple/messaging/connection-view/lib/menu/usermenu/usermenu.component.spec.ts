@@ -18,16 +18,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
-import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { RouteStateService } from '../../services/route-state-service.service';
 
 import { UsermenuComponent } from './usermenu.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { EditAuthService, PreferencesUIService } from '@osee/messaging/shared';
+import {
+	editAuthServiceMock,
+	preferencesUiServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

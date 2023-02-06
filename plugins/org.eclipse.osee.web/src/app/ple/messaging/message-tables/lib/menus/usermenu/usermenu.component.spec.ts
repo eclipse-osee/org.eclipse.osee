@@ -18,15 +18,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
-import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
-import { CurrentMessageServiceMock } from '../../../../shared/testing/current-messages.service.mock';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
 
 import { UsermenuComponent } from './usermenu.component';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	CurrentMessagesService,
+	EditAuthService,
+	PreferencesUIService,
+} from '@osee/messaging/shared';
+import {
+	CurrentMessageServiceMock,
+	preferencesUiServiceMock,
+	editAuthServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

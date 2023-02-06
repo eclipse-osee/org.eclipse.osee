@@ -12,7 +12,7 @@
  **********************************************************************/
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DiffReportResolver } from 'src/app/resolvers/diff-report-resolver.resolver';
+import { DiffReportResolver } from '@osee/shared/resolvers';
 import { SingleDiffComponent } from '../diff-views/single-diff/single-diff.component';
 import { PlconfigComponent } from './plconfig.component';
 

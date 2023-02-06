@@ -28,16 +28,17 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { ActionDropDownComponent } from '../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { ActionDropdownStub } from '../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
-import { BranchPickerStub } from '../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { ApplicabilityTableComponent } from './components/applicability-table/applicability-table.component';
-import { ConfigurationDropdownComponent } from './components/dropdowns/configuration-dropdown/configuration-dropdown.component';
-import { ConfigurationGroupDropdownComponent } from './components/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
-import { FeatureDropdownComponent } from './components/dropdowns/feature-dropdown/feature-dropdown.component';
-import { ProductTypeDropDownComponent } from './components/dropdowns/product-type-drop-down/product-type-drop-down.component';
+import { ApplicabilityTableComponent } from './lib/table/applicability-table/applicability-table.component';
+import { ConfigurationDropdownComponent } from './lib/dropdowns/configuration-dropdown/configuration-dropdown.component';
+import { ConfigurationGroupDropdownComponent } from './lib/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
+import { FeatureDropdownComponent } from './lib/dropdowns/feature-dropdown/feature-dropdown.component';
+import { ProductTypeDropDownComponent } from './lib/dropdowns/product-type-drop-down/product-type-drop-down.component';
 
 import { PlconfigComponent } from './plconfig.component';
+import {
+	ActionDropdownStub,
+	BranchPickerStub,
+} from '@osee/shared/components/testing';
 
 describe('PlconfigComponent', () => {
 	let component: PlconfigComponent;

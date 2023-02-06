@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
+import { enumeration, enumSet } from '@osee/messaging/shared/types';
+import { relation, transaction } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
+} from '@osee/shared/transactions/testing';
+import { of } from 'rxjs';
 import { EnumerationSetService } from '../services/http/enumeration-set.service';
-import { enumeration, enumSet } from '../types/enum';
 import { enumerationSetMock } from './enumeration-set.response.mock';
 
 export const enumerationSetServiceMock: Partial<EnumerationSetService> = {

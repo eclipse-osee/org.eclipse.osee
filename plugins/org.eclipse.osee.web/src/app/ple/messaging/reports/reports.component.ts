@@ -16,19 +16,21 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { from, iif, of } from 'rxjs';
 import { filter, scan, startWith, switchMap, tap } from 'rxjs/operators';
 import { applic } from 'src/app/types/applicability/applic';
-import { ConnectionService } from '../shared/services/http/connection.service';
-import { ApplicabilityListService } from '../shared/services/http/applicability-list.service';
-import { ReportsService } from '../shared/services/ui/reports.service';
-import { connection } from '../shared/types/connection';
-import { MimReport } from '../shared/types/Reports';
+import {
+	ApplicabilityListService,
+	connection,
+	ConnectionService,
+	MimReport,
+	ReportsService,
+} from '@osee/messaging/shared';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
+import { BranchPickerComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-reports',

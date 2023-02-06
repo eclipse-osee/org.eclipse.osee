@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from '../types/element';
+
+import { element } from '@osee/messaging/shared/types';
 
 export const elementsMock: element[] = [
 	{

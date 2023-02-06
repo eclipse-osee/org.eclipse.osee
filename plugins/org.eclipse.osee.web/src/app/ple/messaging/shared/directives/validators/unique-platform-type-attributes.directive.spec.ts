@@ -11,9 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { QueryServiceMock } from '../../testing/query.service.mock';
-import { QueryService } from '../../services/http/query.service';
-import { CurrentQueryService } from '../../services/ui/current-query.service';
+import {
+	CurrentQueryService,
+	QueryService,
+} from '@osee/messaging/shared/services';
+import { QueryServiceMock } from '@osee/messaging/shared/testing';
 import { UniquePlatformTypeAttributesDirective } from './unique-platform-type-attributes.directive';
 
 describe('UniquePlatformTypeAttributesDirective', () => {

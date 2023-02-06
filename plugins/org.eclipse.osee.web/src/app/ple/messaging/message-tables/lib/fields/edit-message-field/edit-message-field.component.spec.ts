@@ -29,11 +29,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { applicabilityListServiceMock } from '../../../../shared/testing/applicability-list.service.mock';
-import { ApplicabilityListService } from '../../../../shared/services/http/applicability-list.service';
 import { apiURL } from '../../../../../../../environments/environment';
-import { MessageUiService } from '../../../../shared/services/ui/messages-ui.service';
 import { EditMessageFieldComponent } from './edit-message-field.component';
+import {
+	ApplicabilityListService,
+	MessageUiService,
+} from '@osee/messaging/shared';
+import { applicabilityListServiceMock } from '@osee/messaging/shared/testing';
 
 describe('EditMessageFieldComponent', () => {
 	let component: EditMessageFieldComponent;

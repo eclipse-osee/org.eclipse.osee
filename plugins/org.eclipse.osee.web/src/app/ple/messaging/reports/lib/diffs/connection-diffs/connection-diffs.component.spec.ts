@@ -13,8 +13,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { DiffReportServiceMock } from '../../../../shared/testing/diff-report-service.mock';
-import { DiffReportService } from '../../../../shared/services/ui/diff-report.service';
+import { DiffReportService } from '@osee/messaging/shared';
+import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
 import { DiffReportTableComponent } from '../../../lib/tables/diff-report-table/diff-report-table.component';
 
 import { ConnectionDiffsComponent } from './connection-diffs.component';

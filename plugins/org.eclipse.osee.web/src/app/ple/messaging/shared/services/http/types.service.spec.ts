@@ -16,13 +16,15 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
-import { transactionBuilderMock } from '../../../../..//transactions/transaction-builder.service.mock';
-import { transactionMock } from '../../../../../transactions/transaction.mock';
 import { apiURL } from '../../../../../../environments/environment';
-import { platformTypesMock } from '../../testing/platform-types.response.mock';
 
 import { TypesService } from './types.service';
+import { platformTypesMock } from '@osee/messaging/shared/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import {
+	transactionBuilderMock,
+	transactionMock,
+} from '@osee/shared/transactions/testing';
 
 describe('TypesService', () => {
 	let service: TypesService;

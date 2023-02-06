@@ -14,12 +14,14 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import {
+	MimRouteService,
+	SharedConnectionUIService,
+	SharedStructureUIService,
+} from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
-import { MimRouteService } from '../../services/ui/mim-route.service';
-import { SharedConnectionUIService } from '../../services/ui/shared-connection-ui.service';
-import { SharedStructureUIService } from '../../services/ui/shared-structure-ui.service';
 
 @Component({
 	selector: 'osee-messaging-header',

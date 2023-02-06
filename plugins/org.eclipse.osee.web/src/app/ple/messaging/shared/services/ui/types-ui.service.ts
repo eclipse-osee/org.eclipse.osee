@@ -11,7 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { iif, of, from, combineLatest } from 'rxjs';
+import {
+	PlatformType,
+	enumeration,
+	enumerationSet,
+	enumeratedPlatformType,
+} from '@osee/messaging/shared/types';
+import { transaction } from '@osee/shared/transactions';
+import { of, from, combineLatest } from 'rxjs';
 import {
 	share,
 	switchMap,
@@ -19,18 +26,13 @@ import {
 	shareReplay,
 	take,
 	tap,
-	mergeMap,
 	reduce,
 	concatMap,
 	map,
 	filter,
 } from 'rxjs/operators';
-import { transaction } from 'src/app/transactions/transaction';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { applic } from '../../../../../types/applicability/applic';
-import { enumeration, enumerationSet } from '../../types/enum';
-import { enumeratedPlatformType } from '../../types/enumeratedPlatformType';
-import { PlatformType } from '../../types/platformType';
 import { TypesService } from '../http/types.service';
 import { EnumerationUIService } from './enumeration-ui.service';
 

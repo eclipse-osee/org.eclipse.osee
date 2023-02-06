@@ -24,7 +24,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { dialogRef } from '../../../../shared/testing/dialog-ref.util.mock';
+import { dialogRef } from '@osee/messaging/shared/testing';
 
 import { CreateNewNodeDialogComponent } from './create-new-node-dialog.component';
 

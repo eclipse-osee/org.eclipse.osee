@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
+import { structure } from '@osee/messaging/shared/types';
+import { relation, transaction } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
+} from '@osee/shared/transactions/testing';
+import { of } from 'rxjs';
 import { StructuresService } from '../services/http/structures.service';
-import { structure } from '../types/structure';
-import { structuresMock, structuresMock2 } from './structure.mock';
+import { structuresMock3, structuresMock2 } from './structure.mock';
 
 //let i= 0;
 export const structureServiceMock: Partial<StructuresService> = {
@@ -29,7 +29,7 @@ export const structureServiceMock: Partial<StructuresService> = {
 		subMessageId: string,
 		connectionId: string
 	) {
-		return of(structuresMock);
+		return of(structuresMock3);
 	},
 	createSubMessageRelation(subMessageId: string) {
 		return of({
@@ -57,7 +57,7 @@ export const structureServiceMock: Partial<StructuresService> = {
 		structureId: string,
 		connectionId: string
 	) {
-		return of(structuresMock[0]);
+		return of(structuresMock3[0]);
 	},
 	addRelation(
 		branchId: string,
@@ -88,7 +88,7 @@ export const structureServiceMock3: Partial<StructuresService> & {
 		subMessageId: string,
 		connectionId: string
 	) {
-		return of(structuresMock);
+		return of(structuresMock3);
 	},
 	createSubMessageRelation(subMessageId: string) {
 		return of({
@@ -116,7 +116,7 @@ export const structureServiceMock3: Partial<StructuresService> & {
 		structureId: string,
 		connectionId: string
 	) {
-		return of(structuresMock[0]);
+		return of(structuresMock3[0]);
 	},
 	addRelation(
 		branchId: string,
@@ -148,7 +148,7 @@ export const structureServiceRandomMock: Partial<StructuresService> & {
 		connectionId: string
 	) {
 		this.i++;
-		return this.i % 2 ? of(structuresMock) : of(structuresMock2);
+		return this.i % 2 ? of(structuresMock3) : of(structuresMock2);
 	},
 	createSubMessageRelation(subMessageId: string) {
 		return of({
@@ -176,7 +176,7 @@ export const structureServiceRandomMock: Partial<StructuresService> & {
 		structureId: string,
 		connectionId: string
 	) {
-		return of(structuresMock[0]);
+		return of(structuresMock3[0]);
 	},
 	addRelation(
 		branchId: string,
@@ -196,6 +196,6 @@ export const structureServiceRandomMock: Partial<StructuresService> & {
 		return of(transactionMock);
 	},
 	getStructures(branchId: string) {
-		return of(structuresMock);
+		return of(structuresMock3);
 	},
 };

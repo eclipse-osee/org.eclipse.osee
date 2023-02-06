@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { message, messageWithChanges } from '../types/messages';
+import { message, messageWithChanges } from '@osee/messaging/shared/types';
 import { subMessagesMock } from './sub-messages.response.mock';
 
 export const messagesMock: (message | messageWithChanges)[] = [

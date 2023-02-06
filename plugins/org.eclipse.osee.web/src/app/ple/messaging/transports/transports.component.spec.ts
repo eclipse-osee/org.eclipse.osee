@@ -18,12 +18,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, convertToParamMap, Params } from '@angular/router';
-import { of, Subject } from 'rxjs';
-import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
-import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { CurrentTransportTypeServiceMock } from '../shared/testing/current-transport-type.service.mock';
-import { CurrentTransportTypeService } from '../shared/services/ui/current-transport-type.service';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { CurrentTransportTypeService } from '@osee/messaging/shared';
+import { CurrentTransportTypeServiceMock } from '@osee/messaging/shared/testing';
+import {
+	ActionDropdownStub,
+	BranchPickerStub,
+} from '@osee/shared/components/testing';
+import { of } from 'rxjs';
 
 import { TransportsComponent } from './transports.component';
 

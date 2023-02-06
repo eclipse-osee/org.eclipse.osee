@@ -23,8 +23,8 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { PreferencesUIService } from '../../services/ui/preferences-ui.service';
-import { EditViewFreeTextDialog } from '../../types/EditViewFreeTextDialog';
+import { PreferencesUIService } from '@osee/messaging/shared/services';
+import { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-edit-view-free-text-field-dialog',

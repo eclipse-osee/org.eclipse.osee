@@ -16,8 +16,8 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { PlatformType } from '@osee/messaging/shared';
 import { apiURL } from '../../../../../../environments/environment';
-import { PlatformType } from '../../../shared/types/platformType';
 
 import { PlatformTypesService } from './platform-types.service';
 

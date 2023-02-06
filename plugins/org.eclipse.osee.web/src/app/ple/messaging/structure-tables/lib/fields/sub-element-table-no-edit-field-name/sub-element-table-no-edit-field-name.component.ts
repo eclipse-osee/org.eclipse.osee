@@ -12,14 +12,14 @@
  **********************************************************************/
 import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-no-edit-field-name',
 	templateUrl: './sub-element-table-no-edit-field-name.component.html',
 	styleUrls: ['./sub-element-table-no-edit-field-name.component.sass'],
 	standalone: true,
-	imports: [OseeStringUtilsDirectivesModule, NgIf],
+	imports: [HighlightFilteredTextDirective, NgIf],
 })
 export class SubElementTableNoEditFieldNameComponent {
 	@Input() filter: string = '';

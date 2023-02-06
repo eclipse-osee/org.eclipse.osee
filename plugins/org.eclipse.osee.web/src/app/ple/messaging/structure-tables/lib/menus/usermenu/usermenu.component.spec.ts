@@ -13,24 +13,23 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { of } from 'rxjs';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
-import { CurrentStructureMultiService } from '../../../../shared/services/ui/current-structure-multi.service';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
-import { MULTI_STRUCTURE_SERVICE } from '../../../../shared/tokens/injection/structure/multi';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 
 import { UsermenuComponent } from './usermenu.component';
+import {
+	CurrentStructureService,
+	EditAuthService,
+	MULTI_STRUCTURE_SERVICE,
+	PreferencesUIService,
+} from '@osee/messaging/shared';
+import {
+	editAuthServiceMock,
+	preferencesUiServiceMock,
+	CurrentStateServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

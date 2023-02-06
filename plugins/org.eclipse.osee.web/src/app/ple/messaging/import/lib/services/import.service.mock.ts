@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { BehaviorSubject, of } from 'rxjs';
-import { ImportOption } from '../../../shared/types/Import';
 import { ImportService } from './import.service';
 import {
 	importOptionsMock,
 	importSummaryMock,
 } from '../testing/import.response.mock';
+import { ImportOption } from '@osee/messaging/shared';
 
 export const importServiceMock: Partial<ImportService> = {
 	performImport() {},

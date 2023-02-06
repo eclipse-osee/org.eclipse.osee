@@ -26,15 +26,19 @@ import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
-import { warningDialogServiceMock } from '../../../../shared/testing/warning-dialog.ui.service.mock';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { StructuresUiService } from '../../../../shared/services/ui/structures-ui.service';
-import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { EditStructureFieldComponent } from './edit-structure-field.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import {
+	EnumsService,
+	StructuresUiService,
+	STRUCTURE_SERVICE_TOKEN,
+	WarningDialogService,
+} from '@osee/messaging/shared';
+import {
+	CurrentStateServiceMock,
+	enumsServiceMock,
+	warningDialogServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('EditStructureFieldComponent', () => {
 	let component: EditStructureFieldComponent;

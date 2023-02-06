@@ -13,9 +13,11 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
-import { UndoButtonBranchComponent } from '../../../shared-components/components/branch-undo-button/undo-button-branch/undo-button-branch.component';
+import {
+	BranchPickerComponent,
+	UndoButtonBranchComponent,
+	ActionDropDownComponent,
+} from '@osee/shared/components';
 import { CurrentTypesService } from './lib/services/current-types.service';
 import { PlMessagingTypesUIService } from './lib/services/pl-messaging-types-ui.service';
 import { TypeGridComponent } from './lib/type-grid/type-grid/type-grid.component';

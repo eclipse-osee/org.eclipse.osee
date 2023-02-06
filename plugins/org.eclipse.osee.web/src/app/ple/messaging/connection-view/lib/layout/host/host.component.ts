@@ -10,21 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { map, share, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, share, shareReplay, switchMap } from 'rxjs/operators';
 import { applic } from '../../../../../../types/applicability/applic';
 import { iif, of } from 'rxjs';
-import { BranchPickerComponent } from '../../../../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { UndoButtonBranchComponent } from '../../../../../../shared-components/components/branch-undo-button/undo-button-branch/undo-button-branch.component';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { ActionDropDownComponent } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
 import { GraphComponent } from '../graph/graph.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	UndoButtonBranchComponent,
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-connection-view-host',

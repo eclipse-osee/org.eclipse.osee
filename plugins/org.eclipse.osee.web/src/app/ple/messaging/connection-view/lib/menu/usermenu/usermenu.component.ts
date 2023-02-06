@@ -11,16 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import {
+	ColumnPreferencesDialogComponent,
+	PreferencesUIService,
+	settingsDialogData,
+} from '@osee/messaging/shared';
 import { combineLatest, iif, of } from 'rxjs';
 import { map, share, shareReplay, take, switchMap } from 'rxjs/operators';
-import { ColumnPreferencesDialogComponent } from '../../../../shared/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
-import { settingsDialogData } from '../../../../shared/types/settingsdialog';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { RouteStateService } from '../../services/route-state-service.service';
 

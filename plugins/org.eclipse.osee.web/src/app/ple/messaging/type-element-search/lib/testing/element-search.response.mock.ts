@@ -10,10 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	element,
-	elementWithPathsAndButtons,
-} from '../../../shared/types/element';
+
+import { element, elementWithPathsAndButtons } from '@osee/messaging/shared';
 
 export const elementSearch1: element[] = [
 	{

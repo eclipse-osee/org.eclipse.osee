@@ -24,21 +24,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NewTypeDialogComponent } from './new-type-dialog.component';
 import { MatTableModule } from '@angular/material/table';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
-import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { EnumsService } from '../../services/http/enums.service';
-import { MimPreferencesService } from '../../services/http/mim-preferences.service';
-import { TypesService } from '../../services/http/types.service';
 import { MatIconModule } from '@angular/material/icon';
-import { MockEnumSetFormUnique } from '../../forms/enum-set-form/enum-set-form.component.mock';
-import { applicabilityListUIServiceMock } from '../../testing/applicability-list-ui.service.mock';
-import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
-import { enumerationUiServiceMock } from '../../testing/enumeration-ui.service.mock';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
 import {
 	NgIf,
 	NgFor,
@@ -46,10 +32,25 @@ import {
 	TitleCasePipe,
 	KeyValuePipe,
 } from '@angular/common';
-import { MockMatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/testing/mat-option-loading.component';
-import { MockLogicalTypeSelectorComponent } from '../../testing/logical-type-selector.component.mock';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { MockNewTypeFormComponent } from '../../testing/new-type-form.component.mock';
+import {
+	MockNewTypeFormComponent,
+	MimPreferencesServiceMock,
+	typesServiceMock,
+	enumsServiceMock,
+	enumerationUiServiceMock,
+	applicabilityListUIServiceMock,
+} from '@osee/messaging/shared/testing';
+import {
+	MimPreferencesService,
+	TypesService,
+	EnumsService,
+	EnumerationUIService,
+	ApplicabilityListUIService,
+} from '@osee/messaging/shared/services';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 
 describe('NewTypeDialogComponent', () => {
 	let component: NewTypeDialogComponent;
@@ -73,8 +74,6 @@ describe('NewTypeDialogComponent', () => {
 						MatTableModule,
 						MatIconModule,
 						MockMatOptionLoadingComponent,
-						MockEnumSetFormUnique,
-						MockLogicalTypeSelectorComponent,
 						MockNewTypeFormComponent,
 						NgIf,
 						NgFor,

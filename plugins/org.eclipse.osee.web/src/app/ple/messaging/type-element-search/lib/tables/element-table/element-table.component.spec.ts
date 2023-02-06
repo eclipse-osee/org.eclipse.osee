@@ -15,8 +15,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
-import { OseeStringUtilsPipesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { MockElementTableSearchComponent } from '../../testing/element-table-search.component.mock';
 import { elementSearch3 } from '../../testing/element-search.response.mock';
@@ -37,8 +35,6 @@ describe('ElementTableComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				MatTableModule,
-				OseeStringUtilsPipesModule,
-				OseeStringUtilsDirectivesModule,
 				MatMenuModule,
 				NoopAnimationsModule,
 				ElementTableComponent,

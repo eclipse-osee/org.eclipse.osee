@@ -17,7 +17,7 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { dialogRef } from '../../../../shared/testing/dialog-ref.util.mock';
+import { dialogRef } from '@osee/messaging/shared/testing';
 
 import { DeleteMessageDialogComponent } from './delete-message-dialog.component';
 

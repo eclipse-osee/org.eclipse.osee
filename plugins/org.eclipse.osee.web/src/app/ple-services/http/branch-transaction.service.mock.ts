@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { transactionResultMock } from '../../transactions/transaction.mock';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { BranchTransactionService } from './branch-transaction.service';
 
 export const branchTransactionServiceMock: Partial<BranchTransactionService> = {

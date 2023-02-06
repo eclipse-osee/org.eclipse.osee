@@ -42,28 +42,11 @@ import {
 import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
 import { applic } from '../../../../../../types/applicability/applic';
 import { difference } from '../../../../../../types/change-report/change-report';
-import { EditViewFreeTextFieldDialogComponent } from '../../../../shared/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
-import { EditViewFreeTextDialog } from '../../../../shared/types/EditViewFreeTextDialog';
-import { element } from '../../../../shared/types/element';
-import {
-	structure,
-	structureWithChanges,
-} from '../../../../shared/types/structure';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpLoadingService } from '../../../../../../services/http-loading.service';
 import { UiService } from '../../../../../../ple-services/ui/ui.service';
-import {
-	defaultEditElementProfile,
-	defaultEditStructureProfile,
-	defaultViewElementProfile,
-	defaultViewStructureProfile,
-} from '../../../../shared/constants/defaultProfiles';
 import { DataSource } from '@angular/cdk/collections';
-import { StructureDataSource } from '../../../../shared/datasources/structure/structure';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
 import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
 import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
@@ -72,19 +55,35 @@ import { RemoveStructureDialogComponent } from '../../dialogs/remove-structure-d
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { ActionStateButtonModule } from '../../../../../../shared-components/components/action-state-button/action-state-button.module';
-import { BranchUndoButtonModule } from '../../../../../../shared-components/components/branch-undo-button/branch-undo-button.module';
-import { GenericButtonsModule } from '../../../../../generic-buttons/generic-buttons.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EditStructureFieldComponent } from '../../fields/edit-structure-field/edit-structure-field.component';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 import { SubElementTableComponent } from '../sub-element-table/sub-element-table.component';
 import { MatButtonModule } from '@angular/material/button';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
+import {
+	structure,
+	structureWithChanges,
+	element,
+	STRUCTURE_SERVICE_TOKEN,
+	EditViewFreeTextDialog,
+	defaultEditElementProfile,
+	defaultEditStructureProfile,
+	defaultViewElementProfile,
+	defaultViewStructureProfile,
+	StructureDataSource,
+	EditViewFreeTextFieldDialogComponent,
+	CurrentStructureService,
+	HeaderService,
+} from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import {
+	ActionDropDownComponent,
+	TwoLayerAddButtonComponent,
+	UndoButtonBranchComponent,
+} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-structure-table',
@@ -99,9 +98,9 @@ import { StructureTableLongTextFieldComponent } from '../../fields/structure-tab
 		AsyncPipe,
 		RouterLink,
 		MatIconModule,
-		ActionStateButtonModule,
-		BranchUndoButtonModule,
-		GenericButtonsModule,
+		ActionDropDownComponent,
+		UndoButtonBranchComponent,
+		TwoLayerAddButtonComponent,
 		MatFormFieldModule,
 		FormsModule,
 		MatInputModule,
@@ -113,7 +112,7 @@ import { StructureTableLongTextFieldComponent } from '../../fields/structure-tab
 		EditStructureFieldComponent,
 		AddStructureDialogComponent,
 		SubElementTableComponent,
-		OseeStringUtilsDirectivesModule,
+		HighlightFilteredTextDirective,
 		StructureTableLongTextFieldComponent,
 	],
 	animations: [
@@ -411,8 +410,7 @@ export class StructureTableComponent implements OnInit {
 		private structureService: CurrentStructureService,
 		private layoutNotifier: LayoutNotifierService,
 		private headerService: HeaderService,
-		private _ui: UiService,
-		private preferencesService: PreferencesUIService
+		private _ui: UiService
 	) {}
 
 	ngOnInit(): void {

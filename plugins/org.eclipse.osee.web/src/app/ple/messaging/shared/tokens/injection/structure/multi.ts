@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CurrentStructureMultiService } from '../../../services/ui/current-structure-multi.service';
+import { CurrentStructureMultiService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from './token';
 
 export const MULTI_STRUCTURE_SERVICE = {

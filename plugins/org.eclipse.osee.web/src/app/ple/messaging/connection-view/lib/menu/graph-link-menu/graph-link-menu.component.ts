@@ -10,27 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
-import {
-	connection,
-	connectionWithChanges,
-} from '../../../../shared/types/connection';
-import {
-	node,
-	nodeData,
-	nodeDataWithChanges,
-	OseeNode,
-} from '../../../../shared/types/node';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
 import { applic } from '../../../../../../types/applicability/applic';
 import { difference } from '../../../../../../types/change-report/change-report';
-import { transportType } from '../../../../shared/types/transportType';
+import {
+	connection,
+	connectionWithChanges,
+	node,
+	nodeData,
+	nodeDataWithChanges,
+	OseeNode,
+	transportType,
+} from '@osee/messaging/shared';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';

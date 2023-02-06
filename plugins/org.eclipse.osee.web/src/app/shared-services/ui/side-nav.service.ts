@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { transactionToken } from 'src/app/transactions/transaction';
+import { transactionToken } from '@osee/shared/transactions';
 import { applic } from 'src/app/types/applicability/applic';
 
 @Injectable({

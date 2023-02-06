@@ -17,7 +17,6 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
-import { TwoLayerAddButtonHarness } from '../../../../../generic-buttons/two-layer-add-button/two-layer-add-button.harness';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
@@ -28,46 +27,47 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
 	ActivatedRoute,
 	ActivatedRouteSnapshot,
-	convertToParamMap,
-	Router,
 	RouterLink,
 	ROUTES,
 	UrlSegment,
-	UrlTree,
 } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { EditStructureFieldComponentMock } from '../../fields/edit-structure-field/edit-structure-field.component.mock';
 import { SubElementTableComponentMock } from '../sub-element-table/sub-element-table.component.mock';
-import {
-	structuresMock,
-	structuresMockWithChanges,
-} from '../../../../shared/testing/Structures.mock';
-import { structure } from '../../../../shared/types/structure';
 
 import { StructureTableComponent } from './structure-table.component';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { ActionDropdownStub } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { TestScheduler } from 'rxjs/testing';
-import { HighlightFilteredTextDirective } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
-import { MimSingleDiffDummy } from '../../../../../diff-views/mocks/mim-single-diff.mock';
-import { GenericButtonsModule } from '../../../../../generic-buttons/generic-buttons.module';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
+import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { EditElementFieldComponent } from '../../fields/edit-element-field/edit-element-field.component';
-import { BranchUndoButtonModule } from '../../../../../../shared-components/components/branch-undo-button/branch-undo-button.module';
-import { CurrentStructureMultiService } from '../../../../shared/services/ui/current-structure-multi.service';
-import { MULTI_STRUCTURE_SERVICE } from '../../../../shared/tokens/injection/structure/multi';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
 import { CurrentBranchTransactionService } from '../../../../../../ple-services/httpui/current-branch-transaction.service';
 import { currentBranchTransactionServiceMock } from '../../../../../../ple-services/httpui/current-branch-transaction.service.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
-import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
+import {
+	CurrentStructureMultiService,
+	CurrentStructureService,
+	EditAuthService,
+	MULTI_STRUCTURE_SERVICE,
+	PreferencesUIService,
+	structure,
+} from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import {
+	ActionDropdownStub,
+	TwoLayerAddButtonHarness,
+	UndoButtonBranchMockComponent,
+} from '@osee/shared/components/testing';
+import { TwoLayerAddButtonComponent } from '@osee/shared/components';
+import {
+	preferencesUiServiceMock,
+	CurrentStateServiceMock,
+	editAuthServiceMock,
+	structuresMock,
+	structuresMockWithChanges,
+} from '@osee/messaging/shared/testing';
 
 describe('StructureTableComponent', () => {
 	let component: StructureTableComponent;
@@ -138,7 +138,7 @@ describe('StructureTableComponent', () => {
 						SubElementTableComponentMock,
 						EditElementFieldComponent,
 						EditStructureFieldComponentMock,
-						MimSingleDiffDummy,
+						MockSingleDiffComponent,
 						AddElementDialogComponent,
 						HighlightFilteredTextDirective,
 						ActionDropdownStub,
@@ -149,8 +149,8 @@ describe('StructureTableComponent', () => {
 						AsyncPipe,
 						RouterLink,
 						MatIconModule,
-						BranchUndoButtonModule,
-						GenericButtonsModule,
+						UndoButtonBranchMockComponent,
+						TwoLayerAddButtonComponent,
 						MatFormFieldModule,
 						FormsModule,
 						MatInputModule,

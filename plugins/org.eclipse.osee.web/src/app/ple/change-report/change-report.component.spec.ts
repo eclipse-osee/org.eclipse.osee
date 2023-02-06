@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BranchPickerStub } from '../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import { BranchPickerStub } from '@osee/shared/components/testing';
 
 import { ChangeReportComponent } from './change-report.component';
 import { MockChangeReportTableComponent } from './mocks/change-report-table.component.mock';

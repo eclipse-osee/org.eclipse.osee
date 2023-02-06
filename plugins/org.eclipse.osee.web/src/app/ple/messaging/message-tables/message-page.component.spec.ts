@@ -11,24 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
-import { OseeStringUtilsDirectivesModule } from '../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
-import { OseeStringUtilsPipesModule } from '../../../osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
 
 import { MessagePageComponent } from './message-page.component';
 import { MockMessageTableComponent } from './lib/testing/message-table.component.mock';
-import { CurrentMessagesService } from '../shared/services/ui/current-messages.service';
-import { message } from '../shared/types/messages';
+import { CurrentMessagesService, message } from '@osee/messaging/shared';
 
 describe('MessageInterfaceComponent', () => {
 	let component: MessagePageComponent;

@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
+import { element } from '@osee/messaging/shared/types';
+import { transaction, relation } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
+} from '@osee/shared/transactions/testing';
+import { of } from 'rxjs';
 import { ElementService } from '../services/http/element.service';
-import { element } from '../types/element';
 import { elementsMock } from './element.response.mock';
 
 export const elementServiceMock: Partial<ElementService> = {

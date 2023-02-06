@@ -19,33 +19,40 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { PlatformTypeCardComponent } from './platform-type-card.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { of } from 'rxjs';
-import { enumerationSet } from '../../types/enum';
-import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { MimPreferencesService } from '../../services/http/mim-preferences.service';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { enumerationSetServiceMock } from '../../testing/enumeration-set.service.mock';
-import { EnumerationSetService } from '../../services/http/enumeration-set.service';
-import { TypesService } from '../../services/http/types.service';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
-import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
-import { ApplicabilityListService } from '../../services/http/applicability-list.service';
-import { EnumsService } from '../../services/http/enums.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { MockEditTypeDialogComponent } from '../../testing/edit-type-dialog.component.mock';
-import { MockEditEnumSetDialogComponent } from '../../testing/edit-enum-set-dialog.component.mock';
-import { QueryServiceMock } from '../../testing/query.service.mock';
-import { QueryService } from '../../services/http/query.service';
-import { EditTypeDialogComponent } from '../../dialogs/edit-type-dialog/edit-type-dialog.component';
-import { EditEnumSetDialogComponent } from '../../dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import { EditEnumSetFieldComponent } from '../../forms/edit-enum-set-field/edit-enum-set-field.component';
-import { MockEditEnumSetFieldComponent } from '../../testing/edit-enum-set-field.component.mock';
+import {
+	MockEditEnumSetFieldComponent,
+	MockEditTypeDialogComponent,
+	MockEditEnumSetDialogComponent,
+	QueryServiceMock,
+	typesServiceMock,
+	MimPreferencesServiceMock,
+	enumerationSetServiceMock,
+	enumsServiceMock,
+	applicabilityListServiceMock,
+} from '@osee/messaging/shared/testing';
+import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
+import {
+	editPlatformTypeDialogData,
+	editPlatformTypeDialogDataMode,
+	enumerationSet,
+} from '@osee/messaging/shared/types';
+import {
+	EditEnumSetDialogComponent,
+	EditTypeDialogComponent,
+} from '@osee/messaging/shared/dialogs';
+import {
+	QueryService,
+	TypesService,
+	MimPreferencesService,
+	EnumerationSetService,
+	EnumsService,
+	ApplicabilityListService,
+} from '@osee/messaging/shared/services';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 
 let loader: HarnessLoader;
 

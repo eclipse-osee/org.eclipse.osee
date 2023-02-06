@@ -11,9 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { newPlatformTypeDialogReturnData } from '../types/newTypeDialogDialogData';
-import { NewTypeDialogComponent } from '../dialogs/new-type-dialog/new-type-dialog.component';
-import { PlatformType } from '../types/platformType';
+import { NewTypeDialogComponent } from '@osee/messaging/shared/dialogs';
+import {
+	newPlatformTypeDialogReturnData,
+	PlatformType,
+} from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-new-type-dialog',

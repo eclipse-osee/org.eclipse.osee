@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgFor } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,21 +20,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
 import {
-	andBitSizeQuery,
-	andDefaultValQuery,
-	andDescriptionQuery,
-	andLogicalTypeQuery,
-	andMaxValQuery,
-	andMinValQuery,
-	andMsbValQuery,
-	andNameQuery,
+	PlatformType,
+	PlatformTypeQuery,
+	EnumsService,
 	andQuery,
 	andUnitQuery,
-	PlatformTypeQuery,
-} from '../../../../shared/types/MimQuery';
-import { PlatformType } from '../../../../shared/types/platformType';
+	andBitSizeQuery,
+	andLogicalTypeQuery,
+	andMinValQuery,
+	andMaxValQuery,
+	andDefaultValQuery,
+	andMsbValQuery,
+	andNameQuery,
+	andDescriptionQuery,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-platform-type-query',

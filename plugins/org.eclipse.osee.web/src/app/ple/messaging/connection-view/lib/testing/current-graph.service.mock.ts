@@ -10,16 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
-import { MimPreferencesMock } from '../../../shared/testing/mim-preferences.response.mock';
+import { of, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { CurrentGraphService } from '../services/current-graph.service';
-import { connection } from '../../../shared/types/connection';
-import { node } from '../../../shared/types/node';
-import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { applic } from '../../../../../types/applicability/applic';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
 import { changeInstance } from '../../../../../types/change-report/change-report';
-import { transactionResultMock } from '../../../../../transactions/transaction.mock';
+import { node, connection, settingsDialogData } from '@osee/messaging/shared';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { MimPreferencesMock } from '@osee/messaging/shared/testing';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;

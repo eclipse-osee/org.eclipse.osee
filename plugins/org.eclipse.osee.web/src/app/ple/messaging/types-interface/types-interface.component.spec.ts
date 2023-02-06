@@ -11,25 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
-import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { BranchUndoButtonTestingModule } from '../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
-import { MockPlatformTypeCardComponent } from '../shared/testing/platform-type-card.component.mock';
 import { CurrentTypesService } from './lib/services/current-types.service';
 
 import { TypesInterfaceComponent } from './types-interface.component';
 import { MockTypeGridComponent } from './lib/testing/type-grid.component.mock';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { UndoButtonBranchMockComponent } from '../../../shared-components/components/branch-undo-button/branch-undo-button.component.mock';
+import {
+	ActionDropdownStub,
+	BranchPickerStub,
+	UndoButtonBranchMockComponent,
+} from '@osee/shared/components/testing';
 
 describe('TypesInterfaceComponent', () => {
 	let component: TypesInterfaceComponent;

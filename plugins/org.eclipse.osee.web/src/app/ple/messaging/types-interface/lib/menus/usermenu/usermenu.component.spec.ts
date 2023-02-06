@@ -19,14 +19,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { currentTypesServiceMock } from '../../testing/current.types.service.mock';
 import { CurrentTypesService } from '../../services/current-types.service';
 
 import { UsermenuComponent } from './usermenu.component';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
+import { EditAuthService, PreferencesUIService } from '@osee/messaging/shared';
+import {
+	preferencesUiServiceMock,
+	editAuthServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

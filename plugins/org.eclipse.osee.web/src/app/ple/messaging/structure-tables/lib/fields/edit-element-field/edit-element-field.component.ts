@@ -33,6 +33,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import {
+	CurrentStructureService,
+	element,
+	PlatformType,
+	STRUCTURE_SERVICE_TOKEN,
+	WarningDialogService,
+} from '@osee/messaging/shared';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import {
 	Subject,
 	combineLatest,
 	switchMap,
@@ -45,15 +53,8 @@ import {
 	tap,
 	scan,
 	iif,
-	takeUntil,
 	ReplaySubject,
 } from 'rxjs';
-import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
-import { element } from '../../../../shared/types/element';
-import { PlatformType } from '../../../../shared/types/platformType';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',

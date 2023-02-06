@@ -17,13 +17,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import {
-	AfterViewChecked,
-	Component,
-	OnDestroy,
-	OnInit,
-	ViewChild,
-} from '@angular/core';
+import { AfterViewChecked, Component, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -46,34 +40,36 @@ import { difference } from 'src/app/types/change-report/change-report';
 
 import { HttpLoadingService } from '../../../../../../services/http-loading.service';
 import { applic } from '../../../../../../types/applicability/applic';
-import { EditViewFreeTextFieldDialogComponent } from '../../../../shared/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
-import { EditViewFreeTextDialog } from '../../../../shared/types/EditViewFreeTextDialog';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import {
-	message,
-	messageChanges,
-	messageWithChanges,
-} from '../../../../shared/types/messages';
 import { DeleteMessageDialogComponent } from '../../dialogs/delete-message-dialog/delete-message-dialog.component';
 import { RemoveMessageDialogComponent } from '../../dialogs/remove-message-dialog/remove-message-dialog.component';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
 import { AddMessageDialogComponent } from '../../dialogs/add-message-dialog/add-message-dialog.component';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { UndoButtonBranchComponent } from '../../../../../../shared-components/components/branch-undo-button/undo-button-branch/undo-button-branch.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ActionDropDownComponent } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { TwoLayerAddButtonComponent } from '../../../../../generic-buttons/two-layer-add-button/two-layer-add-button.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-message-field.component';
-import { HighlightFilteredTextDirective } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
 import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 import { MatInputModule } from '@angular/material/input';
+import {
+	message,
+	messageWithChanges,
+	EditViewFreeTextDialog,
+	messageChanges,
+	EditViewFreeTextFieldDialogComponent,
+	CurrentMessagesService,
+	HeaderService,
+} from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import {
+	UndoButtonBranchComponent,
+	ActionDropDownComponent,
+	TwoLayerAddButtonComponent,
+} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-message-table',
@@ -121,7 +117,6 @@ import { MatInputModule } from '@angular/material/input';
 		AddSubMessageDialogComponent,
 		RemoveMessageDialogComponent,
 		DeleteMessageDialogComponent,
-		EditViewFreeTextFieldDialogComponent,
 		UndoButtonBranchComponent,
 		ActionDropDownComponent,
 		EditMessageFieldComponent,

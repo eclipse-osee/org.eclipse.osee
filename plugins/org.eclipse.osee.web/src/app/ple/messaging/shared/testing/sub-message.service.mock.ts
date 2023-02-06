@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { relation, transaction } from '../../../../transactions/transaction';
+import { subMessage } from '@osee/messaging/shared/types';
+import { relation, transaction } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
+} from '@osee/shared/transactions/testing';
+import { of } from 'rxjs';
 import { SubMessagesService } from '../services/http/sub-messages.service';
-import { subMessage } from '../types/sub-messages';
 import { subMessagesMock } from './sub-messages.response.mock';
 
 export const subMessageServiceMock: Partial<SubMessagesService> = {

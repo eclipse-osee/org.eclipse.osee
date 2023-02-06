@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CurrentStructureSingleService } from '../../../services/ui/current-structure-single.service';
+import { CurrentStructureSingleService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from './token';
 
 export const SINGLE_STRUCTURE_SERVICE = {

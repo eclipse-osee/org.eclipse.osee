@@ -16,30 +16,23 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuItem, MatMenuModule } from '@angular/material/menu';
-import {
-	MatMenuHarness,
-	MatMenuItemHarness,
-} from '@angular/material/menu/testing';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { of } from 'rxjs';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { connectionWithChanges } from '../../../../shared/types/connection';
 import { difference } from '../../../../../../types/change-report/change-report';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { GraphLinkMenuComponent } from './graph-link-menu.component';
+import { connectionWithChanges, EnumsService } from '@osee/messaging/shared';
+import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
 describe('GraphLinkMenuComponent', () => {
 	let component: GraphLinkMenuComponent;

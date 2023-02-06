@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { TransactionService } from '../../../../../transactions/transaction.service';
-import { transactionServiceMock } from '../../../../../transactions/transaction.service.mock';
-import { transportTypeServiceMock } from '../../testing/transport-type.service.mock';
+import { transportTypeServiceMock } from '@osee/messaging/shared/testing';
+import { TransactionService } from '@osee/shared/transactions';
+import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { TransportTypeService } from '../http/transport-type.service';
 
 import { CurrentTransportTypeService } from './current-transport-type.service';

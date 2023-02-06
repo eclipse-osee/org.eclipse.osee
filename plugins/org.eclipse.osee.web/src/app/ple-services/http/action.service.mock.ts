@@ -11,32 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { user } from '../../userdata/types/user-data-user';
 import { ActionService } from './action.service';
-import {
-	newActionInterface,
-	transitionAction,
-} from '../../ple/plconfig/types/pl-config-actions';
+import { CreateNewActionInterface } from '../../types/configuration-management/create-new-action';
+import { transitionAction } from '../../types/configuration-management/transition-action';
 import {
 	testARB,
 	testBranchActions,
-	testDataResponse,
 	testDataTransitionResponse,
 	testDataVersion,
-	testNameValuePairArray,
-	testnewActionResponse,
 	testWorkFlow,
-} from '../../ple/plconfig/testing/mockTypes';
+} from '../../testing/configuration-management.response.mock';
+import { MockXResultData } from '../../testing/XResultData.response.mock';
+import { MockNamedId } from '../../testing/NamedId.response.mock';
+import { testnewActionResponse } from '../../testing/new-action.response.mock';
 
 export const actionServiceMock: Partial<ActionService> = {
 	getActionableItems(workType: string) {
 		return of(testARB);
 	},
-	createBranch(body: newActionInterface) {
+	createBranch(body: CreateNewActionInterface) {
 		return of(testnewActionResponse);
 	},
 	commitBranch(teamWf: string, branchId: string | number) {
-		return of(testDataResponse);
+		return of(MockXResultData);
 	},
 	getWorkFlow(id: string | number) {
 		return of(testWorkFlow);
@@ -54,12 +51,12 @@ export const actionServiceMock: Partial<ActionService> = {
 		return of(testDataVersion);
 	},
 	approveBranch(teamWf: string | number) {
-		return of(testDataResponse);
+		return of(MockXResultData);
 	},
 	getTeamLeads(teamDef: string | number) {
-		return of(testNameValuePairArray);
+		return of(MockNamedId);
 	},
 	getBranchApproved(teamWf: string | number) {
-		return of(testDataResponse);
+		return of(MockXResultData);
 	},
 };

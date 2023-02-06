@@ -31,11 +31,7 @@ import {
 	reduce,
 	switchMap,
 } from 'rxjs';
-import { enumerationSet } from '../../types/enum';
-import { logicalType } from '../../types/logicaltype';
-import { PlatformType } from '../../types/platformType';
 import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
-import { MatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { EnumSetFormComponent } from '../../forms/enum-set-form/enum-set-form.component';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -44,8 +40,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
-import { validateEnumLengthIsBelowMax } from '../../functions/validate-enum-length.util';
 import { MatStepperModule } from '@angular/material/stepper';
 import {
 	trigger,
@@ -54,6 +48,14 @@ import {
 	transition,
 	animate,
 } from '@angular/animations';
+import {
+	enumerationSet,
+	logicalType,
+	PlatformType,
+} from '@osee/messaging/shared/types';
+import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
+import { EnumerationUIService } from '@osee/messaging/shared/services';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-new-platform-type-form-page2',

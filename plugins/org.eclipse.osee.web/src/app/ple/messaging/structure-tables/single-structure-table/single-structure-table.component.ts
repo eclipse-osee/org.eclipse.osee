@@ -14,10 +14,12 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, iif, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { STRUCTURE_SERVICE_TOKEN } from '../../shared/tokens/injection/structure/token';
-import { CurrentStructureService } from '../../shared/services/ui/current-structure.service';
 import { AsyncPipe } from '@angular/common';
 import { StructureTableComponent } from '../lib/tables/structure-table/structure-table.component';
+import {
+	CurrentStructureService,
+	STRUCTURE_SERVICE_TOKEN,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-single-structure-table',

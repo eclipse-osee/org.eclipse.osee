@@ -18,13 +18,17 @@ import {
 } from '@angular/material/dialog';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { enumerationSet } from '../../types/enum.d';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
-import { PreferencesUIService } from '../../services/ui/preferences-ui.service';
-import { enumsetDialogData } from '../../types/EnumSetDialogData';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { EditEnumSetFieldComponent } from '../../forms/edit-enum-set-field/edit-enum-set-field.component';
+import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
+import {
+	enumerationSet,
+	enumsetDialogData,
+} from '@osee/messaging/shared/types';
+import {
+	EnumerationUIService,
+	PreferencesUIService,
+} from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-messaging-edit-enum-set-dialog',

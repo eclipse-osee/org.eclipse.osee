@@ -12,13 +12,13 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { TypesUIService } from '../services/ui/types-ui.service';
+import { platformTypes1 } from './platform-types.response.mock';
+import { PlatformType } from '@osee/messaging/shared/types';
+import { transaction } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
-import { platformTypes1 } from './platform-types.response.mock';
-import { PlatformType } from '../types/platformType';
-import { transaction } from '../../../../transactions/transaction';
+} from '@osee/shared/transactions/testing';
 export const typesUIServiceMock: Partial<TypesUIService> = {
 	get types() {
 		return of(platformTypes1);

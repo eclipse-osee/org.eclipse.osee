@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import {
 	debounceTime,
@@ -21,11 +21,6 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { structure } from '../../../../shared/types/structure';
-import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
@@ -33,6 +28,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import {
+	CurrentStructureService,
+	EnumsService,
+	structure,
+	STRUCTURE_SERVICE_TOKEN,
+	WarningDialogService,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-edit-structure-field',

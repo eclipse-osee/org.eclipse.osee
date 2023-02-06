@@ -14,25 +14,26 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { enumerationUiServiceMock } from '../../../../shared/testing/enumeration-ui.service.mock';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { EnumerationUIService } from '../../../../shared/services/ui/enumeration-ui.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
-import { MatButtonHarness } from '@angular/material/button/testing';
 
 import { SubElementTableDropdownComponent } from './sub-element-table-dropdown.component';
-import { MatMenuItemHarness } from '@angular/material/menu/testing';
-import { elementsMock } from '../../../../shared/testing/element.response.mock';
-import { preferencesUiServiceMock } from '../../../../shared/services/ui/preferences-ui-service.mock';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
+import {
+	CurrentStructureService,
+	EnumerationUIService,
+	PreferencesUIService,
+	STRUCTURE_SERVICE_TOKEN,
+} from '@osee/messaging/shared';
+import {
+	CurrentStateServiceMock,
+	enumerationUiServiceMock,
+	preferencesUiServiceMock,
+	elementsMock,
+} from '@osee/messaging/shared/testing';
 
 describe('SubElementTableDropdownComponent', () => {
 	let component: SubElementTableDropdownComponent;

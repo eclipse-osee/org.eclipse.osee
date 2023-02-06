@@ -12,9 +12,9 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ImportSummary, ImportOption } from '@osee/messaging/shared';
 import { shareReplay } from 'rxjs/operators';
 import { apiURL } from '../../../../../../environments/environment';
-import { ImportOption, ImportSummary } from '../../../shared/types/Import';
 
 @Injectable({
 	providedIn: 'root',

@@ -19,18 +19,19 @@ import {
 import { from, of, Subject } from 'rxjs';
 import { concatMap, filter, reduce, switchMap, take } from 'rxjs/operators';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { newConnection } from '../../../../shared/types/connection';
-import { node } from '../../../../shared/types/node';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
-import { transportType } from '../../../../shared/types/transportType';
+import {
+	CurrentTransportTypeService,
+	newConnection,
+	node,
+	transportType,
+} from '@osee/messaging/shared';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-create-connection-dialog',
@@ -76,7 +77,6 @@ export class CreateConnectionDialogComponent implements OnDestroy {
 		this.transportTypeService.getPaginatedTypes(pageNum, 3);
 	constructor(
 		private graphService: CurrentGraphService,
-		private enumService: EnumsService,
 		private transportTypeService: CurrentTransportTypeService,
 		public dialogRef: MatDialogRef<CreateConnectionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: node

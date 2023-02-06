@@ -21,26 +21,30 @@ import { apiURL } from 'src/environments/environment';
 import {
 	testARB,
 	testBranchActions,
-	testDataResponse,
 	testDataTransitionResponse,
-	testDataUser,
 	testDataVersion,
-	testNewActionData,
-	testnewActionResponse,
-	testUsers,
 	testWorkFlow,
-} from '../../ple/plconfig/testing/mockTypes';
-import { NameValuePair } from '../../ple/plconfig/types/base-types/NameValuePair';
-import {
-	action,
-	newActionResponse,
-	transitionAction,
-} from '../../ple/plconfig/types/pl-config-actions';
-import { PlConfigBranchListingBranch } from '../../ple/plconfig/types/pl-config-branch';
-import { response } from '../../types/responses';
+} from '../../testing/configuration-management.response.mock';
+import { MockXResultData } from '../../testing/XResultData.response.mock';
+import { testnewActionResponse } from '../../testing/new-action.response.mock';
+import { MockUserResponse } from '../../testing/user/user.response.mock';
+import { NamedId } from '../../types/NamedId';
+import { transitionAction } from '../../types/configuration-management/transition-action';
+import { PRIORITY } from '../../types/configuration-management/priority.enum';
 import { ActionService } from './action.service';
 
-describe('PlConfigActionService', () => {
+const testNewActionData = {
+	title: 'title',
+	description: 'string',
+	aiIds: [],
+	asUserId: '0',
+	createdByUserId: '0',
+	versionId: '0',
+	priority: PRIORITY.LowestPriority,
+	changeType: { id: '-1', name: '', description: '' },
+};
+const testUsers = [{ testDataUser: MockUserResponse }];
+describe('ActionService', () => {
 	let service: ActionService;
 	let httpClient: HttpClient;
 	let httpTestingController: HttpTestingController;
@@ -111,7 +115,7 @@ describe('PlConfigActionService', () => {
 			'Review',
 			'Transition To Review',
 			testBranchActions,
-			testDataUser
+			MockUserResponse
 		);
 		service.validateTransitionAction(transitionData).subscribe();
 		const req = httpTestingController.expectOne(
@@ -127,7 +131,7 @@ describe('PlConfigActionService', () => {
 			'Review',
 			'Transition To Review',
 			testBranchActions,
-			testDataUser
+			MockUserResponse
 		);
 		service.transitionAction(transitionData).subscribe();
 		const req = httpTestingController.expectOne(
@@ -168,7 +172,7 @@ describe('PlConfigActionService', () => {
 				0
 		);
 		expect(req.request.method).toEqual('PUT');
-		req.flush(testDataResponse);
+		req.flush(MockXResultData);
 		httpTestingController.verify();
 	});
 
@@ -178,12 +182,12 @@ describe('PlConfigActionService', () => {
 			apiURL + '/ats/ple/action/' + 0 + '/approval'
 		);
 		expect(req.request.method).toEqual('POST');
-		req.flush(testDataResponse);
+		req.flush(MockXResultData);
 		httpTestingController.verify();
 	});
 
 	it('should get team leads', () => {
-		let testData: NameValuePair[] = [
+		let testData: NamedId[] = [
 			{
 				id: '0',
 				name: 'name',
@@ -204,7 +208,7 @@ describe('PlConfigActionService', () => {
 			apiURL + '/ats/ple/action/' + 0 + '/approval'
 		);
 		expect(req.request.method).toEqual('GET');
-		req.flush(testDataResponse);
+		req.flush(MockXResultData);
 		httpTestingController.verify();
 	});
 });

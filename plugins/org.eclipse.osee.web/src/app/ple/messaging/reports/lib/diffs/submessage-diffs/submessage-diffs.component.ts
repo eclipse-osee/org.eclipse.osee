@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import {
+	submessageDiffItem,
+	DiffHeaderType,
+	DiffReportService,
+} from '@osee/messaging/shared';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
-import { DiffReportService } from '../../../../shared/services/ui/diff-report.service';
-import {
-	DiffHeaderType,
-	submessageDiffItem,
-} from '../../../../shared/types/DifferenceReport.d';
 import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
 
 @Component({

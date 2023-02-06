@@ -12,9 +12,8 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { CurrentTypesService } from '../services/current-types.service';
-import { PlatformType } from '../../../shared/types/platformType';
-import { transactionResultMock } from '../../../../../transactions/transaction.mock';
-import { settingsDialogData } from '../../../shared/types/settingsdialog';
+import { PlatformType, settingsDialogData } from '@osee/messaging/shared';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 export const currentTypesServiceMock: Partial<CurrentTypesService> = {
 	createType(body: PlatformType | Partial<PlatformType>) {

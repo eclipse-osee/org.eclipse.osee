@@ -10,15 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Host, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { combineLatest, iif, of } from 'rxjs';
-import { STRUCTURE_SERVICE_TOKEN } from '../../shared/tokens/injection/structure/token';
-import { MULTI_STRUCTURE_SERVICE } from '../../shared/tokens/injection/structure/multi';
-import { CurrentStructureService } from '../../shared/services/ui/current-structure.service';
 import { StructureTableComponent } from '../lib/tables/structure-table/structure-table.component';
 import { AsyncPipe } from '@angular/common';
+import {
+	CurrentStructureService,
+	STRUCTURE_SERVICE_TOKEN,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-multi-structure-table-page',

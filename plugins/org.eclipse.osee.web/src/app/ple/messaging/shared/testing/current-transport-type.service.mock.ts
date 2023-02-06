@@ -12,11 +12,11 @@
  **********************************************************************/
 
 import { Observable, of } from 'rxjs';
-import { transactionResultMock } from '../../../../transactions/transaction.mock';
 import { transactionResult } from '../../../../types/change-report/transaction';
 import { CurrentTransportTypeService } from '../services/ui/current-transport-type.service';
-import { transportType } from '../types/transportType';
+import { transportType } from '@osee/messaging/shared/types';
 import { transportTypes } from './transport-type.service.mock';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 export const CurrentTransportTypeServiceMock: Partial<CurrentTransportTypeService> =
 	{

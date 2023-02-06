@@ -12,10 +12,10 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { branchApplicability } from '@osee/messaging/shared/types';
 import { BehaviorSubject, iif, Observable, of } from 'rxjs';
 import { switchMap, share } from 'rxjs/operators';
 import { apiURL } from 'src/environments/environment';
-import { branchApplicability } from '../../types/branch.applic';
 
 @Injectable({
 	providedIn: 'root',

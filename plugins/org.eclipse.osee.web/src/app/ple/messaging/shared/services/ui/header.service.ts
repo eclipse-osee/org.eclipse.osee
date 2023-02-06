@@ -13,42 +13,41 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, iif, Observable, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
-import { element } from '../../types/element';
-import { structure } from '../../types/structure';
-import { message, messageToken } from '../../types/messages';
-import { subMessage } from '../../types/sub-messages';
-import {
-	branchSummaryHeaderDetail,
-	connectionDiffHeaderDetail,
-	diffReportSummaryHeaderDetail,
-	elementDiffHeaderDetail,
-	elementHeaderDetail,
-	headerDetail,
-	messageDiffHeaderDetail,
-	messageHeaderDetail,
-	nodeDiffHeaderDetail,
-	structureDiffHeaderDetail,
-	structureHeaderDetail,
-	submessageDiffHeaderDetail,
-	subMessageHeaderDetail,
-	transportTypeSummaryHeaderDetail,
-} from '../../types/headerDetail';
 import {
 	branchSummary,
+	branchSummaryHeaderDetail,
+	connectionDiffHeaderDetail,
 	connectionDiffItem,
 	DiffHeaderType,
+	diffReportSummaryHeaderDetail,
 	diffReportSummaryItem,
+	element,
+	elementDiffHeaderDetail,
 	elementDiffItem,
+	elementHeaderDetail,
+	headerDetail,
+	ImportEnumSet,
+	message,
+	messageDiffHeaderDetail,
 	messageDiffItem,
+	messageHeaderDetail,
+	messageToken,
+	nodeDiffHeaderDetail,
 	nodeDiffItem,
+	nodeToken,
+	platformTypeImportToken,
+	structure,
+	structureDiffHeaderDetail,
 	structureDiffItem,
+	structureHeaderDetail,
+	subMessage,
+	submessageDiffHeaderDetail,
 	submessageDiffItem,
-} from '../../types/DifferenceReport.d';
-import { transportType } from '../../types/transportType';
+	subMessageHeaderDetail,
+	transportType,
+	transportTypeSummaryHeaderDetail,
+} from '@osee/messaging/shared/types';
 import { changeReportRow } from 'src/app/types/change-report/change-report';
-import { platformTypeImportToken } from '../../types/platformType';
-import { ImportEnumSet } from '../../types/Import';
-import { nodeToken } from '../../types/node';
 
 export const HeaderKeysEnum = {
 	NONE: '',

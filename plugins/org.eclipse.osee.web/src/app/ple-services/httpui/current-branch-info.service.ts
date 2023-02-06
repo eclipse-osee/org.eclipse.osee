@@ -21,9 +21,28 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { PlConfigBranchListingBranchImpl } from '../../ple/plconfig/types/pl-config-branch';
+import { branch } from '../../types/branches/branch';
 import { BranchInfoService } from '../http/branch-info.service';
 import { UiService } from '../ui/ui.service';
+
+export class branchImpl implements branch {
+	associatedArtifact = '-1';
+	baselineTx = '';
+	parentTx = '';
+	parentBranch = {
+		id: '',
+		viewId: '',
+	};
+	branchState = '-1';
+	branchType = '-1';
+	inheritAccessControl = false;
+	archived = false;
+	shortName = '';
+	idIntValue = -1;
+	name = '';
+	id = '-1';
+	viewId = '-1';
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -38,7 +57,7 @@ export class CurrentBranchInfoService {
 					repeatWhen((_) => this._uiService.update),
 					share()
 				),
-				of(new PlConfigBranchListingBranchImpl())
+				of(new branchImpl())
 			)
 		),
 		share(),

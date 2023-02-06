@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { InjectionToken } from '@angular/core';
-import { CurrentStructureService } from '../../../services/ui/current-structure.service';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 
 /**
  * Token that will provide access to structure information

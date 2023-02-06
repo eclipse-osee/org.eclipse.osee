@@ -23,9 +23,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
+import { enumerationSet } from '@osee/messaging/shared/types';
 import { Observable, of, Subject } from 'rxjs';
 import { applic } from '../../../../../types/applicability/applic';
-import { enumerationSet } from '../../types/enum';
 import { EnumSetFormComponent } from './enum-set-form.component';
 
 @Component({
@@ -34,7 +34,9 @@ import { EnumSetFormComponent } from './enum-set-form.component';
 	standalone: true,
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
-export class MockEnumSetFormUnique implements Partial<EnumSetFormComponent> {
+export class MockEnumSetFormUniqueComponent
+	implements Partial<EnumSetFormComponent>
+{
 	@Input() bitSize: string = '32';
 	applics: Observable<applic[]> = of([]);
 	enumSet: enumerationSet = {

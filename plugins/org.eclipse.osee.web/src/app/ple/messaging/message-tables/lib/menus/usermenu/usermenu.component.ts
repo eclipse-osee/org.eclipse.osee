@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -23,10 +23,12 @@ import {
 	take,
 	switchMap,
 } from 'rxjs/operators';
-import { ColumnPreferencesDialogComponent } from '../../../../shared/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
-import { settingsDialogData } from 'src/app/ple/messaging/shared/types/settingsdialog';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
+import {
+	ColumnPreferencesDialogComponent,
+	CurrentMessagesService,
+	PreferencesUIService,
+	settingsDialogData,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

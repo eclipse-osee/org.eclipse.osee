@@ -1,4 +1,4 @@
-import { UserHeaderProdService } from '../app/userdata/services/user-header-prod.service';
+import { UserHeaderProdService } from '@osee/auth';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing

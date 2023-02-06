@@ -18,7 +18,7 @@ import {
 	UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { UserDataAccountService } from '../userdata/services/user-data-account.service';
+import { UserDataAccountService } from './user-data-account.service';
 
 @Injectable({
 	providedIn: 'root',

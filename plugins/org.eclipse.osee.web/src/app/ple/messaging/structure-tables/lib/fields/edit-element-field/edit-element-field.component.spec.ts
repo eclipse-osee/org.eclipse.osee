@@ -24,27 +24,27 @@ import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
-import {
-	NoopAnimationsModule,
-	provideNoopAnimations,
-} from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
-import { unitsMock } from '../../../../shared/testing/unit.response.mock';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { warningDialogServiceMock } from '../../../../shared/testing/warning-dialog.ui.service.mock';
-import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
 import { EditElementFieldComponent } from './edit-element-field.component';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MockMatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading.component';
+import {
+	EnumsService,
+	STRUCTURE_SERVICE_TOKEN,
+	WarningDialogService,
+} from '@osee/messaging/shared';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	enumsServiceMock,
+	warningDialogServiceMock,
+	CurrentStateServiceMock,
+	unitsMock,
+} from '@osee/messaging/shared/testing';
 
 describe('EditElementFieldComponent', () => {
 	let component: EditElementFieldComponent;

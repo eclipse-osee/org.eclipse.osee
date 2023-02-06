@@ -36,15 +36,11 @@ const routes: Routes = [
 	},
 	{
 		path: '404',
-		loadChildren: () =>
-			import('./page-not-found/page-not-found.module').then(
-				(m) => m.PageNotFoundModule
-			),
+		loadChildren: () => import('./page-not-found/page-not-found.routes'),
 	},
 	{
 		path: 'about',
-		loadChildren: () =>
-			import('./about/about.module').then((m) => m.AboutModule),
+		loadChildren: () => import('./about/about.routes'),
 	},
 	{
 		path: 'gc',

@@ -10,13 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BuildNum, version } from './version';
 
 @Component({
 	selector: 'osee-about',
 	templateUrl: './about.component.html',
 	styleUrls: ['./about.component.sass'],
+	standalone: true,
+	imports: [MatFormFieldModule],
 })
 export class AboutComponent {
 	buildNumber = BuildNum;

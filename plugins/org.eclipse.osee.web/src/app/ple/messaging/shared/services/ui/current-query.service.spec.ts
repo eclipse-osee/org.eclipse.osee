@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { QueryServiceMock } from '../../testing/query.service.mock';
+import { QueryServiceMock } from '@osee/messaging/shared/testing';
 import { QueryService } from '../http/query.service';
 
 import { CurrentQueryService } from './current-query.service';

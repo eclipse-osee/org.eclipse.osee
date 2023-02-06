@@ -17,7 +17,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgxGraphModule, Node } from '@swimlane/ngx-graph';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
-import { BranchRoutedUIService } from '../../../../../../shared-components/services/branch-routed-ui.service';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -37,23 +36,24 @@ import { CreateConnectionDialogComponent } from '../../dialogs/create-connection
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
 import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-node-dialog.component';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
 import { of } from 'rxjs';
-import {
-	connectionWithChanges,
-	OseeEdge,
-} from '../../../../shared/types/connection';
-import { node } from '../../../../shared/types/node';
 import { MockGraphLinkMenuComponent } from '../../testing/graph-link-menu.component.mock';
 import { MockGraphNodeMenuComponent } from '../../testing/graph-node-menu.component.mock';
 import { MatIconModule } from '@angular/material/icon';
+import {
+	connectionWithChanges,
+	OseeEdge,
+	node,
+	EnumsService,
+} from '@osee/messaging/shared';
+import { RouteStateService } from '../../services/route-state-service.service';
+import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
 describe('GraphComponent', () => {
 	let component: GraphComponent;
 	let fixture: ComponentFixture<GraphComponent>;
 	let loader: HarnessLoader;
-	let routerService: BranchRoutedUIService;
+	let routerService: RouteStateService;
 	let menuLinkHarness: MatMenuHarness;
 	let menuNodeHarness: MatMenuHarness;
 	let menuGraphHarness: MatMenuHarness;
@@ -88,7 +88,7 @@ describe('GraphComponent', () => {
 			declarations: [],
 			teardown: { destroyAfterEach: false },
 		}).compileComponents();
-		routerService = TestBed.inject(BranchRoutedUIService);
+		routerService = TestBed.inject(RouteStateService);
 	});
 
 	beforeEach(() => {

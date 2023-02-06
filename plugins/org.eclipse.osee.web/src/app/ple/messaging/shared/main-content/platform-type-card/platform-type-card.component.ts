@@ -14,19 +14,25 @@ import { Component, Input } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { iif, of, OperatorFunction } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
-import { enumerationSet } from '../../types/enum';
-import { PlatformType } from '../../types/platformType';
-import { EditEnumSetDialogComponent } from '../../dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
-import { EditTypeDialogComponent } from '../../dialogs/edit-type-dialog/edit-type-dialog.component';
-import { PreferencesUIService } from '../../services/ui/preferences-ui.service';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
-import { TypesUIService } from '../../services/ui/types-ui.service';
 import { MatCardModule } from '@angular/material/card';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import {
+	PlatformType,
+	editPlatformTypeDialogDataMode,
+	editPlatformTypeDialogData,
+	enumerationSet,
+} from '@osee/messaging/shared/types';
+import {
+	EditEnumSetDialogComponent,
+	EditTypeDialogComponent,
+} from '@osee/messaging/shared/dialogs';
+import {
+	TypesUIService,
+	PreferencesUIService,
+	EnumerationUIService,
+} from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-messaging-types-platform-type-card',

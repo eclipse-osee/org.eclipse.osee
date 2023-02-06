@@ -24,7 +24,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { BranchPickerModule } from 'src/app/shared-components/components/branch-picker/branch-picker.module';
+import { BranchPickerComponent } from '@osee/shared/components';
 
 @NgModule({
 	declarations: [AsciidocEditorComponent, ResizableSplitPaneCodeComponent],
@@ -38,7 +38,7 @@ import { BranchPickerModule } from 'src/app/shared-components/components/branch-
 		MatButtonModule,
 		MatIconModule,
 		MarkdownModule.forChild(),
-		BranchPickerModule,
+		BranchPickerComponent,
 	],
 })
 export class AsciidocModule {}

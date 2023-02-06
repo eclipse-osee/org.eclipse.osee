@@ -28,19 +28,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import {
+	EnumerationSetService,
+	ApplicabilityListService,
+	MimPreferencesService,
+	TypesService,
+} from '@osee/messaging/shared/services';
+import {
+	MockEditEnumSetFieldComponent,
+	enumerationSetServiceMock,
+	applicabilityListServiceMock,
+	MimPreferencesServiceMock,
+	typesServiceMock,
+} from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
-import { enumerationSetServiceMock } from '../../testing/enumeration-set.service.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { ApplicabilityListService } from '../../services/http/applicability-list.service';
-import { EnumerationSetService } from '../../services/http/enumeration-set.service';
-import { MimPreferencesService } from '../../services/http/mim-preferences.service';
-import { TypesService } from '../../services/http/types.service';
 import { enumsetDialogData } from '../../types/EnumSetDialogData';
-import { MockEditEnumSetFieldComponent } from '../../testing/edit-enum-set-field.component.mock';
 
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
 

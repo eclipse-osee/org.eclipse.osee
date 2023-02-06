@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { NewTypeFormComponent } from '../../forms/new-type-form/new-type-form.component';
+import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 
 @Component({
 	selector: 'osee-new-type-dialog',

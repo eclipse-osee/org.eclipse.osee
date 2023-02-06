@@ -10,9 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NameValuePair } from '../../../ple/plconfig/types/base-types/NameValuePair';
+import { NamedId } from '../../../types/NamedId';
 
-export interface UsersContext extends NameValuePair {
+export interface gridCommanderUser extends NamedId {
+	usersContexts: UsersContext[];
+}
+
+export interface UsersContext extends NamedId {
 	commands: Command[];
 	attributes?: ContextAttributes[];
 }
@@ -28,7 +32,7 @@ export interface CommandGroups {
 	commands: Command[];
 }
 
-export interface Command extends NameValuePair {
+export interface Command extends NamedId {
 	contextGroup: string;
 	idIntValue: number;
 	idString: string;
@@ -42,7 +46,7 @@ export interface CommandAttributes {
 	'http method'?: string;
 }
 
-export interface Parameter extends NameValuePair {
+export interface Parameter extends NamedId {
 	idIntValue: number;
 	idString: string;
 	typeAsString: string;

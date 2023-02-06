@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { structure } from '../../../../shared/types/structure';
+import { structure } from '@osee/messaging/shared';
 
 export interface AddStructureDialog {
 	id: string;

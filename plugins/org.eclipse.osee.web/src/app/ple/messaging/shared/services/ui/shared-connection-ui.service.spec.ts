@@ -11,9 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import {
+	connectionMock,
+	sharedConnectionServiceMock,
+} from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { connectionMock } from '../../testing/connection.response.mock';
-import { sharedConnectionServiceMock } from '../../testing/shared-connection.service.mock';
 import { SharedConnectionService } from '../http/shared-connection.service';
 import { MimRouteService } from './mim-route.service';
 

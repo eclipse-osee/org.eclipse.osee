@@ -12,11 +12,14 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import {
+	TransactionBuilderService,
+	TransactionService,
+	relation,
+	transaction,
+} from '@osee/shared/transactions';
 import { of } from 'rxjs';
-import { relation, transaction } from 'src/app/transactions/transaction';
-import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
-import { TransactionService } from '../../../../../transactions/transaction.service';
 import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import {
 	MatDialogModule,
 	MatDialogRef,
@@ -18,18 +18,20 @@ import {
 } from '@angular/material/dialog';
 import { applic } from '../../../../../../types/applicability/applic';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { connection } from '../../../../shared/types/connection';
-import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
 import { Subject } from 'rxjs';
-import { transportType } from '../../../../shared/types/transportType';
+import {
+	connection,
+	CurrentTransportTypeService,
+	transportType,
+} from '@osee/messaging/shared';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-edit-connection-dialog',

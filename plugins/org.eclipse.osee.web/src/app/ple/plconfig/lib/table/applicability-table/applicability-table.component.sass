@@ -1,0 +1,95 @@
+/*********************************************************************
+ * Copyright (c) 2021 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use '../../../../../../sass-utils/mdc-migration/_form-field'
+@use '../../../../../../modern-ple-theme'
+@use '_theme.scss' as t
+@media (prefers-color-scheme:light)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'full-width')
+    @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
+@media (prefers-color-scheme:dark)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'full-width')
+    @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
+table
+    width: 100%
+.table-container
+    width: 100%
+    min-height: 72vh
+    overflow-x: auto
+    overflow-y: auto
+
+.mat-form-field
+    width: 100%
+
+::ng-deep
+    #selectableTableOption
+        .mat-form-field-underline
+            display: none
+.mat-row
+    height: auto
+.mat-cell
+    padding: 0px
+    border-right: 1px solid
+    border-right-color: rgba(0,0,0,0.15)
+.mat-header-cell
+    justify-content: center
+    text-align: center
+    border-right: 1px solid
+    border-right-color: rgba(0,0,0,0.15)
+.selectApplicabilityTableOption
+    margin-bottom: -1.25em
+    margin-top: -1em
+    padding-top: 1.0em
+th
+    justify-content: center
+    border-right: 1px solid
+    border-bottom: 1px solid
+    border-right-color: rgba(0,0,0,0.15)
+    border-bottom-color: rgba(0,0,0,0.15)
+td.mat-cell:last-of-type
+    padding-right: 0px
+.table-container::-webkit-scrollbar
+    height: 12px
+    width: 12px
+.table-container::-webkit-scrollbar-track
+    border-radius: 10px
+.table-container::-webkit-scrollbar-thumb
+    border-radius: 10px
+
+.config-table-row
+    height: 3.16em
+    td
+        padding: 0 0.25em
+
+.cursor-pointer
+    cursor: pointer
+
+.feature-cell
+    @extend .cursor-pointer
+
+.filter-form-field
+    @extend .full-width
+.full-width
+    width: 100%
+.text-align-center
+    text-align: center
+.clickable-table-header
+    @extend .text-align-center
+    @extend .cursor-pointer
+.applic-table-header
+    @extend .text-align-center
+.border-right
+    border-right: 1px solid
+.config-group-header
+    @extend .clickable-table-header
+.config-header
+    @extend .clickable-table-header

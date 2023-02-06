@@ -16,19 +16,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+import {
+	elementImportToken,
+	enumeration,
+	HeaderKeysEnum,
+	ImportEnumSet,
+	ImportSummary,
+	messageToken,
+	nodeToken,
+	platformTypeImportToken,
+	subMessage,
+} from '@osee/messaging/shared';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 import { from, iif, of, OperatorFunction } from 'rxjs';
 import { concatMap, filter, map, reduce, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { ActionStateButtonModule } from '../../../shared-components/components/action-state-button/action-state-button.module';
-import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
-import { HeaderKeysEnum } from '../shared/services/ui/header.service';
-import { elementImportToken } from '../shared/types/element';
-import { enumeration } from '../shared/types/enum';
-import { ImportEnumSet, ImportSummary } from '../shared/types/Import';
-import { messageToken } from '../shared/types/messages';
-import { nodeToken } from '../shared/types/node';
-import { platformTypeImportToken } from '../shared/types/platformType';
-import { subMessage } from '../shared/types/sub-messages';
 import { ImportTableComponent } from './lib/components/import-table/import-table.component';
 import { ImportService } from './lib/services/import.service';
 
@@ -43,8 +48,8 @@ import { ImportService } from './lib/services/import.service';
 		AsyncPipe,
 		MatButtonModule,
 		MatSelectModule,
-		ActionStateButtonModule,
-		BranchPickerModule,
+		ActionDropDownComponent,
+		BranchPickerComponent,
 		MatTableModule,
 		ImportTableComponent,
 	],

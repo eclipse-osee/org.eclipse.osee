@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure, structureWithChanges } from '../types/structure';
+
+import { structure, structureWithChanges } from '@osee/messaging/shared/types';
 
 export const structuresMock: Required<structure>[] = [
 	{

@@ -29,16 +29,18 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { elementsMock } from '../../../../shared/testing/element.response.mock';
 
 import { SubElementTableComponent } from './sub-element-table.component';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
-import { OseeStringUtilsPipesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
-import { CurrentStructureMultiService } from '../../../../shared/services/ui/current-structure-multi.service';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { MockSubElementTableComponent } from '../../menus/testing/sub-element-table-dropdown.component.mock';
+import {
+	CurrentStructureMultiService,
+	CurrentStructureService,
+	STRUCTURE_SERVICE_TOKEN,
+} from '@osee/messaging/shared';
+import { MockSubElementTableComponent } from 'src/app/ple/messaging/structure-tables/lib/menus/testing/sub-element-table-dropdown.component.mock';
+import {
+	CurrentStateServiceMock,
+	elementsMock,
+} from '@osee/messaging/shared/testing';
 
 describe('SubElementTableComponent', () => {
 	let component: SubElementTableComponent;
@@ -95,8 +97,6 @@ describe('SubElementTableComponent', () => {
 				MatInputModule,
 				FormsModule,
 				NoopAnimationsModule,
-				OseeStringUtilsDirectivesModule,
-				OseeStringUtilsPipesModule,
 				RouterTestingModule,
 				HttpClientTestingModule,
 				MockSubElementTableComponent,

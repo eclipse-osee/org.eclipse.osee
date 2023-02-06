@@ -1,5 +1,3 @@
-import { subMessage } from '../../../shared/types/sub-messages';
-
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -12,6 +10,7 @@ import { subMessage } from '../../../shared/types/sub-messages';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { subMessage } from '@osee/messaging/shared';
 export interface DeleteSubMessageDialog {
 	submessage: subMessage;
 }

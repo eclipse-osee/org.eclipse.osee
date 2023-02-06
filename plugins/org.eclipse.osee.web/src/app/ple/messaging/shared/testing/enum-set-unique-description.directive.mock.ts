@@ -18,7 +18,6 @@ import {
 	ValidationErrors,
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { EnumSetUniqueDescriptionDirective } from '../directives/validators/enum-set-unique-description.directive';
 import { enumerationSet } from '../types/enum';
 
 @Directive({

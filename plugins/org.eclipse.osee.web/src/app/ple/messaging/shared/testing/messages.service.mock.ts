@@ -13,13 +13,13 @@
 import { of } from 'rxjs';
 import { MessagesService } from '../services/http/messages.service';
 import { messagesMock } from './messages.response.mock';
-import { message } from '../types/messages';
+import { connectionNodesMock } from '@osee/messaging/shared/testing';
+import { message } from '@osee/messaging/shared/types';
+import { transaction, relation } from '@osee/shared/transactions';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
-import { relation, transaction } from '../../../../transactions/transaction';
-import { connectionNodesMock } from './connection-node.response.mock';
+} from '@osee/shared/transactions/testing';
 
 export const messageServiceMock: Partial<MessagesService> = {
 	getFilteredMessages(filter, branchId, connectionId) {

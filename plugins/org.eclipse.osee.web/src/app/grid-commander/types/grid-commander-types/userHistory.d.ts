@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NameValuePair } from 'src/app/ple/plconfig/types/base-types/NameValuePair';
+import { NamedId } from '../../../types/NamedId';
 import { ResponseColumnSchema } from './table-data-types';
 
-export interface userHistory extends NameValuePair {
+export interface userHistory extends NamedId {
 	executedCommandHistory: string;
 	commandHistoryId: string;
 	columns: ResponseColumnSchema[];

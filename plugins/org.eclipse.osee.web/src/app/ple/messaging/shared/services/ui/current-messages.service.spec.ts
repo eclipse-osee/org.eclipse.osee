@@ -18,23 +18,25 @@ import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
-import { transactionResultMock } from '../../../../../transactions/transaction.mock';
 import { MessageUiService } from './messages-ui.service';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
-import { MimPreferencesMock } from '../../testing/mim-preferences.response.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { message, messageWithChanges } from '../../types/messages';
 import { ApplicabilityListService } from '../http/applicability-list.service';
 import { MessagesService } from '../http/messages.service';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 import { SubMessagesService } from '../http/sub-messages.service';
 import { CurrentMessagesService } from './current-messages.service';
 import { BranchInfoServiceMock } from '../../../../../ple-services/http/branch-info.service.mock';
-import { messageServiceMock } from '../../testing/messages.service.mock';
-import { messagesMock } from '../../testing/messages.response.mock';
-import { subMessagesMock } from '../../testing/sub-messages.response.mock';
-import { subMessageServiceMock } from '../../testing/sub-message.service.mock';
-import { connectionNodesMock } from '../../testing/connection-node.response.mock';
+import {
+	messageServiceMock,
+	subMessageServiceMock,
+	applicabilityListServiceMock,
+	MimPreferencesServiceMock,
+	messagesMock,
+	subMessagesMock,
+	connectionNodesMock,
+	MimPreferencesMock,
+} from '@osee/messaging/shared/testing';
+import { message, messageWithChanges } from '@osee/messaging/shared/types';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 describe('CurrentMessagesService', () => {
 	let service: CurrentMessagesService;

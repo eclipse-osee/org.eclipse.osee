@@ -12,6 +12,11 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import {
+	structure,
+	structureWithChanges,
+	elementWithChanges,
+} from '@osee/messaging/shared/types';
+import {
 	combineLatest,
 	filter,
 	switchMap,
@@ -32,13 +37,8 @@ import {
 	changeTypeNumber,
 	ModificationType,
 } from '../../../../../types/change-report/change-report.d';
-import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
 import { RelationTypeId } from '../../../../../types/constants/RelationTypeId.enum';
-import { elementWithChanges } from '../../types/element';
-import { structure, structureWithChanges } from '../../types/structure';
 import { CurrentStructureService } from './current-structure.service';
 
 @Injectable({

@@ -17,15 +17,16 @@ import {
 	NG_ASYNC_VALIDATORS,
 	ValidationErrors,
 } from '@angular/forms';
-import { Observable, of, switchMap, take } from 'rxjs';
+import { CurrentQueryService } from '@osee/messaging/shared/services';
 import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from '../../../../../types/constants/AttributeTypeId.enum';
-import { CurrentQueryService } from '../../services/ui/current-query.service';
-import { logicalTypeFormDetail } from '../../types/logicaltype';
-import { andQuery, MimQuery, PlatformTypeQuery } from '../../types/MimQuery';
-import { PlatformType } from '../../types/platformType';
+	logicalTypeFormDetail,
+	PlatformType,
+	andQuery,
+	PlatformTypeQuery,
+	MimQuery,
+} from '@osee/messaging/shared/types';
+import { Observable, of, switchMap, take } from 'rxjs';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeAttributes]',

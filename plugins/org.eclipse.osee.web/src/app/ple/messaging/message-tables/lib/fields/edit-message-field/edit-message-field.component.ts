@@ -12,13 +12,18 @@
  **********************************************************************/
 import { A11yModule } from '@angular/cdk/a11y';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {
+	CurrentMessagesService,
+	EnumsService,
+	message,
+} from '@osee/messaging/shared';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import {
 	debounceTime,
@@ -30,9 +35,6 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs/operators';
-import { EnumsService } from 'src/app/ple/messaging/shared/services/http/enums.service';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
-import { message } from '../../../../shared/types/messages';
 
 @Component({
 	selector: 'osee-messaging-edit-message-field',

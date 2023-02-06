@@ -26,7 +26,9 @@ export const routes: Routes = [
 			{
 				path: '',
 				loadComponent: () =>
-					import('../shared/headers/mim-header/mim-header.component'),
+					import(
+						'@osee/messaging/shared/headers/mim-header/mim-header.component'
+					),
 				outlet: 'navigationHeader',
 			},
 		],

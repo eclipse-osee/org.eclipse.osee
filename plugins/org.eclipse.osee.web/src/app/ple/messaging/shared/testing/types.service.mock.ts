@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { transaction } from '../../../../transactions/transaction';
-import {
-	transactionMock,
-	transactionResultMock,
-} from '../../../../transactions/transaction.mock';
 import { TypesService } from '../services/http/types.service';
-import { PlatformType } from '../types/platformType';
 import { logicalTypeMock } from './logical-type.response.mock';
 import { logicalTypeFormDetailMock } from './logical-type-form-detail.response.mock';
 import { platformTypes1 } from './platform-types.response.mock';
+import { PlatformType } from '@osee/messaging/shared/types';
+import { transaction } from '@osee/shared/transactions';
+import {
+	transactionResultMock,
+	transactionMock,
+} from '@osee/shared/transactions/testing';
 
 export const typesServiceMock: Partial<TypesService> = {
 	performMutation(body: transaction) {

@@ -10,17 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	ColumnPreferencesDialogComponent,
+	PreferencesUIService,
+	settingsDialogData,
+} from '@osee/messaging/shared';
 import { combineLatest } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
-import { ColumnPreferencesDialogComponent } from '../../../../shared/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
-import { settingsDialogData } from '../../../../shared/types/settingsdialog';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
 

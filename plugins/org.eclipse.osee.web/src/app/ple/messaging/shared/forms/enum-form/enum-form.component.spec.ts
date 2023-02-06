@@ -21,13 +21,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTableHarness } from '@angular/material/table/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
-import { QueryServiceMock } from '../../testing/query.service.mock';
-import { ApplicabilityListService } from '../../services/http/applicability-list.service';
-import { QueryService } from '../../services/http/query.service';
 
 import { EnumFormComponent } from './enum-form.component';
-import { MatOptionLoadingModule } from '../../../../../shared-components/mat-option-loading/mat-option-loading.module';
+import {
+	applicabilityListServiceMock,
+	QueryServiceMock,
+} from '@osee/messaging/shared/testing';
+import {
+	ApplicabilityListService,
+	QueryService,
+} from '@osee/messaging/shared/services';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 
 describe('EnumFormComponent', () => {
 	let component: EnumFormComponent;
@@ -45,7 +49,7 @@ describe('EnumFormComponent', () => {
 					MatFormFieldModule,
 					MatInputModule,
 					MatSelectModule,
-					MatOptionLoadingModule,
+					MockMatOptionLoadingComponent,
 				],
 				declarations: [],
 				providers: [

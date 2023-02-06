@@ -14,15 +14,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ChangeReportRoutingModule } from './change-report-routing.module';
-import { BranchPickerModule } from 'src/app/shared-components/components/branch-picker/branch-picker.module';
 import { ChangeReportTableComponent } from './components/change-report-table/change-report-table.component';
 import { ChangeReportComponent } from './change-report.component';
 import { MatTableModule } from '@angular/material/table';
+import { BranchPickerComponent } from '@osee/shared/components';
 
 @NgModule({
 	declarations: [ChangeReportComponent, ChangeReportTableComponent],
 	imports: [
-		BranchPickerModule,
+		BranchPickerComponent,
 		CommonModule,
 		ChangeReportRoutingModule,
 		MatTableModule,

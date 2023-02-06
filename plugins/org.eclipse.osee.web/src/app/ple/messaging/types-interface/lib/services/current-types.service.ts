@@ -11,30 +11,28 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, from, iif, Observable, of } from 'rxjs';
+import { combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
-	map,
-	mergeMap,
-	reduce,
 	repeatWhen,
 	share,
-	shareReplay,
 	switchMap,
 	take,
 	tap,
 } from 'rxjs/operators';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import { TypesService } from '../../../shared/services/http/types.service';
-import { PlatformType } from '../../../shared/types/platformType';
-import { transaction } from '../../../../../transactions/transaction';
-import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { applic } from '../../../../../types/applicability/applic';
-import { enumeration } from '../../../shared/types/enum.d';
-import { PreferencesUIService } from '../../../shared/services/ui/preferences-ui.service';
-import { TypesUIService } from '../../../shared/services/ui/types-ui.service';
+import {
+	TypesService,
+	PreferencesUIService,
+	TypesUIService,
+	PlatformType,
+	enumeration,
+	settingsDialogData,
+} from '@osee/messaging/shared';
+import { transaction } from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

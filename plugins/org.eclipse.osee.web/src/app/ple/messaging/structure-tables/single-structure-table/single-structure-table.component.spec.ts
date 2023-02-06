@@ -16,11 +16,13 @@ import { TestScheduler } from 'rxjs/testing';
 import { StructureTableComponentMock } from '../lib/tables/structure-table/structure-table.component.mock';
 
 import { SingleStructureTableComponent } from './single-structure-table.component';
-import { CurrentStateServiceMock } from '../../shared/testing/current-structure.service.mock';
-import { STRUCTURE_SERVICE_TOKEN } from '../../shared/tokens/injection/structure/token';
-import { SINGLE_STRUCTURE_SERVICE } from '../../shared/tokens/injection/structure/single';
-import { CurrentStructureSingleService } from '../../shared/services/ui/current-structure-single.service';
 import { AsyncPipe } from '@angular/common';
+import {
+	SINGLE_STRUCTURE_SERVICE,
+	STRUCTURE_SERVICE_TOKEN,
+	CurrentStructureSingleService,
+} from '@osee/messaging/shared';
+import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
 
 describe('SingleStructureTableComponent', () => {
 	let component: SingleStructureTableComponent;

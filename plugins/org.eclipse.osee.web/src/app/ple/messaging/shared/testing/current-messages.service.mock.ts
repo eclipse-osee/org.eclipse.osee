@@ -13,12 +13,15 @@
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
 import { applic } from '../../../../types/applicability/applic';
-import { settingsDialogData } from '../types/settingsdialog';
 import { CurrentMessagesService } from '../services/ui/current-messages.service';
-import { message, messageWithChanges } from '../types/messages';
-import { subMessage } from '../types/sub-messages';
-import { transactionToken } from '../../../../transactions/transaction';
-import { transactionResultMock } from '../../../../transactions/transaction.mock';
+import {
+	message,
+	messageWithChanges,
+	settingsDialogData,
+	subMessage,
+} from '@osee/messaging/shared/types';
+import { transactionToken } from '@osee/shared/transactions';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;

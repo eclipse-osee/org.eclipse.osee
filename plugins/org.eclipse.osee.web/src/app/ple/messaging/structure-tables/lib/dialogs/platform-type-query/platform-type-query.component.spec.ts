@@ -29,21 +29,24 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { PlatformTypeQueryComponent } from './platform-type-query.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { TransactionBuilderService } from '../../../../../../transactions/transaction-builder.service';
-import { transactionBuilderMock } from '../../../../../../transactions/transaction-builder.service.mock';
-import { UserDataAccountService } from '../../../../../../userdata/services/user-data-account.service';
-import { applicabilityListServiceMock } from '../../../../shared/testing/applicability-list.service.mock';
-import { enumerationSetServiceMock } from '../../../../shared/testing/enumeration-set.service.mock';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
-import { MimPreferencesServiceMock } from '../../../../shared/testing/mim-preferences.service.mock';
-import { platformTypesMock } from '../../../../shared/testing/platform-types.response.mock';
-import { typesServiceMock } from '../../../../shared/testing/types.service.mock';
-import { ApplicabilityListService } from '../../../../shared/services/http/applicability-list.service';
-import { EnumerationSetService } from '../../../../shared/services/http/enumeration-set.service';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { MimPreferencesService } from '../../../../shared/services/http/mim-preferences.service';
-import { TypesService } from '../../../../shared/services/http/types.service';
-import { userDataAccountServiceMock } from '../../../../../../userdata/services/user-data-account.service.mock';
+import {
+	ApplicabilityListService,
+	EnumerationSetService,
+	EnumsService,
+	MimPreferencesService,
+	TypesService,
+} from '@osee/messaging/shared';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import {
+	MimPreferencesServiceMock,
+	typesServiceMock,
+	enumsServiceMock,
+	enumerationSetServiceMock,
+	applicabilityListServiceMock,
+	platformTypesMock,
+} from '@osee/messaging/shared/testing';
 
 describe('PlatformTypeQueryComponent', () => {
 	let component: PlatformTypeQueryComponent;

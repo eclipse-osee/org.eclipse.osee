@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { PlatformTypeCardComponent } from '../main-content/platform-type-card/platform-type-card.component';
-import { PlatformType } from '../types/platformType';
+import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
+import { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-types-platform-type-card',

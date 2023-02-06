@@ -16,13 +16,15 @@ import {
 	MatDialogConfig,
 	MatDialogRef,
 } from '@angular/material/dialog';
+import { AffectedArtifactDialogComponent } from '@osee/messaging/shared/dialogs';
+import {
+	affectedArtifactWarning,
+	element,
+	structure,
+	subMessage,
+} from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { subMessage } from '../../types/sub-messages';
-import { AffectedArtifactDialogComponent } from '../../dialogs/affected-artifact-dialog/affected-artifact-dialog.component';
-import { affectedArtifactWarning } from '../../types/affectedArtifact';
-import { element } from '../../types/element';
-import { structure } from '../../types/structure';
 import { BranchedAffectedArtifactService } from '../ui/branched-affected-artifact.service';
 
 @Injectable({

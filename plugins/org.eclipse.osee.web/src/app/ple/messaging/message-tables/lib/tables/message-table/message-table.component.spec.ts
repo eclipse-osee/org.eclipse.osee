@@ -13,8 +13,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatTableHarness } from '@angular/material/table/testing';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { FormsModule } from '@angular/forms';
@@ -30,41 +28,40 @@ import { MessageTableComponent } from './message-table.component';
 import { of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
 import { AsyncPipe, CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { AddMessageDialogComponent } from '../../dialogs/add-message-dialog/add-message-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MessageUiService } from '../../../../shared/services/ui/messages-ui.service';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import { ActionDropdownStub } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
-import { BranchUndoButtonTestingModule } from '../../../../../../shared-components/components/branch-undo-button/branch.undo-button.testing.module';
-import { HighlightFilteredTextDirective } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
-import { OseeStringUtilsPipesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { MimSingleDiffDummy } from '../../../../../diff-views/mocks/mim-single-diff.mock';
-import { CurrentMessageServiceMock } from '../../../../shared/testing/current-messages.service.mock';
-import { messagesMock } from '../../../../shared/testing/messages.response.mock';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
-import { message } from '../../../../shared/types/messages';
+import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 import { MockAddMessageDialogComponent } from '../../testing/add-message-dialog.component.mock';
 import { MockSubMessageTableComponent } from '../../testing/sub-message-table.component.mock';
 import { MockEditMessageFieldComponent } from '../../testing/edit-message-field.component.mock';
-import { GenericButtonsModule } from '../../../../../generic-buttons/generic-buttons.module';
-import { TwoLayerAddButtonHarness } from '../../../../../generic-buttons/two-layer-add-button/two-layer-add-button.harness';
-import { ActionDropDownComponent } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { UndoButtonBranchComponent } from '../../../../../../shared-components/components/branch-undo-button/undo-button-branch/undo-button-branch.component';
-import { UndoButtonBranchMockComponent } from '../../../../../../shared-components/components/branch-undo-button/branch-undo-button.component.mock';
-import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 import { RouterLink } from '@angular/router';
-import { TwoLayerAddButtonComponent } from '../../../../../generic-buttons/two-layer-add-button/two-layer-add-button.component';
+import {
+	CurrentMessagesService,
+	EditAuthService,
+	EnumsService,
+	message,
+	MessageUiService,
+} from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import {
+	ActionDropdownStub,
+	TwoLayerAddButtonHarness,
+	UndoButtonBranchMockComponent,
+} from '@osee/shared/components/testing';
+import { TwoLayerAddButtonComponent } from '@osee/shared/components';
+import {
+	CurrentMessageServiceMock,
+	editAuthServiceMock,
+	enumsServiceMock,
+	messagesMock,
+} from '@osee/messaging/shared/testing';
 
 let loader: HarnessLoader;
 
@@ -128,7 +125,7 @@ describe('MessageTableComponent', () => {
 					MockSubMessageTableComponent,
 					MockAddMessageDialogComponent,
 					MockEditMessageFieldComponent,
-					MimSingleDiffDummy,
+					MockSingleDiffComponent,
 					HighlightFilteredTextDirective,
 					TwoLayerAddButtonComponent,
 				],
@@ -154,23 +151,20 @@ describe('MessageTableComponent', () => {
 					MatSlideToggleModule,
 					MatButtonModule,
 					MatSidenavModule,
-					OseeStringUtilsDirectivesModule,
-					OseeStringUtilsPipesModule,
 					NoopAnimationsModule,
 					MatTooltipModule,
 					MatMenuModule,
 					MatDialogModule,
-					GenericButtonsModule,
-					BranchUndoButtonTestingModule,
+					UndoButtonBranchMockComponent,
 					RouterTestingModule.withRoutes([
 						{ path: 'diff', component: MessageTableComponent },
 						{
 							path: 'diffOpen',
-							component: MimSingleDiffDummy,
+							component: MockSingleDiffComponent,
 							outlet: 'rightSideNav',
 						},
 					]),
-					MimSingleDiffDummy,
+					MockSingleDiffComponent,
 					HighlightFilteredTextDirective,
 					ActionDropdownStub,
 					AddMessageDialogComponent,
