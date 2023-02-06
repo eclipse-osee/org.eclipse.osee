@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Ken J. Aguilar
  */
+ 
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
    private final HashCollectionSet<KeyOne, KeyTwo> singleKeyMap;
    private final Map<Pair<KeyOne, KeyTwo>, Value> map;
@@ -150,12 +151,12 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
    @Override
    public Value put(Pair<KeyOne, KeyTwo> key, Value value) {
-      put(key.getFirst(), key.getSecond());
+      putKeys(key.getFirst(), key.getSecond());
       return map.put(key, value);
    }
 
    public Value put(KeyOne key1, KeyTwo key2, Value value) {
-      put(key1, key2);
+      putKeys(key1, key2);
       return map.put(new Pair<>(key1, key2), value);
    }
 
@@ -164,11 +165,11 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       map.putAll(copyMap);
 
       for (Pair<KeyOne, KeyTwo> key : copyMap.keySet()) {
-         put(key.getFirst(), key.getSecond());
+         putKeys(key.getFirst(), key.getSecond());
       }
    }
 
-   private void put(KeyOne key1, KeyTwo key2) {
+   private void putKeys(KeyOne key1, KeyTwo key2) {
       if (singleKeyMap.isSynchronized()) {
          synchronized (singleKeyMap) {
             singleKeyMap.put(key1, key2);
