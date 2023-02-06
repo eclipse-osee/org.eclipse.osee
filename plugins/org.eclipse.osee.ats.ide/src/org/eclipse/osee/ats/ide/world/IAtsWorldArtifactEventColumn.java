@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 
 /**
  * @author Donald G. Dunne
@@ -20,5 +21,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 public interface IAtsWorldArtifactEventColumn {
 
    public void handleArtifactEvent(ArtifactEvent artifactEvent, WorldXViewer xViewer);
+   
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, WorldXViewer xViewer);
 
 }

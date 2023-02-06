@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -770,6 +771,11 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
 
    @Override
    public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
+      // already handled in WorldComposite
+   }
+   
+   @Override
+   public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer) {
       // already handled in WorldComposite
    }
 
