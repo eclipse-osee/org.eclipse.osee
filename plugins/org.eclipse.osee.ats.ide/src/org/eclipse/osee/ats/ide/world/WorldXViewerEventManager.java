@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -165,7 +166,7 @@ public class WorldXViewerEventManager {
             AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
 
          return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
-            goalMemberReordered, sprintMemberReordered, artifactEvent, handlers);
+            goalMemberReordered, sprintMemberReordered, artifactEvent, null, handlers);
       }
 
       private Runnable createDisplayRunnable(ArtifactTopicEvent artifactTopicEvent, Collection<IWorldViewerEventHandler> handlers) {
@@ -201,7 +202,7 @@ public class WorldXViewerEventManager {
             AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
 
          return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
-            goalMemberReordered, sprintMemberReordered, null, handlers);
+            goalMemberReordered, sprintMemberReordered, null, artifactTopicEvent, handlers);
       }
    }
 
@@ -214,11 +215,12 @@ public class WorldXViewerEventManager {
       private final Collection<Artifact> sprintMemberReordered;
       private final Collection<Artifact> allModAndParents;
       private final ArtifactEvent artifactEvent;
+      private final ArtifactTopicEvent artifactTopicEvent;
 
       public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> allModAndParents, //
          Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, //
          Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered, //
-         ArtifactEvent artifactEvent, Collection<IWorldViewerEventHandler> handlers) {
+         ArtifactEvent artifactEvent, ArtifactTopicEvent artifactTopicEvent, Collection<IWorldViewerEventHandler> handlers) {
          super();
          this.modifiedArts = modifiedArts;
          this.allModAndParents = allModAndParents;
@@ -227,6 +229,7 @@ public class WorldXViewerEventManager {
          this.goalMemberReordered = goalMemberReordered;
          this.sprintMemberReordered = sprintMemberReordered;
          this.artifactEvent = artifactEvent;
+         this.artifactTopicEvent = artifactTopicEvent;
          this.handlers = handlers;
       }
 
@@ -302,7 +305,11 @@ public class WorldXViewerEventManager {
                      }
                      handler.relationsModifed(relModifiedArts, goalMemberReordered, sprintMemberReordered);
 
-                     handler.handleColumnEvents(artifactEvent, handler.getWorldXViewer());
+                     if (artifactEvent != null) {
+                    	 handler.handleColumnEvents(artifactEvent, handler.getWorldXViewer());
+                     } else {
+                    	 handler.handleColumnTopicEvents(artifactTopicEvent, handler.getWorldXViewer());
+                     }
                   }
                }
             } catch (Exception ex) {

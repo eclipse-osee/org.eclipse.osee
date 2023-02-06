@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -50,7 +51,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -250,6 +253,29 @@ public class SprintColumn extends BackgroundLoadingPreComputedColumn implements 
          Long relTypeId = rel.getRelTypeGuid();
          if (AtsRelationTypes.AgileSprintToItem.getId().equals(relTypeId)) {
             Artifact workflow = ArtifactCache.getActive(rel.getArtB());
+            if (workflow != null) {
+               IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
+               String newValue = getValue(workItem, preComputedValueMap);
+               preComputedValueMap.put(workflow.getId(), newValue);
+               xViewer.update(workflow, null);
+            }
+         }
+      }
+   }
+   
+   /**
+    * Don't want columns to listen to their own events, so have WorldXViewerEventManager call here to tell columns to
+    * handle
+    */
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, WorldXViewer xViewer) {
+      if (!Widgets.isAccessible(xViewer.getTree())) {
+         return;
+      }
+      for (EventTopicRelationTransfer rel : artifactTopicEvent.getRelations()) {
+         Long relTypeId = rel.getRelTypeId();
+         if (AtsRelationTypes.AgileSprintToItem.getId().equals(relTypeId)) {
+            Artifact workflow = ArtifactCache.getActive(rel.getArtBToken());
             if (workflow != null) {
                IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
                String newValue = getValue(workItem, preComputedValueMap);

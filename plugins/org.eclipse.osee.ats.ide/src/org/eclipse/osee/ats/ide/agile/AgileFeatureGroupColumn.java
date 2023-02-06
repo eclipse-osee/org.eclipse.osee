@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
@@ -52,8 +53,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -255,6 +258,26 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingPreComputedColumn 
       }
       for (EventBasicGuidArtifact guidArt : artifactEvent.get(EventModType.Reloaded)) {
          Artifact workflow = ArtifactCache.getActive(guidArt);
+         if (workflow != null && workflow.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
+            String newValue = getValue(workItem, preComputedValueMap);
+            preComputedValueMap.put(workflow.getId(), newValue);
+            xViewer.update(workflow, null);
+         }
+      }
+   }
+   
+   /**
+    * Don't want columns to listen to their own events, so have WorldXViewerEventManager call here to tell columns to
+    * handle
+    */
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, WorldXViewer xViewer) {
+      if (!Widgets.isAccessible(xViewer.getTree())) {
+         return;
+      }
+      for (EventTopicArtifactTransfer topicArt : artifactTopicEvent.getTransfer(EventModType.Reloaded)) {
+         Artifact workflow = ArtifactCache.getActive(topicArt.getArtifactToken());
          if (workflow != null && workflow.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
             String newValue = getValue(workItem, preComputedValueMap);
