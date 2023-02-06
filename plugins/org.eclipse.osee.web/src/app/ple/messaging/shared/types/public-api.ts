@@ -16,6 +16,7 @@ export * from './branches.d';
 export * from './branchstorage.d';
 export * from './connection';
 export * from './connection-nodes.d';
+export * from './crossReference.d ';
 export * from './DifferenceReport.d';
 export * from './editPlatformTypeDialogData.d';
 export * from './EditPlatformTypeDialogDataMode.enum.d';

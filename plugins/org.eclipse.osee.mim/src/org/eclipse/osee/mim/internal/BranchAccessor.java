@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.AffectedArtifactEndpoint;
+import org.eclipse.osee.mim.CrossReferenceEndpoint;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
 import org.eclipse.osee.mim.GetAllMIMRelatedObjectsEndpoint;
 import org.eclipse.osee.mim.IcdEndpoint;
@@ -187,6 +188,12 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public TransportTypeEndpoint getTransportTypeEndpoint(@PathParam("branch") BranchId branch) {
       return new TransportTypeEndpointImpl(branch, mimApi.getTransportTypeApi());
+   }
+
+   @Path("{branch}/crossReference")
+   @Produces(MediaType.APPLICATION_JSON)
+   public CrossReferenceEndpoint getCrossReferenceEndpoint(@PathParam("branch") BranchId branch) {
+      return new CrossReferenceEndpointImpl(branch, mimApi.getCrossReferenceApi());
    }
 
    /**

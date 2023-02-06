@@ -54,5 +54,7 @@ public interface MimApi {
 
    TransportTypeApi getTransportTypeApi();
 
+   CrossReferenceApi getCrossReferenceApi();
+
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 }

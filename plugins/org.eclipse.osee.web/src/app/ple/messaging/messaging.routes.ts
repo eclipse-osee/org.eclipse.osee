@@ -26,6 +26,9 @@ const imports = navigationStructure[0].children
 const reports = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
 	.children.find((page) => page.label === 'Reports');
+const crossReference = navigationStructure[0].children
+	.filter((c) => c.label === 'Messaging Configuration')[0]
+	.children.find((page) => page.label === 'Cross-Reference Data Manager');
 const types = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
 	.children.find((page) => page.label === 'Type View');
@@ -111,6 +114,11 @@ const routes: Routes = [
 		path: 'reports',
 		title: reports?.pageTitle || 'OSEE',
 		loadChildren: () => import('./reports/reports.routes'),
+	},
+	{
+		path: 'crossreference',
+		title: crossReference?.pageTitle || 'OSEE',
+		loadChildren: () => import('./cross-reference/cross-reference.routes'),
 	},
 	{
 		path: 'import',

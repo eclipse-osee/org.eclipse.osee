@@ -13,7 +13,8 @@
 import { Injectable } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import { settingsDialogData } from '@osee/messaging/shared/types';
-import { combineLatest, from, Observable, of } from 'rxjs';
+import { transaction } from '@osee/shared/types';
+import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import {
 	share,
 	filter,
@@ -23,6 +24,7 @@ import {
 	map,
 	reduce,
 	take,
+	tap,
 } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { transactionResult } from 'src/app/shared/types/change-report/transaction';
@@ -100,11 +102,83 @@ export class PreferencesUIService {
 		);
 	}
 
+	updatePreferences(preferences: settingsDialogData) {
+		return this.createUserPreferenceBranchTransaction(
+			preferences.editable
+		).pipe(
+			take(1),
+			switchMap((transaction) =>
+				this.preferenceService.performMutation(transaction).pipe(
+					take(1),
+					tap(() => {
+						this.ui.updated = true;
+					})
+				)
+			)
+		);
+	}
+
+	private createUserPreferenceBranchTransaction(editMode: boolean) {
+		return combineLatest([
+			this.preferences,
+			this.ui.id,
+			this.BranchPrefs,
+		]).pipe(
+			take(1),
+			switchMap(([prefs, branch, branchPrefs]) =>
+				iif(
+					() => prefs.hasBranchPref,
+					of<transaction>({
+						branch: '570',
+						txComment: 'Updating MIM User Preferences',
+						modifyArtifacts: [
+							{
+								id: prefs.id,
+								setAttributes: [
+									{
+										typeName: 'MIM Branch Preferences',
+										value: [
+											...branchPrefs,
+											`${branch}:${editMode}`,
+										],
+									},
+								],
+							},
+						],
+					}),
+					of<transaction>({
+						branch: '570',
+						txComment: 'Updating MIM User Preferences',
+						modifyArtifacts: [
+							{
+								id: prefs.id,
+								addAttributes: [
+									{
+										typeName: 'MIM Branch Preferences',
+										value: `${branch}:${editMode}`,
+									},
+								],
+							},
+						],
+					})
+				)
+			)
+		);
+	}
+
 	constructor(
 		private ui: UiService,
 		private userService: UserDataAccountService,
 		private preferenceService: MimPreferencesService
 	) {}
+
+	public get branchId() {
+		return this.ui.id;
+	}
+
+	public set BranchId(id: string) {
+		this.ui.idValue = id;
+	}
 
 	public get preferences() {
 		return this._preferences;

@@ -43,7 +43,8 @@ const routes: Routes = [
 	},
 	{
 		path: '',
-		loadComponent: () => import('./lib/menu/usermenu/usermenu.component'),
+		loadComponent: () =>
+			import('../shared/headers/usermenu/usermenu.component'),
 		outlet: 'userMenu',
 	},
 	{

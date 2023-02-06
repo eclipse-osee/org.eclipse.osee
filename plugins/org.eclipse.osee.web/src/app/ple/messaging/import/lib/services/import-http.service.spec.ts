@@ -15,7 +15,6 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '../../../../../../environments/environment';
 import {
 	importOptionsMock,
@@ -26,7 +25,6 @@ import { ImportHttpService } from './import-http.service';
 
 describe('ImportHttpService', () => {
 	let service: ImportHttpService;
-	let scheduler: TestScheduler;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {

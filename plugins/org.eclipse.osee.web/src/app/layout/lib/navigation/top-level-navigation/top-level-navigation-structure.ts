@@ -144,6 +144,17 @@ const navigationStructure: navigationElement[] = [
 						children: [],
 					},
 					{
+						label: 'Cross-Reference Data Manager',
+						cypressLabel: 'cross-reference-nav-button',
+						pageTitle: 'OSEE - MIM - Cross-Reference Data Manager',
+						isDropdown: false,
+						isDropdownOpen: false,
+						requiredRoles: [],
+						routerLink: '/ple/messaging/crossreference',
+						icon: 'compare_arrows',
+						children: [],
+					},
+					{
 						label: 'Help',
 						cypressLabel: 'help-nav-button',
 						pageTitle: 'OSEE - MIM - Help',
@@ -204,7 +215,7 @@ const navigationStructure: navigationElement[] = [
 					{
 						label: 'Import',
 						cypressLabel: 'mimimport-nav-button',
-						pageTitle: 'OSEE - MIM - Importer',
+						pageTitle: 'OSEE - MIM - Import',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [UserRoles.OSEE_ADMIN],

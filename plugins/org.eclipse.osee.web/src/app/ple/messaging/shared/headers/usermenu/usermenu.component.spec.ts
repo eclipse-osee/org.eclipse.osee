@@ -18,9 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
-import { graphServiceMock } from '../../testing/current-graph.service.mock';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { RouteStateService } from '../../services/route-state-service.service';
+import { RouteStateService } from '../../../connection-view/lib/services/route-state-service.service';
 
 import { UsermenuComponent } from './usermenu.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -47,7 +45,6 @@ describe('UsermenuComponent', () => {
 			],
 			providers: [
 				{ provide: EditAuthService, useValue: editAuthServiceMock },
-				{ provide: CurrentGraphService, useValue: graphServiceMock },
 				{
 					provide: PreferencesUIService,
 					useValue: preferencesUiServiceMock,

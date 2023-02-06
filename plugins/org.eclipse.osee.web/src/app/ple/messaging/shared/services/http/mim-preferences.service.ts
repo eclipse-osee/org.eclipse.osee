@@ -97,4 +97,8 @@ export class MimPreferencesService {
 
 		return this.txService.performMutation(tx);
 	}
+
+	performMutation(transaction: transaction) {
+		return this.txService.performMutation(transaction);
+	}
 }
