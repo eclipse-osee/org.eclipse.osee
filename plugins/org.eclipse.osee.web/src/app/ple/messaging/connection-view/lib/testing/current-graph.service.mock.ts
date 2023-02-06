@@ -62,9 +62,6 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
 	createNewNode(node: node) {
 		return of(transactionResultMock);
 	},
-	updatePreferences(preferences: settingsDialogData) {
-		return of(transactionResultMock);
-	},
 	nodeOptions: of([
 		{ id: '1', name: 'First' },
 		{ id: '2', name: 'Second' },

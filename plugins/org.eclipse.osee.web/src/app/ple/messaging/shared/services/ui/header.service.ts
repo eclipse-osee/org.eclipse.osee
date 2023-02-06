@@ -49,10 +49,12 @@ import {
 } from '@osee/messaging/shared/types';
 import { NodeTraceReportItem } from '../../types/NodeTraceReport';
 import { changeReportRow } from '@osee/shared/types/change-report';
+import { CrossReference } from '../../types/crossReference.d ';
 
 export const HeaderKeysEnum = {
 	NONE: '',
 	CHANGE_REPORT_ROW: 'changeReportRow',
+	CROSS_REFERENCE: 'crossReference',
 	ELEMENT: 'element',
 	IMPORT_ENUM_SET: 'importEnumSet',
 	IMPORT_MESSAGE: 'importMessage',
@@ -72,6 +74,7 @@ export type HeaderKeys = (typeof HeaderKeysEnum)[keyof typeof HeaderKeysEnum];
 export class HeaderService {
 	getTableHeaderByName<
 		T extends changeReportRow &
+			CrossReference &
 			element &
 			ImportEnumSet &
 			messageToken &
@@ -87,6 +90,10 @@ export class HeaderService {
 			case HeaderKeysEnum.CHANGE_REPORT_ROW:
 				return of(
 					this._changeReportRowHeaders.find((h) => h.header === value)
+				);
+			case HeaderKeysEnum.CROSS_REFERENCE:
+				return of(
+					this._crossReferenceHeaders.find((h) => h.header === value)
 				);
 			case HeaderKeysEnum.ELEMENT:
 				return of(
@@ -1033,6 +1040,25 @@ export class HeaderService {
 			header: 'relatedItems',
 			description: 'Artifacts related to the requirement',
 			humanReadable: 'Traces To',
+		},
+	];
+
+	private _crossReferenceHeaders: headerDetail<CrossReference>[] = [
+		{
+			header: 'name',
+			description: 'Name to be used in cross reference lookup',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'crossReferenceValue',
+			description: 'Value returned by cross reference lookup',
+			humanReadable: 'Value',
+		},
+		{
+			header: 'crossReferenceArrayValues',
+			description:
+				'Key-value pairs returned by cross reference lookup (if cross reference represents an array)',
+			humanReadable: 'Array Values',
 		},
 	];
 

@@ -1,0 +1,82 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Create New Cross Reference</h1>
+<form #crossRefForm="ngForm">
+	<mat-dialog-content>
+		<div class="top-fields">
+			<mat-form-field class="full-width">
+				<mat-label>Name</mat-label>
+				<input
+					matInput
+					[(ngModel)]="crossReference.name"
+					required
+					name="field-name"
+					data-cy="field-name" />
+			</mat-form-field>
+			<mat-form-field class="full-width">
+				<mat-label>Value</mat-label>
+				<input
+					matInput
+					[(ngModel)]="crossReference.crossReferenceValue"
+					required
+					name="field-value"
+					data-cy="field-value" />
+			</mat-form-field>
+		</div>
+		<div class="array-fields">
+			<h4 class="array-fields-header">Array Values</h4>
+			<ng-container *ngFor="let item of arrayValues; let i = index">
+				<div class="array-row">
+					<mat-form-field>
+						<mat-label>Key</mat-label>
+						<input
+							matInput
+							[(ngModel)]="item.key"
+							(ngModelChange)="updateArrayString()"
+							[name]="'field-item-key-' + i" />
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Value</mat-label>
+						<input
+							matInput
+							[(ngModel)]="item.value"
+							(ngModelChange)="updateArrayString()"
+							[name]="'field-item-value-' + i" />
+					</mat-form-field>
+				</div>
+			</ng-container>
+		</div>
+		<button
+			mat-mini-fab
+			color="primary"
+			(click)="addArrayValue()"
+			class="add-button">
+			<mat-icon>add</mat-icon>
+		</button>
+	</mat-dialog-content>
+</form>
+<mat-dialog-actions align="end">
+	<button
+		mat-button
+		(click)="onNoClick()">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		[mat-dialog-close]="crossReference"
+		color="primary"
+		data-cy="submit-btn"
+		[disabled]="!crossRefForm.valid">
+		Ok
+	</button>
+</mat-dialog-actions>

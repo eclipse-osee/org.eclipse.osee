@@ -539,30 +539,6 @@ describe('CurrentGraphService', () => {
 		});
 	});
 
-	it('should update user preferences', () => {
-		scheduler.run(() => {
-			routeState.branchId = '10';
-			let expectedObservable = { a: transactionResultMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(
-					service.updatePreferences({
-						branchId: '10',
-						allowedHeaders1: ['name', 'description'],
-						allowedHeaders2: ['name', 'description'],
-						allHeaders1: ['name'],
-						allHeaders2: ['name'],
-						editable: true,
-						headers1Label: '',
-						headers2Label: '',
-						headersTableActive: false,
-						wordWrap: false,
-					})
-				)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
 	it('should set and get differences', () => {
 		scheduler.run(({ expectObservable, cold }) => {
 			routeState.branchId = '10';

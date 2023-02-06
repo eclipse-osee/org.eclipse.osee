@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.mim.CrossReferenceApi;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
@@ -55,31 +56,20 @@ public class MimApiImpl implements MimApi {
    private final ConcurrentHashMap<Long, InterfaceLogicalTypeGeneric> logicalTypes = new ConcurrentHashMap<>();
 
    private OrcsApi orcsApi;
-
    private AtsApi atsApi;
-
    private InterfaceMessageApi interfaceMessageApi;
-
    private InterfaceSubMessageApi interfaceSubMessageApi;
-
    private InterfaceStructureApi interfaceStructureApi;
-
    private InterfaceElementApi interfaceElementApi;
-
    private InterfaceElementArrayApi interfaceElementArrayApi;
-
    private InterfacePlatformTypeApi interfacePlatformApi;
-
    private InterfaceNodeViewApi interfaceNodeViewApi;
-
    private InterfaceConnectionViewApi interfaceConnectionViewApi;
-
    private InterfaceEnumerationApi interfaceEnumerationApi;
-
    private InterfaceEnumerationSetApi interfaceEnumerationSetApi;
-
    private InterfaceDifferenceReportApi interfaceDifferenceReportApi;
    private TransportTypeApi transportTypeApi;
+   private CrossReferenceApi crossReferenceApi;
    private MimArtifactsApi mimArtifactsApi;
    private MimReportsApi mimReportsApi;
 
@@ -143,7 +133,8 @@ public class MimApiImpl implements MimApi {
          interfaceElementApi, interfacePlatformApi, interfaceEnumerationSetApi, interfaceEnumerationApi);
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
-      this.setTransportTypeApi(new TransportTypeApiImpl(orcsApi));
+      this.transportTypeApi = new TransportTypeApiImpl(orcsApi);
+      this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);
    }
 
    @Override
@@ -226,19 +217,14 @@ public class MimApiImpl implements MimApi {
       return this.mimReportsApi;
    }
 
-   /**
-    * @return the transportTypeApi
-    */
    @Override
    public TransportTypeApi getTransportTypeApi() {
-      return transportTypeApi;
+      return this.transportTypeApi;
    }
 
-   /**
-    * @param transportTypeApi the transportTypeApi to set
-    */
-   public void setTransportTypeApi(TransportTypeApi transportTypeApi) {
-      this.transportTypeApi = transportTypeApi;
+   @Override
+   public CrossReferenceApi getCrossReferenceApi() {
+      return this.crossReferenceApi;
    }
 
 }

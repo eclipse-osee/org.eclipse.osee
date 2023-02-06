@@ -16,6 +16,7 @@ import { of } from 'rxjs';
 import { user } from '@osee/shared/types/auth';
 import { MimPreferencesService } from '../services/http/mim-preferences.service';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
+import { transaction } from '@osee/shared/types';
 
 export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {
 	getUserPrefs(branchId: string, user: user) {
@@ -36,6 +37,9 @@ export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {
 	) {
 		return of(transactionResultMock);
 	},
+	performMutation(tx: transaction) {
+		return of(transactionResultMock);
+	},
 };
 
 export const MimPreferencesServiceNoGlobalPrefsMock: Partial<MimPreferencesService> =
@@ -50,5 +54,8 @@ export const MimPreferencesServiceNoGlobalPrefsMock: Partial<MimPreferencesServi
 					wordWrap: true,
 				},
 			});
+		},
+		performMutation(tx: transaction) {
+			return of(transactionResultMock);
 		},
 	};

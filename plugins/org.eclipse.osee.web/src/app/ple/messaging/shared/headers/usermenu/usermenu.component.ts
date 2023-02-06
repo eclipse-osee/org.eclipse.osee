@@ -23,8 +23,7 @@ import {
 } from '@osee/messaging/shared';
 import { combineLatest, iif, of } from 'rxjs';
 import { map, share, shareReplay, take, switchMap } from 'rxjs/operators';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { RouteStateService } from '../../services/route-state-service.service';
+import { RouteStateService } from '../../../connection-view/lib/services/route-state-service.service';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
@@ -50,7 +49,7 @@ export class UsermenuComponent {
 			)
 		)
 	);
-	inEditMode = this.graphService.preferences.pipe(
+	inEditMode = this.preferencesService.preferences.pipe(
 		map((r) => r.inEditMode),
 		share(),
 		shareReplay(1)
@@ -58,7 +57,6 @@ export class UsermenuComponent {
 	constructor(
 		private routeState: RouteStateService,
 		public dialog: MatDialog,
-		private graphService: CurrentGraphService,
 		private preferencesService: PreferencesUIService
 	) {}
 	openSettingsDialog() {
@@ -89,7 +87,7 @@ export class UsermenuComponent {
 						.pipe(
 							take(1),
 							switchMap((result) =>
-								this.graphService
+								this.preferencesService
 									.updatePreferences(result)
 									.pipe(
 										switchMap((_) =>

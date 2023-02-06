@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Context;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CrossReference;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DesignMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ExecutedCommandHistory;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Feature;
@@ -177,6 +178,10 @@ public interface CoreRelationTypes {
    RelationTypeToken InterfaceConnectionTransportType = osee.addNewRelationType(1859749228181133209L, "Interface Connection Transport Type", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC,InterfaceConnection, "Interface Connection", TransportType, "Transport Type");
    RelationTypeSide InterfaceConnectionTransportType_InterfaceConnection = RelationTypeSide.create(InterfaceConnectionTransportType, SIDE_A);
    RelationTypeSide InterfaceConnectionTransportType_TransportType = RelationTypeSide.create(InterfaceConnectionTransportType, SIDE_B);
+
+   RelationTypeToken InterfaceConnectionCrossReference = osee.addNewRelationType(2283114833979032380L, "Interface Connection Cross Reference", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC,InterfaceConnection, "Interface Connection", CrossReference, "Cross Reference");
+   RelationTypeSide InterfaceConnectionCrossReference_InterfaceConnection = RelationTypeSide.create(InterfaceConnectionCrossReference, SIDE_A);
+   RelationTypeSide InterfaceConnectionCrossReference_CrossReference = RelationTypeSide.create(InterfaceConnectionCrossReference, SIDE_B);
 
    RelationTypeToken RequirementsToInterface = osee.addNewRelationType(9109538440842134345L, "Requirements to Interface", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, Artifact, "Requirement Artifact", InterfaceArtifact, "Artifact");
    RelationTypeSide RequirementsToInterface_Artifact = RelationTypeSide.create(RequirementsToInterface, SIDE_A);

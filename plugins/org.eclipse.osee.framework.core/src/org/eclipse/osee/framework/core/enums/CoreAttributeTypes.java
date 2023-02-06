@@ -88,6 +88,8 @@ public interface CoreAttributeTypes {
    AttributeTypeString ContentUrl = osee.createString(1152921504606847100L, "Content URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Country = osee.createString(1152921504606847072L, "Country", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean CustomCommand = osee.createBoolean(317394570332960L, "Custom Command", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString CrossReferenceValue = osee.createString(1761323951115447407L, "Cross Reference Value", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString CrossReferenceArrayValues = osee.createString(1395395257321371828L, "Cross Reference Array Values", MediaType.TEXT_PLAIN, "");
    DataClassificationAttributeType DataClassification = osee.createEnum(new DataClassificationAttributeType());
    AttributeTypeString DataClassificationRationale = osee.createString(6697327397016528458L, "Data Classification Rationale", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
    AttributeTypeString DataRightsBasis = osee.createString(72057594037928276L, "Data Rights Basis", MediaType.TEXT_PLAIN, "The basis or rationale for the Data Rights Classification selected such as developed under program X");

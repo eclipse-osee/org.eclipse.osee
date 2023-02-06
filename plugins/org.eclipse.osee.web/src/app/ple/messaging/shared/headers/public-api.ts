@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export { MimHeaderComponent, default } from './mim-header/mim-header.component';
+export { UsermenuComponent } from './usermenu/usermenu.component';

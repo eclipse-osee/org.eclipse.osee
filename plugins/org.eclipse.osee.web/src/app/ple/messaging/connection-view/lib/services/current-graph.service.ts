@@ -51,10 +51,9 @@ import {
 	OseeEdge,
 	OseeNode,
 	PreferencesUIService,
-	settingsDialogData,
 	transportType,
 } from '@osee/messaging/shared';
-import { relation, transaction, transactionToken } from '@osee/shared/types';
+import { relation, transactionToken } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -450,70 +449,6 @@ export class CurrentGraphService {
 			returnObj.edges.push({ ...edge, id: 'a' + edge?.id?.toString() });
 		});
 		return returnObj;
-	}
-
-	updatePreferences(preferences: settingsDialogData) {
-		return this.createUserPreferenceBranchTransaction(
-			preferences.editable
-		).pipe(
-			take(1),
-			switchMap((transaction) =>
-				this.nodeService.performMutation(transaction).pipe(
-					take(1),
-					tap(() => {
-						this.update = true;
-					})
-				)
-			)
-		);
-	}
-
-	private createUserPreferenceBranchTransaction(editMode: boolean) {
-		return combineLatest([
-			this.preferences,
-			this.routeStateService.id,
-			this.BranchPrefs,
-		]).pipe(
-			take(1),
-			switchMap(([prefs, branch, branchPrefs]) =>
-				iif(
-					() => prefs.hasBranchPref,
-					of<transaction>({
-						branch: '570',
-						txComment: 'Updating MIM User Preferences',
-						modifyArtifacts: [
-							{
-								id: prefs.id,
-								setAttributes: [
-									{
-										typeName: 'MIM Branch Preferences',
-										value: [
-											...branchPrefs,
-											`${branch}:${editMode}`,
-										],
-									},
-								],
-							},
-						],
-					}),
-					of<transaction>({
-						branch: '570',
-						txComment: 'Updating MIM User Preferences',
-						modifyArtifacts: [
-							{
-								id: prefs.id,
-								addAttributes: [
-									{
-										typeName: 'MIM Branch Preferences',
-										value: `${branch}:${editMode}`,
-									},
-								],
-							},
-						],
-					})
-				)
-			)
-		);
 	}
 
 	private parseIntoNodesAndEdges(
