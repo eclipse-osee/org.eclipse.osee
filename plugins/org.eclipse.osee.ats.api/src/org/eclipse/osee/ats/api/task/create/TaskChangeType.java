@@ -19,5 +19,6 @@ package org.eclipse.osee.ats.api.task.create;
 public enum TaskChangeType {
    Relation,
    Deleted,
-   AddMod;
+   Add,
+   Mod;
 }

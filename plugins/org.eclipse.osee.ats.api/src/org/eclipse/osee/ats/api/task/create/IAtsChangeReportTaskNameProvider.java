@@ -121,14 +121,44 @@ public interface IAtsChangeReportTaskNameProvider {
             match.setType(ChangeReportTaskMatchType.ChgRptTskCompAsNeeded);
             if (chgType.equals(TaskChangeType.Deleted.name())) {
                match.setAutoTaskGenType(AutoTaskGenType.ChgRptDelete.name());
-            } else if (chgType.equals(TaskChangeType.AddMod.name())) {
-               match.setAutoTaskGenType(AutoTaskGenType.ChgRptAddMod.name());
+            } else if (chgType.equals(TaskChangeType.Add.name())) {
+               match.setAutoTaskGenType(AutoTaskGenType.ChgRptAdd.name());
+            } else if (chgType.equals(TaskChangeType.Mod.name())) {
+               match.setAutoTaskGenType(AutoTaskGenType.ChgRptMod.name());
             }
             crttwd.getTaskMatches().add(match);
             return match;
          }
       }
       return null;
+   }
+
+   public static boolean isChangeItemAdded(ArtifactToken reqArt, Collection<ChangeItem> changeItems) {
+      boolean added = false;
+      if (changeItems != null && !changeItems.isEmpty()) {
+         for (ChangeItem change : changeItems) {
+            if (change.getArtId().equals(reqArt) && change.getChangeType().isAttributeChange()) {
+               if (change.getNetChange().getModType() == ModificationType.NEW) {
+                  added = true;
+               }
+            }
+         }
+      }
+      return added;
+   }
+
+   public static boolean isChangeItemModified(ArtifactToken reqArt, Collection<ChangeItem> changeItems) {
+      boolean modified = false;
+      if (changeItems != null && !changeItems.isEmpty()) {
+         for (ChangeItem change : changeItems) {
+            if (change.getArtId().equals(reqArt) && change.getChangeType().isAttributeChange()) {
+               if (change.getNetChange().getModType() == ModificationType.MODIFIED) {
+                  modified = true;
+               }
+            }
+         }
+      }
+      return modified;
    }
 
    public static boolean isChangeItemDeleted(ArtifactToken reqArt, Collection<ChangeItem> changeItems) {
@@ -161,6 +191,7 @@ public interface IAtsChangeReportTaskNameProvider {
 
       List<ChangeItem> changeItems = crtd.getChangeItems();
 
+      Set<ArtifactId> addArts = new HashSet<>();
       Set<ArtifactId> modArts = new HashSet<>();
       Set<ArtifactId> delArts = new HashSet<>();
 
@@ -177,15 +208,20 @@ public interface IAtsChangeReportTaskNameProvider {
                   delArts.add(rollup.getArtId());
                   logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact,
                      TaskChangeType.Deleted.name(), addTaskMatch);
-               } else {
-                  logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact,
-                     TaskChangeType.AddMod.name(), addTaskMatch);
+               } else if (result.isAdded()) {
+                  logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact, TaskChangeType.Add.name(),
+                     addTaskMatch);
+                  addArts.add(rollup.getArtId());
+               } else if (result.isModified()) {
+                  logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact, TaskChangeType.Mod.name(),
+                     addTaskMatch);
                   modArts.add(rollup.getArtId());
                }
             }
          }
       }
       ChangeReportModDelArts modDel = new ChangeReportModDelArts();
+      modDel.setAdded(addArts);
       modDel.setModified(modArts);
       modDel.setDeleted(delArts);
       return modDel;
@@ -201,17 +237,19 @@ public interface IAtsChangeReportTaskNameProvider {
       Collection<AttributeTypeToken> incAttrTypes = crtd.getSetDef().getChgRptOptions().getAttributeTypes();
       Collection<AttributeTypeToken> exclAttrTypes = crtd.getSetDef().getChgRptOptions().getNotAttributeTypes();
 
+      boolean added = false;
+      boolean modified = false;
       boolean included = false;
       boolean deleted = false;
 
       // Check for included/excluded artifact type
       if (artType.inheritsFromAny(exclArtTypes)) {
          // included == false
-         return new ArtifactIncluded(included, deleted);
+         return new ArtifactIncluded(added, modified, included, deleted);
       }
       if (!incArtTypes.isEmpty() && !artType.inheritsFromAny(incArtTypes)) {
          // included == false
-         return new ArtifactIncluded(included, deleted);
+         return new ArtifactIncluded(added, modified, included, deleted);
       }
 
       // Check for included/excluded attribute type
@@ -227,7 +265,11 @@ public interface IAtsChangeReportTaskNameProvider {
          // Change Type or Applicability always true
          if (item.getChangeType().isArtifactChange() && !item.isSynthetic()) {
             deleted = calculatedIfDeleted(rollup);
-            return new ArtifactIncluded(true, deleted);
+            if (ChangeItemUtil.isNew(item.getCurrentVersion())) {
+               return new ArtifactIncluded(true, modified, true, deleted);
+            } else {
+               return new ArtifactIncluded(added, true, true, deleted);
+            }
          }
 
          // Look through attrs for anything that should be included
@@ -251,11 +293,18 @@ public interface IAtsChangeReportTaskNameProvider {
 
             if (incAttrType) {
                included = true;
-               break;
+               if (item.getNetChange().getModType() == ModificationType.MODIFIED) {
+                  modified = true;
+                  break;
+               } else if (item.getNetChange().getModType() == ModificationType.NEW) {
+                  added = true;
+               } else {
+                  included = false;
+               }
             }
          }
       }
-      return new ArtifactIncluded(included, deleted);
+      return new ArtifactIncluded(added, modified, included, deleted);
    }
 
    default public boolean calculatedIfDeleted(ChangeReportRollup rollup) {

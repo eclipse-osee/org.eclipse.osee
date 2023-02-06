@@ -22,11 +22,20 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public class ChangeReportModDelArts {
 
+   private Collection<ArtifactId> added = new ArrayList<>();
    private Collection<ArtifactId> modified = new ArrayList<>();
    private Collection<ArtifactId> deleted = new ArrayList<>();
 
    public ChangeReportModDelArts() {
       // for jax-rs
+   }
+
+   public Collection<ArtifactId> getAdded() {
+      return added;
+   }
+
+   public void setAdded(Collection<ArtifactId> added) {
+      this.added = added;
    }
 
    public Collection<ArtifactId> getModified() {
