@@ -28,20 +28,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
-import { enumerationSet } from '../../../../shared/types/enum';
-import { EditEnumSetDialogComponent } from '../../../../shared/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
-import { element } from '../../../../shared/types/element';
-import { structure } from '../../../../shared/types/structure';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
-import { EditViewFreeTextFieldDialogComponent } from '../../../../shared/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
-import { EditViewFreeTextDialog } from '../../../../shared/types/EditViewFreeTextDialog';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
 import { applic } from '../../../../../../types/applicability/applic';
 import { difference } from 'src/app/types/change-report/change-report';
-import { EnumerationUIService } from '../../../../shared/services/ui/enumeration-ui.service';
 import { UiService } from '../../../../../../ple-services/ui/ui.service';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
@@ -52,8 +42,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
+import {
+	structure,
+	STRUCTURE_SERVICE_TOKEN,
+	enumerationSet,
+	EditViewFreeTextDialog,
+	element,
+	EditEnumSetDialogComponent,
+	EditViewFreeTextFieldDialogComponent,
+	CurrentStructureService,
+	EnumerationUIService,
+	HeaderService,
+	PreferencesUIService,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',

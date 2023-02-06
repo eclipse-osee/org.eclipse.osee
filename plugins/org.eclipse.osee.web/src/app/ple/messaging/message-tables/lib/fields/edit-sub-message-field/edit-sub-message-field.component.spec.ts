@@ -19,12 +19,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { warningDialogServiceMock } from '../../../../shared/testing/warning-dialog.ui.service.mock';
-import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
-import { CurrentMessageServiceMock } from '../../../../shared/testing/current-messages.service.mock';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
 import { EditSubMessageFieldComponent } from './edit-sub-message-field.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import {
+	CurrentMessagesService,
+	WarningDialogService,
+} from '@osee/messaging/shared';
+import {
+	CurrentMessageServiceMock,
+	warningDialogServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('EditSubMessageFieldComponent', () => {
 	let component: EditSubMessageFieldComponent;

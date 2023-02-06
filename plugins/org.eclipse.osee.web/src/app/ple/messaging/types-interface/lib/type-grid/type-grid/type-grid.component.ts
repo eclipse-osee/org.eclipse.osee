@@ -20,32 +20,27 @@ import {
 	Input,
 	OnChanges,
 	OnDestroy,
-	OnInit,
 	SimpleChanges,
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import {
-	BehaviorSubject,
-	combineLatest,
-	of,
-	OperatorFunction,
-	Subject,
-} from 'rxjs';
-import { take, switchMap, filter, tap, takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { combineLatest, OperatorFunction, Subject } from 'rxjs';
+import { switchMap, filter, takeUntil } from 'rxjs/operators';
 import { applic } from '../../../../../../types/applicability/applic';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
-import { enumeration } from '../../../../shared/types/enum';
-import { PlatformType } from '../../../../shared/types/platformType';
-import { NewTypeDialogComponent } from '../../../../shared/dialogs/new-type-dialog/new-type-dialog.component';
-import { newPlatformTypeDialogReturnData } from '../../../../shared/types/newTypeDialogDialogData';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { PlatformTypeCardComponent } from '../../../../shared/main-content/platform-type-card/platform-type-card.component';
+import {
+	PlatformTypeCardComponent,
+	newPlatformTypeDialogReturnData,
+	PlatformType,
+	enumeration,
+	NewTypeDialogComponent,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-types-type-grid',

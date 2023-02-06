@@ -21,21 +21,24 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatOptionLoadingModule } from '../../../../../shared-components/mat-option-loading/mat-option-loading.module';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
-import { enumerationSetServiceMock } from '../../testing/enumeration-set.service.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { platformTypes1 } from '../../testing/platform-types.response.mock';
-import { QueryServiceMock } from '../../testing/query.service.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { ApplicabilityListService } from '../../services/http/applicability-list.service';
-import { EnumerationSetService } from '../../services/http/enumeration-set.service';
-import { MimPreferencesService } from '../../services/http/mim-preferences.service';
-import { QueryService } from '../../services/http/query.service';
-import { TypesService } from '../../services/http/types.service';
-import { MockEnumFormUnique } from '../../testing/enum-form.component.mock';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import {
+	QueryService,
+	EnumerationSetService,
+	ApplicabilityListService,
+	MimPreferencesService,
+	TypesService,
+} from '@osee/messaging/shared/services';
+import {
+	QueryServiceMock,
+	enumerationSetServiceMock,
+	applicabilityListServiceMock,
+	MimPreferencesServiceMock,
+	typesServiceMock,
+	MockEnumFormUniqueComponent,
+	platformTypes1,
+} from '@osee/messaging/shared/testing';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 
 import { EditEnumSetFieldComponent } from './edit-enum-set-field.component';
 
@@ -79,8 +82,8 @@ describe('EditEnumSetFieldComponent', () => {
 					FormsModule,
 					MatTableModule,
 					NoopAnimationsModule,
-					MatOptionLoadingModule,
-					MockEnumFormUnique,
+					MockMatOptionLoadingComponent,
+					MockEnumFormUniqueComponent,
 					EditEnumSetFieldComponent,
 				],
 				providers: [

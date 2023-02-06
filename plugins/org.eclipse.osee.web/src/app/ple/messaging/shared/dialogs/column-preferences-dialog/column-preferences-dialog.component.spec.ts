@@ -32,17 +32,19 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { apiURL } from '../../../../../../environments/environment';
-import { branchApplicability } from '../../types/branch.applic';
-import { settingsDialogData } from '../../types/settingsdialog';
 
 import { ColumnPreferencesDialogComponent } from './column-preferences-dialog.component';
-import {
-	defaultEditElementProfile,
-	defaultEditStructureProfile,
-	defaultViewElementProfile,
-	defaultViewStructureProfile,
-} from '../../constants/defaultProfiles';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	settingsDialogData,
+	branchApplicability,
+} from '@osee/messaging/shared/types';
+import {
+	defaultEditStructureProfile,
+	defaultEditElementProfile,
+	defaultViewStructureProfile,
+	defaultViewElementProfile,
+} from '@osee/messaging/shared/constants';
 
 describe('ColumnPreferencesDialogComponent', () => {
 	let component: ColumnPreferencesDialogComponent;

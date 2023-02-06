@@ -17,7 +17,7 @@ import {
 	ATTRIBUTETYPEID,
 	ATTRIBUTETYPEIDENUM,
 } from '../../../../../types/constants/AttributeTypeId.enum';
-import { transportType } from '../../types/transportType';
+import { transportType } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',

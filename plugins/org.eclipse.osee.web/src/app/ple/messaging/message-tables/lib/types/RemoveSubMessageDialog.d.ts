@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { message } from '../../../shared/types/messages';
-import { subMessage } from '../../../shared/types/sub-messages';
+
+import { subMessage, message } from '@osee/messaging/shared';
 
 export interface RemoveSubMessageDialogData {
 	submessage: subMessage;

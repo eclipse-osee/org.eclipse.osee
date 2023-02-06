@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component } from '@angular/core';
-import { EditTypeDialogComponent } from '../dialogs/edit-type-dialog/edit-type-dialog.component';
+import { EditTypeDialogComponent } from '@osee/messaging/shared/dialogs';
 
 @Component({
 	selector: 'osee-edit-type-dialog',

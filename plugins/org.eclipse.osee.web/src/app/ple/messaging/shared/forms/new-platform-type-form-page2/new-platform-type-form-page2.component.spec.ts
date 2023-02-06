@@ -11,8 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
-import { enumerationUiServiceMock } from '../../testing/enumeration-ui.service.mock';
 
 import { NewPlatformTypeFormPage2Component } from './new-platform-type-form-page2.component';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
@@ -23,20 +21,26 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MockMatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/testing/mat-option-loading.component';
 import { CdkStepper } from '@angular/cdk/stepper';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { SimpleChange } from '@angular/core';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { TypesService } from '../../services/http/types.service';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
-import { EnumsService } from '../../services/http/enums.service';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MockNewPlatformTypeFormComponent } from '../../testing/new-platform-type-form.component.mock';
-import { MockEnumSetFormUnique } from '../../forms/enum-set-form/enum-set-form.component.mock';
+import { MockEnumSetFormUniqueComponent } from '../../forms/enum-set-form/enum-set-form.component.mock';
 import { MatButtonHarness } from '@angular/material/button/testing';
+import {
+	MockNewPlatformTypeFormComponent,
+	typesServiceMock,
+	enumsServiceMock,
+	enumerationUiServiceMock,
+} from '@osee/messaging/shared/testing';
+import {
+	EnumerationUIService,
+	TypesService,
+	EnumsService,
+} from '@osee/messaging/shared/services';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 
 describe('NewPlatformTypeFormPage2Component', () => {
 	let component: NewPlatformTypeFormPage2Component;
@@ -55,7 +59,7 @@ describe('NewPlatformTypeFormPage2Component', () => {
 						AsyncPipe,
 						MockNewPlatformTypeFormComponent,
 						MockMatOptionLoadingComponent,
-						MockEnumSetFormUnique,
+						MockEnumSetFormUniqueComponent,
 						FormsModule,
 						MatFormFieldModule,
 						MatSelectModule,

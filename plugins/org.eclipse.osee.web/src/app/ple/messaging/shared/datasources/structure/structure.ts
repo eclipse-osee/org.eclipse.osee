@@ -12,10 +12,10 @@
  **********************************************************************/
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { Observable, takeUntil } from 'rxjs';
-import { structure, structureWithChanges } from '../../types/structure';
-import { CurrentStructureService } from '../../services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../tokens/injection/structure/token';
 import { Inject } from '@angular/core';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { structure, structureWithChanges } from '@osee/messaging/shared/types';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 export class StructureDataSource extends DataSource<
 	structure | structureWithChanges
 > {

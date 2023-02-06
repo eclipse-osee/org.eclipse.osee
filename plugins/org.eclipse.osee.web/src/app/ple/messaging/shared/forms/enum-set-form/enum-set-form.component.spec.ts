@@ -25,10 +25,12 @@ import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { applicabilityListUIServiceMock } from '../../testing/applicability-list-ui.service.mock';
-import { MockEnumSetUniqueDescriptionDirective } from '../../testing/enum-set-unique-description.directive.mock';
-import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
-import { MockEnumFormUnique } from '../../testing/enum-form.component.mock';
+import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
+import {
+	MockEnumFormUniqueComponent,
+	MockEnumSetUniqueDescriptionDirective,
+	applicabilityListUIServiceMock,
+} from '@osee/messaging/shared/testing';
 
 import { EnumSetFormComponent } from './enum-set-form.component';
 
@@ -52,25 +54,6 @@ describe('EnumSetFormComponent', () => {
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		// await TestBed.configureTestingModule({
-		// 	imports: [
-		// 		MatTableModule,
-		// 		FormsModule,
-		// 		MatFormFieldModule,
-		// 		MatInputModule,
-		// 		MatSelectModule,
-		// 		MatIconModule,
-		// 		NoopAnimationsModule,
-		// 	],
-		// 	declarations: [MockEnumFormUnique],
-		// 	providers: [
-		// 		{
-		// 			provide: ApplicabilityListService,
-		// 			useValue: applicabilityListServiceMock,
-		// 		},
-		// 	],
-		// }).compileComponents();
-
 		await TestBed.configureTestingModule({
 			imports: [
 				NoopAnimationsModule,
@@ -89,7 +72,7 @@ describe('EnumSetFormComponent', () => {
 						MatIconModule,
 						MatSelectModule,
 						MatOptionModule,
-						MockEnumFormUnique,
+						MockEnumFormUniqueComponent,
 						AsyncPipe,
 						NgFor,
 						NgIf,

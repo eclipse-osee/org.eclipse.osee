@@ -11,9 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import {
+	structureServiceMock,
+	structuresMock3,
+} from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { structureServiceMock } from '../../testing/structure.service.mock';
-import { structuresMock } from '../../testing/structure.mock';
 import { StructuresService } from '../http/structures.service';
 import { MimRouteService } from './mim-route.service';
 
@@ -48,7 +50,7 @@ describe('SharedStructureUIService', () => {
 	it('should get the structure', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(service.structure).toBe('a', {
-				a: structuresMock[0],
+				a: structuresMock3[0],
 			});
 		});
 	});

@@ -17,8 +17,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActionDropdownStub } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
-import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
+import {
+	ActionDropdownStub,
+	BranchPickerStub,
+} from '@osee/shared/components/testing';
 
 import { ImportComponent } from './import.component';
 import { ImportService } from './lib/services/import.service';

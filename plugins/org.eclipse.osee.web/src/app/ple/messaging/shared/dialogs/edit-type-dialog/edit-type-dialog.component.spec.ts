@@ -25,23 +25,29 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { MatSelectModule } from '@angular/material/select';
-import { TypesService } from '../../services/http/types.service';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { EnumsService } from '../../services/http/enums.service';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MockUniquePlatformTypeAttributesDirective } from '../../testing/unique-platform-type-attributes.directive.mock';
-import { QueryServiceMock } from '../../testing/query.service.mock';
-import { QueryService } from '../../services/http/query.service';
-import { MockMatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/testing/mat-option-loading.component';
-import { MockEditEnumSetFieldComponent } from '../../testing/edit-enum-set-field.component.mock';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
+import {
+	MockEditEnumSetFieldComponent,
+	MockUniquePlatformTypeAttributesDirective,
+	typesServiceMock,
+	enumsServiceMock,
+	QueryServiceMock,
+} from '@osee/messaging/shared/testing';
+import {
+	editPlatformTypeDialogData,
+	editPlatformTypeDialogDataMode,
+} from '@osee/messaging/shared/types';
+import {
+	QueryService,
+	TypesService,
+	EnumsService,
+} from '@osee/messaging/shared/services';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 
 let loader: HarnessLoader;
 

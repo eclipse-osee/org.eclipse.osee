@@ -15,11 +15,12 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TransactionBuilderService, relation } from '@osee/shared/transactions';
+import {
+	transactionBuilderMock,
+	transactionMock,
+} from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { relation } from 'src/app/transactions/transaction';
-import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
-import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
-import { transactionMock } from 'src/app/transactions/transaction.mock';
 import { apiURL } from 'src/environments/environment';
 
 import { EnumerationSetService } from './enumeration-set.service';

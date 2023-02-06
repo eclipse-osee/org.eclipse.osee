@@ -21,9 +21,9 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FirstLetterLowerPipe } from '../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/first-letter-lower.pipe';
-import { UniquePlatformTypeNameDirective } from '../../directives/validators/unique-platform-type-name.directive';
-import { logicalTypeFieldInfo } from '../../types/logicaltype';
+import { UniquePlatformTypeNameDirective } from '@osee/messaging/shared/directives';
+import { logicalTypeFieldInfo } from '@osee/messaging/shared/types';
+import { FirstLetterLowerPipe } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-new-attribute-form-field',

@@ -18,17 +18,16 @@ import {
 	animate,
 } from '@angular/animations';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { iif, Observable, of, Subject } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { TransactionService } from '@osee/shared/transactions';
+import { iif, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
-import { TransactionService } from 'src/app/transactions/transaction.service';
 import { transactionInfo } from 'src/app/types/change-report/transaction';
-import { transactionToken } from 'src/app/types/change-report/transaction-token';
 import { applic } from '../../../types/applicability/applic';
 
 @Component({

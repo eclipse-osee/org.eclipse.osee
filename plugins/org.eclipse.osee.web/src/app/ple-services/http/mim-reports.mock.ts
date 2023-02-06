@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MimReport } from 'src/app/ple/messaging/shared/types/Reports.d';
+import { MimReport } from '@osee/messaging/shared/types';
 import { FileExtensions, ProducesMediaType } from 'src/app/types/files';
 import { HttpMethods } from 'src/app/types/http-methods';
 export const mimReportsMock: MimReport[] = [

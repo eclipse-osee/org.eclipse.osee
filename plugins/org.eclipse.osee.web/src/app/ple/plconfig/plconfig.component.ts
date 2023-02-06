@@ -22,8 +22,8 @@ import {
 	tap,
 	reduce,
 } from 'rxjs/operators';
-import { ActionStateButtonService } from '../../shared-components/services/action-state-button.service';
-import { PlConfigUIStateService } from './services/pl-config-uistate.service';
+import { ActionStateButtonService } from '@osee/shared/components';
+import { PlConfigUIStateService } from './lib/services/pl-config-uistate.service';
 
 @Component({
 	selector: 'osee-plconfig',

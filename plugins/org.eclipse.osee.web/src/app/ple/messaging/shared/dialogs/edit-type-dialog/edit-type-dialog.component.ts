@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import {
 	MatDialogModule,
 	MatDialogRef,
@@ -26,30 +26,32 @@ import {
 	switchMap,
 	take,
 	takeUntil,
-	tap,
 } from 'rxjs/operators';
-import { editPlatformTypeDialogData } from '../../types/editPlatformTypeDialogData';
-import { logicalType } from '../../types/logicaltype';
-import { EnumsService } from '../../services/http/enums.service';
-import { TypesService } from '../../services/http/types.service';
-import { enumerationSet } from '../../types/enum';
-import { enumeratedPlatformType } from '../../types/enumeratedPlatformType';
-import { editPlatformTypeDialogDataMode } from '../../types/EditPlatformTypeDialogDataMode.enum';
 import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
-import { ParentErrorStateMatcher } from '../../../../../shared-matchers/parent-error-state.matcher';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { UniquePlatformTypeNameDirective } from '../../directives/validators/unique-platform-type-name.directive';
-import { UniquePlatformTypeAttributesDirective } from '../../directives/validators/unique-platform-type-attributes.directive';
-import { MatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { A11yModule } from '@angular/cdk/a11y';
 import { MatButtonModule } from '@angular/material/button';
-import { EditEnumSetFieldComponent } from '../../forms/edit-enum-set-field/edit-enum-set-field.component';
+import {
+	UniquePlatformTypeNameDirective,
+	UniquePlatformTypeAttributesDirective,
+} from '@osee/messaging/shared/directives';
+import {
+	logicalType,
+	enumerationSet,
+	editPlatformTypeDialogData,
+	editPlatformTypeDialogDataMode,
+	enumeratedPlatformType,
+} from '@osee/messaging/shared/types';
+import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
+import { TypesService, EnumsService } from '@osee/messaging/shared/services';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 
 @Component({
 	selector: 'osee-edit-type-dialog',

@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { TransactionService } from '@osee/shared/transactions';
+import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { AttributeService } from 'src/app/ple-services/http/attribute.service';
-import { TransactionService } from 'src/app/transactions/transaction.service';
-import { transactionServiceMock } from 'src/app/transactions/transaction.service.mock';
 import { attributeServiceMock } from '../mocks/attribute-service.mock';
 import { CurrentTextEditorService } from './current-text-editor.service';
 

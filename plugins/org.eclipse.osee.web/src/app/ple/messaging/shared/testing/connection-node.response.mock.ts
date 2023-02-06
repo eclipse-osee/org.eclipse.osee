@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ConnectionNode } from '../types/connection-nodes';
+
+import { ConnectionNode } from '@osee/messaging/shared/types';
 
 export const connectionNodesMock: ConnectionNode[] = [
 	{

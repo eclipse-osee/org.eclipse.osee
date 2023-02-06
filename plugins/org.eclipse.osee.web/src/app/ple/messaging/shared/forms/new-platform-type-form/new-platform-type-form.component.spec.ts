@@ -12,10 +12,11 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { EnumsService } from '../../services/http/enums.service';
-import { TypesService } from '../../services/http/types.service';
+import { TypesService, EnumsService } from '@osee/messaging/shared/services';
+import {
+	typesServiceMock,
+	enumsServiceMock,
+} from '@osee/messaging/shared/testing';
 
 import { NewPlatformTypeFormComponent } from './new-platform-type-form.component';
 

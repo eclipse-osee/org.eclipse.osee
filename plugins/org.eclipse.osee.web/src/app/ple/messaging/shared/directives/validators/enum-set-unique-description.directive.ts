@@ -17,10 +17,13 @@ import {
 	NG_ASYNC_VALIDATORS,
 	ValidationErrors,
 } from '@angular/forms';
+import { CurrentQueryService } from '@osee/messaging/shared/services';
+import {
+	enumerationSet,
+	andDescriptionQuery,
+	MimQuery,
+} from '@osee/messaging/shared/types';
 import { Observable, of, switchMap, take } from 'rxjs';
-import { CurrentQueryService } from '../../services/ui/current-query.service';
-import { enumerationSet } from '../../types/enum';
-import { andDescriptionQuery, andQuery, MimQuery } from '../../types/MimQuery';
 
 @Directive({
 	selector: '[oseeEnumSetUniqueDescription]',

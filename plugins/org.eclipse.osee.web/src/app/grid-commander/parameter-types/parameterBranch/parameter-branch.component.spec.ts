@@ -16,8 +16,10 @@ import {
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 
 import { ParameterBranchComponent } from './parameter-branch.component';
 

@@ -1,4 +1,4 @@
-import { transactionToken } from '../transactions/transaction';
+import { transactionToken } from '@osee/shared/transactions';
 
 /*********************************************************************
  * Copyright (c) 2022 Boeing

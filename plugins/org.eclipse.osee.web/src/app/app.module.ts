@@ -18,13 +18,13 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { httpInterceptorProviders } from './interceptors/http/interceptor-provider';
+import { httpInterceptorProviders } from './interceptors/interceptor-provider';
 
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 //Sub-component imports
 import { environment } from '../environments/environment';
-import { UserHeaderService } from './userdata/services/user-header.service';
+import { UserHeaderService } from './auth/user-header.service';
 import { UrlSerializer } from '@angular/router';
 import { OseeUrlSerializer } from './UrlSerializer';
 import { NavContainerComponent } from './layout/lib/containers/nav-container.component';

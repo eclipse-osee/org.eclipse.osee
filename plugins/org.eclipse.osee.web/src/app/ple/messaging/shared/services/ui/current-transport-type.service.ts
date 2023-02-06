@@ -21,14 +21,13 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
-import { TransactionService } from '../../../../../transactions/transaction.service';
-import {
-	ARTIFACTTYPEID,
-	ARTIFACTTYPEIDENUM,
-} from '../../../../../types/constants/ArtifactTypeId.enum';
-import { transportType } from '../../types/transportType';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { transportType } from '@osee/messaging/shared/types';
 import { TransportTypeService } from '../http/transport-type.service';
+import {
+	TransactionService,
+	TransactionBuilderService,
+} from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

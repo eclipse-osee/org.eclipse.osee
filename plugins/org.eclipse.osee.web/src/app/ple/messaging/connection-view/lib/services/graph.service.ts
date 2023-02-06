@@ -12,18 +12,13 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from 'src/environments/environment';
 import {
-	connection,
-	connectionWithChanges,
-	OseeEdge,
-} from './../../../shared/types/connection';
-import {
-	node,
-	nodeData,
-	nodeDataWithChanges,
 	OseeNode,
-} from '../../../shared/types/node';
+	nodeData,
+	OseeEdge,
+	connection,
+} from '@osee/messaging/shared';
+import { apiURL } from 'src/environments/environment';
 
 @Injectable({
 	providedIn: 'root',

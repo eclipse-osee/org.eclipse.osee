@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { structure } from '@osee/messaging/shared';
 import { Observable, of } from 'rxjs';
-import { structure } from '../../../../shared/types/structure';
 
 @Component({
 	selector: 'osee-structure-table',

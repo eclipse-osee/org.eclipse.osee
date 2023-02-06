@@ -14,9 +14,9 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { HeaderService } from '@osee/messaging/shared';
 import { combineLatest, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { HeaderService } from '../../../shared/services/ui/header.service';
 
 @Component({
 	selector: 'osee-messaging-help-column-descriptions',

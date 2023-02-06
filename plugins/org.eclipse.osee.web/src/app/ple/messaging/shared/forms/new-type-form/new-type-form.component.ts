@@ -47,11 +47,13 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { logicalType } from '../../types/logicaltype';
-import { PlatformType } from '../../types/platformType';
-import { TypesService } from '../../services/http/types.service';
-import { newPlatformTypeDialogReturnData } from '../../types/newTypeDialogDialogData';
 import { NewPlatformTypeFormPage2Component } from '../new-platform-type-form-page2/new-platform-type-form-page2.component';
+import { TypesService } from '@osee/messaging/shared/services';
+import {
+	logicalType,
+	PlatformType,
+	newPlatformTypeDialogReturnData,
+} from '@osee/messaging/shared/types';
 
 /**
  * Form used to create a new platform type

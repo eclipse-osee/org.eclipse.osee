@@ -15,7 +15,7 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { testBranchInfo } from 'src/app/ple/plconfig/testing/mockBranchService';
+import { testBranchInfo } from 'src/app/testing/branch-info.response.mock';
 import { apiURL } from 'src/environments/environment';
 
 import { BranchInfoService } from './branch-info.service';

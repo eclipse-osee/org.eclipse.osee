@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { message } from '../../../shared/types/messages';
+import { message } from '@osee/messaging/shared';
 
 export interface DeleteMessageDialogData {
 	message: message;

@@ -11,9 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Route } from '@angular/router';
-import { DiffReportResolver } from '../../../resolvers/diff-report-resolver.resolver';
-import { MULTI_STRUCTURE_SERVICE } from '../shared/tokens/injection/structure/multi';
-import { SINGLE_STRUCTURE_SERVICE } from '../shared/tokens/injection/structure/single';
+import {
+	MULTI_STRUCTURE_SERVICE,
+	SINGLE_STRUCTURE_SERVICE,
+} from '@osee/messaging/shared';
+import { DiffReportResolver } from '@osee/shared/resolvers';
 
 const routes: Route[] = [
 	{
@@ -75,12 +77,11 @@ const routes: Route[] = [
 		loadComponent: () => import('./lib/menus/usermenu/usermenu.component'),
 		outlet: 'userMenu',
 	},
-	{
-		path: '',
-		loadComponent: () =>
-			import('../shared/headers/mim-header/mim-header.component'),
-		outlet: 'navigationHeader',
-	},
+	// {
+	// 	path: '',
+	// 	loadComponent: () => import('@osee/messaging/shared/headers'),
+	// 	outlet: 'navigationHeader',
+	// },
 ];
 
 export default routes;

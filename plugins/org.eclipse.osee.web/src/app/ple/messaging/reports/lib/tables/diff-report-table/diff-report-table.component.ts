@@ -11,14 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
-import {
-	diffItem,
-	diffItemKey,
-} from '../../../../shared/types/DifferenceReport';
+import { diffItem, diffItemKey, HeaderService } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-diff-report-table',

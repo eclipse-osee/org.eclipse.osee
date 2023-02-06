@@ -25,13 +25,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CurrentStateServiceMock } from '../../../../shared/testing/current-structure.service.mock';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
-import { structure } from '../../../../shared/types/structure';
 import { AddStructureDialog } from './add-structure-dialog';
 
 import { AddStructureDialogComponent } from './add-structure-dialog.component';
-import { MockMatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading.component';
+import { structure, STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
 
 describe('AddStructureDialogComponent', () => {
 	let component: AddStructureDialogComponent;

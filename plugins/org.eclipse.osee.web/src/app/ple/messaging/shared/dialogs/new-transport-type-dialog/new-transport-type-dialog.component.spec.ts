@@ -19,8 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatOptionLoadingModule } from '../../../../../shared-components/mat-option-loading/mat-option-loading.module';
-import { dialogRef } from '../../testing/dialog-ref.util.mock';
+import { dialogRef } from '@osee/messaging/shared/testing';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 
 import { NewTransportTypeDialogComponent } from './new-transport-type-dialog.component';
 
@@ -35,7 +35,7 @@ describe('NewTransportTypeDialogComponent', () => {
 				MatFormFieldModule,
 				MatInputModule,
 				MatSelectModule,
-				MatOptionLoadingModule,
+				MockMatOptionLoadingComponent,
 				MatButtonModule,
 				FormsModule,
 				NoopAnimationsModule,

@@ -11,12 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TypesService } from '../../services/http/types.service';
-import { typesServiceMock } from '../../testing/types.service.mock';
 
 import { LogicalTypeSelectorComponent } from './logical-type-selector.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { logicalTypeMock } from '../../testing/logical-type.response.mock';
+import {
+	logicalTypeMock,
+	typesServiceMock,
+} from '@osee/messaging/shared/testing';
+import { TypesService } from '@osee/messaging/shared/services';
 
 describe('LogicalTypeSelectorComponent', () => {
 	let component: LogicalTypeSelectorComponent;

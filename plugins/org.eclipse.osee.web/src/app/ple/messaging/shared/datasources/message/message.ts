@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { CurrentMessagesService } from '@osee/messaging/shared/services';
+import { message, messageWithChanges } from '@osee/messaging/shared/types';
 import { Observable, takeUntil } from 'rxjs';
-import { message, messageWithChanges } from '../../types/messages';
-import { CurrentMessagesService } from '../../services/ui/current-messages.service';
 /**
  * Not in use yet
  */

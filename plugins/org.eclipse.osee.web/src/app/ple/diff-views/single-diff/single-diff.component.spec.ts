@@ -15,9 +15,9 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TransactionService } from '@osee/shared/transactions';
+import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { SideNavService } from '../../../shared-services/ui/side-nav.service';
-import { TransactionService } from '../../../transactions/transaction.service';
-import { transactionServiceMock } from '../../../transactions/transaction.service.mock';
 
 import { SingleDiffComponent } from './single-diff.component';
 

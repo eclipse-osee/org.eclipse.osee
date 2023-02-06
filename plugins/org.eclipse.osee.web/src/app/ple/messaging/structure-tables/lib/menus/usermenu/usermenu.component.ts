@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { combineLatest, from, iif, of } from 'rxjs';
 import {
@@ -23,17 +23,19 @@ import {
 	switchMap,
 	take,
 } from 'rxjs/operators';
-import { ColumnPreferencesDialogComponent } from '../../../../shared/dialogs/column-preferences-dialog/column-preferences-dialog.component';
-import { HeaderService } from 'src/app/ple/messaging/shared/services/ui/header.service';
-import { element } from '../../../../shared/types/element';
-import { structure } from '../../../../shared/types/structure';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { PreferencesUIService } from '../../../../shared/services/ui/preferences-ui.service';
-import { settingsDialogData } from '../../../../shared/types/settingsdialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	ColumnPreferencesDialogComponent,
+	CurrentStructureService,
+	element,
+	HeaderService,
+	PreferencesUIService,
+	settingsDialogData,
+	structure,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

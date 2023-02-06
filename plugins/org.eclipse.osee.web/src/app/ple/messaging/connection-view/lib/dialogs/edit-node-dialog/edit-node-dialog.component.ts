@@ -18,7 +18,6 @@ import {
 } from '@angular/material/dialog';
 import { applic } from '../../../../../../types/applicability/applic';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { nodeData } from '../../../../shared/types/node.d';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe, NgFor } from '@angular/common';
+import { nodeData } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-edit-node-dialog',

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
+import { applicabilityListServiceMock } from '@osee/messaging/shared/testing';
 import { ApplicabilityListService } from '../http/applicability-list.service';
 
 import { ApplicabilityListUIService } from './applicability-list-ui.service';

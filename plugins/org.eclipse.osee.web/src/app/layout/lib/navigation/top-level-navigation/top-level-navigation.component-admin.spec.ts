@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { userDataAccountAdminServiceMock } from '../../../../userdata/services/user-data-account.service.mock';
+import { userDataAccountAdminServiceMock } from '@osee/auth';
 import { tests } from './top-level-navigation.component.spec';
 
 describe('TopLevelNavigationComponent', () => {

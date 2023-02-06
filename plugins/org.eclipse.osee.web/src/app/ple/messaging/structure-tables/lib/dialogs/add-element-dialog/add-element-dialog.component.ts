@@ -29,20 +29,8 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { PlatformType } from '../../../../shared/types/platformType';
-import { element } from '../../../../shared/types/element';
 import { applic } from '../../../../../../types/applicability/applic';
-import { enumeration } from '../../../../shared/types/enum';
 import { UiService } from '../../../../../../ple-services/ui/ui.service';
-import { TypesUIService } from '../../../../shared/services/ui/types-ui.service';
-import {
-	andNameQuery,
-	andQuery,
-	MimQuery,
-	PlatformTypeQuery,
-} from '../../../../shared/types/MimQuery';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { AddElementDialog } from './add-element-dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -56,10 +44,22 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { newPlatformTypeDialogReturnData } from '../../../../shared/types/newTypeDialogDialogData';
-import { NewTypeFormComponent } from '../../../../shared/forms/new-type-form/new-type-form.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	MimQuery,
+	PlatformType,
+	STRUCTURE_SERVICE_TOKEN,
+	PlatformTypeQuery,
+	element,
+	newPlatformTypeDialogReturnData,
+	andQuery,
+	andNameQuery,
+	enumeration,
+	NewTypeFormComponent,
+	CurrentStructureService,
+	TypesUIService,
+} from '@osee/messaging/shared';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',

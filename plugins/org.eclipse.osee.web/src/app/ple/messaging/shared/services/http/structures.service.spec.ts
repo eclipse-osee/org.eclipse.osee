@@ -19,13 +19,14 @@ import {
 import { StructuresService } from './structures.service';
 import { HttpClient } from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
-import { structure } from '../../types/structure';
 import { apiURL } from 'src/environments/environment';
-import { TransactionBuilderService } from 'src/app/transactions/transaction-builder.service';
-import { transactionBuilderMock } from 'src/app/transactions/transaction-builder.service.mock';
-import { transactionMock } from 'src/app/transactions/transaction.mock';
-import { relation } from 'src/app/transactions/transaction';
-import { structuresMock } from '../../testing/structure.mock';
+import { structure } from '@osee/messaging/shared/types';
+import { structuresMock3 } from '@osee/messaging/shared/testing';
+import { TransactionBuilderService, relation } from '@osee/shared/transactions';
+import {
+	transactionBuilderMock,
+	transactionMock,
+} from '@osee/shared/transactions/testing';
 
 describe('StructuresService', () => {
 	let service: StructuresService;
@@ -178,7 +179,7 @@ describe('StructuresService', () => {
 				10
 		);
 		expect(req.request.method).toEqual('GET');
-		req.flush(structuresMock[0]);
+		req.flush(structuresMock3[0]);
 		httpTestingController.verify();
 	});
 

@@ -29,7 +29,50 @@
 		"target": "ES2022",
 		"module": "ES2022",
 		"lib": ["ES2022", "dom"],
-		"useDefineForClassFields": false
+		"useDefineForClassFields": false,
+		"paths": {
+			"@osee/auth": ["src/app/auth"],
+			"@osee/shared/utils": ["src/app/shared/utils"],
+			"@osee/shared/resolvers": ["src/app/shared/resolvers"],
+			"@osee/shared/components": ["src/app/shared/components"],
+			"@osee/shared/matchers": ["src/app/shared/matchers"],
+			"@osee/shared/validators": ["src/app/shared/validators"],
+			"@osee/shared/transactions": ["src/app/shared/transactions"],
+			"@osee/messaging/shared": ["src/app/ple/messaging/shared"],
+			"@osee/messaging/shared/types": [
+				"src/app/ple/messaging/shared/types"
+			],
+			"@osee/messaging/shared/headers": [
+				"src/app/ple/messaging/shared/headers"
+			],
+			"@osee/messaging/shared/headers/*": [
+				"src/app/ple/messaging/shared/headers/*"
+			],
+			"@osee/messaging/shared/constants": [
+				"src/app/ple/messaging/shared/constants"
+			],
+			"@osee/messaging/shared/tokens": [
+				"src/app/ple/messaging/shared/tokens"
+			],
+			"@osee/messaging/shared/directives": [
+				"src/app/ple/messaging/shared/directives"
+			],
+			"@osee/messaging/shared/functions": [
+				"src/app/ple/messaging/shared/functions"
+			],
+			"@osee/messaging/shared/main-content": [
+				"src/app/ple/messaging/shared/main-content"
+			],
+			"@osee/messaging/shared/forms": [
+				"src/app/ple/messaging/shared/forms"
+			],
+			"@osee/messaging/shared/dialogs": [
+				"src/app/ple/messaging/shared/dialogs"
+			],
+			"@osee/messaging/shared/services": [
+				"src/app/ple/messaging/shared/services"
+			]
+		}
 	},
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,
@@ -37,6 +80,5 @@
 		"strictInputAccessModifiers": true,
 		"strictTemplates": true
 	},
-	"include": ["src"],
 	"exclude": ["node_modules/cypress"]
 }

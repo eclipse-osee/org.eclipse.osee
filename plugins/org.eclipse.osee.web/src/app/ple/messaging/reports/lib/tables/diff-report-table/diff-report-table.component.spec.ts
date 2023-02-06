@@ -13,9 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { DiffHeaderType } from '@osee/messaging/shared';
 import { TestScheduler } from 'rxjs/testing';
 import { connectionDiffsMock } from 'src/app/ple-services/http/difference-report-connections.mock';
-import { DiffHeaderType } from '../../../../shared/types/DifferenceReport';
 
 import { DiffReportTableComponent } from './diff-report-table.component';
 

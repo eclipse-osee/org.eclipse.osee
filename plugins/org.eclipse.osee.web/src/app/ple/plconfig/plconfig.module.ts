@@ -39,29 +39,29 @@ import { MatListModule } from '@angular/material/list';
 import { FormsModule } from '@angular/forms';
 
 //Sub-component imports
-import { ApplicabilityTableComponent } from './components/applicability-table/applicability-table.component';
-import { ConfigurationDropdownComponent } from './components/dropdowns/configuration-dropdown/configuration-dropdown.component';
-import { EditConfigurationDialogComponent } from './components/edit-config-dialog/edit-config-dialog.component';
-import { AddConfigurationDialogComponent } from './components/add-configuration-dialog/add-configuration-dialog.component';
-import { FeatureDropdownComponent } from './components/dropdowns/feature-dropdown/feature-dropdown.component';
-import { AddFeatureDialogComponent } from './components/add-feature-dialog/add-feature-dialog.component';
-import { EditFeatureDialogComponent } from './components/edit-feature-dialog/edit-feature-dialog.component';
-import { CopyConfigurationDialogComponent } from './components/copy-configuration-dialog/copy-configuration-dialog.component';
-import { ConfigurationGroupDropdownComponent } from './components/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
-import { AddConfigurationGroupDialogComponent } from './components/add-configuration-group-dialog/add-configuration-group-dialog.component';
-import { ConfigGroupDialogComponent } from './components/config-group-dialog/config-group-dialog.component';
+import { ApplicabilityTableComponent } from './lib/table/applicability-table/applicability-table.component';
+import { ConfigurationDropdownComponent } from './lib/dropdowns/configuration-dropdown/configuration-dropdown.component';
+import { EditConfigurationDialogComponent } from './lib/dialogs/edit-config-dialog/edit-config-dialog.component';
+import { AddConfigurationDialogComponent } from './lib/dialogs/add-configuration-dialog/add-configuration-dialog.component';
+import { FeatureDropdownComponent } from './lib/dropdowns/feature-dropdown/feature-dropdown.component';
+import { AddFeatureDialogComponent } from './lib/dialogs/add-feature-dialog/add-feature-dialog.component';
+import { EditFeatureDialogComponent } from './lib/dialogs/edit-feature-dialog/edit-feature-dialog.component';
+import { CopyConfigurationDialogComponent } from './lib/dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
+import { ConfigurationGroupDropdownComponent } from './lib/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
+import { AddConfigurationGroupDialogComponent } from './lib/dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
+import { ConfigGroupDialogComponent } from './lib/dialogs/config-group-dialog/config-group-dialog.component';
 
 import { PleSharedMaterialModule } from '../ple-shared-material/ple-shared-material.module';
-import { FeatureMenuComponent } from './components/menus/feature-menu/feature-menu.component';
-import { ArrayDiffMenuComponent } from './components/menus/array-diff-menu/array-diff-menu.component';
-import { ConfigMenuComponent } from './components/menus/config-menu/config-menu.component';
-import { ConfigGroupMenuComponent } from './components/menus/config-group-menu/config-group-menu.component';
-import { ValueMenuComponent } from './components/menus/value-menu/value-menu.component';
-import { ActionStateButtonModule } from '../../shared-components/components/action-state-button/action-state-button.module';
-import { BranchPickerModule } from '../../shared-components/components/branch-picker/branch-picker.module';
-import { ProductTypeDropDownComponent } from './components/dropdowns/product-type-drop-down/product-type-drop-down.component';
-import { AddProductTypeDialogComponent } from './components/add-product-type-dialog/add-product-type-dialog.component';
-import { EditProductTypeDialogComponent } from './components/edit-product-type-dialog/edit-product-type-dialog.component';
+import { FeatureMenuComponent } from './lib/menus/feature-menu/feature-menu.component';
+import { ArrayDiffMenuComponent } from './lib/menus/array-diff-menu/array-diff-menu.component';
+import { ConfigMenuComponent } from './lib/menus/config-menu/config-menu.component';
+import { ConfigGroupMenuComponent } from './lib/menus/config-group-menu/config-group-menu.component';
+import { ValueMenuComponent } from './lib/menus/value-menu/value-menu.component';
+import { ProductTypeDropDownComponent } from './lib/dropdowns/product-type-drop-down/product-type-drop-down.component';
+import { AddProductTypeDialogComponent } from './lib/dialogs/add-product-type-dialog/add-product-type-dialog.component';
+import { EditProductTypeDialogComponent } from './lib/dialogs/edit-product-type-dialog/edit-product-type-dialog.component';
+import { BranchPickerComponent } from 'src/app/shared/components/branch-picker/branch-picker/branch-picker.component';
+import { ActionDropDownComponent } from 'src/app/shared/components/action-state-button/action-drop-down/action-drop-down.component';
 
 @NgModule({
 	declarations: [
@@ -96,7 +96,7 @@ import { EditProductTypeDialogComponent } from './components/edit-product-type-d
 		MatPaginatorModule,
 		MatInputModule,
 		MatMenuModule,
-		BranchPickerModule,
+		BranchPickerComponent,
 		PleSharedMaterialModule,
 		MatDialogModule,
 		MatSlideToggleModule,
@@ -104,7 +104,7 @@ import { EditProductTypeDialogComponent } from './components/edit-product-type-d
 		MatIconModule,
 		MatProgressSpinnerModule,
 		MatListModule,
-		ActionStateButtonModule,
+		ActionDropDownComponent,
 		PlconfigRoutingModule,
 	],
 	providers: [

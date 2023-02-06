@@ -23,7 +23,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { dialogRef } from '../../../../shared/testing/dialog-ref.util.mock';
+import { dialogRef } from '@osee/messaging/shared/testing';
 import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 
 import { ConfirmRemovalDialogComponent } from './confirm-removal-dialog.component';

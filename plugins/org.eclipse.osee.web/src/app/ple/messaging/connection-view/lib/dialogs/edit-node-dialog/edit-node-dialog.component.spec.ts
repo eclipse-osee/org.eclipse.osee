@@ -27,10 +27,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { node } from '../../../../shared/types/node';
 
 import { EditNodeDialogComponent } from './edit-node-dialog.component';
-import { dialogRef } from '../../../../shared/testing/dialog-ref.util.mock';
+import { node } from '@osee/messaging/shared';
+import { dialogRef } from '@osee/messaging/shared/testing';
 
 describe('EditNodeDialogComponent', () => {
 	let component: EditNodeDialogComponent;

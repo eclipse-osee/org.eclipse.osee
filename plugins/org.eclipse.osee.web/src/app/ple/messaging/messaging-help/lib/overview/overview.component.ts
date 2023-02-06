@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { HeaderService } from '../../../shared/services/ui/header.service';
+import { HeaderService } from '@osee/messaging/shared';
 interface Tile {
 	cols: number;
 	rows: number;

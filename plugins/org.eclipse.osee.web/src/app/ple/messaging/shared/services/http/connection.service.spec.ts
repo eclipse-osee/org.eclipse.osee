@@ -15,9 +15,9 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { transaction } from '@osee/shared/transactions';
+import { transactionMock } from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { transaction } from '../../../../../transactions/transaction';
-import { transactionMock } from '../../../../../transactions/transaction.mock';
 import { apiURL } from '../../../../../../environments/environment';
 
 import { ConnectionService } from './connection.service';

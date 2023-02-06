@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { UserDataAccountService } from '@osee/auth';
+import { settingsDialogData } from '@osee/messaging/shared/types';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import {
 	share,
@@ -24,8 +26,6 @@ import {
 } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { transactionResult } from 'src/app/types/change-report/transaction';
-import { UserDataAccountService } from 'src/app/userdata/services/user-data-account.service';
-import { settingsDialogData } from '../../types/settingsdialog';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 @Injectable({

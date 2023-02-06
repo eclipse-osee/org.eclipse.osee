@@ -21,9 +21,8 @@ import {
 	of,
 	map,
 } from 'rxjs';
-import { UserDataAccountService } from '../../../userdata/services/user-data-account.service';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { user } from '../../../userdata/types/user-data-user';
+import { user } from '../../../types/user';
 import { GCBranchIdService } from '../fetch-data-services/gc-branch-id.service';
 import {
 	executedCommandHistory,
@@ -31,6 +30,7 @@ import {
 } from '../../types/grid-commander-types/userHistory';
 import { GetUserHistoryService } from '../fetch-data-services/get-user-history.service';
 import { HistoryService } from './history.service';
+import { UserDataAccountService } from '@osee/auth';
 
 @Injectable({
 	providedIn: 'root',

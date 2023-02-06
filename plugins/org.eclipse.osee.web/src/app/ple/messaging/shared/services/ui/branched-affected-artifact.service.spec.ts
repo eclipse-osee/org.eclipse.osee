@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { affectedArtifactHttpServiceMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { affectedArtifactHttpServiceMock } from '../../testing/affected-artifact.service.mock';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { BranchedAffectedArtifactService } from './branched-affected-artifact.service';

@@ -14,27 +14,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 
 import { TypeGridComponent } from './type-grid.component';
-import { LayoutModule } from '@angular/cdk/layout';
-import { PlatformType } from '../../../../shared/types/platformType';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
-import { settingsDialogData } from '../../../../shared/types/settingsdialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MockPlatformTypeCardComponent } from '../../../../shared/testing/platform-type-card.component.mock';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, AsyncPipe, NgFor } from '@angular/common';
-import { transactionMock } from '../../../../../../transactions/transaction.mock';
+import { PlatformType, settingsDialogData } from '@osee/messaging/shared';
+import { transactionMock } from '@osee/shared/transactions/testing';
+import { MockPlatformTypeCardComponent } from '@osee/messaging/shared/testing';
 
 let loader: HarnessLoader;
 

@@ -24,28 +24,30 @@ import {
 } from 'rxjs';
 import { applic } from '../../../../../../types/applicability/applic';
 import { difference } from '../../../../../../types/change-report/change-report';
-import { EditEnumSetDialogComponent } from '../../../../shared/dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
-import { EditViewFreeTextFieldDialogComponent } from '../../../../shared/dialogs/edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
-import { EditViewFreeTextDialog } from '../../../../shared/types/EditViewFreeTextDialog';
-import { enumerationSet } from '../../../../shared/types/enum';
 import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
-import { element } from '../../../../shared/types/element';
-import { structure } from '../../../../shared/types/structure';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { UiService } from '../../../../../../ple-services/ui/ui.service';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { EnumerationUIService } from '../../../../shared/services/ui/enumeration-ui.service';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import {
+	element,
+	structure,
+	STRUCTURE_SERVICE_TOKEN,
+	enumerationSet,
+	EditViewFreeTextDialog,
+	EditEnumSetDialogComponent,
+	EditViewFreeTextFieldDialogComponent,
+	CurrentStructureService,
+	EnumerationUIService,
+	HeaderService,
+} from '@osee/messaging/shared';
 
 /**
  * Required attributes:

@@ -14,11 +14,10 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserDataAccountService } from '../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../userdata/services/user-data-account.service.mock';
+import { UserDataAccountService } from '../../auth/user-data-account.service';
+import { userDataAccountServiceMock } from '../../auth/user-data-account.service.mock';
 
 import { MessagingComponent } from './messaging.component';
 

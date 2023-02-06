@@ -16,7 +16,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { DisplayUserComponent } from '../../../userdata/components/display-user/display-user.component';
+import { DisplayUserComponent } from '../../../user-display/display-user.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpLoadingService } from '../../../services/http-loading.service';
 import { SideNavService } from '../../../shared-services/ui/side-nav.service';

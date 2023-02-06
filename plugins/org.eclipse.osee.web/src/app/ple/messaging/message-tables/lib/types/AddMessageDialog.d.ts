@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ConnectionNode } from '../../../shared/types/connection-nodes';
+import { ConnectionNode } from '@osee/messaging/shared';
 
 export interface AddMessageDialog {
 	id: string;

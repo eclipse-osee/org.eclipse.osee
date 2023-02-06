@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { applic } from '../../../../../../types/applicability/applic';
 
 @Component({
@@ -19,7 +19,7 @@ import { applic } from '../../../../../../types/applicability/applic';
 	templateUrl: './sub-element-table-no-edit-field-filtered.component.html',
 	styleUrls: ['./sub-element-table-no-edit-field-filtered.component.sass'],
 	standalone: true,
-	imports: [OseeStringUtilsDirectivesModule],
+	imports: [HighlightFilteredTextDirective],
 })
 export class SubElementTableNoEditFieldFilteredComponent {
 	@Input() field: string | number | boolean | applic | undefined = '';

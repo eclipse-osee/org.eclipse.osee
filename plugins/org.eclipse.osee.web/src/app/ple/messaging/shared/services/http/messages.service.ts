@@ -13,18 +13,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { relation, transaction } from '../../../../../transactions/transaction';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { message } from '../../types/messages';
 import { connection } from '../../types/connection';
 import { ConnectionNode } from '../../types/connection-nodes';
 import { map } from 'rxjs/operators';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 import {
-	ARTIFACTTYPEID,
-	ARTIFACTTYPEIDENUM,
-} from '../../../../../types/constants/ArtifactTypeId.enum';
-import { TransactionService } from '../../../../../transactions/transaction.service';
+	TransactionBuilderService,
+	TransactionService,
+	relation,
+	transaction,
+} from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

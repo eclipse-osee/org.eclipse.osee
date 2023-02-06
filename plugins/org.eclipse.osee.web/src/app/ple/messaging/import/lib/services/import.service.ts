@@ -31,24 +31,27 @@ import {
 	OperatorFunction,
 	Subject,
 } from 'rxjs';
-import { ImportOption, ImportSummary } from '../../../shared/types/Import';
-import { NodeService } from '../../../shared/services/http/node.service';
-import { node, nodeToken } from '../../../shared/types/node';
-import { BranchUIService } from '../../../../../ple-services/ui/branch/branch-ui.service';
-import { TransactionService } from '../../../../../transactions/transaction.service';
-import { ConnectionService } from '../../../shared/services/http/connection.service';
-import { MessagesService } from '../../../shared/services/http/messages.service';
-import { transaction } from '../../../../../transactions/transaction';
-import { message } from '../../../shared/types/messages';
-import { structure } from '../../../shared/types/structure';
-import { SubMessagesService } from '../../../shared/services/http/sub-messages.service';
-import { subMessage } from '../../../shared/types/sub-messages';
-import { StructuresService } from '../../../shared/services/http/structures.service';
-import { ElementService } from '../../../shared/services/http/element.service';
-import { TypesService } from '../../../shared/services/http/types.service';
-import { enumSet } from '../../../shared/types/enum';
-import { EnumerationSetService } from '../../../shared/services/http/enumeration-set.service';
 import { ImportHttpService } from './import-http.service';
+import {
+	ImportOption,
+	nodeToken,
+	ImportSummary,
+	subMessage,
+	enumSet,
+	node,
+	structure,
+	message,
+	ConnectionService,
+	ElementService,
+	EnumerationSetService,
+	MessagesService,
+	NodeService,
+	StructuresService,
+	SubMessagesService,
+	TypesService,
+} from '@osee/messaging/shared';
+import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
+import { transaction, TransactionService } from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

@@ -11,8 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AboutComponent } from './about.component';
@@ -23,8 +21,8 @@ describe('AboutComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [FormsModule, MatFormFieldModule, NoopAnimationsModule],
-			declarations: [AboutComponent],
+			imports: [NoopAnimationsModule, AboutComponent],
+			declarations: [],
 		}).compileComponents();
 	});
 

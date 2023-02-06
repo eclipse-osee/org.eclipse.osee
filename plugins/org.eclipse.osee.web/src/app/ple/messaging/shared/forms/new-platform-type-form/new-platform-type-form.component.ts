@@ -23,6 +23,15 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
+import { TypesService, EnumsService } from '@osee/messaging/shared/services';
+import {
+	logicalType,
+	logicalTypeFieldInfo,
+	PlatformType,
+} from '@osee/messaging/shared/types';
+import { ParentErrorStateMatcher } from '@osee/shared/matchers';
+import { FirstLetterLowerPipe } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -32,13 +41,6 @@ import {
 	Subject,
 	switchMap,
 } from 'rxjs';
-import { FirstLetterLowerPipe } from '../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/first-letter-lower.pipe';
-import { ParentErrorStateMatcher } from '../../../../../shared-matchers/parent-error-state.matcher';
-import { UniquePlatformTypeAttributesDirective } from '../../directives/validators/unique-platform-type-attributes.directive';
-import { EnumsService } from '../../services/http/enums.service';
-import { TypesService } from '../../services/http/types.service';
-import { logicalType, logicalTypeFieldInfo } from '../../types/logicaltype';
-import { PlatformType } from '../../types/platformType';
 import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-attribute-form-field.component';
 /**
  * Form that handles the selection of platform type attributes for a new platform type based on it's logical type.

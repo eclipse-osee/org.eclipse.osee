@@ -11,16 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { TransactionService } from '@osee/shared/transactions';
+import {
+	transactionServiceMock,
+	transactionInfoMock,
+} from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { ActionService } from 'src/app/ple-services/http/action.service';
 import { actionServiceMock } from 'src/app/ple-services/http/action.service.mock';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
-import { transactionInfoMock } from 'src/app/transactions/transaction.mock';
-import { TransactionService } from 'src/app/transactions/transaction.service';
-import { transactionServiceMock } from 'src/app/transactions/transaction.service.mock';
-import { testBranchInfo } from '../../plconfig/testing/mockBranchService';
-import { testBranchActions } from '../../plconfig/testing/mockTypes';
+import { testBranchInfo } from '../../../testing/branch-info.response.mock';
+import { testBranchActions } from '../../../testing/configuration-management.response.mock';
 import { changeReportHttpServiceMock } from '../mocks/change-report-http.service.mock';
 import { changeReportMock } from '../mocks/changeReportMock';
 import { ChangeReportHttpService } from './change-report-http.service';

@@ -25,6 +25,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
+import {
+	ApplicabilityListUIService,
+	CurrentQueryService,
+} from '@osee/messaging/shared/services';
+import {
+	enumeration,
+	EnumerationSetQuery,
+	andDescriptionQuery,
+} from '@osee/messaging/shared/types';
 import { combineLatest, from, of, Subject } from 'rxjs';
 import {
 	switchMap,
@@ -35,11 +45,6 @@ import {
 	debounceTime,
 } from 'rxjs/operators';
 import { applic } from '../../../../../types/applicability/applic';
-import { validateEnumLengthIsBelowMax } from '../../functions/validate-enum-length.util';
-import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
-import { CurrentQueryService } from '../../services/ui/current-query.service';
-import { enumeration } from '../../types/enum';
-import { andDescriptionQuery, EnumerationSetQuery } from '../../types/MimQuery';
 
 @Component({
 	selector: 'osee-enum-form',

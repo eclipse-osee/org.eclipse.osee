@@ -12,9 +12,9 @@
  **********************************************************************/
 
 import { Component, Input, Output } from '@angular/core';
+import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
+import { PlatformType } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
-import { PlatformType } from '../types/platformType';
-import { NewTypeFormComponent } from '../forms/new-type-form/new-type-form.component';
 
 @Component({
 	selector: 'osee-new-type-form',

@@ -12,9 +12,11 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import {
+	BranchPickerComponent,
+	ActionDropDownComponent,
+} from '@osee/shared/components';
 import { map } from 'rxjs/operators';
-import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
 import { RouterStateService } from './lib/services/router-state.service';
 import { ElementTableComponent } from './lib/tables/element-table/element-table.component';
 

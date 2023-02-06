@@ -11,6 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import {
+	enumSet,
+	enumeration,
+	enumerationSet,
+} from '@osee/messaging/shared/types';
+import { relation, transaction } from '@osee/shared/transactions';
 import { from, iif, Observable, of } from 'rxjs';
 import {
 	share,
@@ -23,8 +29,6 @@ import {
 	reduce,
 } from 'rxjs/operators';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
-import { relation, transaction } from 'src/app/transactions/transaction';
-import { enumeration, enumerationSet, enumSet } from '../../types/enum';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 
 @Injectable({

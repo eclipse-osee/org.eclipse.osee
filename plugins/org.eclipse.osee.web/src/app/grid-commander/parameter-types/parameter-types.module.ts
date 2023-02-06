@@ -19,9 +19,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { ActionStateButtonModule } from '../../shared-components/components/action-state-button/action-state-button.module';
-import { BranchPickerModule } from '../../shared-components/components/branch-picker/branch-picker.module';
-
 import { HideColumnCommandComponent } from './parameter-multiple-select/hide-column-command/hide-column-command.component';
 import { ParameterBooleanComponent } from './parameterBoolean/parameter-boolean.component';
 import { ParameterBranchComponent } from './parameterBranch/parameter-branch.component';
@@ -32,6 +29,10 @@ import { ParameterStringComponent } from './parameterString/parameter-string.com
 import { ParameterTypesComponent } from './parameter-types.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from '../shared/shared.module';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 
 @NgModule({
 	declarations: [
@@ -45,8 +46,8 @@ import { SharedModule } from '../shared/shared.module';
 		ParameterTypesComponent,
 	],
 	imports: [
-		ActionStateButtonModule,
-		BranchPickerModule,
+		ActionDropDownComponent,
+		BranchPickerComponent,
 		CommonModule,
 		FormsModule,
 		MatButtonModule,

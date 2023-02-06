@@ -22,9 +22,6 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs/operators';
-import { WarningDialogService } from '../../../../shared/services/ui/warning-dialog.service';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
-import { subMessage } from '../../../../shared/types/sub-messages';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -33,6 +30,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {
+	CurrentMessagesService,
+	subMessage,
+	WarningDialogService,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',

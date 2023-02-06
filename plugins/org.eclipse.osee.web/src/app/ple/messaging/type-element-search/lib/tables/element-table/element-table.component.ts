@@ -14,16 +14,18 @@ import { Component } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { map } from 'rxjs/operators';
 import { UiService } from '../../../../../../ple-services/ui/ui.service';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
-import { elementWithPathsAndButtons } from '../../../../shared/types/element';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
-import { element } from '../../../../shared/types/element';
 import { ElementTableSearchComponent } from '../../forms/element-table-search/element-table-search.component';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { DisplayTruncatedStringWithFieldOverflowPipe } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/display-truncated-string-with-field-overflow.pipe';
 import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import {
+	element,
+	elementWithPathsAndButtons,
+	HeaderService,
+} from '@osee/messaging/shared';
+import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-typesearch-element-table',

@@ -14,7 +14,7 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { UserHeaderProdService } from '../app/userdata/services/user-header-prod.service';
+import { UserHeaderProdService } from '@osee/auth';
 
 export const environment = {
 	production: false,

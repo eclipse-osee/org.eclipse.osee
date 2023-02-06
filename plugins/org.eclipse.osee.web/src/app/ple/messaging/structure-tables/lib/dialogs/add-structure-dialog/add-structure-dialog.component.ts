@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -24,11 +24,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { MatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { CurrentStructureService } from '../../../../shared/services/ui/current-structure.service';
-import { STRUCTURE_SERVICE_TOKEN } from '../../../../shared/tokens/injection/structure/token';
-import { structure } from '../../../../shared/types/structure';
+import {
+	STRUCTURE_SERVICE_TOKEN,
+	structure,
+	CurrentStructureService,
+	EnumsService,
+} from '@osee/messaging/shared';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { AddStructureDialog } from './add-structure-dialog';
 
 @Component({

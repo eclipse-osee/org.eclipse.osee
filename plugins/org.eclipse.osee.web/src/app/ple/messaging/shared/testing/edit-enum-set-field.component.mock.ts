@@ -13,9 +13,8 @@
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
-import { enumerationSet } from '../types/enum';
-import { PlatformType } from '../types/platformType';
-import { EditEnumSetFieldComponent } from '../forms/edit-enum-set-field/edit-enum-set-field.component';
+import { enumerationSet, PlatformType } from '@osee/messaging/shared/types';
+import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',

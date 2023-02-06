@@ -11,9 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
+import { element, structure } from '@osee/messaging/shared';
 import { applic } from '../../../../../../types/applicability/applic';
-import { element } from '../../../../shared/types/element';
-import { structure } from '../../../../shared/types/structure';
 
 @Component({
 	selector:

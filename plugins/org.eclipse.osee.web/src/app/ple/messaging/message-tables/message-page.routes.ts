@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import { DiffReportResolver } from '../../../resolvers/diff-report-resolver.resolver';
+import { DiffReportResolver } from '@osee/shared/resolvers';
 
 const routes: Routes = [
 	{
@@ -42,8 +42,7 @@ const routes: Routes = [
 	},
 	{
 		path: '',
-		loadComponent: () =>
-			import('../shared/headers/mim-header/mim-header.component'),
+		loadComponent: () => import('@osee/messaging/shared/headers'),
 		outlet: 'navigationHeader',
 	},
 ];

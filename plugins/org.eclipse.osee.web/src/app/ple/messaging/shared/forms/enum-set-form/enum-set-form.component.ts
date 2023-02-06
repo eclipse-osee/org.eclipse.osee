@@ -21,10 +21,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { applic } from '../../../../../types/applicability/applic';
-import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
-import { enumeration, enumerationSet } from '../../types/enum';
 import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
-import { EnumSetUniqueDescriptionDirective } from '../../directives/validators/enum-set-unique-description.directive';
+import { EnumSetUniqueDescriptionDirective } from '@osee/messaging/shared/directives';
+import { enumeration, enumerationSet } from '@osee/messaging/shared/types';
+import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-enum-set-form',

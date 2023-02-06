@@ -13,32 +13,34 @@
 import { TestBed } from '@angular/core/testing';
 import { iif, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { applicabilityListServiceMock } from '../../../shared/testing/applicability-list.service.mock';
-import { MimPreferencesMock } from '../../../shared/testing/mim-preferences.response.mock';
-import { MimPreferencesServiceMock } from '../../../shared/testing/mim-preferences.service.mock';
-import { ApplicabilityListService } from '../../../shared/services/http/applicability-list.service';
-import { MimPreferencesService } from '../../../shared/services/http/mim-preferences.service';
-import { connection } from '../../../shared/types/connection';
-import { node } from '../../../shared/types/node';
-import { ConnectionService } from '../../../shared/services/http/connection.service';
 
 import { CurrentGraphService } from './current-graph.service';
 import { GraphService } from './graph.service';
-import { NodeService } from '../../../shared/services/http/node.service';
 import { RouteStateService } from './route-state-service.service';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { relation } from '../../../../../transactions/transaction';
-import { transaction } from '../../../../../transactions/transaction';
-import {
-	transactionMock,
-	transactionResultMock,
-} from '../../../../../transactions/transaction.mock';
 import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from '../../../../../ple-services/http/branch-info.service.mock';
 import { DifferenceReportService } from '../../../../../ple-services/http/difference-report.service';
 import { DifferenceReportServiceMock } from '../../../../../ple-services/http/difference-report.service.mock';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
+import {
+	node,
+	connection,
+	ApplicabilityListService,
+	ConnectionService,
+	MimPreferencesService,
+	NodeService,
+} from '@osee/messaging/shared';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { relation, transaction } from '@osee/shared/transactions';
+import {
+	transactionMock,
+	transactionResultMock,
+} from '@osee/shared/transactions/testing';
+import {
+	applicabilityListServiceMock,
+	MimPreferencesServiceMock,
+	MimPreferencesMock,
+} from '@osee/messaging/shared/testing';
 
 describe('CurrentGraphService', () => {
 	let service: CurrentGraphService;

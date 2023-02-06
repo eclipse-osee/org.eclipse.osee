@@ -20,10 +20,9 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BranchPickerModule } from '../../../shared-components/components/branch-picker/branch-picker.module';
-import { BranchPickerStub } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { structuresNameServiceMock } from '../shared/testing/structure-names.service.mock';
-import { StructureNamesService } from '../shared/services/http/structure-names.service';
+import { StructureNamesService } from '@osee/messaging/shared';
+import { structuresNameServiceMock } from '@osee/messaging/shared/testing';
+import { BranchPickerStub } from '@osee/shared/components/testing';
 
 import { StructureNamesComponent } from './structure-names.component';
 

@@ -26,20 +26,20 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { HighlightFilteredTextDirective } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
-import { OseeStringUtilsPipesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-pipes/osee-string-utils-pipes.module';
-import { CurrentMessageServiceMock } from '../../../../shared/testing/current-messages.service.mock';
-import { messagesMock } from '../../../../shared/testing/messages.response.mock';
-import { subMessagesMock } from '../../../../shared/testing/sub-messages.response.mock';
-import { CurrentMessagesService } from '../../../../shared/services/ui/current-messages.service';
 import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-message-table-titles-to-string.pipe';
 import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
-import { MimSingleDiffDummy } from '../../../../../diff-views/mocks/mim-single-diff.mock';
+import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 
 import { SubMessageTableComponent } from './sub-message-table.component';
 import { MockEditMessageFieldComponent } from '../../testing/edit-sub-message-field.component.mock';
+import { CurrentMessagesService } from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import {
+	CurrentMessageServiceMock,
+	messagesMock,
+	subMessagesMock,
+} from '@osee/messaging/shared/testing';
 
 describe('SubMessageTableComponent', () => {
 	let component: SubMessageTableComponent;
@@ -69,13 +69,11 @@ describe('SubMessageTableComponent', () => {
 				MatIconModule,
 				MatTooltipModule,
 				MatButtonModule,
-				OseeStringUtilsDirectivesModule,
-				OseeStringUtilsPipesModule,
 				RouterTestingModule.withRoutes([
 					{ path: '', component: SubMessageTableComponent },
 					{
 						path: 'diffOpen',
-						component: MimSingleDiffDummy,
+						component: MockSingleDiffComponent,
 						outlet: 'rightSideNav',
 					},
 				]),

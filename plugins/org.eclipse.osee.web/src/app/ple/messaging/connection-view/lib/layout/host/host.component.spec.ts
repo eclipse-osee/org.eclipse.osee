@@ -20,18 +20,20 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 import { HostComponent } from './host.component';
-import { EditAuthService } from '../../../../shared/services/public/edit-auth-service.service';
-import { editAuthServiceMock } from '../../../../shared/testing/edit-auth.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MimSingleDiffDummy } from '../../../../../diff-views/mocks/mim-single-diff.mock';
+import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatIconModule } from '@angular/material/icon';
-import { BranchPickerStub } from '../../../../../../shared-components/components/branch-picker/branch-picker/branch-picker.mock.component';
-import { ActionDropdownStub } from '../../../../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.mock.component';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { UndoButtonBranchMockComponent } from '../../../../../../shared-components/components/branch-undo-button/branch-undo-button.component.mock';
+import { EditAuthService } from '@osee/messaging/shared';
+import {
+	UndoButtonBranchMockComponent,
+	ActionDropdownStub,
+	BranchPickerStub,
+} from '@osee/shared/components/testing';
+import { editAuthServiceMock } from '@osee/messaging/shared/testing';
 
 describe('HostComponent', () => {
 	let component: HostComponent;
@@ -51,7 +53,7 @@ describe('HostComponent', () => {
 					NgIf,
 					AsyncPipe,
 					UndoButtonBranchMockComponent,
-					MimSingleDiffDummy,
+					MockSingleDiffComponent,
 					ActionDropdownStub,
 					MockGraphComponent,
 					BranchPickerStub,
@@ -67,7 +69,7 @@ describe('HostComponent', () => {
 					RouterTestingModule,
 					UndoButtonBranchMockComponent,
 					NoopAnimationsModule,
-					MimSingleDiffDummy,
+					MockSingleDiffComponent,
 					ActionDropdownStub,
 					HostComponent,
 					MockGraphComponent,

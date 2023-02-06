@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CurrentMessagesService } from '@osee/messaging/shared';
 import { combineLatest, iif, of } from 'rxjs';
-import { CurrentMessagesService } from '../shared/services/ui/current-messages.service';
 import { MessageTableComponent } from './lib/tables/message-table/message-table.component';
 
 @Component({

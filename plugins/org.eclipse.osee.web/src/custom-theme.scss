@@ -20,6 +20,7 @@
 // @use 'themes/ple/messages/lib' as plmessages;
 @use 'themes/ple/lib' as ple;
 @use 'themes/gc/lib' as gc;
+@use 'themes/scrollbar.theme' as scrollbar;
 @import 'modern-ple-theme';
 
 // Plus imports for other components in your app.
@@ -44,6 +45,7 @@
 			map.get(mat.get-color-config($modern-ple-light-theme), success)
 		) !important; // hate having to use this
 	}
+	@include scrollbar.theme($modern-ple-light-theme);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -51,18 +53,12 @@
 
 	.mat-success {
 		color: mat.get-color-from-palette(
-			map.get(mat.get-color-config($modern-ple-light-theme), success)
+			map.get(mat.get-color-config($modern-ple-dark-theme), success)
 		) !important; // hate having to use this
 	}
+	@include scrollbar.theme($modern-ple-dark-theme);
 }
 
-@include ple.plconfig-main-theme($modern-ple-light-theme);
-@include ple.plconfig-dropdown-configuration-theme($modern-ple-light-theme);
-@include ple.plconfig-dropdown-feature-theme($modern-ple-light-theme);
-@include ple.plconfig-dropdown-configuration-group-theme(
-	$modern-ple-light-theme
-);
-@include ple.plconfig-branch-selector-radio-theme($modern-ple-light-theme);
 @include ple.generic-material-divider-vertical-theme(
 	$modern-ple-light-theme,
 	$modern-ple-typography
@@ -75,16 +71,6 @@
 	$modern-ple-light-theme,
 	$modern-ple-typography
 );
-
-.dark-theme {
-	@include ple.plconfig-main-color($modern-ple-dark-theme);
-	@include ple.plconfig-dropdown-configuration-color($modern-ple-dark-theme);
-	@include ple.plconfig-dropdown-feature-color($modern-ple-dark-theme);
-	@include ple.plconfig-dropdown-configuration-group-color(
-		$modern-ple-dark-theme
-	);
-	@include ple.plconfig-branch-selector-radio-color($modern-ple-dark-theme);
-}
 
 html,
 body {

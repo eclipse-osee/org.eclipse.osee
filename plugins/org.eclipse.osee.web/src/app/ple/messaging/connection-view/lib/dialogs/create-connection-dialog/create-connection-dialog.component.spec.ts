@@ -28,17 +28,21 @@ import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { CurrentTransportTypeServiceMock } from '../../../../shared/testing/current-transport-type.service.mock';
-import { CurrentTransportTypeService } from '../../../../shared/services/ui/current-transport-type.service';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { CreateConnectionDialogComponent } from './create-connection-dialog.component';
-import { dialogRef } from '../../../../shared/testing/dialog-ref.util.mock';
 import { MatOptionModule } from '@angular/material/core';
-import { MockMatOptionLoadingComponent } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading.component';
+import {
+	CurrentTransportTypeService,
+	EnumsService,
+} from '@osee/messaging/shared';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	dialogRef,
+	enumsServiceMock,
+	CurrentTransportTypeServiceMock,
+} from '@osee/messaging/shared/testing';
 
 describe('CreateConnectionDialogComponent', () => {
 	let component: CreateConnectionDialogComponent;

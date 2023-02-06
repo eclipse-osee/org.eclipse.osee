@@ -21,11 +21,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { MimPreferencesService } from '@osee/messaging/shared/services';
+import { MimPreferencesServiceMock } from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { MimPreferencesService } from '../../services/http/mim-preferences.service';
 
 import { EditViewFreeTextFieldDialogComponent } from './edit-view-free-text-field-dialog.component';
 

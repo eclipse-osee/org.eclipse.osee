@@ -14,13 +14,11 @@ import { Component, Input } from '@angular/core';
 import {
 	connection,
 	connectionWithChanges,
-} from '../../../shared/types/connection';
-import {
 	OseeNode,
 	node,
 	nodeData,
 	nodeDataWithChanges,
-} from '../../../shared/types/node';
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-graph-link-menu',

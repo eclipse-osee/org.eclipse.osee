@@ -27,9 +27,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatOptionLoadingTestingModule } from '../../../../../../shared-components/mat-option-loading/testing/mat-option-loading-testing.module';
+import { subMessage } from '@osee/messaging/shared';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import { subMessage } from '../../../../shared/types/sub-messages';
 
 import { AddSubMessageDialogComponent } from './add-sub-message-dialog.component';
 
@@ -66,7 +66,7 @@ describe('AddSubMessageDialogComponent', () => {
 				MatInputModule,
 				MatButtonModule,
 				MatSelectModule,
-				MatOptionLoadingTestingModule,
+				MockMatOptionLoadingComponent,
 				AddSubMessageDialogComponent,
 			],
 			declarations: [],

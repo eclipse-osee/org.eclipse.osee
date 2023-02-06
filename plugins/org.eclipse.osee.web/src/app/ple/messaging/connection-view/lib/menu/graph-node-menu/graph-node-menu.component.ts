@@ -10,23 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
 import { from, of } from 'rxjs';
 import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
-import {
-	connection,
-	connectionWithChanges,
-	newConnection,
-	OseeEdge,
-	_newConnection,
-} from '../../../../shared/types/connection';
-import {
-	node,
-	nodeData,
-	nodeDataWithChanges,
-} from '../../../../shared/types/node';
 import { applic } from '../../../../../../types/applicability/applic';
 import { difference } from '../../../../../../types/change-report/change-report';
 import { CurrentGraphService } from '../../services/current-graph.service';
@@ -38,6 +25,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import {
+	connection,
+	connectionWithChanges,
+	newConnection,
+	node,
+	nodeData,
+	nodeDataWithChanges,
+	OseeEdge,
+	_newConnection,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-graph-node-menu',

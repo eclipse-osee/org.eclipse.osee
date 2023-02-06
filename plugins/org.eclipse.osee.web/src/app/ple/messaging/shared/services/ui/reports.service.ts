@@ -17,8 +17,7 @@ import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { FilesService } from 'src/app/ple-services/http/files.service';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { apiURL } from 'src/environments/environment';
-import { connection } from '../../types/connection';
-import { MimReport } from '../../types/Reports';
+import { connection, MimReport } from '@osee/messaging/shared';
 
 @Injectable({
 	providedIn: 'root',

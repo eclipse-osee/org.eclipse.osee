@@ -16,7 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { logicalTypeFormDetailMock } from '../../testing/logical-type-form-detail.response.mock';
+import { logicalTypeFormDetailMock } from '@osee/messaging/shared/testing';
 
 import { NewAttributeFormFieldComponent } from './new-attribute-form-field.component';
 

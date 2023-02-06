@@ -10,14 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from '../types/element';
-import { structure } from '../types/structure';
-import { message } from '../types/messages';
-import { subMessage } from '../types/sub-messages';
+
 import {
 	MimPreferences,
+	structure,
+	message,
+	subMessage,
+	element,
 	MimUserGlobalPreferences,
-} from '../types/mim.preferences';
+} from '@osee/messaging/shared/types';
 
 export const MimPreferencesMock: MimPreferences<
 	structure & message & subMessage & element

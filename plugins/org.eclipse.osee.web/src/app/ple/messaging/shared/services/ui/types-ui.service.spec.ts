@@ -11,15 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { TestScheduler } from 'rxjs/testing';
+import {
+	typesServiceMock,
+	enumsServiceMock,
+	enumerationSetServiceMock,
+} from '@osee/messaging/shared/testing';
 import {
 	transactionMock,
 	transactionResultMock,
-} from 'src/app/transactions/transaction.mock';
+} from '@osee/shared/transactions/testing';
+import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { enumerationSetServiceMock } from '../../testing/enumeration-set.service.mock';
-import { enumsServiceMock } from '../../testing/enums.service.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 import { EnumsService } from '../http/enums.service';
 import { TypesService } from '../http/types.service';

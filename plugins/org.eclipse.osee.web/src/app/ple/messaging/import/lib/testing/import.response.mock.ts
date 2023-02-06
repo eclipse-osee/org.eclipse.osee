@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ImportOption, ImportSummary } from '../../../shared/types/Import';
+
+import { ImportOption, ImportSummary } from '@osee/messaging/shared';
 
 export const importSummaryMock: ImportSummary = {
 	createPrimaryNode: true,

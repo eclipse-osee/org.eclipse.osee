@@ -12,8 +12,8 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { map, tap } from 'rxjs';
-import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
+import { PreferencesUIService } from '@osee/messaging/shared';
+import { tap } from 'rxjs';
 
 @Component({
 	standalone: true,

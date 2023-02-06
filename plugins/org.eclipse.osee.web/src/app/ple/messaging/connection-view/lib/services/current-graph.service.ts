@@ -24,38 +24,12 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { ConnectionService } from '../../../shared/services/http/connection.service';
 import { GraphService } from './graph.service';
-import { NodeService } from '../../../shared/services/http/node.service';
 import { RouteStateService } from './route-state-service.service';
-import {
-	connection,
-	connectionWithChanges,
-	OseeEdge,
-} from '../../../shared/types/connection';
-import {
-	node,
-	nodeData,
-	nodeDataWithChanges,
-	OseeNode,
-} from '../../../shared/types/node';
-import { ApplicabilityListService } from '../../../shared/services/http/applicability-list.service';
-import {
-	relation,
-	transaction,
-	transactionToken,
-} from 'src/app/transactions/transaction';
-import { settingsDialogData } from '../../../shared/types/settingsdialog';
 import { applic } from '../../../../../types/applicability/applic';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
-import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from '../../../../../types/constants/AttributeTypeId.enum';
-import {
-	ARTIFACTTYPEID,
-	ARTIFACTTYPEIDENUM,
-} from '../../../../../types/constants/ArtifactTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
 import {
 	changeInstance,
 	changeTypeEnum,
@@ -63,8 +37,26 @@ import {
 } from '../../../../../types/change-report/change-report.d';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
-import { PreferencesUIService } from '../../../shared/services/ui/preferences-ui.service';
-import { transportType } from '../../../shared/types/transportType';
+import {
+	ApplicabilityListService,
+	connection,
+	ConnectionService,
+	connectionWithChanges,
+	node,
+	nodeData,
+	nodeDataWithChanges,
+	NodeService,
+	OseeEdge,
+	OseeNode,
+	PreferencesUIService,
+	settingsDialogData,
+	transportType,
+} from '@osee/messaging/shared';
+import {
+	transactionToken,
+	relation,
+	transaction,
+} from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

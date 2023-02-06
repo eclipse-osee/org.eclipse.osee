@@ -27,15 +27,17 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { enumsServiceMock } from '../../../../shared/testing/enums.service.mock';
-import { EnumsService } from '../../../../shared/services/http/enums.service';
-import { nodeDataWithChanges } from '../../../../shared/types/node';
 import { difference } from '../../../../../../types/change-report/change-report';
-import { _newConnection } from '../../../../shared/types/connection';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { GraphNodeMenuComponent } from './graph-node-menu.component';
+import {
+	EnumsService,
+	nodeDataWithChanges,
+	_newConnection,
+} from '@osee/messaging/shared';
+import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
 describe('GraphNodeMenuComponent', () => {
 	let component: GraphNodeMenuComponent;

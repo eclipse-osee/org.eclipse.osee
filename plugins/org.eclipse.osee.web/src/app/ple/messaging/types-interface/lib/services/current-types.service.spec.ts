@@ -16,26 +16,31 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
-import { transactionBuilderMock } from '../../../../../transactions/transaction-builder.service.mock';
-import { applicabilityListServiceMock } from '../../../shared/testing/applicability-list.service.mock';
-import { MimPreferencesMock } from '../../../shared/testing/mim-preferences.response.mock';
-import { MimPreferencesServiceMock } from '../../../shared/testing/mim-preferences.service.mock';
-import { ApplicabilityListService } from '../../../shared/services/http/applicability-list.service';
-import { MimPreferencesService } from '../../../shared/services/http/mim-preferences.service';
-import { platformTypes1 } from '../../../shared/testing/platform-types.response.mock';
-import { enumerationSetServiceMock } from '../../../shared/testing/enumeration-set.service.mock';
-import { typesServiceMock } from '../../../shared/testing/types.service.mock';
 
 import { CurrentTypesService } from './current-types.service';
-import { EnumerationSetService } from '../../../shared/services/http/enumeration-set.service';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import { TypesService } from '../../../shared/services/http/types.service';
-import { EnumsService } from '../../../shared/services/http/enums.service';
-import { enumsServiceMock } from '../../../shared/testing/enums.service.mock';
-import { transactionResultMock } from '../../../../../transactions/transaction.mock';
-import { UserDataAccountService } from '../../../../../userdata/services/user-data-account.service';
-import { userDataAccountServiceMock } from '../../../../../userdata/services/user-data-account.service.mock';
+import {
+	ApplicabilityListService,
+	EnumerationSetService,
+	EnumsService,
+	MimPreferencesService,
+	TypesService,
+} from '@osee/messaging/shared';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import {
+	transactionBuilderMock,
+	transactionResultMock,
+} from '@osee/shared/transactions/testing';
+import {
+	MimPreferencesServiceMock,
+	typesServiceMock,
+	enumsServiceMock,
+	enumerationSetServiceMock,
+	applicabilityListServiceMock,
+	platformTypes1,
+	MimPreferencesMock,
+} from '@osee/messaging/shared/testing';
 
 describe('CurrentTypesServiceService', () => {
 	let service: CurrentTypesService;

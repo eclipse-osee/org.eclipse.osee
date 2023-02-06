@@ -12,9 +12,9 @@
  **********************************************************************/
 import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { PreferencesUIService } from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { tap } from 'rxjs';
-import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
-import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-no-edit-field-dynamic-width',
@@ -25,7 +25,7 @@ import { OseeStringUtilsDirectivesModule } from '../../../../../../osee-utils/os
 	],
 	standalone: true,
 	imports: [
-		OseeStringUtilsDirectivesModule,
+		HighlightFilteredTextDirective,
 		NgIf,
 		NgStyle,
 		NgClass,

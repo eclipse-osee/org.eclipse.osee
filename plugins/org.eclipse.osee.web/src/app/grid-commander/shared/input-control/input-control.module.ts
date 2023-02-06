@@ -25,7 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { InputControlComponent } from './input-control.component';
-import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/osee-string-utils-directives.module';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @NgModule({
 	declarations: [InputControlComponent],
@@ -42,7 +42,7 @@ import { OseeStringUtilsDirectivesModule } from 'src/app/osee-utils/osee-string-
 		MatInputModule,
 		MatSelectModule,
 		MatTooltipModule,
-		OseeStringUtilsDirectivesModule,
+		HighlightFilteredTextDirective,
 	],
 	exports: [InputControlComponent],
 })

@@ -10,15 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { DiffReportService } from '../../../../shared/services/ui/diff-report.service';
-import {
-	branchSummary,
-	diffReportSummaryItem,
-} from '../../../../shared/types/DifferenceReport';
-import { HeaderService } from '../../../../shared/services/ui/header.service';
+import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { ScrollToTopButtonComponent } from '../../../../../generic-buttons/scroll-to-top-button/scroll-to-top-button.component';
+import { ScrollToTopButtonComponent } from '../../../../../../shared/components/scroll-to-top-button/scroll-to-top-button.component';
 import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { NodeDiffsComponent } from '../../diffs/node-diffs/node-diffs.component';
@@ -26,6 +20,12 @@ import { ConnectionDiffsComponent } from '../../diffs/connection-diffs/connectio
 import { MessageDiffsComponent } from '../../diffs/message-diffs/message-diffs.component';
 import { SubmessageDiffsComponent } from '../../diffs/submessage-diffs/submessage-diffs.component';
 import { StructureDiffsComponent } from '../../diffs/structure-diffs/structure-diffs.component';
+import {
+	branchSummary,
+	DiffReportService,
+	diffReportSummaryItem,
+	HeaderService,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-diff-report',

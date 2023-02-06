@@ -13,18 +13,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { user } from 'src/app/userdata/types/user-data-user';
+import { user } from 'src/app/types/user';
 import { apiURL } from 'src/environments/environment';
-import { NameValuePair } from '../../ple/plconfig/types/base-types/NameValuePair';
-import {
-	action,
-	actionableItem,
-	newActionInterface,
-	newActionResponse,
-	targetedVersion,
-	teamWorkflow,
-	transitionAction,
-} from '../../ple/plconfig/types/pl-config-actions';
+import { NamedId } from '../../types/NamedId';
+import { newActionResponse } from '../../types/configuration-management/new-action-response';
+import { teamWorkflow } from '../../types/configuration-management/team-workflow';
+import { CreateNewActionInterface } from '../../types/configuration-management/create-new-action';
+import { targetedVersion } from '../../types/configuration-management/targeted-version';
+import { transitionAction } from '../../types/configuration-management/transition-action';
+import { action } from '../../types/configuration-management/action';
+import { actionableItem } from '../../types/configuration-management/actionable-item';
 import { response, transitionResponse } from '../../types/responses';
 
 @Injectable({
@@ -71,7 +69,7 @@ export class ActionService {
 		);
 	}
 	public createBranch(
-		body: newActionInterface
+		body: CreateNewActionInterface
 	): Observable<newActionResponse> {
 		return this.http.post<newActionResponse>(
 			apiURL + '/ats/action/branch',
@@ -97,8 +95,8 @@ export class ActionService {
 			null
 		);
 	}
-	public getTeamLeads(teamDef: string | number): Observable<NameValuePair[]> {
-		return this.http.get<NameValuePair[]>(
+	public getTeamLeads(teamDef: string | number): Observable<NamedId[]> {
+		return this.http.get<NamedId[]>(
 			apiURL + '/ats/config/teamdef/' + teamDef + '/leads'
 		);
 	}

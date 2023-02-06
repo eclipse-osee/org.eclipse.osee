@@ -18,15 +18,6 @@ import { TestBed } from '@angular/core/testing';
 import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 import { DiffReportBranchService } from '../../../../../ple-services/ui/diff/diff-report-branch.service';
-import { transactionResultMock } from '../../../../../transactions/transaction.mock';
-import { applicabilityListServiceMock } from '../../testing/applicability-list.service.mock';
-import { elementsMock } from '../../testing/element.response.mock';
-import { MimPreferencesServiceMock } from '../../testing/mim-preferences.service.mock';
-import { platformTypes1 } from '../../testing/platform-types.response.mock';
-import { QueryServiceMock } from '../../testing/query.service.mock';
-import { structuresMock, structuresMock2 } from '../../testing/structure.mock';
-import { typesServiceMock } from '../../testing/types.service.mock';
-import { PlatformTypeQuery } from '../../types/MimQuery';
 import { ApplicabilityListService } from '../http/applicability-list.service';
 import { ElementService } from '../http/element.service';
 import { MimPreferencesService } from '../http/mim-preferences.service';
@@ -37,19 +28,32 @@ import { CurrentStructureMultiService } from './current-structure-multi.service'
 import { diffReportBranchServiceMock } from '../../../../../ple-services/ui/diff/diff-report-branch.service.mock';
 import { of } from 'rxjs';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
-import {
-	structuresPreChanges,
-	structuresMockWithChangesMulti,
-	structureRepeatingWithChanges,
-} from '../../testing/Structures.mock';
 import { CurrentStructureService } from './current-structure.service';
 import { CurrentStructureSingleService } from './current-structure-single.service';
-import { structure, structureWithChanges } from '../../types/structure';
 import { StructuresUiService } from './structures-ui.service';
-import { elementServiceMock } from '../../testing/element.service.mock';
 import { MessagesService } from '../http/messages.service';
-import { structureServiceRandomMock } from '../../testing/structure.service.mock';
-import { messageServiceMock } from '../../testing/messages.service.mock';
+import {
+	structuresMock3,
+	structuresMockWithChangesMulti,
+	structureRepeatingWithChanges,
+	elementServiceMock,
+	structureServiceRandomMock,
+	messageServiceMock,
+	typesServiceMock,
+	MimPreferencesServiceMock,
+	applicabilityListServiceMock,
+	QueryServiceMock,
+	elementsMock,
+	platformTypes1,
+	structuresMock2,
+	structuresPreChanges,
+} from '@osee/messaging/shared/testing';
+import {
+	structure,
+	structureWithChanges,
+	PlatformTypeQuery,
+} from '@osee/messaging/shared/types';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 const servicesUnderTest: {
 	service: typeof CurrentStructureService;
@@ -64,7 +68,7 @@ const servicesUnderTest: {
 	{
 		service: CurrentStructureMultiService,
 		name: 'Multiple Structures',
-		noDiffValue: structuresMock,
+		noDiffValue: structuresMock3,
 		pushStructure: false,
 		values: {
 			a: [
@@ -86,7 +90,7 @@ const servicesUnderTest: {
 	{
 		service: CurrentStructureSingleService,
 		name: 'Single Structure',
-		noDiffValue: [structuresMock[0]],
+		noDiffValue: [structuresMock3[0]],
 		pushStructure: true,
 		values: {
 			a: [structureRepeatingWithChanges],
@@ -194,7 +198,7 @@ servicesUnderTest.forEach((testCase) => {
 				let expectedMarble = '(a|)';
 				scheduler
 					.expectObservable(
-						service.createStructure(structuresMock[0])
+						service.createStructure(structuresMock3[0])
 					)
 					.toBe(expectedMarble, expectedObservable);
 			});
@@ -273,7 +277,7 @@ servicesUnderTest.forEach((testCase) => {
 				expectObservable(
 					service.removeElementFromStructure(
 						elementsMock[0],
-						structuresMock[0]
+						structuresMock3[0]
 					)
 				).toBe(expectedMarble, expectedObservable);
 			});
@@ -295,7 +299,7 @@ servicesUnderTest.forEach((testCase) => {
 				let expectedObservable = { a: transactionResultMock };
 				let expectedMarble = 'a';
 				expectObservable(
-					service.deleteStructure(structuresMock[0].id)
+					service.deleteStructure(structuresMock3[0].id)
 				).toBe(expectedMarble, expectedObservable);
 			});
 		});
@@ -367,25 +371,25 @@ servicesUnderTest.forEach((testCase) => {
 		it('should get available structures', () => {
 			scheduler.run(() => {
 				let expectedObservable = {
-					a: structuresMock,
-					b: [structuresMock[0], structuresMock2[0]],
+					a: structuresMock3,
+					b: [structuresMock3[0], structuresMock2[0]],
 					c: [
-						structuresMock[0],
-						structuresMock[0],
-						structuresMock[0],
+						structuresMock3[0],
+						structuresMock3[0],
+						structuresMock3[0],
 					],
 					d: [
-						structuresMock[0],
-						structuresMock[0],
-						structuresMock[0],
-						structuresMock[0],
+						structuresMock3[0],
+						structuresMock3[0],
+						structuresMock3[0],
+						structuresMock3[0],
 					],
 					e: [
-						structuresMock[0],
-						structuresMock[0],
-						structuresMock[0],
-						structuresMock[0],
-						structuresMock[0],
+						structuresMock3[0],
+						structuresMock3[0],
+						structuresMock3[0],
+						structuresMock3[0],
+						structuresMock3[0],
 					],
 				};
 				let expectedMarble = '(a)';

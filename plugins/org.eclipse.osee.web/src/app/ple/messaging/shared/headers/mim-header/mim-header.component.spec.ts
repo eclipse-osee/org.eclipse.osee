@@ -12,13 +12,17 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import {
+	MimRouteService,
+	SharedConnectionService,
+	StructuresService,
+} from '@osee/messaging/shared/services';
+import {
+	sharedConnectionServiceMock,
+	structureServiceMock,
+} from '@osee/messaging/shared/testing';
 import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from '../../../../../ple-services/http/branch-info.service.mock';
-import { structureServiceMock } from '../../testing/structure.service.mock';
-import { sharedConnectionServiceMock } from '../../testing/shared-connection.service.mock';
-import { SharedConnectionService } from '../../services/http/shared-connection.service';
-import { StructuresService } from '../../services/http/structures.service';
-import { MimRouteService } from '../../services/ui/mim-route.service';
 
 import { MimHeaderComponent } from './mim-header.component';
 const headerUnderTest = [

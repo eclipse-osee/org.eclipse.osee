@@ -24,11 +24,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionLoadingComponent } from '../../../../../shared-components/mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { ParentErrorStateMatcher } from '../../../../../shared-matchers/parent-error-state.matcher';
-import { HasValidIdDirective } from '../../../../../validators/has-valid-id.directive';
-import { TypesService } from '../../services/http/types.service';
-import { logicalType } from '../../types/logicaltype';
+import { TypesService } from '@osee/messaging/shared/services';
+import { logicalType } from '@osee/messaging/shared/types';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { ParentErrorStateMatcher } from '@osee/shared/matchers';
+import { HasValidIdDirective } from '@osee/shared/validators';
 
 @Component({
 	selector: 'osee-logical-type-selector',

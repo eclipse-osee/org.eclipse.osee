@@ -17,16 +17,21 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
-import {
-	transactionInfoMock,
-	transactionResultMock,
-} from '../../../../../transactions/transaction.mock';
-import { TransactionService } from '../../../../../transactions/transaction.service';
-import { transactionServiceMock } from '../../../../../transactions/transaction.service.mock';
-import { testDataUser } from '../../../../plconfig/testing/mockTypes';
-import { testGlobalUserPrefs } from '../../testing/mim-preferences.response.mock';
+import { MockUserResponse } from '../../../../../testing/user/user.response.mock';
 
 import { MimPreferencesService } from './mim-preferences.service';
+import { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
+import { TransactionService } from '@osee/shared/transactions';
+import {
+	transactionServiceMock,
+	transactionResultMock,
+} from '@osee/shared/transactions/testing';
+
+const testGlobalUserPrefs: MimUserGlobalPreferences = {
+	id: '1',
+	name: 'MIM Global User Preferences',
+	wordWrap: false,
+};
 
 describe('MimPreferencesService', () => {
 	let service: MimPreferencesService;
@@ -59,7 +64,7 @@ describe('MimPreferencesService', () => {
 	});
 
 	it('should get user prefs', () => {
-		service.getUserPrefs('10', testDataUser).subscribe();
+		service.getUserPrefs('10', MockUserResponse).subscribe();
 		const req = httpTestingController.expectOne(apiURL + '/mim/user/' + 10);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});
@@ -67,7 +72,7 @@ describe('MimPreferencesService', () => {
 	});
 
 	it('should get branch prefs', () => {
-		service.getBranchPrefs(testDataUser).subscribe();
+		service.getBranchPrefs(MockUserResponse).subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL + '/mim/user/branches'
 		);
@@ -79,7 +84,7 @@ describe('MimPreferencesService', () => {
 	it('should create global user preferences', () => {
 		scheduler.run(({ expectObservable }) => {
 			const result = service.createGlobalUserPrefs(
-				testDataUser,
+				MockUserResponse,
 				testGlobalUserPrefs
 			);
 			scheduler

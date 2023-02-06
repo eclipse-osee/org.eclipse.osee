@@ -12,9 +12,9 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
-import { HighlightFilteredTextDirective } from '../../../../../../osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
-import { PreferencesUIService } from 'src/app/ple/messaging/shared/services/ui/preferences-ui.service';
 import { tap } from 'rxjs';
+import { PreferencesUIService } from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-structure-table-long-text-field',

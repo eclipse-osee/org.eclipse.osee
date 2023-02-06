@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
-import { StructurePath } from '../../types/StructurePath';
+import { StructurePath } from '@osee/messaging/shared';
 
 @Injectable({
 	providedIn: 'root',

@@ -13,19 +13,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { relation, transaction } from '../../../../../transactions/transaction';
-import { TransactionBuilderService } from '../../../../../transactions/transaction-builder.service';
 import { apiURL } from 'src/environments/environment';
 import { subMessage } from '../../types/sub-messages';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
 import {
-	ARTIFACTTYPEID,
-	ARTIFACTTYPEIDENUM,
-} from '../../../../../types/constants/ArtifactTypeId.enum';
-import { TransactionService } from '../../../../../transactions/transaction.service';
-import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from '../../../../../types/constants/AttributeTypeId.enum';
+	TransactionBuilderService,
+	TransactionService,
+	relation,
+	transaction,
+} from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

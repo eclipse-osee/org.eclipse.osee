@@ -21,12 +21,16 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { ActionDropDownComponent } from '../../../shared-components/components/action-state-button/action-drop-down/action-drop-down.component';
-import { BranchPickerComponent } from '../../../shared-components/components/branch-picker/branch-picker/branch-picker.component';
-import { NewTransportTypeDialogComponent } from '../shared/dialogs/new-transport-type-dialog/new-transport-type-dialog.component';
-import { CurrentTransportTypeService } from '../shared/services/ui/current-transport-type.service';
-import { HeaderService } from '../shared/services/ui/header.service';
-import { transportType } from '../shared/types/transportType';
+import {
+	CurrentTransportTypeService,
+	HeaderService,
+	NewTransportTypeDialogComponent,
+	transportType,
+} from '@osee/messaging/shared';
+import {
+	BranchPickerComponent,
+	ActionDropDownComponent,
+} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-transports',

@@ -17,9 +17,11 @@ import {
 	NG_ASYNC_VALIDATORS,
 	ValidationErrors,
 } from '@angular/forms';
+import {
+	logicalTypeFormDetail,
+	PlatformType,
+} from '@osee/messaging/shared/types';
 import { Observable, of } from 'rxjs';
-import { logicalTypeFormDetail } from '../types/logicaltype';
-import { PlatformType } from '../types/platformType';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeAttributes]',

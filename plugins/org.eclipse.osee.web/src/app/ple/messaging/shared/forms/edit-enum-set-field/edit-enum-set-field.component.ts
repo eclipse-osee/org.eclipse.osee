@@ -20,6 +20,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import {
+	EnumerationUIService,
+	ApplicabilityListUIService,
+	PreferencesUIService,
+	TypesUIService,
+} from '@osee/messaging/shared/services';
+import {
+	enumeration,
+	enumerationSet,
+	PlatformType,
+	PlatformTypeSentinel,
+} from '@osee/messaging/shared/types';
+import {
 	BehaviorSubject,
 	combineLatest,
 	iif,
@@ -27,15 +39,8 @@ import {
 	of,
 	Subject,
 } from 'rxjs';
-import { map, scan, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { applic } from '../../../../../types/applicability/applic';
-import { ApplicabilityListUIService } from '../../services/ui/applicability-list-ui.service';
-import { EnumerationUIService } from '../../services/ui/enumeration-ui.service';
-import { PreferencesUIService } from '../../services/ui/preferences-ui.service';
-import { TypesUIService } from '../../services/ui/types-ui.service';
-import { enumeration, enumerationSet } from '../../types/enum';
-import { PlatformType } from '../../types/platformType';
-import { PlatformTypeSentinel } from '../../types/PlatformTypeInstance';
 import { EnumFormComponent } from '../enum-form/enum-form.component';
 
 @Component({

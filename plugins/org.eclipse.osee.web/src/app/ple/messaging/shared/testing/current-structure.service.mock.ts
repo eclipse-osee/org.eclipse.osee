@@ -13,20 +13,22 @@
 import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
 import { applic } from '../../../../types/applicability/applic';
-import { settingsDialogData } from '../types/settingsdialog';
 import { CurrentStructureService } from '../services/ui/current-structure.service';
-import { structure } from '../types/structure';
 import { platformTypesMock } from './platform-types.response.mock';
 import { structuresMock } from './Structures.mock';
-import { transactionToken } from '../../../../transactions/transaction';
 import { unitsMock } from './unit.response.mock';
-import { PlatformType } from '../types/platformType';
-import { transactionResultMock } from '../../../../transactions/transaction.mock';
-import { MimQuery } from '../types/MimQuery';
 import { messagesMock } from './messages.response.mock';
-import { element } from '../types/element';
 import { transactionResult } from '../../../../types/change-report/transaction';
 import { changeInstance } from '../../../../types/change-report/change-report';
+import {
+	structure,
+	settingsDialogData,
+	PlatformType,
+	MimQuery,
+	element,
+} from '@osee/messaging/shared/types';
+import { transactionToken } from '@osee/shared/transactions';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;

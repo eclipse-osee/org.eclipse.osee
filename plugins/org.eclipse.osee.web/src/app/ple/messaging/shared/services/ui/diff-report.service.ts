@@ -28,31 +28,28 @@ import {
 	ModificationType,
 } from 'src/app/types/change-report/change-report.d';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
-import {
-	branchSummary,
-	connectionDiffItem,
-	DifferenceReport,
-	DifferenceReportItem,
-	diffItem,
-	diffReportSummaryItem,
-	diffUrl,
-	elementDiffItem,
-	enumDiffItem,
-	enumSetDiffItem,
-	fieldsChanged,
-	messageDiffItem,
-	nodeDiffItem,
-	platformTypeDiffItem,
-	structureDiffItem,
-	submessageDiffItem,
-} from '../../types/DifferenceReport';
-import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from 'src/app/types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from 'src/app/types/constants/AttributeTypeId.enum';
 import { ActionService } from 'src/app/ple-services/http/action.service';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
+import {
+	branchSummary,
+	DifferenceReport,
+	DifferenceReportItem,
+	nodeDiffItem,
+	fieldsChanged,
+	connectionDiffItem,
+	messageDiffItem,
+	submessageDiffItem,
+	enumSetDiffItem,
+	elementDiffItem,
+	platformTypeDiffItem,
+	structureDiffItem,
+	diffReportSummaryItem,
+	diffUrl,
+	diffItem,
+	enumDiffItem,
+} from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',

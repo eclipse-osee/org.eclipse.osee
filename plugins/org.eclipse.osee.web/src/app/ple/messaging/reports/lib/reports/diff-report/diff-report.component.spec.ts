@@ -15,9 +15,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { TestScheduler } from 'rxjs/testing';
-import { GenericButtonsModule } from 'src/app/ple/generic-buttons/generic-buttons.module';
-import { DiffReportServiceMock } from '../../../../shared/testing/diff-report-service.mock';
-import { DiffReportService } from '../../../../shared/services/ui/diff-report.service';
 import { ConnectionDiffsComponent } from '../../diffs/connection-diffs/connection-diffs.component';
 import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
 
@@ -26,6 +23,8 @@ import { MessageDiffsComponent } from '../../diffs/message-diffs/message-diffs.c
 import { NodeDiffsComponent } from '../../diffs/node-diffs/node-diffs.component';
 import { StructureDiffsComponent } from '../../diffs/structure-diffs/structure-diffs.component';
 import { SubmessageDiffsComponent } from '../../diffs/submessage-diffs/submessage-diffs.component';
+import { DiffReportService } from '@osee/messaging/shared';
+import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
 
 describe('DiffReportComponent', () => {
 	let component: DiffReportComponent;
@@ -39,7 +38,6 @@ describe('DiffReportComponent', () => {
 			],
 			imports: [
 				CommonModule,
-				GenericButtonsModule,
 				MatIconModule,
 				MatTableModule,
 				DiffReportTableComponent,

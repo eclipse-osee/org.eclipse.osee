@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component } from '@angular/core';
-import { EditEnumSetDialogComponent } from '../dialogs/edit-enum-set-dialog/edit-enum-set-dialog.component';
+import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
 
 @Component({
 	selector: 'osee-messaging-edit-enum-set-dialog',

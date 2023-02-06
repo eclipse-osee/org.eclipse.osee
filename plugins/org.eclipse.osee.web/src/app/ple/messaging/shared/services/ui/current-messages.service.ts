@@ -24,20 +24,12 @@ import {
 	filter,
 	map,
 	reduce,
-	takeUntil,
 	mergeMap,
 	scan,
 } from 'rxjs/operators';
-import {
-	transaction,
-	transactionToken,
-} from '../../../../../transactions/transaction';
 import { ApplicabilityListUIService } from './applicability-list-ui.service';
 import { PreferencesUIService } from './preferences-ui.service';
 import { applic } from '../../../../../types/applicability/applic';
-import { settingsDialogData } from '../../types/settingsdialog';
-import { message, messageWithChanges } from '../../types/messages';
-import { subMessage, subMessageWithChanges } from '../../types/sub-messages';
 import { MessagesService } from '../http/messages.service';
 import { SubMessagesService } from '../http/sub-messages.service';
 import { MessageUiService } from './messages-ui.service';
@@ -46,18 +38,20 @@ import {
 	changeTypeEnum,
 	itemTypeIdRelation,
 } from '../../../../../types/change-report/change-report.d';
-import {
-	ARTIFACTTYPEID,
-	ARTIFACTTYPEIDENUM,
-} from '../../../../../types/constants/ArtifactTypeId.enum';
-import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from '../../../../../types/constants/AttributeTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
 import { RelationTypeId } from '../../../../../types/constants/RelationTypeId.enum';
 import { SideNavService } from '../../../../../shared-services/ui/side-nav.service';
 import { ConnectionNode } from '../../../shared/types/connection-nodes';
 import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
+import {
+	messageWithChanges,
+	subMessageWithChanges,
+	subMessage,
+	message,
+	settingsDialogData,
+} from '@osee/messaging/shared/types';
+import { transaction, transactionToken } from '@osee/shared/transactions';
 
 @Injectable({
 	providedIn: 'root',

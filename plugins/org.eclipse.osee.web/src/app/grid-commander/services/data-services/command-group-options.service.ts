@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { checkIfUndefinedOrNull } from '@osee/shared/utils';
 import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
 import {
 	concatMap,
@@ -28,7 +29,6 @@ import {
 	Parameter,
 } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { UserContextRelationsService } from '../data-services/user-context-relations.service';
-import { checkIfUndefinedOrNull } from '../../../osee-utils/functions/undefinedOrNullCheck';
 
 @Injectable({
 	providedIn: 'root',

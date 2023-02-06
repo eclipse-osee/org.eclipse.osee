@@ -12,17 +12,17 @@
  **********************************************************************/
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import {
-	HeaderKeys,
-	HeaderKeysEnum,
-	HeaderService,
-} from 'src/app/ple/messaging/shared/services/ui/header.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { applic } from 'src/app/types/applicability/applic';
-import { HighlightFilteredTextDirective } from 'src/app/osee-utils/osee-string-utils/osee-string-utils-directives/highlight-filtered-text.directive';
+import {
+	HeaderKeys,
+	HeaderKeysEnum,
+	HeaderService,
+} from '@osee/messaging/shared';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-import-table',

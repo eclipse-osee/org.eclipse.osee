@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { connection } from '../types/connection';
+
+import { connection } from '@osee/messaging/shared/types';
 
 export const connectionMock: connection = {
 	name: 'connection1',

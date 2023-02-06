@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -23,19 +23,23 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+	defaultEditStructureProfile,
+	defaultEditElementProfile,
+	defaultViewStructureProfile,
+	defaultViewElementProfile,
+} from '@osee/messaging/shared/constants';
+import {
+	EditAuthService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
+import {
+	settingsDialogData,
+	structure,
+	element,
+} from '@osee/messaging/shared/types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {
-	defaultEditElementProfile,
-	defaultEditStructureProfile,
-	defaultViewElementProfile,
-	defaultViewStructureProfile,
-} from '../../constants/defaultProfiles';
-import { EditAuthService } from '../../services/public/edit-auth-service.service';
-import { HeaderService } from '../../services/ui/header.service';
-import { element } from '../../types/element';
-import { settingsDialogData } from '../../types/settingsdialog';
-import { structure } from '../../types/structure';
 
 @Component({
 	selector: 'osee-messaging-column-preferences-dialog',

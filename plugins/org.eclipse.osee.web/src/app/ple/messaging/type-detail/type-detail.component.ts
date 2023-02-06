@@ -13,9 +13,11 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import {
+	PlatformTypeCardComponent,
+	TypesUIService,
+} from '@osee/messaging/shared';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { PlatformTypeCardComponent } from '../shared/main-content/platform-type-card/platform-type-card.component';
-import { TypesUIService } from '../shared/services/ui/types-ui.service';
 import { TypeDetailService } from './lib/services/type-detail-service.service';
 
 @Component({

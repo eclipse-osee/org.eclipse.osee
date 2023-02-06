@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { MimQuery } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { QueryService } from '../services/http/query.service';
-import { MimQuery } from '../types/MimQuery';
 
 export const QueryServiceMock: Partial<QueryService> = {
 	query(branchId: string, query: MimQuery<unknown>) {
