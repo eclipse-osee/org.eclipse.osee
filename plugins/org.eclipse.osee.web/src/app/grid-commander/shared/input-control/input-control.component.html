@@ -57,13 +57,15 @@
 						"
 						*ngFor="let commandObject of command.commands"
 						[value]="commandObject.name">
-						<span
-							*ngIf="input !== null"
-							oseeHighlightFilteredText
-							[searchTerms]="input"
-							[text]="commandObject.name"
-							classToApply="message-element-interface-table-highlighted-text">
-						</span>
+						<ng-container *ngIf="input !== null">
+							<span
+								oseeHighlightFilteredText
+								[searchTerms]="input"
+								[text]="commandObject.name"
+								classToApply="command-palette-highlighted-text">
+								{{ commandObject.name }}
+							</span>
+						</ng-container>
 					</mat-option>
 				</ng-container>
 			</mat-optgroup>

@@ -13,10 +13,11 @@
 @use '../../../sass-utils/mat-sort-header-override/_mat-sort-header.sass'
 @use '../../../modern-ple-theme.scss'
 @use '_theme.scss' as t
-:host-context(.light-theme)
+
+@media (prefers-color-scheme:light)
     @include mat-sort-header.override($theme:modern-ple-theme.$modern-ple-light-theme,$class:'sort-header')
     @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
-:host-context(.dark-theme)
+@media (prefers-color-scheme:dark)
     @include mat-sort-header.override($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'sort-header')
     @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
 .data-table-component

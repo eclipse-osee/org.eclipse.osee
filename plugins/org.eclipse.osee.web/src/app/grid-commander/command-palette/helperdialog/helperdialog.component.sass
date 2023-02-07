@@ -10,5 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@use '../../../../modern-ple-theme'
+@use './_theme.scss' as t
+
+@media (prefers-color-scheme:light)
+    @include t.theme(modern-ple-theme.$modern-ple-light-theme)
+@media (prefers-color-scheme:dark)
+    @include t.theme(modern-ple-theme.$modern-ple-dark-theme)
+
 .helper-dialog-component-commandGroups
   text-align: left

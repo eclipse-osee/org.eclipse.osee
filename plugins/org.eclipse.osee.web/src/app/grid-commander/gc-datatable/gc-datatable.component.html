@@ -202,12 +202,13 @@
 					*matHeaderRowDef="displayedCols; sticky: true"></tr>
 				<tr
 					mat-row
+					class="data-table-row"
 					*matRowDef="let row; columns: displayedCols; let i = index"
-					[ngClass]="{
-						highlighted: selection.isSelected(row),
-						hidden: hiddenRows.value.includes(row),
-						notHidden: hiddenRows.value.indexOf(row) === -1
-					}"></tr>
+					[ngClass]="
+						i % 2 === 0
+							? 'data-table-row-even'
+							: 'data-table-row-odd'
+					"></tr>
 			</ng-container>
 		</table>
 	</ng-container>

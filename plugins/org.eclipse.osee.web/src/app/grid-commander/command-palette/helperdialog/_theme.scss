@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,7 +12,7 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../theme-system';
+@use '../../../../modern-ple-theme.scss' as theme;
 
 @mixin color($config-or-theme) {
 	// Extract the color configuration in case a theme has been passed.
@@ -26,15 +26,24 @@
 	$background: map.get($config, background);
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
 
 	// Define any styles affected by the theme.
-	.helper-dialog-component-command-groups {
+	.dialog-title {
 		color: mat.get-color-from-palette($primary, 'A400');
-		text-align: left;
 	}
 
-	.helper-dialog-component-property {
-		color: mat.get-color-from-palette($background, tooltip);
+	.helper-dialog-component-command-groups {
+		color: mat.get-color-from-palette($primary, 'A400');
+	}
+
+	.helper-dialog-commands-details {
+		@if $is-dark != true {
+			color: mat.get-color-from-palette($background, tooltip);
+		}
+		@if $is-dark == true {
+			color: mat.get-color-from-palette($foreground, text);
+		}
 	}
 }
 
@@ -42,7 +51,8 @@
 	$density: mat.get-density-config($config-or-theme);
 
 	.dialog-title-container {
-		margin: calc(1em + 0.5em * $density);
+		margin-top: calc(2em + 0.5em * $density);
+		margin-left: calc(1.5em + 0.5em * $density);
 	}
 }
 
@@ -57,16 +67,16 @@
 		@include mat.typography-level($config, 'headline-5');
 	}
 
-	.helper-dialog-component-command {
-		@include mat.typography-level($config, 'subtitle-1');
+	.detail-title {
+		@include mat.typography-level($config, 'bold-table-header');
 	}
 
-	.helper-dialog-component-command-description {
-		@include mat.typography-level($config, 'subtitle-1');
+	.helper-dialog-commands-details {
+		@include mat.typography-level($config, 'subtitle-2');
 	}
 }
 
-@mixin theme($theme, $typography) {
+@mixin theme($theme) {
 	$color: mat.get-color-config($theme);
 	$typography: mat.get-typography-config($theme);
 	$density: mat.get-density-config($theme);
