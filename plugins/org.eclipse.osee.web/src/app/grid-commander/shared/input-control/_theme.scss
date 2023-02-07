@@ -12,7 +12,6 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@use '../../../../modern-ple-theme.scss' as theme;
 
 @mixin color($config-or-theme) {
 	$config: mat.get-color-config($config-or-theme);
@@ -22,12 +21,26 @@
 	$background: map.get($config, background);
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
+
+	// Define any styles affected by the theme.
+	.command-palette-highlighted-text {
+		color: mat.get-color-from-palette($accent, 900);
+	}
 
 	.input-form-helper-button-icon {
-		color: mat.get-color-from-palette(
-			$background,
-			selected-disabled-button
-		);
+		@if $is-dark != true {
+			color: mat.get-color-from-palette(
+				$background,
+				selected-disabled-button
+			);
+		}
+		@if $is-dark == true {
+			color: mat.get-color-from-palette(
+				$foreground,
+				selected-disabled-button
+			);
+		}
 	}
 
 	.input-form-helper-button-tooltip {
@@ -37,8 +50,7 @@
 		);
 	}
 
-	.suggestion {
-		color: mat.get-color-from-palette($background, tooltip);
+	.suggestion [id='suggestion-text'] {
 		@include mat.elevation(0);
 	}
 }
@@ -47,7 +59,7 @@
 	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography) {
+@mixin theme($theme) {
 	$color: mat.get-color-config($theme);
 	$typography: mat.get-typography-config($theme);
 

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,7 +12,7 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@import '../../../../theme-system';
+@use '../../../../modern-ple-theme.scss' as theme;
 
 @mixin color($config-or-theme) {
 	// Extract the color configuration in case a theme has been passed.
@@ -26,18 +26,43 @@
 	$background: map.get($config, background);
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
 
 	// Define any styles affected by the theme.
 	.dialog-component-warning-text {
 		color: mat.get-color-from-palette($warn, 700);
 	}
+
+	.cancel-btn.mat-mdc-raised-button {
+		@if $is-dark != true {
+			background-color: mat.get-color-from-palette(
+				$background,
+				selected-disabled-button
+			);
+			color: mat.get-color-from-palette($foreground, 'slider-min');
+		}
+		@if $is-dark == true {
+			background-color: mat.get-color-from-palette(
+				$background,
+				unselected-chip
+			);
+		}
+	}
 }
 
 @mixin typography($config-or-theme) {
 	$config: mat.get-typography-config($config-or-theme);
+
+	.dialog-component-warning-text.title {
+		@include mat.typography-level($config, 'headline-6');
+	}
+
+	.dialog-component-warning-text.content {
+		font-weight: bold;
+	}
 }
 
-@mixin theme($theme, $typography) {
+@mixin theme($theme) {
 	$color: mat.get-color-config($theme);
 	$typography: mat.get-typography-config($theme);
 

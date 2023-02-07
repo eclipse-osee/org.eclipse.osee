@@ -14,57 +14,6 @@
 @use '@angular/material' as mat;
 @use '../../../../modern-ple-theme.scss' as theme;
 
-@mixin color($config-or-theme) {
-	// Extract the color configuration in case a theme has been passed.
-	// This allows consumers to either pass a theme object or a color configuration.
-	$config: mat.get-color-config($config-or-theme);
-
-	// Extract the palettes you need from the theme definition.
-	$primary: map.get($config, primary);
-	$accent: map.get($config, accent);
-	$warn: map.get($config, warn);
-	$background: map.get($config, background);
-	$foreground: map.get($config, foreground);
-	$success: map.get($config, success);
-
-	// Define any styles affected by the theme.
-	.input-form-submit-btn {
-		color: mat.get-color-from-palette($primary, 'A400');
-		background-color: mat.get-color-from-palette($background, app-bar);
-	}
-
-	.suggestion {
-		color: mat.get-color-from-palette(
-			$background,
-			selected-disabled-button
-		);
-	}
-
-	.input-form-submit-btn:hover {
-		background-color: mat.get-color-from-palette($primary, 'A400');
-		color: mat.get-color-from-palette($background, card);
-	}
-
-	.input-form-submit-btn:focus {
-		background-color: mat.get-color-from-palette($primary, 'A400');
-		color: mat.get-color-from-palette($background, card);
-	}
-
-	.input-form-helper-button-icon {
-		color: mat.get-color-from-palette(
-			$background,
-			selected-disabled-button
-		);
-	}
-
-	.input-form-helper-button-tooltip {
-		color: mat.get-color-from-palette(
-			$background,
-			selected-disabled-button
-		);
-	}
-}
-
 @mixin density($config-or-theme) {
 	$density: mat.get-density-config($config-or-theme);
 
@@ -91,11 +40,7 @@
 	$density: mat.get-density-config($theme);
 
 	@if $typography {
-		@include typography($theme);
-	}
-
-	@if $color {
-		@include color($color);
+		@include typography($typography);
 	}
 
 	@if $density {

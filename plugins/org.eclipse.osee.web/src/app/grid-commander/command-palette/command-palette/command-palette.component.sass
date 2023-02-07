@@ -12,10 +12,12 @@
  **********************************************************************/
 @use '../../../../modern-ple-theme'
 @use '_theme.scss' as t
-:host-context(.light-theme)
+
+@media (prefers-color-scheme:light)
     @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
-:host-context(.dark-theme)
+@media (prefers-color-scheme:dark)
     @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
+
 div
   display: flex
   align-items: flex-end
@@ -29,17 +31,6 @@ div
 .input-container
   align-items: flex-start
   flex-grow: 1
-
-.input-form-input
-  position: relative
-  z-index: 3
-  background-color: transparent
-
-.suggestion
-  position: absolute
-  left: 0
-  background-color: transparent
-  z-index: 0
 
 .args-container
   flex-direction: column

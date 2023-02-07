@@ -22,7 +22,7 @@
 	}
 }
 
-@mixin theme($theme, $typography) {
+@mixin theme($theme) {
 	$density: mat.get-density-config($theme);
 
 	@if $density {

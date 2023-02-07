@@ -26,10 +26,44 @@
 	$background: map.get($config, background);
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
 
 	// Define any styles affected by the theme.
+	tr.data-table-row {
+		@if $is-dark != true {
+			&:hover {
+				background-color: mat.get-color-from-palette(
+					$background,
+					dialog
+				);
+			}
+		}
+		@if $is-dark == true {
+			&:hover {
+				background-color: mat.get-color-from-palette(
+					$background,
+					hover
+				);
+			}
+		}
+	}
+
 	.data-table-header-cell {
 		color: mat.get-color-from-palette($primary, 'A700');
+	}
+
+	.data-table-row-even {
+		background-color: mat.get-color-from-palette(
+			$background,
+			disabled-button-toggle
+		);
+	}
+
+	.data-table-row-odd {
+		background-color: mat.get-color-from-palette(
+			$background,
+			unselected-chip
+		);
 	}
 
 	.data-table-mat-toolbar-row {
@@ -74,19 +108,6 @@
 
 	.data-table-elements-tooltips-tooltip-accent {
 		background-color: mat.get-color-from-palette($accent, 'A200');
-	}
-
-	tr {
-		&:hover {
-			background-color: mat.get-color-from-palette(
-				$background,
-				'app-bar'
-			);
-		}
-	}
-
-	tr.highlight {
-		background-color: mat.get-color-from-palette($background, 'app-bar');
 	}
 }
 

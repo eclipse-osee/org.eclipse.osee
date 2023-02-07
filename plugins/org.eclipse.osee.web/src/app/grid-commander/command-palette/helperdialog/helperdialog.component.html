@@ -28,20 +28,17 @@
 							*ngFor="let cmd of command.commands; let i = index">
 							<tr>
 								<div>
-									<td class="helper-dialog-component-command">
-										<span
-											class="helper-dialog-component-property"
-											>{{ 'Name: ' }}</span
-										>
+									<td class="helper-dialog-commands-details">
+										<span class="detail-title">{{
+											'Name: '
+										}}</span>
 										{{ cmd.name }}
 									</td>
 								</div>
-								<td
-									class="helper-dialog-component-command-description">
-									<span
-										class="helper-dialog-component-property"
-										>{{ 'Description: ' }}</span
-									>
+								<td class="helper-dialog-commands-details">
+									<span class="detail-title">{{
+										'Description: '
+									}}</span>
 									{{ cmd.attributes.description }}
 								</td>
 							</tr>

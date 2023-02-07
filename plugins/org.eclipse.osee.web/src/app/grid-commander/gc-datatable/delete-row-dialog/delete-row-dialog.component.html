@@ -12,12 +12,16 @@
  -->
 <div>
 	<h2 mat-dialog-title>
-		<span class="dialog-component-warning-text">{{ data.action }} </span>
+		<span class="dialog-component-warning-text title"
+			>{{ data.action }}
+		</span>
 		Row Globally?
 	</h2>
 	<mat-dialog-content>
 		Action will permanently
-		<span class="dialog-component-warning-text">{{ data.action }}</span>
+		<span class="dialog-component-warning-text content">{{
+			data.action
+		}}</span>
 		artifact
 		{{ data.object['Artifact Id'].toString() }}
 	</mat-dialog-content>
@@ -27,7 +31,7 @@
 		align="end">
 		<button
 			mat-raised-button
-			color="basic"
+			class="cancel-btn"
 			mat-dialog-close
 			(click)="closeDialog('Cancel')">
 			Cancel
