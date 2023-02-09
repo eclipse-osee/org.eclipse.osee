@@ -13,10 +13,11 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Ryan D. Brooks
@@ -49,6 +50,7 @@ public interface TxCurrent extends Id {
     * This method is only public because all methods in an interface are and it should never be called outside of this
     * interface
     */
+   @SuppressWarnings("ComparableType")
    public static TxCurrent internalCreate(Long id) {
       final class TxChangeImpl extends BaseId implements TxCurrent, Comparable<TxCurrent> {
          public TxChangeImpl(Long id) {
