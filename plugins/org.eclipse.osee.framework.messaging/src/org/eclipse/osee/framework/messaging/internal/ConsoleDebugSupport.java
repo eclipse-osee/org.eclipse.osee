@@ -24,6 +24,7 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 /**
  * @author Roberto E. Escobar
  */
+ 
 public class ConsoleDebugSupport {
 
    private boolean printSends;
@@ -120,6 +121,7 @@ public class ConsoleDebugSupport {
       }
    }
 
+	@SuppressWarnings("CollectionIncompatibleType")
    public void printRxStats(CommandInterpreter ci) {
       ci.println("RxStats:");
       for (String id : receives.keySet()) {
@@ -129,5 +131,5 @@ public class ConsoleDebugSupport {
          ci.println("------------------------------");
       }
    }
-
 }
+
