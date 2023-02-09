@@ -1,0 +1,100 @@
+java_test(
+        name = "AccountRestTestSuite",
+	srcs =
+                        glob(["**/*.java"]),
+                        deps = ["java_deps",
+					"javax_annotation",
+					"javax_servlet",
+					"apache_commons",
+					"junit"
+			],
+	visibility = ["//visibility:public"]
+)
+
+java_library(
+        name = "java_deps",
+        exports = [
+                "@maven//:com_fasterxml_jackson_core_jackson_core",
+                "@maven//:com_fasterxml_jackson_core_jackson_databind",
+                "@maven//:com_fasterxml_jackson_core_jackson_annotations",
+		"@maven//:com_fasterxml_jackson_jaxrs_jackson_jaxrs_base",
+		"@maven//:com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider",
+		"@maven//:org_apache_cxf_cxf_core",
+		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		"@maven//:org_apache_cxf_cxf_rt_rs_client",
+		"@maven//:org_apache_cxf_cxf_rt_rs_security_oauth",
+                "@maven//:org_apache_cxf_cxf_rt_rs_security_oauth2",
+		"@maven//:org_apache_cxf_cxf_rt_security",
+		"@maven//:org_apache_cxf_cxf_rt_transports_http",
+		"@maven//:org_apache_cxf_cxf_rt_rs_service_description",
+                "@maven//:commons_codec_commons_codec",
+                "@maven//:org_eclipse_jdt_org_eclipse_jdt_annotation",
+                "@maven//:javax_ws_rs_javax_ws_rs_api",
+                "@maven//:javax_activation_activation",
+                "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
+                "@maven//:org_slf4j_slf4j_api",
+                "@maven//:org_osgi_org_osgi_service_log",
+                "@maven//:org_osgi_org_osgi_service_event",
+                "@maven//:org_osgi_org_osgi_service_component",
+                "@maven//:org_osgi_org_osgi_framework",
+                "@maven//:org_eclipse_core_runtime",
+		"@maven//:org_eclipse_osgi",
+                "@maven//:org_eclipse_core_org_eclipse_core_resources",
+                "@maven//:javax_mail_mail",
+                "@maven//:org_antlr_antlr_runtime",
+                "@maven//:com_google_guava_guava",
+		"@maven//:org_apache_poi_poi",
+        	"@maven//:org_apache_poi_poi_ooxml",
+		"@maven//:javax_servlet_javax_servlet_api",
+		"@maven//:org_hsqldb_hsqldb",
+		"@maven//:org_hamcrest_hamcrest_core",
+		"@maven//:org_mockito_mockito_core",
+                "@account_admin//:account_admin",
+		"@account_rest//:account_rest",
+		"@account_rest_model//:account_rest_model",
+		"@authentication_admin//:authentication_admin",
+		"@authorization_admin//:authorization_admin",
+		"@framework_core//:framework_core",
+		"@framework_core_model//:framework_core_model",
+		"@framework_jdk_core//:framework_jdk_core",
+		"@framework_logging//:framework_logging",
+		"@jaxrs_server//:jaxrs_server",
+		"@template_engine//:template_engine",
+		"@logger//:logger",
+		"@jaxrs//:jaxrs",
+		"@activity_api//:activity_api",
+		"@orcs//:orcs",
+		"@framework_resource_management//:framework_resource_management",
+		"@jdbc//:jdbc"
+                ],
+)
+package(default_visibility = ["//visibility:public"])
+java_import(
+        name = "javax_annotation",
+        jars = [
+                "javax.annotation_1.3.5.v20200909-1856.jar"
+      
+       ]
+)
+java_import(
+        name = "javax_servlet",
+        jars = [
+                "javax.servlet_3.1.0.v201410161800.jar"
+
+       ]
+)
+java_import(
+        name = "apache_commons",
+        jars = [
+                "org.apache.commons.lang_2.6.0.v201404270220.jar"
+
+       ]
+)
+java_import(
+        name = "junit",
+        jars = [
+                "org.junit_4.13.0.v20200204-1500.jar"
+
+       ]
+)
+
