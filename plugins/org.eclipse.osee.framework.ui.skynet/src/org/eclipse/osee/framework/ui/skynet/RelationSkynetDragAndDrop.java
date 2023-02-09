@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -118,17 +117,64 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
          errorToolTip.setVisible(false);
       }
 
-      if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
-         ArtifactTransfer artTransfer = ArtifactTransfer.getInstance();
-         FileTransfer fileTransfer = FileTransfer.getInstance();
-         RelationTypeSideSorter relTypeSorter = (RelationTypeSideSorter) selected.getData();
+      if (selected != null) {
+         Object selectedData = selected.getData();
+         if (selectedData instanceof RelationTypeSideSorter) {
+            dragRelationTypeSide(event, tree, (RelationTypeSideSorter) selectedData);
+         } else if (selectedData instanceof WrapperForRelationLink) {
+            dragWrappedRelation(event, (WrapperForRelationLink) selectedData);
+         } else {
+            tree.setInsertMark(null, false);
+         }
+      }
+   }
+
+   private void dragWrappedRelation(DropTargetEvent event, WrapperForRelationLink targetLink) {
+      IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+      Object obj = selection.getFirstElement();
+      if (obj instanceof WrapperForRelationLink) {
+         WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
+         boolean hasPermission = false;
+         try {
+            RelationTypeSide rts = new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
+            List<Artifact> related = Arrays.asList(
+               artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA());
+
+            hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, rts, related,
+               PermissionEnum.WRITE, null).isSuccess();
+
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+         if (!hasPermission) {
+            event.detail = DND.DROP_NONE;
+            getErrorToolTip().setText("MOVE ERROR");
+            getErrorToolTip().setMessage("Access Control has restricted this action.");
+            getErrorToolTip().setVisible(true);
+            return;
+         }
+         // the links must be in the same group
+         if (relationLinkIsInSameGroup(targetLink, dropTarget)) {
+            if (isFeedbackAfter) {
+               event.feedback = DND.FEEDBACK_INSERT_AFTER;
+            } else {
+               event.feedback = DND.FEEDBACK_INSERT_BEFORE;
+            }
+            event.detail = DND.DROP_MOVE;
+         }
+      }
+   }
+
+   private void dragRelationTypeSide(DropTargetEvent event, Tree tree, RelationTypeSideSorter relTypeSorter) {
+      ArtifactTransfer artTransfer = ArtifactTransfer.getInstance();
+      FileTransfer fileTransfer = FileTransfer.getInstance();
+      ArtifactData artData = artTransfer.nativeToJava(event.currentDataType);
+
+      if (artData != null) {
+         List<Artifact> relatedArts = Arrays.asList(artData.getArtifacts());
+
          if (artTransfer.isSupportedType(event.currentDataType)) {
             try {
-               ArtifactData artData = artTransfer.nativeToJava(event.currentDataType);
-               List<Artifact> relatedArts = new ArrayList<Artifact>();
-               for (Artifact relatedArt : artData.getArtifacts()) {
-                  relatedArts.add(relatedArt);
-               }
 
                String toolTipText = "";
                Artifact relationArtifact = relTypeSorter.getArtifact();
@@ -171,23 +217,13 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
          } else if (fileTransfer.isSupportedType(event.currentDataType)) {
             RelationTypeToken relationType = relTypeSorter.getRelationType();
-            if (relationType.equals(CoreRelationTypes.Verification_Verifier) || relationType.equals(
-               CoreRelationTypes.Uses_TestUnit)) {
-               RelationTypeSide relTypeSide = null;
+            if (relationType.matches(CoreRelationTypes.Verification_Verifier, CoreRelationTypes.Uses_TestUnit)) {
 
-               relTypeSide = CoreRelationTypes.Verification_Verifier;
-
-               ArtifactData artData = artTransfer.nativeToJava(event.currentDataType);
-               List<Artifact> relatedArts = new ArrayList<Artifact>();
-               for (Artifact relatedArt : artData.getArtifacts()) {
-                  relatedArts.add(relatedArt);
-               }
                Artifact artifact = relTypeSorter.getArtifact();
-
                boolean hasPermission = false;
                try {
-                  hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, relTypeSide,
-                     relatedArts, PermissionEnum.WRITE, null).isSuccess();
+                  hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
+                     CoreRelationTypes.Verification_Verifier, relatedArts, PermissionEnum.WRITE, null).isSuccess();
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -196,44 +232,6 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                }
             }
          }
-
-      } else if (selected != null && selected.getData() instanceof WrapperForRelationLink) {
-         WrapperForRelationLink targetLink = (WrapperForRelationLink) selected.getData();
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Object obj = selection.getFirstElement();
-         if (obj instanceof WrapperForRelationLink) {
-            WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
-            boolean hasPermission = false;
-            try {
-               RelationTypeSide rts = new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
-               List<Artifact> related = Arrays.asList(
-                  artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA());
-
-               hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, rts, related,
-                  PermissionEnum.WRITE, null).isSuccess();
-
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-            if (!hasPermission) {
-               event.detail = DND.DROP_NONE;
-               getErrorToolTip().setText("MOVE ERROR");
-               getErrorToolTip().setMessage("Access Control has restricted this action.");
-               getErrorToolTip().setVisible(true);
-               return;
-            }
-            // the links must be in the same group
-            if (relationLinkIsInSameGroup(targetLink, dropTarget)) {
-               if (isFeedbackAfter) {
-                  event.feedback = DND.FEEDBACK_INSERT_AFTER;
-               } else {
-                  event.feedback = DND.FEEDBACK_INSERT_BEFORE;
-               }
-               event.detail = DND.DROP_MOVE;
-            }
-         }
-      } else {
-         tree.setInsertMark(null, false);
       }
    }
 
