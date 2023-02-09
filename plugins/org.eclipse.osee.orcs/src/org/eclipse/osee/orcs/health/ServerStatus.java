@@ -13,11 +13,12 @@
 
 package org.eclipse.osee.orcs.health;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Donald G. Dunne
@@ -37,6 +38,7 @@ public class ServerStatus {
       return data.get(key.getShortName());
    }
 
+   @SuppressWarnings("FormatString")
    public void add(String keyStr, String value) {
       StatusKey key = StatusKey.Unknown;
       try {

@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.CellData;
@@ -134,6 +135,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       this(writer, null);
    }
 
+   @SuppressWarnings("ChainingConstructorIgnoresParameter")
    public ExcelXmlWriter(String fileName, String style) throws IOException {
       this(fileName, null, defaultEmptyStringXmlRep, DEFAULT_FONT_SIZE);
    }
