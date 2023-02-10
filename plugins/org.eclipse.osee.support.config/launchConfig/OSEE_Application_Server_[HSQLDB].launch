@@ -22,7 +22,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=demo&#13;&#10;-Dlogback.configurationFile=${project_loc:org.eclipse.osee.server.p2}\logback-dev.xml&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.support.config}/launchConfig/osee.hsql.json&quot;&#13;&#10;-Djwt.login.key=&quot;activecac&quot;"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=demo&#13;&#10;-Dlogback.configurationFile=${project_loc:org.eclipse.osee.server.p2}\logback-dev.xml&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.support.config}/launchConfig/osee.hsql.json&quot;"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${env_var:UserProfile}\Documents\"/>
     <stringAttribute key="pde.version" value="3.3"/>
     <setAttribute key="selected_features">

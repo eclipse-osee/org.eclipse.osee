@@ -56,19 +56,21 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-         if (authHeader != null && !orcsApi.userService().getLoginKey().isEmpty()) {
-            String[] authArray = authHeader.split(" ");
-            if (authArray.length == 2) {
-               String[] jwt = authArray[1].split("\\.");
-               Decoder urlDecoder = Base64.getUrlDecoder();
-               String payloadJson = new String(urlDecoder.decode(jwt[1]), StandardCharsets.UTF_8);
+         if (authHeader != null) {
+            String jwtLoginKey = orcsApi.userService().getLoginKey();
+            if (Strings.isValid(jwtLoginKey)) {
+               String[] authArray = authHeader.split(" ");
+               if (authArray.length == 2) {
+                  String[] jwt = authArray[1].split("\\.");
+                  Decoder urlDecoder = Base64.getUrlDecoder();
+                  String payloadJson = new String(urlDecoder.decode(jwt[1]), StandardCharsets.UTF_8);
 
-               String loginId = jaxRsApi.readValue(payloadJson, orcsApi.userService().getLoginKey());
-               orcsApi.userService().setUserForCurrentThread(loginId);
+                  String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey);
+                  orcsApi.userService().setUserForCurrentThread(loginId);
+               }
+            } else {
+               setUserForCurrentThread(authHeader);
             }
-         } else {
-            UserId accountId = UserId.valueOf(requestContext.getHeaderString(OseeClient.OSEE_ACCOUNT_ID));
-            orcsApi.userService().setUserForCurrentThread(accountId);
          }
       } catch (Exception ex) {
          orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
@@ -89,5 +91,10 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
             activityLog.createThrowableEntry(JAXRS_METHOD_CALL_FILTER_ERROR, th);
          }
       }
+   }
+
+   private void setUserForCurrentThread(String userArtifactId) {
+      UserId accountId = UserId.valueOf(userArtifactId);
+      orcsApi.userService().setUserForCurrentThread(accountId);
    }
 }
