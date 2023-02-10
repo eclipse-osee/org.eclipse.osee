@@ -31,6 +31,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { BranchPickerComponent } from '@osee/shared/components';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
 	selector: 'osee-messaging-reports',
@@ -44,6 +45,7 @@ import { BranchPickerComponent } from '@osee/shared/components';
 		NgFor,
 		FormsModule,
 		MatFormFieldModule,
+		MatInputModule,
 		MatSelectModule,
 		MatOptionModule,
 		MatCheckboxModule,

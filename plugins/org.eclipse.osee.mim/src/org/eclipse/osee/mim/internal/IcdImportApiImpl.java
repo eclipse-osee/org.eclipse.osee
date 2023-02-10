@@ -342,9 +342,9 @@ public class IcdImportApiImpl implements MimImportApi {
       PlatformTypeImportToken previousPType = PlatformTypeImportToken.SENTINEL;
       while (reader.rowExists(rowIndex)) {
          int numBytes = (int) reader.getCellNumericValue(rowIndex, 2);
-         String logicalType = reader.getCellStringValue(rowIndex, 5);
-         String name = reader.getCellStringValue(rowIndex, 6);
-         String units = reader.getCellStringValue(rowIndex, 7);
+         String logicalType = reader.getCellStringValue(rowIndex, 5).trim();
+         String name = reader.getCellStringValue(rowIndex, 6).trim();
+         String units = reader.getCellStringValue(rowIndex, 7).trim();
          String validRange = reader.getCellStringValue(rowIndex, 8);
          boolean alterable = reader.getCellStringValue(rowIndex, 9).equals("Yes");
          String description = reader.getCellStringValue(rowIndex, 10);
@@ -367,7 +367,6 @@ public class IcdImportApiImpl implements MimImportApi {
                "command taskfile") ? "Command Taskfile" : "Status Taskfile" : enumName;
             enumName = enumName.isEmpty() || (enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches(
                "^\\d+\\s*")) ? name : enumName;
-            enumName = enumName.matches("^C\\d+$") ? name : enumName;
 
             String key = getEnumNameKey(enumName);
             key = key.isEmpty() ? enumName : key;
@@ -375,7 +374,7 @@ public class IcdImportApiImpl implements MimImportApi {
             if (platformTypes.containsKey(key)) {
                pType = platformTypes.get(key);
             } else {
-               pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", "", "",
+               pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", units, "",
                   defaultValue, validRange);
                incrementId();
                platformTypes.put(getEnumNameKey(enumName), pType);
@@ -460,12 +459,22 @@ public class IcdImportApiImpl implements MimImportApi {
                String[] prevNameSplit = previousElement.getName().split(" ");
                int prevArrayNum = Integer.parseInt(prevNameSplit[prevNameSplit.length - 1]);
                previousElement.setInterfaceElementIndexStart(prevArrayNum);
-            } else if (previousElement.getName().matches(".*\\s\\d+$")) {
-               // Remove number from previous element name
-               previousElement.setName(previousElement.getName().split("\\s\\d+$")[0].trim());
             }
             previousElement.setInterfaceElementIndexEnd(arrayNum);
             relateElement = false;
+            // Check next row for member of array. If it is not, remove the number from the end of the name.
+            if (reader.rowExists(rowIndex + 1) && reader.getCellValue(rowIndex + 1,
+               0) != null && !reader.getCellValue(rowIndex + 1, 0).toString().isEmpty()) {
+               String nextName = reader.getCellStringValue(rowIndex + 1, 11).trim();
+               if (!nextName.split("\\s\\d+$")[0].trim().equals(name.split("\\s\\d+$")[0].trim())) {
+                  previousElement.setName(previousElement.getName().split("\\s\\d+$")[0].trim());
+               }
+            } else {
+               // If on the last row and the last element is part of an array, remove the number from the array element name.
+               if (previousElement.getName().matches(".*\\s\\d+$")) {
+                  previousElement.setName(previousElement.getName().split("\\s\\d+$")[0].trim());
+               }
+            }
          } else {
             element = new InterfaceElementImportToken(id, name);
             incrementId();
