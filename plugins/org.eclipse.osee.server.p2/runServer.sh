@@ -34,7 +34,7 @@ if [ -z "$USE_LOAD_BALANCER" ]; then
 fi
 
 if [ -z "$OSEE_AUTHENTICATION_PROTOCOL" ]; then
-  OSEE_AUTHENTICATION_PROTOCOL="trustAll"
+  OSEE_AUTHENTICATION_PROTOCOL="loginId"
 fi
 
 if [ -z "$OSEE_BALANCER_GROUP" ]; then
