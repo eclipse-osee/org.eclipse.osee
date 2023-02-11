@@ -29,7 +29,7 @@ import {
 } from 'rxjs/operators';
 import { ApplicabilityListUIService } from './applicability-list-ui.service';
 import { PreferencesUIService } from './preferences-ui.service';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { MessagesService } from '../http/messages.service';
 import { SubMessagesService } from '../http/sub-messages.service';
 import { MessageUiService } from './messages-ui.service';
@@ -37,12 +37,14 @@ import {
 	changeInstance,
 	changeTypeEnum,
 	itemTypeIdRelation,
-} from '../../../../../types/change-report/change-report.d';
-import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
-import { RelationTypeId } from '../../../../../types/constants/RelationTypeId.enum';
+} from '@osee/shared/types/change-report';
+import {
+	ATTRIBUTETYPEIDENUM,
+	ARTIFACTTYPEIDENUM,
+	RelationTypeId,
+} from '@osee/shared/types/constants';
 import { SideNavService } from '../../../../../shared-services/ui/side-nav.service';
-import { ConnectionNode } from '../../../shared/types/connection-nodes';
+import { ConnectionNode } from '@osee/messaging/shared/types';
 import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
 import {
 	messageWithChanges,
@@ -51,7 +53,7 @@ import {
 	message,
 	settingsDialogData,
 } from '@osee/messaging/shared/types';
-import { transaction, transactionToken } from '@osee/shared/transactions';
+import { transaction, transactionToken } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

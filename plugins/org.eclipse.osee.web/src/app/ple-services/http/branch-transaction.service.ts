@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../environments/environment';
-import { transactionResult } from '../../types/change-report/transaction';
+import { transactionResult } from '@osee/shared/types/change-report';
 
 @Injectable({
 	providedIn: 'root',

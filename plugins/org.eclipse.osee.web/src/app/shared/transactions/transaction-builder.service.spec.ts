@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { transaction } from './transaction';
+import { transaction } from '../types/transaction';
 
 import { TransactionBuilderService } from './transaction-builder.service';
 

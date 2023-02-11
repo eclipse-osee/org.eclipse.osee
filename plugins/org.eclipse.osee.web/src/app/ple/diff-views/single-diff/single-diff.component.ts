@@ -27,8 +27,8 @@ import { TransactionService } from '@osee/shared/transactions';
 import { iif, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
-import { transactionInfo } from 'src/app/types/change-report/transaction';
-import { applic } from '../../../types/applicability/applic';
+import { transactionInfo } from '@osee/shared/types/change-report';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-single-diff',

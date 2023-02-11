@@ -19,8 +19,6 @@ import {
 	of,
 	combineLatest,
 	OperatorFunction,
-	interval,
-	partition,
 } from 'rxjs';
 import {
 	switchMap,
@@ -29,20 +27,15 @@ import {
 	mergeMap,
 	filter,
 	tap,
-	finalize,
 	take,
 	shareReplay,
 	distinct,
 	distinctUntilChanged,
-	groupBy,
 	map,
 	reduce,
 	scan,
 	startWith,
-	distinctUntilKeyChanged,
-	delay,
 	concatMap,
-	defaultIfEmpty,
 } from 'rxjs/operators';
 import {
 	changeInstance,
@@ -50,11 +43,11 @@ import {
 	difference,
 	ignoreType,
 	ModificationType,
-} from 'src/app/types/change-report/change-report.d';
+} from '@osee/shared/types/change-report';
 import {
-	ARTIFACTTYPEID,
 	ARTIFACTTYPEIDENUM,
-} from 'src/app/types/constants/ArtifactTypeId.enum';
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/shared/types/constants';
 import {
 	ConfigGroup,
 	PlConfigApplicUIBranchMapping,
@@ -77,15 +70,14 @@ import {
 	ExtendedNameValuePair,
 	ExtendedNameValuePairWithChanges,
 } from '../types/base-types/ExtendedNameValuePair';
-import { ATTRIBUTETYPEIDENUM } from 'src/app/types/constants/AttributeTypeId.enum';
 import {
 	extendedFeature,
 	extendedFeatureWithChanges,
 } from '../types/features/base';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
-import { applic } from 'src/app/types/applicability/applic';
-import { transactionToken } from 'src/app/types/change-report/transaction-token';
-import { NamedId } from '../../../../types/NamedId';
+import { applic } from '@osee/shared/types/applicability';
+import { transactionToken } from '@osee/shared/types/change-report';
+import { NamedId } from '@osee/shared/types';
 import { PlConfigTypesService } from './pl-config-types.service';
 import { productType } from '../types/pl-config-product-types';
 

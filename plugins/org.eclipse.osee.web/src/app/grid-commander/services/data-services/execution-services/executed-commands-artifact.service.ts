@@ -12,16 +12,17 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { executedCommand } from '../../../types/grid-commander-types/executedCommand';
-import { ARTIFACTTYPEIDENUM } from 'src/app/types/constants/ArtifactTypeId.enum';
+import {
+	ARTIFACTTYPEIDENUM,
+	RelationTypeId,
+} from '@osee/shared/types/constants';
 import { of, switchMap, take } from 'rxjs';
 import { userHistory } from '../../../types/grid-commander-types/userHistory';
-import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
 import {
-	TransactionService,
 	TransactionBuilderService,
-	transaction,
-	relation,
+	TransactionService,
 } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

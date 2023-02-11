@@ -13,13 +13,11 @@
 import { Injectable } from '@angular/core';
 import { of, switchMap, take } from 'rxjs';
 import {
-	createArtifact,
-	relation,
-	transaction,
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { ARTIFACTTYPEIDENUM } from '../../../types/constants/ArtifactTypeId.enum';
+import { relation, createArtifact, transaction } from '@osee/shared/types';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { GCRELATIONTYPEID } from '../../types/grid-commander-constants/gcRelationTypeId.enum';
 
 @Injectable({

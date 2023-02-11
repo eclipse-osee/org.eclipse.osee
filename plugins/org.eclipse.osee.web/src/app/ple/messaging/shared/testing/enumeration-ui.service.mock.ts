@@ -18,7 +18,7 @@ import {
 	enumeration,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,

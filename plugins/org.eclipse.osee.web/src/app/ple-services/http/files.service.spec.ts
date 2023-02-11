@@ -16,7 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { HttpMethods } from 'src/app/types/http-methods';
+import { HttpMethods } from '@osee/shared/types';
 import { apiURL } from 'src/environments/environment';
 
 import { FilesService } from './files.service';

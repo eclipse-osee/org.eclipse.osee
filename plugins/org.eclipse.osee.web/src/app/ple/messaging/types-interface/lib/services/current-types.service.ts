@@ -23,7 +23,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import {
 	TypesService,
 	PreferencesUIService,
@@ -32,7 +32,7 @@ import {
 	enumeration,
 	settingsDialogData,
 } from '@osee/messaging/shared';
-import { transaction } from '@osee/shared/transactions';
+import { transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

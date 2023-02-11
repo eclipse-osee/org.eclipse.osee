@@ -12,7 +12,6 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { changeReportMock } from '../../http/change-report.mock';
-import { differenceReportMock } from '../../http/difference-report.mock';
 import { DifferenceBranchInfoService } from './difference-branch-info.service';
 
 export const DifferenceBranchInfoServiceMock: Partial<DifferenceBranchInfoService> =
@@ -20,8 +19,5 @@ export const DifferenceBranchInfoServiceMock: Partial<DifferenceBranchInfoServic
 		differences(branchId) {
 			return of(changeReportMock);
 		},
-
-		differenceReport(branchId) {
-			return of(differenceReportMock);
-		},
+		parentBranch: of('10'),
 	};

@@ -19,7 +19,7 @@ import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
-import { response } from '../../../../../types/responses';
+import { response } from '@osee/shared/types';
 
 import { FeatureDropdownComponent } from './feature-dropdown.component';
 

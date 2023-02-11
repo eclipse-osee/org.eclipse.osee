@@ -22,8 +22,8 @@ import {
 	OperatorFunction,
 	tap,
 } from 'rxjs';
-import { applic } from '../../../../../../types/applicability/applic';
-import { difference } from '../../../../../../types/change-report/change-report';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
 import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';

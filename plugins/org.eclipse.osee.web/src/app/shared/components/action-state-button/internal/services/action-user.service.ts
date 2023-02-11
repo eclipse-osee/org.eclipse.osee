@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { user } from 'src/app/types/user';
+import { user } from '@osee/shared/types/auth';
 import { ActionService } from '../../../../../ple-services/http/action.service';
 
 @Injectable({

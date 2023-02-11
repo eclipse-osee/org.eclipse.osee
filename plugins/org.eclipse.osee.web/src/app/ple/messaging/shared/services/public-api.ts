@@ -46,3 +46,6 @@ export * from './http/structures.service';
 export * from './http/sub-messages.service';
 export * from './http/transport-type.service';
 export * from './http/types.service';
+export * from './http/difference-report.service';
+export * from './ui/difference-report-branch-info.service';
+export * from './ui/current-diff-report.service';

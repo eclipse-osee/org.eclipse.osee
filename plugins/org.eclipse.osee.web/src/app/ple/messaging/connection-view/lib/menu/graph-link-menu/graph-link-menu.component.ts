@@ -18,8 +18,8 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
-import { applic } from '../../../../../../types/applicability/applic';
-import { difference } from '../../../../../../types/change-report/change-report';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
 import {
 	connection,
 	connectionWithChanges,

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { transaction } from '../transaction';
+import { transaction } from '../../types/transaction';
 import { transactionInfoMock, transactionResultMock } from './transaction.mock';
 import { TransactionService } from '../transaction.service';
 

@@ -16,7 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
-import { transactionInfo } from '../../types/change-report/transaction';
+import { transactionInfo } from '@osee/shared/types/change-report';
 import { transactionInfoMock } from './testing/transaction.mock';
 
 import { TransactionService } from './transaction.service';

@@ -24,8 +24,8 @@ import {
 } from '../../../../../testing/configuration-management.response.mock';
 import { MockXResultData } from '../../../../../testing/XResultData.response.mock';
 import { testnewActionResponse } from '../../../../../testing/new-action.response.mock';
-import { MockUserResponse } from '../../../../../testing/user/user.response.mock';
-import { CreateAction } from '../../../../../types/configuration-management/create-action';
+import { MockUserResponse } from '../../../../../testing/user.response.mock';
+import { CreateAction } from '@osee/shared/types/configuration-management';
 
 import { ActionStateButtonService } from './action-state-button.service';
 import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';

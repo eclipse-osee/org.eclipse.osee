@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { changeReportRow } from 'src/app/types/change-report/change-report';
+import { changeReportRow } from 'src/app/shared/types/change-report/change-report';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({

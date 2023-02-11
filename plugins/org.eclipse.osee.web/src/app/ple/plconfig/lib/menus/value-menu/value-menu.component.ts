@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit } from '@angular/core';
-import { applic } from 'src/app/types/applicability/applic';
-import { difference } from 'src/app/types/change-report/change-report';
+import { Component, Input } from '@angular/core';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from 'src/app/shared/types/change-report/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import {
 	ExtendedNameValuePair,

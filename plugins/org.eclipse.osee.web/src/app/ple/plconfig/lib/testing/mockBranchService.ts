@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedId } from '../../../../types/NamedId';
+import { NamedId } from '@osee/shared/types';
 import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
 
 export const testApplicabilityTag: NamedId = {

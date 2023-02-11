@@ -13,7 +13,7 @@
 import { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { of } from 'rxjs';
-import { user } from '../../../../types/user';
+import { user } from '@osee/shared/types/auth';
 import { MimPreferencesService } from '../services/http/mim-preferences.service';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
 

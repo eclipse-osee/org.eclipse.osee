@@ -13,8 +13,8 @@
 import {
 	transactionInfo,
 	transactionResult,
-} from '../../../types/change-report/transaction';
-import { transaction } from '../transaction';
+} from '@osee/shared/types/change-report';
+import { transaction } from '../../types/transaction';
 
 export const transactionMock: transaction = {
 	branch: '10',

@@ -21,7 +21,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { createArtifact } from '@osee/shared/transactions';
+import { createArtifact } from '@osee/shared/types';
 import { CreateCommandService } from './create-command.service';
 import { CreateParameterService } from './create-parameter.service';
 

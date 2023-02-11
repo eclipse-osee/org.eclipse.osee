@@ -24,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { TransitionActionDialogData } from '../transition-action-dialog';
-import { action } from '../../../../types/configuration-management/action';
+import { action } from '@osee/shared/types/configuration-management';
 
 /**
  * @todo figure out where this used to be used??

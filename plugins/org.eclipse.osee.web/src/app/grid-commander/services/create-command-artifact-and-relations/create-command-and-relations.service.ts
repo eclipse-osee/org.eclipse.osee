@@ -12,14 +12,12 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import {
-	createArtifact,
-	relation,
-	transaction,
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
+import { relation, createArtifact, transaction } from '@osee/shared/types';
 import { of, switchMap, take, tap } from 'rxjs';
-import { ARTIFACTTYPEIDENUM } from '../../../types/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { GCRELATIONTYPEID } from '../../types/grid-commander-constants/gcRelationTypeId.enum';
 import { CreateParameterService } from '../create-command-form-services/create-parameter.service';
 

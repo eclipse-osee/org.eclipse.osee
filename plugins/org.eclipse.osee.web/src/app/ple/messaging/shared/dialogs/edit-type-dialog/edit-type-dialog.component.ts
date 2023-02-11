@@ -27,7 +27,7 @@ import {
 	take,
 	takeUntil,
 } from 'rxjs/operators';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';

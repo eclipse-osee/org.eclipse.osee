@@ -16,7 +16,7 @@ import {
 	enumeration,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 import { from, iif, Observable, of } from 'rxjs';
 import {
 	share,

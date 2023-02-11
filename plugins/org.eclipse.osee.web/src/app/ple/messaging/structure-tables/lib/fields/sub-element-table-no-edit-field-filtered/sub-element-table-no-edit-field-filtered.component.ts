@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-no-edit-field-filtered',

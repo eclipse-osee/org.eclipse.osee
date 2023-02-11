@@ -29,7 +29,7 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { UiService } from '../../../../../../ple-services/ui/ui.service';
 import { AddElementDialog } from './add-element-dialog';
 import { MatButtonModule } from '@angular/material/button';

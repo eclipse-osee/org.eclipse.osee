@@ -17,7 +17,7 @@ import {
 	OnInit,
 	SimpleChanges,
 } from '@angular/core';
-import { BranchCategoryService } from '../../../../shared-services/ui/branch-category.service';
+import { BranchCategoryService } from '../../internal/services/branch-category.service';
 import { BranchSelectorComponent } from '../internal/components/branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from '../internal/components/branch-type-selector/branch-type-selector.component';
 

@@ -27,10 +27,12 @@ import {
 } from '../../testing/configuration-management.response.mock';
 import { MockXResultData } from '../../testing/XResultData.response.mock';
 import { testnewActionResponse } from '../../testing/new-action.response.mock';
-import { MockUserResponse } from '../../testing/user/user.response.mock';
-import { NamedId } from '../../types/NamedId';
-import { transitionAction } from '../../types/configuration-management/transition-action';
-import { PRIORITY } from '../../types/configuration-management/priority.enum';
+import { MockUserResponse } from '../../testing/user.response.mock';
+import { NamedId } from '@osee/shared/types';
+import {
+	transitionAction,
+	PRIORITY,
+} from '@osee/shared/types/configuration-management';
 import { ActionService } from './action.service';
 
 const testNewActionData = {

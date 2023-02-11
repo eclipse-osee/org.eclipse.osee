@@ -22,7 +22,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { createArtifact } from '@osee/shared/transactions';
+import { createArtifact } from '@osee/shared/types';
 import { CreateParameterAndRelationsService } from '../create-command-artifact-and-relations/create-parameter-and-relations.service';
 import { CommandGroupOptionsService } from '../data-services/commands/command-group-options.service';
 import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.service';

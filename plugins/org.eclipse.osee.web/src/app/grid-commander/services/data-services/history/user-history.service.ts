@@ -30,7 +30,7 @@ import {
 import { GetUserHistoryService } from '../../fetch-data-services/user-history/get-user-history.service';
 import { HistoryService } from './history.service';
 import { UserDataAccountService } from '@osee/auth';
-import { user } from '../../../../types/user';
+import { user } from '@osee/shared/types/auth';
 
 @Injectable({
 	providedIn: 'root',

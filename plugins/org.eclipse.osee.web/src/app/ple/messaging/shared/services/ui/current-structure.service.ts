@@ -27,8 +27,8 @@ import {
 	tap,
 } from 'rxjs';
 import { StructuresUiService } from './structures-ui.service';
-import { applic } from '../../../../../types/applicability/applic';
-import { transactionToken } from '../../../../../types/change-report/transaction-token';
+import { applic } from '@osee/shared/types/applicability';
+import { transactionToken } from '@osee/shared/types/change-report';
 import { StructuresService } from '../http/structures.service';
 import { ElementService } from '../http/element.service';
 import { TypesUIService } from './types-ui.service';
@@ -38,8 +38,10 @@ import { DiffReportBranchService } from '../../../../../ple-services/ui/diff/dif
 import { SideNavService } from '../../../../../shared-services/ui/side-nav.service';
 import { EnumsService } from '../http/enums.service';
 import { QueryService } from '../http/query.service';
-import { changeInstance } from '../../../../../types/change-report/change-report';
-import { transactionResult } from '../../../../../types/change-report/transaction';
+import {
+	changeInstance,
+	transactionResult,
+} from '@osee/shared/types/change-report';
 import { MessagesService } from '../http/messages.service';
 import {
 	structure,
@@ -50,7 +52,7 @@ import {
 	elementWithChanges,
 	MimQuery,
 } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/transactions';
+import { transaction } from '@osee/shared/types';
 @Injectable({
 	providedIn: 'root',
 })

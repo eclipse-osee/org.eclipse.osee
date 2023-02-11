@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
-import { share, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { changeInstance } from 'src/app/types/change-report/change-report';
+import { changeInstance } from '@osee/shared/types/change-report';
 
 @Injectable({
 	providedIn: 'root',

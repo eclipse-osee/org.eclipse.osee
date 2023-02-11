@@ -17,7 +17,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
-import { MockUserResponse } from '../../../../../testing/user/user.response.mock';
+import { MockUserResponse } from '../../../../../testing/user.response.mock';
 
 import { MimPreferencesService } from './mim-preferences.service';
 import { MimUserGlobalPreferences } from '@osee/messaging/shared/types';

@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Observable, of } from 'rxjs';
-import { transactionResult } from '../../../../types/change-report/transaction';
+import { transactionResult } from '@osee/shared/types/change-report';
 import { CurrentTransportTypeService } from '../services/ui/current-transport-type.service';
 import { transportType } from '@osee/messaging/shared/types';
 import { transportTypes } from './transport-type.service.mock';

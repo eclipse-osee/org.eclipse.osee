@@ -26,7 +26,7 @@ import {
 	MimQuery,
 } from '@osee/messaging/shared/types';
 import { Observable, of, switchMap, take } from 'rxjs';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeAttributes]',

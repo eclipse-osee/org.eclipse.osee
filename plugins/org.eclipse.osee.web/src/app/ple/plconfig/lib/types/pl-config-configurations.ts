@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from 'src/app/types/change-report/change-report';
-import { NamedIdAndDescription } from '../../../../types/NamedId';
+import { difference } from 'src/app/shared/types/change-report/change-report';
+import { NamedIdAndDescription } from '@osee/shared/types';
 
 export interface configuration {
 	name: string;

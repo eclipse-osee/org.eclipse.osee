@@ -1,4 +1,4 @@
-import { difference } from 'src/app/types/change-report/change-report';
+import { difference } from 'src/app/shared/types/change-report/change-report';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing

@@ -40,15 +40,4 @@ export class DiffReportBranchService {
 			shareReplay({ bufferSize: 1, refCount: true })
 		);
 	}
-
-	get differenceReport() {
-		return this.branchService.id.pipe(
-			take(1),
-			switchMap((id) =>
-				this.differenceService
-					.differenceReport(id)
-					.pipe(shareReplay({ bufferSize: 5, refCount: true }))
-			)
-		);
-	}
 }

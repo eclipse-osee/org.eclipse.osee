@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedId } from '../../../types/NamedId';
+import { NamedId } from '@osee/shared/types';
 
 export interface gridCommanderUser extends NamedId {
 	usersContexts: UsersContext[];

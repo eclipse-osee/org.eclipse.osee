@@ -15,7 +15,7 @@ import { combineLatest, iif, of } from 'rxjs';
 import { share, switchMap } from 'rxjs/operators';
 import { BranchInfoService } from '../../../../ple-services/http/branch-info.service';
 import { BranchUIService } from '../../../../ple-services/ui/branch/branch-ui.service';
-import { BranchCategoryService } from '../../../../shared-services/ui/branch-category.service';
+import { BranchCategoryService } from './branch-category.service';
 
 @Injectable({
 	providedIn: 'root',

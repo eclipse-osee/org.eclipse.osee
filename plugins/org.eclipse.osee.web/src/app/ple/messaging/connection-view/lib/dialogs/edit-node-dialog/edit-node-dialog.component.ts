@@ -16,7 +16,7 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';

@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { BehaviorSubject } from 'rxjs';
-import { connectionDiffsMock } from 'src/app/ple-services/http/difference-report-connections.mock';
-import { elementDiffsMock } from 'src/app/ple-services/http/difference-report-elements.mock';
-import { messageDiffsMock } from 'src/app/ple-services/http/difference-report-messages.mock';
-import { nodeDiffsMock } from 'src/app/ple-services/http/difference-report-nodes.mock';
-import { structureElementDiffsMock } from 'src/app/ple-services/http/difference-report-structures-elements.mock';
-import { structureDiffsMock } from 'src/app/ple-services/http/difference-report-structures.mock';
-import { submessageDiffsMock } from 'src/app/ple-services/http/difference-report-submessages.mock';
-import { differenceReportMock } from 'src/app/ple-services/http/difference-report.mock';
+import { connectionDiffsMock } from './difference-report-connections.mock';
+import { elementDiffsMock } from './difference-report-elements.mock';
+import { messageDiffsMock } from './difference-report-messages.mock';
+import { nodeDiffsMock } from './difference-report-nodes.mock';
+import { structureElementDiffsMock } from './difference-report-structures-elements.mock';
+import { structureDiffsMock } from './difference-report-structures.mock';
+import { submessageDiffsMock } from './difference-report-submessages.mock';
+import { differenceReportMock } from './difference-report.mock';
 import { DiffReportService } from '../services/ui/diff-report.service';
 
 export const DiffReportServiceMock: Partial<DiffReportService> = {

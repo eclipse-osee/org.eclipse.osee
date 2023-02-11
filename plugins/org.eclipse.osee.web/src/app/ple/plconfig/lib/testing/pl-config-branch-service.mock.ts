@@ -11,9 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Observable, of } from 'rxjs';
-import { response } from '../../../../types/responses';
 import { PlConfigBranchService } from '../services/pl-config-branch-service.service';
-import { NamedId } from '../../../../types/NamedId';
+import { NamedId } from '@osee/shared/types';
 import {
 	PlConfigApplicUIBranchMapping,
 	PlConfigApplicUIBranchMappingImpl,
@@ -26,7 +25,7 @@ import {
 	configurationGroup,
 } from '../types/pl-config-configurations';
 import { writeFeature, modifyFeature } from '../types/pl-config-features';
-import { branch } from '../../../../types/branches/branch';
+import { branch, response } from '@osee/shared/types';
 
 export const PlConfigBranchServiceMock: Partial<PlConfigBranchService> = {
 	getBranches: function (type: string): Observable<branch[]> {

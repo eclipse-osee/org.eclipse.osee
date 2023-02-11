@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { map, share, shareReplay, switchMap } from 'rxjs/operators';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { iif, of } from 'rxjs';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';

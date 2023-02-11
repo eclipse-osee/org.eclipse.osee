@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { element, structure } from '@osee/messaging/shared';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector:

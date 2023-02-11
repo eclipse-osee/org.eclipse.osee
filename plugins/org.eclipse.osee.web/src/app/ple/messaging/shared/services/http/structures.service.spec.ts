@@ -22,7 +22,8 @@ import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
 import { structure } from '@osee/messaging/shared/types';
 import { structuresMock3 } from '@osee/messaging/shared/testing';
-import { TransactionBuilderService, relation } from '@osee/shared/transactions';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import { relation } from '@osee/shared/types';
 import {
 	transactionBuilderMock,
 	transactionMock,

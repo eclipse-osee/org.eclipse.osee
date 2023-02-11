@@ -16,8 +16,8 @@ import { apiURL } from 'src/environments/environment';
 import {
 	transactionInfo,
 	transactionResult,
-} from '../../types/change-report/transaction';
-import { transaction } from './transaction';
+} from '@osee/shared/types/change-report';
+import { transaction } from '../types/transaction';
 
 @Injectable({
 	providedIn: 'root',

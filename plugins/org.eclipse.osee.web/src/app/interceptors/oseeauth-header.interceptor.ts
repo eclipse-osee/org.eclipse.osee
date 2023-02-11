@@ -20,7 +20,7 @@ import {
 import { Observable } from 'rxjs';
 import { apiURL, OSEEAuthURL } from 'src/environments/environment';
 import { take } from 'rxjs/operators';
-import { user } from 'src/app/types/user';
+import { user } from '@osee/shared/types/auth';
 import { UserDataAccountService } from '@osee/auth';
 
 @Injectable()

@@ -38,6 +38,18 @@
 			"@osee/shared/matchers": ["src/app/shared/matchers"],
 			"@osee/shared/validators": ["src/app/shared/validators"],
 			"@osee/shared/transactions": ["src/app/shared/transactions"],
+			"@osee/shared/types": ["src/app/shared/types"],
+			"@osee/shared/types/applicability": [
+				"src/app/shared/types/applicability"
+			],
+			"@osee/shared/types/auth": ["src/app/shared/types/auth"],
+			"@osee/shared/types/change-report": [
+				"src/app/shared/types/change-report"
+			],
+			"@osee/shared/types/configuration-management": [
+				"src/app/shared/types/configuration-management"
+			],
+			"@osee/shared/types/constants": ["src/app/shared/types/constants"],
 			"@osee/messaging/shared": ["src/app/ple/messaging/shared"],
 			"@osee/messaging/shared/types": [
 				"src/app/ple/messaging/shared/types"
@@ -80,5 +92,5 @@
 		"strictInputAccessModifiers": true,
 		"strictTemplates": true
 	},
-	"exclude": ["node_modules/cypress"]
+	"exclude": ["node_modules/cypress", "./cypress.config.ts", "cypress"]
 }

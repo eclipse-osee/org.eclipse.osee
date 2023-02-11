@@ -13,10 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
-import {
-	ATTRIBUTETYPEID,
-	ATTRIBUTETYPEIDENUM,
-} from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { transportType } from '@osee/messaging/shared/types';
 
 @Injectable({

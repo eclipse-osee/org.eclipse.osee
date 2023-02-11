@@ -17,7 +17,7 @@ import {
 	enumerationSet,
 	enumeratedPlatformType,
 } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/transactions';
+import { transaction } from '@osee/shared/types';
 import { of, from, combineLatest } from 'rxjs';
 import {
 	share,
@@ -32,7 +32,7 @@ import {
 	filter,
 } from 'rxjs/operators';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { TypesService } from '../http/types.service';
 import { EnumerationUIService } from './enumeration-ui.service';
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { element } from '@osee/messaging/shared/types';
-import { transaction, relation } from '@osee/shared/transactions';
+import { transaction, relation } from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,

@@ -15,8 +15,7 @@ import { Injectable } from '@angular/core';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import { concatMap, reduce, shareReplay, take } from 'rxjs/operators';
 import { environment, OSEEAuthURL } from 'src/environments/environment';
-import { user } from '../types/user';
-import { UserRoles } from '../types/user-roles.';
+import { user, UserRoles } from '@osee/shared/types/auth';
 import { UserHeaderService } from './user-header.service';
 
 @Injectable({

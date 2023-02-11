@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { changeReportRow } from 'src/app/types/change-report/change-report';
+import { changeReportRow } from 'src/app/shared/types/change-report/change-report';
 
 export const changeReportMock: changeReportRow[] = [
 	{

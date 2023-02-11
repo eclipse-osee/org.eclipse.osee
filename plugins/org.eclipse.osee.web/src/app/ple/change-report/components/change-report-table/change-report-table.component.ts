@@ -24,10 +24,13 @@ import {
 	HeaderKeys,
 	HeaderKeysEnum,
 	HeaderService,
-} from 'src/app/ple/messaging/shared/services/ui/header.service';
-import { changeReportRow } from 'src/app/types/change-report/change-report';
+} from '@osee/messaging/shared';
+import { changeReportRow } from '@osee/shared/types/change-report';
 import { ChangeReportService } from '../../services/change-report.service';
 
+/**
+ * @TODO ryan please remove reference to messaging here in some way
+ */
 @Component({
 	selector: 'osee-change-report-table',
 	templateUrl: './change-report-table.component.html',

@@ -15,14 +15,15 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
 import { structure } from '../../types/structure';
-import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEIDENUM,
+	ARTIFACTTYPEIDENUM,
+} from '@osee/shared/types/constants';
 import {
 	TransactionBuilderService,
 	TransactionService,
-	relation,
-	transaction,
 } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

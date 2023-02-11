@@ -25,7 +25,7 @@ import {
 	take,
 } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { transactionResult } from 'src/app/types/change-report/transaction';
+import { transactionResult } from 'src/app/shared/types/change-report/transaction';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 @Injectable({
