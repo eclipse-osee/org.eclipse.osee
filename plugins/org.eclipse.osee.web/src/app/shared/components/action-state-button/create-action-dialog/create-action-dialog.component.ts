@@ -26,11 +26,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { ActionUserService } from '../internal/services/action-user.service';
-import { CreateAction } from '../../../../types/configuration-management/create-action';
-import { targetedVersion } from '../../../../types/configuration-management/targeted-version';
-import { actionableItem } from '../../../../types/configuration-management/actionable-item';
-import { PRIORITY } from '../../../../types/configuration-management/priority.enum';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
+import {
+	actionableItem,
+	targetedVersion,
+	PRIORITY,
+	CreateAction,
+} from '@osee/shared/types/configuration-management';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */

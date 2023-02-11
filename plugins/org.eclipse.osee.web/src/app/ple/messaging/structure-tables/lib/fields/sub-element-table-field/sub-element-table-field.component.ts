@@ -13,7 +13,7 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { EditElementFieldComponent } from '../edit-element-field/edit-element-field.component';
 import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';

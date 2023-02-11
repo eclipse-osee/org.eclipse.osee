@@ -12,14 +12,16 @@
  **********************************************************************/
 import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
-import { applic } from '../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { CurrentStructureService } from '../services/ui/current-structure.service';
 import { platformTypesMock } from './platform-types.response.mock';
 import { structuresMock } from './Structures.mock';
 import { unitsMock } from './unit.response.mock';
 import { messagesMock } from './messages.response.mock';
-import { transactionResult } from '../../../../types/change-report/transaction';
-import { changeInstance } from '../../../../types/change-report/change-report';
+import {
+	changeInstance,
+	transactionResult,
+} from '@osee/shared/types/change-report';
 import {
 	structure,
 	settingsDialogData,
@@ -27,7 +29,7 @@ import {
 	MimQuery,
 	element,
 } from '@osee/messaging/shared/types';
-import { transactionToken } from '@osee/shared/transactions';
+import { transactionToken } from '@osee/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 let sideNavContentPlaceholder = new ReplaySubject<{

@@ -16,14 +16,6 @@ import { ActionService } from 'src/app/ple-services/http/action.service';
 import { actionServiceMock } from 'src/app/ple-services/http/action.service.mock';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
-import { connectionDiffsMock } from 'src/app/ple-services/http/difference-report-connections.mock';
-import { elementDiffsMock } from 'src/app/ple-services/http/difference-report-elements.mock';
-import { messageDiffsMock } from 'src/app/ple-services/http/difference-report-messages.mock';
-import { nodeDiffsMock } from 'src/app/ple-services/http/difference-report-nodes.mock';
-import { structureElementDiffsMock } from 'src/app/ple-services/http/difference-report-structures-elements.mock';
-import { structureDiffsMock } from 'src/app/ple-services/http/difference-report-structures.mock';
-import { submessageDiffsMock } from 'src/app/ple-services/http/difference-report-submessages.mock';
-import { differenceReportMock } from 'src/app/ple-services/http/difference-report.mock';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-report-branch.service.mock';
@@ -32,6 +24,18 @@ import { testBranchActions } from 'src/app/testing/configuration-management.resp
 import { branchSummary } from '../../types/DifferenceReport';
 
 import { DiffReportService } from './diff-report.service';
+import {
+	differenceReportMock,
+	nodeDiffsMock,
+	messageDiffsMock,
+	submessageDiffsMock,
+	structureDiffsMock,
+	elementDiffsMock,
+	structureElementDiffsMock,
+	connectionDiffsMock,
+	CurrentDifferenceReportServiceMock,
+} from '@osee/messaging/shared/testing';
+import { CurrentDiffReportService } from 'src/app/ple/messaging/shared/public-api';
 
 describe('DiffReportService', () => {
 	let service: DiffReportService;
@@ -47,6 +51,10 @@ describe('DiffReportService', () => {
 				},
 				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
 				{ provide: ActionService, useValue: actionServiceMock },
+				{
+					provide: CurrentDiffReportService,
+					useValue: CurrentDifferenceReportServiceMock,
+				},
 			],
 		});
 		service = TestBed.inject(DiffReportService);

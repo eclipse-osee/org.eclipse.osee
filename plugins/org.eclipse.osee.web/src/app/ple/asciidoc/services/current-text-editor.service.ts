@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { transaction, TransactionService } from '@osee/shared/transactions';
+import { TransactionService } from '@osee/shared/transactions';
+import { transaction } from '@osee/shared/types';
 import {
 	combineLatest,
 	distinctUntilChanged,
@@ -23,7 +24,7 @@ import {
 	tap,
 } from 'rxjs';
 import { AttributeService } from 'src/app/ple-services/http/attribute.service';
-import { ATTRIBUTETYPEIDENUM } from '../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { TextEditorUiService } from './text-editor-ui.service';
 
 @Injectable({

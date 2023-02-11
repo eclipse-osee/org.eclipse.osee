@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch } from '../types/branches/branch';
+import { branch } from '@osee/shared/types';
 
 export const testBranchListing: branch[] = [
 	{

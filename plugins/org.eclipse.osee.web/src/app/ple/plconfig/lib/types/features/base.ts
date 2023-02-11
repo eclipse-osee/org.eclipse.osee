@@ -10,12 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from 'src/app/types/change-report/change-report';
+import { difference } from 'src/app/shared/types/change-report/change-report';
 import {
 	ExtendedNameValuePair,
 	ExtendedNameValuePairWithChanges,
 } from '../base-types/ExtendedNameValuePair';
-import { NamedId } from '../../../../../types/NamedId';
 
 export interface feature {
 	name: string;

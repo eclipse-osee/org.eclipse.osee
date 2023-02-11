@@ -36,10 +36,10 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs/operators';
-import { difference } from 'src/app/types/change-report/change-report';
+import { difference } from 'src/app/shared/types/change-report/change-report';
 
 import { HttpLoadingService } from '../../../../../../services/http-loading.service';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { DeleteMessageDialogComponent } from '../../dialogs/delete-message-dialog/delete-message-dialog.component';

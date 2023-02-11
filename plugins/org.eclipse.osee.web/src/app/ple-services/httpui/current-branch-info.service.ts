@@ -21,7 +21,7 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { branch } from '../../types/branches/branch';
+import { branch } from '@osee/shared/types';
 import { BranchInfoService } from '../http/branch-info.service';
 import { UiService } from '../ui/ui.service';
 

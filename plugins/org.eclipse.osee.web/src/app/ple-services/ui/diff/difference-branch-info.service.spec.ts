@@ -15,7 +15,6 @@ import { TestScheduler } from 'rxjs/testing';
 import { BranchInfoService } from '../../http/branch-info.service';
 import { BranchInfoServiceMock } from '../../http/branch-info.service.mock';
 import { changeReportMock } from '../../http/change-report.mock';
-import { differenceReportMock } from '../../http/difference-report.mock';
 import { DifferenceReportService } from '../../http/difference-report.service';
 import { DifferenceReportServiceMock } from '../../http/difference-report.service.mock';
 import { UiService } from '../ui.service';
@@ -58,17 +57,6 @@ describe('DifferenceService', () => {
 			const expectedValues = { a: changeReportMock };
 			const expectedMarble = '(a|)';
 			expectObservable(service.differences('10')).toBe(
-				expectedMarble,
-				expectedValues
-			);
-		});
-	});
-
-	it('should get difference report', () => {
-		scheduler.run(({ expectObservable }) => {
-			const expectedValues = { a: differenceReportMock };
-			const expectedMarble = '(a|)';
-			expectObservable(service.differenceReport('10')).toBe(
 				expectedMarble,
 				expectedValues
 			);

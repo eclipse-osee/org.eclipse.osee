@@ -44,7 +44,7 @@ import {
 	filter,
 	debounceTime,
 } from 'rxjs/operators';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-enum-form',

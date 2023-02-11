@@ -13,10 +13,10 @@
 import {
 	ARTIFACTTYPEID,
 	ARTIFACTTYPEIDENUM,
-} from '../../../../types/constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEIDENUM } from '../../../../types/constants/AttributeTypeId.enum';
+	ATTRIBUTETYPEIDENUM,
+	RelationTypeId,
+} from '@osee/shared/types/constants';
 import { MIMATTRIBUTETYPEID } from './MimAttributes';
-import { RelationTypeId } from '../../../../types/constants/RelationTypeId.enum';
 import { enumerationSet } from './enum';
 import { PlatformType } from './platformType';
 

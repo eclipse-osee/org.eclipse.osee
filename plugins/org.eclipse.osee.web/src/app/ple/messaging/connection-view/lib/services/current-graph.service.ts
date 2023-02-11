@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
 import {
 	concatMap,
 	filter,
@@ -26,17 +26,19 @@ import {
 } from 'rxjs/operators';
 import { GraphService } from './graph.service';
 import { RouteStateService } from './route-state-service.service';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
-import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
+import {
+	ARTIFACTTYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/shared/types/constants';
 import {
 	changeInstance,
 	changeTypeEnum,
 	itemTypeIdRelation,
-} from '../../../../../types/change-report/change-report.d';
+} from '@osee/shared/types/change-report';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
-import { RelationTypeId } from 'src/app/types/constants/RelationTypeId.enum';
+import { RelationTypeId } from 'src/app/shared/types/constants/RelationTypeId.enum';
 import {
 	ApplicabilityListService,
 	connection,
@@ -52,11 +54,7 @@ import {
 	settingsDialogData,
 	transportType,
 } from '@osee/messaging/shared';
-import {
-	transactionToken,
-	relation,
-	transaction,
-} from '@osee/shared/transactions';
+import { relation, transaction, transactionToken } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

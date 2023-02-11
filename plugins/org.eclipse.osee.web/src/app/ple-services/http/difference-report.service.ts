@@ -12,8 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DifferenceReport } from 'src/app/ple/messaging/shared/types/DifferenceReport';
-import { changeInstance } from 'src/app/types/change-report/change-report';
+import { changeInstance } from '@osee/shared/types/change-report';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
@@ -25,15 +24,6 @@ export class DifferenceReportService {
 	getDifferences(fromBranchId: string | number, toBranchId: string | number) {
 		return this.http.get<changeInstance[]>(
 			apiURL + '/orcs/branches/' + toBranchId + '/diff/' + fromBranchId
-		);
-	}
-
-	getDifferenceReport(
-		fromBranchId: string | number,
-		toBranchId: string | number
-	) {
-		return this.http.get<DifferenceReport>(
-			apiURL + '/mim/branch/' + toBranchId + '/diff/' + fromBranchId
 		);
 	}
 }

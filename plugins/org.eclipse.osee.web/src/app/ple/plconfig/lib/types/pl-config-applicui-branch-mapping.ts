@@ -10,17 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedIdAndDescription } from '../../../../types/NamedId';
-import { difference } from 'src/app/types/change-report/change-report';
-import { NamedId } from '../../../../types/NamedId';
+import { NamedIdAndDescription } from '@osee/shared/types';
+import { difference } from 'src/app/shared/types/change-report/change-report';
 import { showable } from './base-types/showable';
 import { extendedFeature, extendedFeatureWithChanges } from './features/base';
 import {
 	configGroup,
 	configGroupWithChanges,
-	configurationGroup,
 } from './pl-config-configurations';
-import { branchInfo } from '../../../../types/branches/branch';
+import { branchInfo } from '@osee/shared/types';
 
 export interface PlConfigApplicUIBranchMapping {
 	associatedArtifactId: string;

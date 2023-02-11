@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpMethods } from 'src/app/types/http-methods';
+import { HttpMethods } from '@osee/shared/types';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({

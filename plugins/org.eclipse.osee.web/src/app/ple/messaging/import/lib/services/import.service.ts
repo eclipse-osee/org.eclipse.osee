@@ -51,7 +51,8 @@ import {
 	TypesService,
 } from '@osee/messaging/shared';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
-import { transaction, TransactionService } from '@osee/shared/transactions';
+import { TransactionService } from '@osee/shared/transactions';
+import { transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

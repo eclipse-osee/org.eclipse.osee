@@ -10,6 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedIdAndDescription } from '../../../../types/NamedId';
+import { NamedIdAndDescription } from '@osee/shared/types';
 
 export interface cfgGroup extends NamedIdAndDescription {}

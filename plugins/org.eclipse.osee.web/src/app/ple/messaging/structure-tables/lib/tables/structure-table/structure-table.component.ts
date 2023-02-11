@@ -40,8 +40,8 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
-import { applic } from '../../../../../../types/applicability/applic';
-import { difference } from '../../../../../../types/change-report/change-report';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpLoadingService } from '../../../../../../services/http-loading.service';

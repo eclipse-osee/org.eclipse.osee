@@ -28,14 +28,16 @@ import { ActionService } from '../../../../../ple-services/http/action.service';
 import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
 import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
-import { teamWorkflowImpl } from '../../../../../types/configuration-management/team-workflow';
-import { CreateAction } from '../../../../../types/configuration-management/create-action';
-import { CreateNewAction } from '../../../../../types/configuration-management/create-new-action';
-import { transitionAction } from '../../../../../types/configuration-management/transition-action';
-import { actionImpl } from '../../../../../types/configuration-management/action';
-import { BranchCategoryService } from '../../../../../shared-services/ui/branch-category.service';
+import { BranchCategoryService } from '../../../internal/services/branch-category.service';
 import { UserDataAccountService } from '@osee/auth';
 import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
+import {
+	actionImpl,
+	teamWorkflowImpl,
+	transitionAction,
+	CreateAction,
+	CreateNewAction,
+} from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',

@@ -17,7 +17,6 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from 'src/environments/environment';
 import { changeReportMock } from './change-report.mock';
-import { differenceReportMock } from './difference-report.mock';
 
 import { DifferenceReportService } from './difference-report.service';
 
@@ -45,17 +44,6 @@ describe('DifferenceReportService', () => {
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(testInfo);
-		httpTestingController.verify();
-	});
-
-	it('should get difference report', () => {
-		const testReport = differenceReportMock;
-		service.getDifferenceReport('20', '10').subscribe();
-		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/' + 10 + '/diff/' + 20
-		);
-		expect(req.request.method).toEqual('GET');
-		req.flush(testReport);
 		httpTestingController.verify();
 	});
 });

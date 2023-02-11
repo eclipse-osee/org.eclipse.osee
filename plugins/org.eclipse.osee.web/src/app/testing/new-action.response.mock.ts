@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { newActionResponse } from '../types/configuration-management/new-action-response';
+import { newActionResponse } from '@osee/shared/types/configuration-management';
 import { MockXResultData } from './XResultData.response.mock';
-import { branch } from 'src/app/types/branches/branch';
+import { branch } from '@osee/shared/types';
 
 const BranchListingBranch: branch = {
 	name: 'name',

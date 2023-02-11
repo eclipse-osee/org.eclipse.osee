@@ -16,7 +16,7 @@ import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { plCurrentBranchServiceMock } from '../testing/mockPlCurrentBranchService.mock';
 import { MockXResultData } from '../../../../testing/XResultData.response.mock';
-import { response } from '../../../../types/responses';
+import { response } from '@osee/shared/types';
 import { CfgGroupDialog } from '../types/pl-config-cfggroups';
 import { PLEditConfigData } from '../types/pl-edit-config-data';
 

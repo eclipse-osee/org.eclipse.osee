@@ -1,5 +1,4 @@
-import { difference } from 'src/app/types/change-report/change-report';
-import { applic } from '../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -13,7 +12,7 @@ import { applic } from '../../../../types/applicability/applic';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { hasChanges } from '../../../../types/change-report/changes';
+import { hasChanges } from '@osee/shared/types/change-report';
 export interface element {
 	[index: string]: any;
 	id: string;

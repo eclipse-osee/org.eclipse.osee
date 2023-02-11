@@ -16,7 +16,7 @@ import { logicalTypeMock } from './logical-type.response.mock';
 import { logicalTypeFormDetailMock } from './logical-type-form-detail.response.mock';
 import { platformTypes1 } from './platform-types.response.mock';
 import { PlatformType } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/transactions';
+import { transaction } from '@osee/shared/types';
 import {
 	transactionResultMock,
 	transactionMock,

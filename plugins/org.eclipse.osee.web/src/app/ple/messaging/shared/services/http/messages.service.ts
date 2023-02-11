@@ -18,13 +18,12 @@ import { message } from '../../types/messages';
 import { connection } from '../../types/connection';
 import { ConnectionNode } from '../../types/connection-nodes';
 import { map } from 'rxjs/operators';
-import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {
 	TransactionBuilderService,
 	TransactionService,
-	relation,
-	transaction,
 } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

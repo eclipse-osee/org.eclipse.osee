@@ -25,7 +25,7 @@ import {
 	PlatformType,
 } from '@osee/messaging/shared/types';
 import { debounceTime, map, Observable, of, switchMap, take } from 'rxjs';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeName]',

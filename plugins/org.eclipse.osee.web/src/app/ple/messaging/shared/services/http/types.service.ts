@@ -16,14 +16,15 @@ import { Observable, of } from 'rxjs';
 import { apiURL } from '../../../../../../environments/environment';
 import { logicalType, logicalTypeFormDetail } from '../../types/logicaltype';
 import { PlatformType } from '../../types/platformType';
-import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
+import {
+	ATTRIBUTETYPEIDENUM,
+	ARTIFACTTYPEIDENUM,
+} from '@osee/shared/types/constants';
 import {
 	TransactionBuilderService,
 	TransactionService,
-	relation,
-	transaction,
 } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { ScrollToTopButtonComponent } from '../../../../../../shared/components/scroll-to-top-button/scroll-to-top-button.component';
+import { ScrollToTopButtonComponent } from '@osee/shared/components';
 import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { NodeDiffsComponent } from '../../diffs/node-diffs/node-diffs.component';

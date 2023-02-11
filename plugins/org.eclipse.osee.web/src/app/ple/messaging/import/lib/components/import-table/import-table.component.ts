@@ -16,7 +16,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { applic } from 'src/app/types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import {
 	HeaderKeys,
 	HeaderKeysEnum,

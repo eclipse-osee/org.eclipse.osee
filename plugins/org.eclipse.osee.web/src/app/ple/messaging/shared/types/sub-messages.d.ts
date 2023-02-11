@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from 'src/app/types/change-report/change-report';
-import { applic } from '../../../../types/applicability/applic';
+import { difference } from 'src/app/shared/types/change-report/change-report';
+import { applic } from '@osee/shared/types/applicability';
 
 export interface subMessage {
 	id?: string;

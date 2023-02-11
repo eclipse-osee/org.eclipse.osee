@@ -35,15 +35,17 @@ import {
 	reduce,
 	take,
 } from 'rxjs';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import {
 	changeInstance,
 	changeTypeNumber,
 	ModificationType,
 	ignoreType,
-} from '../../../../../types/change-report/change-report.d';
-import { ATTRIBUTETYPEIDENUM } from '../../../../../types/constants/AttributeTypeId.enum';
-import { RelationTypeId } from '../../../../../types/constants/RelationTypeId.enum';
+} from '@osee/shared/types/change-report';
+import {
+	ATTRIBUTETYPEIDENUM,
+	RelationTypeId,
+} from '@osee/shared/types/constants';
 import { CurrentStructureService } from './current-structure.service';
 
 @Injectable({

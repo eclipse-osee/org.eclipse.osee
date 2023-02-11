@@ -12,8 +12,10 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { ActionService } from './action.service';
-import { CreateNewActionInterface } from '../../types/configuration-management/create-new-action';
-import { transitionAction } from '../../types/configuration-management/transition-action';
+import {
+	CreateNewActionInterface,
+	transitionAction,
+} from '@osee/shared/types/configuration-management';
 import {
 	testARB,
 	testBranchActions,

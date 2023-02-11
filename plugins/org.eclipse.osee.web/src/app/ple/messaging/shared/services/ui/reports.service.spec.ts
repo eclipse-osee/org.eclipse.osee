@@ -15,8 +15,8 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { mimReportsMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { mimReportsMock } from 'src/app/ple-services/http/mim-reports.mock';
 import { apiURL } from 'src/environments/environment';
 
 import { ReportsService } from './reports.service';

@@ -28,8 +28,8 @@ import {
 	actionStateButtonServiceMockCommit,
 } from '../internal/services/action-state-button.service.mock';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { CreateAction } from '../../../../types/configuration-management/create-action';
-import { MockUserResponse } from '../../../../testing/user/user.response.mock';
+import { CreateAction } from '@osee/shared/types/configuration-management';
+import { MockUserResponse } from '../../../../testing/user.response.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { MockActionUserService } from '../internal/services/action-user.service.mock';

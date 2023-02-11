@@ -16,7 +16,8 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { elementsMock } from '@osee/messaging/shared/testing';
-import { TransactionBuilderService, relation } from '@osee/shared/transactions';
+import { TransactionBuilderService } from '@osee/shared/transactions';
+import { relation } from '@osee/shared/types';
 import {
 	transactionBuilderMock,
 	transactionMock,

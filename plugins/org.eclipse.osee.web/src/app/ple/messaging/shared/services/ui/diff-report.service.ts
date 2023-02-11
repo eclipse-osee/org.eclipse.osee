@@ -26,11 +26,10 @@ import {
 	changeInstance,
 	changeTypeNumber,
 	ModificationType,
-} from 'src/app/types/change-report/change-report.d';
+} from '@osee/shared/types/change-report';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
-import { ATTRIBUTETYPEIDENUM } from 'src/app/types/constants/AttributeTypeId.enum';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { ActionService } from 'src/app/ple-services/http/action.service';
-import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import {
 	branchSummary,
@@ -50,13 +49,14 @@ import {
 	diffItem,
 	enumDiffItem,
 } from '@osee/messaging/shared/types';
+import { CurrentDiffReportService } from './current-diff-report.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class DiffReportService {
 	constructor(
-		private diffService: DiffReportBranchService,
+		private diffService: CurrentDiffReportService,
 		private uiService: BranchUIService,
 		private branchInfoService: BranchInfoService,
 		private actionService: ActionService

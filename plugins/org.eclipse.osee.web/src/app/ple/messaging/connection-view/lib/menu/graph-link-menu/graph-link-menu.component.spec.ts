@@ -26,7 +26,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { difference } from '../../../../../../types/change-report/change-report';
+import { difference } from '@osee/shared/types/change-report';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 

@@ -15,7 +15,7 @@ import {
 	createArtifact,
 	relation,
 	transaction,
-} from '../transaction';
+} from '../../types/transaction';
 import { TransactionBuilderService } from '../transaction-builder.service';
 import { transactionMock } from './transaction.mock';
 

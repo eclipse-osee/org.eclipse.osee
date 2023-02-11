@@ -24,9 +24,8 @@ import {
 	editConfiguration,
 } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { response } from '../../../../types/responses';
-import { NamedId } from '../../../../types/NamedId';
-import { branch } from '../../../../types/branches/branch';
+import { response } from '@osee/shared/types';
+import { NamedId, branch } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

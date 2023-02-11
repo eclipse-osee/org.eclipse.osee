@@ -10,8 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { FileExtensions, ProducesMediaType } from 'src/app/types/files';
-import { HttpMethods } from 'src/app/types/http-methods';
+import {
+	HttpMethods,
+	FileExtensions,
+	ProducesMediaType,
+} from '@osee/shared/types';
 
 export interface MimReport {
 	id: string;

@@ -31,7 +31,7 @@ import {
 	NodeService,
 } from '@osee/messaging/shared';
 import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
-import { relation, transaction } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,

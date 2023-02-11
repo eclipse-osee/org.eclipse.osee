@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { createArtifact } from '@osee/shared/transactions';
+import { createArtifact } from '@osee/shared/types';
 import { OpenUrlFormService } from '../../../../services/create-command-form-services/open-url-form.service';
 import {
 	commandObject,

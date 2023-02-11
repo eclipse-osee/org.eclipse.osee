@@ -11,6 +11,5 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-export * from './transaction.d';
 export * from './transaction-builder.service';
 export * from './transaction.service';

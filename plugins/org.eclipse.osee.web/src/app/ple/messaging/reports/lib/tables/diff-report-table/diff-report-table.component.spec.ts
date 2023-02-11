@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { DiffHeaderType } from '@osee/messaging/shared';
 import { TestScheduler } from 'rxjs/testing';
-import { connectionDiffsMock } from 'src/app/ple-services/http/difference-report-connections.mock';
+import { connectionDiffsMock } from '@osee/messaging/shared/testing';
 
 import { DiffReportTableComponent } from './diff-report-table.component';
 

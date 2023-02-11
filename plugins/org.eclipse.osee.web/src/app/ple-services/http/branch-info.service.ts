@@ -14,8 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { iif } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { commitResponse, response } from '../../types/responses';
-import { branch } from '../../types/branches/branch';
+import { branch, commitResponse, response } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

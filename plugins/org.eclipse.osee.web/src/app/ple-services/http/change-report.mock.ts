@@ -17,8 +17,8 @@ import {
 	changeTypeNumber,
 	ignoreType,
 	ModificationType,
-} from '../../types/change-report/change-report';
-import { RelationTypeId } from '../../types/constants/RelationTypeId.enum';
+} from '@osee/shared/types/change-report';
+import { RelationTypeId } from '@osee/shared/types/constants';
 
 export const changeReportMock: changeInstance[] = [
 	{

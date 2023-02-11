@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 import { EnumSetUniqueDescriptionDirective } from '@osee/messaging/shared/directives';
 import { enumeration, enumerationSet } from '@osee/messaging/shared/types';

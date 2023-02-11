@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { user } from 'src/app/types/user';
+import { user } from '@osee/shared/types/auth';
 import { apiURL } from 'src/environments/environment';
 import { element } from '../../types/element';
 import { structure } from '../../types/structure';
@@ -22,12 +22,10 @@ import {
 	MimPreferences,
 	MimUserGlobalPreferences,
 } from '../../types/mim.preferences';
-import { ARTIFACTTYPEIDENUM } from '../../../../../types/constants/ArtifactTypeId.enum';
-import {
-	TransactionService,
-	transaction,
-	attributeType,
-} from '@osee/shared/transactions';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+
+import { TransactionService } from '@osee/shared/transactions';
+import { attributeType, transaction } from '@osee/shared/types';
 @Injectable({
 	providedIn: 'root',
 })

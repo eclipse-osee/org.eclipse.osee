@@ -12,9 +12,9 @@
  **********************************************************************/
 import { of, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { CurrentGraphService } from '../services/current-graph.service';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
-import { changeInstance } from '../../../../../types/change-report/change-report';
+import { changeInstance } from '@osee/shared/types/change-report';
 import { node, connection, settingsDialogData } from '@osee/messaging/shared';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { MimPreferencesMock } from '@osee/messaging/shared/testing';

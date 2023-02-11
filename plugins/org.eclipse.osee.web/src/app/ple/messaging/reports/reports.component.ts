@@ -15,7 +15,7 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { from, iif, of } from 'rxjs';
 import { filter, scan, startWith, switchMap, tap } from 'rxjs/operators';
-import { applic } from 'src/app/types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import {
 	ApplicabilityListService,
 	connection,

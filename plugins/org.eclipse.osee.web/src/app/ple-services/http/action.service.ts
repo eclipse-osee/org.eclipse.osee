@@ -10,20 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { user } from 'src/app/types/user';
+import { user } from '@osee/shared/types/auth';
 import { apiURL } from 'src/environments/environment';
-import { NamedId } from '../../types/NamedId';
-import { newActionResponse } from '../../types/configuration-management/new-action-response';
-import { teamWorkflow } from '../../types/configuration-management/team-workflow';
-import { CreateNewActionInterface } from '../../types/configuration-management/create-new-action';
-import { targetedVersion } from '../../types/configuration-management/targeted-version';
-import { transitionAction } from '../../types/configuration-management/transition-action';
-import { action } from '../../types/configuration-management/action';
-import { actionableItem } from '../../types/configuration-management/actionable-item';
-import { response, transitionResponse } from '../../types/responses';
+import { NamedId, response, transitionResponse } from '@osee/shared/types';
+import {
+	actionableItem,
+	teamWorkflow,
+	action,
+	transitionAction,
+	targetedVersion,
+	CreateNewActionInterface,
+	newActionResponse,
+} from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',

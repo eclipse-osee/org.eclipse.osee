@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { user } from 'src/app/types/user';
-import { action } from '../../../types/configuration-management/action';
+import { user } from '@osee/shared/types/auth';
+import { action } from '@osee/shared/types/configuration-management';
 
 //used in action dropdown
 export interface TransitionActionDialogData {

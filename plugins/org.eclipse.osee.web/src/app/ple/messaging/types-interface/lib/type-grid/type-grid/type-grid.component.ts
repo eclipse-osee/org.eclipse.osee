@@ -25,7 +25,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, OperatorFunction, Subject } from 'rxjs';
 import { switchMap, filter, takeUntil } from 'rxjs/operators';
-import { applic } from '../../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';

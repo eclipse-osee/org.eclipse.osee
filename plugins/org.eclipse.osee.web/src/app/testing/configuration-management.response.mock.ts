@@ -10,11 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { teamWorkflow } from '../types/configuration-management/team-workflow';
-import { targetedVersion } from '../types/configuration-management/targeted-version';
-import { transitionAction } from '../types/configuration-management/transition-action';
-import { action } from '../types/configuration-management/action';
-import { commitResponse, transitionResponse } from '../types/responses';
+import {
+	action,
+	transitionAction,
+	teamWorkflow,
+	targetedVersion,
+} from '@osee/shared/types/configuration-management';
+import { commitResponse, transitionResponse } from '@osee/shared/types';
 import { MockXResultData } from './XResultData.response.mock';
 
 export const testBranchActions: action[] = [

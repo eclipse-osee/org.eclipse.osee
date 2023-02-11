@@ -40,7 +40,7 @@ import {
 	Subject,
 } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { applic } from '../../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { EnumFormComponent } from '../enum-form/enum-form.component';
 
 @Component({

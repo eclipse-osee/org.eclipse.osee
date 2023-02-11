@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '../../../../types/applicability/applic';
-import { enumeration, enumerationSet } from '../../shared/types/enum';
+import { applic } from '@osee/shared/types/applicability';
+import { enumeration, enumerationSet } from './enum';
 import { PlatformType } from './platformType';
 
 export interface newTypeDialogData {

@@ -11,15 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { ARTIFACTTYPEIDENUM } from '../../../../types/constants/ArtifactTypeId.enum';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { executedCommandHistory } from '../../../types/grid-commander-types/userHistory';
 import { of } from 'rxjs';
 import {
-	TransactionService,
 	TransactionBuilderService,
-	transaction,
-	relation,
+	TransactionService,
 } from '@osee/shared/transactions';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

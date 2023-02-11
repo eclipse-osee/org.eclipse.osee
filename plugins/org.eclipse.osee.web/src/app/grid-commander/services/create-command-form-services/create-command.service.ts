@@ -21,7 +21,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { createArtifact } from '@osee/shared/transactions';
+import { createArtifact } from '@osee/shared/types';
 import { CreateCommandandAndRelationsService } from '../create-command-artifact-and-relations/create-command-and-relations.service';
 import { SelectedCommandDataService } from '../data-services/selected-command-data/selected-command-data.service';
 import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.service';

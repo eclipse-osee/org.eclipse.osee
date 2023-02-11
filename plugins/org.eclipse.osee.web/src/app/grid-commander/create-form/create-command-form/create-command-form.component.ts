@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { take } from 'rxjs';
-import { createArtifact } from '@osee/shared/transactions';
+import { createArtifact } from '@osee/shared/types';
 import { ParameterTypesModule } from '../../parameter-types/parameter-types.module';
 import { CreateCommandWithParameterArtifactService } from '../../services/create-command-form-services/create-command-with-parameter-artifact.service';
 import { CreateCommandService } from '../../services/create-command-form-services/create-command.service';

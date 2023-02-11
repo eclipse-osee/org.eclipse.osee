@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { createArtifact } from '@osee/shared/transactions';
+import { createArtifact } from '@osee/shared/types';
 import {
 	commandObject,
 	parameterObject,

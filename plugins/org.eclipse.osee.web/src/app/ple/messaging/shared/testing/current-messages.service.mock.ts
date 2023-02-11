@@ -12,7 +12,7 @@
  **********************************************************************/
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
-import { applic } from '../../../../types/applicability/applic';
+import { applic } from '@osee/shared/types/applicability';
 import { CurrentMessagesService } from '../services/ui/current-messages.service';
 import {
 	message,
@@ -20,7 +20,7 @@ import {
 	settingsDialogData,
 	subMessage,
 } from '@osee/messaging/shared/types';
-import { transactionToken } from '@osee/shared/transactions';
+import { transactionToken } from '@osee/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 let sideNavContentPlaceholder = new ReplaySubject<{

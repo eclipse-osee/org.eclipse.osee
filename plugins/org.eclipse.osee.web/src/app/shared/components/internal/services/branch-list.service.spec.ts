@@ -16,11 +16,11 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '../../../../../environments/environment';
-import { messageBranch } from '../../../../ple/messaging/shared/types/branches';
 
 import { BranchListService } from './branch-list.service';
-import { BranchCategoryService } from '../../../../shared-services/ui/branch-category.service';
+import { BranchCategoryService } from './branch-category.service';
 import { UiService } from '../../../../ple-services/ui/ui.service';
+import { branch } from '@osee/shared/types';
 
 describe('BranchListService', () => {
 	let service: BranchListService;
@@ -42,7 +42,7 @@ describe('BranchListService', () => {
 	describe('Core Functionality', () => {
 		describe('branches observable', () => {
 			it('should call for baseline branches when set to product line', () => {
-				let testData: messageBranch[] = [];
+				let testData: branch[] = [];
 				routeService.typeValue = 'product line';
 				categoryService.category = '3';
 				service.branches.subscribe();
@@ -55,7 +55,7 @@ describe('BranchListService', () => {
 			});
 
 			it('should call for working branches when set to working', () => {
-				let testData: messageBranch[] = [];
+				let testData: branch[] = [];
 				routeService.typeValue = 'working';
 				categoryService.category = '3';
 				service.branches.subscribe();

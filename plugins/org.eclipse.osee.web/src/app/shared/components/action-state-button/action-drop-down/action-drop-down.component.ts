@@ -14,7 +14,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
-import { CreateAction } from '../../../../types/configuration-management/create-action';
+import { CreateAction } from '@osee/shared/types/configuration-management';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { AsyncPipe, NgIf } from '@angular/common';

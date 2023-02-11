@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { MockUserResponse } from '../testing/user/user.response.mock';
-import { UserRoles } from '../types/user-roles.';
+import { MockUserResponse } from '../testing/user.response.mock';
+import { UserRoles } from '@osee/shared/types/auth';
 import { UserDataAccountService } from './user-data-account.service';
 
 export const userDataAccountServiceMock: Partial<UserDataAccountService> = {

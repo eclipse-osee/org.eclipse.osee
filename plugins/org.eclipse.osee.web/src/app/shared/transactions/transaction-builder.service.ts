@@ -18,7 +18,7 @@ import {
 	modifyArtifact,
 	transaction,
 	relation,
-} from './transaction';
+} from '../types/transaction';
 import { TransactionTranslations } from './transactions.translations';
 
 @Injectable({

@@ -15,7 +15,7 @@ import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
-import { changeInstance } from 'src/app/types/change-report/change-report';
+import { changeInstance } from '@osee/shared/types/change-report';
 
 @Injectable({
 	providedIn: 'root',

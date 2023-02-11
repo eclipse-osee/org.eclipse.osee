@@ -14,7 +14,6 @@ import { TestBed } from '@angular/core/testing';
 import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 import { changeReportMock } from '../../http/change-report.mock';
-import { differenceReportMock } from '../../http/difference-report.mock';
 import { BranchUIService } from '../branch/branch-ui.service';
 
 import { DiffReportBranchService } from './diff-report-branch.service';
@@ -58,20 +57,6 @@ describe('DiffReportBranchService', () => {
 			const expectedValues = { a: changeReportMock };
 			const expectedMarble = '(a|)';
 			expectObservable(service.differences).toBe(
-				expectedMarble,
-				expectedValues
-			);
-		});
-	});
-
-	it('should get a difference report', () => {
-		scheduler.run(({ expectObservable, cold }) => {
-			const makeemissions = cold('-a|', { a: '10' }).pipe(
-				tap((t) => (branchService.idValue = t))
-			);
-			const expectedValues = { a: differenceReportMock };
-			const expectedMarble = '(a|)';
-			expectObservable(service.differenceReport).toBe(
 				expectedMarble,
 				expectedValues
 			);

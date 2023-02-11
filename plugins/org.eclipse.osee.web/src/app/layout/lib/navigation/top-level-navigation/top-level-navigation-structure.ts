@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { UserRoles } from 'src/app/types/user-roles.';
+import { UserRoles } from 'src/app/shared/types/auth/user-roles';
 
 // Adding element(s) requires:
 // - Defining the element(s) in this file

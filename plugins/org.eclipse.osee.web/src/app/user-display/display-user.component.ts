@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { user } from '../types/user';
+import { user } from '@osee/shared/types/auth';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	animate,

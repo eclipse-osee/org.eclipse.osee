@@ -13,8 +13,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { transactionToken } from '@osee/shared/transactions';
-import { applic } from 'src/app/types/applicability/applic';
+import { transactionToken } from '@osee/shared/types';
+import { applic } from '@osee/shared/types/applicability';
 
 @Injectable({
 	providedIn: 'root',
