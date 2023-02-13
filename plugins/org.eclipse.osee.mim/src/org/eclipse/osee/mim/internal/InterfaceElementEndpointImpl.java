@@ -16,7 +16,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
@@ -26,14 +25,12 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
  */
 public class InterfaceElementEndpointImpl implements InterfaceElementEndpoint {
    private final BranchId branch;
-   private final UserId account;
    private final ArtifactId messageId;
    private final ArtifactId subMessageId;
    private final ArtifactId structureId;
    private final InterfaceElementApi elementApi;
 
-   public InterfaceElementEndpointImpl(BranchId branch, UserId account, ArtifactId messageId, ArtifactId subMessageId, ArtifactId structureId, InterfaceElementApi interfaceElementApi) {
-      this.account = account;
+   public InterfaceElementEndpointImpl(BranchId branch, ArtifactId messageId, ArtifactId subMessageId, ArtifactId structureId, InterfaceElementApi interfaceElementApi) {
       this.branch = branch;
       this.messageId = messageId;
       this.subMessageId = subMessageId;

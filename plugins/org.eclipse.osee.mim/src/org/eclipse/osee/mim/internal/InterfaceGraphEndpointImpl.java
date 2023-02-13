@@ -16,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
@@ -32,12 +31,10 @@ import org.eclipse.osee.mim.types.NodeView;
 public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final InterfaceNodeViewApi interfaceNodeApi;
    private final InterfaceConnectionViewApi interfaceConnectionApi;
 
-   public InterfaceGraphEndpointImpl(BranchId branch, UserId account, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi) {
-      this.account = account;
+   public InterfaceGraphEndpointImpl(BranchId branch, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi) {
       this.branch = branch;
       this.interfaceNodeApi = interfaceNodeApi;
       this.interfaceConnectionApi = interfaceConnectionViewApi;

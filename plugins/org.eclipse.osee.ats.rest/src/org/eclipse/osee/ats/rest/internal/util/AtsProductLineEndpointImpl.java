@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import javax.ws.rs.HeaderParam;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -29,7 +28,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -45,9 +43,6 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
 
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
-
-   @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
-   private UserId accountId;
 
    public AtsProductLineEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -106,10 +101,12 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Plarb approval user");
       Date resultDate = new Date(System.currentTimeMillis());
-      if (accountId == null) {
+
+      UserId account = orcsApi.userService().getUser();
+      if (account.isInvalid()) {
          rd.error("Account Id not passed properly.  See Admin for help.");
       }
-      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ProductLineApprovedBy, accountId);
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ProductLineApprovedBy, account.getIdString());
       changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ProductLineApprovedDate, resultDate);
       changes.execute();
       return rd;

@@ -16,7 +16,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
@@ -31,13 +30,11 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearchEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final InterfaceElementApi elementApi;
    private final InterfaceElementArrayApi elementArrayApi;
    private final InterfacePlatformTypeApi platformApi;
 
-   public InterfaceElementSearchEndpointImpl(BranchId branch, UserId account, InterfaceElementApi interfaceElementApi, InterfaceElementArrayApi interfaceElementArrayApi, InterfacePlatformTypeApi interfacePlatformTypeApi) {
-      this.account = account;
+   public InterfaceElementSearchEndpointImpl(BranchId branch, InterfaceElementApi interfaceElementApi, InterfaceElementArrayApi interfaceElementArrayApi, InterfacePlatformTypeApi interfacePlatformTypeApi) {
       this.branch = branch;
       this.elementApi = interfaceElementApi;
       this.elementArrayApi = interfaceElementArrayApi;

@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
@@ -37,13 +36,11 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
 public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final InterfacePlatformTypeApi platformApi;
    private final InterfaceEnumerationSetApi enumSetApi;
    private final InterfaceEnumerationApi enumApi;
 
-   public PlatformTypesEndpointImpl(BranchId branch, UserId account, InterfacePlatformTypeApi api, InterfaceEnumerationSetApi enumSetApi, InterfaceEnumerationApi enumApi) {
-      this.account = account;
+   public PlatformTypesEndpointImpl(BranchId branch, InterfacePlatformTypeApi api, InterfaceEnumerationSetApi enumSetApi, InterfaceEnumerationApi enumApi) {
       this.branch = branch;
       this.platformApi = api;
       this.enumSetApi = enumSetApi;
