@@ -15,13 +15,10 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.util.concurrent.Callable;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.orcs.OrcsAdmin;
@@ -39,9 +36,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    private final ActivityLog activityLog;
    private final OrcsAdmin adminOps;
    private final UserService userService;
-
-   @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
-   private UserId accountId;
 
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.activityLog = activityLog;

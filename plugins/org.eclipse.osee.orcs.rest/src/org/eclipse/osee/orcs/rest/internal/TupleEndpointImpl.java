@@ -40,10 +40,10 @@ public class TupleEndpointImpl implements TupleEndpoint {
    private final BranchId branch;
    private final UserId account;
 
-   public TupleEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId account) {
+   public TupleEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
       this.branch = branch;
-      this.account = account;
+      this.account = orcsApi.userService().getUser();
    }
 
    @Override

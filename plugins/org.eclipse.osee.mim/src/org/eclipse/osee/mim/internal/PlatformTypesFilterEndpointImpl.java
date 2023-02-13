@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
@@ -35,11 +34,9 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
 public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final InterfacePlatformTypeApi platformApi;
 
-   public PlatformTypesFilterEndpointImpl(BranchId branch, UserId account, InterfacePlatformTypeApi interfacePlatformTypeApi) {
-      this.account = account;
+   public PlatformTypesFilterEndpointImpl(BranchId branch, InterfacePlatformTypeApi interfacePlatformTypeApi) {
       this.branch = branch;
       this.platformApi = interfacePlatformTypeApi;
    }

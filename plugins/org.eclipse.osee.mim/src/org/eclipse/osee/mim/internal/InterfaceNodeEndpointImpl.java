@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
@@ -32,12 +31,10 @@ import org.eclipse.osee.mim.types.InterfaceNode;
 public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
 
    private final BranchId branch;
-   private final UserId account;
    private final InterfaceNodeViewApi interfaceNodeApi;
    private final InterfaceConnectionViewApi interfaceConnectionApi;
 
-   public InterfaceNodeEndpointImpl(BranchId branch, UserId account, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi) {
-      this.account = account;
+   public InterfaceNodeEndpointImpl(BranchId branch, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi) {
       this.branch = branch;
       this.interfaceNodeApi = interfaceNodeApi;
       this.interfaceConnectionApi = interfaceConnectionViewApi; //leaving this in here in case it's needed at a future date

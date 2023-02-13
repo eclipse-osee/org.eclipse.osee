@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.orcs.rest.internal;
 
-import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -76,8 +73,8 @@ public class BranchesResource {
    }
 
    @Path("{branch}/tuple")
-   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
-      return new TupleEndpointImpl(orcsApi, branch, accountId);
+   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch) {
+      return new TupleEndpointImpl(orcsApi, branch);
    }
 
    @Path("{branch}/applic")
