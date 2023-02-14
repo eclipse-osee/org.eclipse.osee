@@ -43,10 +43,9 @@ export class OSEEAuthHeaderInterceptor implements HttpInterceptor {
 			request.url !== OSEEAuthURL
 		) {
 			request = request.clone({
-				headers: request.headers.set(
-					'osee.account.id',
-					this.currentUser?.id || ''
-				),
+				headers: request.headers
+					.set('osee.account.id', this.currentUser?.id || '')
+					.set('Authorization', this.currentUser?.id || ''),
 			});
 		}
 		return next.handle(request);
