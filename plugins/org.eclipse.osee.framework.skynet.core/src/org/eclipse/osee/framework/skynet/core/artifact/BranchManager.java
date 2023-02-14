@@ -750,7 +750,12 @@ public final class BranchManager {
 
    public static String getArchivedStr(BranchId branchId) {
       Branch branch = getAndCheck(branchId);
-      return BranchArchivedState.fromBoolean(branch.isArchived()).getName();
+      if (branch == null || branch.isInvalid()) {
+         return "";
+      } else if (branch.getBranchState() != BranchState.COMMITTED) {
+         return "UnCommitted";
+      }
+      return branch.isArchived() ? "Archived" : "UnArchived";
    }
 
    public static boolean hasChildren(BranchId branchId) {

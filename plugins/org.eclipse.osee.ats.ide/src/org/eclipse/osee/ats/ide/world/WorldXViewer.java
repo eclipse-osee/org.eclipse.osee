@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
+import org.eclipse.osee.ats.ide.actions.ArchiveCommitedBranches;
 import org.eclipse.osee.ats.ide.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
@@ -169,12 +170,14 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    AddTaskAction addTaskAction;
    private boolean showRemoveMenuItems = true;
    private ViewTableReportAction htmlAction;
+   private ArchiveCommitedBranches archiveBranches;
 
    public void createMenuActions() {
 
       favoritesAction = new FavoriteAction(this);
       subscribedAction = new SubscribedAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this, false);
+      archiveBranches = new ArchiveCommitedBranches(this, true);
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
@@ -398,6 +401,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);
+
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, archiveBranches);
+         archiveBranches.setEnabled(getSelectedAtsArtifacts().size() > 0);
       }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
