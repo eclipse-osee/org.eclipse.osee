@@ -37,8 +37,9 @@ describe('ColumnFilterComponent', () => {
 				MatAutocompleteModule,
 				MatIconModule,
 				NoopAnimationsModule,
+				ColumnFilterComponent,
+				InputControlComponent,
 			],
-			declarations: [ColumnFilterComponent, InputControlComponent],
 			providers: [{ provide: MatDialogRef, useValue: {} }],
 		}).compileComponents();
 	});

@@ -33,8 +33,6 @@ describe('CommandPaletteComponent', () => {
 				MatIconModule,
 				CommonModule,
 				HttpClientTestingModule,
-			],
-			declarations: [
 				CommandPaletteComponent,
 				HelperdialogComponent,
 				CheckboxContainerComponent,

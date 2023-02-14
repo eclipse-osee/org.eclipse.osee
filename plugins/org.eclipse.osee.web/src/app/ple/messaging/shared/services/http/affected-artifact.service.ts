@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
-import { affectedArtifact } from '../../types/affectedArtifact';
+import type { affectedArtifact } from '../../types/affectedArtifact';
 
 @Injectable({
 	providedIn: 'root',

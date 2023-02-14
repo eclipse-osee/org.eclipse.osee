@@ -49,10 +49,10 @@ describe('AddConfigurationDialogComponent', () => {
 				MatDialogModule,
 				MatInputModule,
 				MatSelectModule,
+				AddConfigurationDialogComponent,
 				NoopAnimationsModule,
 				FormsModule,
 			],
-			declarations: [AddConfigurationDialogComponent],
 			providers: [
 				{ provide: PlConfigBranchService, useValue: branchService },
 				{

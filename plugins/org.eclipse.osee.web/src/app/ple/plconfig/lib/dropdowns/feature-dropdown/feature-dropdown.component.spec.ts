@@ -61,8 +61,12 @@ describe('FeatureDropdownComponent', () => {
 			of(testResponse)
 		);
 		await TestBed.configureTestingModule({
-			imports: [MatMenuModule, MatIconModule, MatButtonModule],
-			declarations: [FeatureDropdownComponent],
+			imports: [
+				MatMenuModule,
+				MatIconModule,
+				MatButtonModule,
+				FeatureDropdownComponent,
+			],
 			providers: [
 				{
 					provide: PlConfigCurrentBranchService,

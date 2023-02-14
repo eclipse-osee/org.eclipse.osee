@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { connectionDiffItem } from '@osee/messaging/shared/types';
+import type { connectionDiffItem } from '@osee/messaging/shared/types';
 
 export const connectionDiffsMock: connectionDiffItem[] = [
 	{

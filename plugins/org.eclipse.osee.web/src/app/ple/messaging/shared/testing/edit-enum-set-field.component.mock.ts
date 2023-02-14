@@ -13,7 +13,10 @@
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
-import { enumerationSet, PlatformType } from '@osee/messaging/shared/types';
+import type {
+	enumerationSet,
+	PlatformType,
+} from '@osee/messaging/shared/types';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 
 @Component({

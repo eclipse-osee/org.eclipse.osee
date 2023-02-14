@@ -19,11 +19,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {
-	CurrentMessagesService,
-	EnumsService,
-	message,
-} from '@osee/messaging/shared';
+import { CurrentMessagesService, EnumsService } from '@osee/messaging/shared';
+import type { message } from '@osee/messaging/shared';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import {
 	debounceTime,

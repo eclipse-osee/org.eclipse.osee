@@ -22,9 +22,7 @@ export const routes: Routes = [
 			{
 				path: '',
 				loadComponent: () =>
-					import(
-						'@osee/messaging/shared/headers/usermenu/usermenu.component'
-					),
+					import('@osee/messaging/shared/preferences'),
 				outlet: 'userMenu',
 			},
 			{

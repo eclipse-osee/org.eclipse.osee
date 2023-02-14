@@ -10,8 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 import { productType } from '../../types/pl-config-product-types';
 
@@ -19,6 +28,15 @@ import { productType } from '../../types/pl-config-product-types';
 	selector: 'osee-add-product-type-dialog',
 	templateUrl: './add-product-type-dialog.component.html',
 	styleUrls: ['./add-product-type-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		FormsModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatInputModule,
+		TextFieldModule,
+		MatButtonModule,
+	],
 })
 export class AddProductTypeDialogComponent {
 	parentMatcher = new ParentErrorStateMatcher();

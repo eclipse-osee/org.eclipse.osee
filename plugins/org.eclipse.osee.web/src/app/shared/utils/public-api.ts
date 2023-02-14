@@ -14,3 +14,4 @@ export * from './directives/highlight-filtered-text.directive';
 export * from './functions/undefinedOrNullCheck';
 export * from './pipes/display-truncated-string-with-field-overflow.pipe';
 export * from './pipes/first-letter-lower.pipe';
+export * from './pipes/split-string.pipe';

@@ -48,11 +48,11 @@ import {
 	structuresMock2,
 	structuresPreChanges,
 } from '@osee/messaging/shared/testing';
-import {
+import type {
 	structure,
 	structureWithChanges,
-	PlatformTypeQuery,
 } from '@osee/messaging/shared/types';
+import { PlatformTypeQuery } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 const servicesUnderTest: {

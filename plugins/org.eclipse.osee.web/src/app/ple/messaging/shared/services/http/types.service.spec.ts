@@ -108,9 +108,14 @@ describe('TypesService', () => {
 	});
 
 	it('should get filtered types', () => {
-		service.getFilteredTypes('', '10').subscribe();
+		service.getFilteredTypes('', '10', 1, 10).subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/' + 10 + '/types/filter/' + ''
+			apiURL +
+				'/mim/branch/' +
+				10 +
+				'/types/filter/' +
+				'' +
+				'?count=10&pageNum=1'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

@@ -14,7 +14,7 @@ import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
 import { applic } from '@osee/shared/types/applicability';
 import { CurrentMessagesService } from '../services/ui/current-messages.service';
-import {
+import type {
 	message,
 	messageWithChanges,
 	settingsDialogData,
@@ -153,4 +153,6 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
 		} as message,
 	]),
 	expandedRowsDecreasing: new BehaviorSubject<boolean>(false),
+	currentPage: new BehaviorSubject(0),
+	currentPageSize: new BehaviorSubject(10),
 };

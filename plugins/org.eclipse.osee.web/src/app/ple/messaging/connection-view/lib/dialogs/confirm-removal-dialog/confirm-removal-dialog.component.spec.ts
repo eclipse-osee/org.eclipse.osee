@@ -49,7 +49,6 @@ describe('ConfirmRemovalDialogComponent', () => {
 				FormsModule,
 				ConfirmRemovalDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{ provide: MatDialogRef, useValue: dialogRef },
 				{ provide: MAT_DIALOG_DATA, useValue: dialogData },

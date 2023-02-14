@@ -32,30 +32,33 @@ describe('AsciidocEditorComponent', () => {
 	let fixture: ComponentFixture<AsciidocEditorComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				RouterTestingModule,
-				MatIconModule,
-				MatButtonModule,
-				MatInputModule,
-				MatFormFieldModule,
-				MatDividerModule,
-				MarkdownModule.forRoot(),
-				NoopAnimationsModule,
-				FormsModule,
-				BranchPickerStub,
-			],
-			declarations: [
-				AsciidocEditorComponent,
-				ResizableSplitPaneCodeComponent,
-			],
-			providers: [
-				{
-					provide: CurrentTextEditorService,
-					useValue: currentTextEditorServiceMock,
-				},
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(AsciidocEditorComponent, {
+			set: {
+				imports: [BranchPickerStub, ResizableSplitPaneCodeComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					RouterTestingModule,
+					MatIconModule,
+					MatButtonModule,
+					MatInputModule,
+					MatFormFieldModule,
+					MatDividerModule,
+					MarkdownModule.forRoot(),
+					NoopAnimationsModule,
+					FormsModule,
+					AsciidocEditorComponent,
+				],
+				declarations: [],
+				providers: [
+					{
+						provide: CurrentTextEditorService,
+						useValue: currentTextEditorServiceMock,
+					},
+				],
+			})
+			.compileComponents();
 
 		fixture = TestBed.createComponent(AsciidocEditorComponent);
 		component = fixture.componentInstance;

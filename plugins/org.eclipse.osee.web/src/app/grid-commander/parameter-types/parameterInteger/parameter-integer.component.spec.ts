@@ -20,8 +20,7 @@ describe('ParameterIntegerComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule],
-			declarations: [ParameterIntegerComponent],
+			imports: [HttpClientModule, ParameterIntegerComponent],
 		}).compileComponents();
 	});
 

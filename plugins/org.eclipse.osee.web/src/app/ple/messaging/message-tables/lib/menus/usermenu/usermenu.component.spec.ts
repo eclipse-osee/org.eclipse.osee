@@ -60,7 +60,6 @@ describe('UsermenuComponent', () => {
 					useValue: editAuthServiceMock,
 				},
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

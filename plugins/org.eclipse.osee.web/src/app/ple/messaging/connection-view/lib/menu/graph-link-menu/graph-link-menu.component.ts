@@ -20,7 +20,7 @@ import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dia
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
-import {
+import type {
 	connection,
 	connectionWithChanges,
 	node,

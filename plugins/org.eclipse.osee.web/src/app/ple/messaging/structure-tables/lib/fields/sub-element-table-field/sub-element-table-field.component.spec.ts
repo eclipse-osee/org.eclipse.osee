@@ -28,7 +28,6 @@ describe('SubElementTableRowComponent', () => {
 			['paramMap']
 		);
 		await TestBed.configureTestingModule({
-			declarations: [],
 			providers: [
 				{ provide: Router, useValue: router },
 				{

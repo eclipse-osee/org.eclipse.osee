@@ -10,4 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './public-api.d';
 export * from './public-api';

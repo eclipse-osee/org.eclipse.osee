@@ -13,12 +13,33 @@
 import { Component, OnDestroy } from '@angular/core';
 import { combineLatest, iif, map, of, switchMap } from 'rxjs';
 import { FilterService } from '../../services/datatable-services/filter/filter.service';
-import { MatSelectChange } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { ColumnFilterComponent } from './column-filter/column-filter.component';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-table-filter-component',
 	templateUrl: './table-filter.component.html',
 	styleUrls: ['./table-filter.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		MatFormFieldModule,
+		MatSelectModule,
+		FormsModule,
+		MatChipsModule,
+		NgFor,
+		MatIconModule,
+		MatOptionModule,
+		ColumnFilterComponent,
+		AsyncPipe,
+		TitleCasePipe,
+	],
 })
 export class TableFilterComponent implements OnDestroy {
 	selectedColsToFilter = this.filterService.selectedColumnsToFilter;

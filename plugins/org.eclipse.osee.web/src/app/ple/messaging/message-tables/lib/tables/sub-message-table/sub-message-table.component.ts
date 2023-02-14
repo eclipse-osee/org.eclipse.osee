@@ -40,14 +40,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
-	subMessage,
-	message,
-	messageWithChanges,
-	subMessageWithChanges,
-	EditViewFreeTextDialog,
 	EditViewFreeTextFieldDialogComponent,
 	CurrentMessagesService,
 	HeaderService,
+} from '@osee/messaging/shared';
+import type {
+	message,
+	subMessage,
+	messageWithChanges,
+	subMessageWithChanges,
+	EditViewFreeTextDialog,
 } from '@osee/messaging/shared';
 import {
 	HighlightFilteredTextDirective,

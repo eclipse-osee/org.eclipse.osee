@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../../../sass-utils/mdc-migration/_form-field'
-@use '../../../../../../modern-ple-theme'
+@use 'mdc-migration/_form-field'
+@use 'modern-ple-theme'
 @use '_theme.scss' as t
 @media (prefers-color-scheme:light)
     @include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'full-width')
-    @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
+    @include t.material-theme($theme:modern-ple-theme.$modern-ple-light-theme,$typography:modern-ple-theme.$modern-ple-typography)
 @media (prefers-color-scheme:dark)
     @include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'full-width')
-    @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
+    @include t.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
 table
     width: 100%
 .table-container

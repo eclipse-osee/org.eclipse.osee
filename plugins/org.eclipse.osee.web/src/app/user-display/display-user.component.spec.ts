@@ -39,7 +39,6 @@ describe('DisplayUserComponent', () => {
 				NoopAnimationsModule,
 				DisplayUserComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});

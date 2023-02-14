@@ -41,8 +41,12 @@ describe('ConfigurationGroupDropdownComponent', () => {
 			['updateReqConfig']
 		);
 		await TestBed.configureTestingModule({
-			imports: [MatMenuModule, MatButtonModule, MatIconModule],
-			declarations: [ConfigurationGroupDropdownComponent],
+			imports: [
+				MatMenuModule,
+				MatButtonModule,
+				MatIconModule,
+				ConfigurationGroupDropdownComponent,
+			],
 			providers: [
 				{ provide: MatDialog, useValue: {} },
 				{

@@ -21,7 +21,7 @@ import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-repor
 import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-report-branch.service.mock';
 import { testBranchInfo } from 'src/app/testing/branch-info.response.mock';
 import { testBranchActions } from 'src/app/testing/configuration-management.response.mock';
-import { branchSummary } from '../../types/DifferenceReport';
+import type { branchSummary } from '../../types/DifferenceReport';
 
 import { DiffReportService } from './diff-report.service';
 import {

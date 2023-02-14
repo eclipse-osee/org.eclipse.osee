@@ -21,8 +21,7 @@ describe('NoDataToDisplayComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MatCardModule],
-			declarations: [NoDataToDisplayComponent],
+			imports: [MatCardModule, NoDataToDisplayComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(NoDataToDisplayComponent);

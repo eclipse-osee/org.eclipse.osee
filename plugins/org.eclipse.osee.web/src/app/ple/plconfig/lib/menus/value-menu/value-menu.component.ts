@@ -10,9 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
-import { difference } from 'src/app/shared/types/change-report/change-report';
+import { difference } from '@osee/shared/types/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import {
 	ExtendedNameValuePair,
@@ -23,6 +26,8 @@ import {
 	selector: 'osee-plconfig-value-menu',
 	templateUrl: './value-menu.component.html',
 	styleUrls: ['./value-menu.component.sass'],
+	standalone: true,
+	imports: [NgIf, MatMenuModule, MatIconModule],
 })
 export class ValueMenuComponent {
 	@Input() value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges = {

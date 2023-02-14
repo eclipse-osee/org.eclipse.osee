@@ -10,8 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { A11yModule } from '@angular/cdk/a11y';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { view } from '../../types/pl-config-applicui-branch-mapping';
 import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 
@@ -19,6 +30,18 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 	selector: 'osee-plconfig-config-group-dialog',
 	templateUrl: './config-group-dialog.component.html',
 	styleUrls: ['./config-group-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		NgFor,
+		FormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatListModule,
+		MatButtonModule,
+		MatDialogModule,
+		A11yModule,
+	],
 })
 export class ConfigGroupDialogComponent {
 	totalConfigurations: view[] = [];

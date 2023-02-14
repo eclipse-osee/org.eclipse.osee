@@ -35,7 +35,7 @@ import {
 	connectionNodesMock,
 	MimPreferencesMock,
 } from '@osee/messaging/shared/testing';
-import { message, messageWithChanges } from '@osee/messaging/shared/types';
+import type { message, messageWithChanges } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 describe('CurrentMessagesService', () => {

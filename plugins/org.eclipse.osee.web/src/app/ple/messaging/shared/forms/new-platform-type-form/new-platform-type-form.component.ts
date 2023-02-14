@@ -25,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
 import { TypesService, EnumsService } from '@osee/messaging/shared/services';
-import {
+import type {
 	logicalType,
 	logicalTypeFieldInfo,
 	PlatformType,

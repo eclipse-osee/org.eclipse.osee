@@ -29,7 +29,6 @@ describe('TwoLayerAddButtonComponent', () => {
 				MatIconModule,
 				TwoLayerAddButtonComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

@@ -36,10 +36,10 @@ describe('AddProductTypeDialogComponent', () => {
 				MatButtonModule,
 				MatFormFieldModule,
 				MatInputModule,
+				AddProductTypeDialogComponent,
 				FormsModule,
 				NoopAnimationsModule,
 			],
-			declarations: [AddProductTypeDialogComponent],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
 				{

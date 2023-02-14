@@ -30,8 +30,8 @@ describe('TableFilterComponent', () => {
 				MatSelectModule,
 				MatChipsModule,
 				MatSelectModule,
+				TableFilterComponent,
 			],
-			declarations: [TableFilterComponent],
 			providers: [FilterService],
 		}).compileComponents();
 	});

@@ -21,7 +21,6 @@ describe('ScrollToTopButtonComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [ScrollToTopButtonComponent],
-			declarations: [],
 		}).compileComponents();
 	});
 

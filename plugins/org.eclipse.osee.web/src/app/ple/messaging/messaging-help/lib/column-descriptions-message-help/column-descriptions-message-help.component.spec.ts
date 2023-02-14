@@ -27,7 +27,6 @@ describe('ColumnDescriptionsMessageHelpComponent', () => {
 				MatListModule,
 				ColumnDescriptionsMessageHelpComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

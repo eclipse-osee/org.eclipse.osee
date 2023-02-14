@@ -47,7 +47,6 @@ describe('CreateActionDialogComponent', () => {
 				FormsModule,
 				CreateActionDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: ActionUserService,

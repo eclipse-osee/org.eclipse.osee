@@ -10,9 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
-import { difference } from 'src/app/shared/types/change-report/change-report';
+import { difference } from '@osee/shared/types/change-report';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
@@ -20,11 +23,20 @@ import {
 	view,
 	viewWithChanges,
 } from '../../types/pl-config-applicui-branch-mapping';
+import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.component';
 
 @Component({
 	selector: 'osee-plconfig-config-menu',
 	templateUrl: './config-menu.component.html',
 	styleUrls: ['./config-menu.component.sass'],
+	standalone: true,
+	imports: [
+		MatMenuModule,
+		MatIconModule,
+		NgIf,
+		AsyncPipe,
+		ArrayDiffMenuComponent,
+	],
 })
 export class ConfigMenuComponent {
 	_editable = this.uiStateService.editable;

@@ -23,13 +23,12 @@ import { DifferenceReportService } from '../../../../../ple-services/http/differ
 import { DifferenceReportServiceMock } from '../../../../../ple-services/http/difference-report.service.mock';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
 import {
-	node,
-	connection,
 	ApplicabilityListService,
 	ConnectionService,
 	MimPreferencesService,
 	NodeService,
 } from '@osee/messaging/shared';
+import type { connection, node } from '@osee/messaging/shared';
 import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
 import { relation, transaction } from '@osee/shared/types';
 import {

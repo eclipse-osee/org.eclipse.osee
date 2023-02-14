@@ -29,7 +29,7 @@ import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { EditNodeDialogComponent } from './edit-node-dialog.component';
-import { node } from '@osee/messaging/shared';
+import type { node } from '@osee/messaging/shared';
 import { dialogRef } from '@osee/messaging/shared/testing';
 
 describe('EditNodeDialogComponent', () => {
@@ -53,7 +53,6 @@ describe('EditNodeDialogComponent', () => {
 				FormsModule,
 				EditNodeDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{ provide: MatDialogRef, useValue: dialogRef },
 				{ provide: MAT_DIALOG_DATA, useValue: dialogData },

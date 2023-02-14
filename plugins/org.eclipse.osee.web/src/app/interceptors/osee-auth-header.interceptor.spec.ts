@@ -10,29 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {
-	HttpClientTestingModule,
+	HttpClient,
+	HttpInterceptorFn,
+	provideHttpClient,
+	withInterceptors,
+} from '@angular/common/http';
+import {
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
 import { apiURL, OSEEAuthURL } from 'src/environments/environment';
-
-import { OSEEAuthHeaderInterceptor } from './oseeauth-header.interceptor';
+import { OseeAuthInterceptor } from './osee-auth-header.interceptor';
 
 describe('OSEEAuthHeaderInterceptor', () => {
 	let httpTestingController: HttpTestingController;
+	const interceptor: HttpInterceptorFn = (req, next) =>
+		TestBed.runInInjectionContext(() => OseeAuthInterceptor(req, next));
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
 			providers: [
-				{
-					provide: HTTP_INTERCEPTORS,
-					useClass: OSEEAuthHeaderInterceptor,
-					multi: true,
-				},
-				OSEEAuthHeaderInterceptor,
+				provideHttpClient(withInterceptors([interceptor])),
+				provideHttpClientTesting(),
 				{
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
@@ -43,20 +45,13 @@ describe('OSEEAuthHeaderInterceptor', () => {
 	});
 
 	it('should be created', () => {
-		const interceptor: OSEEAuthHeaderInterceptor = TestBed.inject(
-			OSEEAuthHeaderInterceptor
-		);
 		expect(interceptor).toBeTruthy();
 	});
 
 	it('should add a header', () => {
 		const http = TestBed.inject(HttpClient);
-		http.get(apiURL + 'abcde').subscribe();
-		const request = httpTestingController.expectOne(
-			(req) =>
-				req.headers.has('osee.account.id') &&
-				req.headers.get('osee.account.id') === '0'
-		);
+		http.get(apiURL + '/abcde').subscribe();
+		const request = httpTestingController.expectOne(apiURL + '/abcde');
 		request.flush({});
 		expect(request.request.headers.has('osee.account.id'));
 		expect(request.request.headers.get('osee.account.id')).toEqual('0');

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
-import { PlatformType } from '@osee/messaging/shared/types';
+import type { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-types-platform-type-card',

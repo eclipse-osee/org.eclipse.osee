@@ -28,7 +28,6 @@ describe('DiffReportTableComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [MatIconModule, MatTableModule, DiffReportTableComponent],
-			declarations: [],
 		}).compileComponents();
 	});
 

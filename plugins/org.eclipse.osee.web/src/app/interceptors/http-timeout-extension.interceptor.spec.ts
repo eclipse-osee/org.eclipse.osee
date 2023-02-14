@@ -10,21 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { HttpInterceptorFn } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
 import { HttpTimeoutExtensionInterceptor } from './http-timeout-extension.interceptor';
 
 describe('HttpTimeoutExtensionInterceptor', () => {
-	beforeEach(() =>
-		TestBed.configureTestingModule({
-			providers: [HttpTimeoutExtensionInterceptor],
-		})
-	);
+	const interceptor: HttpInterceptorFn = (req, next) =>
+		TestBed.runInInjectionContext(() =>
+			HttpTimeoutExtensionInterceptor(req, next)
+		);
+	beforeEach(() => TestBed.configureTestingModule({}));
 
 	it('should be created', () => {
-		const interceptor: HttpTimeoutExtensionInterceptor = TestBed.inject(
-			HttpTimeoutExtensionInterceptor
-		);
 		expect(interceptor).toBeTruthy();
 	});
 });

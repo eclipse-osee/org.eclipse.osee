@@ -32,6 +32,18 @@ import { MatOptionLoadingComponent } from './mat-option-loading.component';
 	selector: 'osee-outer-component',
 	template:
 		'<mat-form-field><mat-label>OuterComponent</mat-label><mat-select><osee-mat-option-loading [data]="observable$"><ng-template let-option><mat-option>{{option}}</mat-option></ng-template></osee-mat-option-loading></mat-select></mat-form-field>',
+	standalone: true,
+	imports: [
+		FormsModule,
+		MatFormFieldModule,
+		MatProgressSpinnerModule,
+		MatSelectModule,
+		MatAutocompleteModule,
+		MatListModule,
+		MatButtonModule,
+		ScrollingModule,
+		MatOptionLoadingComponent,
+	],
 })
 class OuterComponent implements AfterViewInit {
 	observable$ = of(['1', '2', '3']);
@@ -61,8 +73,8 @@ describe('MatOptionLoadingComponent', async () => {
 				ScrollingModule,
 				NoopAnimationsModule,
 				MatOptionLoadingComponent,
+				OuterComponent,
 			],
-			declarations: [OuterComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(OuterComponent);

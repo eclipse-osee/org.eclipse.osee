@@ -17,7 +17,7 @@ import {
 	MatDialogRef,
 } from '@angular/material/dialog';
 import { AffectedArtifactDialogComponent } from '@osee/messaging/shared/dialogs';
-import {
+import type {
 	affectedArtifactWarning,
 	element,
 	structure,

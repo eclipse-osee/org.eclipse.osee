@@ -22,7 +22,7 @@ import {
 } from 'rxjs/operators';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
-import { transportType } from '@osee/messaging/shared/types';
+import type { transportType } from '@osee/messaging/shared/types';
 import { TransportTypeService } from '../http/transport-type.service';
 import {
 	TransactionService,

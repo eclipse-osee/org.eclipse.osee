@@ -17,7 +17,7 @@ import {
 	NG_ASYNC_VALIDATORS,
 	ValidationErrors,
 } from '@angular/forms';
-import {
+import type {
 	logicalTypeFormDetail,
 	PlatformType,
 } from '@osee/messaging/shared/types';

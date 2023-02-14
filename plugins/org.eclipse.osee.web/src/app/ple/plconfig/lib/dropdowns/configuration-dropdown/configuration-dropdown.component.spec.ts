@@ -62,12 +62,12 @@ describe('ConfigurationDropdownComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				MatMenuModule,
+				ConfigurationDropdownComponent,
 				MatIconModule,
 				MatButtonModule,
 				MatFormFieldModule,
 				NoopAnimationsModule,
 			],
-			declarations: [ConfigurationDropdownComponent],
 			providers: [
 				{ provide: MatDialog, useValue: {} },
 				{

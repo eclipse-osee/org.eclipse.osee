@@ -10,10 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { forwardRef } from '@angular/core';
 import { CurrentStructureSingleService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from './token';
 
 export const SINGLE_STRUCTURE_SERVICE = {
-	provide: STRUCTURE_SERVICE_TOKEN,
-	useExisting: CurrentStructureSingleService,
+	provide: forwardRef(() => STRUCTURE_SERVICE_TOKEN),
+	useExisting: forwardRef(() => CurrentStructureSingleService),
 };

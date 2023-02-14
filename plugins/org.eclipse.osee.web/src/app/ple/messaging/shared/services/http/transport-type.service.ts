@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
-import { transportType } from '@osee/messaging/shared/types';
+import type { transportType } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',

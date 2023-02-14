@@ -76,7 +76,7 @@
 	}
 }
 
-@mixin theme($theme) {
+@mixin material-theme($theme) {
 	$color: mat.get-color-config($theme);
 	$typography: mat.get-typography-config($theme);
 	$density: mat.get-density-config($theme);

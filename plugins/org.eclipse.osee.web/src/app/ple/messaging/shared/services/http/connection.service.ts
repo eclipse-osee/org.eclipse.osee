@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from '../../../../../../environments/environment';
-import { connection, _newConnection } from '../../types/connection';
+import type { connection, _newConnection } from '../../types/connection';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {
 	TransactionBuilderService,

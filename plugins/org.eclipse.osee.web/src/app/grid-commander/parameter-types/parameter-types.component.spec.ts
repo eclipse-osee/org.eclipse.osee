@@ -21,8 +21,11 @@ describe('ParameterTypesComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule, HttpClientTestingModule],
-			declarations: [ParameterTypesComponent],
+			imports: [
+				HttpClientModule,
+				HttpClientTestingModule,
+				ParameterTypesComponent,
+			],
 		}).compileComponents();
 	});
 

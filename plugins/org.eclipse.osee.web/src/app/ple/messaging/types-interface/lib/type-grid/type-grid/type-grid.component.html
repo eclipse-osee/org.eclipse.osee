@@ -31,12 +31,21 @@
 	<mat-hint>Enter text to filter Types</mat-hint>
 </mat-form-field>
 <div class="ple-messaging-type-grid">
-	<ng-container *ngFor="let card of filteredData | async; let i = index">
-		<osee-messaging-types-platform-type-card
-			[typeData]="card"
-			[attr.width]="getWidthString()"
-			[style.margin]="getMarginString()"
-			class="typeElement">
-		</osee-messaging-types-platform-type-card>
+	<ng-container *ngIf="filteredData | async as _filteredData">
+		<ng-container *ngFor="let card of _filteredData; let i = index">
+			<osee-messaging-types-platform-type-card
+				[typeData]="card"
+				[attr.width]="getWidthString()"
+				[style.margin]="getMarginString()"
+				class="typeElement">
+			</osee-messaging-types-platform-type-card>
+		</ng-container>
+		<mat-paginator
+			style="width: 100%"
+			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100]"
+			[pageIndex]="currentPage | async"
+			(page)="setPage($event)"
+			[length]="minPageSize | async"
+			[disabled]="false"></mat-paginator>
 	</ng-container>
 </div>

@@ -1,5 +1,5 @@
-import { MIMATTRIBUTETYPEID } from './MimAttributes';
-import { PlatformType } from './platformType';
+import type { MIMATTRIBUTETYPEID } from './MimAttributes';
+import type { PlatformType } from './platformType';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing

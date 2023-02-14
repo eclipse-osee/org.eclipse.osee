@@ -46,9 +46,9 @@ import {
 	CurrentMessagesService,
 	EditAuthService,
 	EnumsService,
-	message,
 	MessageUiService,
 } from '@osee/messaging/shared';
+import type { message } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
 	ActionDropdownStub,
@@ -62,6 +62,7 @@ import {
 	enumsServiceMock,
 	messagesMock,
 } from '@osee/messaging/shared/testing';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 let loader: HarnessLoader;
 
@@ -120,6 +121,7 @@ describe('MessageTableComponent', () => {
 					MatTooltipModule,
 					MatMenuModule,
 					MatDialogModule,
+					MatPaginatorModule,
 					ActionDropdownStub,
 					UndoButtonBranchMockComponent,
 					MockSubMessageTableComponent,

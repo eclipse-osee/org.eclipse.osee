@@ -34,7 +34,6 @@ describe('ConnectionDiffsComponent', () => {
 				DiffReportTableComponent,
 				ConnectionDiffsComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

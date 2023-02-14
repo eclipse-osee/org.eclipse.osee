@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from 'src/app/shared/types/change-report/change-report';
-import { element, elementWithChanges } from './element';
+import type { applic } from '@osee/shared/types/applicability';
+import type { difference } from 'src/app/shared/types/change-report/change-report';
+import type { element, elementWithChanges } from './element';
 
 export interface structure {
 	[index: string]:

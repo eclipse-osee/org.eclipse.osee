@@ -18,13 +18,12 @@ import {
 	ValidationErrors,
 } from '@angular/forms';
 import { CurrentQueryService } from '@osee/messaging/shared/services';
-import {
+import type {
 	logicalTypeFormDetail,
 	PlatformType,
-	andQuery,
-	PlatformTypeQuery,
 	MimQuery,
 } from '@osee/messaging/shared/types';
+import { andQuery, PlatformTypeQuery } from '@osee/messaging/shared/types';
 import { Observable, of, switchMap, take } from 'rxjs';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 

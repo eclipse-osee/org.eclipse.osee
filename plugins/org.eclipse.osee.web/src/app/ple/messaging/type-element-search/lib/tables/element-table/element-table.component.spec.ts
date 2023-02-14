@@ -43,7 +43,6 @@ describe('ElementTableComponent', () => {
 			providers: [
 				{ provide: CurrentElementSearchService, useValue: serviceSpy },
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

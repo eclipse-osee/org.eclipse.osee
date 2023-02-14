@@ -18,6 +18,8 @@ import { By } from '@angular/platform-browser';
 	selector: 'osee-my-test-component',
 	template:
 		'<div oseeHighlightFilteredText searchTerms="this" text="Hello World This is Text" classToApply="highlightTextClass">Hello World This is Text</div>',
+	standalone: true,
+	imports: [HighlightFilteredTextDirective],
 })
 class TestComponent {}
 
@@ -34,15 +36,13 @@ const componentsUnderTest = [
 	{
 		component: TestComponent,
 		compilation: TestBed.configureTestingModule({
-			imports: [HighlightFilteredTextDirective],
-			declarations: [TestComponent],
+			imports: [HighlightFilteredTextDirective, TestComponent],
 		}).compileComponents(),
 	},
 	{
 		component: StandaloneTestComponent,
 		compilation: TestBed.configureTestingModule({
 			imports: [HighlightFilteredTextDirective, StandaloneTestComponent],
-			declarations: [],
 		}).compileComponents(),
 	},
 ];

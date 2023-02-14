@@ -26,3 +26,5 @@ export class AboutComponent {
 	version = version;
 	constructor() {}
 }
+
+export default AboutComponent;

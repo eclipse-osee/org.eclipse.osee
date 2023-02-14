@@ -88,7 +88,6 @@ describe('SubMessageTableComponent', () => {
 				ConvertSubMessageTitlesToStringPipe,
 				SubMessageTableComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: CurrentMessagesService,

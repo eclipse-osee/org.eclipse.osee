@@ -25,7 +25,7 @@ import { GraphNodeMenuComponent } from '../../menu/graph-node-menu/graph-node-me
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
+import type {
 	connection,
 	connectionWithChanges,
 	node,

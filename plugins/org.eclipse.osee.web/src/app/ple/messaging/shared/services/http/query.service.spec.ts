@@ -16,7 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '../../../../../../environments/environment';
-import { MimQuery, PlatformTypeQuery } from '../../types/MimQuery';
+import { PlatformTypeQuery } from '../../types/MimQuery';
 
 import { QueryService } from './query.service';
 

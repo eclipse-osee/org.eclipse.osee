@@ -35,10 +35,10 @@ describe('ConfigGroupDialogComponent', () => {
 				MatFormFieldModule,
 				MatInputModule,
 				MatListModule,
+				ConfigGroupDialogComponent,
 				NoopAnimationsModule,
 				FormsModule,
 			],
-			declarations: [ConfigGroupDialogComponent],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
 				{

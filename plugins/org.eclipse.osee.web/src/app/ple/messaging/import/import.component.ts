@@ -17,25 +17,27 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import {
+import type {
 	connection,
 	CrossReference,
-	crossReferenceHeaderDetails,
 	elementImportToken,
 	enumeration,
-	importElementHeaderDetails,
 	ImportEnumSet,
+	ImportSummary,
+	messageToken,
+	nodeToken,
+	platformTypeImportToken,
+	subMessage,
+} from '@osee/messaging/shared';
+import {
 	importEnumSetHeaderDetails,
 	importMessageHeaderDetails,
 	importPlatformTypeHeaderDetails,
-	ImportSummary,
-	messageToken,
 	nodeHeaderDetails,
-	nodeToken,
-	platformTypeImportToken,
 	structureHeaderDetails,
-	subMessage,
 	subMessageHeaderDetails,
+	importElementHeaderDetails,
+	crossReferenceHeaderDetails,
 } from '@osee/messaging/shared';
 import {
 	ActionDropDownComponent,

@@ -31,7 +31,11 @@
 						"tsConfig": "tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
 						"stylePreprocessorOptions": {
-							"includePaths": ["modern-ple-theme"]
+							"includePaths": [
+								"src",
+								"src/sass-utils/",
+								"src/modern-ple-theme"
+							]
 						},
 						"styles": [
 							"node_modules/material-design-icons/iconfont/material-icons.css",
@@ -170,6 +174,13 @@
 							"**/*.mock.*",
 							"**/*.harness.*"
 						],
+						"stylePreprocessorOptions": {
+							"includePaths": [
+								"src",
+								"src/sass-utils/",
+								"src/modern-ple-theme"
+							]
+						},
 						"codeCoverage": true,
 						"assets": ["src/favicon.ico", "src/assets"],
 						"styles": ["src/styles.sass"],

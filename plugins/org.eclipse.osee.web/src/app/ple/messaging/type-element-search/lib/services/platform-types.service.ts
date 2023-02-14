@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { elementWithPathsAndButtons } from '@osee/messaging/shared';
+import type { elementWithPathsAndButtons } from '@osee/messaging/shared';
 import { apiURL } from '../../../../../../environments/environment';
 
 @Injectable({

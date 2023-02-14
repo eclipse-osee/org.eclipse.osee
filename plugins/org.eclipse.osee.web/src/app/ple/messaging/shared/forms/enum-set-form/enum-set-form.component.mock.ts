@@ -23,7 +23,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { enumerationSet } from '@osee/messaging/shared/types';
+import type { enumerationSet } from '@osee/messaging/shared/types';
 import { Observable, of, Subject } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import { EnumSetFormComponent } from './enum-set-form.component';

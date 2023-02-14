@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from 'src/app/shared/types/change-report/change-report';
-import { applic } from '@osee/shared/types/applicability';
-import { Node } from '@swimlane/ngx-graph';
+import type { difference } from 'src/app/shared/types/change-report/change-report';
+import type { applic } from '@osee/shared/types/applicability';
+import type { Node } from '@swimlane/ngx-graph';
 
 export interface nodeData {
 	id: string;

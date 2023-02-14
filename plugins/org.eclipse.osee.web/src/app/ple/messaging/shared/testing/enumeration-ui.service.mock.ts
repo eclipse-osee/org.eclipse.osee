@@ -13,7 +13,7 @@
 import { of } from 'rxjs';
 import { enumerationSetMock } from './enumeration-set.response.mock';
 import { EnumerationUIService } from '../services/ui/enumeration-ui.service';
-import {
+import type {
 	enumSet,
 	enumeration,
 	enumerationSet,

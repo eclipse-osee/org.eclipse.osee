@@ -39,8 +39,8 @@ describe('ResizableSplitPaneCodeComponent', () => {
 				MarkdownModule.forRoot(),
 				NoopAnimationsModule,
 				FormsModule,
+				ResizableSplitPaneCodeComponent,
 			],
-			declarations: [ResizableSplitPaneCodeComponent],
 			providers: [
 				{
 					provide: CurrentTextEditorService,

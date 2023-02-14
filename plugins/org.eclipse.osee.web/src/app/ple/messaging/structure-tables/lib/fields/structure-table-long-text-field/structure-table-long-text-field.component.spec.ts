@@ -23,7 +23,6 @@ describe('StructureTableLongTextFieldComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [StructureTableLongTextFieldComponent],
-			declarations: [],
 			providers: [
 				{
 					provide: PreferencesUIService,

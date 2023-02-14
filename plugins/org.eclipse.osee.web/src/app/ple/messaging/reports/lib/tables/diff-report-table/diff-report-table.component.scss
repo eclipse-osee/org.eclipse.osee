@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../../../../modern-ple-theme';
+@use 'modern-ple-theme';
 @use './_theme' as t;
 
 @media (prefers-color-scheme: light) {
-	@include t.theme($theme: modern-ple-theme.$modern-ple-light-theme);
+	@include t.material-theme($theme: modern-ple-theme.$modern-ple-light-theme);
 }
 @media (prefers-color-scheme: dark) {
-	@include t.theme($theme: modern-ple-theme.$modern-ple-dark-theme);
+	@include t.material-theme($theme: modern-ple-theme.$modern-ple-dark-theme);
 }
 
 table {

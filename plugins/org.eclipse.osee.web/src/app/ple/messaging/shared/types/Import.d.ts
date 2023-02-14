@@ -1,11 +1,11 @@
-import { messageToken } from './messages';
-import { subMessage } from './sub-messages';
-import { elementImportToken } from './element';
-import { enumeration, enumSet } from './enum';
-import { nodeToken } from './node';
-import { platformTypeImportToken } from './platformType';
-import { structure } from './structure';
-import { CrossReference } from './crossReference.d ';
+import type { CrossReference } from './crossReference.d ';
+import type { messageToken } from './messages';
+import type { subMessage } from './sub-messages';
+import type { elementImportToken } from './element';
+import type { enumeration, enumSet } from './enum';
+import type { nodeToken } from './node';
+import type { platformTypeImportToken } from './platformType';
+import type { structure } from './structure';
 
 /*********************************************************************
  * Copyright (c) 2022 Boeing

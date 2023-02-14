@@ -43,7 +43,6 @@ describe('EditViewFreeTextFieldDialogComponent', () => {
 				NoopAnimationsModule,
 				EditViewFreeTextFieldDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: MatDialogRef,

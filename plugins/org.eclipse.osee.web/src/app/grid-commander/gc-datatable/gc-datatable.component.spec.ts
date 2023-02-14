@@ -41,8 +41,9 @@ describe('GcDatatableComponent', () => {
 				MatToolbarModule,
 				MatPaginatorModule,
 				HttpClientTestingModule,
+				GcDatatableComponent,
+				NoDataToDisplayComponent,
 			],
-			declarations: [GcDatatableComponent, NoDataToDisplayComponent],
 			providers: [
 				{
 					provide: MAT_DIALOG_DATA,

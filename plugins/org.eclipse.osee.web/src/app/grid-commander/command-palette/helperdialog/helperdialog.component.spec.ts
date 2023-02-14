@@ -24,13 +24,13 @@ describe('HelperdialogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [HelperdialogComponent],
 			imports: [
 				MatDialogModule,
 				MatIconModule,
 				CommonModule,
 				HttpClientTestingModule,
 				RouterTestingModule,
+				HelperdialogComponent,
 			],
 			providers: [{ provide: MatDialogRef, useValue: {} }],
 		}).compileComponents();

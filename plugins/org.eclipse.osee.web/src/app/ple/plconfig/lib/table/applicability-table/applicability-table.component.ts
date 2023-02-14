@@ -10,20 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import {
 	AfterViewInit,
 	Component,
 	OnChanges,
-	OnInit,
 	SimpleChanges,
 	ViewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSelectChange } from '@angular/material/select';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -48,15 +54,8 @@ import {
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import {
-	ExtendedNameValuePair,
-	ExtendedNameValuePairWithChanges,
-} from '../../types/base-types/ExtendedNameValuePair';
-import {
-	extendedFeature,
-	extendedFeatureWithChanges,
-	trackableFeature,
-} from '../../types/features/base';
+import { ExtendedNameValuePairWithChanges } from '../../types/base-types/ExtendedNameValuePair';
+import { extendedFeature, trackableFeature } from '../../types/features/base';
 import {
 	view,
 	viewWithChanges,
@@ -65,11 +64,40 @@ import {
 	configGroup,
 	configGroupWithChanges,
 } from '../../types/pl-config-configurations';
+import { FeatureMenuComponent } from '../../menus/feature-menu/feature-menu.component';
+import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
+import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
+import { ValueMenuComponent } from '../../menus/value-menu/value-menu.component';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
 	selector: 'osee-plconfig-applicability-table',
 	templateUrl: './applicability-table.component.html',
 	styleUrls: ['./applicability-table.component.sass'],
+	standalone: true,
+	imports: [
+		FormsModule,
+		AsyncPipe,
+		NgFor,
+		NgIf,
+		NgClass,
+		MatFormFieldModule,
+		MatInputModule,
+		MatDialogModule,
+		MatIconModule,
+		MatTableModule,
+		MatSortModule,
+		MatTooltipModule,
+		MatSelectModule,
+		MatOptionModule,
+		MatListModule,
+		MatPaginatorModule,
+		MatMenuModule,
+		FeatureMenuComponent,
+		ConfigMenuComponent,
+		ConfigGroupMenuComponent,
+		ValueMenuComponent,
+	],
 })
 export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 	branchApplicability = this.currentBranchService.branchApplicability.pipe(

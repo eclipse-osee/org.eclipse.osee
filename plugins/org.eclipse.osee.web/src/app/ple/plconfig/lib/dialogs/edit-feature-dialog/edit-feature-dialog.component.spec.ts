@@ -50,8 +50,8 @@ describe('EditFeatureDialogComponent', () => {
 				NoopAnimationsModule,
 				MatSlideToggleModule,
 				FormsModule,
+				EditFeatureDialogComponent,
 			],
-			declarations: [EditFeatureDialogComponent],
 			providers: [
 				{
 					provide: PlConfigTypesService,

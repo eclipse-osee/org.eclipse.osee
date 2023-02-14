@@ -10,10 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import navigationStructure from '../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
-import { PleComponent } from './ple.component';
 
 const ple = navigationStructure[0].children.find(
 	(page) => page.label === 'Product Line Engineering - Home'
@@ -38,13 +36,12 @@ const routes: Routes = [
 	{
 		path: '',
 		title: ple?.pageTitle,
-		component: PleComponent,
+		loadComponent: () => import('./ple.component'),
 	},
 	{
 		path: 'plconfig',
 		title: plconfig?.pageTitle,
-		loadChildren: () =>
-			import('./plconfig/plconfig.module').then((m) => m.PlconfigModule),
+		loadChildren: () => import('./plconfig/plconfig.routes'),
 	},
 	{
 		path: 'messaging',
@@ -54,20 +51,12 @@ const routes: Routes = [
 	{
 		path: 'asciidoc',
 		title: asciidoc?.pageTitle,
-		loadChildren: () =>
-			import('./asciidoc/asciidoc.module').then((m) => m.AsciidocModule),
+		loadChildren: () => import('./asciidoc/asciidoc.routes'),
 	},
 	{
 		path: 'changes',
-		loadChildren: () =>
-			import('./change-report/change-report.module').then(
-				(m) => m.ChangeReportModule
-			),
+		loadChildren: () => import('./change-report/change-report.routes'),
 	},
 ];
 
-@NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-})
-export class PleRoutingModule {}
+export default routes;

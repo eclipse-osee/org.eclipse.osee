@@ -38,6 +38,10 @@ import {
 	take,
 	takeUntil,
 	tap,
+	pairwise,
+	debounceTime,
+	scan,
+	startWith,
 } from 'rxjs/operators';
 import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
 import { applic } from '@osee/shared/types/applicability';
@@ -64,11 +68,7 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 import { MatButtonModule } from '@angular/material/button';
 import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
 import {
-	structure,
-	structureWithChanges,
-	element,
 	STRUCTURE_SERVICE_TOKEN,
-	EditViewFreeTextDialog,
 	defaultEditElementProfile,
 	defaultEditStructureProfile,
 	defaultViewElementProfile,
@@ -78,12 +78,20 @@ import {
 	CurrentStructureService,
 	HeaderService,
 } from '@osee/messaging/shared';
+import type {
+	structure,
+	structureWithChanges,
+	element,
+	EditViewFreeTextDialog,
+} from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
 	ActionDropDownComponent,
 	TwoLayerAddButtonComponent,
 	UndoButtonBranchComponent,
 } from '@osee/shared/components';
+import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
 	selector: 'osee-structure-table',
@@ -109,6 +117,9 @@ import {
 		MatTooltipModule,
 		MatMenuModule,
 		MatButtonModule,
+		MatPaginatorModule,
+		CdkVirtualForOf,
+		ScrollingModule,
 		EditStructureFieldComponent,
 		AddStructureDialogComponent,
 		SubElementTableComponent,
@@ -169,6 +180,36 @@ export class StructureTableComponent implements OnInit {
 		map((x) => x.inEditMode),
 		share(),
 		shareReplay(1)
+	);
+	structures = this.structureService.structures;
+	/**
+	 * @TODO this needs to be replaced with a SQL query since we can't tell whether a user decreased the size or the results themselves decreased
+	 */
+	currentPage = this.structureService.currentPage;
+
+	currentOffset = combineLatest([
+		this.structureService.currentPage.pipe(startWith(0), pairwise()),
+		this.structureService.currentPageSize,
+	]).pipe(
+		debounceTime(100),
+		scan((acc, [[previousPageNum, currentPageNum], currentSize]) => {
+			if (previousPageNum < currentPageNum) {
+				return (acc += currentSize);
+			} else {
+				return acc;
+			}
+		}, 10)
+	);
+	private _structureLength = this.structures.pipe(
+		map((structures) => structures.length)
+	);
+	minPageSize = combineLatest([
+		this.currentOffset,
+		this._structureLength,
+	]).pipe(
+		debounceTime(100),
+		switchMap(([offset, messages]) => of([offset, messages])),
+		map(([offset, length]) => Math.max(offset + 1, length + 1))
 	);
 	private _currentElementHeaders = combineLatest([
 		this.headerService.AllElementHeaders,
@@ -708,5 +749,9 @@ export class StructureTableComponent implements OnInit {
 				| undefined,
 			transaction: value.transactionToken,
 		};
+	}
+	setPage(event: PageEvent) {
+		this.structureService.pageSize = event.pageSize;
+		this.structureService.page = event.pageIndex;
 	}
 }

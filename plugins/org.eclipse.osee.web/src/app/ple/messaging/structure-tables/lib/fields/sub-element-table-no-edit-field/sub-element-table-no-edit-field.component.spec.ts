@@ -30,7 +30,6 @@ describe('SubElementTableNoEditFieldComponent', () => {
 		);
 		await TestBed.configureTestingModule({
 			imports: [RouterTestingModule],
-			declarations: [],
 			providers: [
 				{ provide: Router, useValue: router },
 				{

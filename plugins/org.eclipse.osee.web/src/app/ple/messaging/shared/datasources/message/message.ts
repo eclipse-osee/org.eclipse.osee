@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
-import { message, messageWithChanges } from '@osee/messaging/shared/types';
+import type { message, messageWithChanges } from '@osee/messaging/shared/types';
 import { Observable, takeUntil } from 'rxjs';
 /**
  * Not in use yet

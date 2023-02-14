@@ -21,8 +21,7 @@ describe('ChangeReportTableComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [ChangeReportTableComponent],
+			imports: [HttpClientTestingModule, ChangeReportTableComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ChangeReportTableComponent);

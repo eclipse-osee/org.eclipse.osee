@@ -18,7 +18,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { of } from 'rxjs';
-import { RouteStateService } from '../../../connection-view/lib/services/route-state-service.service';
 
 import { UsermenuComponent } from './usermenu.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -27,12 +26,13 @@ import {
 	editAuthServiceMock,
 	preferencesUiServiceMock,
 } from '@osee/messaging/shared/testing';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;
 	let fixture: ComponentFixture<UsermenuComponent>;
 	let loader: HarnessLoader;
-	let routeState: RouteStateService;
+	let routeState: UiService;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -52,7 +52,7 @@ describe('UsermenuComponent', () => {
 			],
 			declarations: [],
 		}).compileComponents();
-		routeState = TestBed.inject(RouteStateService);
+		routeState = TestBed.inject(UiService);
 	});
 
 	beforeEach(() => {
@@ -67,7 +67,7 @@ describe('UsermenuComponent', () => {
 	});
 
 	it('should open settings dialog', async () => {
-		routeState.branchId = '10';
+		routeState.idValue = '10';
 		let dialogRefSpy = jasmine.createSpyObj({
 			afterClosed: of({
 				branchId: '10',

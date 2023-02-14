@@ -27,8 +27,8 @@ import {
 	ColumnPreferencesDialogComponent,
 	CurrentMessagesService,
 	PreferencesUIService,
-	settingsDialogData,
 } from '@osee/messaging/shared';
+import type { settingsDialogData } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

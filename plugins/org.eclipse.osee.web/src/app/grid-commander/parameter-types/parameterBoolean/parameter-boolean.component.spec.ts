@@ -21,8 +21,7 @@ describe('ParameterBooleanComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule],
-			declarations: [ParameterBooleanComponent],
+			imports: [HttpClientModule, ParameterBooleanComponent],
 		}).compileComponents();
 	});
 

@@ -19,7 +19,7 @@ import {
 	Observable,
 	of,
 	reduce,
-	repeatWhen,
+	repeat,
 	share,
 	shareReplay,
 	switchMap,
@@ -43,14 +43,14 @@ import {
 	transactionResult,
 } from '@osee/shared/types/change-report';
 import { MessagesService } from '../http/messages.service';
-import {
+import type {
 	structure,
 	structureWithChanges,
 	PlatformType,
 	element,
+	MimQuery,
 	settingsDialogData,
 	elementWithChanges,
-	MimQuery,
 } from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
 @Injectable({
@@ -74,6 +74,14 @@ export abstract class CurrentStructureService {
 		protected queryService: QueryService
 	) {}
 
+	abstract get currentPage(): Observable<number>;
+
+	abstract set page(page: number);
+
+	abstract get currentPageSize(): Observable<number>;
+
+	abstract set pageSize(page: number);
+
 	get expandedRows() {
 		return this._expandedRows.asObservable();
 	}
@@ -91,7 +99,7 @@ export abstract class CurrentStructureService {
 		]).pipe(
 			switchMap(([branch, connection, id, submessageId]) =>
 				this.messages.getMessage(branch, connection, id).pipe(
-					repeatWhen((_) => this.ui.UpdateRequired),
+					repeat({ delay: () => this.ui.UpdateRequired }),
 					tap((value) => {
 						this.BreadCrumb =
 							value.name +

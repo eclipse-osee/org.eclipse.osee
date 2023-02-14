@@ -12,10 +12,10 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import {
+import { DiffReportService } from '@osee/messaging/shared';
+import type {
 	structureDiffItem,
 	elementDiffItem,
-	DiffReportService,
 } from '@osee/messaging/shared';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';

@@ -35,7 +35,6 @@ describe('UndoButtonBranchComponent', () => {
 				MatTooltipModule,
 				UndoButtonBranchComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: CurrentBranchTransactionService,

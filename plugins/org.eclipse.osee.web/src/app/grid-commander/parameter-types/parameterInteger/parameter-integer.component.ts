@@ -13,11 +13,17 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-parameter-integer',
 	templateUrl: './parameter-integer.component.html',
 	styleUrls: ['./parameter-integer.component.sass'],
+	standalone: true,
+	imports: [NgIf, MatFormFieldModule, MatInputModule, FormsModule, AsyncPipe],
 })
 export class ParameterIntegerComponent {
 	value = '';

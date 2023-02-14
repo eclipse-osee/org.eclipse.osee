@@ -22,7 +22,7 @@ import {
 	changeInstance,
 	transactionResult,
 } from '@osee/shared/types/change-report';
-import {
+import type {
 	structure,
 	settingsDialogData,
 	PlatformType,
@@ -162,4 +162,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	): Observable<transactionResult> {
 		return of(transactionResultMock);
 	},
+	currentPageSize: of(10),
+	currentPage: of(1),
 };

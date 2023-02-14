@@ -23,7 +23,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 import { EnumSetUniqueDescriptionDirective } from '@osee/messaging/shared/directives';
-import { enumeration, enumerationSet } from '@osee/messaging/shared/types';
+import type { enumeration, enumerationSet } from '@osee/messaging/shared/types';
 import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
 
 @Component({

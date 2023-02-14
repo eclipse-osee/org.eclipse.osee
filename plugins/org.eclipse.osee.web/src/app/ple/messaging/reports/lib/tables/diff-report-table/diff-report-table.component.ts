@@ -15,7 +15,7 @@ import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { HeaderService } from 'src/app/ple-services/ui/header.service';
-import { headerDetail } from '@osee/shared/types';
+import type { headerDetail } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-messaging-diff-report-table',

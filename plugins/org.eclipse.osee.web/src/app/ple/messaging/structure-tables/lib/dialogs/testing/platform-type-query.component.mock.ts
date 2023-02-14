@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PlatformType, PlatformTypeQuery } from '@osee/messaging/shared';
+import type { PlatformType, PlatformTypeQuery } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-platform-type-query',

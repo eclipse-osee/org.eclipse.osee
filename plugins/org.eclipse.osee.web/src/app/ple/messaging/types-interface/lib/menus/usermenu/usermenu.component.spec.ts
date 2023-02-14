@@ -43,7 +43,6 @@ describe('UsermenuComponent', () => {
 				NoopAnimationsModule,
 				UsermenuComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: CurrentTypesService,

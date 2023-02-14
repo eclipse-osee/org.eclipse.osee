@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
+import type {
 	HttpMethods,
 	FileExtensions,
 	ProducesMediaType,

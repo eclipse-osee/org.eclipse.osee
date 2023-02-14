@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { enumeration, enumSet } from '@osee/messaging/shared/types';
+import type { enumeration, enumSet } from '@osee/messaging/shared/types';
 import { relation, transaction } from '@osee/shared/types';
 import {
 	transactionMock,

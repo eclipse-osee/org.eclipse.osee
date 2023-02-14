@@ -10,31 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { from, iif, of, OperatorFunction, throwError } from 'rxjs';
 import {
 	filter,
 	map,
 	mergeMap,
-	reduce,
 	scan,
-	share,
 	switchMap,
 	take,
 	tap,
 } from 'rxjs/operators';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { AddConfigurationGroupDialogComponent } from '../../dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { addCfgGroup } from '../../types/pl-config-cfggroups';
 import { cfgGroup } from '../../types/pl-config-branch';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-plconfig-configuration-group-dropdown',
 	templateUrl: './configuration-group-dropdown.component.html',
 	styleUrls: ['./configuration-group-dropdown.component.sass'],
+	standalone: true,
+	imports: [
+		MatIconModule,
+		MatMenuModule,
+		MatFormFieldModule,
+		NgFor,
+		NgIf,
+		AsyncPipe,
+	],
 })
 export class ConfigurationGroupDropdownComponent {
 	editable = this.currentBranchService.branchApplicEditable;

@@ -37,6 +37,7 @@ describe('EditProductTypeDialogComponent', () => {
 				MatFormFieldModule,
 				MatInputModule,
 				FormsModule,
+				EditProductTypeDialogComponent,
 				NoopAnimationsModule,
 			],
 			providers: [
@@ -46,7 +47,6 @@ describe('EditProductTypeDialogComponent', () => {
 					useValue: new ProductType('Code', 'Description', '1'),
 				},
 			],
-			declarations: [EditProductTypeDialogComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(EditProductTypeDialogComponent);

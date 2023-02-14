@@ -48,7 +48,6 @@ describe('DiffReportComponent', () => {
 				SubmessageDiffsComponent,
 				DiffReportComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

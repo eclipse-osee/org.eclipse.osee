@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use "../../../../../../../sass-utils/mat-table-utils" as utils
-@use '../../../../../../../modern-ple-theme'
+@use "mat-table-utils" as utils
+@use 'modern-ple-theme'
 @use './_theme' as msg
 
 @media (prefers-color-scheme:light)
-  @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme)
+  @include msg.material-theme($config:modern-ple-theme.$modern-ple-light-theme)
 @media (prefers-color-scheme:dark)
-  @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme)
+  @include msg.material-theme($config:modern-ple-theme.$modern-ple-dark-theme)
 
 table
   width: 100%
@@ -92,7 +92,7 @@ tr.message-expanded-detail-row
   z-index: 999
   position: fixed
   bottom: 3%
-  right: 2%
+  left: 2%
 td th
   white-space: nowrap
   overflow: hidden
@@ -138,6 +138,9 @@ td th
   padding: 0 2px 0 2px
 .fit-buttons
   min-width: max-content
+
+th:nth-last-of-type(1)
+  colspan: 2
 @include utils.table-column-width('name ', 200px)
 @include utils.table-column-width('interfaceMinSimultaneity ', 100px)
 @include utils.table-column-width('interfaceMaxSimultaneity ', 100px)

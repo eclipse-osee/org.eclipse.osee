@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, iif, of } from 'rxjs';
 import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
-import {
+import type {
 	branchSummary,
 	branchSummaryHeaderDetail,
 	diffReportSummaryHeaderDetail,
@@ -30,6 +30,22 @@ import {
 	transportTypeSummaryHeaderDetail,
 } from '@osee/messaging/shared/types';
 import { headerDetail } from '@osee/shared/types';
+
+export const HeaderKeysEnum = {
+	NONE: '',
+	CHANGE_REPORT_ROW: 'changeReportRow',
+	ELEMENT: 'element',
+	IMPORT_ENUM_SET: 'importEnumSet',
+	IMPORT_MESSAGE: 'importMessage',
+	IMPORT_NODE: 'importNode',
+	IMPORT_PLATFORM_TYPE: 'importPlatformType',
+	MESSAGE: 'message',
+	NODE_TRACE_REQ: 'nodeTraceReq',
+	STRUCTURE: 'structure',
+	SUBMESSAGE: 'submessage',
+} as const;
+
+export type HeaderKeys = (typeof HeaderKeysEnum)[keyof typeof HeaderKeysEnum];
 
 @Injectable({
 	providedIn: 'root',

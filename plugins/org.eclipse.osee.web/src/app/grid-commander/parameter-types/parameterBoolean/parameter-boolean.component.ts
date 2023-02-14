@@ -18,6 +18,7 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 	selector: 'osee-parameter-boolean',
 	templateUrl: './parameter-boolean.component.html',
 	styleUrls: ['./parameter-boolean.component.sass'],
+	standalone: true,
 })
 export class ParameterBooleanComponent {
 	parameter$ = this.parameterDataService.parameter$;

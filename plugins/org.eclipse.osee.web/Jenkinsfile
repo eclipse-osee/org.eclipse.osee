@@ -58,7 +58,7 @@ spec:
           sh 'npm -v'
           dir('plugins/org.eclipse.osee.web') {
             sh 'npm config set timeout=100000'
-            sh 'npm ci'
+            sh 'npm ci --force'
           }
         }
       }

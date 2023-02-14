@@ -1,4 +1,4 @@
-import { applic } from '@osee/shared/types/applicability';
+import type { applic } from '@osee/shared/types/applicability';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -12,7 +12,7 @@ import { applic } from '@osee/shared/types/applicability';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { hasChanges } from '@osee/shared/types/change-report';
+import type { hasChanges } from '@osee/shared/types/change-report';
 export interface element {
 	[index: string]: any;
 	id: string;

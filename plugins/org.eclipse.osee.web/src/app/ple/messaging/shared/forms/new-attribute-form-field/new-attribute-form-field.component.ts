@@ -22,7 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { UniquePlatformTypeNameDirective } from '@osee/messaging/shared/directives';
-import { logicalTypeFieldInfo } from '@osee/messaging/shared/types';
+import type { logicalTypeFieldInfo } from '@osee/messaging/shared/types';
 import { FirstLetterLowerPipe } from '@osee/shared/utils';
 
 @Component({

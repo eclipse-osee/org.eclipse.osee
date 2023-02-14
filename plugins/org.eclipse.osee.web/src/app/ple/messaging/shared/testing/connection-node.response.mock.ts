@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { ConnectionNode } from '@osee/messaging/shared/types';
+import type { ConnectionNode } from '@osee/messaging/shared/types';
 
 export const connectionNodesMock: ConnectionNode[] = [
 	{

@@ -15,7 +15,11 @@ import { CurrentGraphService } from '../services/current-graph.service';
 import { applic } from '@osee/shared/types/applicability';
 import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
 import { changeInstance } from '@osee/shared/types/change-report';
-import { node, connection, settingsDialogData } from '@osee/messaging/shared';
+import type {
+	node,
+	connection,
+	settingsDialogData,
+} from '@osee/messaging/shared';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { MimPreferencesMock } from '@osee/messaging/shared/testing';
 

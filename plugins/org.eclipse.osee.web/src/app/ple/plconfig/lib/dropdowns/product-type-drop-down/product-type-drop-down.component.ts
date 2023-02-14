@@ -10,9 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { filter, switchMap, take } from 'rxjs';
 import { AddProductTypeDialogComponent } from '../../dialogs/add-product-type-dialog/add-product-type-dialog.component';
 import { EditProductTypeDialogComponent } from '../../dialogs/edit-product-type-dialog/edit-product-type-dialog.component';
@@ -26,6 +29,15 @@ import {
 	selector: 'osee-plconfig-product-type-dropdown',
 	templateUrl: './product-type-drop-down.component.html',
 	styleUrls: ['./product-type-drop-down.component.sass'],
+	standalone: true,
+	imports: [
+		MatIconModule,
+		MatMenuModule,
+		MatFormFieldModule,
+		NgFor,
+		NgIf,
+		AsyncPipe,
+	],
 })
 export class ProductTypeDropDownComponent {
 	editable = this.currentBranchService.branchApplicEditable;

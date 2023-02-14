@@ -23,11 +23,15 @@ import { changeReportRow } from '@osee/shared/types/change-report';
 import { ChangeReportService } from '../../services/change-report.service';
 import { HeaderService } from 'src/app/ple-services/ui/header.service';
 import { changeReportHeaders } from './change-report-table-headers';
+import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
 	selector: 'osee-change-report-table',
 	templateUrl: './change-report-table.component.html',
 	styleUrls: ['./change-report-table.component.scss'],
+	standalone: true,
+	imports: [NgIf, NgClass, AsyncPipe, MatTableModule],
 })
 export class ChangeReportTableComponent implements OnChanges {
 	@Input() branchId: string = '';

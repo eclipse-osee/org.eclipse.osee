@@ -12,11 +12,23 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { ParameterDataService } from '../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { ParameterMultipleSelectComponent } from './parameter-multiple-select/parameter-multiple-select.component';
+import { ParameterStringComponent } from './parameterString/parameter-string.component';
+import { NgIf, NgSwitch, NgSwitchCase, AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-parameter-types',
 	templateUrl: './parameter-types.component.html',
 	styleUrls: ['./parameter-types.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		NgSwitch,
+		NgSwitchCase,
+		ParameterStringComponent,
+		ParameterMultipleSelectComponent,
+		AsyncPipe,
+	],
 })
 export class ParameterTypesComponent {
 	parameter$ = this.parameterDataService.parameter$;

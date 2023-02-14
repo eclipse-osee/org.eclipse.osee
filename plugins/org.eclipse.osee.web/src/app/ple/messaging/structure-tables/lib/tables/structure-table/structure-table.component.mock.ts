@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { structure } from '@osee/messaging/shared';
+import type { structure } from '@osee/messaging/shared';
 import { Observable, of } from 'rxjs';
 
 @Component({

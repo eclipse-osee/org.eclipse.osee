@@ -31,12 +31,12 @@ import { EditConnectionDialogComponent } from './edit-connection-dialog.componen
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
+import type { connection } from '@osee/messaging/shared';
 import {
-	connection,
 	CurrentTransportTypeService,
 	EnumsService,
 } from '@osee/messaging/shared';
-import { MatOptionLoadingTestingModule } from '@osee/shared/components/testing';
+
 import {
 	dialogRef,
 	enumsServiceMock,
@@ -70,10 +70,8 @@ describe('EditConnectionDialogComponent', () => {
 				MatButtonModule,
 				NoopAnimationsModule,
 				FormsModule,
-				MatOptionLoadingTestingModule,
 				EditConnectionDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{ provide: MatDialogRef, useValue: dialogRef },
 				{ provide: MAT_DIALOG_DATA, useValue: dialogData },

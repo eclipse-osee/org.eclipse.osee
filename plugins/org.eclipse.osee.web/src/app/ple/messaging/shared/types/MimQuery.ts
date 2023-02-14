@@ -16,9 +16,9 @@ import {
 	ATTRIBUTETYPEIDENUM,
 	RelationTypeId,
 } from '@osee/shared/types/constants';
-import { MIMATTRIBUTETYPEID } from './MimAttributes';
-import { enumerationSet } from './enum';
-import { PlatformType } from './platformType';
+import type { MIMATTRIBUTETYPEID } from './MimAttributes';
+import type { enumerationSet } from './enum';
+import type { PlatformType } from './platformType';
 
 interface _mimQuery<T> {
 	type: ARTIFACTTYPEID;

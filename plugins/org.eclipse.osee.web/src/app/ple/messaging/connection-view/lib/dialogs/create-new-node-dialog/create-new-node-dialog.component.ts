@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { nodeData } from '@osee/messaging/shared';
+import type { nodeData } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-create-new-node-dialog',

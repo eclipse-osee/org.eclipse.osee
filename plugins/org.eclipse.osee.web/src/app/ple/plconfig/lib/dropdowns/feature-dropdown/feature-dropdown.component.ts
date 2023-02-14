@@ -27,12 +27,24 @@ import { response } from '@osee/shared/types';
 import { AddFeatureDialogComponent } from '../../dialogs/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from '../../dialogs/edit-feature-dialog/edit-feature-dialog.component';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
 	templateUrl: './feature-dropdown.component.html',
 	styleUrls: ['./feature-dropdown.component.sass'],
+	standalone: true,
+	imports: [
+		MatIconModule,
+		MatMenuModule,
+		MatFormFieldModule,
+		NgFor,
+		NgIf,
+		AsyncPipe,
+	],
 })
 export class FeatureDropdownComponent {
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(

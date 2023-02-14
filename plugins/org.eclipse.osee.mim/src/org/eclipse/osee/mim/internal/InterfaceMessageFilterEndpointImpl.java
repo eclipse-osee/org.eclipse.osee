@@ -43,8 +43,9 @@ public class InterfaceMessageFilterEndpointImpl implements InterfaceMessageFilte
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getMessages(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttribute) {
-      return messageApi.getAllForConnectionAndFilter(branch, ConnectionId, filter);
+   public Collection<InterfaceMessageToken> getMessages(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return messageApi.getAllForConnectionAndFilter(branch, ConnectionId, filter, pageNum, pageSize,
+         orderByAttributeType);
    }
 
 }

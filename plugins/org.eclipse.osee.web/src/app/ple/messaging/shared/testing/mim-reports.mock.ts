@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MimReport } from '@osee/messaging/shared/types';
+import type { MimReport } from '@osee/messaging/shared/types';
 import {
 	HttpMethods,
 	FileExtensions,

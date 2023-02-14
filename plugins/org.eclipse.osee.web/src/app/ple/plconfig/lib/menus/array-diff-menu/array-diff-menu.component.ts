@@ -10,15 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatMenuModule } from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
-import { difference } from 'src/app/shared/types/change-report/change-report';
+import { difference } from '@osee/shared/types/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 
 @Component({
 	selector: 'osee-plconfig-array-diff-menu',
 	templateUrl: './array-diff-menu.component.html',
 	styleUrls: ['./array-diff-menu.component.sass'],
+	standalone: true,
+	imports: [NgIf, NgFor, MatMenuModule],
 })
 export class ArrayDiffMenuComponent {
 	@Input() array: difference[] = [];

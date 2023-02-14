@@ -10,11 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { DiffReportResolver } from '@osee/shared/resolvers';
-import { SingleDiffComponent } from '../diff-views/single-diff/single-diff.component';
-import { PlconfigComponent } from './plconfig.component';
+import { Routes } from '@angular/router';
+import { diffReportResolverFn } from '@osee/shared/resolvers';
 
 const routes: Routes = [
 	{
@@ -22,28 +19,32 @@ const routes: Routes = [
 		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
 		outlet: 'toolbar',
 	},
-	{ path: '', component: PlconfigComponent },
-	{ path: ':branchType', component: PlconfigComponent },
+	{ path: '', loadComponent: () => import('./plconfig.component') },
+	{
+		path: ':branchType',
+		loadComponent: () => import('./plconfig.component'),
+	},
 	{
 		path: ':branchType/:branchId',
 		children: [
 			{
 				path: '',
-				component: PlconfigComponent,
+				loadComponent: () => import('./plconfig.component'),
 			},
 
 			{
 				path: 'diff',
-				component: PlconfigComponent,
-				resolve: { diff: DiffReportResolver },
+				loadComponent: () => import('./plconfig.component'),
+				resolve: { diff: diffReportResolverFn },
 			},
 		],
 	},
-	{ path: '', component: SingleDiffComponent, outlet: 'rightSideNav' },
+	{
+		path: '',
+		loadComponent: () =>
+			import('../diff-views/single-diff/single-diff.component'),
+		outlet: 'rightSideNav',
+	},
 ];
 
-@NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-})
-export class PlconfigRoutingModule {}
+export default routes;

@@ -11,10 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import {
-	logicalTypeFormDetail,
-	PLATFORMTYPEATTRIBUTETYPEIDENUM,
-} from '@osee/messaging/shared/types';
+import type { logicalTypeFormDetail } from '@osee/messaging/shared/types';
+import { PLATFORMTYPEATTRIBUTETYPEIDENUM } from '@osee/messaging/shared/types';
 
 export const logicalTypeFormDetailMock: logicalTypeFormDetail = {
 	fields: [

@@ -14,7 +14,7 @@ import { of } from 'rxjs';
 import { MessagesService } from '../services/http/messages.service';
 import { messagesMock } from './messages.response.mock';
 import { connectionNodesMock } from '@osee/messaging/shared/testing';
-import { message } from '@osee/messaging/shared/types';
+import type { message } from '@osee/messaging/shared/types';
 import { transaction, relation } from '@osee/shared/types';
 import {
 	transactionMock,
@@ -22,7 +22,7 @@ import {
 } from '@osee/shared/transactions/testing';
 
 export const messageServiceMock: Partial<MessagesService> = {
-	getFilteredMessages(filter, branchId, connectionId) {
+	getFilteredMessages(filter, branchId, connectionId, pageNum, pageSize) {
 		return of(messagesMock);
 	},
 	getMessage(branchId: string, messageId: string) {

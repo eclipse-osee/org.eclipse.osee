@@ -46,18 +46,20 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-	MimQuery,
-	PlatformType,
 	STRUCTURE_SERVICE_TOKEN,
 	PlatformTypeQuery,
-	element,
-	newPlatformTypeDialogReturnData,
 	andQuery,
 	andNameQuery,
-	enumeration,
 	NewTypeFormComponent,
 	CurrentStructureService,
 	TypesUIService,
+} from '@osee/messaging/shared';
+import type {
+	element,
+	newPlatformTypeDialogReturnData,
+	enumeration,
+	MimQuery,
+	PlatformType,
 } from '@osee/messaging/shared';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 

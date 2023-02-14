@@ -18,11 +18,10 @@ import { filter, map, scan, startWith, switchMap, tap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import {
 	ApplicabilityListService,
-	connection,
 	ConnectionService,
-	MimReport,
 	ReportsService,
 } from '@osee/messaging/shared';
+import type { connection, MimReport } from '@osee/messaging/shared';
 import { UiService } from '../../../ple-services/ui/ui.service';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';

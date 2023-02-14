@@ -22,7 +22,6 @@ describe('SubElementTableNoEditFieldDynamicWidthComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [],
 			providers: [
 				{
 					provide: PreferencesUIService,

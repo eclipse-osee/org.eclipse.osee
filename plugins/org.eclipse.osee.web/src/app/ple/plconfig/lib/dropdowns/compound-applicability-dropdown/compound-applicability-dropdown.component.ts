@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { Observable, of, OperatorFunction } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
 import { AddCompoundApplicabilityDialogComponent } from '../../dialogs/add-compound-applicability-dialog/add-compound-applicability-dialog.component';
@@ -24,11 +24,23 @@ import {
 	PLAddCompoundApplicabilityData,
 } from '../../types/pl-config-compound-applicabilities';
 import { tap } from 'rxjs';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-compound-applicability-dropdown',
 	templateUrl: './compound-applicability-dropdown.component.html',
 	styleUrls: ['./compound-applicability-dropdown.component.sass'],
+	standalone: true,
+	imports: [
+		MatIconModule,
+		MatMenuModule,
+		MatFormFieldModule,
+		NgFor,
+		NgIf,
+		AsyncPipe,
+	],
 })
 export class CompoundApplicabilityDropdownComponent {
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(

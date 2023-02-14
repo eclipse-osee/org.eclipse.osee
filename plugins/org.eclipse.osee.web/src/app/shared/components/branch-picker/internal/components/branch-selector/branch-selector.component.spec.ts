@@ -37,7 +37,6 @@ describe('BranchSelectorComponent', () => {
 				MockMatOptionLoadingComponent,
 				BranchSelectorComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

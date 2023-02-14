@@ -16,10 +16,10 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import type { settingsDialogData } from '@osee/messaging/shared';
 import {
-	ColumnPreferencesDialogComponent,
 	PreferencesUIService,
-	settingsDialogData,
+	ColumnPreferencesDialogComponent,
 } from '@osee/messaging/shared';
 import { combineLatest } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';

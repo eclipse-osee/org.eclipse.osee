@@ -10,46 +10,43 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpInterceptor,
-	HttpRequest,
-	HttpHandler,
-	HttpResponse,
-} from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { finalize, tap } from 'rxjs/operators';
-import { HttpLoadingService } from 'src/app/services/http-loading.service';
+import { HttpRequest, HttpHandlerFn, HttpResponse } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { finalize, tap } from 'rxjs';
+import { HttpLoadingService } from '../services/http-loading.service';
 
-/** Pass untouched request through to the next request handler. */
-@Injectable()
-export class LoadingIndicatorInterceptor implements HttpInterceptor {
-	requests: HttpRequest<any>[] = [];
-	constructor(private loadingService: HttpLoadingService) {}
-	intercept(req: HttpRequest<any>, next: HttpHandler) {
-		this.requests.push(req);
-		this.loadingService.loading = true;
-		return next.handle(req).pipe(
-			tap(
-				(event) => {
-					if (event instanceof HttpResponse) {
-						this.removeRequest(req);
-					}
-				},
-				(error) => {
-					alert('Request ' + req.url + ' returned an error.');
-					this.removeRequest(req);
+let requests: HttpRequest<any>[] = [];
+export const LoadingIndicatorInterceptor = (
+	req: HttpRequest<unknown>,
+	next: HttpHandlerFn
+) => {
+	requests.push(req);
+	const loadingService = inject(HttpLoadingService);
+	loadingService.loading = true;
+	return next(req).pipe(
+		tap(
+			(event) => {
+				if (event instanceof HttpResponse) {
+					removeRequest(req, loadingService);
 				}
-			),
-			finalize(() => {
-				this.removeRequest(req);
-			})
-		);
+			},
+			(error) => {
+				alert('Request ' + req.url + ' returned an error.');
+				removeRequest(req, loadingService);
+			}
+		),
+		finalize(() => {
+			removeRequest(req, loadingService);
+		})
+	);
+};
+function removeRequest(
+	req: HttpRequest<any>,
+	loadingService: HttpLoadingService
+) {
+	const index = requests.indexOf(req);
+	if (index >= 0) {
+		requests.splice(index, 1);
 	}
-	removeRequest(req: HttpRequest<any>) {
-		const index = this.requests.indexOf(req);
-		if (index >= 0) {
-			this.requests.splice(index, 1);
-		}
-		this.loadingService.loading = this.requests.length > 0;
-	}
+	loadingService.loading = requests.length > 0;
 }

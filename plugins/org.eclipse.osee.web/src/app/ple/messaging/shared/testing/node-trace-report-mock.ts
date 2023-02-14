@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NodeTraceReportItem } from '../types/NodeTraceReport';
+import type { NodeTraceReportItem } from '../types/NodeTraceReport';
 
 export const NodeTraceReportMock: NodeTraceReportItem[] = [
 	{

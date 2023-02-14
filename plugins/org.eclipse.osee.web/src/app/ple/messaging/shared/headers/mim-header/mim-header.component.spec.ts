@@ -123,7 +123,6 @@ describe('MimHeaderComponent', () => {
 				},
 				{ provide: StructuresService, useValue: structureServiceMock },
 			],
-			declarations: [],
 		}).compileComponents();
 		uiService = TestBed.inject(MimRouteService);
 	});

@@ -34,7 +34,6 @@ describe('StructureDiffsComponent', () => {
 				DiffReportTableComponent,
 				StructureDiffsComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

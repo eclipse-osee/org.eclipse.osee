@@ -12,13 +12,16 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { map } from 'rxjs';
-import { HttpLoadingService } from './services/http-loading.service';
 import { SideNavService } from './shared-services/ui/side-nav.service';
+import { NavContainerComponent } from './layout/lib/containers/nav-container.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
 	selector: 'osee-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.sass'],
+	standalone: true,
+	imports: [RouterOutlet, NavContainerComponent],
 })
 export class AppComponent {
 	rightSideNavOpened = this.sideNavService.rightSideNavOpened;

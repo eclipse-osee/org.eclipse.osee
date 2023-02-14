@@ -14,8 +14,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { apiURL } from '../../../../../../environments/environment';
-import { logicalType, logicalTypeFormDetail } from '../../types/logicaltype';
-import { PlatformType } from '../../types/platformType';
+import type {
+	logicalType,
+	logicalTypeFormDetail,
+} from '../../types/logicaltype';
+import type { PlatformType } from '../../types/platformType';
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
@@ -24,7 +27,7 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import type { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -44,10 +47,18 @@ export class TypesService {
 	 */
 	getFilteredTypes(
 		filter: string,
-		branchId: string
+		branchId: string,
+		pageNum: number,
+		pageSize: number
 	): Observable<PlatformType[]> {
 		return this.http.get<PlatformType[]>(
-			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter
+			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter,
+			{
+				params: {
+					count: pageSize,
+					pageNum: pageNum,
+				},
+			}
 		);
 	}
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { MimQuery } from '@osee/messaging/shared/types';
+import type { MimQuery } from '@osee/messaging/shared/types';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { QueryService } from '../http/query.service';

@@ -48,10 +48,10 @@ describe('AddFeatureDialogComponent', () => {
 				MatInputModule,
 				MatSelectModule,
 				FormsModule,
+				AddFeatureDialogComponent,
 				NoopAnimationsModule,
 				MatSlideToggleModule,
 			],
-			declarations: [AddFeatureDialogComponent],
 			providers: [
 				{ provide: PlConfigBranchService, useValue: branchService },
 				{

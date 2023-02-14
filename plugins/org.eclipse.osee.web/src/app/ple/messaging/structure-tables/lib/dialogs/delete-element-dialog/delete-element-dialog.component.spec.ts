@@ -27,7 +27,6 @@ describe('DeleteElementDialogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [],
 			imports: [MatDialogModule, MatButtonModule],
 			providers: [
 				{ provide: MatDialogRef, useValue: dialogRef },

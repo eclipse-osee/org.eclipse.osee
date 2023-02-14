@@ -20,7 +20,7 @@ import { StructuresService } from './structures.service';
 import { HttpClient } from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
-import { structure } from '@osee/messaging/shared/types';
+import type { structure } from '@osee/messaging/shared/types';
 import { structuresMock3 } from '@osee/messaging/shared/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { relation } from '@osee/shared/types';
@@ -74,7 +74,9 @@ describe('StructuresService', () => {
 				interfaceTaskFileType: 1,
 			},
 		];
-		service.getFilteredStructures('0', '0', '1', '2', '3').subscribe();
+		service
+			.getFilteredStructures('0', '0', '1', '2', '3', 1, 10)
+			.subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/branch/' +
@@ -86,7 +88,8 @@ describe('StructuresService', () => {
 				'/submessages/' +
 				2 +
 				'/structures/filter/' +
-				0
+				0 +
+				'?count=10&pageNum=1'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(testData);

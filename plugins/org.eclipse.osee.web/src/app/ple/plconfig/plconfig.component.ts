@@ -10,25 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, from, iif, Observable, of, Subject } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
-	concatMap,
-	filter,
-	map,
-	switchMap,
-	takeUntil,
-	tap,
-	reduce,
-} from 'rxjs/operators';
-import { ActionStateButtonService } from '@osee/shared/components';
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
+import { combineLatest, iif, Observable, of, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { EditDefinitionsDropdownComponent } from './lib/dropdowns/edit-definitions-dropdown/edit-definitions-dropdown.component';
 import { PlConfigUIStateService } from './lib/services/pl-config-uistate.service';
+import { ApplicabilityTableComponent } from './lib/table/applicability-table/applicability-table.component';
 
 @Component({
 	selector: 'osee-plconfig',
 	templateUrl: './plconfig.component.html',
 	styleUrls: ['./plconfig.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		AsyncPipe,
+		RouterLink,
+		MatIconModule,
+		MatButtonModule,
+		BranchPickerComponent,
+		ActionDropDownComponent,
+		EditDefinitionsDropdownComponent,
+		ApplicabilityTableComponent,
+	],
 })
 export class PlconfigComponent implements OnInit, OnDestroy {
 	_updateRequired: Observable<boolean> = this.uiStateService.updateReq;
@@ -117,3 +129,4 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 }
+export default PlconfigComponent;

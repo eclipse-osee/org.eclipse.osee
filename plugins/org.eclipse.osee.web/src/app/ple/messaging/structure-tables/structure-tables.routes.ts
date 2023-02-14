@@ -15,7 +15,7 @@ import {
 	MULTI_STRUCTURE_SERVICE,
 	SINGLE_STRUCTURE_SERVICE,
 } from '@osee/messaging/shared';
-import { DiffReportResolver } from '@osee/shared/resolvers';
+import { diffReportResolverFn } from '@osee/shared/resolvers';
 
 const routes: Route[] = [
 	{
@@ -41,7 +41,7 @@ const routes: Route[] = [
 					import(
 						'./multi-structure-table/multi-structure-table.component'
 					),
-				resolve: { diff: DiffReportResolver },
+				resolve: { diff: diffReportResolverFn },
 			},
 		],
 	},
@@ -62,7 +62,7 @@ const routes: Route[] = [
 					import(
 						'./single-structure-table/single-structure-table.component'
 					),
-				resolve: { diff: DiffReportResolver },
+				resolve: { diff: diffReportResolverFn },
 			},
 		],
 	},

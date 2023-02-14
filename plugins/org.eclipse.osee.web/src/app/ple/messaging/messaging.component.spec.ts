@@ -24,18 +24,24 @@ import { MessagingComponent } from './messaging.component';
 @Component({
 	selector: 'osee-mock-help',
 	template: '<p>Dummy</p>',
+	standalone: true,
+	imports: [MessagingComponent, MatIconModule],
 })
 class MessagingHelpDummyComponent {}
 
 @Component({
 	selector: 'osee-mock-main',
 	template: '<p>Dummy</p>',
+	standalone: true,
+	imports: [MessagingComponent, MatIconModule],
 })
 class MessagingMainMockComponent {}
 
 @Component({
 	selector: 'osee-mock-type-search',
 	template: '<p>Dummy</p>',
+	standalone: true,
+	imports: [MessagingComponent, MatIconModule],
 })
 class MessagingTypeSearchMockComponent {}
 
@@ -60,17 +66,15 @@ describe('MessagingComponent', () => {
 					{ path: 'help', component: MessagingHelpDummyComponent },
 				]),
 				MatIconModule,
+				MessagingMainMockComponent,
+				MessagingTypeSearchMockComponent,
+				MessagingHelpDummyComponent,
 			],
 			providers: [
 				{
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
 				},
-			],
-			declarations: [
-				MessagingMainMockComponent,
-				MessagingTypeSearchMockComponent,
-				MessagingHelpDummyComponent,
 			],
 		}).compileComponents();
 	});

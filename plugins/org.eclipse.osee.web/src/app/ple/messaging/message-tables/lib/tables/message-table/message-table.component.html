@@ -279,6 +279,15 @@
 				(rowIsExpanded(row.id) | async) || false
 			"></tr>
 	</table>
+	<ng-container *ngIf="messages | async as _messages">
+		<mat-paginator
+			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100]"
+			[pageSize]="_messages.length"
+			[pageIndex]="currentPage | async"
+			(page)="setPage($event)"
+			[length]="minPageSize | async"
+			[disabled]="false"></mat-paginator>
+	</ng-container>
 </div>
 <mat-menu
 	#contextMenu="matMenu"

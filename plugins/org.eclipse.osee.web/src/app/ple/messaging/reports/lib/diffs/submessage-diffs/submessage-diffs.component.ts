@@ -12,7 +12,8 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { submessageDiffItem, DiffReportService } from '@osee/messaging/shared';
+import { DiffReportService } from '@osee/messaging/shared';
+import type { submessageDiffItem } from '@osee/messaging/shared';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
 import { submessageDiffHeaderDetails } from '../../table-headers/submessage-diff-table-headers';

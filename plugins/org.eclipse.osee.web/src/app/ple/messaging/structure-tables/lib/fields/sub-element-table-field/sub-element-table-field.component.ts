@@ -17,7 +17,7 @@ import { applic } from '@osee/shared/types/applicability';
 import { EditElementFieldComponent } from '../edit-element-field/edit-element-field.component';
 import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
-import { element, structure } from '@osee/messaging/shared';
+import type { element, structure } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',

@@ -20,7 +20,7 @@ import { relation, transaction } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
-import { enumeration, enumerationSet, enumSet } from '../../types/enum';
+import type { enumeration, enumerationSet, enumSet } from '../../types/enum';
 
 @Injectable({
 	providedIn: 'root',

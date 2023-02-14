@@ -21,8 +21,7 @@ describe('HideColumnCommandComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			declarations: [HideColumnCommandComponent],
+			imports: [HttpClientTestingModule, HideColumnCommandComponent],
 		}).compileComponents();
 	});
 

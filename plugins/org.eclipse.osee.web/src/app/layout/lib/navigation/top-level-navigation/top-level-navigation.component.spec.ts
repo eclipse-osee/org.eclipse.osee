@@ -47,7 +47,6 @@ export const tests = (
 					useValue: serviceMock,
 				},
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

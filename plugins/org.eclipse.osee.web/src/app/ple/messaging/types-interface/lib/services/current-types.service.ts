@@ -11,13 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, iif, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
 	repeatWhen,
 	share,
+	shareReplay,
 	switchMap,
 	take,
 	tap,
@@ -28,6 +29,8 @@ import {
 	TypesService,
 	PreferencesUIService,
 	TypesUIService,
+} from '@osee/messaging/shared';
+import type {
 	PlatformType,
 	enumeration,
 	settingsDialogData,
@@ -38,28 +41,35 @@ import { transaction } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class CurrentTypesService {
+	private _currentPage$ = new BehaviorSubject<number>(0);
+	private _currentPageSize$ = new BehaviorSubject<number>(10);
 	private _typeData = combineLatest([
 		this.uiService.filter,
 		this.uiService.BranchId,
+		this.currentPage,
+		this.currentPageSize,
 	]).pipe(
 		share(),
-		filter(([filter, id]) => id !== ''),
+		filter(([filter, id, page, pageSize]) => id !== ''),
 		debounceTime(500),
 		distinctUntilChanged(),
-		switchMap(([filter, id]) =>
-			this.typesService.getFilteredTypes(filter, id).pipe(
-				repeatWhen((_) => this.uiService.typeUpdateRequired),
-				share(),
-				tap((y) => {
-					//this.uiService.updateTypes = false;
-					if (y.length <= this.uiService.columnCount.getValue()) {
-						this.uiService.singleLineAdjustmentNumber = 30;
-					} else {
-						this.uiService.singleLineAdjustmentNumber = 0;
-					}
-				})
-			)
-		)
+		switchMap(([filter, id, page, pageSize]) =>
+			this.typesService
+				.getFilteredTypes(filter, id, page + 1, pageSize)
+				.pipe(
+					repeatWhen((_) => this.uiService.typeUpdateRequired),
+					share(),
+					tap((y) => {
+						//this.uiService.updateTypes = false;
+						if (y.length <= this.uiService.columnCount.getValue()) {
+							this.uiService.singleLineAdjustmentNumber = 30;
+						} else {
+							this.uiService.singleLineAdjustmentNumber = 0;
+						}
+					})
+				)
+		),
+		shareReplay({ refCount: true, bufferSize: 1 })
 	);
 
 	constructor(
@@ -102,6 +112,21 @@ export class CurrentTypesService {
 			isNewEnumSet,
 			enumSetData
 		);
+	}
+
+	get currentPage() {
+		return this._currentPage$;
+	}
+
+	set page(page: number) {
+		this._currentPage$.next(page);
+	}
+
+	get currentPageSize() {
+		return this._currentPageSize$;
+	}
+	set pageSize(page: number) {
+		this._currentPageSize$.next(page);
 	}
 
 	public get preferences() {

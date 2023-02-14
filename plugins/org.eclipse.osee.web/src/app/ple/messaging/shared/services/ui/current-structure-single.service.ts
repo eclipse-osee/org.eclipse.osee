@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import {
+import type {
 	structure,
 	structureWithChanges,
 	elementWithChanges,
@@ -29,6 +29,7 @@ import {
 	repeat,
 	OperatorFunction,
 	debounceTime,
+	Observable,
 } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import {
@@ -116,6 +117,22 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 		),
 		map((data) => [data])
 	);
+	/**
+	 * no-op implementation
+	 */
+	get currentPage() {
+		return of();
+	}
+
+	/**
+	 * no-op implementation
+	 */
+	set page(page: number) {}
+
+	get currentPageSize(): Observable<number> {
+		return of();
+	}
+	set pageSize(page: number) {}
 	get structures() {
 		return this._structures;
 	}

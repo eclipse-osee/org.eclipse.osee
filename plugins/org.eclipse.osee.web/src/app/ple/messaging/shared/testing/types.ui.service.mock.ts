@@ -13,7 +13,7 @@
 import { of } from 'rxjs';
 import { TypesUIService } from '../services/ui/types-ui.service';
 import { platformTypes1 } from './platform-types.response.mock';
-import { PlatformType } from '@osee/messaging/shared/types';
+import type { PlatformType } from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
 import {
 	transactionMock,

@@ -11,13 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { addCfgGroup } from '../../types/pl-config-cfggroups';
 
 @Component({
 	selector: 'osee-plconfig-add-configuration-group-dialog',
 	templateUrl: './add-configuration-group-dialog.component.html',
 	styleUrls: ['./add-configuration-group-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		FormsModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatButtonModule,
+	],
 })
 export class AddConfigurationGroupDialogComponent {
 	constructor(
