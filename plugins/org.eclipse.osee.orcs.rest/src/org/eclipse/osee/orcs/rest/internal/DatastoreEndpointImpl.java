@@ -80,8 +80,14 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public UserToken getUserInfo(String userId) {
-      return userService.getUserByUserId(userId);
+   public UserToken getUserInfo(String userId, String externalUserInfo) {
+      if (!userId.equals("-1")) {
+         return userService.getUserByUserId(userId);
+      }
+      if (!externalUserInfo.equals("-1")) {
+         return userService.getUserByUserId(externalUserInfo);
+      }
+      return UserToken.SENTINEL;
    }
 
    /**
