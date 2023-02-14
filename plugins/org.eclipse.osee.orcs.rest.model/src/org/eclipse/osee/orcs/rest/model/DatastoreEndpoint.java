@@ -53,10 +53,19 @@ public interface DatastoreEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    TransactionId createUsers(Iterable<UserToken> users);
 
+   /**
+    * Used for initial authentication from the web to the server.
+    *
+    * @param userId This header is used when you can control the authentication provider to provide data closer to what
+    * OSEE needs.
+    * @param externalUserInfo Typical use case is authentication is provided by an external service (i.e. Auth0,
+    * Firebase, KeyCloak etc). This should be the default authentication method for web clients.
+    * @return The current logged in user.
+    */
    @GET
    @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
-   UserToken getUserInfo(@DefaultValue("-1") @HeaderParam("osee.user.id") String userId);
+   UserToken getUserInfo(@DefaultValue("-1") @HeaderParam("osee.user.id") String userId, @DefaultValue("-1") @HeaderParam("osee_external_user_info") String externalUserInfo);
 
    /**
     * Clears the OSEE server's {@link UserToken} cache.
