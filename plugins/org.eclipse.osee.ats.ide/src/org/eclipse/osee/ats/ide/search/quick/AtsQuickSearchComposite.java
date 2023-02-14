@@ -180,8 +180,9 @@ public class AtsQuickSearchComposite extends Composite {
          AWorkbench.popup("Please enter search string");
          return;
       }
+      String srchText = searchArea.getText().trim();
       AtsQuickSearchData data =
-         new AtsQuickSearchData("ATS Quick Search", searchArea.getText(), completeCancelledCheck.isChecked());
+         new AtsQuickSearchData("ATS Quick Search", srchText, completeCancelledCheck.isChecked());
       Job srchJob = new Job("ATS - Search by ID(s)") {
 
          @Override
