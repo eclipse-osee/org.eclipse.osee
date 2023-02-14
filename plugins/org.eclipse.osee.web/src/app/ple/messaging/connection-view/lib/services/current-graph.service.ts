@@ -41,16 +41,18 @@ import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { RelationTypeId } from 'src/app/shared/types/constants/RelationTypeId.enum';
 import {
 	ApplicabilityListService,
-	connection,
 	ConnectionService,
+	NodeService,
+	PreferencesUIService,
+} from '@osee/messaging/shared';
+import type {
+	connection,
 	connectionWithChanges,
 	node,
 	nodeData,
 	nodeDataWithChanges,
-	NodeService,
 	OseeEdge,
 	OseeNode,
-	PreferencesUIService,
 	transportType,
 } from '@osee/messaging/shared';
 import { relation, transactionToken } from '@osee/shared/types';

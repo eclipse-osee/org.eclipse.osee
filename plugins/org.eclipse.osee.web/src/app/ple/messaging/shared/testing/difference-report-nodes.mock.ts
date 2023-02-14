@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { nodeDiffItem } from '@osee/messaging/shared/types';
+import type { nodeDiffItem } from '@osee/messaging/shared/types';
 export const nodeDiffsMock: nodeDiffItem[] = [
 	{
 		id: '200394',

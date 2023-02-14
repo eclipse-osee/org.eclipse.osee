@@ -65,16 +65,14 @@ describe('PlconfigComponent', () => {
 				NoopAnimationsModule,
 				ActionDropdownStub,
 				BranchPickerStub,
-			],
-			declarations: [
-				PlconfigComponent,
-				ApplicabilityTableComponent,
 				ConfigurationDropdownComponent,
 				ConfigurationGroupDropdownComponent,
 				FeatureDropdownComponent,
 				ProductTypeDropDownComponent,
-				EditDefinitionsDropdownComponent,
 				CompoundApplicabilityDropdownComponent,
+				EditDefinitionsDropdownComponent,
+				ApplicabilityTableComponent,
+				PlconfigComponent,
 			],
 			providers: [
 				{

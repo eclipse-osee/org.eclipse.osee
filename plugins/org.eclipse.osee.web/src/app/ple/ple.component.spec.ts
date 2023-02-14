@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -25,8 +24,7 @@ describe('PleComponent', () => {
 	beforeEach(async () => {
 		router = jasmine.createSpyObj('Router', ['navigate']);
 		await TestBed.configureTestingModule({
-			imports: [MatButtonModule, RouterTestingModule],
-			declarations: [PleComponent],
+			imports: [PleComponent, RouterTestingModule],
 			providers: [
 				{ provide: Router, useValue: router },
 				{ provide: ActivatedRoute, useValue: {} },

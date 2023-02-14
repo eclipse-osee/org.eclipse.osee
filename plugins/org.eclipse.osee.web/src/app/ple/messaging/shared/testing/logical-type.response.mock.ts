@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { logicalType } from '@osee/messaging/shared/types';
+import type { logicalType } from '@osee/messaging/shared/types';
 
 export const logicalTypeMock: logicalType[] = [
 	{

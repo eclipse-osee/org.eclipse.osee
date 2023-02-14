@@ -10,13 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'osee-ple-main',
 	templateUrl: './ple.component.html',
 	styleUrls: ['./ple.component.sass'],
+	standalone: true,
+	imports: [MatButtonModule],
 })
 export class PleComponent {
 	constructor(private route: ActivatedRoute, private router: Router) {}
@@ -28,3 +31,4 @@ export class PleComponent {
 		});
 	}
 }
+export default PleComponent;

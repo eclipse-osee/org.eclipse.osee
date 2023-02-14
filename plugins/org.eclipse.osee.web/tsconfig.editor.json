@@ -77,6 +77,9 @@
 			],
 			"@osee/messaging/shared/services": [
 				"src/app/ple/messaging/shared/services"
+			],
+			"@osee/messaging/shared/preferences": [
+				"src/app/ple/messaging/shared/preferences"
 			]
 		}
 	},

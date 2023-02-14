@@ -20,7 +20,7 @@ import { apiURL } from 'src/environments/environment';
 import { MockUserResponse } from '../../../../../testing/user.response.mock';
 
 import { MimPreferencesService } from './mim-preferences.service';
-import { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
+import type { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
 import { TransactionService } from '@osee/shared/transactions';
 import {
 	transactionServiceMock,

@@ -31,10 +31,10 @@ import {
 	CurrentQueryService,
 } from '@osee/messaging/shared/services';
 import {
-	enumeration,
 	EnumerationSetQuery,
 	andDescriptionQuery,
 } from '@osee/messaging/shared/types';
+import type { enumeration } from '@osee/messaging/shared/types';
 import { combineLatest, from, of, Subject } from 'rxjs';
 import {
 	switchMap,

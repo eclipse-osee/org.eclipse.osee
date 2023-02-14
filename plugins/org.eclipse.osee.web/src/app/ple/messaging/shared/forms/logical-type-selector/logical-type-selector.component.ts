@@ -25,7 +25,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { TypesService } from '@osee/messaging/shared/services';
-import { logicalType } from '@osee/messaging/shared/types';
+import type { logicalType } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 import { HasValidIdDirective } from '@osee/shared/validators';

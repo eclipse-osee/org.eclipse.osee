@@ -12,7 +12,7 @@
  **********************************************************************/
 @use 'sass:map';
 @use '@angular/material' as mat;
-@use '../../../../modern-ple-theme.scss' as theme;
+@use 'modern-ple-theme' as theme;
 
 @mixin density($config-or-theme) {
 	$density: mat.get-density-config($config-or-theme);
@@ -34,7 +34,7 @@
 	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography) {
+@mixin material-theme($theme, $typography) {
 	$color: mat.get-color-config($theme);
 	$typography: mat.get-typography-config($theme);
 	$density: mat.get-density-config($theme);

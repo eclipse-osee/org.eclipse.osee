@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { PlatformType } from '@osee/messaging/shared/types';
+import type { PlatformType } from '@osee/messaging/shared/types';
 
 export const platformTypesMock: PlatformType[] = [
 	{

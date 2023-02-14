@@ -32,11 +32,11 @@ import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { GraphNodeMenuComponent } from './graph-node-menu.component';
-import {
-	EnumsService,
+import type {
 	nodeDataWithChanges,
 	_newConnection,
 } from '@osee/messaging/shared';
+import { EnumsService } from '@osee/messaging/shared';
 import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
 describe('GraphNodeMenuComponent', () => {
@@ -74,7 +74,6 @@ describe('GraphNodeMenuComponent', () => {
 				{ provide: CurrentGraphService, useValue: graphServiceMock },
 				{ provide: EnumsService, useValue: enumsServiceMock },
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

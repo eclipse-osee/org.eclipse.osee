@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import {
+import type {
 	structure,
 	element,
 	elementWithChanges,
@@ -24,7 +24,7 @@ import {
 	distinctUntilChanged,
 	filter,
 	switchMap,
-	repeatWhen,
+	repeat,
 	shareReplay,
 	of,
 	concatMap,
@@ -34,6 +34,8 @@ import {
 	OperatorFunction,
 	reduce,
 	take,
+	BehaviorSubject,
+	Observable,
 } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import {
@@ -52,28 +54,59 @@ import { CurrentStructureService } from './current-structure.service';
 	providedIn: 'root',
 })
 export class CurrentStructureMultiService extends CurrentStructureService {
+	private _currentPage$ = new BehaviorSubject<number>(0);
+	private _currentPageSize$ = new BehaviorSubject<number>(10);
 	private _structuresNoDiff = combineLatest([
 		this.ui.filter,
 		this.ui.BranchId,
 		this.ui.messageId,
 		this.ui.subMessageId,
 		this.ui.connectionId,
+		this.currentPage,
+		this.currentPageSize,
 	]).pipe(
 		share(),
 		debounceTime(500),
 		distinctUntilChanged(),
 		filter(
-			([filter, branchId, messageId, subMessageId, connectionId]) =>
+			([
+				filter,
+				branchId,
+				messageId,
+				subMessageId,
+				connectionId,
+				page,
+				pageSize,
+			]) =>
 				branchId !== '' &&
 				messageId !== '' &&
 				subMessageId !== '' &&
 				connectionId !== ''
 		),
-		switchMap((x) =>
-			this.structure.getFilteredStructures(...x).pipe(
-				repeatWhen((_) => this.ui.UpdateRequired),
-				share()
-			)
+		switchMap(
+			([
+				filter,
+				branchId,
+				messageId,
+				subMessageId,
+				connectionId,
+				page,
+				pageSize,
+			]) =>
+				this.structure
+					.getFilteredStructures(
+						filter,
+						branchId,
+						messageId,
+						subMessageId,
+						connectionId,
+						page + 1,
+						pageSize
+					)
+					.pipe(
+						repeat({ delay: () => this.ui.UpdateRequired }),
+						share()
+					)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -110,6 +143,22 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 					: of(structures)
 		)
 	);
+
+	get currentPage() {
+		return this._currentPage$;
+	}
+
+	set page(page: number) {
+		this._currentPage$.next(page);
+	}
+
+	get currentPageSize(): Observable<number> {
+		return this._currentPageSize$;
+	}
+	set pageSize(page: number) {
+		this._currentPageSize$.next(page);
+	}
+
 	get structures() {
 		return this._structures;
 	}

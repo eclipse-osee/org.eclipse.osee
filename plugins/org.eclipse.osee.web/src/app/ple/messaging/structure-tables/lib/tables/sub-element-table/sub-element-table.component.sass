@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../../../../sass-utils/mdc-migration/_form-field'
-@use '../../../../../../../modern-ple-theme'
+@use 'mdc-migration/_form-field'
+@use 'modern-ple-theme'
 @use './_theme' as msg
 
 @media (prefers-color-scheme:light)
-  @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme)
+  @include msg.material-theme($theme:modern-ple-theme.$modern-ple-light-theme)
 @media (prefers-color-scheme:dark)
-  @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme)
+  @include msg.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 
 .message-element-interface-table-view-sub-message-header
   font:

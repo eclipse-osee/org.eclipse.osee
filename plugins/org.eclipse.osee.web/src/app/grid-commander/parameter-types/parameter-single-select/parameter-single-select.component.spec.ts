@@ -29,8 +29,8 @@ describe('ParameterSingleSelectComponent', () => {
 				MatSelectModule,
 				MatFormFieldModule,
 				NoopAnimationsModule,
+				ParameterSingleSelectComponent,
 			],
-			declarations: [ParameterSingleSelectComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ParameterSingleSelectComponent);

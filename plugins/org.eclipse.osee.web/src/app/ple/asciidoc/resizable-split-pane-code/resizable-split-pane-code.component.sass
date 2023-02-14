@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-   
+@use 'modern-ple-theme'
+@use '_theme.scss' as t
+@media (prefers-color-scheme:light)
+    @include t.material-theme($theme:modern-ple-theme.$modern-ple-light-theme)
+@media (prefers-color-scheme:dark)
+    @include t.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 body
     display: flex
     flex-direction: column
@@ -26,7 +31,7 @@ body
     transform: translateY(-0.25rem)
     filter: brightness(70%)
 
-.container 
+.container
     display: flex
 
     /* Misc */
@@ -36,7 +41,7 @@ body
     width: 95%
     z-index: 4
 
-.container__left 
+.container__left
     /* Initial left width */
     width: 25%
     /* Misc */
@@ -46,27 +51,25 @@ body
     overflow-y: auto
     padding: .5rem
 
-
-.container_left_internal 
+.container_left_internal
     margin: auto
     display: flex
     flex-direction: column
     width: 100%
     height: 100%
 
-
-.container__right 
+.container__right
     /* Take the remaining width */
     flex: 1
 
     /* Misc */
-    border-radius: 0px 15px 15px 0px 
+    border-radius: 0px 15px 15px 0px
     // display: flex
     overflow: auto
     min-width: 1rem
     padding: .5rem
 
-textarea::placeholder 
+textarea::placeholder
     font-weight: bold
     opacity: .5
 

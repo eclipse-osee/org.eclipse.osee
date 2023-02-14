@@ -48,7 +48,7 @@ import {
 	transition,
 	animate,
 } from '@angular/animations';
-import {
+import type {
 	enumerationSet,
 	logicalType,
 	PlatformType,

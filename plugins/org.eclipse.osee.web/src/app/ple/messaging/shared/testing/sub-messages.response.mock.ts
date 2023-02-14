@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { subMessage, subMessageWithChanges } from '../types/sub-messages';
+import type { subMessage, subMessageWithChanges } from '../types/sub-messages';
 
 export const subMessagesMock: Required<subMessage | subMessageWithChanges>[] = [
 	{

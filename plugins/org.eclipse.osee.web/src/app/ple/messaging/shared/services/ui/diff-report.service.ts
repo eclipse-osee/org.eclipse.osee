@@ -31,7 +31,7 @@ import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { ActionService } from 'src/app/ple-services/http/action.service';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
-import {
+import type {
 	branchSummary,
 	DifferenceReport,
 	DifferenceReportItem,

@@ -37,7 +37,11 @@ export class StructureTableLongTextFieldComponent {
 
 	wordWrap: boolean = false;
 	globalPrefs = this.preferencesService.globalPrefs.pipe(
-		tap((prefs) => (this.wordWrap = prefs.wordWrap))
+		tap((prefs) => {
+			if (prefs !== null && prefs !== undefined) {
+				this.wordWrap = prefs.wordWrap;
+			}
+		})
 	);
 
 	constructor(private preferencesService: PreferencesUIService) {}

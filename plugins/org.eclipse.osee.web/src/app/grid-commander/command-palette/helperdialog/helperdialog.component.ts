@@ -12,12 +12,19 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { CommandGroupOptionsService } from '../../services/data-services/commands/command-group-options.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+	MatDialog,
+	MatDialogRef,
+	MatDialogModule,
+} from '@angular/material/dialog';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-helperdialog',
 	templateUrl: './helperdialog.component.html',
 	styleUrls: ['./helperdialog.component.sass'],
+	standalone: true,
+	imports: [MatDialogModule, NgIf, NgFor, AsyncPipe],
 })
 export class HelperdialogComponent {
 	allCommands = this.commandGroupOptsService.allCommands;

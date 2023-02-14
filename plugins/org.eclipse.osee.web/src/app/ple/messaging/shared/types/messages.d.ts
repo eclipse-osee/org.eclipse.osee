@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference } from 'src/app/shared/types/change-report/change-report';
-import { applic } from '@osee/shared/types/applicability';
-import { subMessage, subMessageWithChanges } from './sub-messages';
-import { ConnectionNode } from './connection-nodes';
-import { nodeToken } from './node';
+import type { difference } from '@osee/shared/types/change-report';
+import type { applic } from '@osee/shared/types/applicability';
+import type { subMessage, subMessageWithChanges } from './sub-messages';
+import type { ConnectionNode } from './connection-nodes';
+import type { nodeToken } from './node';
 
 export interface message {
 	[index: string]:

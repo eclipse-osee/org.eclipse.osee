@@ -41,13 +41,13 @@ import {
 	UniquePlatformTypeNameDirective,
 	UniquePlatformTypeAttributesDirective,
 } from '@osee/messaging/shared/directives';
-import {
+import type {
 	logicalType,
 	enumerationSet,
 	editPlatformTypeDialogData,
-	editPlatformTypeDialogDataMode,
 	enumeratedPlatformType,
 } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import { TypesService, EnumsService } from '@osee/messaging/shared/services';
 import { MatOptionLoadingComponent } from '@osee/shared/components';

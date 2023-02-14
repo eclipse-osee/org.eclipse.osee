@@ -16,7 +16,8 @@ import { BehaviorSubject, of } from 'rxjs';
 
 import { MessagePageComponent } from './message-page.component';
 import { MockMessageTableComponent } from './lib/testing/message-table.component.mock';
-import { CurrentMessagesService, message } from '@osee/messaging/shared';
+import { CurrentMessagesService } from '@osee/messaging/shared';
+import type { message } from '@osee/messaging/shared';
 
 describe('MessageInterfaceComponent', () => {
 	let component: MessagePageComponent;

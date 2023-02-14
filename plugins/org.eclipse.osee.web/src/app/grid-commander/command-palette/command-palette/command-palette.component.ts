@@ -20,11 +20,23 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
 import { Command } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { HelperdialogComponent } from '../helperdialog/helperdialog.component';
+import { ParameterTypesComponent } from '../../parameter-types/parameter-types.component';
+import { TableFilterComponent } from '../../gc-datatable/filter-component/table-filter.component';
+import { InputControlComponent } from '../../shared/input-control/input-control.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-command-palette',
 	templateUrl: './command-palette.component.html',
 	styleUrls: ['./command-palette.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		InputControlComponent,
+		TableFilterComponent,
+		ParameterTypesComponent,
+		AsyncPipe,
+	],
 })
 export class CommandPaletteComponent {
 	filteredCommandGroups$ =

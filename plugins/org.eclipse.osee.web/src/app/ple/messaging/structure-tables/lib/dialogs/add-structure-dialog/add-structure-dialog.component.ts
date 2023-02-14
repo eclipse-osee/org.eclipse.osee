@@ -26,10 +26,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import {
 	STRUCTURE_SERVICE_TOKEN,
-	structure,
 	CurrentStructureService,
 	EnumsService,
 } from '@osee/messaging/shared';
+import type { structure } from '@osee/messaging/shared';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { AddStructureDialog } from './add-structure-dialog';
 

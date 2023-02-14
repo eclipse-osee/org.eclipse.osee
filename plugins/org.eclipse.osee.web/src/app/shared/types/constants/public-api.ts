@@ -13,4 +13,3 @@
 export * from './ArtifactTypeId.enum';
 export * from './AttributeTypeId.enum';
 export * from './RelationTypeId.enum';
-export * from './TupleTypeId.d';

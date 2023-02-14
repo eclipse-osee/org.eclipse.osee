@@ -11,11 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { InputControlComponent } from '../../../shared/input-control/input-control.component';
 
 @Component({
 	selector: 'osee-column-filter',
 	templateUrl: './column-filter.component.html',
 	styleUrls: ['./column-filter.component.sass'],
+	standalone: true,
+	imports: [InputControlComponent],
 })
 export class ColumnFilterComponent {
 	@Input() filterInputLabel: string = '';

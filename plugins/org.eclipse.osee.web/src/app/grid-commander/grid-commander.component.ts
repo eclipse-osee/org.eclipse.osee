@@ -14,12 +14,24 @@ import { Component, OnDestroy } from '@angular/core';
 import { CommandGroupOptionsService } from './services/data-services/commands/command-group-options.service';
 import { SelectedCommandDataService } from './services/data-services/selected-command-data/selected-command-data.service';
 import { DataTableService } from './services/datatable-services/datatable.service';
+import { GcDatatableComponent } from './gc-datatable/gc-datatable.component';
+import { CreateCommandFormComponent } from './create-form/create-command-form/create-command-form.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { CommandPaletteComponent } from './command-palette/command-palette/command-palette.component';
 
 @Component({
 	selector: 'osee-grid-commander',
 	templateUrl: './grid-commander.component.html',
 	styleUrls: ['./grid-commander.component.sass'],
 	providers: [],
+	standalone: true,
+	imports: [
+		CommandPaletteComponent,
+		NgIf,
+		CreateCommandFormComponent,
+		GcDatatableComponent,
+		AsyncPipe,
+	],
 })
 export class GridCommanderComponent implements OnDestroy {
 	tableData = this.dataTableService.displayedTableData;
@@ -35,3 +47,4 @@ export class GridCommanderComponent implements OnDestroy {
 		this.dataTableService.doneFx = '';
 	}
 }
+export default GridCommanderComponent;

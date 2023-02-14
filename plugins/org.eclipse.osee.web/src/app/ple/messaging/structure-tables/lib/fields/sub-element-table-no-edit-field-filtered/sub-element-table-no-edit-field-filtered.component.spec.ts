@@ -22,7 +22,6 @@ describe('SubElementTableNoEditFieldFilteredComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [CommonModule],
-			declarations: [],
 		}).compileComponents();
 	});
 

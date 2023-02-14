@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-export const routes: Routes = [
+
+const routes: Routes = [
 	{
 		path: '',
-		loadComponent: () =>
-			import(
-				'../layout/lib/toolbar/non-osee-toolbar/non-osee-toolbar.component'
-			),
+		loadChildren: () => import('./toolbar.routes'),
+		outlet: 'toolbar',
 	},
+	{ path: '', loadComponent: () => import('./grid-commander.component') },
 ];
 
 export default routes;

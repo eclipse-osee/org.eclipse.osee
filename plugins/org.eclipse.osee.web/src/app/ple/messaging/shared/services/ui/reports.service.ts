@@ -13,11 +13,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
 import { FilesService } from 'src/app/ple-services/http/files.service';
 import { apiURL } from 'src/environments/environment';
-import { connection, MimReport } from '@osee/messaging/shared';
-import { NodeTraceReportItem } from '../../types/NodeTraceReport';
+import type { connection, MimReport } from '@osee/messaging/shared';
+import type { NodeTraceReportItem } from '../../types/NodeTraceReport';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({

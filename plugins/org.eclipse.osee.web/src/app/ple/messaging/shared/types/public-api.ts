@@ -12,14 +12,11 @@
  **********************************************************************/
 export * from './affectedArtifact.d';
 export * from './branch.applic.d';
-export * from './branches.d';
-export * from './branchstorage.d';
 export * from './connection';
 export * from './connection-nodes.d';
 export * from './crossReference.d ';
 export * from './DifferenceReport.d';
 export * from './editPlatformTypeDialogData.d';
-export * from './EditPlatformTypeDialogDataMode.enum.d';
 export * from './EditViewFreeTextDialog.d';
 export * from './element.d';
 export * from './enum.d';
@@ -36,10 +33,5 @@ export * from './newTypeDialogDialogData.d';
 export * from './node.d';
 export * from './NodeTraceReport.d';
 export * from './platformType.d';
+export * from './EditPlatformTypeDialogDataMode.enum';
 export * from './PlatformTypeInstance';
-export * from './Reports.d';
-export * from './settingsdialog.d';
-export * from './structure.d';
-export * from './StructurePath.d';
-export * from './sub-messages.d';
-export * from './transportType.d';

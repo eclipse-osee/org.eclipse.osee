@@ -49,7 +49,6 @@ describe('BranchTypeSelectorComponent', () => {
 				FormsModule,
 				BranchTypeSelectorComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { settingsDialogData } from '@osee/messaging/shared/types';
+import type { settingsDialogData } from '@osee/messaging/shared/types';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 import { PreferencesUIService } from './preferences-ui.service';

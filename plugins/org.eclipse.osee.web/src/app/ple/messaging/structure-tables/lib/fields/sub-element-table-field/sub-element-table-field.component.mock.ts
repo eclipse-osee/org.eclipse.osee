@@ -12,7 +12,7 @@
  **********************************************************************/
 import { EventEmitter, Output } from '@angular/core';
 import { Component, Input } from '@angular/core';
-import { element, structure } from '@osee/messaging/shared';
+import type { element, structure } from '@osee/messaging/shared';
 import { applic } from '@osee/shared/types/applicability';
 
 @Component({

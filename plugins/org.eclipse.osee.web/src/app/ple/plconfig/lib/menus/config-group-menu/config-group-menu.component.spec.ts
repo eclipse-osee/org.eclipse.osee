@@ -31,49 +31,62 @@ describe('ConfigGroupMenuComponent', () => {
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatMenuModule,
-				MatIconModule,
-				NoopAnimationsModule,
-				RouterTestingModule.withRoutes([
+		await TestBed.overrideComponent(ConfigGroupMenuComponent, {
+			set: {
+				providers: [
+					{ provide: DialogService, useValue: DialogServiceMock },
 					{
-						path: '',
-						component: ConfigGroupMenuComponent,
-						children: [
-							{
-								path: ':branchType',
-								children: [
-									{
-										path: ':branchId',
-										children: [
-											{
-												path: 'diff',
-												component:
-													ConfigGroupMenuComponent,
-											},
-										],
-									},
-								],
-							},
-						],
+						provide: PlConfigCurrentBranchService,
+						useValue: plCurrentBranchServiceMock,
 					},
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatMenuModule,
+					MatIconModule,
+					ConfigGroupMenuComponent,
+					NoopAnimationsModule,
+					RouterTestingModule.withRoutes([
+						{
+							path: '',
+							component: ConfigGroupMenuComponent,
+							children: [
+								{
+									path: ':branchType',
+									children: [
+										{
+											path: ':branchId',
+											children: [
+												{
+													path: 'diff',
+													component:
+														ConfigGroupMenuComponent,
+												},
+											],
+										},
+									],
+								},
+							],
+						},
+						{
+							path: 'diffOpen',
+							component: ConfigGroupMenuComponent,
+							outlet: 'rightSideNav',
+						},
+					]),
+				],
+				declarations: [],
+				providers: [
+					{ provide: DialogService, useValue: DialogServiceMock },
 					{
-						path: 'diffOpen',
-						component: ConfigGroupMenuComponent,
-						outlet: 'rightSideNav',
+						provide: PlConfigCurrentBranchService,
+						useValue: plCurrentBranchServiceMock,
 					},
-				]),
-			],
-			declarations: [ConfigGroupMenuComponent],
-			providers: [
-				{ provide: DialogService, useValue: DialogServiceMock },
-				{
-					provide: PlConfigCurrentBranchService,
-					useValue: plCurrentBranchServiceMock,
-				},
-			],
-		}).compileComponents();
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

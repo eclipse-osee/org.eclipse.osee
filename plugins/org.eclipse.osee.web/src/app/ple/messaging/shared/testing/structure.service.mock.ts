@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure } from '@osee/messaging/shared/types';
+import type { structure } from '@osee/messaging/shared/types';
 import { relation, transaction } from '@osee/shared/types';
 import {
 	transactionMock,
@@ -27,7 +27,8 @@ export const structureServiceMock: Partial<StructuresService> = {
 		branchId: string,
 		messageId: string,
 		subMessageId: string,
-		connectionId: string
+		connectionId: string,
+		pageNum: number
 	) {
 		return of(structuresMock3);
 	},

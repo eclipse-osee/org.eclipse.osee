@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import {
+import type {
 	MimPreferences,
 	structure,
 	message,

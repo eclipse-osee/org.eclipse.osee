@@ -35,6 +35,7 @@ describe('ProductTypeDropDownComponent', () => {
 				NoopAnimationsModule,
 				MatIconModule,
 				MatButtonModule,
+				ProductTypeDropDownComponent,
 			],
 			providers: [
 				{
@@ -46,7 +47,6 @@ describe('ProductTypeDropDownComponent', () => {
 					useValue: plCurrentBranchServiceMock,
 				},
 			],
-			declarations: [ProductTypeDropDownComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ProductTypeDropDownComponent);

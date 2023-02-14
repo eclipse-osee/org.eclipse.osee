@@ -21,3 +21,4 @@ import { Component } from '@angular/core';
 export class PageNotFoundComponent {
 	constructor() {}
 }
+export default PageNotFoundComponent;

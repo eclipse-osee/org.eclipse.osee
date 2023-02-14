@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branchApplicability } from '@osee/messaging/shared/types';
+import type { branchApplicability } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { EditAuthService } from '../services/public/edit-auth-service.service';
 

@@ -20,11 +20,11 @@ import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
-import {
+import type {
 	element,
 	elementWithPathsAndButtons,
-	HeaderService,
 } from '@osee/messaging/shared';
+import { HeaderService } from '@osee/messaging/shared';
 import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils';
 
 @Component({

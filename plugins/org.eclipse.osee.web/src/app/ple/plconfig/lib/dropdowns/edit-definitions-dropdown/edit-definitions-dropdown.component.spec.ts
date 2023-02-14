@@ -15,12 +15,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 
-import { ConfigurationDropdownComponent } from '../configuration-dropdown/configuration-dropdown.component';
-import { ConfigurationGroupDropdownComponent } from '../configuration-group-dropdown/configuration-group-dropdown.component';
 import { EditDefinitionsDropdownComponent } from './edit-definitions-dropdown.component';
-import { CompoundApplicabilityDropdownComponent } from '../compound-applicability-dropdown/compound-applicability-dropdown.component';
-import { FeatureDropdownComponent } from '../feature-dropdown/feature-dropdown.component';
-import { ProductTypeDropDownComponent } from '../product-type-drop-down/product-type-drop-down.component';
 
 describe('EditDefinitionsDropdownComponent', () => {
 	let component: EditDefinitionsDropdownComponent;
@@ -28,14 +23,11 @@ describe('EditDefinitionsDropdownComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule, MatMenuModule, MatDialogModule],
-			declarations: [
+			imports: [
+				HttpClientModule,
+				MatMenuModule,
+				MatDialogModule,
 				EditDefinitionsDropdownComponent,
-				FeatureDropdownComponent,
-				ConfigurationGroupDropdownComponent,
-				ConfigurationDropdownComponent,
-				ProductTypeDropDownComponent,
-				CompoundApplicabilityDropdownComponent,
 			],
 		}).compileComponents();
 

@@ -13,9 +13,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -38,11 +38,51 @@ import { RowObjectActionsService } from '../services/datatable-services/row-acti
 import { commandHistoryObject } from '../types/grid-commander-types/executedCommand';
 import { RowObj } from '../types/grid-commander-types/table-data-types';
 import { DeleteRowDialogComponent } from './delete-row-dialog/delete-row-dialog.component';
+import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-display/no-data-to-display.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import {
+	NgIf,
+	NgFor,
+	NgSwitch,
+	NgSwitchCase,
+	NgSwitchDefault,
+	NgClass,
+	AsyncPipe,
+} from '@angular/common';
 
 @Component({
 	selector: 'osee-gc-datatable',
 	templateUrl: './gc-datatable.component.html',
 	styleUrls: ['./gc-datatable.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		MatTableModule,
+		MatSortModule,
+		NgFor,
+		MatCheckboxModule,
+		NgSwitch,
+		NgSwitchCase,
+		MatIconModule,
+		MatTooltipModule,
+		NgSwitchDefault,
+		MatFormFieldModule,
+		MatInputModule,
+		FormsModule,
+		NgClass,
+		MatToolbarModule,
+		MatButtonModule,
+		MatPaginatorModule,
+		NoDataToDisplayComponent,
+		AsyncPipe,
+	],
 })
 export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 	@ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;

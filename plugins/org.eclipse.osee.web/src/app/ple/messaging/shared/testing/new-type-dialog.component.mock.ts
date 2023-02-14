@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NewTypeDialogComponent } from '@osee/messaging/shared/dialogs';
-import {
+import type {
 	newPlatformTypeDialogReturnData,
 	PlatformType,
 } from '@osee/messaging/shared/types';

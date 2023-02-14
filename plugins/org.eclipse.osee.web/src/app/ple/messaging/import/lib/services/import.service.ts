@@ -33,14 +33,6 @@ import {
 } from 'rxjs';
 import { ImportHttpService } from './import-http.service';
 import {
-	ImportOption,
-	nodeToken,
-	ImportSummary,
-	subMessage,
-	enumSet,
-	node,
-	structure,
-	message,
 	ConnectionService,
 	ElementService,
 	EnumerationSetService,
@@ -50,6 +42,16 @@ import {
 	SubMessagesService,
 	TypesService,
 	CrossReferenceService,
+} from '@osee/messaging/shared';
+import type {
+	ImportOption,
+	nodeToken,
+	ImportSummary,
+	subMessage,
+	enumSet,
+	node,
+	structure,
+	message,
 } from '@osee/messaging/shared';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { TransactionService } from '@osee/shared/transactions';

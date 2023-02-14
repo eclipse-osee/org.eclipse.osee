@@ -68,7 +68,8 @@
 </ng-container>
 <ng-container *ngIf="inDiffMode | async as _diff">
 	<div
-		class="message-element-interface message-element-interface-top-level-table">
+		class="message-element-interface message-element-interface-top-level-table"
+		#topOfTable>
 		<ng-container *ngIf="currentStructureHeaders | async as currentHeaders">
 			<ng-container *ngIf="hasFilter">
 				<mat-form-field
@@ -402,13 +403,25 @@
 					[class.message-element-structure-added-odd]="
 						row.added && k % 2 === 1
 					"
-					[class.message-element-structure-deleted]="row.deleted"
-					[attr.data-cy]="'structure-table-row-' + row.name"></tr>
+					[class.message-element-structure-deleted]="
+						row.deleted
+					"></tr>
 				<tr
 					mat-row
 					*matRowDef="let row; columns: ['expandedMessage']"
 					class="message-expanded-detail-row"></tr>
 			</table>
+			<ng-container *ngIf="structures | async as st">
+				<ng-container *ngIf="hasFilter">
+					<mat-paginator
+						[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100]"
+						[pageSize]="st.length"
+						[pageIndex]="currentPage | async"
+						(page)="setPage($event)"
+						[length]="minPageSize | async"
+						[disabled]="false"></mat-paginator>
+				</ng-container>
+			</ng-container>
 		</ng-container>
 	</div>
 </ng-container>

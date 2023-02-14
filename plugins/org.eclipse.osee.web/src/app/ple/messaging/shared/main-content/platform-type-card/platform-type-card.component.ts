@@ -18,12 +18,12 @@ import { MatCardModule } from '@angular/material/card';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import {
+import type {
 	PlatformType,
-	editPlatformTypeDialogDataMode,
 	editPlatformTypeDialogData,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
 import {
 	EditEnumSetDialogComponent,
 	EditTypeDialogComponent,

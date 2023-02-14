@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { DifferenceReport } from '@osee/messaging/shared/types';
+import type { DifferenceReport } from '@osee/messaging/shared/types';
 import {
 	changeTypeEnum,
 	changeTypeNumber,

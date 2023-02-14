@@ -13,11 +13,15 @@
 import { Component } from '@angular/core';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
+import { HideColumnCommandComponent } from './hide-column-command/hide-column-command.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-parameter-multiple-select',
 	templateUrl: './parameter-multiple-select.component.html',
 	styleUrls: ['./parameter-multiple-select.component.sass'],
+	standalone: true,
+	imports: [NgIf, HideColumnCommandComponent, AsyncPipe],
 })
 export class ParameterMultipleSelectComponent {
 	command$ = this.selectedCommandDataService.selectedCommandObject;

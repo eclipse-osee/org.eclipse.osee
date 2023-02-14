@@ -23,8 +23,17 @@ import {
 	SimpleChanges,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, OperatorFunction, Subject } from 'rxjs';
-import { switchMap, filter, takeUntil } from 'rxjs/operators';
+import { combineLatest, of, OperatorFunction, Subject } from 'rxjs';
+import {
+	switchMap,
+	filter,
+	takeUntil,
+	debounceTime,
+	map,
+	pairwise,
+	scan,
+	startWith,
+} from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
@@ -34,13 +43,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import {
-	PlatformTypeCardComponent,
+import type {
 	newPlatformTypeDialogReturnData,
 	PlatformType,
 	enumeration,
+} from '@osee/messaging/shared';
+import {
+	PlatformTypeCardComponent,
 	NewTypeDialogComponent,
 } from '@osee/messaging/shared';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
 	selector: 'osee-messaging-types-type-grid',
@@ -56,6 +68,7 @@ import {
 		MatIconModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatPaginatorModule,
 		PlatformTypeCardComponent,
 	],
 })
@@ -67,6 +80,34 @@ export class TypeGridComponent implements OnChanges, OnDestroy {
 	filteredData = this.typesService.typeData.pipe(takeUntil(this._done));
 	rowHeight: string = '';
 	inEditMode = this.typesService.inEditMode;
+
+	/**
+	 * @TODO this needs to be replaced with a SQL query since we can't tell whether a user decreased the size or the results themselves decreased
+	 */
+	currentPage = this.typesService.currentPage;
+
+	currentOffset = combineLatest([
+		this.typesService.currentPage.pipe(startWith(0), pairwise()),
+		this.typesService.currentPageSize,
+	]).pipe(
+		debounceTime(100),
+		scan((acc, [[previousPageNum, currentPageNum], currentSize]) => {
+			if (previousPageNum < currentPageNum) {
+				return (acc += currentSize);
+			} else {
+				return acc;
+			}
+		}, 10)
+	);
+	private _typesLength = this.typesService.typeData.pipe(
+		map((types) => types.length)
+	);
+	minPageSize = combineLatest([this.currentOffset, this._typesLength]).pipe(
+		debounceTime(100),
+		switchMap(([offset, types]) => of([offset, types])),
+		map(([offset, length]) => Math.max(offset + 1, length + 1)),
+		takeUntil(this._done)
+	);
 
 	constructor(
 		private breakpointObserver: BreakpointObserver,
@@ -201,5 +242,10 @@ export class TypeGridComponent implements OnChanges, OnDestroy {
 	}
 	getMarginString() {
 		return this.gutterSize + 'px';
+	}
+
+	setPage(event: PageEvent) {
+		this.typesService.pageSize = event.pageSize;
+		this.typesService.page = event.pageIndex;
 	}
 }

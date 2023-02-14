@@ -25,8 +25,8 @@ import {
 	CurrentTransportTypeService,
 	HeaderService,
 	NewTransportTypeDialogComponent,
-	transportType,
 } from '@osee/messaging/shared';
+import type { transportType } from '@osee/messaging/shared';
 import {
 	BranchPickerComponent,
 	ActionDropDownComponent,

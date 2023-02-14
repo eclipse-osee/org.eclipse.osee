@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '@osee/shared/types/applicability';
-import { enumeration, enumerationSet } from './enum';
-import { PlatformType } from './platformType';
+import type { applic } from '@osee/shared/types/applicability';
+import type { enumeration, enumerationSet } from './enum';
+import type { PlatformType } from './platformType';
 
 export interface newTypeDialogData {
 	fields: logicalTypefieldValue[];

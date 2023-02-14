@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import {
+import type {
 	PlatformType,
 	enumeration,
 	enumerationSet,

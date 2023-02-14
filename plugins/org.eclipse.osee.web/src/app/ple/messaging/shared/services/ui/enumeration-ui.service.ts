@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import {
+import type {
 	enumSet,
 	enumeration,
 	enumerationSet,
@@ -23,8 +23,6 @@ import {
 	switchMap,
 	shareReplay,
 	take,
-	mergeMap,
-	tap,
 	concatMap,
 	reduce,
 } from 'rxjs/operators';

@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgIf, AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BranchPickerStub } from '@osee/shared/components/testing';
@@ -22,13 +23,21 @@ describe('ChangeReportComponent', () => {
 	let fixture: ComponentFixture<ChangeReportComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule, BranchPickerStub],
-			declarations: [
-				ChangeReportComponent,
-				MockChangeReportTableComponent,
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(ChangeReportComponent, {
+			set: {
+				imports: [
+					BranchPickerStub,
+					NgIf,
+					AsyncPipe,
+					MockChangeReportTableComponent,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [RouterTestingModule, ChangeReportComponent],
+				declarations: [],
+			})
+			.compileComponents();
 
 		fixture = TestBed.createComponent(ChangeReportComponent);
 		component = fixture.componentInstance;

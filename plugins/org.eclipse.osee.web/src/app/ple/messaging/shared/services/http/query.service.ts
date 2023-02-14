@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '../../../../../../environments/environment';
-import { MimQuery } from '../../types/MimQuery';
+import type { MimQuery } from '../../types/MimQuery';
 
 @Injectable({
 	providedIn: 'root',

@@ -19,7 +19,7 @@ const routes: Routes = [
 		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
 		outlet: 'toolbar',
 	},
-	{ path: '', component: AboutComponent },
+	{ path: '', loadComponent: () => import('./about.component') },
 ];
 
 export default routes;

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '@osee/shared/types/applicability';
+import type { applic } from '@osee/shared/types/applicability';
 
 export interface enumeration {
 	id?: string;

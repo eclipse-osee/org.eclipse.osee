@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structureDiffItem } from '@osee/messaging/shared/types';
+import type { structureDiffItem } from '@osee/messaging/shared/types';
 export const structureDiffsMock: structureDiffItem[] = [
 	{
 		id: '200408',

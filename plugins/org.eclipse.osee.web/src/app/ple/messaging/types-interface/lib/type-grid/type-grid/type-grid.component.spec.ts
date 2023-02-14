@@ -28,9 +28,10 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, AsyncPipe, NgFor } from '@angular/common';
-import { PlatformType, settingsDialogData } from '@osee/messaging/shared';
+import type { PlatformType, settingsDialogData } from '@osee/messaging/shared';
 import { transactionMock } from '@osee/shared/transactions/testing';
 import { MockPlatformTypeCardComponent } from '@osee/messaging/shared/testing';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 let loader: HarnessLoader;
 
@@ -86,6 +87,7 @@ describe('TypeGridComponent', () => {
 					MatIconModule,
 					MatFormFieldModule,
 					MatInputModule,
+					MatPaginatorModule,
 					MockPlatformTypeCardComponent,
 				],
 				providers: [
@@ -93,6 +95,8 @@ describe('TypeGridComponent', () => {
 						provide: CurrentTypesService,
 						useValue: {
 							typeData: typeData,
+							currentPage: of(0),
+							currentPageSize: of(10),
 							inEditMode: of(true),
 							updatePreferences(preferences: settingsDialogData) {
 								return of(transactionMock);

@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component, Input, Output } from '@angular/core';
-import { logicalType } from '@osee/messaging/shared/types';
+import type { logicalType } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { NewPlatformTypeFormPage2Component } from './new-platform-type-form-page2.component';
 

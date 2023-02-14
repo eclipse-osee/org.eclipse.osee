@@ -12,17 +12,39 @@
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import {
 	applicability,
 	compApplicRelationshipStructure,
 } from '../../types/pl-config-compound-applicabilities';
 import { PLAddCompoundApplicabilityData } from '../../types/pl-config-compound-applicabilities';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
 	selector: 'osee-add-compound-applicability-dialog',
 	templateUrl: './add-compound-applicability-dialog.component.html',
 	styleUrls: ['./add-compound-applicability-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		NgFor,
+		NgIf,
+		AsyncPipe,
+		FormsModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatOptionModule,
+		MatButtonModule,
+	],
 })
 export class AddCompoundApplicabilityDialogComponent {
 	features = this.currentBranchService.branchApplicFeatures;

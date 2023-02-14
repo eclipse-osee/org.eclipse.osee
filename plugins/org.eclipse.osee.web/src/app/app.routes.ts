@@ -10,10 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
+export const routes: Routes = [
 	{
 		path: '',
 		loadChildren: () => import('./layout/lib/toolbar/toolbar.routes'),
@@ -27,7 +26,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'ple',
-		loadChildren: () => import('./ple/ple.module').then((m) => m.PleModule),
+		loadChildren: () => import('./ple/ple.routes'),
 	},
 	{
 		path: '', //todo remove when main app page is made
@@ -44,10 +43,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'gc',
-		loadChildren: () =>
-			import('./grid-commander/grid-commander.module').then(
-				(m) => m.GridCommanderModule
-			),
+		loadChildren: () => import('./grid-commander/grid-commander.routes'),
 	},
 	{
 		path: '**',
@@ -60,14 +56,4 @@ const routes: Routes = [
 	},
 ];
 
-@NgModule({
-	imports: [
-		RouterModule.forRoot(routes, {
-			anchorScrolling: 'enabled',
-			scrollPositionRestoration: 'enabled',
-			scrollOffset: [0, 256],
-		}),
-	],
-	exports: [RouterModule],
-})
-export class AppRoutingModule {}
+export default routes;

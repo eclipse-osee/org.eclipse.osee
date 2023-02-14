@@ -10,13 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { element } from './element';
-import { structure } from './structure';
-import { message } from './messages';
-import { subMessage } from './sub-messages';
-import { branchSummary, diffReportSummaryItem } from './DifferenceReport.d';
-import { transportType } from './transportType';
 import { headerDetail } from '@osee/shared/types';
+import type { element } from './element';
+import type { structure } from './structure';
+import type { message } from './messages';
+import type { subMessage } from './sub-messages';
+import type {
+	branchSummary,
+	diffReportSummaryItem,
+} from './DifferenceReport.d';
+import type { transportType } from './transportType';
 
 export interface messageHeaderDetail extends headerDetail<message> {}
 export interface subMessageHeaderDetail extends headerDetail<subMessage> {}

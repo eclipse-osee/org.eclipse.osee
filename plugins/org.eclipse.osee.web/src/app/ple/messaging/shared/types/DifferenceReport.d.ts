@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '@osee/shared/types/applicability';
-import { changeInstance } from '@osee/shared/types/change-report';
+import type { applic } from '@osee/shared/types/applicability';
+import type { changeInstance } from '@osee/shared/types/change-report';
 
 export interface DifferenceReport {
 	changeItems: DifferenceReportItemMap;

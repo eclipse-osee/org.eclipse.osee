@@ -29,8 +29,8 @@ describe('CheckboxContainerComponent', () => {
 				MatInputModule,
 				MatCheckboxModule,
 				FormsModule,
+				CheckboxContainerComponent,
 			],
-			declarations: [CheckboxContainerComponent],
 		}).compileComponents();
 	});
 

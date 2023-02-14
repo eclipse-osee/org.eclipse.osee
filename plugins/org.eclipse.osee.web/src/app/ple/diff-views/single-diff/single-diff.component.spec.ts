@@ -40,7 +40,6 @@ describe('MimSingleDiffComponent', () => {
 					useValue: transactionServiceMock,
 				},
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

@@ -12,13 +12,17 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BranchPickerComponent } from '@osee/shared/components';
 import { tap } from 'rxjs';
+import { ResizableSplitPaneCodeComponent } from '../resizable-split-pane-code/resizable-split-pane-code.component';
 import { TextEditorUiService } from '../services/text-editor-ui.service';
 
 @Component({
 	selector: 'osee-asciidoc-editor',
 	templateUrl: './asciidoc-editor.component.html',
 	styleUrls: ['./asciidoc-editor.component.sass'],
+	standalone: true,
+	imports: [BranchPickerComponent, ResizableSplitPaneCodeComponent],
 })
 export class AsciidocEditorComponent implements OnInit {
 	constructor(
@@ -47,3 +51,4 @@ export class AsciidocEditorComponent implements OnInit {
 			.subscribe();
 	}
 }
+export default AsciidocEditorComponent;

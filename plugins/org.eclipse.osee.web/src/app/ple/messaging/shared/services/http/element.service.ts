@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { element } from '../../types/element';
+import type { element } from '../../types/element';
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
@@ -23,7 +23,7 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import type { relation, transaction } from '@osee/shared/types';
 @Injectable({
 	providedIn: 'root',
 })

@@ -32,9 +32,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {
 	CurrentMessagesService,
-	subMessage,
 	WarningDialogService,
 } from '@osee/messaging/shared';
+import type { subMessage } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',

@@ -22,7 +22,6 @@ describe('AboutComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [NoopAnimationsModule, AboutComponent],
-			declarations: [],
 		}).compileComponents();
 	});
 

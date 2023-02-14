@@ -25,12 +25,12 @@ import {
 	PreferencesUIService,
 	TypesUIService,
 } from '@osee/messaging/shared/services';
-import {
+import type {
 	enumeration,
 	enumerationSet,
 	PlatformType,
-	PlatformTypeSentinel,
 } from '@osee/messaging/shared/types';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/types';
 import {
 	BehaviorSubject,
 	combineLatest,

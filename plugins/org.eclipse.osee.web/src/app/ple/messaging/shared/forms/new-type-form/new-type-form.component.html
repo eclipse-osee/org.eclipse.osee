@@ -64,6 +64,7 @@
 		</ng-container>
 	</mat-step>
 	<mat-step label="Summary">
+		<ng-container *ngIf="closeDialog | async"></ng-container>
 		<mat-dialog-content>
 			<p class="mat-headline-5">
 				A new platform type of type

@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../../../../sass-utils/mdc-migration/_form-field'
-@use '../../../../../../../modern-ple-theme'
+@use 'mdc-migration/_form-field'
+@use 'modern-ple-theme'
 :host-context(.light-theme)
     @include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'wide-form')
 :host-context(.dark-theme)

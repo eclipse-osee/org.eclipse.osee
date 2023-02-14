@@ -16,9 +16,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 
-// @use 'themes/ple/plconfig/lib' as plconfig;
-// @use 'themes/ple/messages/lib' as plmessages;
-@use 'themes/ple/lib' as ple;
 @use 'themes/scrollbar.theme' as scrollbar;
 @import 'modern-ple-theme';
 
@@ -34,8 +31,6 @@
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 
-// @include mat.all-component-themes($modern-ple-light-theme);
-
 @include mat.all-component-typographies($modern-ple-light-theme);
 @include mat.all-component-themes($modern-ple-light-theme);
 @media (prefers-color-scheme: light) {
@@ -44,7 +39,7 @@
 			map.get(mat.get-color-config($modern-ple-light-theme), success)
 		) !important; // hate having to use this
 	}
-	@include scrollbar.theme($modern-ple-light-theme);
+	@include scrollbar.material-theme($modern-ple-light-theme);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -55,13 +50,8 @@
 			map.get(mat.get-color-config($modern-ple-dark-theme), success)
 		) !important; // hate having to use this
 	}
-	@include scrollbar.theme($modern-ple-dark-theme);
+	@include scrollbar.material-theme($modern-ple-dark-theme);
 }
-
-@include ple.generic-material-divider-vertical-theme(
-	$modern-ple-light-theme,
-	$modern-ple-typography
-);
 
 html,
 body {

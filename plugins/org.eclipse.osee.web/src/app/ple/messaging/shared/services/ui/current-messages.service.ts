@@ -44,9 +44,9 @@ import {
 	RelationTypeId,
 } from '@osee/shared/types/constants';
 import { SideNavService } from '../../../../../shared-services/ui/side-nav.service';
-import { ConnectionNode } from '@osee/messaging/shared/types';
+import type { ConnectionNode } from '@osee/messaging/shared/types';
 import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
-import {
+import type {
 	messageWithChanges,
 	subMessageWithChanges,
 	subMessage,
@@ -59,23 +59,35 @@ import { transaction, transactionToken } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class CurrentMessagesService {
+	private _currentPage$ = new BehaviorSubject<number>(0);
+	private _currentPageSize$ = new BehaviorSubject<number>(10);
 	private _messagesList = combineLatest([
 		this.ui.filter,
 		this.BranchId,
 		this.connectionId,
+		this.currentPage,
+		this.currentPageSize,
 	]).pipe(
 		filter(
-			([filter, branchId, connection]) =>
+			([filter, branchId, connection, page, pageSize]) =>
 				connection !== '' && branchId !== ''
 		),
 		share(),
 		debounceTime(500),
 		distinctUntilChanged(),
-		switchMap((x) =>
-			this.messageService.getFilteredMessages(x[0], x[1], x[2]).pipe(
-				repeatWhen((_) => this.ui.UpdateRequired),
-				share()
-			)
+		switchMap(([filter, branchId, connection, page, pageSize]) =>
+			this.messageService
+				.getFilteredMessages(
+					filter,
+					branchId,
+					connection,
+					page + 1,
+					pageSize
+				)
+				.pipe(
+					repeatWhen((_) => this.ui.UpdateRequired),
+					share()
+				)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -220,6 +232,20 @@ export class CurrentMessagesService {
 		private sideNavService: SideNavService
 	) {}
 
+	get currentPage() {
+		return this._currentPage$;
+	}
+
+	set page(page: number) {
+		this._currentPage$.next(page);
+	}
+
+	get currentPageSize() {
+		return this._currentPageSize$;
+	}
+	set pageSize(page: number) {
+		this._currentPageSize$.next(page);
+	}
 	get messages() {
 		return this._messages;
 	}

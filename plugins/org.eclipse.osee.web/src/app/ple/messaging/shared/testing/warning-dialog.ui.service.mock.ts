@@ -1,6 +1,10 @@
 import { of } from 'rxjs';
 import { WarningDialogService } from '../services/ui/warning-dialog.service';
-import { element, structure, subMessage } from '@osee/messaging/shared/types';
+import type {
+	element,
+	structure,
+	subMessage,
+} from '@osee/messaging/shared/types';
 
 /*********************************************************************
  * Copyright (c) 2022 Boeing

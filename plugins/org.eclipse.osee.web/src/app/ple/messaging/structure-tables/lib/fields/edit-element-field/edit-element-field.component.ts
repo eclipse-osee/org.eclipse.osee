@@ -34,11 +34,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import {
 	CurrentStructureService,
-	element,
-	PlatformType,
 	STRUCTURE_SERVICE_TOKEN,
 	WarningDialogService,
 } from '@osee/messaging/shared';
+import type { element, PlatformType } from '@osee/messaging/shared';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
 	Subject,

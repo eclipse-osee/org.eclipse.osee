@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DifferenceReport } from '@osee/messaging/shared/types';
+import type { DifferenceReport } from '@osee/messaging/shared/types';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({

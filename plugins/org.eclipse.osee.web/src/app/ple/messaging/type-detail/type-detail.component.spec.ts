@@ -63,7 +63,6 @@ describe('TypeDetailComponent', () => {
 					useValue: applicabilityListServiceMock,
 				},
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

@@ -43,7 +43,7 @@ import {
 	typesServiceMock,
 } from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
-import { enumsetDialogData } from '../../types/EnumSetDialogData';
+import type { enumsetDialogData } from '../../types/EnumSetDialogData';
 
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
 

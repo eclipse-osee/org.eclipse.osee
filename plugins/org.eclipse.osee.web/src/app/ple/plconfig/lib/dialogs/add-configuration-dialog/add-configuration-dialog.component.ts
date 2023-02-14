@@ -10,8 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -24,6 +36,19 @@ import { PLAddConfigData } from '../../types/pl-edit-config-data';
 	selector: 'osee-plconfig-add-configuration-dialog',
 	templateUrl: './add-configuration-dialog.component.html',
 	styleUrls: ['./add-configuration-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		NgFor,
+		AsyncPipe,
+		FormsModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatSelectModule,
+		MatOptionModule,
+		MatListModule,
+		MatButtonModule,
+	],
 })
 export class AddConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;

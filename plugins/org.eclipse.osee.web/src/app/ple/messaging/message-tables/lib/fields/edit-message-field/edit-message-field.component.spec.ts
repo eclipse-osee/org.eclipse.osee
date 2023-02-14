@@ -62,7 +62,6 @@ describe('EditMessageFieldComponent', () => {
 					useValue: applicabilityListServiceMock,
 				},
 			],
-			declarations: [],
 			teardown: { destroyAfterEach: false },
 		}).compileComponents();
 	});

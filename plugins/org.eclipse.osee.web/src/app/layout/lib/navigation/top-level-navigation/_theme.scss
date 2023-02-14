@@ -52,7 +52,7 @@
 	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography) {
+@mixin material-theme($theme, $typography) {
 	$color: mat.get-color-config($theme);
 	$typography: mat.get-typography-config($typography);
 	@include typography($theme);

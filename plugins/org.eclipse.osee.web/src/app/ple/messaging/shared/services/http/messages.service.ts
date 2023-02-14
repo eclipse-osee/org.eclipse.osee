@@ -14,9 +14,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { message } from '../../types/messages';
-import { connection } from '../../types/connection';
-import { ConnectionNode } from '../../types/connection-nodes';
+import type { message } from '../../types/messages';
+import type { connection } from '../../types/connection';
+import type { ConnectionNode } from '../../types/connection-nodes';
 import { map } from 'rxjs/operators';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {
@@ -44,8 +44,27 @@ export class MessagesService {
 	getFilteredMessages(
 		filter: string,
 		branchId: string,
-		connectionId: string
+		connectionId: string,
+		pageNum?: number,
+		pageSize?: number
 	): Observable<message[]> {
+		if (pageNum !== undefined && pageSize !== undefined) {
+			return this.http.get<message[]>(
+				apiURL +
+					'/mim/branch/' +
+					branchId +
+					'/connections/' +
+					connectionId +
+					'/messages/filter/' +
+					filter,
+				{
+					params: {
+						count: pageSize,
+						pageNum: pageNum,
+					},
+				}
+			);
+		}
 		return this.http.get<message[]>(
 			apiURL +
 				'/mim/branch/' +

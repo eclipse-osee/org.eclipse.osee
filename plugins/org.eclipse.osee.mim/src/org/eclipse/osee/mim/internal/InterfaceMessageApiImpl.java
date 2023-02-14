@@ -30,7 +30,6 @@ import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
-import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -43,6 +42,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private final InterfaceNodeViewApi nodeApi;
    private final InterfaceSubMessageApi subMessageApi;
    private final List<RelationTypeSide> relations;
+   private final List<RelationTypeSide> fullRelations;
    private final List<RelationTypeSide> affectedRelations;
 
    InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceSubMessageApi subMessageApi) {
@@ -50,7 +50,20 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       this.subMessageApi = subMessageApi;
       this.setAccessor(new InterfaceMessageAccessor(orcsApi));
       this.relations = createRelationTypeSideList();
+      this.fullRelations = createFullRelationTypeSideList();
       this.affectedRelations = createAffectedRelations();
+   }
+
+   /**
+    * NOTE: Only use this when performing a search. The page does not utilize this information, and is strictly just for
+    * providing the ability to search the underlying information
+    *
+    * @return
+    */
+   private List<RelationTypeSide> createFullRelationTypeSideList() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
+      return relations;
    }
 
    private List<AttributeTypeId> createMessageAttributes() {
@@ -63,6 +76,14 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       messageAttributes.add(CoreAttributeTypes.InterfaceMessageWriteAccess);
       messageAttributes.add(CoreAttributeTypes.InterfaceMessageType);
       return messageAttributes;
+   }
+
+   private List<AttributeTypeId> createSubMessageAttributes() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceSubMessageNumber);
+      return attributes;
    }
 
    @Override
@@ -264,50 +285,29 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter) {
+      return this.getAllForConnectionAndFilter(branch, connectionId, filter, 0L, 0L, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
+   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      List<InterfaceMessageToken> messages = new LinkedList<InterfaceMessageToken>();
       List<AttributeTypeId> messageAttributes = createMessageAttributes();
+      List<AttributeTypeId> subMessageAttributes = createSubMessageAttributes();
       try {
-         List<InterfaceMessageToken> messageList =
-            (List<InterfaceMessageToken>) this.getAccessor().getAllByRelationAndFilter(branch,
-               CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
-               InterfaceMessageToken.class);
-         for (InterfaceMessageToken message : messageList) {
-            message.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAllByRelation(branch,
-               ArtifactId.valueOf(message.getId())));
-            message.setInitiatingNode(nodeApi.getNodeForMessage(branch, ArtifactId.valueOf(message.getId())));
-            if (message.getInterfaceMessageType().equals("Operational")) {
-               ((List<InterfaceSubMessageToken>) message.getSubMessages()).add(0, getMessageHeader(message));
-            }
-         }
+         messages = this.getAccessor().getAllByRelationAndFilter(branch,
+            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
+            this.fullRelations, pageNum, pageSize, orderByAttribute, subMessageAttributes).stream().map(
+               m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
 
-         List<InterfaceMessageToken> unfilteredMessageList =
-            (List<InterfaceMessageToken>) this.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, InterfaceMessageToken.class);
-         for (InterfaceMessageToken message : unfilteredMessageList) {
-            if (!messageList.contains(message)) {
-               InterfaceNode node = nodeApi.getNodeForMessage(branch, ArtifactId.valueOf(message.getId()));
-               if (node.getName().toLowerCase().contains(filter.toLowerCase())) {
-                  message.setSubMessages((List<InterfaceSubMessageToken>) subMessageApi.getAllByRelation(branch,
-                     ArtifactId.valueOf(message.getId())));
-                  message.setInitiatingNode(node);
-                  messageList.add(message);
-               } else {
-                  List<InterfaceSubMessageToken> msgSubMessages =
-                     (List<InterfaceSubMessageToken>) this.subMessageApi.getAllByRelationAndFilter(branch,
-                        ArtifactId.valueOf(message.getId()), filter);
-                  if (msgSubMessages.size() > 0) {
-                     message.setSubMessages(msgSubMessages);
-                     message.setInitiatingNode(node);
-                     messageList.add(message);
-                  }
-               }
+         messages.stream().forEach(m -> {
+            if (m.getInterfaceMessageType().equals("Operational")) {
+               ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m));
             }
-         }
-
-         return messageList;
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
+         });
+         return messages;
+      } catch (Exception ex) {
          System.out.println(ex);
-         return null;
+         return messages;
       }
    }
 }

@@ -38,7 +38,7 @@ Angular Tests:
     - node -v
     - npm config set strict-ssl false
     - npm config list
-    - npm ci --cache $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/.npm/ --prefer-offline
+    - npm ci --cache $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/.npm/ --prefer-offline --force
   script:
     - npx -p @angular/cli ng lint
     - npx prettier --check .

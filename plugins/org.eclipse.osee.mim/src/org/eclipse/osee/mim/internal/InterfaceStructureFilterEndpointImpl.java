@@ -51,6 +51,7 @@ public class InterfaceStructureFilterEndpointImpl implements InterfaceStructureF
       if (subMessageId.getId() == 0) {
          return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
       }
-      return this.interfaceStructureApi.getAllRelatedAndFilter(branch, subMessageId, filter);
+      return this.interfaceStructureApi.getAllRelatedAndFilter(branch, subMessageId, filter, pageNum, pageSize,
+         orderByAttributeTypeId);
    }
 }

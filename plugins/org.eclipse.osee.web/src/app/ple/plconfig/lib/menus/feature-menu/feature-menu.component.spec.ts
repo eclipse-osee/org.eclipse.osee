@@ -13,7 +13,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
@@ -32,48 +31,62 @@ describe('FeatureMenuComponent', () => {
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatMenuModule,
-				MatIconModule,
-				NoopAnimationsModule,
-				RouterTestingModule.withRoutes([
+		await TestBed.overrideComponent(FeatureMenuComponent, {
+			set: {
+				providers: [
+					{ provide: DialogService, useValue: DialogServiceMock },
 					{
-						path: '',
-						component: FeatureMenuComponent,
-						children: [
-							{
-								path: ':branchType',
-								children: [
-									{
-										path: ':branchId',
-										children: [
-											{
-												path: 'diff',
-												component: FeatureMenuComponent,
-											},
-										],
-									},
-								],
-							},
-						],
+						provide: PlConfigCurrentBranchService,
+						useValue: plCurrentBranchServiceMock,
 					},
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatMenuModule,
+					MatIconModule,
+					NoopAnimationsModule,
+					FeatureMenuComponent,
+					RouterTestingModule.withRoutes([
+						{
+							path: '',
+							component: FeatureMenuComponent,
+							children: [
+								{
+									path: ':branchType',
+									children: [
+										{
+											path: ':branchId',
+											children: [
+												{
+													path: 'diff',
+													component:
+														FeatureMenuComponent,
+												},
+											],
+										},
+									],
+								},
+							],
+						},
+						{
+							path: 'diffOpen',
+							component: FeatureMenuComponent,
+							outlet: 'rightSideNav',
+						},
+					]),
+				],
+				declarations: [],
+				providers: [
+					{ provide: DialogService, useValue: DialogServiceMock },
 					{
-						path: 'diffOpen',
-						component: FeatureMenuComponent,
-						outlet: 'rightSideNav',
+						provide: PlConfigCurrentBranchService,
+						useValue: plCurrentBranchServiceMock,
 					},
-				]),
-			],
-			declarations: [FeatureMenuComponent],
-			providers: [
-				{ provide: DialogService, useValue: DialogServiceMock },
-				{
-					provide: PlConfigCurrentBranchService,
-					useValue: plCurrentBranchServiceMock,
-				},
-			],
-		}).compileComponents();
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

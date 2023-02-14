@@ -12,9 +12,9 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
-import { settingsDialogData } from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
+import type { settingsDialogData } from '@osee/messaging/shared/types';
 import {
 	share,
 	filter,
@@ -27,7 +27,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { transactionResult } from 'src/app/shared/types/change-report/transaction';
+import { transactionResult } from '@osee/shared/types/change-report';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 @Injectable({

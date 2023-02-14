@@ -45,7 +45,6 @@ describe('AffectedArtifactDialogComponent', () => {
 				HttpClientTestingModule,
 				AffectedArtifactDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
 				{

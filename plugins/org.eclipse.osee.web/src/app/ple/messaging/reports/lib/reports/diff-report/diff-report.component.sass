@@ -10,18 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../../../../sass-utils/host-utils'
+@use 'host-utils'
 
-@use '../../../../../../../modern-ple-theme'
+@use 'modern-ple-theme'
 //@use '../../../../../../../themes/ple/messages/messaging/message-interface/interface/_lib' as msg
 @use './_theme' as t
 
 @media (prefers-color-scheme:light)
-    //@include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
-    @include t.theme($theme:modern-ple-theme.$modern-ple-light-theme)
+    //@include msg.material-theme($theme:modern-ple-theme.$modern-ple-light-theme, $typography: modern-ple-theme.$modern-ple-typography)
+    @include t.material-theme($theme:modern-ple-theme.$modern-ple-light-theme)
 @media (prefers-color-scheme:dark)
-    //@include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
-    @include t.theme($theme:modern-ple-theme.$modern-ple-dark-theme)
+    //@include msg.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme, $typography: modern-ple-theme.$modern-ple-typography)
+    @include t.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 @include host-utils.main-route-host()
 .diff-report-header
     padding: 1em 0 0 1em

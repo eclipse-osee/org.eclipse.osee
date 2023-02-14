@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { enumerationSet } from './enum';
-import { PlatformType } from './platformType';
+import type { enumerationSet } from './enum';
+import type { PlatformType } from './platformType';
 
 export interface enumeratedPlatformType extends PlatformType {
 	interfaceLogicalType: 'enumeration';

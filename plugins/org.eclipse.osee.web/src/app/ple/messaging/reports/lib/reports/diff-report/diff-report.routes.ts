@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import { DiffReportResolver } from '@osee/shared/resolvers';
+import { diffReportResolverFn } from '@osee/shared/resolvers';
 
 const routes: Routes = [
 	{
 		path: '',
 		loadComponent: () => import('./diff-report.component'),
 		resolve: {
-			diff: DiffReportResolver,
+			diff: diffReportResolverFn,
 		},
 	},
 ];

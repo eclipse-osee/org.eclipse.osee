@@ -17,6 +17,7 @@ import { ChangeReportTableComponent } from '../components/change-report-table/ch
 @Component({
 	selector: 'osee-change-report-table',
 	template: '<p>Dummy</p>',
+	standalone: true,
 })
 export class MockChangeReportTableComponent
 	implements Partial<ChangeReportTableComponent>

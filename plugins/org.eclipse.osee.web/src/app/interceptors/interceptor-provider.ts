@@ -10,26 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { HttpTimeoutExtensionInterceptor } from './http-timeout-extension.interceptor';
-import { OSEEAuthHeaderInterceptor } from './oseeauth-header.interceptor';
 import { LoadingIndicatorInterceptor } from './loading-indicator.interceptor';
+import { OseeAuthInterceptor } from './osee-auth-header.interceptor';
 
-/** Http interceptor providers in outside-in order */
-export const httpInterceptorProviders = [
-	{
-		provide: HTTP_INTERCEPTORS,
-		useClass: LoadingIndicatorInterceptor,
-		multi: true,
-	},
-	{
-		provide: HTTP_INTERCEPTORS,
-		useClass: HttpTimeoutExtensionInterceptor,
-		multi: true,
-	},
-	{
-		provide: HTTP_INTERCEPTORS,
-		useClass: OSEEAuthHeaderInterceptor,
-		multi: true,
-	},
+export const GlobalHttpInterceptors: HttpInterceptorFn[] = [
+	LoadingIndicatorInterceptor,
+	HttpTimeoutExtensionInterceptor,
+	OseeAuthInterceptor,
 ];

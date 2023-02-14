@@ -81,7 +81,6 @@ describe('TransitionActionToReviewDialogComponent', () => {
 				NoopAnimationsModule,
 				TransitionActionToReviewDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: ActionUserService,

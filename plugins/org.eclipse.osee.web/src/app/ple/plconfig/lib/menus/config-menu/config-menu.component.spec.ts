@@ -31,48 +31,62 @@ describe('ConfigMenuComponent', () => {
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatMenuModule,
-				MatIconModule,
-				NoopAnimationsModule,
-				RouterTestingModule.withRoutes([
+		await TestBed.overrideComponent(ConfigMenuComponent, {
+			set: {
+				providers: [
+					{ provide: DialogService, useValue: DialogServiceMock },
 					{
-						path: '',
-						component: ConfigMenuComponent,
-						children: [
-							{
-								path: ':branchType',
-								children: [
-									{
-										path: ':branchId',
-										children: [
-											{
-												path: 'diff',
-												component: ConfigMenuComponent,
-											},
-										],
-									},
-								],
-							},
-						],
+						provide: PlConfigCurrentBranchService,
+						useValue: plCurrentBranchServiceMock,
 					},
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatMenuModule,
+					MatIconModule,
+					ConfigMenuComponent,
+					NoopAnimationsModule,
+					RouterTestingModule.withRoutes([
+						{
+							path: '',
+							component: ConfigMenuComponent,
+							children: [
+								{
+									path: ':branchType',
+									children: [
+										{
+											path: ':branchId',
+											children: [
+												{
+													path: 'diff',
+													component:
+														ConfigMenuComponent,
+												},
+											],
+										},
+									],
+								},
+							],
+						},
+						{
+							path: 'diffOpen',
+							component: ConfigMenuComponent,
+							outlet: 'rightSideNav',
+						},
+					]),
+				],
+				declarations: [],
+				providers: [
+					{ provide: DialogService, useValue: DialogServiceMock },
 					{
-						path: 'diffOpen',
-						component: ConfigMenuComponent,
-						outlet: 'rightSideNav',
+						provide: PlConfigCurrentBranchService,
+						useValue: plCurrentBranchServiceMock,
 					},
-				]),
-			],
-			declarations: [ConfigMenuComponent],
-			providers: [
-				{ provide: DialogService, useValue: DialogServiceMock },
-				{
-					provide: PlConfigCurrentBranchService,
-					useValue: plCurrentBranchServiceMock,
-				},
-			],
-		}).compileComponents();
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

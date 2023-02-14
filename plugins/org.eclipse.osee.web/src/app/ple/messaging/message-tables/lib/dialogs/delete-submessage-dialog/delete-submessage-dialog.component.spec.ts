@@ -27,7 +27,6 @@ describe('DeleteSubmessageDialogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [],
 			imports: [
 				MatDialogModule,
 				MatButtonModule,

@@ -101,7 +101,6 @@ describe('SubElementTableComponent', () => {
 				HttpClientTestingModule,
 				MockSubElementTableComponent,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: ActivatedRoute,

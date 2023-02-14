@@ -10,30 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import {
-	ActivatedRouteSnapshot,
-	CanActivate,
-	RouterStateSnapshot,
-	UrlTree,
-} from '@angular/router';
-import { Observable } from 'rxjs';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { UserDataAccountService } from './user-data-account.service';
 
-@Injectable({
-	providedIn: 'root',
-})
-export class RoleGuard implements CanActivate {
-	constructor(private userService: UserDataAccountService) {}
-
-	canActivate(
-		route: ActivatedRouteSnapshot,
-		state: RouterStateSnapshot
-	):
-		| Observable<boolean | UrlTree>
-		| Promise<boolean | UrlTree>
-		| boolean
-		| UrlTree {
-		return this.userService.userHasRoles(route.data.requiredRoles);
-	}
-}
+export const RoleGuard = (
+	next: ActivatedRouteSnapshot,
+	state: RouterStateSnapshot
+) => {
+	return inject(UserDataAccountService).userHasRoles(next.data.requiredRoles);
+};

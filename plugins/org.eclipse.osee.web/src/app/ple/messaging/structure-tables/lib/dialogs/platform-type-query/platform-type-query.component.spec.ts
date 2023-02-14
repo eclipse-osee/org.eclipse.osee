@@ -68,7 +68,6 @@ describe('PlatformTypeQueryComponent', () => {
 				MatAutocompleteModule,
 				NoopAnimationsModule,
 			],
-			declarations: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,

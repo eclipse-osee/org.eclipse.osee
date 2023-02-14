@@ -33,11 +33,11 @@ import {
 	applicabilityListServiceMock,
 } from '@osee/messaging/shared/testing';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
-import {
+import type {
 	editPlatformTypeDialogData,
-	editPlatformTypeDialogDataMode,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
 import {
 	EditEnumSetDialogComponent,
 	EditTypeDialogComponent,

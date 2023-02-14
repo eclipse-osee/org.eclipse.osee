@@ -10,9 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
+import { A11yModule } from '@angular/cdk/a11y';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import {
+	MatDialogModule,
+	MatDialogRef,
+	MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { combineLatest, from, Observable } from 'rxjs';
 import { map, reduce, switchMap } from 'rxjs/operators';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
@@ -33,6 +43,18 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 	selector: 'osee-plconfig-copy-configuration-dialog',
 	templateUrl: './copy-configuration-dialog.component.html',
 	styleUrls: ['./copy-configuration-dialog.component.sass'],
+	standalone: true,
+	imports: [
+		FormsModule,
+		NgFor,
+		AsyncPipe,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatSelectModule,
+		MatOptionModule,
+		MatButtonModule,
+		A11yModule,
+	],
 })
 export class CopyConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;

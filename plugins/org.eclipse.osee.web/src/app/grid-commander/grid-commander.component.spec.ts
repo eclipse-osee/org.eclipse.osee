@@ -35,8 +35,6 @@ describe('GridCommanderComponent', () => {
 				MatCardModule,
 				MatDialogModule,
 				MatCardModule,
-			],
-			declarations: [
 				GridCommanderComponent,
 				CommandPaletteComponent,
 				GcDatatableComponent,

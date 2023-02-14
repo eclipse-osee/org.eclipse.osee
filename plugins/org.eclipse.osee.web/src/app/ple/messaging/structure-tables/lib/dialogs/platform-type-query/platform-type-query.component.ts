@@ -21,7 +21,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import {
-	PlatformType,
 	PlatformTypeQuery,
 	EnumsService,
 	andQuery,
@@ -35,6 +34,7 @@ import {
 	andNameQuery,
 	andDescriptionQuery,
 } from '@osee/messaging/shared';
+import type { PlatformType } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-platform-type-query',

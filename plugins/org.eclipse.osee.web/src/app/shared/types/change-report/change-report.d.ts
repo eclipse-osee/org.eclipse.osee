@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { applic } from '../applicability/applic';
-import { ARTIFACTTYPEID } from '../constants/ArtifactTypeId.enum';
-import { ATTRIBUTETYPEID } from '../constants/AttributeTypeId.enum';
-import { RelationTypeId } from '../constants/RelationTypeId.enum';
+import type { ARTIFACTTYPEID } from '../constants/ArtifactTypeId.enum';
+import type { ATTRIBUTETYPEID } from '../constants/AttributeTypeId.enum';
+import type { RelationTypeId } from '../constants/RelationTypeId.enum';
 import { TupleTypeId } from '../constants/TupleTypeId';
 import { transactionToken } from './transaction-token';
 

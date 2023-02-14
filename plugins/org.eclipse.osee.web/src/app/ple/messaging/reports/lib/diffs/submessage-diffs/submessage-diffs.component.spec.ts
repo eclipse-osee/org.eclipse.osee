@@ -34,7 +34,6 @@ describe('SubmessageDiffsComponent', () => {
 				DiffReportTableComponent,
 				SubmessageDiffsComponent,
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { subMessage } from '../../types/sub-messages';
+import type { subMessage } from '../../types/sub-messages';
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,

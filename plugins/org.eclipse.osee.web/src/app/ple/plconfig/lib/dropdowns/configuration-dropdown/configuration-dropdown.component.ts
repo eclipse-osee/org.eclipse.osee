@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { iif, Observable, of, OperatorFunction } from 'rxjs';
 import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
@@ -26,11 +26,23 @@ import { EditConfigurationDialogComponent } from '../../dialogs/edit-config-dial
 import { editConfiguration } from '../../types/pl-config-configurations';
 import { AddConfigurationDialogComponent } from '../../dialogs/add-configuration-dialog/add-configuration-dialog.component';
 import { CopyConfigurationDialogComponent } from '../../dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
 	selector: 'osee-plconfig-configuration-dropdown',
 	templateUrl: './configuration-dropdown.component.html',
 	styleUrls: ['./configuration-dropdown.component.sass'],
+	standalone: true,
+	imports: [
+		MatIconModule,
+		MatMenuModule,
+		MatFormFieldModule,
+		NgFor,
+		NgIf,
+		AsyncPipe,
+	],
 })
 export class ConfigurationDropdownComponent {
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(

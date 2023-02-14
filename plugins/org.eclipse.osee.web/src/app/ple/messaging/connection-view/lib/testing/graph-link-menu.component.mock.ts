@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import {
+import type {
 	connection,
 	connectionWithChanges,
 	OseeNode,

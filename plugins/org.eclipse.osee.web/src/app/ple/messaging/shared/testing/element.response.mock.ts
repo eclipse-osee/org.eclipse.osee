@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { element } from '@osee/messaging/shared/types';
+import type { element } from '@osee/messaging/shared/types';
 
 export const elementsMock: element[] = [
 	{

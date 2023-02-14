@@ -11,15 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { ResolveFn } from '@angular/router';
 import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
 import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
 import { DifferenceReportService } from 'src/app/ple-services/http/difference-report.service';
 import { DifferenceReportServiceMock } from 'src/app/ple-services/http/difference-report.service.mock';
+import { changeInstance } from '../types/change-report';
 
-import { DiffReportResolver } from './diff-report-resolver.resolver';
+import { diffReportResolverFn } from './diff-report-resolver.resolver';
 
 describe('DiffReportResolverResolver', () => {
-	let resolver: DiffReportResolver;
+	const resolver: ResolveFn<changeInstance[] | undefined> = (route, state) =>
+		TestBed.runInInjectionContext(() => diffReportResolverFn(route, state));
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -31,7 +34,7 @@ describe('DiffReportResolverResolver', () => {
 				},
 			],
 		});
-		resolver = TestBed.inject(DiffReportResolver);
+		//resolver = TestBed.inject(DiffReportResolver);
 	});
 
 	it('should be created', () => {

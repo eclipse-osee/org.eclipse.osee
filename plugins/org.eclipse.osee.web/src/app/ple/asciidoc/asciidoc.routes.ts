@@ -10,9 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ChangeReportComponent } from './change-report.component';
+import { Routes } from '@angular/router';
 
 const routes: Routes = [
 	{
@@ -20,13 +18,26 @@ const routes: Routes = [
 		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
 		outlet: 'toolbar',
 	},
-	{ path: '', component: ChangeReportComponent },
-	{ path: ':branchType', component: ChangeReportComponent },
-	{ path: ':branchType/:branchId', component: ChangeReportComponent },
+	{
+		path: '',
+		loadComponent: () =>
+			import('./asciidoc-editor/asciidoc-editor.component'),
+	},
+	{
+		path: ':branchType',
+		loadComponent: () =>
+			import('./asciidoc-editor/asciidoc-editor.component'),
+	},
+	{
+		path: ':branchType/:branchId',
+		loadComponent: () =>
+			import('./asciidoc-editor/asciidoc-editor.component'),
+	},
+	{
+		path: ':branchType/:branchId/:artifactId',
+		loadComponent: () =>
+			import('./asciidoc-editor/asciidoc-editor.component'),
+	},
 ];
 
-@NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule],
-})
-export class ChangeReportRoutingModule {}
+export default routes;

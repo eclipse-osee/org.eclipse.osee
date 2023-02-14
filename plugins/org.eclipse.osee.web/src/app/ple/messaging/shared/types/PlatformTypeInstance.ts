@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { PlatformType } from './platformType';
+import type { PlatformType } from './platformType';
 
 export class PlatformTypeSentinel implements PlatformType {
 	id?: string | undefined = '-1';

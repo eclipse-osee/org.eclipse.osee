@@ -26,30 +26,45 @@
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
 
-	.onpage:not(.highlight) {
-		background-color: mat.get-color-from-palette($primary, 50);
+	// Define any styles affected by the theme.
+	.vert-divider {
+		.divider {
+			flex-grow: 1;
+		}
+
+		.divider-icon {
+			cursor: ew-resize;
+		}
+
+		display: flex;
+		flex-direction: column;
+		cursor: ew-resize;
+		align-items: center;
+		justify-content: center;
 	}
 
-	.top-navigation:hover {
-		background-color: mat.get-color-from-palette($primary, 100);
+	.vert-divider:hover {
+		.divider {
+			border-right-color: mat.get-color-from-palette($primary, 200);
+		}
+
+		.divider-icon {
+			color: mat.get-color-from-palette($primary, 400);
+		}
 	}
 }
-/* stylelint-disable block-no-empty */
 @mixin typography($config-or-theme) {
-}
-@mixin typography-themed($config-or-theme) {
 	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme, $typography) {
+@mixin material-theme($theme) {
 	$color: mat.get-color-config($theme);
-	$typography: mat.get-typography-config($typography);
-	@include typography($theme);
+	$typography: mat.get-typography-config($theme);
 
 	@if $color {
 		@include color($color);
 	}
 	@if $typography {
-		@include typography-themed($typography);
+		@include typography($typography);
 	}
 }

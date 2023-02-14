@@ -10,24 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import {
-	HttpRequest,
-	HttpHandler,
-	HttpEvent,
-	HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
+import { timeout } from 'rxjs';
 
-@Injectable()
-export class HttpTimeoutExtensionInterceptor implements HttpInterceptor {
-	constructor() {}
-
-	intercept(
-		request: HttpRequest<any>,
-		next: HttpHandler
-	): Observable<HttpEvent<any>> {
-		return next.handle(request).pipe(timeout(900000));
-	}
-}
+export const HttpTimeoutExtensionInterceptor = (
+	req: HttpRequest<unknown>,
+	next: HttpHandlerFn
+) => {
+	return next(req).pipe(timeout(900000));
+};

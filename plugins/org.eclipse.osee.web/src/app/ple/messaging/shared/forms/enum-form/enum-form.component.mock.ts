@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, Output } from '@angular/core';
-import { enumeration } from '@osee/messaging/shared/types';
+import type { enumeration } from '@osee/messaging/shared/types';
 import { Observable, Subject } from 'rxjs';
 import { EnumFormComponent } from './enum-form.component';
 

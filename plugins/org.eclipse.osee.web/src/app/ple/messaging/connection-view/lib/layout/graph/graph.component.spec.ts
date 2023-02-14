@@ -40,12 +40,12 @@ import { of } from 'rxjs';
 import { MockGraphLinkMenuComponent } from '../../testing/graph-link-menu.component.mock';
 import { MockGraphNodeMenuComponent } from '../../testing/graph-node-menu.component.mock';
 import { MatIconModule } from '@angular/material/icon';
-import {
+import type {
 	connectionWithChanges,
 	OseeEdge,
 	node,
-	EnumsService,
 } from '@osee/messaging/shared';
+import { EnumsService } from '@osee/messaging/shared';
 import { RouteStateService } from '../../services/route-state-service.service';
 import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
@@ -85,7 +85,6 @@ describe('GraphComponent', () => {
 				{ provide: CurrentGraphService, useValue: graphServiceMock },
 				{ provide: EnumsService, useValue: enumsServiceMock },
 			],
-			declarations: [],
 			teardown: { destroyAfterEach: false },
 		}).compileComponents();
 		routerService = TestBed.inject(RouteStateService);

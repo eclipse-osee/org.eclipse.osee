@@ -14,11 +14,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { user } from '@osee/shared/types/auth';
 import { apiURL } from 'src/environments/environment';
-import { element } from '../../types/element';
-import { structure } from '../../types/structure';
-import { message } from '../../types/messages';
-import { subMessage } from '../../types/sub-messages';
-import {
+import type { element } from '../../types/element';
+import type { structure } from '../../types/structure';
+import type { message } from '../../types/messages';
+import type { subMessage } from '../../types/sub-messages';
+import type {
 	MimPreferences,
 	MimUserGlobalPreferences,
 } from '../../types/mim.preferences';

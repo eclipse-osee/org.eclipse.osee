@@ -11,15 +11,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../sass-utils/host-utils'
-@use "../../../../sass-utils/mat-table-utils" as utils
-@use '../../../../modern-ple-theme'
+@use 'host-utils'
+@use "mat-table-utils" as utils
+@use 'modern-ple-theme'
 @use './_theme' as msg
 
 @media (prefers-color-scheme:light)
-    @include msg.theme($theme:modern-ple-theme.$modern-ple-light-theme)
+    @include msg.material-theme($theme:modern-ple-theme.$modern-ple-light-theme)
 @media (prefers-color-scheme:dark)
-    @include msg.theme($theme:modern-ple-theme.$modern-ple-dark-theme)
+    @include msg.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 @include host-utils.main-route-host()
 body
     height: 90vh

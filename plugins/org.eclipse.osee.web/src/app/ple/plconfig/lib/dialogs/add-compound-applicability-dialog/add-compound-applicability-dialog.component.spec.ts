@@ -49,10 +49,10 @@ describe('AddCompoundApplicabilityDialogComponent', () => {
 				MatInputModule,
 				MatSelectModule,
 				FormsModule,
+				AddCompoundApplicabilityDialogComponent,
 				NoopAnimationsModule,
 				MatSlideToggleModule,
 			],
-			declarations: [AddCompoundApplicabilityDialogComponent],
 			providers: [
 				{ provide: PlConfigBranchService, useValue: branchService },
 				{

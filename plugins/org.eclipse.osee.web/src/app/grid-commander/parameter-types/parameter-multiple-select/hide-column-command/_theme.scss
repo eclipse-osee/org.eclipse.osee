@@ -21,7 +21,7 @@
 	}
 }
 
-@mixin theme($theme) {
+@mixin material-theme($theme) {
 	$density: mat.get-density-config($theme);
 
 	@if $density {

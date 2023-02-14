@@ -25,7 +25,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import {
+import type {
 	connection,
 	connectionWithChanges,
 	newConnection,

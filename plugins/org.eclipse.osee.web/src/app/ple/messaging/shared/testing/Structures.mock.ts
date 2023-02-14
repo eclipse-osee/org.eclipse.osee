@@ -11,7 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { structure, structureWithChanges } from '@osee/messaging/shared/types';
+import type {
+	structure,
+	structureWithChanges,
+} from '@osee/messaging/shared/types';
 
 export const structuresMock: Required<structure>[] = [
 	{

@@ -35,7 +35,7 @@ import { apiURL } from '../../../../../../environments/environment';
 
 import { ColumnPreferencesDialogComponent } from './column-preferences-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
+import type {
 	settingsDialogData,
 	branchApplicability,
 } from '@osee/messaging/shared/types';
@@ -80,7 +80,6 @@ describe('ColumnPreferencesDialogComponent', () => {
 				HttpClientTestingModule,
 				ColumnPreferencesDialogComponent,
 			],
-			declarations: [],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
 				{ provide: MAT_DIALOG_DATA, useValue: dialogData },

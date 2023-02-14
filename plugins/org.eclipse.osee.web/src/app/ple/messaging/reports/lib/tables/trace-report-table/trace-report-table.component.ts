@@ -12,7 +12,7 @@
  **********************************************************************/
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NodeTraceReportItem } from 'src/app/ple/messaging/shared/types/NodeTraceReport';
+import type { NodeTraceReportItem } from '@osee/messaging/shared';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { MatFormFieldModule } from '@angular/material/form-field';

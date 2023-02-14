@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { enumerationSet } from '@osee/messaging/shared/types';
+import type { enumerationSet } from '@osee/messaging/shared/types';
 
 export const enumerationSetMock: enumerationSet[] = [
 	{

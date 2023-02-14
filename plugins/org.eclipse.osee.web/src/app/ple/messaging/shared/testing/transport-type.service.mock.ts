@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Observable, of } from 'rxjs';
 import { TransportTypeService } from '../services/http/transport-type.service';
-import { transportType } from '@osee/messaging/shared/types';
+import type { transportType } from '@osee/messaging/shared/types';
 
 export const transportTypes: Required<transportType>[] = [
 	{

@@ -130,9 +130,9 @@
 	$config: mat.get-typography-config($config-or-theme);
 }
 
-@mixin theme($theme) {
-	$color: mat.get-color-config($theme);
-	$typography: mat.get-typography-config($theme);
+@mixin material-theme($config) {
+	$color: mat.get-color-config($config);
+	$typography: mat.get-typography-config($config);
 
 	@if $color {
 		@include color($color);

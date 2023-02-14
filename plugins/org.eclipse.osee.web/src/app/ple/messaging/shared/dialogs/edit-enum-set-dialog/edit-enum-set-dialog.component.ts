@@ -21,7 +21,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
-import {
+import type {
 	enumerationSet,
 	enumsetDialogData,
 } from '@osee/messaging/shared/types';

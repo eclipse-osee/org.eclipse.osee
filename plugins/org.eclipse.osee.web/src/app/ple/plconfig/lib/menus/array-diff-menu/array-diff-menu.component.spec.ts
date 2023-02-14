@@ -32,6 +32,7 @@ describe('ArrayDiffMenuComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				MatMenuModule,
+				ArrayDiffMenuComponent,
 				RouterTestingModule.withRoutes([
 					{
 						path: '',
@@ -61,7 +62,6 @@ describe('ArrayDiffMenuComponent', () => {
 					},
 				]),
 			],
-			declarations: [ArrayDiffMenuComponent],
 			providers: [
 				{ provide: DialogService, useValue: DialogServiceMock },
 				{

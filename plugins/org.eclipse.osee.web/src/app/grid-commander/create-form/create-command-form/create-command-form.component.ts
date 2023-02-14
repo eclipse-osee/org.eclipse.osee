@@ -22,16 +22,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { createArtifact } from '@osee/shared/types';
 import { combineLatest, map, take } from 'rxjs';
-import { ParameterTypesModule } from '../../parameter-types/parameter-types.module';
+
 import { ContextSelectionService } from '../../services/create-command-form-services/context-selection.service';
 import { CreateCommandWithParameterArtifactService } from '../../services/create-command-form-services/create-command-with-parameter-artifact.service';
 import { CreateCommandService } from '../../services/create-command-form-services/create-command.service';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-form.component';
+import { ParameterSingleSelectComponent } from '../../parameter-types/parameter-single-select/parameter-single-select.component';
 
 @Component({
 	selector: 'osee-create-command-form',
 	standalone: true,
+	templateUrl: './create-command-form.component.html',
+	styleUrls: ['./create-command-form.component.sass'],
 	imports: [
 		CommonModule,
 		FormsModule,
@@ -42,11 +45,9 @@ import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-f
 		MatCardModule,
 		MatButtonModule,
 		MatIconModule,
-		ParameterTypesModule,
 		OpenUrlFormComponent,
+		ParameterSingleSelectComponent,
 	],
-	templateUrl: './create-command-form.component.html',
-	styleUrls: ['./create-command-form.component.sass'],
 })
 export class CreateCommandFormComponent implements OnDestroy {
 	commandActionOptions = this.parameterDataService.parameterDefaultValue$;

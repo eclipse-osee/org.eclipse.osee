@@ -11,11 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
 	FloatLabelType,
 	MatFormFieldControl,
+	MatFormFieldModule,
 } from '@angular/material/form-field';
 import { tap } from 'rxjs';
 import { HelperdialogComponent } from '../../command-palette/helperdialog/helperdialog.component';
@@ -26,6 +27,14 @@ import {
 	Command,
 	CommandGroups,
 } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { HighlightFilteredTextDirective } from '../../../shared/utils/directives/highlight-filtered-text.directive';
+import { MatOptionModule } from '@angular/material/core';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
 	selector: 'osee-input-control',
@@ -37,6 +46,21 @@ import {
 			useExisting: InputControlComponent,
 			multi: true,
 		},
+	],
+	standalone: true,
+	imports: [
+		FormsModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatAutocompleteModule,
+		NgIf,
+		NgFor,
+		MatOptionModule,
+		HighlightFilteredTextDirective,
+		MatButtonModule,
+		MatTooltipModule,
+		MatIconModule,
+		AsyncPipe,
 	],
 })
 export class InputControlComponent<T extends CommandGroups> {

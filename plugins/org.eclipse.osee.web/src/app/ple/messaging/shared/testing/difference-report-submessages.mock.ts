@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { submessageDiffItem } from '@osee/messaging/shared/types';
+import type { submessageDiffItem } from '@osee/messaging/shared/types';
 export const submessageDiffsMock: submessageDiffItem[] = [
 	{
 		id: '200403',

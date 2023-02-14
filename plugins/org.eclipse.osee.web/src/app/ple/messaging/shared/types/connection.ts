@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Edge } from '@swimlane/ngx-graph';
-import { difference } from 'src/app/shared/types/change-report/change-report';
-import { applic } from '@osee/shared/types/applicability';
-import { transportType } from './transportType';
+import type { Edge } from '@swimlane/ngx-graph';
+import type { difference } from '@osee/shared/types/change-report';
+import type { applic } from '@osee/shared/types/applicability';
+import type { transportType } from './transportType';
 
 export interface connection extends connectionAttributes, connectionRelations {
 	id?: string;

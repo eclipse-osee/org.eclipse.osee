@@ -33,7 +33,7 @@ import {
 	EditAuthService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
-import {
+import type {
 	settingsDialogData,
 	structure,
 	element,

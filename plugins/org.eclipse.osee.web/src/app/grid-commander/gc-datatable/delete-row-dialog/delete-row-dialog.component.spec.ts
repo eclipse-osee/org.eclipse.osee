@@ -24,8 +24,7 @@ describe('CheckboxContainerComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MatDialogModule],
-			declarations: [DeleteRowDialogComponent],
+			imports: [MatDialogModule, DeleteRowDialogComponent],
 			providers: [
 				{
 					provide: MAT_DIALOG_DATA,

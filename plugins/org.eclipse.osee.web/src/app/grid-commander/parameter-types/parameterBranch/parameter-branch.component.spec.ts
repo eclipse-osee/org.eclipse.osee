@@ -35,8 +35,8 @@ describe('ParameterBranchComponent', () => {
 				BranchPickerComponent,
 				HttpClientTestingModule,
 				NoopAnimationsModule,
+				ParameterBranchComponent,
 			],
-			declarations: [ParameterBranchComponent],
 		});
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});

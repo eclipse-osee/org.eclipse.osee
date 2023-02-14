@@ -125,7 +125,7 @@ describe('MessagesService', () => {
 	});
 
 	it('should get filtered messages', () => {
-		service.getFilteredMessages('', '10', '10').subscribe();
+		service.getFilteredMessages('', '10', '10', 1, 10).subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/branch/' +
@@ -133,7 +133,8 @@ describe('MessagesService', () => {
 				'/connections/' +
 				10 +
 				'/messages/filter/' +
-				''
+				'' +
+				'?count=10&pageNum=1'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

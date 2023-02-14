@@ -38,10 +38,8 @@ import {
 	enumsServiceMock,
 	QueryServiceMock,
 } from '@osee/messaging/shared/testing';
-import {
-	editPlatformTypeDialogData,
-	editPlatformTypeDialogDataMode,
-} from '@osee/messaging/shared/types';
+import type { editPlatformTypeDialogData } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
 import {
 	QueryService,
 	TypesService,

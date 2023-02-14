@@ -32,6 +32,7 @@ import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
+import org.eclipse.osee.mim.InterfaceStructureCountEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
@@ -101,6 +102,13 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceStructureFilterEndpoint getStructureFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId) {
       return new InterfaceStructureFilterEndpointImpl(branch, messageId, subMessageId,
+         mimApi.getInterfaceStructureApi());
+   }
+
+   @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   public InterfaceStructureCountEndpoint getStructureCountEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId) {
+      return new InterfaceStructureCountEndpointImpl(branch, messageId, subMessageId,
          mimApi.getInterfaceStructureApi());
    }
 

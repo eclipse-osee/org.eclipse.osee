@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { elementDiffItem } from '@osee/messaging/shared/types';
+import type { elementDiffItem } from '@osee/messaging/shared/types';
 export const elementDiffsMock: elementDiffItem[] = [
 	{
 		id: '200435',

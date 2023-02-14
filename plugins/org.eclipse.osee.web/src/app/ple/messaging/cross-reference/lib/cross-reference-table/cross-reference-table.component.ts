@@ -1,3 +1,15 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -18,7 +30,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/new-cross-reference-dialog.component';
-import { SplitStringPipe } from 'src/app/shared/utils/pipes/split-string.pipe';
+import { SplitStringPipe } from '@osee/shared/utils';
 import { HeaderService } from 'src/app/ple-services/ui/header.service';
 
 @Component({

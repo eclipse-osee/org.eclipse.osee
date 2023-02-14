@@ -21,8 +21,7 @@ describe('ParameterMultipleSelectComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule],
-			declarations: [ParameterMultipleSelectComponent],
+			imports: [HttpClientModule, ParameterMultipleSelectComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ParameterMultipleSelectComponent);

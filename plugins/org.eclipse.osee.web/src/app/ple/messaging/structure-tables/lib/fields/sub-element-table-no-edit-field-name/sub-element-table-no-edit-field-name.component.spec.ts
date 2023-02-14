@@ -19,9 +19,7 @@ describe('SubElementTableNoEditFieldNameComponent', () => {
 	let fixture: ComponentFixture<SubElementTableNoEditFieldNameComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			declarations: [],
-		}).compileComponents();
+		await TestBed.configureTestingModule({}).compileComponents();
 	});
 
 	beforeEach(() => {

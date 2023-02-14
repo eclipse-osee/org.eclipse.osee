@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { logicalType } from '@osee/messaging/shared/types';
+import type { logicalType } from '@osee/messaging/shared/types';
 import { LogicalTypeSelectorComponent } from './logical-type-selector.component';
 
 @Component({

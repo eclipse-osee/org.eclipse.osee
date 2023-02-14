@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { enumerationSet } from './enum';
+import type { enumerationSet } from './enum';
 
 /**
  * Platform Type as defined by the API, ids are required when fetching or updating a platform type

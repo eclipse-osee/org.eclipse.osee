@@ -52,8 +52,8 @@ import {
 	EditAuthService,
 	MULTI_STRUCTURE_SERVICE,
 	PreferencesUIService,
-	structure,
 } from '@osee/messaging/shared';
+import type { structure } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
 	ActionDropdownStub,
@@ -68,6 +68,8 @@ import {
 	structuresMock,
 	structuresMockWithChanges,
 } from '@osee/messaging/shared/testing';
+import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 describe('StructureTableComponent', () => {
 	let component: StructureTableComponent;
@@ -159,6 +161,9 @@ describe('StructureTableComponent', () => {
 						MatMenuModule,
 						MatButtonModule,
 						MatDialogModule,
+						MatPaginatorModule,
+						CdkVirtualForOf,
+						ScrollingModule,
 						RouterTestingModule,
 					],
 					providers: [

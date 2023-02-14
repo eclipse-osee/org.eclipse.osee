@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
+import type { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { of } from 'rxjs';
 import { user } from '@osee/shared/types/auth';

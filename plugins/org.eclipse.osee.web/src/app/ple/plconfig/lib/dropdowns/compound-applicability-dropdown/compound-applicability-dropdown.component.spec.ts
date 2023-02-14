@@ -25,7 +25,6 @@ describe('CompoundApplicabilityDropdownComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [CompoundApplicabilityDropdownComponent],
 			providers: [
 				{
 					provide: PlConfigCurrentBranchService,
@@ -34,7 +33,11 @@ describe('CompoundApplicabilityDropdownComponent', () => {
 					},
 				},
 			],
-			imports: [MatDialogModule, MatMenuModule],
+			imports: [
+				MatDialogModule,
+				MatMenuModule,
+				CompoundApplicabilityDropdownComponent,
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(

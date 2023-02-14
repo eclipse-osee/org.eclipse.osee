@@ -11,16 +11,35 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SelectedCommandDataService } from '../../../services/data-services/selected-command-data/selected-command-data.service';
 import { DataTableService } from '../../../services/datatable-services/datatable.service';
+import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-hide-column-command',
 	templateUrl: './hide-column-command.component.html',
 	styleUrls: ['./hide-column-command.component.sass'],
+	standalone: true,
+	imports: [
+		NgIf,
+		MatFormFieldModule,
+		MatSelectModule,
+		FormsModule,
+		MatChipsModule,
+		NgFor,
+		MatIconModule,
+		MatOptionModule,
+		AsyncPipe,
+		TitleCasePipe,
+	],
 })
 export class HideColumnCommandComponent {
 	columnOptions = this.dataTableService.columnOptions;

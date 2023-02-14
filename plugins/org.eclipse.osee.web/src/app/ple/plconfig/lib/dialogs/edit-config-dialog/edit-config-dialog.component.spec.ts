@@ -55,8 +55,8 @@ describe('EditConfigDialogComponent', () => {
 				MatListModule,
 				MatButtonModule,
 				FormsModule,
+				EditConfigurationDialogComponent,
 			],
-			declarations: [EditConfigurationDialogComponent],
 			providers: [
 				{ provide: PlConfigBranchService, useValue: branchService },
 				{

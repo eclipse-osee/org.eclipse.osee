@@ -12,7 +12,7 @@
  **********************************************************************/
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -24,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
-import { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
+import type { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-edit-view-free-text-field-dialog',

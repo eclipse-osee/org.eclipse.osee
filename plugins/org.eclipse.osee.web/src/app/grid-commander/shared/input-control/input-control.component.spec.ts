@@ -31,7 +31,6 @@ describe('InputControlComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			declarations: [InputControlComponent],
 			imports: [
 				CommonModule,
 				FormsModule,
@@ -43,6 +42,7 @@ describe('InputControlComponent', () => {
 				MatInputModule,
 				NoopAnimationsModule,
 				RouterTestingModule,
+				InputControlComponent,
 			],
 			providers: [{ provide: MatDialogRef, useValue: {} }],
 		}).compileComponents();

@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structure } from '@osee/messaging/shared/types';
 import { headerDetail } from '@osee/shared/types';
+import { structure } from '../types';
 
 export const structureHeaderDetails: headerDetail<structure>[] = [
 	{

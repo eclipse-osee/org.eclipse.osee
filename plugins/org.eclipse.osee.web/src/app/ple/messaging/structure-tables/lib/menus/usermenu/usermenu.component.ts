@@ -30,9 +30,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
 	ColumnPreferencesDialogComponent,
 	CurrentStructureService,
-	element,
 	HeaderService,
 	PreferencesUIService,
+} from '@osee/messaging/shared';
+import type {
+	element,
 	settingsDialogData,
 	structure,
 } from '@osee/messaging/shared';

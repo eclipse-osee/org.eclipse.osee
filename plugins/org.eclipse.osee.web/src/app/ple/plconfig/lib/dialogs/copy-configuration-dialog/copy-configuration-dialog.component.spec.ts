@@ -37,8 +37,8 @@ describe('CopyConfigurationDialogComponent', () => {
 				NoopAnimationsModule,
 				MatDialogModule,
 				MatButtonModule,
+				CopyConfigurationDialogComponent,
 			],
-			declarations: [CopyConfigurationDialogComponent],
 			providers: [
 				{
 					provide: PlConfigBranchService,

@@ -10,50 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, ReplaySubject } from 'rxjs';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
 import { changeInstance } from '@osee/shared/types/change-report';
 
-@Injectable({
-	providedIn: 'root',
-})
-export class DiffReportResolver
-	implements Resolve<changeInstance[] | undefined>
-{
-	replaySubject = new ReplaySubject<changeInstance[] | undefined>(1);
-	requested = false;
-	constructor(private diffService: DiffUIService) {}
-	resolve(
-		route: ActivatedRouteSnapshot
-	): Observable<changeInstance[] | undefined> {
-		let currentRoute = route;
-		while (
-			!currentRoute.paramMap.has('branchId') &&
-			!currentRoute.paramMap.has('branchType') &&
-			currentRoute.parent !== null
-		) {
-			currentRoute = currentRoute.parent;
-		}
-		if (this.diffService.id !== currentRoute.paramMap.get('branchId')) {
-			this.requested = false;
-			this.diffService.branchId =
-				currentRoute.paramMap.get('branchId') || '';
-		}
-		if (this.diffService.type !== currentRoute.paramMap.get('branchType')) {
-			this.requested = false;
-			this.diffService.branchType =
-				currentRoute.paramMap.get('branchType') || '';
-		}
-		this.diffService.DiffMode = route.url.some((e) => e.path === 'diff');
-		if (!this.requested) {
-			this.requested = true;
-			this.diffService.diff.subscribe((value) => {
-				this.replaySubject.next(value);
-			});
-		}
-		return this.replaySubject.pipe(first());
+const resolvedSubject = new ReplaySubject<changeInstance[] | undefined>(1);
+let requested = false;
+export const diffReportResolverFn: ResolveFn<changeInstance[] | undefined> = (
+	route: ActivatedRouteSnapshot
+) => {
+	const diffService = inject(DiffUIService);
+	let currentRoute = route;
+	while (
+		!currentRoute.paramMap.has('branchId') &&
+		!currentRoute.paramMap.has('branchType') &&
+		currentRoute.parent !== null
+	) {
+		currentRoute = currentRoute.parent;
 	}
-}
+	if (diffService.id !== currentRoute.paramMap.get('branchId')) {
+		requested = false;
+		diffService.branchId = currentRoute.paramMap.get('branchId') || '';
+	}
+	if (diffService.type !== currentRoute.paramMap.get('branchType')) {
+		requested = false;
+		diffService.branchType = currentRoute.paramMap.get('branchType') || '';
+	}
+	diffService.DiffMode = route.url.some((e) => e.path === 'diff');
+	if (!requested) {
+		requested = true;
+		diffService.diff.subscribe((value) => {
+			resolvedSubject.next(value);
+		});
+	}
+	return resolvedSubject.pipe(first());
+};

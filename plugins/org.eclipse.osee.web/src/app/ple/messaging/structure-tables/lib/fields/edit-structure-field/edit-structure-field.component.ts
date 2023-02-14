@@ -31,10 +31,10 @@ import { MatInputModule } from '@angular/material/input';
 import {
 	CurrentStructureService,
 	EnumsService,
-	structure,
 	STRUCTURE_SERVICE_TOKEN,
 	WarningDialogService,
 } from '@osee/messaging/shared';
+import type { structure } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-messaging-edit-structure-field',

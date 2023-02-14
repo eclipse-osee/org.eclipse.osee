@@ -51,6 +51,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    private final InterfaceElementApi interfaceElementApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final List<AttributeTypeId> structureAttributeList;
+   private final List<AttributeTypeId> elementAttributeList;
    private final List<RelationTypeSide> affectedRelations;
 
    InterfaceStructureApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceElementApi interfaceElementApi, InterfaceMessageApi interfaceMessageApi) {
@@ -59,6 +60,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       this.interfaceElementApi = interfaceElementApi;
       this.interfaceMessageApi = interfaceMessageApi;
       this.structureAttributeList = this.createStructureAttributeList();
+      this.elementAttributeList = this.createElementAttributeList();
       this.affectedRelations = this.createAffectedRelationTypeSideList();
    }
 
@@ -87,6 +89,20 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       attributes.add(CoreAttributeTypes.InterfaceMinSimultaneity);
       attributes.add(CoreAttributeTypes.InterfaceMaxSimultaneity);
       attributes.add(CoreAttributeTypes.InterfaceTaskFileType);
+      return attributes;
+   }
+
+   private List<AttributeTypeId> createElementAttributeList() {
+      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
+      attributes.add(CoreAttributeTypes.Name);
+      attributes.add(CoreAttributeTypes.Description);
+      attributes.add(CoreAttributeTypes.InterfaceDefaultValue);
+      attributes.add(CoreAttributeTypes.InterfaceElementAlterable);
+      attributes.add(CoreAttributeTypes.Notes);
+      attributes.add(CoreAttributeTypes.InterfaceElementEnumLiteral);
+      attributes.add(CoreAttributeTypes.InterfaceElementAlterable);
+      attributes.add(CoreAttributeTypes.InterfaceElementIndexStart);
+      attributes.add(CoreAttributeTypes.InterfaceElementIndexEnd);
       return attributes;
    }
 
@@ -395,6 +411,12 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet);
    }
 
+   private List<RelationTypeSide> getFullFollowRelationDetails() {
+      return Arrays.asList(CoreRelationTypes.InterfaceStructureContent_DataElement,
+         CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet);
+   }
+
    @Override
    public List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element) {
       ArtifactReadable elementReadable = element.getArtifactReadable();
@@ -682,13 +704,56 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       }
    }
 
+   @Override
+   public int getAllRelatedCount(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      int count = 0;
+      try {
+         count =
+            this.getAccessor().getAllByRelationAndCount(branch, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+               subMessageId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute);
+
+         return count;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return 0;
+      }
+   }
+
    /**
     * potentially not valid, need to decide the appropriate approach for structure filter
     */
 
    @Override
    public List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
-      return null;
+      List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
+      try {
+         structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelationAndFilter(branch,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
+            this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
+         for (InterfaceStructureToken structure : structureList) {
+            structure = this.parseStructure(branch, structure, structure.getElements());
+         }
+
+         return structureList;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return structureList;
+      }
+   }
+
+   @Override
+   public int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      int count = 0;
+      try {
+         count = this.getAccessor().getAllByRelationAndFilterAndCount(branch,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
+            this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
+
+         return count;
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return 0;
+      }
    }
 
 }

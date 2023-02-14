@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
-import { structure } from '../../types/structure';
+import type { structure } from '../../types/structure';
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
@@ -62,7 +62,9 @@ export class StructuresService {
 		branchId: string,
 		messageId: string,
 		subMessageId: string,
-		connectionId: string
+		connectionId: string,
+		pageNum: number,
+		pageSize: number
 	) {
 		return this.http.get<Required<structure>[]>(
 			apiURL +
@@ -75,7 +77,13 @@ export class StructuresService {
 				'/submessages/' +
 				subMessageId +
 				'/structures/filter/' +
-				filter
+				filter,
+			{
+				params: {
+					count: pageSize,
+					pageNum: pageNum,
+				},
+			}
 		);
 	}
 	getStructure(

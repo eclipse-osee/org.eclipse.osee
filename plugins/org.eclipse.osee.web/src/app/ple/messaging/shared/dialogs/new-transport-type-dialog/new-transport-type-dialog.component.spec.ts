@@ -42,7 +42,6 @@ describe('NewTransportTypeDialogComponent', () => {
 				MatSlideToggleModule,
 			],
 			providers: [{ provide: MatDialogRef, useValue: dialogRef }],
-			declarations: [],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(NewTransportTypeDialogComponent);

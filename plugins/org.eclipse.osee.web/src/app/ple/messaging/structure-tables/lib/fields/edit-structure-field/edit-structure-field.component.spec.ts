@@ -68,7 +68,6 @@ describe('EditStructureFieldComponent', () => {
 					useValue: CurrentStateServiceMock,
 				},
 			],
-			declarations: [],
 		}).compileComponents();
 	});
 

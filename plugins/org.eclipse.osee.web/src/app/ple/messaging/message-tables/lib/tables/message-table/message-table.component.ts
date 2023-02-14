@@ -24,13 +24,17 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
 import {
+	debounceTime,
 	delay,
 	distinctUntilChanged,
 	filter,
 	first,
 	map,
+	pairwise,
+	scan,
 	share,
 	shareReplay,
+	startWith,
 	switchMap,
 	take,
 	takeUntil,
@@ -56,13 +60,15 @@ import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-
 import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 import { MatInputModule } from '@angular/material/input';
 import {
-	message,
-	messageWithChanges,
-	EditViewFreeTextDialog,
-	messageChanges,
 	EditViewFreeTextFieldDialogComponent,
 	CurrentMessagesService,
 	HeaderService,
+} from '@osee/messaging/shared';
+import type {
+	message,
+	messageWithChanges,
+	messageChanges,
+	EditViewFreeTextDialog,
 } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
@@ -70,6 +76,7 @@ import {
 	ActionDropDownComponent,
 	TwoLayerAddButtonComponent,
 } from '@osee/shared/components';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
 	selector: 'osee-messaging-message-table',
@@ -113,6 +120,7 @@ import {
 		MatTooltipModule,
 		MatMenuModule,
 		MatDialogModule,
+		MatPaginatorModule,
 		AddMessageDialogComponent,
 		AddSubMessageDialogComponent,
 		RemoveMessageDialogComponent,
@@ -205,6 +213,32 @@ export class MessageTableComponent implements AfterViewChecked {
 			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
+	);
+	messages = this.messageService.messages;
+	currentPage = this.messageService.currentPage;
+	/**
+	 * @TODO this needs to be replaced with a SQL query since we can't tell whether a user decreased the size or the results themselves decreased
+	 */
+	currentOffset = combineLatest([
+		this.messageService.currentPage.pipe(startWith(0), pairwise()),
+		this.messageService.currentPageSize,
+	]).pipe(
+		debounceTime(100),
+		scan((acc, [[previousPageNum, currentPageNum], currentSize]) => {
+			if (previousPageNum < currentPageNum) {
+				return (acc += currentSize);
+			} else {
+				return acc;
+			}
+		}, 10)
+	);
+	private _messageLength = this.messages.pipe(
+		map((messages) => messages.length)
+	);
+	minPageSize = combineLatest([this.currentOffset, this._messageLength]).pipe(
+		debounceTime(100),
+		switchMap(([offset, messages]) => of([offset, messages])),
+		map(([offset, length]) => Math.max(offset + 1, length + 1))
 	);
 
 	constructor(
@@ -431,5 +465,9 @@ export class MessageTableComponent implements AfterViewChecked {
 				)
 			)
 			.subscribe();
+	}
+	setPage(event: PageEvent) {
+		this.messageService.pageSize = event.pageSize;
+		this.messageService.page = event.pageIndex;
 	}
 }

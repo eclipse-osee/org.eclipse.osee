@@ -11,15 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import { PageNotFoundComponent } from './page-not-found.component';
-
 const routes: Routes = [
 	{
 		path: '',
 		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
 		outlet: 'toolbar',
 	},
-	{ path: '', component: PageNotFoundComponent },
+	{ path: '', loadComponent: () => import('./page-not-found.component') },
 ];
 
 export default routes;

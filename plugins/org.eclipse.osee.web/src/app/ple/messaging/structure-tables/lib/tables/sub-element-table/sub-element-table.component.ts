@@ -44,17 +44,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
 import {
-	structure,
 	STRUCTURE_SERVICE_TOKEN,
-	enumerationSet,
-	EditViewFreeTextDialog,
-	element,
 	EditEnumSetDialogComponent,
 	EditViewFreeTextFieldDialogComponent,
 	CurrentStructureService,
 	EnumerationUIService,
 	HeaderService,
 	PreferencesUIService,
+} from '@osee/messaging/shared';
+import type {
+	structure,
+	enumerationSet,
+	element,
+	EditViewFreeTextDialog,
 } from '@osee/messaging/shared';
 
 @Component({

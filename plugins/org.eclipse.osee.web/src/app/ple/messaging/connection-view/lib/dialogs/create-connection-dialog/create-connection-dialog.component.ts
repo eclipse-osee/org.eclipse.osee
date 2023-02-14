@@ -19,12 +19,12 @@ import {
 import { from, of, Subject } from 'rxjs';
 import { concatMap, filter, reduce, switchMap, take } from 'rxjs/operators';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import {
-	CurrentTransportTypeService,
+import type {
 	newConnection,
 	node,
 	transportType,
 } from '@osee/messaging/shared';
+import { CurrentTransportTypeService } from '@osee/messaging/shared';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';

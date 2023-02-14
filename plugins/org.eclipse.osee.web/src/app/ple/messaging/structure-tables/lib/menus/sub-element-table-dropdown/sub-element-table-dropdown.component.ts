@@ -37,16 +37,18 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
-	element,
-	structure,
 	STRUCTURE_SERVICE_TOKEN,
-	enumerationSet,
-	EditViewFreeTextDialog,
 	EditEnumSetDialogComponent,
 	EditViewFreeTextFieldDialogComponent,
 	CurrentStructureService,
 	EnumerationUIService,
 	HeaderService,
+} from '@osee/messaging/shared';
+import type {
+	element,
+	structure,
+	enumerationSet,
+	EditViewFreeTextDialog,
 } from '@osee/messaging/shared';
 
 /**

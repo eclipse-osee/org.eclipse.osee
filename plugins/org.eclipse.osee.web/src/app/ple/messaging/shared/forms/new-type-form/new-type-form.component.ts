@@ -29,7 +29,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+	MatDialog,
+	MatDialogModule,
+	MatDialogRef,
+} from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { EnumSetFormComponent } from '../../forms/enum-set-form/enum-set-form.component';
 import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
@@ -42,6 +46,7 @@ import {
 	from,
 	Observable,
 	of,
+	shareReplay,
 	Subject,
 	switchMap,
 	take,
@@ -49,7 +54,7 @@ import {
 } from 'rxjs';
 import { NewPlatformTypeFormPage2Component } from '../new-platform-type-form-page2/new-platform-type-form-page2.component';
 import { TypesService } from '@osee/messaging/shared/services';
-import {
+import type {
 	logicalType,
 	PlatformType,
 	newPlatformTypeDialogReturnData,
@@ -104,6 +109,19 @@ export class NewTypeFormComponent implements OnInit {
 
 	_typeFormState = new Subject<newPlatformTypeDialogReturnData>();
 
+	private _dialogToClose = new BehaviorSubject<
+		MatDialogRef<unknown, unknown> | undefined
+	>(undefined);
+
+	closeDialog = combineLatest([
+		this._dialogToClose,
+		this._typeFormState,
+	]).pipe(
+		filter((v) => v[0] !== undefined),
+		take(1),
+		tap(([dialog, state]) => dialog !== undefined && dialog.close(state))
+	);
+
 	updateOuterComponent = new Subject<boolean>();
 
 	/**
@@ -154,12 +172,7 @@ export class NewTypeFormComponent implements OnInit {
 			this.updateOuterComponent.next(true);
 			return;
 		}
-		this._typeFormState
-			.pipe(
-				take(1),
-				tap((v) => isInDialog.close(v))
-			)
-			.subscribe();
+		this._dialogToClose.next(isInDialog);
 	}
 
 	updateFormState(state: newPlatformTypeDialogReturnData) {

@@ -13,11 +13,15 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { ActionDropDownComponent } from '../../../shared/components/action-state-button/action-drop-down/action-drop-down.component';
+import { BranchPickerComponent } from '../../../shared/components/branch-picker/branch-picker/branch-picker.component';
 
 @Component({
 	selector: 'osee-parameter-branch',
 	templateUrl: './parameter-branch.component.html',
 	styleUrls: ['./parameter-branch.component.sass'],
+	standalone: true,
+	imports: [BranchPickerComponent, ActionDropDownComponent],
 })
 export class ParameterBranchComponent {
 	parameter$ = this.parameterDataService.parameter$;

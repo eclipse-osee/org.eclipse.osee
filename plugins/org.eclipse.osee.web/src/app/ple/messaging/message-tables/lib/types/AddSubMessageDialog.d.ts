@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { subMessage } from '@osee/messaging/shared';
+import type { subMessage } from '@osee/messaging/shared';
 
 export interface AddSubMessageDialog {
 	id: string;

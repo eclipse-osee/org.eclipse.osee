@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { AsyncPipe } from '@angular/common';
 import {
 	AfterViewInit,
 	Component,
@@ -18,6 +20,13 @@ import {
 	Renderer2,
 	ViewChild,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MarkdownModule } from 'ngx-markdown';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
@@ -27,6 +36,18 @@ import { INSERTIONS } from '../types/constants/insertions';
 	selector: 'osee-resizable-split-pane-code',
 	templateUrl: './resizable-split-pane-code.component.html',
 	styleUrls: ['./resizable-split-pane-code.component.sass'],
+	standalone: true,
+	imports: [
+		FormsModule,
+		AsyncPipe,
+		MatInputModule,
+		MatButtonModule,
+		MatIconModule,
+		MatFormFieldModule,
+		TextFieldModule,
+		MatDividerModule,
+		MarkdownModule,
+	],
 })
 export class ResizableSplitPaneCodeComponent
 	implements OnDestroy, AfterViewInit
