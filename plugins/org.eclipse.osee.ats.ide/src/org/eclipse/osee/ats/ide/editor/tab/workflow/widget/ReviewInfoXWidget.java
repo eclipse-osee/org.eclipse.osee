@@ -232,7 +232,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          }
       } else {
          strLabel.setText(
-            revArt.getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
+            revArt.getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
       }
 
       String str = "[" + revArt.getName() + "]";

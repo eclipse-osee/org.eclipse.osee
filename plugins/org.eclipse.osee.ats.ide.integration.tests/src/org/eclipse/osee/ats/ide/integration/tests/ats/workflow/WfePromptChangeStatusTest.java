@@ -156,9 +156,9 @@ public class WfePromptChangeStatusTest {
 
    private static void validateWorkflows(Collection<? extends AbstractWorkflowArtifact> awas, String stateName, int totalPercent, double hoursSpent) throws Exception {
       for (AbstractWorkflowArtifact awa : awas) {
-         assertEquals("Current State wrong for " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName(), stateName);
+         assertEquals("Current State wrong for " + awa.getAtsId(), awa.getCurrentStateName(), stateName);
          if (awa.isCompletedOrCancelled()) {
-            assertEquals("ats.CurrentState wrong " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName() + ";;;",
+            assertEquals("ats.CurrentState wrong " + awa.getAtsId(), awa.getCurrentStateName() + ";;;",
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
          assertEquals("Percent wrong for " + awa.getAtsId(),

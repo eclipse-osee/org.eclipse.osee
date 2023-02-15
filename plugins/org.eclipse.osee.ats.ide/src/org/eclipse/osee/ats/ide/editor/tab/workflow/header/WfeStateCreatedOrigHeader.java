@@ -67,13 +67,13 @@ public class WfeStateCreatedOrigHeader extends Composite {
          String isHold = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
             AtsAttributeTypes.HoldReason, "");
          if (Strings.isValid(isBlocked)) {
-            stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Blocked)");
+            stateValueLabel.setText(workItem.getCurrentStateName() + " (Blocked)");
             stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
          } else if (Strings.isValid(isHold)) {
-            stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Hold)");
+            stateValueLabel.setText(workItem.getCurrentStateName() + " (Hold)");
             stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
          } else {
-            stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName());
+            stateValueLabel.setText(workItem.getCurrentStateName());
             stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
          createdValueLabel.setText(DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()));

@@ -74,7 +74,7 @@ public class WfePromptChangeStatus {
                      //
                      "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
                   taskArt.getName(), taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "unknown"),
-                  taskArt.getParentAWA().getStateMgr().getCurrentStateName()));
+                  taskArt.getParentAWA().getCurrentStateName()));
             }
          }
 

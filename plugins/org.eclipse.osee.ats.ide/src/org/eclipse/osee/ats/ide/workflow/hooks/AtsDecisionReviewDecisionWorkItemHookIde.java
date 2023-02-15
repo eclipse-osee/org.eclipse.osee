@@ -95,9 +95,8 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
    }
 
    private boolean isApplicable(IAtsWorkItem workItem) {
-      return workItem.isTypeEqual(
-         AtsArtifactTypes.DecisionReview) && workItem.getStateMgr().getCurrentStateName().equals(
-            DecisionReviewState.Decision.getName());
+      return workItem.isTypeEqual(AtsArtifactTypes.DecisionReview) && workItem.getCurrentStateName().equals(
+         DecisionReviewState.Decision.getName());
    }
 
    public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) {

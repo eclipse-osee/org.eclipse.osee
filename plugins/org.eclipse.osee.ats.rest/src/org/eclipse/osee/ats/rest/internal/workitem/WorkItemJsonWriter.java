@@ -153,7 +153,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          }
          writer.writeStringField("ChangeType", workItemArt.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
          writer.writeStringField("Priority", workItemArt.getSoleAttributeAsString(AtsAttributeTypes.Priority, ""));
-         writer.writeStringField("State", workItem.getStateMgr().getCurrentStateName());
+         writer.writeStringField("State", workItem.getCurrentStateName());
          if (options.contains(WorkItemWriterOptions.DatesAsLong)) {
             writer.writeStringField("CreatedDate", String.valueOf(workItem.getCreatedDate().getTime()));
          } else {
@@ -234,7 +234,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeObjectFieldStart("State");
       AttributeReadable<Object> attr =
          action.getAttributeById(action.getSoleAttributeId(AtsAttributeTypes.CurrentState));
-      writer.writeObjectField("value", workItem.getStateMgr().getCurrentStateName());
+      writer.writeObjectField("value", workItem.getCurrentStateName());
       writer.writeNumberField("gammaId", attr.getGammaId().getId());
       writer.writeEndObject();
    }

@@ -146,7 +146,7 @@ public class EmailActionsBlam extends AbstractBlam {
             recipients, getIdString(workItem), data.getEmailRecipient().name(),
             String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
                data.getEmailRecipient().name(), workItem.getArtifactTypeName(),
-               workItem.getStateMgr().getCurrentStateName(), workItem.getName(),
+               workItem.getCurrentStateName(), workItem.getName(),
                DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
       notificationEvent.setUrl(AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
       if (includeCancelHyperlink) {

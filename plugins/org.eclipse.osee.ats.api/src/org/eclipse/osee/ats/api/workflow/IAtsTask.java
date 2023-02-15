@@ -182,6 +182,11 @@ public interface IAtsTask extends IAtsWorkItem {
             return false;
          }
 
+         @Override
+         public String getCurrentStateName() {
+            return "";
+         }
+
       }
       return new IAtsTaskSentinel();
    }

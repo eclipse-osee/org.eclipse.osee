@@ -68,7 +68,7 @@ public class AgileItemWriter {
 
             for (IAtsWorkItem workItem : workItems) {
                // just assignee change
-               if (workItem.getStateMgr().getCurrentStateName().equals(newItem.getToState())) {
+               if (atsApi.getWorkItemService().getCurrentStateName(workItem).equals(newItem.getToState())) {
                   Collection<AtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
                   workItem.getStateMgr().setAssignees(toStateAssignees);

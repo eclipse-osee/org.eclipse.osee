@@ -84,7 +84,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             for (IAtsTeamWorkflow team : AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(version)) {
                if (!team.getStateMgr().getStateType().isCancelled() && !team.getStateMgr().getStateType().isCompleted()) {
                   errorStr =
-                     "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getAtsId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
+                     "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getAtsId() + " - is in the\"" + team.getCurrentStateName() + "\" state.";
                }
             }
             if (errorStr != null) {

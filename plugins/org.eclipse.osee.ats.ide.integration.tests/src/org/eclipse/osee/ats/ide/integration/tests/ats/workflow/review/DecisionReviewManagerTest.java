@@ -81,7 +81,7 @@ public class DecisionReviewManagerTest {
          String.format("Decision Review artifact should not be dirty [%s]",
             Artifacts.getDirtyReport(AtsApiService.get().getQueryServiceIde().getArtifact(decRev))),
          AtsApiService.get().getQueryServiceIde().getArtifact(decRev).isDirty());
-      Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getCurrentStateName());
       Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
 
    }
@@ -112,7 +112,7 @@ public class DecisionReviewManagerTest {
          String.format("Decision Review artifact should not be dirty [%s]",
             Artifacts.getDirtyReport(AtsApiService.get().getQueryServiceIde().getArtifact(decRev))),
          AtsApiService.get().getQueryServiceIde().getArtifact(decRev).isDirty());
-      Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getCurrentStateName());
       Assert.assertEquals("UnAssigned", decRev.getStateMgr().getAssigneesStr());
 
    }
@@ -133,7 +133,7 @@ public class DecisionReviewManagerTest {
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
-      Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
       Assert.assertEquals("Alex Kay", decRev.getStateMgr().getAssigneesStr());
       Assert.assertEquals(TeamState.Implement.getName(),
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState,
@@ -174,7 +174,7 @@ public class DecisionReviewManagerTest {
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals("Should we do this?  Yes will require followup, No will not", decRev.getName());
-      Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
       Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
       Assert.assertEquals(TeamState.Analyze.getName(),
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState,

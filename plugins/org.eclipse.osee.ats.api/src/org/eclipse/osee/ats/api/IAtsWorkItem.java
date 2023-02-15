@@ -172,6 +172,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
       return getArtifactType().inheritsFrom(AtsArtifactTypes.AbstractChangeRequestWorkflow);
    }
 
+   public String getCurrentStateName();
+
    public static IAtsWorkItem createSentinel() {
       final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsWorkItem {
 
@@ -318,6 +320,11 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          @Override
          public boolean isSprint() {
             return false;
+         }
+
+         @Override
+         public String getCurrentStateName() {
+            return "";
          }
 
       }

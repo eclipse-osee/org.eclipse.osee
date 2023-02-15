@@ -769,4 +769,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       }
       return new Pair<Boolean, Collection<Priorities>>(samePriorities, priorities);
    }
+
+   @Override
+   public String getCurrentStateName(IAtsWorkItem workItem) {
+      return workItem.getStateMgr().getCurrentStateNameInternal();
+   }
 }

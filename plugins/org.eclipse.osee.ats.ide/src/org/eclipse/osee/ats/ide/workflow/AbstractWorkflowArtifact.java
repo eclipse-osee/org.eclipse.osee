@@ -113,13 +113,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       AtsApiService.get().getWorkDefinitionService().internalClearWorkDefinition(this);
    }
 
+   @Override
    public String getCurrentStateName() {
-      return getStateMgr().getCurrentStateName();
+      return AtsApiService.get().getWorkItemService().getCurrentStateName(this);
    }
 
    @Override
    public boolean isInState(IStateToken state) {
-      return getStateMgr().getCurrentStateName().equals(state.getName());
+      return getCurrentStateName().equals(state.getName());
    }
 
    public String implementersStr = null;
@@ -219,7 +220,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public String getGroupExplorerName() {
-      return String.format("[%s] %s", getStateMgr().getCurrentStateName(), getName());
+      return String.format("[%s] %s", getCurrentStateName(), getName());
    }
 
    @Override
@@ -247,10 +248,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public StateDefinition getStateDefinition() {
-      if (getStateMgr().getCurrentStateName() == null) {
+      if (getCurrentStateName() == null) {
          return null;
       }
-      return getWorkDefinition().getStateByName(getStateMgr().getCurrentStateName());
+      return getWorkDefinition().getStateByName(getCurrentStateName());
    }
 
    public StateDefinition getStateDefinitionByName(String name) {

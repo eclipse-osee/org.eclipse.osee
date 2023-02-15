@@ -468,7 +468,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public boolean isInState(IAtsWorkItem workItem, StateDefinition stateDef) {
-      return workItem.getStateMgr().getCurrentStateName().equals(stateDef.getName());
+      return workItem.getCurrentStateName().equals(stateDef.getName());
    }
 
    @Override

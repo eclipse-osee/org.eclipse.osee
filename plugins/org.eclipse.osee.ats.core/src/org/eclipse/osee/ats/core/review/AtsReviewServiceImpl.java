@@ -194,9 +194,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return createNewDecisionReview(teamWf, reviewBlockType,
          "Should we do this?  Yes will require followup, No will not",
-         againstCurrentState ? teamWf.getStateMgr().getCurrentStateName() : null,
-         "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null, createdDate, createdBy,
-         changes);
+         againstCurrentState ? teamWf.getCurrentStateName() : null, "Enter description of the decision, if any",
+         getDefaultDecisionReviewOptions(), null, createdDate, createdBy, changes);
    }
 
    @Override

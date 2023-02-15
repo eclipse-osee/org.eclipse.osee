@@ -133,7 +133,7 @@ public class SprintUtil {
          item.setAssigneesOrImplementers(assignees);
       }
       item.setAtsId(workItem.getAtsId());
-      item.setState(aItem.getStateMgr().getCurrentStateName());
+      item.setState(aItem.getCurrentStateName());
       item.setChangeType(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.ChangeType, ""));
       item.setAgilePoints(atsApi.getAgileService().getAgileTeamPointsStr(workItem));
       IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(workItem);

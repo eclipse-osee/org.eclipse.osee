@@ -139,7 +139,7 @@ public class BidsOperations {
       jTeamWf.setName(newTeamWf.getName());
       jTeamWf.setId(newTeamWf.getId());
       jTeamWf.setStateType(newTeamWf.getStateMgr().getCurrentStateType());
-      jTeamWf.setCurrentState(newTeamWf.getStateMgr().getCurrentStateName());
+      jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
    }
 
    public BuildImpactDatas getBids(String atsId) {
@@ -155,9 +155,9 @@ public class BidsOperations {
          bids.setTeamWf(teamWf.getStoreObject());
       }
 
-	  if (teamWf == null) {
-	  	throw new RuntimeException("teamWf is null");
-	  }
+      if (teamWf == null) {
+         throw new RuntimeException("teamWf is null");
+      }
       IAtsProgram program = atsApi.getProgramService().getProgram(teamWf);
       if (program == null || program.isInvalid()) {
          bids.getResults().errorf("No Program found for workflow %s", teamWf.toStringWithAtsId());

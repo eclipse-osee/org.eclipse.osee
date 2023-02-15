@@ -171,4 +171,6 @@ public interface IAtsWorkItemService {
 
    List<Priorities> getPrioritiesOptions(IAtsObject atsObject);
 
+   String getCurrentStateName(IAtsWorkItem workItem);
+
 }

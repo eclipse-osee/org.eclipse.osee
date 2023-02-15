@@ -181,7 +181,7 @@ public class SortAgileBacklog extends XNavigateItemAction {
          if (a2.getStateMgr().getCurrentStateType().isCompleted()) {
             return 1;
          }
-         return -1 * a1.getStateMgr().getCurrentStateName().compareTo(a2.getStateMgr().getCurrentStateName());
+         return -1 * a1.getCurrentStateName().compareTo(a2.getCurrentStateName());
       }
    };
 

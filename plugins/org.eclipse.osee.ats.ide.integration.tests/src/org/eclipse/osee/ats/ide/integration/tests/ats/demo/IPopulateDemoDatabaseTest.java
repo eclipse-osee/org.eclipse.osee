@@ -50,7 +50,7 @@ public interface IPopulateDemoDatabaseTest {
 
    default void testReviewContents(IAtsAbstractReview review, String title, String currentStateName, String... assigneeStrs) {
       Assert.assertEquals(title, review.getName());
-      Assert.assertEquals(currentStateName, review.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(currentStateName, review.getCurrentStateName());
 
       Collection<String> assigneeNames = Named.getNames(review.getStateMgr().getAssignees());
 
@@ -63,7 +63,7 @@ public interface IPopulateDemoDatabaseTest {
    }
 
    default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, ArtifactTypeToken artifactType, IAtsTeamDefinition teamDef) {
-      Assert.assertEquals(currentStateName, teamWf.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(currentStateName, teamWf.getCurrentStateName());
       Assert.assertEquals(priority,
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
       // want targeted version, not error/exception

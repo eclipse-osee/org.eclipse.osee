@@ -44,7 +44,15 @@ public class StateManagerWriter {
 
    public void writeToStore() {
 
-      String currentStateName = stateMgr.getCurrentStateName();
+      String currentStateName = stateMgr.getCurrentStateNameInternal();
+
+      //      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStateName, changes);
+      //      List<Object> assigneeIds = new ArrayList<>();
+      //      for (AtsUser user : stateMgr.getAssignees()) {
+      //         assigneeIds.add(user.getArtifactId().getIdString());
+      //      }
+      //      changes.setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, assigneeIds);
+
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
          workStateFactory.toStoreStr(stateMgr, currentStateName), changes);
 
@@ -63,7 +71,7 @@ public class StateManagerWriter {
 
    private void writeStatesToStore(IAtsChangeSet changes) {
       for (String stateName : stateMgr.getVisitedStateNames()) {
-         if (!stateName.equals(stateMgr.getCurrentStateName())) {
+         if (!stateName.equals(stateMgr.getCurrentStateNameInternal())) {
             boolean updated = updateStateAttributeIfExsists(stateName, changes);
             // Else, doesn't exist yet, create
             if (!updated) {

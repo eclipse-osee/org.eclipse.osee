@@ -40,21 +40,21 @@ public class StateColumn extends AbstractServicesColumn {
          String isHold =
             atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.HoldReason, "");
          if (Strings.isValid(isBlocked) && (Strings.isValid(isHold))) {
-            String hold = ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Hold)";
-            String block = " " + ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Blocked)";
+            String hold = ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Hold)";
+            String block = " " + ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Blocked)";
             return hold + block;
          }
          if (Strings.isValid(isBlocked)) {
-            return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Blocked)";
+            return ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Blocked)";
          } else if (Strings.isValid(isHold)) {
-            return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Hold)";
+            return ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Hold)";
          } else {
-            return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName();
+            return ((IAtsWorkItem) atsObject).getCurrentStateName();
          }
       } else if (atsObject instanceof IAtsAction) {
          Set<String> strs = new HashSet<>();
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            strs.add(team.getStateMgr().getCurrentStateName());
+            strs.add(team.getCurrentStateName());
          }
          return org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", strs);
       }

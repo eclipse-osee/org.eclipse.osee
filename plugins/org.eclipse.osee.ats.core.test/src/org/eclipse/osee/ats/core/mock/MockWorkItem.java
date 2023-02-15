@@ -289,4 +289,9 @@ public class MockWorkItem implements IAtsWorkItem {
       return false;
    }
 
+   @Override
+   public String getCurrentStateName() {
+      return "";
+   }
+
 }
