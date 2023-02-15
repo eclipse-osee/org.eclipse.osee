@@ -119,7 +119,7 @@ public abstract class XCheckBoxesWithTaskGen extends XCheckBoxes implements Arti
       IAtsTask task = cbdTask.getTask();
       String state = "(No Task)";
       if (task != null) {
-         state = " (" + task.getStateMgr().getCurrentStateName() + ")";
+         state = " (" + task.getCurrentStateName() + ")";
       }
       name = String.format("%s %s", name, state);
       return name;

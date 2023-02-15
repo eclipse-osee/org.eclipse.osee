@@ -67,7 +67,7 @@ public class PeerToPeerReviewColumnsTest {
             changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt,
-            getClass().getSimpleName(), teamArt.getStateMgr().getCurrentStateName(), changes);
+            getClass().getSimpleName(), teamArt.getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
 

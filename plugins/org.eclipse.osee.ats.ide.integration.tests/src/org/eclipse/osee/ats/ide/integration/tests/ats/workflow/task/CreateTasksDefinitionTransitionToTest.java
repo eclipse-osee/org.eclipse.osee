@@ -93,7 +93,7 @@ public class CreateTasksDefinitionTransitionToTest {
       teamWf = actionResult.getFirstTeam();
       boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
       Assert.assertTrue(isSwDesign);
-      Assert.assertEquals(StateToken.Endorse.getName(), teamWf.getStateMgr().getCurrentStateName());
+      Assert.assertEquals(StateToken.Endorse.getName(), teamWf.getCurrentStateName());
 
       changes.execute();
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 2");

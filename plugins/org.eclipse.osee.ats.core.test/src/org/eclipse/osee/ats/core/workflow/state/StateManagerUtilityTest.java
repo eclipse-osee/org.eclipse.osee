@@ -88,18 +88,18 @@ public class StateManagerUtilityTest {
       StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(2, stateMgr.getAssignees().size());
 
       state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, null, Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(1, stateMgr.getAssignees().size());
       Assert.assertEquals(Joe, stateMgr.getAssignees().iterator().next());
 
       state = new TestState("Completed", StateType.Completed);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Completed", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Completed", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(0, stateMgr.getAssignees().size());
    }
 
@@ -115,7 +115,7 @@ public class StateManagerUtilityTest {
       // test current state modified
       when(attrResolver.getAttributeCount(workItem, AtsAttributeTypes.CurrentState)).thenReturn(1);
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, null)).thenReturn("this");
-      when(stateMgr.getCurrentStateName()).thenReturn("Analyze");
+      when(stateMgr.getCurrentStateNameInternal()).thenReturn("Analyze");
       result = StateManagerUtility.isDirtyResult(workItem, stateMgr, attrResolver, workStateFactory);
       Assert.assertTrue(result.getText().contains("Current State modified"));
 

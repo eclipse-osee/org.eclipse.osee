@@ -71,9 +71,9 @@ public class TeamWorkFlowManager {
       Conditions.checkNotNullOrEmpty(transitionToAssignees, "transitionToAssignees");
       Date date = new Date();
       if (toState == TeamState.Endorse) {
-         if (!teamWf.getStateMgr().getCurrentStateName().equals(TeamState.Endorse.getName())) {
+         if (!teamWf.getCurrentStateName().equals(TeamState.Endorse.getName())) {
             return new Result("Workflow current state [%s] past desired Endorse state",
-               teamWf.getStateMgr().getCurrentStateName());
+               teamWf.getCurrentStateName());
          }
          return Result.TrueResult;
       }

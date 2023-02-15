@@ -91,7 +91,7 @@ public class StateManagerStoreTest {
       StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(2, stateMgr.getAssignees().size());
       when(workStateFactory.toStoreStr(stateMgr, "Analyze")).thenReturn("Analyze;<Joe><Kay>;;");
       StateManagerStore.writeToStore(asUser, workItem, stateMgr, attrResolver, changes, workStateFactory);
@@ -106,7 +106,7 @@ public class StateManagerStoreTest {
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(2, stateMgr.getAssignees().size());
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
          "Analyze;<Joe><Kay>;;");
@@ -126,7 +126,7 @@ public class StateManagerStoreTest {
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(2, stateMgr.getAssignees().size());
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
          "Analyze;<Joe><Kay>;;");
@@ -149,7 +149,7 @@ public class StateManagerStoreTest {
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
+      Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
       Assert.assertEquals(2, stateMgr.getAssignees().size());
 
       when(workItem.getStateMgr()).thenReturn(stateMgr);

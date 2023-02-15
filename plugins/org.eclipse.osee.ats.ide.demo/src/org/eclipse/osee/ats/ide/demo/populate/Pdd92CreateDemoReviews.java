@@ -100,12 +100,12 @@ public class Pdd92CreateDemoReviews {
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
-            "Peer Review first set of code changes", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
+            "Peer Review first set of code changes", firstCodeArt.getCurrentStateName(), changes);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
-            "Peer Review algorithm used in code", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
+            "Peer Review algorithm used in code", firstCodeArt.getCurrentStateName(), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       List<UserRole> roles = new ArrayList<>();
       roles.add(new UserRole(ReviewRole.Author, DemoUsers.Joe_Smith));
@@ -121,7 +121,7 @@ public class Pdd92CreateDemoReviews {
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(secondCodeArt,
-            "Review new logic", secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
+            "Review new logic", secondCodeArt.getCurrentStateName(), new Date(),
             AtsApiService.get().getUserService().getUserById(DemoUsers.Kay_Jones), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();

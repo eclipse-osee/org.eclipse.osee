@@ -40,7 +40,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
 
    public boolean isRelatedToParentWorkflowCurrentState() {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
-         ((IAtsWorkItem) getParentAWA()).getStateMgr().getCurrentStateName());
+         ((IAtsWorkItem) getParentAWA()).getCurrentStateName());
    }
 
    public boolean isRelatedToUsed() {

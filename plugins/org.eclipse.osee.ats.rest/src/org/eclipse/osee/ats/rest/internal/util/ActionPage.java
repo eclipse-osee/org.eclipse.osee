@@ -96,7 +96,7 @@ public class ActionPage {
       page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
       page.param("team", getTeamStr(atsApi, action));
       page.param("ais", getAIStr(action));
-      page.param("state", workItem.getStateMgr().getCurrentStateName());
+      page.param("state", atsApi.getWorkItemService().getCurrentStateName(workItem));
       page.param("assignees", getAssigneesStr(workItem, action));
       page.param("id", workItem.getId());
       page.param("atsId", workItem.getAtsId());
@@ -241,7 +241,7 @@ public class ActionPage {
             String stateHtmlTemplate = getStateHtmlTemplate();
 
             String stateName = state.getName();
-            if (stateName.equals(stateMgr.getCurrentStateName())) {
+            if (stateName.equals(atsApi.getWorkItemService().getCurrentStateName(workItem))) {
                stateName = String.format("CURRENT STATE => <b>%s</b>", stateName);
                if (stateMgr.getStateType().isCompleted()) {
                   stateName = String.format("%s - on <b>%s</b> - by <b>%s</b>", stateName,

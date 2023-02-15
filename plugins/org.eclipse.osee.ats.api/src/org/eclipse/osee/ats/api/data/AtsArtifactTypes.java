@@ -194,7 +194,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(CreatedDate)
       .zeroOrOne(CurrentState)
       .zeroOrOne(CurrentStateName)
-      .any(CurrentStateAssignees)
+      .any(CurrentStateAssignee)
       .zeroOrOne(CurrentStateType)
       .zeroOrOne(EndDate)
       .zeroOrOne(EstimatedCompletionDate)

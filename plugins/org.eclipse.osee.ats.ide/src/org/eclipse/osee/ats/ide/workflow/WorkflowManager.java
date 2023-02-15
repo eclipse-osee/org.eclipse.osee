@@ -58,7 +58,7 @@ public class WorkflowManager {
    public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
-         if (!stateNames.contains(awa.getStateMgr().getCurrentStateName())) {
+         if (!stateNames.contains(awa.getCurrentStateName())) {
             artifactsToReturn.add(awa);
          }
       }
@@ -91,7 +91,7 @@ public class WorkflowManager {
          artifactsToReturn.addAll(awas);
       } else {
          for (Artifact awa : awas) {
-            if (awa instanceof IAtsWorkItem && ((IAtsWorkItem) awa).getStateMgr().getCurrentStateName().equals(
+            if (awa instanceof IAtsWorkItem && ((IAtsWorkItem) awa).getCurrentStateName().equals(
                selectedState)) {
                artifactsToReturn.add(awa);
             }
@@ -162,7 +162,7 @@ public class WorkflowManager {
 
    public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
       for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
-         if (awa.getStateMgr().getCurrentStateName().equals(statePage.getName())) {
+         if (awa.getCurrentStateName().equals(statePage.getName())) {
             return statePage;
          }
       }

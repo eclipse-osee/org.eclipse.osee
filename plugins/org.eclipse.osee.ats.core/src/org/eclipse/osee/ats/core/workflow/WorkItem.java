@@ -163,7 +163,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public StateDefinition getStateDefinition() {
-      String currentStateName = getStateMgr().getCurrentStateName();
+      String currentStateName = atsApi.getWorkItemService().getCurrentStateName(this);
       if (currentStateName == null) {
          return null;
       }
@@ -307,6 +307,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public boolean isInState(IStateToken state) {
       return getStateMgr().getCurrentState().getName().equals(state.getName());
+   }
+
+   @Override
+   public String getCurrentStateName() {
+      return atsApi.getWorkItemService().getCurrentStateName(this);
    }
 
 }

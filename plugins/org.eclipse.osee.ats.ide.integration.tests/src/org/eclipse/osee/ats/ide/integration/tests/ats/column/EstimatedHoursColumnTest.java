@@ -64,7 +64,7 @@ public class EstimatedHoursColumnTest {
          EstimatedHoursColumnTest.class.getSimpleName(), changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt1,
-            getClass().getSimpleName(), teamArt1.getStateMgr().getCurrentStateName(), changes);
+            getClass().getSimpleName(), teamArt1.getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
 

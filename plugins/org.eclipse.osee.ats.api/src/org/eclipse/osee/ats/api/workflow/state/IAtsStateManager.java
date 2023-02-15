@@ -28,8 +28,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
  */
 public interface IAtsStateManager extends WorkStateFactory {
 
-   String getCurrentStateName();
-
    IStateToken getCurrentState();
 
    StateType getCurrentStateType();
@@ -165,5 +163,10 @@ public interface IAtsStateManager extends WorkStateFactory {
    void internalSetCreatedBy(AtsUser user, IAtsChangeSet changes);
 
    String getCurrentStateNameFast();
+
+   /**
+    * Should not be called except by WorkItemService or in test
+    */
+   String getCurrentStateNameInternal();
 
 }

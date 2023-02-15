@@ -299,7 +299,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          expectedTargetedVersion = "not set";
       }
       testEquals("Targeted Version", expectedTargetedVersion, "SAW_Bld_2");
-      testEquals("State", TeamState.Analyze.getName(), teamWf.getStateMgr().getCurrentStateName());
+      testEquals("State", TeamState.Analyze.getName(), teamWf.getCurrentStateName());
    }
 
    private void testEquals(String name, Object expected, Object actual) {

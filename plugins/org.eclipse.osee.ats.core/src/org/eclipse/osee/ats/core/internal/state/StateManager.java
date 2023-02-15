@@ -79,13 +79,13 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public String getCurrentStateName() {
+   public String getCurrentStateNameInternal() {
       return currentStateName;
    }
 
    @Override
    public IStateToken getCurrentState() {
-      return new SimpleTeamState(getCurrentStateName(), getCurrentStateType());
+      return new SimpleTeamState(getCurrentStateNameInternal(), getCurrentStateType());
    }
 
    @Override
@@ -204,10 +204,10 @@ public class StateManager implements IAtsStateManager {
          }
       }
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
-         removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
+         removeAssignee(getCurrentStateNameInternal(), AtsCoreUsers.UNASSIGNED_USER);
       }
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
-         removeAssignee(getCurrentStateName(), AtsCoreUsers.SYSTEM_USER);
+         removeAssignee(getCurrentStateNameInternal(), AtsCoreUsers.SYSTEM_USER);
       }
       setDirty(true);
    }
@@ -226,7 +226,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public void setAssignees(Collection<? extends AtsUser> assignees) {
-      setAssignees(getCurrentStateName(), new LinkedList<AtsUser>(assignees));
+      setAssignees(getCurrentStateNameInternal(), new LinkedList<AtsUser>(assignees));
    }
 
    /**
@@ -262,7 +262,7 @@ public class StateManager implements IAtsStateManager {
       }
 
       // Note: current and next state could be same
-      WorkState currState = getState(getCurrentStateName());
+      WorkState currState = getState(getCurrentStateNameInternal());
       if (currState != null) {
          List<AtsUser> currAssignees = currState.getAssignees();
          WorkState nextState = getState(stateName);
@@ -279,10 +279,10 @@ public class StateManager implements IAtsStateManager {
 
       // Remove UnAssigned if part of assignees
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
-         removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
+         removeAssignee(getCurrentStateNameInternal(), AtsCoreUsers.UNASSIGNED_USER);
       }
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
-         removeAssignee(getCurrentStateName(), AtsCoreUsers.SYSTEM_USER);
+         removeAssignee(getCurrentStateNameInternal(), AtsCoreUsers.SYSTEM_USER);
       }
 
       setDirty(true);
@@ -378,7 +378,7 @@ public class StateManager implements IAtsStateManager {
    @Override
    public List<AtsUser> getAssignees() {
       List<AtsUser> assignees = new ArrayList<>();
-      WorkState state = getState(getCurrentStateName());
+      WorkState state = getState(getCurrentStateNameInternal());
       if (state != null) {
          assignees.addAll(state.getAssignees());
       } else {
@@ -396,7 +396,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public void addAssignee(AtsUser assignee) {
-      addAssignee(getCurrentStateName(), assignee);
+      addAssignee(getCurrentStateNameInternal(), assignee);
    }
 
    @Override
@@ -406,7 +406,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public void setAssignees(List<? extends AtsUser> assignees) {
-      setAssignees(getCurrentStateName(), assignees);
+      setAssignees(getCurrentStateNameInternal(), assignees);
    }
 
    @Override
@@ -491,12 +491,12 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public String getAssigneesStr() {
-      return getAssigneesStr(getCurrentStateName());
+      return getAssigneesStr(getCurrentStateNameInternal());
    }
 
    @Override
    public void removeAssignee(AtsUser assignee) {
-      removeAssignee(getCurrentStateName(), assignee);
+      removeAssignee(getCurrentStateNameInternal(), assignee);
    }
 
    @Override
@@ -506,7 +506,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public void clearAssignees() {
-      setAssignees(getCurrentStateName(), new LinkedList<AtsUser>());
+      setAssignees(getCurrentStateNameInternal(), new LinkedList<AtsUser>());
    }
 
    @Override
@@ -521,7 +521,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public String getAssigneesStr(int length) {
-      return getAssigneesStr(getCurrentStateName(), length);
+      return getAssigneesStr(getCurrentStateNameInternal(), length);
    }
 
    @Override
@@ -540,7 +540,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public void addAssignees(Collection<? extends AtsUser> assignees) {
-      addAssignees(getCurrentStateName(), assignees);
+      addAssignees(getCurrentStateNameInternal(), assignees);
    }
 
    @Override
@@ -640,7 +640,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public boolean isInState(IStateToken state) {
-      return getCurrentStateName().equals(state.getName());
+      return getCurrentStateNameInternal().equals(state.getName());
    }
 
    @Override

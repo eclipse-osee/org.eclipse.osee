@@ -125,7 +125,8 @@ public class WorkItemNotificationProcessorTest {
       when(teamWf.getId()).thenReturn(98L);
       when(teamWf.getArtifactTypeName()).thenReturn("Team Workflow");
       when(teamWf.getStateMgr()).thenReturn(stateMgr);
-      when(stateMgr.getCurrentStateName()).thenReturn("Analyze");
+      when(stateMgr.getCurrentStateNameInternal()).thenReturn("Analyze");
+      when(teamWf.getCurrentStateName()).thenReturn("Analyze");
       when(stateMgr.getAssignees()).thenReturn(assignees);
 
       when(teamWf.getStateDefinition()).thenReturn(stateDef);
@@ -262,7 +263,8 @@ public class WorkItemNotificationProcessorTest {
       when(teamWf.isTask()).thenReturn(false);
       when(stateDef.getStateType()).thenReturn(StateType.Completed);
       when(teamWf.getCreatedBy()).thenReturn(inactiveSteve);
-      when(stateMgr.getCurrentStateName()).thenReturn("Completed");
+      when(stateMgr.getCurrentStateNameInternal()).thenReturn("Completed");
+      when(teamWf.getCurrentStateName()).thenReturn("Completed");
 
       WorkItemNotificationProcessor processor = new WorkItemNotificationProcessor(atsApiServer);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
@@ -299,7 +301,8 @@ public class WorkItemNotificationProcessorTest {
       when(teamWf.getCreatedBy()).thenReturn(inactiveSteve);
       when(teamWf.getCancelledReason()).thenReturn("this is the reason");
       when(teamWf.getCancelledFromState()).thenReturn("Analyze");
-      when(stateMgr.getCurrentStateName()).thenReturn("Cancelled");
+      when(stateMgr.getCurrentStateNameInternal()).thenReturn("Cancelled");
+      when(teamWf.getCurrentStateName()).thenReturn("Cancelled");
 
       WorkItemNotificationProcessor processor = new WorkItemNotificationProcessor(atsApiServer);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
@@ -334,7 +337,7 @@ public class WorkItemNotificationProcessorTest {
       event.getIds().add(teamWf.getId());
       when(teamWf.isTeamWorkflow()).thenReturn(true);
       when(stateDef.getStateType()).thenReturn(StateType.Working);
-      when(stateMgr.getCurrentStateName()).thenReturn(StateType.Working.name());
+      when(stateMgr.getCurrentStateNameInternal()).thenReturn(StateType.Working.name());
 
       WorkItemNotificationProcessor processor = new WorkItemNotificationProcessor(atsApiServer);
 

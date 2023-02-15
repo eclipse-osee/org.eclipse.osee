@@ -67,12 +67,12 @@ public class StateManagerUtility {
       if (attrResolver.getAttributeCount(workItem, AtsAttributeTypes.CurrentState) == 0) {
          return new Result(true, "StateManager: Current State new");
       }
-      if (!workStateFactory.toStoreStr(stateMgr, stateMgr.getCurrentStateName()).equals(
+      if (!workStateFactory.toStoreStr(stateMgr, stateMgr.getCurrentStateNameInternal()).equals(
          attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, null))) {
          return new Result(true, "StateManager: Current State modified");
       }
       for (String stateName : stateMgr.getVisitedStateNames()) {
-         if (!stateName.equals(stateMgr.getCurrentStateName())) {
+         if (!stateName.equals(stateMgr.getCurrentStateNameInternal())) {
             boolean found = false;
             // Update attribute if it already exists
             for (String storedStateXml : attrResolver.getAttributesToStringList(workItem, AtsAttributeTypes.State)) {

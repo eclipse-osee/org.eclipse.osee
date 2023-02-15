@@ -330,7 +330,7 @@ public class TransitionManager implements IExecuteListener {
                      logWorkflowCompletedEvent(workItem, fromState, toState, transitionDate, transitionUser, changes);
                   } else {
                      updatePercentComplete(workItem, toState, changes);
-                     logStateCompletedEvent(workItem, workItem.getStateMgr().getCurrentStateName(), transitionDate,
+                     logStateCompletedEvent(workItem, workItem.getCurrentStateName(), transitionDate,
                         transitionUser);
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);

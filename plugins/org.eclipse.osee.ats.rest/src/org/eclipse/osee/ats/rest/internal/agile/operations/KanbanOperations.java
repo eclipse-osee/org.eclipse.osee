@@ -116,7 +116,7 @@ public class KanbanOperations {
          //   "Cancelled"  : [ "9898" ],
          //   "Completed"  : [ "5656","4325" ]
          // },
-         jSprint.addStateNameToTaskId(workItem.getStateMgr().getCurrentStateName(), aItem.getIdString());
+         jSprint.addStateNameToTaskId(workItem.getCurrentStateName(), aItem.getIdString());
 
          // "availableStates" : [ {
          //    "name" : "New",

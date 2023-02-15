@@ -48,7 +48,7 @@ public class ActionServiceOperations {
             writer.writeStringField("legacyId",
                atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
             writer.writeStringField("stateType", workItem.getStateMgr().getStateType().name());
-            writer.writeStringField("state", workItem.getStateMgr().getCurrentStateName());
+            writer.writeStringField("state", atsApi.getWorkItemService().getCurrentStateName(workItem));
             writer.writeEndObject();
          }
          if (workItems.size() > 1) {

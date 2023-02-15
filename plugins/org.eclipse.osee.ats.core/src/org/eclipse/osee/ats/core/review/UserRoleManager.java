@@ -260,7 +260,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
       peerRev.getStateMgr().setMetrics(peerRev.getStateDefinition(), hoursSpent,
-         peerRev.getStateMgr().getPercentComplete(peerRev.getStateMgr().getCurrentStateName()), true,
+         peerRev.getStateMgr().getPercentComplete(peerRev.getCurrentStateName()), true,
          atsApi.getUserService().getCurrentUser(), new Date());
    }
 

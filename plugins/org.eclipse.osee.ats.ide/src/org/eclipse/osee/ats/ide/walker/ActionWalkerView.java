@@ -394,7 +394,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
-         builder.append("\n State: " + ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentStateName());
+         builder.append("\n State: " + AtsApiService.get().getWorkItemService().getCurrentStateName(
+            (AbstractWorkflowArtifact) artifact));
          builder.append("\n Assignee: " + getAssignee(artifact));
          builder.append("\n Version: " + getTargetedVersion(artifact));
       }

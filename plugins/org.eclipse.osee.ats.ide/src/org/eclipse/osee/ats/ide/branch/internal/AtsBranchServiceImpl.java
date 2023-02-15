@@ -162,10 +162,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
             String.format("Failure setting new branch name [%s] for branch [%s] ", newBranchName, workingBranch));
       }
       IAtsChangeSet changes = atsApi.createChangeSet(log);
-      fromTeamWf.getLog().addLog(LogType.Note, fromTeamWf.getStateMgr().getCurrentStateName(), log,
+      fromTeamWf.getLog().addLog(LogType.Note, fromTeamWf.getCurrentStateName(), log,
          atsApi.getUserService().getCurrentUserId());
       changes.add(fromTeamWf);
-      toTeamWf.getLog().addLog(LogType.Note, toTeamWf.getStateMgr().getCurrentStateName(), log,
+      toTeamWf.getLog().addLog(LogType.Note, toTeamWf.getCurrentStateName(), log,
          atsApi.getUserService().getCurrentUserId());
       changes.add(toTeamWf);
       changes.execute();

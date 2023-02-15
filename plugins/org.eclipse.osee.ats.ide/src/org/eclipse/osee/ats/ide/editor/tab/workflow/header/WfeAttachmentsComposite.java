@@ -118,7 +118,7 @@ public class WfeAttachmentsComposite extends Composite {
             if (support instanceof IAtsWorkItem) {
                IAtsWorkItem thatWorkItem = (IAtsWorkItem) support;
                labelStr = String.format("[%s] - %s - [%s]", thatWorkItem.getArtifactTypeName(),
-                  thatWorkItem.toStringWithAtsId(), thatWorkItem.getStateMgr().getCurrentStateName());
+                  thatWorkItem.toStringWithAtsId(), thatWorkItem.getCurrentStateName());
             }
             Composite lComp = new Composite(this, SWT.NONE);
             relIdToComp.put(relation.getId(), lComp);

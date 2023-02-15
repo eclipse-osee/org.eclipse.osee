@@ -119,7 +119,7 @@ public class Overview {
       addNotes(awa);
       addTable(getLabelValue("Title", awa.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
-         AHTML.getLabelStr(labelFont, "State: ") + awa.getStateMgr().getCurrentStateName(),
+         AHTML.getLabelStr(labelFont, "State: ") + awa.getCurrentStateName(),
          AHTML.getLabelStr(labelFont, "Type: ") + awa.getArtifactTypeName(),
          AHTML.getLabelStr(labelFont, "Id: ") + awa.getAtsId()}));
       addTable(getLabelValue("Originator", awa.getCreatedBy().getName()),
@@ -142,7 +142,7 @@ public class Overview {
                new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
             this.html.append(AHTML.multiColumnTable(new String[] {
                AHTML.getLabelStr(labelFont,
-                  "Parent State: ") + ((TaskArtifact) awa).getStateMgr().getCurrentStateName()}));
+                  "Parent State: ") + ((TaskArtifact) awa).getCurrentStateName()}));
          }
          this.html.append(AHTML.multiColumnTable(new String[] {
             AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString("; ",
@@ -226,7 +226,7 @@ public class Overview {
       ArrayList<CellItem> cells = new ArrayList<>();
       for (TeamWorkFlowArtifact team : teams) {
          cells.add(new AHTML.CellItem(Overview.getOpenHyperlinkHtml(team)));
-         cells.add(new AHTML.CellItem(team.getStateMgr().getCurrentStateName()));
+         cells.add(new AHTML.CellItem(team.getCurrentStateName()));
          sb.append(AHTML.addRowMultiColumnTable(cells));
          cells.clear();
       }

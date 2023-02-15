@@ -145,7 +145,7 @@ public class WfePrint extends Action {
             TaskArtifact art = (TaskArtifact) task;
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
-               art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
+               art.getCurrentStateName().replaceAll("(Task|State)", ""),
                AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, art),
                PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsApiService.get()) + "",
                HoursSpentUtil.getHoursSpentTotal(art, AtsApiService.get()) + "",
