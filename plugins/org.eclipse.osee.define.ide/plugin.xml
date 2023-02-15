@@ -130,6 +130,14 @@
          <Operation
             className="org.eclipse.osee.define.ide.blam.operation.PublishingTemplateBlam" />
       </extension>
+
+      <extension
+         id    = "PublishingAttributeContentBlam"
+         name  = "Publishing Attribute Content BLAM"
+         point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation
+            className="org.eclipse.osee.define.ide.blam.operation.PublishingAttributeContentBlam" />
+      </extension>
    
  <extension
        id="RemoveTraceMarksFromTraceUnits"
