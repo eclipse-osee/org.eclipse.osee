@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.internal.state;
 
-import java.rmi.activation.Activator;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -48,7 +47,7 @@ public class StateManagerStore {
                workItem, assigneesAdded, AtsNotifyType.Assigned));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+         OseeLog.log(StateManagerStore.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
       }
       load(workItem, stateMgr, attrResolver, workStateFactory);
    }

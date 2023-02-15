@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ote.define.jobs;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,7 +88,7 @@ public class FindCommitableJob extends Job {
       try {
          executor.executeWorkersBlocking();
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
          return new Status(IStatus.ERROR, PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       }
 
@@ -128,7 +127,7 @@ public class FindCommitableJob extends Job {
                   }
                }
             } catch (OseeArgumentException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               OseeLog.log(getClass(), Level.SEVERE, ex);
             }
 
             if (monitor.isCanceled() == true) {

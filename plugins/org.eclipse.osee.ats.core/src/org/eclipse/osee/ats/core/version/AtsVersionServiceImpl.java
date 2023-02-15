@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.core.version;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Active;
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -173,8 +172,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       IAtsVersion version = null;
       if (!versions.isEmpty()) {
          if (versions.size() > 1) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               "Multiple targeted versions for artifact " + team.toStringWithId());
+            OseeLog.log(getClass(), Level.SEVERE, "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
             version = getVersionById(versions.iterator().next());
          }
