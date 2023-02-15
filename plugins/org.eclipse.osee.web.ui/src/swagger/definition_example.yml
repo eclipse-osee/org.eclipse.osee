@@ -3,13 +3,13 @@ info:
   title: ArtifactEndpoint
   version: '1.0'
 servers:
-  - url: http://localhost:8089
+  - url: /orcs
 paths:
-  /orcs/branch/{branchId}/artifact/{artifactId}/related/maps:
+  /branch/{branchId}/artifact/{artifactId}/related/maps:
     get:
       tags:
         - orcs
-      summary: Returns a hierarchical tree of childrent from specified artifact
+      summary: Returns a hierarchical tree of children from a specified artifact
       description: Finds and displays all children and their attributes in a hierarchical fashion
       operationId: getRelatedArtifactsTree
       parameters:
