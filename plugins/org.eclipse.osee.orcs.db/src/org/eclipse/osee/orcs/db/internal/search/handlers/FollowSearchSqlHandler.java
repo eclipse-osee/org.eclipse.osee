@@ -57,19 +57,42 @@ public class FollowSearchSqlHandler extends SqlHandler<CriteriaFollowSearch> {
       attrSearchAlias = writer.startCommonTableExpression("attrSearch");
       List<String> values = new ArrayList<>(criteria.getValues());
       List<AttributeTypeId> types = new ArrayList<>(criteria.getTypes());
-      if (pagination != null) {
-         writer.write("select * from ( select *, row_number() over (order by top");
+    //@formatter:off
+    /**
+     *        SELECT
+         *
+  FROM
+         (
+                SELECT DISTINCT art_id,
+                art_path,
+                top,
+                top_rel_type,
+                top_rel_order,
+                row_number() OVER (order by top,top_rel_type,top_rel_order) rn
+         FROM
+                atts1
+         WHERE
+                LOWER(VALUE) LIKE LOWER('%desired_attribute_value%')
+                ) t1
+WHERE
+  rn BETWEEN start_index AND end_index
+  )
+     */
+//  //@formatter:on
+      writer.write("select * from (select distinct art_id, art_path");
+      if (newRelation) {
+         writer.write(", top, top_rel_type, top_rel_order");
+      }
+      if (pagination != null && writer.getJdbcClient().getDbType().isPaginationOrderingSupported()) {
+         writer.write(", row_number() over (order by top");
          if (newRelation) {
-            writer.write(",top_rel_type, top_rel_order");
+            writer.write(", top_rel_type, top_rel_order");
          }
-         writer.write(") rn from (");
-         writer.write("select distinct art_id, art_path, top");
-         if (newRelation) {
-            writer.write(", top_rel_type, top_rel_order ");
-         }
+         writer.write(") rn from " + attAlias);
+      } else if (pagination != null) {
+         writer.write(", row_number() over () rn from " + attAlias);
       } else {
-         writer.write("select distinct art_id, art_path from " + attAlias);
-
+         writer.write(" from " + attAlias);
       }
       writer.write(" where ");
       List<QueryOption> options = Arrays.asList(criteria.getOptions());
@@ -88,7 +111,9 @@ public class FollowSearchSqlHandler extends SqlHandler<CriteriaFollowSearch> {
          Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
          Long upperBound =
             tempLowerBound == 0 ? lowerBound + pagination.getPageSize() : lowerBound + pagination.getPageSize() - 1L;
-         writer.write(" t0) t1 where rn between " + lowerBound + " and " + upperBound + " )");
+         writer.write(" ) t1 where rn between " + lowerBound + " and " + upperBound + " ");
+      } else {
+         writer.write(" ) ");
       }
 
       return attrSearchAlias;

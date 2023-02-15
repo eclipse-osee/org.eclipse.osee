@@ -329,15 +329,18 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      OptionsUtil.setFollowSearchInProgress(getOptions(), true);
       return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, values, options));
    }
 
    @Override
    public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      OptionsUtil.setFollowSearchInProgress(getOptions(), true);
       return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, value, options));
    }
-   
+
+   @Override
    public void setTableOptions(ArtifactTableOptions tableOptions) {
       this.tableoptions = tableOptions;
    }
@@ -637,6 +640,15 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow));
+      if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
+         //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+         followQueryData.addCriteria(this.getAllCriteria().stream().filter(
+            a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst().get());
+      }
+      if (this.hasCriteriaType(CriteriaAttributeSort.class)) {
+         //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+         followQueryData.addCriteria(new CriteriaAttributeSort(-1L));
+      }
       return followQueryData;
    }
 
@@ -861,7 +873,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public String orderMechanism() {
       return OptionsUtil.getOrderByMechanism(getOptions());
    }
-   
+
    public ArtifactTableOptions getTableoptions() {
       return tableoptions;
    }
