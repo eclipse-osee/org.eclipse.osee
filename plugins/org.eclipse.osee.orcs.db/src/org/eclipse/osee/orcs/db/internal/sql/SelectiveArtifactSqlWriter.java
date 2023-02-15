@@ -14,7 +14,6 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +26,6 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -143,12 +141,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String artWithAlias = write(handlers, "artWith");
       artWithAliases.add(artWithAlias);
       QueryData tempQueryDataCursor = queryDataCursor;
-      Optional<Criteria> followSearchCriteria = queryDataCursor.getAllCriteria().stream().filter(
-         a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst();
       for (QueryData childQueryData : queryDataCursor.getChildrenQueryData()) {
-         if (followSearchCriteria.isPresent()) {
-            childQueryData.addCriteria(followSearchCriteria.get());
-         }
          queryDataCursor = childQueryData;
          follow(handlerFactory, artWithAliases, artWithAlias);
       }
@@ -394,16 +387,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeSelectFields(getMainTableAlias(OseeDb.ARTIFACT_TABLE), "art_id");
       } else {
          writeSelectFields();
-         if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
-            CriteriaAttributeSort.class)) {
-            write(", '' AS order_value");
+         for (SqlHandler<?> handler : handlers) {
+            handler.writeSelectFields(this);
          }
          if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
             CriteriaPagination.class)) {
             write(", 0 as rn");
-         }
-         for (SqlHandler<?> handler : handlers) {
-            handler.writeSelectFields(this);
          }
 
       }

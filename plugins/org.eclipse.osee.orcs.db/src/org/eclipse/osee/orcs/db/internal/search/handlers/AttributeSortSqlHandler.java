@@ -41,40 +41,57 @@ public class AttributeSortSqlHandler extends SqlHandler<CriteriaAttributeSort> {
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
       writer.writeCommaIfNotFirst();
-      writer.write(attrAlias);
-      writer.write(".value order_value");
+      if (criteria.isValid()) {
+
+         writer.write(attrAlias);
+         writer.write(".value order_value");
+      } else {
+         writer.write("'' as order_value");
+      }
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.ATTRIBUTE);
-      attrAlias = writer.addTable(OseeDb.ATTRIBUTE_TABLE);
+      if (criteria.isValid()) {
+
+         txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.ATTRIBUTE);
+         attrAlias = writer.addTable(OseeDb.ATTRIBUTE_TABLE);
+      }
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.writeTxBranchFilter(txsAlias);
-      writer.write(" ");
-      writer.writeAnd();
-      writer.writeEqualsAnd(attrAlias, txsAlias, "gamma_id");
-      List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
-      if (!aliases.isEmpty()) {
-         int aSize = aliases.size();
-         for (int index = 0; index < aSize; index++) {
-            String artAlias = aliases.get(index);
-            writer.write(attrAlias);
-            writer.write(".art_id = ");
-            writer.write(artAlias);
-            writer.write(".art_id");
-            if (index + 1 < aSize) {
-               writer.writeAnd();
-            }
-         }
-         writer.writeAndLn();
-      }
-      writer.write(attrAlias);
-      writer.write(".attr_type_id = ");
-      writer.write(String.valueOf(criteria.getAttributeTypeId()));
+      if (criteria.isValid()) {
 
+         writer.writeTxBranchFilter(txsAlias);
+         writer.write(" ");
+         writer.writeAnd();
+         writer.writeEqualsAnd(attrAlias, txsAlias, "gamma_id");
+         List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
+         if (!aliases.isEmpty()) {
+            int aSize = aliases.size();
+            for (int index = 0; index < aSize; index++) {
+               String artAlias = aliases.get(index);
+               writer.write(attrAlias);
+               writer.write(".art_id = ");
+               writer.write(artAlias);
+               writer.write(".art_id");
+               if (index + 1 < aSize) {
+                  writer.writeAnd();
+               }
+            }
+            writer.writeAndLn();
+         }
+         writer.write(attrAlias);
+         writer.write(".attr_type_id = ");
+         writer.write(String.valueOf(criteria.getAttributeTypeId()));
+      }
+
+   }
+
+   @Override()
+   public boolean shouldWriteAnd() {
+      System.out.println(criteria.isValid());
+      return criteria.isValid();
    }
 }

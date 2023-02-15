@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
@@ -58,27 +59,30 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public void writeCommonTableExpression(AbstractSqlWriter writer) {
-      Collection<AttributeTypeId> types = criteria.getTypes();
-      AbstractJoinQuery joinQuery = null;
-      if (!criteria.isIncludeAllTypes() && types.size() > 1) {
-         Set<AttributeTypeId> typeIds = new HashSet<>();
-         for (AttributeTypeId type : types) {
-            typeIds.add(type);
+      if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
+         Collection<AttributeTypeId> types = criteria.getTypes();
+         AbstractJoinQuery joinQuery = null;
+         if (!criteria.isIncludeAllTypes() && types.size() > 1) {
+            Set<AttributeTypeId> typeIds = new HashSet<>();
+            for (AttributeTypeId type : types) {
+               typeIds.add(type);
+            }
+            joinQuery = writer.writeJoin(typeIds);
          }
-         joinQuery = writer.writeJoin(typeIds);
-      }
-      List<QueryOption> asList = Arrays.asList(criteria.getOptions());
-      if ((asList.contains(QueryOption.CASE__MATCH) && asList.contains(
-         QueryOption.TOKEN_DELIMITER__EXACT) && asList.contains(
-            QueryOption.TOKEN_MATCH_ORDER__MATCH)) || criteria.getOptions().equals(QueryOption.EXACT_MATCH_OPTIONS)) {
-         attrAlias = writer.startCommonTableExpression("att");
-         writeAttrWithNoGamma(writer, joinQuery);
-      } else {
-         String gammaAlias = writer.startCommonTableExpression("gamma");
-         writeGammaWith(writer, joinQuery);
+         List<QueryOption> asList = Arrays.asList(criteria.getOptions());
+         if ((asList.contains(QueryOption.CASE__MATCH) && asList.contains(
+            QueryOption.TOKEN_DELIMITER__EXACT) && asList.contains(
+               QueryOption.TOKEN_MATCH_ORDER__MATCH)) || criteria.getOptions().equals(
+                  QueryOption.EXACT_MATCH_OPTIONS)) {
+            attrAlias = writer.startCommonTableExpression("att");
+            writeAttrWithNoGamma(writer, joinQuery);
+         } else {
+            String gammaAlias = writer.startCommonTableExpression("gamma");
+            writeGammaWith(writer, joinQuery);
 
-         attrAlias = writer.startCommonTableExpression("att");
-         writeAttrWith(writer, joinQuery, gammaAlias);
+            attrAlias = writer.startCommonTableExpression("att");
+            writeAttrWith(writer, joinQuery, gammaAlias);
+         }
       }
    }
 
@@ -189,14 +193,18 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      writer.addTable(attrAlias);
-      artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
-      writer.getMainTableAlias(OseeDb.TXS_TABLE);
+      if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
+         writer.addTable(attrAlias);
+         artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+         writer.getMainTableAlias(OseeDb.TXS_TABLE);
+      }
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      writer.writeEquals(artAlias, attrAlias, "art_id");
+      if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
+         writer.writeEquals(artAlias, attrAlias, "art_id");
+      }
    }
 
    @Override

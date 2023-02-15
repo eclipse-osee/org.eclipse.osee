@@ -383,6 +383,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public void writeAndLn() {
+      removeDanglingSeparator(AND);
+      removeDanglingSeparator(AND_NEW_LINE);
       write(AND_NEW_LINE);
    }
 

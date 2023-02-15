@@ -47,4 +47,7 @@ public class CriteriaAttributeSort extends Criteria {
       Conditions.assertTrue(AttributeTypeId.valueOf(attributeTypeId).isValid(), "Attribute Type Id is not valid");
    }
 
+   public boolean isValid() {
+      return AttributeTypeId.valueOf(attributeTypeId).isValid();
+   }
 }

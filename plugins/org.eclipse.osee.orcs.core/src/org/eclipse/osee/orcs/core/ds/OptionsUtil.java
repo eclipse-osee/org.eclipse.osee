@@ -37,6 +37,7 @@ public final class OptionsUtil {
    private static final String INCLUDE_APPLICABILITY_TOKENS = "include.applicability.tokens";
    private static final String ORDER_BY_MECHANISM = "order.by.mechanism";
    private static final String ORDER_BY_ATTRIBUTE = "order.by.attribute";
+   private static final String FOLLOW_SEARCH_IN_PROGRESS = "follow.search.in.progress";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -52,6 +53,7 @@ public final class OptionsUtil {
    public static Options createOptions() {
       Options options = new Options();
       reset(options);
+      setFollowSearchInProgress(options, false);
       return options;
    }
 
@@ -208,5 +210,13 @@ public final class OptionsUtil {
 
    public static Long getOrderByAttribute(Options options) {
       return options.getLong(ORDER_BY_ATTRIBUTE);
+   }
+
+   public static void setFollowSearchInProgress(Options options, boolean inProgress) {
+      options.put(FOLLOW_SEARCH_IN_PROGRESS, inProgress);
+   }
+
+   public static boolean getFollowSearchInProgress(Options options) {
+      return options.getBoolean(FOLLOW_SEARCH_IN_PROGRESS);
    }
 }
