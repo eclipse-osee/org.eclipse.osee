@@ -24,6 +24,7 @@ Export-Package: org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.util.io.excel,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.jdk.core.util.network,
+ org.eclipse.osee.framework.jdk.core.util.regex,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.windows,
  org.eclipse.osee.framework.jdk.core.util.xml

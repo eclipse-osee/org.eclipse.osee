@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import org.eclipse.osee.framework.jdk.core.util.annotation.AnnotationTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.io.IoTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.regex.RegexTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -37,6 +38,7 @@ import org.junit.runners.Suite;
    LibTest.class,
    ProcessesTest.class,
    ReservedCharactersTest.class,
+   RegexTestSuite.class,
    StringsTest.class,
    UrlQueryTest.class,
    EnumFunctionalInterafaceMapsTest.class,
