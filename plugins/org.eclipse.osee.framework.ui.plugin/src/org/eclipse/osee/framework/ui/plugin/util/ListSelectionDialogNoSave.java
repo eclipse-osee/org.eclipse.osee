@@ -85,6 +85,7 @@ public class ListSelectionDialogNoSave extends MessageDialog {
       });
 
       selectionList.getList().select(0);
+      selected = options.iterator().next();
       return parent;
    }
 
