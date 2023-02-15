@@ -122,8 +122,11 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && isEmpty()) {
+      if (isRequiredEntry() && isEmpty() && getCurrentValue().isEmpty()) {
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      }
+      if (isRequiredEntry() && getCurrentValue().equals(Widgets.NOT_SET)) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " is Not Set.");
       }
       return Status.OK_STATUS;
    }

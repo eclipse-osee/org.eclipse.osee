@@ -13,6 +13,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Date;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
@@ -126,6 +128,16 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
    @Override
    public void setEditorData(EditorData editorData) {
       this.editorData = editorData;
+   }
+
+   @Override
+   public IStatus isValid() {
+      if (isRequiredEntry() && isEmpty()) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      } else if (isRequiredEntry() && getCurrentValue().equals(Widgets.NOT_SET)) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " is not set.");
+      }
+      return Status.OK_STATUS;
    }
 
 }
