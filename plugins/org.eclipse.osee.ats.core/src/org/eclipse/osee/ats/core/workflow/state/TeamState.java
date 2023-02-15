@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
 public class TeamState extends StateTypeAdapter {
    public static TeamState Endorse = new TeamState("Endorse", StateType.Working);
    public static TeamState Open = new TeamState("Open", StateType.Working);
+   public static TeamState Prepare = new TeamState("Prepare", StateType.Working);
    public static TeamState Analyze = new TeamState("Analyze", StateType.Working);
    public static TeamState Authorize = new TeamState("Authorize", StateType.Working);
    public static TeamState Implement = new TeamState("Implement", StateType.Working);
