@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.OseeData;
@@ -139,22 +140,28 @@ public class PublishingTemplateBlam extends AbstractBlam {
          var fileName =
             "PUBLISHING_TEMPLATE_" + publishingTemplate.getIdentifier() + "_" + Lib.getDateTimeString() + ".txt";
          var file = OseeData.getFile(fileName);
-         var fileWriter = new FileWriter(file);
-         fileWriter.write(publishingTemplate.toString());
-         fileWriter.close();
+
+         try (var fileWriter = new FileWriter(file)) {
+            fileWriter.write(publishingTemplate.toString());
+         }
 
          Program.launch(file.getAbsolutePath());
 
       } catch (Exception e) {
          //@formatter:off
-         AWorkbench.popup
-            (
-               new Message()
-                      .title( "Publishing Template Request Failed" )
-                      .reasonFollows( e )
-                      .toString()
-               );
+         var message =
+            new Message()
+            .title( "Publishing Template Request Failed" )
+            .reasonFollows( e );
          //@formatter:on
+
+         var cause = e.getCause();
+
+         if (Objects.nonNull(cause)) {
+            message.reasonFollows("Caused By", cause);
+         }
+
+         AWorkbench.popup(message.toString());
       }
    }
 
