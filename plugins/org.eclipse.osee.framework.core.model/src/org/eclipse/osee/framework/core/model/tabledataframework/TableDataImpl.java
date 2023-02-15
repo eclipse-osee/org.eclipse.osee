@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.core.model.tabledataframework;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -123,7 +122,7 @@ public class TableDataImpl implements TableData {
          } catch (Exception ex) {
             handleExceptions(ex);
             cols.add(ex.toString());
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
          return cols;
       }

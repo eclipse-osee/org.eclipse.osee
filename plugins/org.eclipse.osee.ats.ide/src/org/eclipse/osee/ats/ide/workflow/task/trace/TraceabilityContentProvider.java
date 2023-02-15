@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.workflow.task.trace;
 
-import java.rmi.activation.Activator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -64,7 +63,7 @@ public class TraceabilityContentProvider implements ITreeContentProvider {
                      children.add(new ResultsXViewerRow(new String[] {art.getName(), "Uses"}, art));
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.WARNING, ex);
+                  OseeLog.log(getClass(), Level.WARNING, ex);
                }
                return children.toArray();
             }
