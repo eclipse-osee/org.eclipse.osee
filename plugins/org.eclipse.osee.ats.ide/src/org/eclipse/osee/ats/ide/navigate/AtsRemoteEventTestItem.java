@@ -69,7 +69,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    ArtifactToken SAW_Bld_3 = ArtifactToken.valueOf(577781, "SAW_Bld_3", COMMON, AtsArtifactTypes.Version);
 
    public AtsRemoteEventTestItem() {
-      super("ATS Remote Event Test", XNavigateItem.DEMO);
+      super("ATS Remote Event Test", XNavigateItem.TOP_ADMIN);
    }
 
    @Override
