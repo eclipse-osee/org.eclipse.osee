@@ -10,15 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './constants/';
-export * from './datasources/';
-export * from './dialogs/';
-export * from './directives/';
-export * from './forms/';
-export * from './functions/';
-export * from './headers/';
-export * from './main-content/';
-export * from './services/';
-export * from './table-headers';
-export * from './tokens/';
-export * from './types/';
+
+import { Injectable } from '@angular/core';
+import { of } from 'rxjs';
+import { headerDetail } from '@osee/shared/types';
+
+@Injectable({
+	providedIn: 'root',
+})
+export class HeaderService {
+	getHeaderByName<T>(headers: headerDetail<T>[], key: keyof T) {
+		return of(headers.find((h) => h.header === key));
+	}
+}

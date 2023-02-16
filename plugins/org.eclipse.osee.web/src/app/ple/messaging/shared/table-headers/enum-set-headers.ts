@@ -10,15 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './constants/';
-export * from './datasources/';
-export * from './dialogs/';
-export * from './directives/';
-export * from './forms/';
-export * from './functions/';
-export * from './headers/';
-export * from './main-content/';
-export * from './services/';
-export * from './table-headers';
-export * from './tokens/';
-export * from './types/';
+import { headerDetail } from '@osee/shared/types';
+import { ImportEnumSet } from '../types';
+
+export const importEnumSetHeaderDetails: headerDetail<ImportEnumSet>[] = [
+	{
+		header: 'name',
+		description: 'Enum Set name',
+		humanReadable: 'Name',
+	},
+	{
+		header: 'enums',
+		description: 'Enumerated Literals',
+		humanReadable: 'Enums',
+	},
+	{
+		header: 'applicability',
+		description: 'Enum Set applicability',
+		humanReadable: 'Applicability',
+	},
+];

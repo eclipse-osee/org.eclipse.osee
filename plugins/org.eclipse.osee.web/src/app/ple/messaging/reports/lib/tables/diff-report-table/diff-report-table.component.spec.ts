@@ -13,15 +13,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { DiffHeaderType } from '@osee/messaging/shared';
+import { connectionDiffItem } from '@osee/messaging/shared';
 import { TestScheduler } from 'rxjs/testing';
 import { connectionDiffsMock } from '@osee/messaging/shared/testing';
 
 import { DiffReportTableComponent } from './diff-report-table.component';
+import { connectionDiffHeaderDetails } from '../../table-headers/connection-diff-table-headers';
 
 describe('DiffReportTableComponent', () => {
-	let component: DiffReportTableComponent;
-	let fixture: ComponentFixture<DiffReportTableComponent>;
+	let component: DiffReportTableComponent<connectionDiffItem>;
+	let fixture: ComponentFixture<DiffReportTableComponent<connectionDiffItem>>;
 	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
@@ -32,7 +33,9 @@ describe('DiffReportTableComponent', () => {
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(DiffReportTableComponent);
+		fixture = TestBed.createComponent(
+			DiffReportTableComponent<connectionDiffItem>
+		);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
@@ -48,24 +51,7 @@ describe('DiffReportTableComponent', () => {
 		component.items = connectionDiffsMock;
 		component.title = 'Connections Added';
 		component.headers = ['name'];
-		component.headerKey = DiffHeaderType.CONNECTION;
+		component.headerDetails = connectionDiffHeaderDetails;
 		expect(component).toBeTruthy();
-	});
-
-	it('should get the header name', () => {
-		scheduler.run(() => {
-			component.headerKey = DiffHeaderType.ELEMENT;
-			let expectedObservable = {
-				a: {
-					header: 'name',
-					description: 'Name of element',
-					humanReadable: 'Name',
-				},
-			};
-			let expectedMarble = '(a)';
-			scheduler
-				.expectObservable(component.getHeaderByName('name'))
-				.toBe(expectedMarble, expectedObservable);
-		});
 	});
 });

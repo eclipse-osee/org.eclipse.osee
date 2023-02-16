@@ -158,8 +158,8 @@
 													<osee-import-table
 														[data]="_nodes"
 														[headers]="nodeHeaders"
-														[headerKey]="
-															headerKeys.IMPORT_NODE
+														[headerDetails]="
+															nodeHeaderDetails
 														"
 														[tableTitle]="
 															'Nodes'
@@ -175,8 +175,8 @@
 											<osee-import-table
 												[data]="_importSummary.messages"
 												[headers]="messageHeaders"
-												[headerKey]="
-													headerKeys.IMPORT_MESSAGE
+												[headerDetails]="
+													messageHeaderDetails
 												"
 												[tableTitle]="
 													'Messages'
@@ -192,8 +192,8 @@
 													_importSummary.subMessages
 												"
 												[headers]="submessageHeaders"
-												[headerKey]="
-													headerKeys.SUBMESSAGE
+												[headerDetails]="
+													submessageHeaderDetails
 												"
 												[tableTitle]="
 													'SubMessages'
@@ -209,8 +209,8 @@
 													_importSummary.structures
 												"
 												[headers]="structureHeaders"
-												[headerKey]="
-													headerKeys.STRUCTURE
+												[headerDetails]="
+													structureHeaderDetails
 												"
 												[tableTitle]="
 													'Structures'
@@ -224,7 +224,9 @@
 											<osee-import-table
 												[data]="_importSummary.elements"
 												[headers]="elementHeaders"
-												[headerKey]="headerKeys.ELEMENT"
+												[headerDetails]="
+													elementHeaderDetails
+												"
 												[tableTitle]="
 													'Elements'
 												"></osee-import-table>
@@ -239,8 +241,8 @@
 													_importSummary.platformTypes
 												"
 												[headers]="platformTypeHeaders"
-												[headerKey]="
-													headerKeys.IMPORT_PLATFORM_TYPE
+												[headerDetails]="
+													platformTypeHeaderDetails
 												"
 												[tableTitle]="
 													'Platform Types'
@@ -256,8 +258,8 @@
 													(enumSets | async) || []
 												"
 												[headers]="enumSetHeaders"
-												[headerKey]="
-													headerKeys.IMPORT_ENUM_SET
+												[headerDetails]="
+													enumSetHeaderDetails
 												"
 												[tableTitle]="
 													'Enum Sets'
@@ -273,8 +275,8 @@
 													_importSummary.crossReferences
 												"
 												[headers]="crossRefHeaders"
-												[headerKey]="
-													headerKeys.CROSS_REFERENCE
+												[headerDetails]="
+													crossReferenceHeaderDetails
 												"
 												[tableTitle]="
 													'Cross References'

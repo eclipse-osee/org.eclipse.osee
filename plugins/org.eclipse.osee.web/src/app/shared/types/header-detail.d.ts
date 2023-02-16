@@ -10,15 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './constants/';
-export * from './datasources/';
-export * from './dialogs/';
-export * from './directives/';
-export * from './forms/';
-export * from './functions/';
-export * from './headers/';
-export * from './main-content/';
-export * from './services/';
-export * from './table-headers';
-export * from './tokens/';
-export * from './types/';
+export interface headerDetail<T> {
+	header: Extract<keyof T, string>;
+	description: string;
+	humanReadable: string;
+}

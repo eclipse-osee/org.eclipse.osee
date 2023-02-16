@@ -17,21 +17,21 @@
 			<osee-messaging-diff-report-table
 				[items]="nodes"
 				[headers]="headers"
-				[headerKey]="headerType"
+				[headerDetails]="headerDetails"
 				[title]="'Nodes Added'"></osee-messaging-diff-report-table>
 		</ng-container>
 		<ng-container *ngIf="nodesDeleted | async as nodes">
 			<osee-messaging-diff-report-table
 				[items]="nodes"
 				[headers]="headers"
-				[headerKey]="headerType"
+				[headerDetails]="headerDetails"
 				[title]="'Nodes Deleted'"></osee-messaging-diff-report-table>
 		</ng-container>
 		<ng-container *ngIf="nodesChanged | async as nodes">
 			<osee-messaging-diff-report-table
 				[items]="nodes"
 				[headers]="headers"
-				[headerKey]="headerType"
+				[headerDetails]="headerDetails"
 				[title]="'Nodes Changed'"></osee-messaging-diff-report-table>
 		</ng-container>
 	</ng-container>

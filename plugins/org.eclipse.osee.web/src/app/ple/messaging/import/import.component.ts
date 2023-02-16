@@ -20,15 +20,22 @@ import { ActivatedRoute } from '@angular/router';
 import {
 	connection,
 	CrossReference,
+	crossReferenceHeaderDetails,
 	elementImportToken,
 	enumeration,
-	HeaderKeysEnum,
+	importElementHeaderDetails,
 	ImportEnumSet,
+	importEnumSetHeaderDetails,
+	importMessageHeaderDetails,
+	importPlatformTypeHeaderDetails,
 	ImportSummary,
 	messageToken,
+	nodeHeaderDetails,
 	nodeToken,
 	platformTypeImportToken,
+	structureHeaderDetails,
 	subMessage,
+	subMessageHeaderDetails,
 } from '@osee/messaging/shared';
 import {
 	ActionDropDownComponent,
@@ -235,10 +242,10 @@ export class ImportComponent implements OnInit, OnDestroy {
 		)
 	);
 
-	headerKeys = HeaderKeysEnum;
-
+	nodeHeaderDetails = nodeHeaderDetails;
 	nodeHeaders: (keyof nodeToken)[] = ['name', 'description', 'applicability'];
 
+	messageHeaderDetails = importMessageHeaderDetails;
 	messageHeaders: (keyof messageToken)[] = [
 		'name',
 		'description',
@@ -250,6 +257,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'applicability',
 	];
 
+	submessageHeaderDetails = subMessageHeaderDetails;
 	submessageHeaders: (keyof subMessage)[] = [
 		'name',
 		'description',
@@ -257,6 +265,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'applicability',
 	];
 
+	structureHeaderDetails = structureHeaderDetails;
 	structureHeaders: string[] = [
 		'name',
 		'description',
@@ -267,6 +276,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'applicability',
 	];
 
+	elementHeaderDetails = importElementHeaderDetails;
 	elementHeaders: (keyof elementImportToken)[] = [
 		'name',
 		'description',
@@ -278,6 +288,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'interfaceDefaultValue',
 	];
 
+	platformTypeHeaderDetails = importPlatformTypeHeaderDetails;
 	platformTypeHeaders: (keyof platformTypeImportToken)[] = [
 		'name',
 		'description',
@@ -290,12 +301,14 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'interfaceDefaultValue',
 	];
 
+	enumSetHeaderDetails = importEnumSetHeaderDetails;
 	enumSetHeaders: (keyof ImportEnumSet)[] = [
 		'name',
 		'enums',
 		'applicability',
 	];
 
+	crossReferenceHeaderDetails = crossReferenceHeaderDetails;
 	crossRefHeaders: (keyof CrossReference)[] = [
 		'name',
 		'crossReferenceValue',

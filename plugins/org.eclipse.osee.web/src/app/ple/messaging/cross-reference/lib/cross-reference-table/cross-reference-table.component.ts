@@ -1,9 +1,8 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+	crossReferenceHeaderDetails,
 	CrossReferenceService,
-	HeaderKeysEnum,
-	HeaderService,
 	TableEditTextFieldComponent,
 } from '@osee/messaging/shared';
 import { CrossReference } from 'src/app/ple/messaging/shared/types/crossReference.d ';
@@ -20,6 +19,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/new-cross-reference-dialog.component';
 import { SplitStringPipe } from 'src/app/shared/utils/pipes/split-string.pipe';
+import { HeaderService } from 'src/app/ple-services/ui/header.service';
 
 @Component({
 	selector: 'osee-cross-reference-table',
@@ -54,9 +54,9 @@ export class CrossReferenceTableComponent implements OnDestroy {
 	) {}
 
 	getTableHeaderByName(header: keyof CrossReference) {
-		return this.headerService.getTableHeaderByName(
-			header,
-			HeaderKeysEnum.CROSS_REFERENCE
+		return this.headerService.getHeaderByName(
+			crossReferenceHeaderDetails,
+			header
 		);
 	}
 

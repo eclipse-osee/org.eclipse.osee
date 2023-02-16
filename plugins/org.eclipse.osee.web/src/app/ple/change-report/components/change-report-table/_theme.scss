@@ -25,32 +25,25 @@
 	$background: map.get($config, background);
 	$foreground: map.get($config, foreground);
 	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
 
 	// Define any styles affected by the theme.
-	.table-header {
+	.table-header-cell {
 		color: mat.get-color-from-palette($primary, 600);
 	}
 
-	.diff-report-base-color {
-		color: mat.get-color-from-palette($foreground, base);
-	}
-
-	.diff-report-row-even {
+	.table-row-even {
 		background-color: mat.get-color-from-palette($background, background);
 	}
 
-	.diff-report-table-view-message-header {
-		color: mat.get-color-from-palette($primary, 600);
-	}
-
-	tr.message-detail-row:not(.message-expanded-detail-row):hover {
-		background: mat.get-color-from-palette($background, app-bar);
-	}
-
-	tr.message-detail-row:not(.message-expanded-detail-row):active {
-		background: mat.get-color-from-palette($background, unselected-chip);
+	.table-row-odd {
+		background-color: mat.get-color-from-palette(
+			$background,
+			selected-button
+		);
 	}
 }
+
 @mixin typography-themed($config-or-theme) {
 	$config: mat.get-typography-config($config-or-theme);
 }

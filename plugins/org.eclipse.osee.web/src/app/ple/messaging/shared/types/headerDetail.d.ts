@@ -14,46 +14,15 @@ import { element } from './element';
 import { structure } from './structure';
 import { message } from './messages';
 import { subMessage } from './sub-messages';
-import {
-	branchSummary,
-	connectionDiffItem,
-	diffReportSummaryItem,
-	elementDiffItem,
-	messageDiffItem,
-	nodeDiffItem,
-	structureDiffItem,
-	submessageDiffItem,
-} from './DifferenceReport.d';
+import { branchSummary, diffReportSummaryItem } from './DifferenceReport.d';
 import { transportType } from './transportType';
-
-export interface headerDetail<T> {
-	header: Extract<keyof T, string>;
-	description: string;
-	humanReadable: string;
-}
+import { headerDetail } from '@osee/shared/types';
 
 export interface messageHeaderDetail extends headerDetail<message> {}
 export interface subMessageHeaderDetail extends headerDetail<subMessage> {}
 export interface structureHeaderDetail extends headerDetail<structure> {}
 
 export interface elementHeaderDetail extends headerDetail<element> {}
-
-export interface nodeDiffHeaderDetail extends headerDetail<nodeDiffItem> {}
-
-export interface connectionDiffHeaderDetail
-	extends headerDetail<connectionDiffItem> {}
-
-export interface messageDiffHeaderDetail
-	extends headerDetail<messageDiffItem> {}
-
-export interface submessageDiffHeaderDetail
-	extends headerDetail<submessageDiffItem> {}
-
-export interface structureDiffHeaderDetail
-	extends headerDetail<structureDiffItem> {}
-
-export interface elementDiffHeaderDetail
-	extends headerDetail<elementDiffItem> {}
 
 export interface branchSummaryHeaderDetail
 	extends headerDetail<branchSummary> {}
