@@ -18,16 +18,21 @@
 				<ng-container
 					*ngIf="
 						_branchType === 'working' &&
-						(diffReportRoute | async) as diffRoute
+						(webReportRoutes | async) as routes
 					">
 					<h2 class="mat-headline-6">Web-Based Reports</h2>
 					<div class="reports-view-web-based">
 						<a
 							mat-raised-button
 							color="primary"
-							[routerLink]="diffRoute"
-							class="diff-report-button">
-							View Difference Report
+							[routerLink]="routes.diffRoute">
+							Difference Report
+						</a>
+						<a
+							mat-raised-button
+							color="primary"
+							[routerLink]="routes.nodeTraceRoute">
+							Traceability Report
 						</a>
 					</div>
 				</ng-container>

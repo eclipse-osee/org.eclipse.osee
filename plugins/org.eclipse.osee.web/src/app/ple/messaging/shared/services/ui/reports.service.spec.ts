@@ -18,6 +18,7 @@ import { TestBed } from '@angular/core/testing';
 import { mimReportsMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from 'src/environments/environment';
+import { NodeTraceReportMock } from '../../testing/node-trace-report-mock';
 
 import { ReportsService } from './reports.service';
 
@@ -76,5 +77,41 @@ describe('ReportsService', () => {
 				a: '/ple/messaging/reports/abc/10/differences',
 			});
 		});
+	});
+
+	it('should get a trace report path', () => {
+		scheduler.run(({ expectObservable }) => {
+			service.BranchId = '10';
+			service.BranchType = 'abc';
+			expectObservable(service.nodeTraceReportRoute).toBe('a', {
+				a: '/ple/messaging/reports/abc/10/traceReport',
+			});
+		});
+	});
+
+	it('should get a requirement trace report', () => {
+		const traceReport = NodeTraceReportMock;
+		service.BranchId = '10';
+		service.BranchType = 'abc';
+		service.nodeTraceReportRequirements.subscribe();
+		const req = httpTestingController.expectOne(
+			apiURL + '/mim/reports/10/allRequirementsToInterface'
+		);
+		expect(req.request.method).toEqual('GET');
+		req.flush(traceReport);
+		httpTestingController.verify();
+	});
+
+	it('should get an interface artifact trace report', () => {
+		const traceReport = NodeTraceReportMock;
+		service.BranchId = '10';
+		service.BranchType = 'abc';
+		service.nodeTraceReportInterfaceArtifacts.subscribe();
+		const req = httpTestingController.expectOne(
+			apiURL + '/mim/reports/10/allInterfaceToRequirements'
+		);
+		expect(req.request.method).toEqual('GET');
+		req.flush(traceReport);
+		httpTestingController.verify();
 	});
 });

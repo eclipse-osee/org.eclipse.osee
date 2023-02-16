@@ -27,6 +27,7 @@ import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimArtifactsApi;
+import org.eclipse.osee.mim.MimReportsApi;
 import org.eclipse.osee.mim.TransportTypeApi;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeBoolean;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeCharacter;
@@ -80,6 +81,7 @@ public class MimApiImpl implements MimApi {
    private InterfaceDifferenceReportApi interfaceDifferenceReportApi;
    private TransportTypeApi transportTypeApi;
    private MimArtifactsApi mimArtifactsApi;
+   private MimReportsApi mimReportsApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -140,7 +142,8 @@ public class MimApiImpl implements MimApi {
          interfaceConnectionViewApi, interfaceMessageApi, interfaceSubMessageApi, interfaceStructureApi,
          interfaceElementApi, interfacePlatformApi, interfaceEnumerationSetApi, interfaceEnumerationApi);
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
-	  this.setTransportTypeApi(new TransportTypeApiImpl(orcsApi));
+      this.mimReportsApi = new MimReportsApiImpl(orcsApi);
+      this.setTransportTypeApi(new TransportTypeApiImpl(orcsApi));
    }
 
    @Override
@@ -217,10 +220,16 @@ public class MimApiImpl implements MimApi {
    public MimArtifactsApi getMimArtifactsApi() {
       return this.mimArtifactsApi;
    }
-   
-      /**
+
+   @Override
+   public MimReportsApi getMimReportsApi() {
+      return this.mimReportsApi;
+   }
+
+   /**
     * @return the transportTypeApi
     */
+   @Override
    public TransportTypeApi getTransportTypeApi() {
       return transportTypeApi;
    }
@@ -231,6 +240,5 @@ public class MimApiImpl implements MimApi {
    public void setTransportTypeApi(TransportTypeApi transportTypeApi) {
       this.transportTypeApi = transportTypeApi;
    }
-
 
 }

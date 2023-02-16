@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,32 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BranchPickerStub } from '@osee/shared/components/testing';
+import { ReportsService } from '@osee/messaging/shared';
+import { ReportsServiceMock } from 'src/app/ple/messaging/shared/testing/reports-service.mock';
 
-import { ReportsComponent } from './reports.component';
+import { NodeTraceReportRequirementsComponent } from './trace-report.component';
 
-describe('ReportsComponent', () => {
-	let component: ReportsComponent;
-	let fixture: ComponentFixture<ReportsComponent>;
+describe('NodeTraceReportComponent', () => {
+	let component: NodeTraceReportRequirementsComponent;
+	let fixture: ComponentFixture<NodeTraceReportRequirementsComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
+				NodeTraceReportRequirementsComponent,
 				RouterTestingModule,
-				NoopAnimationsModule,
-				BranchPickerStub,
-				HttpClientTestingModule,
-				ReportsComponent,
+			],
+			providers: [
+				{ provide: ReportsService, useValue: ReportsServiceMock },
 			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(ReportsComponent);
+		fixture = TestBed.createComponent(NodeTraceReportRequirementsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

@@ -1,0 +1,134 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="node-trace-req-table-container">
+	<mat-form-field class="table-filter">
+		<mat-label>Filter Table</mat-label>
+		<input
+			matInput
+			(keyup)="applyFilter($event)"
+			#input />
+		<mat-icon matPrefix>filter_list</mat-icon>
+	</mat-form-field>
+	<table
+		mat-table
+		[dataSource]="dataSource"
+		matSort
+		class="mat-elevation-z2">
+		<ng-container
+			[matColumnDef]="header"
+			*ngFor="let header of headers">
+			<ng-container *ngIf="header !== 'relatedItems'">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					mat-sort-header
+					class="table-header-cell">
+					{{
+						(getTableHeaderByName(header) | async)?.humanReadable ||
+							''
+					}}
+				</th>
+			</ng-container>
+			<ng-container *ngIf="header === 'relatedItems'">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="table-header-cell">
+					<div class="related-items-header">
+						{{
+							(getTableHeaderByName(header) | async)
+								?.humanReadable || ''
+						}}
+					</div>
+					<div class="sub-table">
+						<div class="sub-table-cell">Name</div>
+						<div class="sub-table-cell">Artifact Type</div>
+					</div>
+				</th>
+			</ng-container>
+			<td
+				mat-cell
+				*matCellDef="let item; let row = index"
+				[ngClass]="
+					header === 'relatedItems'
+						? row % 2 === 0
+							? 'sub-table-row-even'
+							: 'sub-table-row-odd'
+						: ''
+				">
+				<ng-container *ngIf="header !== 'relatedItems'">
+					<div
+						oseeHighlightFilteredText
+						[searchTerms]="dataSource.filter"
+						[text]="item[header]"
+						classToApply="table-highlighted-text">
+						{{ item[header] }}
+					</div>
+				</ng-container>
+				<ng-container *ngIf="header === 'relatedItems'">
+					<ng-container
+						*ngFor="let rel of item.relatedItems; let i = index">
+						<div class="sub-table">
+							<ng-container
+								*ngFor="
+									let text of [rel.name, rel.artifactType]
+								">
+								<ng-container
+									[ngTemplateOutlet]="subTableCell"
+									[ngTemplateOutletContext]="{
+										item: item,
+										text: text,
+										index: i,
+										row: row
+									}"></ng-container>
+							</ng-container>
+						</div>
+					</ng-container>
+				</ng-container>
+			</td>
+		</ng-container>
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; let i = index; columns: headers"
+			[ngClass]="i % 2 === 0 ? 'table-row-even' : 'table-row-odd'"></tr>
+	</table>
+</div>
+<ng-template
+	#subTableCell
+	let-item="item"
+	let-text="text"
+	let-index="index"
+	let-row="row">
+	<div
+		oseeHighlightFilteredText
+		[searchTerms]="dataSource.filter"
+		[text]="text"
+		classToApply="table-highlighted-text"
+		class="sub-table-cell"
+		[ngClass]="
+			item.relatedItems.length > 1
+				? row % 2 === 0
+					? index % 2 === 0
+						? 'table-row-even'
+						: 'sub-table-row-even'
+					: index % 2 === 0
+					? 'table-row-even'
+					: 'sub-table-row-odd'
+				: ''
+		">
+		{{ text }}
+	</div>
+</ng-template>

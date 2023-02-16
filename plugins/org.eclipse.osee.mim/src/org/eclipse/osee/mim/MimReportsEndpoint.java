@@ -15,9 +15,13 @@ package org.eclipse.osee.mim;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.MimReportToken;
+import org.eclipse.osee.mim.types.NodeTraceReportItem;
 
 /**
  * @author Ryan Baldwin
@@ -28,5 +32,25 @@ public interface MimReportsEndpoint {
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
    public List<MimReportToken> getReports();
+
+   @GET()
+   @Path("{branchId}/allRequirementsToInterface")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<NodeTraceReportItem> getAllRequirementsToInterface(@PathParam("branchId") BranchId branch);
+
+   @GET()
+   @Path("{branchId}/allInterfaceToRequirements")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<NodeTraceReportItem> getAllInterfaceToRequirements(@PathParam("branchId") BranchId branch);
+
+   @GET()
+   @Path("{branchId}/interfacesFromRequirement/{artId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public NodeTraceReportItem getInterfacesFromRequirement(@PathParam("branchId") BranchId branch, @PathParam("artId") ArtifactId artId);
+
+   @GET()
+   @Path("{branchId}/requirementsFromInterface/{artId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public NodeTraceReportItem getRequirementsFromInterface(@PathParam("branchId") BranchId branch, @PathParam("artId") ArtifactId artId);
 
 }

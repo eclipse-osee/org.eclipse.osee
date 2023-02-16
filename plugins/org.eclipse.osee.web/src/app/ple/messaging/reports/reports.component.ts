@@ -13,8 +13,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { from, iif, of } from 'rxjs';
-import { filter, scan, startWith, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, from, iif, of } from 'rxjs';
+import { filter, map, scan, startWith, switchMap, tap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import {
 	ApplicabilityListService,
@@ -36,7 +36,7 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
 	selector: 'osee-messaging-reports',
 	templateUrl: './reports.component.html',
-	styleUrls: ['./reports.component.sass'],
+	styleUrls: ['./reports.component.scss'],
 	standalone: true,
 	imports: [
 		NgIf,
@@ -75,7 +75,16 @@ export class ReportsComponent implements OnInit {
 	branchId = this.reportsService.branchId;
 	branchType = this.reportsService.branchType;
 	reports = this.reportsService.getReports();
-	diffReportRoute = this.reportsService.diffReportRoute;
+
+	webReportRoutes = combineLatest([
+		this.reportsService.diffReportRoute,
+		this.reportsService.nodeTraceReportRoute,
+	]).pipe(
+		map(([diffRoute, nodeTraceRoute]) => ({
+			diffRoute: diffRoute,
+			nodeTraceRoute: nodeTraceRoute,
+		}))
+	);
 
 	reportSelectionText = this.reports.pipe(
 		switchMap((reports) =>
