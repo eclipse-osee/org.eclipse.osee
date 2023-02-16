@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeHistorySection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeOperationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
@@ -83,7 +82,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public final static String ID = "ats.workflow.tab";
    private final WorkflowEditor editor;
    private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
-   private WfeHistorySection historySection;
 
    public WfeWorkFlowTab(WorkflowEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, awa, "Workflow");
@@ -229,7 +227,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
       createPageSections();
       createUndefinedStateSections();
-      createHistorySection();
       createOperationsSection();
 
       setEditorWidgets();
@@ -277,15 +274,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                undefinedStateSections.add(section);
             }
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void createHistorySection() {
-      try {
-         historySection = new WfeHistorySection(editor, atsBody, editor.getToolkit(), SWT.NONE);
-         managedForm.addPart(historySection);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -376,9 +364,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       for (WfeUndefinedStateSection section : undefinedStateSections) {
          section.dispose();
       }
-      if (historySection != null) {
-         historySection.dispose();
-      }
       for (WfeWorkflowSection section : stateSections) {
          section.dispose();
       }
@@ -427,8 +412,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                   section.refresh();
                }
                refreshExpandStates();
-
-               historySection.refresh();
 
                setEditorWidgets();
             }
