@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,7 +60,6 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -213,6 +213,7 @@ public class QueryEngineImpl implements QueryEngine {
    private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory, Consumer<ArtifactReadable> artifactConsumer, int numArtifacts) {
       // make the HashMap capacity large enough to accommodate the artifactCount given the default load factor of 75%
       HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>((int) (numArtifacts / 0.75) + 1);
+      List<ArtifactId> consumedArts = new LinkedList<>();
 
       Consumer<JdbcStatement> jdbcConsumer = stmt -> {
          Long artId = stmt.getLong("art_id");
@@ -222,8 +223,15 @@ public class QueryEngineImpl implements QueryEngine {
             artifactMap.put(artifact, artifact);
             if (stmt.getLong("top") == 1) {
                artifactConsumer.accept(artifact);
+               consumedArts.add(ArtifactId.valueOf(artifact.getId()));
             }
          } else {
+            // If an artifact with top = 1 appears as an "otherArtifact" first, because it's related to an artifact with top = 1, it needs
+            // to be added to the consumer as well.
+            if (!consumedArts.contains(ArtifactId.valueOf(artifact.getId())) && stmt.getLong("top") == 1) {
+               artifactConsumer.accept(artifact);
+               consumedArts.add(ArtifactId.valueOf(artifact.getId()));
+            }
             /**
              * if artifact is already in the map that means it was first found as a relation and applicability may not
              * have been set
@@ -247,12 +255,7 @@ public class QueryEngineImpl implements QueryEngine {
                new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, resourceManager);
             // Check if the attribute value has been added already to the artifact to prevent duplicate values.
             // This can happen when the same object is returned multiple times when following relations.
-            if (queryData.hasCriteriaType(CriteriaRelationTypeFollow.class)) {
-               if (!artifact.getAttributeList(attributeType).stream().anyMatch(
-                  a -> a.getId().equals(attribute.getId()))) {
-                  artifact.putAttributeValue(attributeType, attribute);
-               }
-            } else {
+            if (!artifact.getAttributeList(attributeType).stream().anyMatch(a -> a.getId().equals(attribute.getId()))) {
                artifact.putAttributeValue(attributeType, attribute);
             }
          } else {
