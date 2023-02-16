@@ -10,15 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './constants/';
-export * from './datasources/';
-export * from './dialogs/';
-export * from './directives/';
-export * from './forms/';
-export * from './functions/';
-export * from './headers/';
-export * from './main-content/';
-export * from './services/';
-export * from './table-headers';
-export * from './tokens/';
-export * from './types/';
+import { headerDetail } from '@osee/shared/types';
+import { nodeToken } from '../types';
+
+export const nodeHeaderDetails: headerDetail<nodeToken>[] = [
+	{
+		header: 'name',
+		description: 'Name of the node',
+		humanReadable: 'Name',
+	},
+	{
+		header: 'description',
+		description: 'Description of the node',
+		humanReadable: 'Description',
+	},
+	{
+		header: 'applicability',
+		description: 'Applicability of the node',
+		humanReadable: 'Applicability',
+	},
+];

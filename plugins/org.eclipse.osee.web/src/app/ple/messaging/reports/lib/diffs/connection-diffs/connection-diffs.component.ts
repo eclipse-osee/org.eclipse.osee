@@ -12,13 +12,10 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import {
-	connectionDiffItem,
-	DiffHeaderType,
-	DiffReportService,
-} from '@osee/messaging/shared';
+import { connectionDiffItem, DiffReportService } from '@osee/messaging/shared';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
+import { connectionDiffHeaderDetails } from '../../table-headers/connection-diff-table-headers';
 import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
 
 @Component({
@@ -31,14 +28,13 @@ import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-re
 export class ConnectionDiffsComponent {
 	constructor(private diffReportService: DiffReportService) {}
 
+	headerDetails = connectionDiffHeaderDetails;
 	headers: (keyof connectionDiffItem)[] = [
 		'name',
 		'description',
 		'transportType',
 		'applicability',
 	];
-
-	headerType = DiffHeaderType.CONNECTION;
 
 	allConnections = this.diffReportService.connections;
 

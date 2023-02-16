@@ -12,13 +12,10 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import {
-	nodeDiffItem,
-	DiffHeaderType,
-	DiffReportService,
-} from '@osee/messaging/shared';
+import { nodeDiffItem, DiffReportService } from '@osee/messaging/shared';
 import { from } from 'rxjs';
-import { filter, reduce, switchMap, tap } from 'rxjs/operators';
+import { filter, reduce, switchMap } from 'rxjs/operators';
+import { nodeDiffHeaderDetails } from '../../table-headers/node-diff-table-headers';
 import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
 
 @Component({
@@ -31,6 +28,7 @@ import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-re
 export class NodeDiffsComponent {
 	constructor(private diffReportService: DiffReportService) {}
 
+	headerDetails = nodeDiffHeaderDetails;
 	headers: (keyof nodeDiffItem)[] = [
 		'name',
 		'description',
@@ -38,8 +36,6 @@ export class NodeDiffsComponent {
 		'color',
 		'applicability',
 	];
-
-	headerType = DiffHeaderType.NODE;
 
 	allNodes = this.diffReportService.nodes;
 

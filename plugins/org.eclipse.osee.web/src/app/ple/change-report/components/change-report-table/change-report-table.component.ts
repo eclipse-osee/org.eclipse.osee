@@ -17,24 +17,17 @@ import {
 	of,
 	shareReplay,
 	switchMap,
-	tap,
 } from 'rxjs';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import {
-	HeaderKeys,
-	HeaderKeysEnum,
-	HeaderService,
-} from '@osee/messaging/shared';
 import { changeReportRow } from '@osee/shared/types/change-report';
 import { ChangeReportService } from '../../services/change-report.service';
+import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { changeReportHeaders } from './change-report-table-headers';
 
-/**
- * @TODO ryan please remove reference to messaging here in some way
- */
 @Component({
 	selector: 'osee-change-report-table',
 	templateUrl: './change-report-table.component.html',
-	styleUrls: ['./change-report-table.component.sass'],
+	styleUrls: ['./change-report-table.component.scss'],
 })
 export class ChangeReportTableComponent implements OnChanges {
 	@Input() branchId: string = '';
@@ -62,10 +55,7 @@ export class ChangeReportTableComponent implements OnChanges {
 	];
 
 	getHeaderByName(value: keyof changeReportRow) {
-		return this.headerService.getTableHeaderByName(
-			value,
-			HeaderKeysEnum.CHANGE_REPORT_ROW
-		);
+		return this.headerService.getHeaderByName(changeReportHeaders, value);
 	}
 
 	branchId$ = new BehaviorSubject<string>('');

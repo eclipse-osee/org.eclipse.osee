@@ -14,7 +14,8 @@ import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { diffItem, diffItemKey, HeaderService } from '@osee/messaging/shared';
+import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { headerDetail } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-messaging-diff-report-table',
@@ -23,15 +24,15 @@ import { diffItem, diffItemKey, HeaderService } from '@osee/messaging/shared';
 	standalone: true,
 	imports: [NgIf, NgFor, AsyncPipe, NgClass, MatTableModule, MatIconModule],
 })
-export class DiffReportTableComponent {
-	@Input() items: diffItem[] = [];
+export class DiffReportTableComponent<T extends { [key: string]: any }> {
+	@Input() items: T[] = [];
 	@Input() title: string = '';
-	@Input() headers: diffItemKey[] = [];
-	@Input() headerKey: string = '';
+	@Input() headerDetails: headerDetail<T>[] = [];
+	@Input() headers: string[] = [];
 
 	constructor(private headerService: HeaderService) {}
 
-	getHeaderByName(value: diffItemKey) {
-		return this.headerService.getHeaderByName(value, this.headerKey);
+	getHeaderByName(header: string) {
+		return this.headerService.getHeaderByName(this.headerDetails, header);
 	}
 }

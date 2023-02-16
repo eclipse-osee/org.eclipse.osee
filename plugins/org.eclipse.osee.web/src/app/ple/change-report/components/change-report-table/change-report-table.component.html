@@ -46,7 +46,7 @@
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="message-element-interface-table-view-message-header">
+					class="table-header-cell">
 					{{ (getHeaderByName(header) | async)?.humanReadable || '' }}
 				</th>
 				<td
@@ -60,8 +60,10 @@
 				*matHeaderRowDef="headers"></tr>
 			<tr
 				mat-row
-				*matRowDef="let row; columns: headers"
-				class="message-detail-row"></tr>
+				*matRowDef="let row; let i = index; columns: headers"
+				[ngClass]="
+					i % 2 === 0 ? 'table-row-even' : 'table-row-odd'
+				"></tr>
 		</table>
 	</ng-container>
 </div>

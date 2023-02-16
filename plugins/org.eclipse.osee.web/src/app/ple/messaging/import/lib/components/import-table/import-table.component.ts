@@ -17,12 +17,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { applic } from '@osee/shared/types/applicability';
-import {
-	HeaderKeys,
-	HeaderKeysEnum,
-	HeaderService,
-} from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { headerDetail } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-import-table',
@@ -46,7 +43,7 @@ export class ImportTableComponent<T extends { [key: string]: any }>
 {
 	@Input() data: T[] = [];
 	@Input() headers: string[] = [];
-	@Input() headerKey: HeaderKeys = HeaderKeysEnum.NONE;
+	@Input() headerDetails: headerDetail<T>[] = [];
 	@Input() tableTitle: string = '';
 
 	filteredData: T[] = [];
@@ -60,7 +57,7 @@ export class ImportTableComponent<T extends { [key: string]: any }>
 	}
 
 	getTableHeaderByName(header: string) {
-		return this.headerService.getTableHeaderByName(header, this.headerKey);
+		return this.headerService.getHeaderByName(this.headerDetails, header);
 	}
 
 	applyFilter(event: Event) {

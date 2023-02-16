@@ -20,7 +20,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { HeaderKeysEnum, HeaderService } from '@osee/messaging/shared';
+import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-table-headers';
 
 @Component({
 	selector: 'osee-trace-report-table',
@@ -79,10 +80,10 @@ export class TraceReportTableComponent implements AfterViewInit {
 		this.dataSource.sort = this.sort;
 	}
 
-	getTableHeaderByName(header: string) {
-		return this.headerService.getTableHeaderByName(
-			header,
-			HeaderKeysEnum.NODE_TRACE_REQ
+	getTableHeaderByName(header: keyof NodeTraceReportItem) {
+		return this.headerService.getHeaderByName(
+			nodeTraceReportHeaderDetails,
+			header
 		);
 	}
 

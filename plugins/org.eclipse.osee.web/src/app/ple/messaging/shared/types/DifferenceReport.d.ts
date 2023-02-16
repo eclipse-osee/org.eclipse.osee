@@ -210,13 +210,3 @@ export type diffItemKey =
 export type fieldsChanged = Partial<
 	Record<diffItemKey, string | number | boolean | undefined | null | applic>
 >;
-
-export const enum DiffHeaderType {
-	NODE = 'nodeDiff',
-	CONNECTION = 'connectionDiff',
-	MESSAGE = 'messageDiff',
-	SUBMESSAGE = 'subMessageDiff',
-	STRUCTURE = 'structureDiff',
-	ELEMENT = 'elementDiff',
-	ENUMSET = 'enumSetDiff',
-}

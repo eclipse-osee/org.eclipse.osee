@@ -15,11 +15,12 @@ import { Component } from '@angular/core';
 import {
 	structureDiffItem,
 	elementDiffItem,
-	DiffHeaderType,
 	DiffReportService,
 } from '@osee/messaging/shared';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
+import { elementDiffHeaderDetails } from '../../table-headers/element-diff-table-headers';
+import { structureDiffHeaderDetails } from '../../table-headers/structure-diff-table-headers';
 import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
 
 @Component({
@@ -32,7 +33,8 @@ import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-re
 export class StructureDiffsComponent {
 	constructor(private diffReportService: DiffReportService) {}
 
-	headers: (keyof structureDiffItem)[] = [
+	structureHeaderDetails = structureDiffHeaderDetails;
+	structureHeaders: (keyof structureDiffItem)[] = [
 		'name',
 		'description',
 		'interfaceMinSimultaneity',
@@ -41,6 +43,7 @@ export class StructureDiffsComponent {
 		'interfaceStructureCategory',
 	];
 
+	elementHeaderDetails = elementDiffHeaderDetails;
 	elementHeaders: (keyof elementDiffItem)[] = [
 		'name',
 		'description',
@@ -58,9 +61,6 @@ export class StructureDiffsComponent {
 		'notes',
 		'applicability',
 	];
-
-	headerType = DiffHeaderType.STRUCTURE;
-	elementHeaderType = DiffHeaderType.ELEMENT;
 
 	allStructures = this.diffReportService.structuresWithElements;
 

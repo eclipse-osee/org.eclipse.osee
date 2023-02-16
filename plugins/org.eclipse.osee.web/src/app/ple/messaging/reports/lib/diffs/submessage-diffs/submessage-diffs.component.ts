@@ -12,13 +12,10 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import {
-	submessageDiffItem,
-	DiffHeaderType,
-	DiffReportService,
-} from '@osee/messaging/shared';
+import { submessageDiffItem, DiffReportService } from '@osee/messaging/shared';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
+import { submessageDiffHeaderDetails } from '../../table-headers/submessage-diff-table-headers';
 import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
 
 @Component({
@@ -31,14 +28,13 @@ import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-re
 export class SubmessageDiffsComponent {
 	constructor(private diffReportService: DiffReportService) {}
 
+	headerDetails = submessageDiffHeaderDetails;
 	headers: (keyof submessageDiffItem)[] = [
 		'name',
 		'description',
 		'interfaceSubMessageNumber',
 		'applicability',
 	];
-
-	headerType = DiffHeaderType.SUBMESSAGE;
 
 	allSubMessages = this.diffReportService.submessages;
 

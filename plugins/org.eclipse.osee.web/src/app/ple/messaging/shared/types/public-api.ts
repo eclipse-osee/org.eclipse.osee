@@ -34,6 +34,7 @@ export * from './MimAttributes';
 export * from './MimQuery';
 export * from './newTypeDialogDialogData.d';
 export * from './node.d';
+export * from './NodeTraceReport.d';
 export * from './platformType.d';
 export * from './PlatformTypeInstance';
 export * from './Reports.d';

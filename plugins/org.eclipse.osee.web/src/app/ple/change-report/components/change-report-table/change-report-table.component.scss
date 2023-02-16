@@ -10,11 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.change-table
-    width: 100%
+@use '../../../../../modern-ple-theme';
+@use './theme' as t;
 
-.transaction-info
-    padding-left: 2em
+@media (prefers-color-scheme: light) {
+	@include t.theme($theme: modern-ple-theme.$modern-ple-light-theme);
+}
 
-.tx-info-bold
-    font-weight: bold
+@media (prefers-color-scheme: dark) {
+	@include t.theme($theme: modern-ple-theme.$modern-ple-dark-theme);
+}
+
+.change-table {
+	width: 100%;
+}
+
+.transaction-info {
+	padding-left: 2em;
+}
+
+.tx-info-bold {
+	font-weight: bold;
+}
