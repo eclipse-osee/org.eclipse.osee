@@ -351,7 +351,7 @@ public class Pdd93CreateDemoAgile {
       inworkItems.setSetSprint(true);
 
       for (IAtsWorkItem workItem : items) {
-         if (workItem.getStateMgr().getStateType().isCompleted()) {
+         if (workItem.getCurrentStateType().isCompleted()) {
             completedItems.getIds().add(workItem.getId());
          } else {
             inworkItems.getIds().add(workItem.getId());

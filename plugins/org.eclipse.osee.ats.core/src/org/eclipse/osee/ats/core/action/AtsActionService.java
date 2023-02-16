@@ -563,6 +563,7 @@ public class AtsActionService implements IAtsActionService {
       StateDefinition startState = workDefinition.getStartState();
       StateManager stateMgr = new StateManager(workItem, new AtsLogFactory(), atsApi);
       workItem.setStateMgr(stateMgr);
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, startState.getStateType().name());
 
       StateManagerUtility.initializeStateMachine(stateMgr, startState, assignees, createdBy, changes);
       AtsUser user = createdBy;

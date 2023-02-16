@@ -243,10 +243,10 @@ public class ActionPage {
             String stateName = state.getName();
             if (stateName.equals(atsApi.getWorkItemService().getCurrentStateName(workItem))) {
                stateName = String.format("CURRENT STATE => <b>%s</b>", stateName);
-               if (stateMgr.getStateType().isCompleted()) {
+               if (workItem.getCurrentStateType().isCompleted()) {
                   stateName = String.format("%s - on <b>%s</b> - by <b>%s</b>", stateName,
                      DateUtil.getMMDDYYHHMM(workItem.getCompletedDate()), workItem.getCompletedBy().getName());
-               } else if (stateMgr.getStateType().isCancelled()) {
+               } else if (workItem.getCurrentStateType().isCancelled()) {
                   stateName = String.format("%s - on <b>%s</b> - by <b>%s</b><br/>from <b>%s</b> - reason <b>[%s]</b>",
                      stateName, DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()),
                      workItem.getCancelledBy().getName(), workItem.getCancelledFromState(),

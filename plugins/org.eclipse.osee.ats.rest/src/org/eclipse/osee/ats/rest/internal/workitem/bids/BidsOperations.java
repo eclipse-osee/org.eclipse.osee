@@ -138,7 +138,7 @@ public class BidsOperations {
       jTeamWf.setAtsId(newTeamWf.getAtsId());
       jTeamWf.setName(newTeamWf.getName());
       jTeamWf.setId(newTeamWf.getId());
-      jTeamWf.setStateType(newTeamWf.getStateMgr().getCurrentStateType());
+      jTeamWf.setStateType(newTeamWf.getCurrentStateType());
       jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
    }
 

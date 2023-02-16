@@ -17,8 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -70,6 +72,9 @@ public class AtsStateFactory implements IAtsStateFactory {
 
    @Override
    public void writeToStore(AtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes) {
+      String stateName = workItem.getCurrentStateName();
+      StateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, stateDef.getStateType().name());
       StateManagerStore.writeToStore(asUser, workItem, (StateManager) workItem.getStateMgr(),
          atsApi.getAttributeResolver(), changes, workStateFactory);
    }

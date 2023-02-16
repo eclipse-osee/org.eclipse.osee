@@ -34,7 +34,7 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
 
    @Override
    public boolean isActive() {
-      return getStateMgr().getStateType().isInWork();
+      return getCurrentStateType().isInWork();
    }
 
    @Override

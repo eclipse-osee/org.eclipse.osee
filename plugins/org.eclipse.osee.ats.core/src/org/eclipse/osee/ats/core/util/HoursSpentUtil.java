@@ -36,7 +36,7 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            if (!team.getStateMgr().getStateType().isCancelled()) {
+            if (!team.getCurrentStateType().isCancelled()) {
                hours += getHoursSpentTotal(team, atsApi);
             }
          }
@@ -78,7 +78,7 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            if (!team.getStateMgr().getStateType().isCancelled()) {
+            if (!team.getCurrentStateType().isCancelled()) {
                hours += getHoursSpentStateTotal(team, atsApi);
             }
          }
@@ -109,7 +109,7 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            if (!team.getStateMgr().getStateType().isCancelled()) {
+            if (!team.getCurrentStateType().isCancelled()) {
                hours += getHoursSpentStateReview(team, atsApi);
             }
          }
@@ -153,7 +153,7 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            if (!team.getStateMgr().getStateType().isCancelled()) {
+            if (!team.getCurrentStateType().isCancelled()) {
                hours += getHoursSpentSMAState(team, atsApi);
             }
          }
@@ -183,7 +183,7 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            if (!team.getStateMgr().getStateType().isCancelled()) {
+            if (!team.getCurrentStateType().isCancelled()) {
                hours += getHoursSpentFromStateTasks(team, atsApi);
             }
          }

@@ -120,7 +120,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
    public static Result areTasksComplete(IAtsTeamWorkflow teamWf, IStateToken state) {
       try {
          for (IAtsTask task : AtsApiService.get().getTaskService().getTask(teamWf)) {
-            if (task.getStateMgr().getStateType().isInWork() && AtsApiService.get().getTaskService().isRelatedToState(
+            if (task.getCurrentStateType().isInWork() && AtsApiService.get().getTaskService().isRelatedToState(
                task, state.getName())) {
                return new Result(false, "Task " + task.getIdString() + " Not Complete");
             }

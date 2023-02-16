@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
@@ -90,12 +89,12 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
          types.add(type);
       }
       for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
-         IAtsStateManager mgr = workItem.getStateMgr();
-         if (mgr.getStateType().isCompleted() && !types.contains(StateType.Completed)) {
+         StateType currentStateType = workItem.getCurrentStateType();
+         if (currentStateType.isCompleted() && !types.contains(StateType.Completed)) {
             items.remove(workItem);
-         } else if (mgr.getStateType().isCancelled() && !types.contains(StateType.Cancelled)) {
+         } else if (currentStateType.isCancelled() && !types.contains(StateType.Cancelled)) {
             items.remove(workItem);
-         } else if (mgr.getStateType().isInWork() && !types.contains(StateType.Working)) {
+         } else if (currentStateType.isInWork() && !types.contains(StateType.Working)) {
             items.remove(workItem);
          }
       }

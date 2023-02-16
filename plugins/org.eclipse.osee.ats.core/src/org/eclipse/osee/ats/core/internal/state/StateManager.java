@@ -64,7 +64,6 @@ public class StateManager implements IAtsStateManager {
    private final String instanceId;
    private final IAtsLogFactory logFactory;
    private final AtsApi atsApi;
-   private StateType stateType;
 
    public StateManager(IAtsWorkItem workItem, IAtsLogFactory logFactory, AtsApi atsApi) {
       this.workItem = workItem;
@@ -74,10 +73,6 @@ public class StateManager implements IAtsStateManager {
       this.instanceId = Lib.generateArtifactIdAsInt().toString();
    }
 
-   public void setStateType(StateType stateType) {
-      this.stateType = stateType;
-   }
-
    @Override
    public String getCurrentStateNameInternal() {
       return currentStateName;
@@ -85,12 +80,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public IStateToken getCurrentState() {
-      return new SimpleTeamState(getCurrentStateNameInternal(), getCurrentStateType());
-   }
-
-   @Override
-   public StateType getCurrentStateType() {
-      return stateType;
+      return new SimpleTeamState(getCurrentStateNameInternal(), workItem.getCurrentStateType());
    }
 
    @Override
@@ -177,11 +167,6 @@ public class StateManager implements IAtsStateManager {
          changed = true;
       }
       return changed;
-   }
-
-   @Override
-   public StateType getStateType() {
-      return stateType;
    }
 
    @Override
@@ -293,7 +278,6 @@ public class StateManager implements IAtsStateManager {
       createState(toState);
       setAssignees(toState.getName(), toAssignees);
       setCurrentStateName(toState.getName());
-      stateType = toState.getStateType();
       setDirty(true);
    }
 

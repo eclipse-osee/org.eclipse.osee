@@ -56,7 +56,7 @@ public class AssigneeColumn extends AbstractServicesColumn {
          List<AtsUser> pocs = new ArrayList<>();
          List<AtsUser> implementers = new ArrayList<>();
          for (IAtsWorkItem workItem : ((Action) atsObject).getTeamWorkflows()) {
-            StateType stateType = workItem.getStateMgr().getStateType();
+            StateType stateType = workItem.getCurrentStateType();
             if (stateType != null) {
                if (stateType.isCompletedOrCancelled()) {
                   for (AtsUser user : workItem.getImplementers()) {
@@ -79,7 +79,7 @@ public class AssigneeColumn extends AbstractServicesColumn {
             pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ", implementers) + ")");
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         StateType stateType = workItem.getStateMgr().getStateType();
+         StateType stateType = workItem.getCurrentStateType();
          if (stateType != null) {
             if (stateType.isCompletedOrCancelled()) {
                String implementers = getImplementersStringProvider().getImplementersStr(workItem);
