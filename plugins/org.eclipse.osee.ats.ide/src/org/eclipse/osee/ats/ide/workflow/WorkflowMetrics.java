@@ -24,8 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.ide.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -119,10 +117,10 @@ public class WorkflowMetrics {
       for (AbstractWorkflowArtifact team : awas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
          estHours += EstimatedHoursUtil.getEstimatedHours(team);
-         hrsSpent += HoursSpentUtil.getHoursSpentTotal(team, AtsApiService.get());
+         hrsSpent += AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(team);
          manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete +=
-            PercentCompleteTotalUtil.getPercentCompleteTotal(team, AtsApiService.get());
+            AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(team);
          String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.Points, null);
          points += Strings.isNumeric(ptsStr) ? Integer.valueOf(ptsStr) : 0;
          pointsNumeric += team.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
@@ -149,7 +147,8 @@ public class WorkflowMetrics {
          hrsRemainFromEstimates, hrsSpent, points, pointsNumeric,
          manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : "",
          version != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ", version.getName(),
-            estimatedReleaseDate == null ? Widgets.NOT_SET : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
+            estimatedReleaseDate == null ? Widgets.NOT_SET : DateUtil.getMMDDYY(estimatedReleaseDate),
+            daysTillRel) : "");
    }
 
    public HashCollectionSet<AtsUser, Artifact> getUserToCompletedSmas() {

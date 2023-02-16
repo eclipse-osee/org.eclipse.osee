@@ -26,24 +26,11 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsStateManager extends WorkStateFactory {
+public interface IAtsStateManager {
 
    IStateToken getCurrentState();
 
-   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, AtsUser user);
-
-   void setMetrics(double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date);
-
-   /**
-    * Set metrics and log if changed
-    *
-    * @param changes JavaTip
-    */
-   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date);
-
    void addAssignees(String stateName, Collection<? extends AtsUser> assignees);
-
-   String getHoursSpentStr(String stateName);
 
    void setAssignee(AtsUser assignee);
 
@@ -62,8 +49,6 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    void addAssignee(String stateName, AtsUser assignee);
 
-   void addState(String stateName, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete);
-
    boolean isDirty();
 
    List<AtsUser> getAssignees(String stateName);
@@ -80,15 +65,7 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    void setAssignees(List<? extends AtsUser> assignees);
 
-   void createState(String stateName);
-
-   void setPercentComplete(String stateName, int percentComplete);
-
-   void setHoursSpent(String stateName, double hoursSpent);
-
-   double getHoursSpent(String stateName);
-
-   int getPercentComplete(String stateName);
+   WorkState createState(String stateName);
 
    List<String> getVisitedStateNames();
 
@@ -124,29 +101,13 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    boolean isStateVisited(String stateName);
 
-   @Override
-   WorkState createStateData(String name, List<? extends AtsUser> assignees);
-
-   @Override
-   WorkState createStateData(String name);
-
-   @Override
-   WorkState createStateData(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete);
-
    void addState(WorkState workState);
-
-   @Override
-   String getId();
 
    IAtsLogItem getStateStartedData(IStateToken state);
 
    IAtsLogItem getStateStartedData(String stateName);
 
    Collection<? extends AtsUser> getAssigneesAdded();
-
-   Integer getPercentCompleteValue();
-
-   void setPercentCompleteValue(Integer percentComplete);
 
    WorkState getState(String string);
 

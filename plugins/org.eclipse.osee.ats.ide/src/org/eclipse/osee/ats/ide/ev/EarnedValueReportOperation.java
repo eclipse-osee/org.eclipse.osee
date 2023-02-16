@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ColumnAdapter;
 import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.ats.api.util.IColumn;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -81,9 +80,8 @@ public class EarnedValueReportOperation extends AbstractOperation {
             result.setValue(Related_Action_Id, getActionId(art));
             result.setValue(Related_Action_Name, art.getName());
             result.setValue(Related_Action_Type, awa.getParentTeamWorkflow().getTeamDefinition().getName());
-            result.setValue(Related_Action_Percent,
-               String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) art,
-                  AtsApiService.get())));
+            result.setValue(Related_Action_Percent, String.valueOf(
+               AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal((IAtsWorkItem) art)));
             result.setValue(Related_Action_ArtId, art.getIdString());
          }
       }

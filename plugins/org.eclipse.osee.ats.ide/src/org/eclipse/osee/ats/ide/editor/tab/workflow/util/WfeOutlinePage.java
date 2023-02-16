@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -171,8 +170,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.add(((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
             items.addAll(((WrappedLayout) element).getStateItems());
-         } else if (element instanceof WrappedPercentWeight) {
-            getChildrenFromWrappedPercentDefinition((WrappedPercentWeight) element, items);
          } else if (element instanceof WorkDefinition) {
             getChildrenFromWorkDefinition((WorkDefinition) element, items);
          } else if (element instanceof StateDefinition) {
@@ -257,12 +254,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedTransitions) {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
-            try {
-               return AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(
-                  ((WrappedPercentWeight) element).getWorkDef());
-            } catch (OseeStateException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
             return false;
          } else if (element instanceof WrappedChangeTypes) {
             return !((WrappedChangeTypes) element).getChangeTypes().isEmpty();
@@ -288,17 +279,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          }
          return false;
-      }
-
-      private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         try {
-            for (StateDefinition stateDef : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
-               weightDef.getWorkDef())) {
-               items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
-            }
-         } catch (OseeStateException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
       }
 
       private void getChildrenFromWidgetDefinition(Object element, List<Object> items) {
@@ -579,11 +559,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       @Override
       public String toString() {
          try {
-            if (AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(workDef)) {
-               return "Total Percent Weighting";
-            } else {
-               return "Total Percent Weighting: Single Percent";
-            }
+            return "Total Percent Weighting: ";
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

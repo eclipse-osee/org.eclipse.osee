@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -433,8 +434,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          }
       }
       changes.setSoleAttributeValue(decRev, AtsAttributeTypes.EstimatedHours, estimateHours);
-      decRev.getStateMgr().updateMetrics(decRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
-         atsApi.getUserService().getCurrentUser());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(decRev, decRev.getStateDefinition(),
+         stateHoursSpent, statePercentComplete, true, atsApi.getUserService().getCurrentUser(), changes);
       return Result.TrueResult;
    }
 
@@ -459,8 +460,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       }
       changes.setSoleAttributeValue(decRev, AtsAttributeTypes.Decision, decision ? "Yes" : "No");
 
-      decRev.getStateMgr().updateMetrics(decRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
-         atsApi.getUserService().getCurrentUser());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(decRev, decRev.getStateDefinition(),
+         stateHoursSpent, statePercentComplete, true, atsApi.getUserService().getCurrentUser(), changes);
       return Result.TrueResult;
    }
 
@@ -533,8 +534,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       }
       changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.Location, reviewMaterials);
       changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
-      peerRev.getStateMgr().updateMetrics(peerRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
-         atsApi.getUserService().getCurrentUser());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(peerRev, peerRev.getStateDefinition(),
+         stateHoursSpent, statePercentComplete, true, atsApi.getUserService().getCurrentUser(), changes);
       return Result.TrueResult;
    }
 
@@ -554,8 +555,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          }
          defectManager.saveToArtifact(peerRev, changes);
       }
-      peerRev.getStateMgr().updateMetrics(peerRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
-         atsApi.getUserService().getCurrentUser());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(peerRev, peerRev.getStateDefinition(),
+         stateHoursSpent, statePercentComplete, true, atsApi.getUserService().getCurrentUser(), changes);
       return Result.TrueResult;
    }
 

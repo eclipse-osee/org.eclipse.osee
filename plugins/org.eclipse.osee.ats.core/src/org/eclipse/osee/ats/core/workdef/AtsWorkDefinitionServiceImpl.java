@@ -401,16 +401,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public boolean isStateWeightingEnabled(WorkDefinition workDef) {
-      for (StateDefinition stateDef : workDef.getStates()) {
-         if (stateDef.getStateWeight() != 0) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public StateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) {
       return getWorkDefinition(workItem).getStateByName(stateName);
    }

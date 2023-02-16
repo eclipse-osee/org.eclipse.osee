@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -97,7 +96,7 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
          Collection<IAtsAbstractReview> reviews =
             AtsApiService.get().getReviewService().getReviews((TeamWorkFlowArtifact) artifact);
          for (IAtsAbstractReview review : reviews) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(review, AtsApiService.get());
+            spent += AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(review);
          }
          if (spent == 0) {
             return 0;

@@ -227,7 +227,7 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<IAtsTransitionHook> getTransitionListeners() {
+         public Collection<IAtsTransitionHook> getTransitionHooks() {
             try {
                Set<IAtsTransitionHook> listeners = new HashSet<>();
                listeners.addAll(AtsApiService.get().getWorkItemService().getTransitionHooks());

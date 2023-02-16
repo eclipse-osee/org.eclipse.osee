@@ -38,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * Shows state information for any state that is no-longer defined by Work Definition.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WfeUndefinedStateSection extends SectionPart {
@@ -58,8 +58,8 @@ public class WfeUndefinedStateSection extends SectionPart {
       super.initialize(form);
       Section section = getSection();
       try {
-         section.setText("Un-Defined State - " + WfeWorkflowSection.getCurrentStateTitle(editor.getWorkItem(), stateName,
-            false, false));
+         section.setText("Un-Defined State - " + WfeWorkflowSection.getCurrentStateTitle(editor.getWorkItem(),
+            stateName, false, false));
       } catch (OseeCoreException ex) {
          section.setText(stateName + " - Exception:" + ex.getLocalizedMessage());
       }
@@ -113,8 +113,8 @@ public class WfeUndefinedStateSection extends SectionPart {
 
       String infoStr = "";
       try {
-         infoStr = String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", stateName,
-            awa.getStateMgr().getAssigneesStr(stateName, 100), awa.getStateMgr().getHoursSpent(stateName));
+         infoStr =
+            String.format("Name: [%s] Assignees: [%s]", stateName, awa.getStateMgr().getAssigneesStr(stateName, 100));
       } catch (OseeCoreException ex) {
          infoStr = "Exception processing state data (see log for details) " + ex.getLocalizedMessage();
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

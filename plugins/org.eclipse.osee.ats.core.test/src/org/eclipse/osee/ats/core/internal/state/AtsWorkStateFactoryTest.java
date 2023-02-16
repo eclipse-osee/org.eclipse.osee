@@ -59,18 +59,6 @@ public class AtsWorkStateFactoryTest {
 
       xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
       Assert.assertEquals("Implement;<joe><qwer>;;", xml);
-
-      when(stateMgr.getHoursSpent("Implement")).thenReturn(1.3);
-      when(stateMgr.getHoursSpentStr("Implement")).thenReturn("1.3");
-      xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<joe><qwer>;1.3;", xml);
-
-      when(stateMgr.getPercentComplete("Implement")).thenReturn(23);
-      xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<joe><qwer>;1.3;23", xml);
-      when(stateMgr.getPercentComplete("Implement")).thenReturn(0);
-      xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<joe><qwer>;1.3;", xml);
    }
 
    @Test

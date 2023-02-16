@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -95,12 +94,7 @@ public class TransitionStatusDialog extends MessageDialog {
                AbstractWorkflowArtifact awa =
                   (AbstractWorkflowArtifact) AtsApiService.get().getQueryService().getArtifact(
                      data.getWorkItems().iterator().next());
-               if (!AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(
-                  awa.getWorkDefinition())) {
-                  currentPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
-               } else {
-                  currentPercent = awa.getStateMgr().getPercentComplete(awa.getCurrentStateName());
-               }
+               currentPercent = AtsApiService.get().getWorkItemMetricsService().getPercentComplete(awa);
                data.setPercent(currentPercent);
                percent.set(currentPercent);
                percentSet = true;

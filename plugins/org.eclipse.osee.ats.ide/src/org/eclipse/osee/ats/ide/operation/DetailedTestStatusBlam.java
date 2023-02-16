@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.XVersionList;
@@ -640,9 +639,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
                reqTaskMap.put(requirementName, legacyId, requirementStatus);
             }
 
-            int percentComplete = PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsApiService.get());
-            requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
-               task.getCurrentStateName());
+            int percentComplete = AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(task);
+            requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1), task.getCurrentStateName());
             requirementStatus.setTestPocs(task.getImplementers());
          }
       }

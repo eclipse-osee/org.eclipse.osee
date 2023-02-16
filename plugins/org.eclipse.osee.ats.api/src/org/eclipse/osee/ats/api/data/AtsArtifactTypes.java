@@ -201,6 +201,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(EstimatedHours)
       .zeroOrOne(EstimatedReleaseDate)
       .zeroOrOne(ExternalReference)
+      .zeroOrOne(HoursSpent)
       .zeroOrOne(Log)
       .zeroOrOne(Numeric1)
       .zeroOrOne(Numeric2)

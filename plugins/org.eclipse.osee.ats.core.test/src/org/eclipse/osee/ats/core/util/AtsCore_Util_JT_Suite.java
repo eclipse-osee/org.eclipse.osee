@@ -21,8 +21,7 @@ import org.junit.runners.Suite;
    AtsCoreServiceImplTest.class,
    RecentlyVisitedItemsTest.class,
    AtsObjectsTest.class,
-   AtsUserGroupTest.class,
-   HoursSpentUtilTest.class})
+   AtsUserGroupTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

@@ -24,8 +24,6 @@ import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeStateNotesHeader;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StateHoursSpentXWidget;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -37,7 +35,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -173,10 +170,6 @@ public class WfeWorkflowSection extends SectionPart {
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
 
-      if (sma.getWorkDefinition().isShowStateMetrics()) {
-         createMetricsHeader(workComp);
-      }
-
       // Add any dynamic XWidgets declared for page by IAtsWorkItemHook extensions
       for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getName())) {
@@ -261,26 +254,6 @@ public class WfeWorkflowSection extends SectionPart {
       xWidget = new XLabelValue("Completed from State", sma.getCompletedFromState());
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-   }
-
-   private void createMetricsHeader(Composite parent) {
-      if (!statePage.getStateType().isCompletedOrCancelledState()) {
-         Composite comp = new Composite(parent, SWT.None);
-         GridLayout layout = ALayout.getZeroMarginLayout(4, false);
-         layout.marginLeft = 2;
-         comp.setLayout(layout);
-         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         try {
-            if (AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(sma.getWorkDefinition())) {
-               allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
-                  isCurrentState(), editor));
-            }
-         } catch (OseeStateException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-         allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
-            isCurrentState(), editor));
-      }
    }
 
    private void createReviewFooter(Composite parent, IStateToken forState) {

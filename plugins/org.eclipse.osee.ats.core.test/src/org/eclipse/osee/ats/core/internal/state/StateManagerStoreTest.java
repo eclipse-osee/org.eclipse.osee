@@ -88,7 +88,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testWriteToStore() {
-      StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
+      StateManager stateMgr = new StateManager(workItem, atsApi);
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
       Assert.assertEquals("Analyze", stateMgr.getCurrentStateNameInternal());
@@ -102,7 +102,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testLoad() {
-      StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
+      StateManager stateMgr = new StateManager(workItem, atsApi);
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
@@ -120,7 +120,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testPostPersistNotifyReset() {
-      StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
+      StateManager stateMgr = new StateManager(workItem, atsApi);
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
@@ -141,7 +141,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testGetPostPersistExecutionListener() {
-      StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
+      StateManager stateMgr = new StateManager(workItem, atsApi);
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);

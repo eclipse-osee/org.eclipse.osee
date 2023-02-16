@@ -297,7 +297,7 @@ public class WfeTransitionHeader extends Composite {
          }
 
          @Override
-         public Collection<IAtsTransitionHook> getTransitionListeners() {
+         public Collection<IAtsTransitionHook> getTransitionHooks() {
             try {
                return AtsApiService.get().getWorkItemService().getTransitionHooks();
             } catch (OseeCoreException ex) {

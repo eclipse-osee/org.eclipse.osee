@@ -19,12 +19,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.column.DeadlineColumn;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
@@ -147,8 +144,8 @@ public class WfePrint extends Action {
                art.getName(),
                art.getCurrentStateName().replaceAll("(Task|State)", ""),
                AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, art),
-               PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsApiService.get()) + "",
-               HoursSpentUtil.getHoursSpentTotal(art, AtsApiService.get()) + "",
+               AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(art) + "",
+               AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(art) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getAtsId()}));
          }
@@ -180,7 +177,7 @@ public class WfePrint extends Action {
             if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
                statePage.generateLayoutDatas();
                rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? activeColor : normalColor, notesSb.toString(),
-                  getStateHoursSpentHtml(statePage) + getReviewData(sma, statePage)));
+                  getReviewData(sma, statePage)));
                rd.addRaw(AHTML.newline());
             }
          }
@@ -192,11 +189,6 @@ public class WfePrint extends Action {
          return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
       }
       return "";
-   }
-
-   private String getStateHoursSpentHtml(StateXWidgetPage statePage) {
-      return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getName())) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

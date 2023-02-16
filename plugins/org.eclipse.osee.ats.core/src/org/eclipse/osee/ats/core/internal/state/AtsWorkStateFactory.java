@@ -47,16 +47,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
       StringBuffer sb = new StringBuffer(stateName);
       sb.append(";");
       sb.append(getStorageString(stateMgr.getAssignees(stateName)));
-      sb.append(";");
-      double hoursSpent = stateMgr.getHoursSpent(stateName);
-      if (hoursSpent > 0) {
-         sb.append(stateMgr.getHoursSpentStr(stateName));
-      }
-      sb.append(";");
-      int percentComplete = stateMgr.getPercentComplete(stateName);
-      if (percentComplete > 0) {
-         sb.append(percentComplete);
-      }
+      sb.append(";;");
       return sb.toString();
    }
 

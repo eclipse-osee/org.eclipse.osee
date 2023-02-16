@@ -14,8 +14,13 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 
 import java.util.Arrays;
+import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -42,13 +47,24 @@ public class TaskTestUtil {
       if (taskArt.getStateMgr().isUnAssigned()) {
          taskArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
       }
-      taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true,
-         AtsApiService.get().getUserService().getCurrentUser());
       if (estimatedHours > 0.0) {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
       }
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
          TaskStates.Completed.getName(), null, null, null, AtsApiService.get());
+      helper.addTransitionHook(new IAtsTransitionHook() {
+
+         @Override
+         public String getDescription() {
+            return "";
+         }
+
+         @Override
+         public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+            AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, taskArt.getStateDefinition(),
+               additionalHours, 100, true, AtsApiService.get().getUserService().getCurrentUser(), changes);
+         }
+      });
       TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
 
       if (results.isEmpty()) {
@@ -61,17 +77,28 @@ public class TaskTestUtil {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
-      TransitionHelper helper = new TransitionHelper("Transition to InWork", Arrays.asList(taskArt),
-         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, AtsApiService.get(),
-         TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper =
+         new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
+            Arrays.asList(toUser), null, null, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
+      helper.addTransitionHook(new IAtsTransitionHook() {
+
+         @Override
+         public String getDescription() {
+            return "";
+         }
+
+         @Override
+         public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+            if (AtsApiService.get().getWorkItemMetricsService().getPercentComplete(
+               taskArt) != percentComplete || additionalHours > 0) {
+               AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, fromState, additionalHours,
+                  percentComplete, true, AtsApiService.get().getUserService().getCurrentUser(), changes);
+            }
+         }
+      });
       TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
-      }
-      if (taskArt.getStateMgr().getPercentComplete(
-         taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
-         taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true,
-            AtsApiService.get().getUserService().getCurrentUser());
       }
       return Result.TrueResult;
    }

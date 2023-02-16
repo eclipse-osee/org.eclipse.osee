@@ -60,7 +60,7 @@ public class AtsStateFactory implements IAtsStateFactory {
          idToTransactionId.put(workItem, workItemTransaction);
       }
       if (stateMgr == null || !sameTransaction) {
-         stateMgr = new StateManager(workItem, logFactory, atsApi);
+         stateMgr = new StateManager(workItem, atsApi);
          idToStateManager.put(workItem, stateMgr);
          StateManagerStore.load(workItem, stateMgr, atsApi.getAttributeResolver(), workStateFactory);
       }

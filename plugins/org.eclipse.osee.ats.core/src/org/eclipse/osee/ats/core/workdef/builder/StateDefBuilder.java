@@ -86,11 +86,6 @@ public class StateDefBuilder {
       return this;
    }
 
-   public StateDefBuilder andStateWeight(int percent) {
-      state.setStateWeight(percent);
-      return this;
-   }
-
    public StateDefBuilder andToStates(StateToken... stateTokens) {
       if (state.getStateType().isCompletedOrCancelled() && !hasOption(
          WorkDefBuilderOption.OVERRIDE_COMP_CANC_TO_STATE_CHECK)) {

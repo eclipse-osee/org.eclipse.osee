@@ -53,8 +53,6 @@ public interface IAtsWorkDefinitionService {
 
    WorkDefinition computedWorkDefinitionForTaskNotYetCreated(IAtsTeamWorkflow teamWf);
 
-   boolean isStateWeightingEnabled(WorkDefinition workDef);
-
    Collection<String> getStateNames(WorkDefinition workDef);
 
    List<StateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef);

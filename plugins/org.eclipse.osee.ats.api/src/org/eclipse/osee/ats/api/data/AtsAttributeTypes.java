@@ -112,6 +112,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", MediaType.TEXT_PLAIN, "Reason for action being held");
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDouble HoursSpent = ats.createDouble(2676491969719166786L, "ats.Hours Spent", MediaType.TEXT_PLAIN, "");
    AttributeTypeString HowToReproduceProblem = ats.createString(836807199L, "ats.How to reproduce the problem", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", MediaType.TEXT_PLAIN, "Is Direct Commercial Sale");
    AttributeTypeString ImpactToMissionOrCrew = ats.createString(1442232314L, "ats.Impact to Mission or Crew", MediaType.TEXT_PLAIN, "");

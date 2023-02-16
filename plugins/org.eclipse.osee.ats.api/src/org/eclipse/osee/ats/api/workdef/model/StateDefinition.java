@@ -38,7 +38,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
    private WorkDefinition workDefinition;
-   private int stateWeight = 0;
    private Integer recommendedPercentComplete = null;
    private StateColor color = null;
    private final List<IAtsTransitionHook> transitionListeners = new ArrayList<>();
@@ -133,21 +132,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    public List<IAtsPeerReviewDefinition> getPeerReviews() {
       return peerReviews;
-   }
-
-   public int getStateWeight() {
-      return stateWeight;
-   }
-
-   /**
-    * Set how much (of 100%) this state's percent complete will contribute to the full percent complete of work
-    * definitions.
-    *
-    * @param percentWeight int value where all stateWeights in workdefinition == 100
-    */
-
-   public void setStateWeight(int percentWeight) {
-      this.stateWeight = percentWeight;
    }
 
    public void setRecommendedPercentComplete(int recommendedPercentComplete) {

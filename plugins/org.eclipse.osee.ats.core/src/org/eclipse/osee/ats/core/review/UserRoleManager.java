@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -247,21 +248,21 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
             updatedStoredUserRoles)) {
             changes.addAttribute(peerRev, AtsAttributeTypes.Role, AXml.addTagData(ROLE_ITEM_TAG, newRole.toXml()));
          }
-         rollupHoursSpentToReviewState(peerRev);
+         rollupHoursSpentToReviewState(peerRev, changes);
          validateUserRolesCompleted(storedUserRoles, userRoles, changes);
       } catch (OseeCoreException ex) {
          atsApi.getLogger().error(ex, "Can't create ats review role document");
       }
    }
 
-   private void rollupHoursSpentToReviewState(IAtsPeerToPeerReview peerRev) {
+   private void rollupHoursSpentToReviewState(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes) {
       double hoursSpent = 0.0;
       for (UserRole role : getUserRoles()) {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
-      peerRev.getStateMgr().setMetrics(peerRev.getStateDefinition(), hoursSpent,
-         peerRev.getStateMgr().getPercentComplete(peerRev.getCurrentStateName()), true,
-         atsApi.getUserService().getCurrentUser(), new Date());
+      AtsApiService.get().getWorkItemMetricsService().setMetrics(peerRev, hoursSpent,
+         AtsApiService.get().getWorkItemMetricsService().getPercentComplete(peerRev), true,
+         atsApi.getUserService().getCurrentUser(), new Date(), changes);
    }
 
    private void validateUserRolesCompleted(List<UserRole> currentUserRoles, List<UserRole> newUserRoles, IAtsChangeSet changes) {

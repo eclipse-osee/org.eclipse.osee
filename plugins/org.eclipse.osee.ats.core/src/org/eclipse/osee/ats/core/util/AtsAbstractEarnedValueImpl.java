@@ -215,7 +215,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       if (est == 0) {
          return getEstimatedHoursFromArtifact(workItem);
       }
-      return est - est * PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) / 100.0;
+      return est - est * atsApi.getWorkItemMetricsService().getPercentCompleteTotal(workItem) / 100.0;
    }
 
    @Override
@@ -262,7 +262,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       if (workItem.isTeamWorkflow()) {
          Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem, relatedToState);
          for (IAtsTask task : tasks) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, atsApi);
+            spent += atsApi.getWorkItemMetricsService().getPercentCompleteTotal(task);
          }
          if (spent > 0) {
             result = spent / tasks.size();
@@ -277,7 +277,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       if (workItem.isTeamWorkflow()) {
          Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem);
          for (IAtsTask task : tasks) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, atsApi);
+            spent += atsApi.getWorkItemMetricsService().getPercentCompleteTotal(task);
          }
          if (spent > 0) {
             result = spent / tasks.size();
@@ -298,7 +298,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          Collection<IAtsAbstractReview> reviews =
             atsApi.getReviewService().getReviews((IAtsTeamWorkflow) workItem, relatedToState);
          for (IAtsAbstractReview review : reviews) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(review, atsApi);
+            spent += atsApi.getWorkItemMetricsService().getPercentCompleteTotal(review);
          }
          if (spent == 0) {
             return 0;

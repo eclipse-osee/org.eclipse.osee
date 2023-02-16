@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -82,8 +81,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
       }
       try {
          setEditable(isCurrentState && !sma.isReadOnly());
-         StringBuffer sb = new StringBuffer(
-            String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(page.getName())));
+         StringBuffer sb = new StringBuffer();
          boolean breakoutNeeded = false;
          if (sma instanceof TeamWorkFlowArtifact && AtsApiService.get().getTaskService().hasTasks(
             (TeamWorkFlowArtifact) sma)) {
@@ -100,10 +98,10 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
-            return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteSMAStateTotal(sma, page,
-               AtsApiService.get()));
+            return String.valueOf(AtsApiService.get().getWorkItemMetricsService().getPercentCompleteSMAStateTotal(sma,
+               page, AtsApiService.get()));
          } else {
-            return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
+            return String.valueOf(AtsApiService.get().getWorkItemMetricsService().getPercentComplete(sma));
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

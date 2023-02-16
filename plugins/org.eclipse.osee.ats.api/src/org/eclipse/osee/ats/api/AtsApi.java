@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemMetricsService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -195,6 +196,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    IAtsServerEndpointProvider getServerEndpoints();
 
    IAtsAccessService getAtsAccessService();
+
+   IAtsWorkItemMetricsService getWorkItemMetricsService();
 
    @Override
    IAccessControlService getAccessControlService();

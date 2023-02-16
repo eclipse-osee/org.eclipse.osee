@@ -24,8 +24,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
@@ -162,9 +160,9 @@ public class WfePromptChangeStatusTest {
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
          assertEquals("Percent wrong for " + awa.getAtsId(),
-            PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsApiService.get()), totalPercent);
+            AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(awa), totalPercent);
          assertEquals("Hours Spent wrong for " + awa.getAtsId(),
-            HoursSpentUtil.getHoursSpentTotal(awa, AtsApiService.get()), hoursSpent, 0.0);
+            AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(awa), hoursSpent, 0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             WorkState state = AtsApiService.get().getWorkStateFactory().fromStoreStr(xml);

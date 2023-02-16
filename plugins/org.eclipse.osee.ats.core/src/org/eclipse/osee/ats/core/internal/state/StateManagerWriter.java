@@ -45,6 +45,7 @@ public class StateManagerWriter {
 
       String currentStateName = stateMgr.getCurrentStateNameInternal();
 
+      // Uncomment when attrs make it through F18 / AMS releases
       //      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStateName, changes);
       //      List<Object> assigneeIds = new ArrayList<>();
       //      for (AtsUser user : stateMgr.getAssignees()) {
@@ -59,11 +60,6 @@ public class StateManagerWriter {
 
       writeStatesToStore(changes);
 
-      Integer percentCompleteValue = stateMgr.getPercentCompleteValue();
-      if (percentCompleteValue == null) {
-         percentCompleteValue = 0;
-      }
-      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, percentCompleteValue, changes);
    }
 
    private void writeStatesToStore(IAtsChangeSet changes) {
