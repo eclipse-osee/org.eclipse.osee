@@ -262,7 +262,7 @@ public class TransitionManager implements IExecuteListener {
 
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, StateDefinition fromStateDef, StateDefinition toStateDef) {
       // Check extension points for valid transition
-      for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
+      for (IAtsTransitionHook listener : helper.getTransitionHooks()) {
          try {
             listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
                helper.getTransitionUser());
@@ -279,7 +279,7 @@ public class TransitionManager implements IExecuteListener {
 
       // Check again in case first check made changes that would now keep transition from happening
       if (results.isEmpty()) {
-         for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
+         for (IAtsTransitionHook listener : helper.getTransitionHooks()) {
             try {
                listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
                   AtsApiService.get().getUserService().getCurrentUser());
@@ -330,8 +330,7 @@ public class TransitionManager implements IExecuteListener {
                      logWorkflowCompletedEvent(workItem, fromState, toState, transitionDate, transitionUser, changes);
                   } else {
                      updatePercentComplete(workItem, toState, changes);
-                     logStateCompletedEvent(workItem, workItem.getCurrentStateName(), transitionDate,
-                        transitionUser);
+                     logStateCompletedEvent(workItem, workItem.getCurrentStateName(), transitionDate, transitionUser);
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);
                   // Get transition to assignees, do some checking to ensure someone is assigneed and UnAssigned
@@ -361,7 +360,7 @@ public class TransitionManager implements IExecuteListener {
                   }
 
                   // Notify extension points of transition
-                  for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
+                  for (IAtsTransitionHook listener : helper.getTransitionHooks()) {
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getTransitionUser(),
                         changes);
                   }
@@ -570,30 +569,29 @@ public class TransitionManager implements IExecuteListener {
 
    private void updatePercentComplete(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes) {
       IAtsStateManager stateMgr = workItem.getStateMgr();
-      Integer percent = stateMgr.getPercentCompleteValue();
+      Integer percent = AtsApiService.get().getWorkItemMetricsService().getPercentComplete(workItem);
       if (percent == null) {
          percent = 0;
       }
       if (toState.getStateType().isWorkingState()) {
          Integer recPercent = toState.getRecommendedPercentComplete();
          if (recPercent != null && recPercent > 0) {
-            stateMgr.setPercentCompleteValue(recPercent);
+            AtsApiService.get().getWorkItemMetricsService().setPercentComplete(workItem, recPercent, changes);
          }
          changes.add(workItem);
       }
    }
 
    private static void validateUpdatePercentComplete(IAtsWorkItem workItem, StateDefinition toState, IAtsChangeSet changes) {
-      IAtsStateManager stateMgr = workItem.getStateMgr();
-      Integer percent = stateMgr.getPercentCompleteValue();
+      Integer percent = AtsApiService.get().getWorkItemMetricsService().getPercentComplete(workItem);
       if (percent == null) {
          percent = 0;
       }
       if (toState.getStateType().isCompletedOrCancelledState() && percent != 100) {
-         stateMgr.setPercentCompleteValue(100);
+         AtsApiService.get().getWorkItemMetricsService().setPercentComplete(workItem, 100, changes);
          changes.add(workItem);
       } else if (toState.getStateType().isWorkingState() && percent == 100) {
-         stateMgr.setPercentCompleteValue(0);
+         AtsApiService.get().getWorkItemMetricsService().setPercentComplete(workItem, 0, changes);
          changes.add(workItem);
       }
    }
@@ -685,7 +683,7 @@ public class TransitionManager implements IExecuteListener {
    @Override
    public void changesStored(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
-      for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
+      for (IAtsTransitionHook listener : helper.getTransitionHooks()) {
          listener.transitionPersisted(helper.getWorkItems(), workItemFromStateMap, helper.getToStateName(),
             helper.getTransitionUser());
       }

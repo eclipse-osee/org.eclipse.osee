@@ -13,17 +13,12 @@
 
 package org.eclipse.osee.ats.core.internal.state;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -39,7 +34,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -62,7 +56,7 @@ public class StateManagerTest extends AbstractUserTest {
       MockitoAnnotations.initMocks(this);
 
       MockWorkItem workItem = new MockWorkItem("mock work item", "Endorse", workDef, StateType.Working);
-      stateMgr = new StateManager(workItem, logFactory, atsApi);
+      stateMgr = new StateManager(workItem, atsApi);
 
       when(workDef.getStateByName("endorse")).thenReturn(endorseStateDef);
       when(endorseStateDef.getStateType()).thenReturn(StateType.Working);
@@ -192,15 +186,13 @@ public class StateManagerTest extends AbstractUserTest {
    @Test
    public void testAddState_exception() {
       stateMgr.addState(WorkState.create("endorse"));
-
       stateMgr.addState(WorkState.create("endorse"), false);
    }
 
    @Test
    public void testAddState_exception2() {
       stateMgr.addState(WorkState.create("endorse"));
-
-      stateMgr.addState("endorse", new LinkedList<AtsUser>(), 34, 23, false);
+      stateMgr.addState("endorse", new LinkedList<AtsUser>(), false);
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -343,12 +335,10 @@ public class StateManagerTest extends AbstractUserTest {
 
    @Test
    public void testAddStateStringListOfQextendsAtsUserDoubleInt() {
-      stateMgr.addState("endorse", Arrays.asList(joe), 4.2, 4);
+      stateMgr.addState("endorse", Arrays.asList(joe));
       Assert.assertTrue(stateMgr.isStateVisited("endorse"));
       Assert.assertEquals(1, stateMgr.getVisitedStateNames().size());
       Assert.assertEquals(1, stateMgr.getAssignees("endorse").size());
-      Assert.assertEquals(4.2, stateMgr.getHoursSpent("endorse"), 0.0);
-      Assert.assertEquals(4, stateMgr.getPercentComplete("endorse"));
    }
 
    @Test(expected = OseeStateException.class)
@@ -362,87 +352,11 @@ public class StateManagerTest extends AbstractUserTest {
       Assert.assertTrue(stateMgr.isStateVisited("endorse"));
       Assert.assertEquals(1, stateMgr.getVisitedStateNames().size());
       Assert.assertEquals(1, stateMgr.getAssignees("endorse").size());
-      Assert.assertEquals(0.0, stateMgr.getHoursSpent("endorse"), 0.0);
-      Assert.assertEquals(0, stateMgr.getPercentComplete("endorse"));
-   }
-
-   @Test
-   public void getPercentComplete() {
-      Assert.assertEquals(0, stateMgr.getPercentComplete("endorse"));
-   }
-
-   @Test(expected = OseeStateException.class)
-   public void setPercentComplete_exception() {
-      stateMgr.setPercentComplete("endorse", 34);
-   }
-
-   @Test
-   public void setPercentComplete() {
-      stateMgr.addState(WorkState.create("endorse"));
-      stateMgr.setCurrentStateName("endorse");
-      stateMgr.setPercentComplete("endorse", 34);
-
-      Assert.assertEquals(34, stateMgr.getPercentComplete("endorse"));
-   }
-
-   @Test
-   public void getHoursSpent() {
-      Assert.assertEquals(0.0, stateMgr.getHoursSpent("endorse"), 0.0);
-   }
-
-   @Test(expected = OseeStateException.class)
-   public void setHoursSpent_exception() {
-      stateMgr.setHoursSpent("endorse", 8.0);
-   }
-
-   @Test
-   public void setHoursSpent() {
-      stateMgr.addState(WorkState.create("endorse"));
-      stateMgr.setCurrentStateName("endorse");
-      stateMgr.setHoursSpent("endorse", 8.0);
-
-      Assert.assertEquals(8.0, stateMgr.getHoursSpent("endorse"), 0.0);
    }
 
    @Test(expected = OseeStateException.class)
    public void removeAssignee_exception() {
       stateMgr.removeAssignee(joe);
-   }
-
-   @Test
-   public void testIsHoursEqual() {
-      IAtsWorkItem awa = Mockito.mock(IAtsWorkItem.class);
-      StateManager mgr = new StateManager(awa, logFactory, atsApi);
-
-      assertTrue(mgr.isHoursEqual(1.0, 1.0));
-      assertTrue(mgr.isHoursEqual(01.0, 1.0));
-      assertTrue(mgr.isHoursEqual(01.0, 1.000));
-      assertTrue(mgr.isHoursEqual(1.0, 1.001));
-
-      assertFalse(mgr.isHoursEqual(1.0, 1.01));
-      assertFalse(mgr.isHoursEqual(1.0, -1.001));
-      assertFalse(mgr.isHoursEqual(-1.0, 1.01));
-      assertFalse(mgr.isHoursEqual(2, 4));
-   }
-
-   @Test
-   public void testSetMetrics() {
-      IAtsWorkItem awa = mock(IAtsWorkItem.class);
-      StateManager mgr = new StateManager(awa, logFactory, atsApi);
-
-      StateDefinition state = mock(StateDefinition.class);
-      when(state.getName()).thenReturn("Endorse");
-
-      List<AtsUser> assignees = Collections.emptyList();
-      mgr.addState("Endorse", assignees);
-      mgr.setHoursSpent("Endorse", 1.0);
-      mgr.setPercentComplete("Endorse", 46);
-
-      assertFalse(mgr.setMetricsIfChanged(state, 1.0, 46));
-      assertFalse(mgr.setMetricsIfChanged(state, 1.001, 46));
-
-      assertTrue(mgr.setMetricsIfChanged(state, 1.1, 46));
-      assertTrue(mgr.setMetricsIfChanged(state, 1.0, 47));
    }
 
 }

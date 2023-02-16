@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.ats.core.workflow.transition;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -35,6 +37,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
 
    private IAtsChangeSet changes;
    private IAtsWorkItemService workItemService;
+   private final List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
 
    public TransitionHelper(TransitionData transData, IAtsChangeSet changes, AtsApi atsApi) {
       super(atsApi, transData);
@@ -133,9 +136,12 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Collection<IAtsTransitionHook> getTransitionListeners() {
+   public Collection<IAtsTransitionHook> getTransitionHooks() {
       try {
-         return workItemService.getTransitionHooks();
+         List<IAtsTransitionHook> hooks = new ArrayList<>();
+         hooks.addAll(workItemService.getTransitionHooks());
+         hooks.addAll(transitionHooks);
+         return hooks;
       } catch (OseeCoreException ex) {
          OseeLog.log(TransitionHelper.class, Level.SEVERE, ex);
       }
@@ -191,6 +197,10 @@ public class TransitionHelper extends TransitionHelperAdapter {
    @Override
    public AttributeTypeToken getCancellationReasonAttrType() {
       return transData.getCancellationReasonAttrType();
+   }
+
+   public void addTransitionHook(IAtsTransitionHook transitionHook) {
+      transitionHooks.add(transitionHook);
    }
 
 }

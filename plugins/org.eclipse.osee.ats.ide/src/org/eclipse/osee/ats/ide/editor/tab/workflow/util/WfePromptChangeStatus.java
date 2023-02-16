@@ -115,8 +115,8 @@ public class WfePromptChangeStatus {
             workItem.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
             workItem.getStateMgr().addAssignee(AtsApiService.get().getUserService().getCurrentUser());
          }
-         workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true,
-            AtsApiService.get().getUserService().getCurrentUser());
+         AtsApiService.get().getWorkItemMetricsService().updateMetrics(workItem, workItem.getStateDefinition(), hours,
+            percent, true, AtsApiService.get().getUserService().getCurrentUser(), changes);
          changes.add(workItem);
       }
    }

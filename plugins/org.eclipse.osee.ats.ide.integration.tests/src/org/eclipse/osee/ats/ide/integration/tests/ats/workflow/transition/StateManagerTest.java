@@ -14,9 +14,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import java.util.Collections;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -42,9 +42,10 @@ public class StateManagerTest {
 
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      teamWf.getStateMgr().updateMetrics(AtsTestUtil.getAnalyzeStateDef(), 1.1, 1, false,
-         AtsApiService.get().getUserService().getCurrentUser());
-      teamWf.persist(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(teamWf, AtsTestUtil.getAnalyzeStateDef(), 1.1, 1,
+         false, AtsApiService.get().getUserService().getCurrentUser(), changes);
+      changes.execute();
 
       ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getImplementStateDef().getName(),
@@ -52,9 +53,10 @@ public class StateManagerTest {
       TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       Assert.assertTrue(results.isEmpty());
 
-      teamWf.getStateMgr().updateMetrics(AtsTestUtil.getImplementStateDef(), 2.2, 1, false,
-         AtsApiService.get().getUserService().getCurrentUser());
-      teamWf.persist(getClass().getSimpleName());
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(teamWf, AtsTestUtil.getImplementStateDef(), 2.2, 1,
+         false, AtsApiService.get().getUserService().getCurrentUser(), changes);
+      changes.execute();
 
       helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getCompletedStateDef().getName(),
@@ -62,17 +64,20 @@ public class StateManagerTest {
       results = AtsApiService.get().getWorkItemService().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
-      Assert.assertEquals(3.3, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsApiService.get()), 0.001);
+      Assert.assertEquals(3.3, AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(teamWf), 0.001);
 
-      teamWf.getStateMgr().updateMetrics(AtsTestUtil.getCompletedStateDef(), -2.2, 1, false,
-         AtsApiService.get().getUserService().getCurrentUser());
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(teamWf, AtsTestUtil.getCompletedStateDef(), -2.2, 1,
+         false, AtsApiService.get().getUserService().getCurrentUser(), changes);
+      changes.execute();
       AtsApiService.get().getStoreService().executeChangeSet(getClass().getSimpleName(), teamWf);
-      Assert.assertEquals(1.1, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsApiService.get()), 0.001);
+      Assert.assertEquals(1.1, AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(teamWf), 0.001);
 
-      teamWf.getStateMgr().updateMetrics(AtsTestUtil.getCompletedStateDef(), -2.2, 1, false,
-         AtsApiService.get().getUserService().getCurrentUser());
-      AtsApiService.get().getStoreService().executeChangeSet(getClass().getSimpleName(), teamWf);
-      Assert.assertEquals(0, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsApiService.get()), 0.001);
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkItemMetricsService().updateMetrics(teamWf, AtsTestUtil.getCompletedStateDef(), -2.2, 1,
+         false, AtsApiService.get().getUserService().getCurrentUser(), changes);
+      changes.execute();
+      Assert.assertEquals(0, AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(teamWf), 0.001);
 
       AtsTestUtil.cleanup();
    }

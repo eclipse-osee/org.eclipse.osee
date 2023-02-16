@@ -172,7 +172,7 @@ public class TransitionHelperTest {
    public void testGetTransitionListeners() {
       when(workItemService.getTransitionHooks()).thenReturn(Arrays.asList(transListener1));
 
-      Assert.assertEquals(transListener1, helper.getTransitionListeners().iterator().next());
+      Assert.assertEquals(transListener1, helper.getTransitionHooks().iterator().next());
    }
 
    @Test

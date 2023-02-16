@@ -94,6 +94,7 @@ public class WorkState extends NamedBase {
    }
 
    public static WorkState create(String name, List<? extends AtsUser> assignees) {
+      Conditions.checkNotNullOrContainNull(assignees, "assignees");
       return new WorkState(name, assignees, 0, 0);
    }
 

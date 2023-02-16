@@ -55,7 +55,6 @@ import org.mockito.MockitoAnnotations;
 public class AtsWorkDefinitionServiceImplTest {
 
    private static final ArtifactId MyPeerToPeerWorkDefArt = ArtifactId.valueOf(266434L);
-   private static final ArtifactId MyTaskWorkDefArt = ArtifactId.valueOf(34345L);
 
    // @formatter:off
    @Mock TeamDefinition topTeamDef;
@@ -262,19 +261,6 @@ public class AtsWorkDefinitionServiceImplTest {
    public void testGetIds() {
       WorkDefinition def = new WorkDefinition(15L, "this");
       Assert.assertEquals((Long) 15L, def.getId());
-   }
-
-   @Test
-   public void testIsStateWeightingEnabled() {
-      WorkDefinition def = new WorkDefinition(15L, "this");
-      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).isStateWeightingEnabled(def));
-      StateDefinition endorse = new StateDefinition("endorse");
-      def.addState(endorse);
-      endorse.setStateWeight(34);
-      Assert.assertTrue(new AtsWorkDefinitionServiceImpl(atsApi, null).isStateWeightingEnabled(def));
-
-      endorse.setStateWeight(0);
-      Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).isStateWeightingEnabled(def));
    }
 
    @Test

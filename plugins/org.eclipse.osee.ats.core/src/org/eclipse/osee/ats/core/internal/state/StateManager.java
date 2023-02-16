@@ -27,20 +27,15 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkState;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -57,19 +52,14 @@ public class StateManager implements IAtsStateManager {
    private final IAtsWorkItem workItem;
    private String currentStateName;
    private final List<WorkState> states = new CopyOnWriteArrayList<>();
-   private final WorkStateFactory factory;
-   private Integer percentCompleteValue = 0;
    private final List<AtsUser> initialAssignees = new ArrayList<>();
    private boolean dirty = false;
    private final String instanceId;
-   private final IAtsLogFactory logFactory;
    private final AtsApi atsApi;
 
-   public StateManager(IAtsWorkItem workItem, IAtsLogFactory logFactory, AtsApi atsApi) {
+   public StateManager(IAtsWorkItem workItem, AtsApi atsApi) {
       this.workItem = workItem;
-      this.logFactory = logFactory;
       this.atsApi = atsApi;
-      this.factory = this;
       this.instanceId = Lib.generateArtifactIdAsInt().toString();
    }
 
@@ -81,92 +71,6 @@ public class StateManager implements IAtsStateManager {
    @Override
    public IStateToken getCurrentState() {
       return new SimpleTeamState(getCurrentStateNameInternal(), workItem.getCurrentStateType());
-   }
-
-   @Override
-   public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, AtsUser user) {
-
-      // get hours in current state, if additional hours + current hours < 0, walk other states subtracting difference
-      double hoursInCurrentState = getHoursSpent(state.getName());
-      double remaining = hoursInCurrentState + additionalHours;
-      if (remaining < 0.0) {
-         setHoursSpent(state.getName(), 0.0);
-         for (String stateName : getVisitedStateNames()) {
-            hoursInCurrentState = getHoursSpent(stateName);
-            remaining += hoursInCurrentState;
-            if (remaining < 0.0) {
-               setHoursSpent(stateName, 0.0);
-            } else {
-               setHoursSpent(stateName, remaining);
-               break;
-            }
-         }
-      } else {
-         setHoursSpent(state.getName(), remaining);
-      }
-
-      if (atsApi.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
-         setPercentComplete(state.getName(), percentComplete);
-      } else {
-         this.percentCompleteValue = percentComplete;
-      }
-      if (logMetrics) {
-         logMetrics(workItem.getStateMgr().getCurrentState(), user, new Date());
-      }
-      setDirty(true);
-   }
-
-   protected void logMetrics(IStateToken state, AtsUser user, Date date) {
-      String hoursSpent = AtsUtil.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, atsApi));
-      logMetrics(atsApi, logFactory, workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) + "",
-         hoursSpent, state, user, date);
-   }
-
-   public static void logMetrics(AtsApi atsApi, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, AtsUser user, Date date) {
-      IAtsLogItem logItem =
-         logFactory.newLogItem(LogType.Metrics, date, user, state.getName(), String.format("Percent %s Hours %s",
-            PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi), Double.parseDouble(hours)));
-      workItem.getLog().addLogItem(logItem);
-   }
-
-   @Override
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date) {
-      setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
-   }
-
-   /**
-    * @return true if hours difference is > than .01
-    */
-   protected boolean isHoursEqual(double hours1, double hours2) {
-      return Math.abs(hours2 - hours1) < 0.01;
-   }
-
-   /**
-    * Set metrics and log if changed
-    */
-
-   @Override
-   public void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date) {
-      boolean changed = setMetricsIfChanged(state, hours, percentComplete);
-      if (changed) {
-         if (logMetrics) {
-            logMetrics(workItem.getStateMgr().getCurrentState(), user, new Date());
-         }
-         setDirty(true);
-      }
-   }
-
-   protected boolean setMetricsIfChanged(IStateToken state, double hours, int percentComplete) {
-      boolean changed = false;
-      if (!isHoursEqual(getHoursSpent(state.getName()), hours)) {
-         setHoursSpent(state.getName(), hours);
-         changed = true;
-      }
-      if (percentComplete != getPercentComplete(state.getName())) {
-         setPercentComplete(state.getName(), percentComplete);
-         changed = true;
-      }
-      return changed;
    }
 
    @Override
@@ -195,11 +99,6 @@ public class StateManager implements IAtsStateManager {
          removeAssignee(getCurrentStateNameInternal(), AtsCoreUsers.SYSTEM_USER);
       }
       setDirty(true);
-   }
-
-   @Override
-   public String getHoursSpentStr(String stateName) {
-      return AtsUtil.doubleToI18nString(getHoursSpent(stateName), true);
    }
 
    @Override
@@ -313,20 +212,15 @@ public class StateManager implements IAtsStateManager {
       addAssignees(stateName, Arrays.asList(assignee));
    }
 
-   @Override
-   public void addState(String stateName, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
-      addState(stateName, assignees, hoursSpent, percentComplete, true);
-   }
-
-   protected void addState(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete, boolean logError) {
+   protected void addState(String name, List<? extends AtsUser> assignees, boolean logError) {
       if (getVisitedStateNames().contains(name)) {
-         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, factory.getId());
+         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, workItem.getAtsId());
          if (logError) {
             OseeLog.log(StateManager.class, Level.SEVERE, errorStr);
          }
          return;
       } else {
-         addState(factory.createStateData(name, assignees, hoursSpent, percentComplete));
+         addState(WorkState.create(name, assignees));
       }
    }
 
@@ -385,7 +279,8 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public void addState(String stateName, List<? extends AtsUser> assignees) {
-      addState(stateName, assignees, 0, 0);
+      WorkState state = createState(stateName);
+      state.setAssignees(assignees);
    }
 
    @Override
@@ -394,52 +289,13 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void createState(String stateName) {
+   public WorkState createState(String stateName) {
       WorkState state = getState(stateName);
       if (state == null) {
-         state = factory.createStateData(stateName);
+         state = WorkState.create(stateName);
          addState(state);
       }
-   }
-
-   @Override
-   public void setPercentComplete(String stateName, int percentComplete) {
-      WorkState state = getState(stateName);
-      if (state != null) {
-         state.setPercentComplete(percentComplete);
-         setDirty(true);
-      } else {
-         throw new OseeStateException("State [%s] not found for %s", stateName, workItem.toStringWithId());
-      }
-   }
-
-   @Override
-   public void setHoursSpent(String stateName, double hoursSpent) {
-      WorkState state = getState(stateName);
-      if (state != null) {
-         state.setHoursSpent(hoursSpent);
-         setDirty(true);
-      } else {
-         throw new OseeStateException("State [%s] not found for %s", stateName, workItem.toStringWithId());
-      }
-   }
-
-   @Override
-   public double getHoursSpent(String stateName) {
-      WorkState state = getState(stateName);
-      if (state != null) {
-         return state.getHoursSpent();
-      }
-      return 0.0;
-   }
-
-   @Override
-   public int getPercentComplete(String stateName) {
-      WorkState state = getState(stateName);
-      if (state != null) {
-         return state.getPercentComplete();
-      }
-      return 0;
+      return state;
    }
 
    @Override
@@ -540,30 +396,13 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public WorkState createStateData(String name, List<? extends AtsUser> assignees) {
-      Conditions.checkNotNullOrContainNull(assignees, "assignees");
-      return WorkState.create(name, assignees);
-   }
-
-   @Override
-   public WorkState createStateData(String name) {
-      return WorkState.create(name);
-   }
-
-   @Override
-   public WorkState createStateData(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
-      Conditions.checkNotNullOrContainNull(assignees, "assignees");
-      return WorkState.create(name, assignees, hoursSpent, percentComplete);
-   }
-
-   @Override
    public void addState(WorkState workState) {
       addState(workState, true);
    }
 
    protected void addState(WorkState state, boolean logError) {
       if (getVisitedStateNames().contains(state.getName())) {
-         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), factory.getId());
+         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), workItem.getAtsId());
          if (logError) {
             OseeLog.log(StateManager.class, Level.SEVERE, errorStr);
          }
@@ -574,24 +413,8 @@ public class StateManager implements IAtsStateManager {
       }
    }
 
-   @Override
-   public String getId() {
-      return workItem.getAtsId();
-   }
-
    public void setDirty(boolean dirty) {
       this.dirty = dirty;
-   }
-
-   @Override
-   public void setPercentCompleteValue(Integer percentComplete) {
-      this.percentCompleteValue = percentComplete;
-      setDirty(true);
-   }
-
-   @Override
-   public Integer getPercentCompleteValue() {
-      return this.percentCompleteValue;
    }
 
    public List<AtsUser> getInitialAssignees() {
@@ -613,7 +436,6 @@ public class StateManager implements IAtsStateManager {
    public void clear() {
       initialAssignees.clear();
       states.clear();
-      percentCompleteValue = null;
       currentStateName = null;
    }
 

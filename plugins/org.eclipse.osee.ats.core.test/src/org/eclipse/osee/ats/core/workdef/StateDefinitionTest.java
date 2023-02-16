@@ -182,15 +182,6 @@ public class StateDefinitionTest {
    }
 
    @Test
-   public void testGetSetPercentWeight() {
-      StateDefinition def = new StateDefinition("endorse");
-      Assert.assertEquals(0, def.getStateWeight());
-      def.setStateWeight(34);
-      Assert.assertEquals(34, def.getStateWeight());
-
-   }
-
-   @Test
    public void testGetSetRecommendedPercentComplete() {
       StateDefinition endorse = new StateDefinition("endorse");
       Assert.assertEquals((Integer) null, endorse.getRecommendedPercentComplete());

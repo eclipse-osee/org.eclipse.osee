@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -82,15 +82,16 @@ public class WfePercentCompleteHeader extends Composite {
                         "Enter Percent Complete (0 to 99)\n\n(use Transition to mark complete.)", 0, 99);
                      dialog.setNumberFormat(NumberFormat.getIntegerInstance());
                      int percent = 0;
-                     if (workItem.getStateMgr().getPercentCompleteValue() != null) {
-                        percent = workItem.getStateMgr().getPercentCompleteValue();
+                     if (AtsApiService.get().getWorkItemMetricsService().getPercentComplete(workItem) != null) {
+                        percent = AtsApiService.get().getWorkItemMetricsService().getPercentComplete(workItem);
                      }
                      dialog.setEntry(String.valueOf(percent));
                      if (dialog.open() == Window.OK) {
                         Integer intValue = dialog.getInt();
-                        workItem.getStateMgr().setPercentCompleteValue(intValue);
-                        AtsApiService.get().getStoreService().executeChangeSet(
-                           "ATS Workflow Editor - set Percent Complete", workItem);
+                        IAtsChangeSet changes =
+                           AtsApiService.get().createChangeSet("ATS Workflow Editor - set Percent Complete");
+                        AtsApiService.get().getWorkItemMetricsService().setPercentComplete(workItem, intValue, changes);
+                        changes.executeIfNeeded();
                      }
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -117,7 +118,7 @@ public class WfePercentCompleteHeader extends Composite {
    public String getPercentCompleteStr() {
       int awaPercent = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.PercentComplete, 0);
-      int totalPecent = PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get());
+      int totalPecent = AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(workItem);
       if (awaPercent != totalPecent) {
          return String.format("%d | %d", awaPercent, totalPecent);
       } else {

@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -66,8 +65,8 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
       try {
          if (element instanceof IAtsObject) {
             if (((IAtsObject) element).isOfType(TeamWorkflow, Action)) {
-               return String.valueOf(getPercentCompleteFromTasksAndReviews(
-                  AtsApiService.get().getQueryServiceIde().getArtifact(element)));
+               return String.valueOf(
+                  getPercentCompleteFromTasksAndReviews(AtsApiService.get().getQueryServiceIde().getArtifact(element)));
             }
          }
       } catch (OseeCoreException ex) {
@@ -84,8 +83,8 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
-               percent += getPercentCompleteFromTasksAndReviews(
-                  AtsApiService.get().getQueryServiceIde().getArtifact(team));
+               percent +=
+                  getPercentCompleteFromTasksAndReviews(AtsApiService.get().getQueryServiceIde().getArtifact(team));
             }
          }
          if (percent == 0) {
@@ -99,14 +98,14 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
       if (artifact.isOfType(TeamWorkflow)) {
          Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) artifact);
          for (IAtsTask task : tasks) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsApiService.get());
+            spent += AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(task);
          }
          size = tasks.size();
 
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
          Collection<IAtsAbstractReview> reviewArts = AtsApiService.get().getReviewService().getReviews(teamWf);
          for (IAtsAbstractReview reviewArt : reviewArts) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsApiService.get());
+            spent += AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(reviewArt);
          }
          size += reviewArts.size();
       }

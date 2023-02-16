@@ -319,7 +319,7 @@ public class CreateTasksOperation {
 
             Double hoursSpent = jTask.getHoursSpent();
             if (hoursSpent > 0.0) {
-               task.getStateMgr().setHoursSpent(task.getCurrentStateName(), hoursSpent);
+               atsApi.getWorkItemMetricsService().setHoursSpent(task, hoursSpent, changes);
             }
 
             for (JaxAttribute attribute : jTask.getAttributes()) {

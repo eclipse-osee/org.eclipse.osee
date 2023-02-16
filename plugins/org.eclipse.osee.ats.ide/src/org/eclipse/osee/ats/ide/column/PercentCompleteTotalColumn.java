@@ -18,7 +18,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -57,8 +56,8 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsWorkItem) {
-            return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) element,
-               AtsApiService.get()));
+            return String.valueOf(
+               AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal((IAtsWorkItem) element));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

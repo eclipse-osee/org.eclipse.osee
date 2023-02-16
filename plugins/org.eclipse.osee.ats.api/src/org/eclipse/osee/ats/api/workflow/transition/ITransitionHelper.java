@@ -62,7 +62,7 @@ public interface ITransitionHelper {
 
    public boolean isExecuteChanges();
 
-   public Collection<IAtsTransitionHook> getTransitionListeners();
+   public Collection<IAtsTransitionHook> getTransitionHooks();
 
    public AtsUser getTransitionUser();
 

@@ -55,7 +55,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
@@ -561,7 +560,7 @@ public class AtsActionService implements IAtsActionService {
       atsApi.getWorkDefinitionService().internalSetWorkDefinition(workItem, workDefinition);
 
       StateDefinition startState = workDefinition.getStartState();
-      StateManager stateMgr = new StateManager(workItem, new AtsLogFactory(), atsApi);
+      StateManager stateMgr = new StateManager(workItem, atsApi);
       workItem.setStateMgr(stateMgr);
       changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, startState.getStateType().name());
 

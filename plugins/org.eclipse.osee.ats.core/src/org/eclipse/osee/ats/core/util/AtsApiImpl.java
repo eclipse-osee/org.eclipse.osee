@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemMetricsService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -63,6 +64,7 @@ import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
+import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
@@ -106,6 +108,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsActionService actionService;
    protected IAtsImplementerService implementerService;
    protected IAtsWorkItemService workItemService;
+   protected IAtsWorkItemMetricsService workItemMetricsService;
    protected ISequenceProvider sequenceProvider;
    protected IAtsProgramService programService;
    protected IAtsStateFactory stateFactory;
@@ -177,6 +180,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
+      workItemMetricsService = new AtsWorkItemMetricsServiceImpl(this);
 
       programService = new AtsProgramService(this);
       teamDefinitionService = new TeamDefinitionServiceImpl(this);
@@ -358,6 +362,11 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public IAtsWorkItemService getWorkItemService() {
       return workItemService;
+   }
+
+   @Override
+   public IAtsWorkItemMetricsService getWorkItemMetricsService() {
+      return workItemMetricsService;
    }
 
    public void setWorkItemService(IAtsWorkItemService workItemService) {

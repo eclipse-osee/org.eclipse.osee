@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 
 /**
  * @author Donald G. Dunne
@@ -69,7 +68,7 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
       int spent = 0, result = 0;
       Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(teamWf);
       for (IAtsTask task : tasks) {
-         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, atsApi);
+         spent += atsApi.getWorkItemMetricsService().getPercentCompleteTotal(task);
       }
       if (spent > 0) {
          result = spent / tasks.size();

@@ -50,8 +50,6 @@ public class StateManagerReader {
             }
          }
       }
-      Integer percentComplete = attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, null);
-      stateMgr.setPercentCompleteValue(percentComplete);
       stateMgr.setDirty(false);
       stateMgr.getInitialAssignees().addAll(stateMgr.getAssignees());
    }

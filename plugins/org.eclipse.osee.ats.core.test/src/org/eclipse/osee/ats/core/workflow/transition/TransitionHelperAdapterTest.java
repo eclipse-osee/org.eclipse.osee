@@ -126,7 +126,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public Collection<IAtsTransitionHook> getTransitionListeners() {
+      public Collection<IAtsTransitionHook> getTransitionHooks() {
          return null;
       }
 
