@@ -39,7 +39,11 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       super.addPredicates(writer);
 
       writer.write(relAlias);
-      writer.write(".rel_link_type_id = ?");
+      if (criteria.getType().isNewRelationTable()) {
+         writer.write(".rel_type = ?");
+      } else {
+         writer.write(".rel_link_type_id = ?");
+      }
       writer.addParameter(criteria.getType());
 
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
@@ -70,4 +74,12 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       writer.writeAndLn();
       writer.writeTxBranchFilter(txsAlias);
    }
+
+   @Override
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      if (this.criteria.getType().isNewRelationTable()) {
+         writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
+      }
+   }
+
 }
