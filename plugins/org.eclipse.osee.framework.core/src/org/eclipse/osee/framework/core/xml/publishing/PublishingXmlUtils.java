@@ -14,6 +14,9 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -31,6 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * A class of utility methods for parsing and working with the XML DOM for a Word ML document.
@@ -299,6 +304,31 @@ public class PublishingXmlUtils {
    }
 
    /**
+    * Reads a Word ML document from a file ({@link File}), closes the stream, and parses it into a
+    * {@link org.w3c.dom.Document} XML DOM.
+    *
+    * @param file the file containing the Word ML document.
+    * @return when the file is successfully parsed, an {@link Optional} containing the {@link org.w3c.dom.Document};
+    * otherwise, an empty {@link Optional}.
+    */
+
+   public Optional<Document> parse(File file) {
+
+      this.startOperation();
+
+      try (var autoCloseInputStream = new FileInputStream(file)) {
+
+         return this.parseInternal(autoCloseInputStream);
+
+      } catch (Exception e) {
+
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   /**
     * Reads a Word ML document from an input stream ({@link InputStream}), closes the stream, and parses it into a
     * {@link org.w3c.dom.Document} XML DOM.
     *
@@ -313,11 +343,7 @@ public class PublishingXmlUtils {
 
       try (var autoCloseInputStream = inputStream) {
 
-         var documentBuilderFactory = DocumentBuilderFactory.newInstance();
-         var documentBuilder = documentBuilderFactory.newDocumentBuilder();
-         var document = documentBuilder.parse(autoCloseInputStream);
-
-         return Optional.of(document);
+         return this.parseInternal(autoCloseInputStream);
 
       } catch (Exception e) {
 
@@ -339,13 +365,9 @@ public class PublishingXmlUtils {
 
       this.startOperation();
 
-      try (var inputStream = new ByteArrayInputStream(xmlString.getBytes())) {
+      try (var autoCloseInputStream = new ByteArrayInputStream(xmlString.getBytes())) {
 
-         var documentBuilderFactory = DocumentBuilderFactory.newInstance();
-         var documentBuilder = documentBuilderFactory.newDocumentBuilder();
-         var document = documentBuilder.parse(inputStream);
-
-         return Optional.of(document);
+         return this.parseInternal(autoCloseInputStream);
 
       } catch (Exception e) {
 
@@ -353,6 +375,26 @@ public class PublishingXmlUtils {
          this.lastError.set(e);
          return Optional.empty();
       }
+   }
+
+   /**
+    * Reads a Word ML document from an {@link InputStream} and parses it into a {@link org.w3c.dom.Document} XML DOM.
+    *
+    * @param xmlString a string containing the Word ML document
+    * @return an {@link Optional} containing the {@link org.w3c.dom.Document}.
+    * @throws ParserConfigurationException when a DocumentBuildercannot be created which satisfies the configuration
+    * requested.
+    * @throws IOException when any IO errors occur.
+    * @throws SAXException when any parse errors occur.
+    */
+
+   private Optional<Document> parseInternal(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
+
+      var documentBuilderFactory = DocumentBuilderFactory.newInstance();
+      var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+      var document = documentBuilder.parse(inputStream);
+
+      return Optional.of(document);
    }
 
    /**

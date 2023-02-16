@@ -770,10 +770,32 @@ public class TestDocumentBuilder {
    }
 
    /**
+    * Gets the OSEE Artifact associated with the specified builder record identifier.
+    *
+    * @param builderRecordId identifier of the builder record to look up.
+    * @return if found, an {@link Optional} containing the OSEE Artifact associated with the specified builder record;
+    * otherwise, an empty {@link Optional}.
+    */
+
+   public Optional<Artifact> getArtifactByBuilderRecordId(Integer builderRecordId) {
+
+      var builderRecordWrapper = this.builderRecordWrapperByIdMap.get(builderRecordId);
+
+      if (Objects.isNull(builderRecordWrapper)) {
+         return Optional.empty();
+      }
+
+      var artifact = builderRecordWrapper.getArtifact();
+
+      return Optional.of(artifact);
+   }
+
+   /**
     * Gets the OSEE Artifact Identifier for the artifact associated with the specified builder record identifier.
     *
     * @param builderRecordId identifier of the builder record to look up.
-    * @return the identifier for the OSEE Artifact associated with the specified builder record.
+    * @return if found, an {@link Optional} containing the identifier for the OSEE Artifact associated with the
+    * specified builder record; otherwise, an empty {@link Optional}.
     */
 
    public Optional<Long> getArtifactIdByBuilderRecordId(Integer builderRecordId) {

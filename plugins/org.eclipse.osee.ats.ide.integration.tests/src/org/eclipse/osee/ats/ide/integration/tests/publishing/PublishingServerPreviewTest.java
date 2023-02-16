@@ -87,7 +87,8 @@ public class PublishingServerPreviewTest {
     * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
     * <dt>In Publishing Group Test Rule</dt>
     * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
-    * {@Link UserToken} cache has been flushed.</dd></dt>
+    * {@Link UserToken} cache has been flushed.</dd>
+    * </dl>
     */
 
    //@formatter:off
