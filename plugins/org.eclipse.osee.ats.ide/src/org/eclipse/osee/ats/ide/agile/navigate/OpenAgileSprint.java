@@ -85,8 +85,8 @@ public class OpenAgileSprint extends XNavigateItemAction {
       @Override
       public int compare(Viewer viewer, Object e1, Object e2) {
          if (e1 instanceof SprintArtifact && e2 instanceof SprintArtifact) {
-            StateType e1StateType = ((IAtsWorkItem) e1).getStateMgr().getStateType();
-            StateType e2StateType = ((IAtsWorkItem) e2).getStateMgr().getStateType();
+            StateType e1StateType = ((IAtsWorkItem) e1).getCurrentStateType();
+            StateType e2StateType = ((IAtsWorkItem) e2).getCurrentStateType();
             if (e1StateType != e2StateType) {
                if (e1StateType.isInWork()) {
                   return -1;

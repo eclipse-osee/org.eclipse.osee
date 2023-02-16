@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -203,7 +204,13 @@ public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvid
             return null;
          }
 
+         @Override
+         public StateType getCurrentStateType() {
+            return null;
+         }
+
       }
       return new IAtsWorkItemSentinel();
    }
+
 }

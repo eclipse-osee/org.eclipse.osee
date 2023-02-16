@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
@@ -174,6 +175,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    public String getCurrentStateName();
 
+   StateType getCurrentStateType();
+
    public static IAtsWorkItem createSentinel() {
       final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsWorkItem {
 
@@ -325,6 +328,11 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          @Override
          public String getCurrentStateName() {
             return "";
+         }
+
+         @Override
+         public StateType getCurrentStateType() {
+            return null;
          }
 
       }

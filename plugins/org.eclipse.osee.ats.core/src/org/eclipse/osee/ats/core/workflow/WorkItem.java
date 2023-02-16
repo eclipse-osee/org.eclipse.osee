@@ -256,7 +256,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isInWork() {
-      return getStateMgr().getStateType().isInWork();
+      return getCurrentStateType().isInWork();
    }
 
    @Override
@@ -312,6 +312,12 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public String getCurrentStateName() {
       return atsApi.getWorkItemService().getCurrentStateName(this);
+   }
+
+   @Override
+   public StateType getCurrentStateType() {
+      return StateType.valueOf(atsApi.getAttributeResolver().getSoleAttributeValue(artifact,
+         AtsAttributeTypes.CurrentStateType, StateType.Working.name()));
    }
 
 }

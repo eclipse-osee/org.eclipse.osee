@@ -30,8 +30,6 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    IStateToken getCurrentState();
 
-   StateType getCurrentStateType();
-
    void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, AtsUser user);
 
    void setMetrics(double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date);
@@ -42,8 +40,6 @@ public interface IAtsStateManager extends WorkStateFactory {
     * @param changes JavaTip
     */
    void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date);
-
-   StateType getStateType();
 
    void addAssignees(String stateName, Collection<? extends AtsUser> assignees);
 

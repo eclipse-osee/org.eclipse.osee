@@ -39,7 +39,7 @@ public class PercentCompleteTotalUtil {
       int percent = 0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+         if (workItem.getCurrentStateType().isCompletedOrCancelled()) {
             percent = 100;
          } else {
             if (atsApi.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
@@ -193,7 +193,7 @@ public class PercentCompleteTotalUtil {
          } else {
             int items = 0;
             for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-               if (!team.getStateMgr().getStateType().isCancelled()) {
+               if (!team.getCurrentStateType().isCancelled()) {
                   percent += getPercentCompleteSMAState(team, atsApi);
                   items++;
                }

@@ -123,13 +123,13 @@ public class SortAgileBacklog extends XNavigateItemAction {
          IAgileSprint sprint2 = atsApi.getAgileService().getSprint(a2);
 
          // Must declare equal or next comparator will not be applied
-         if (sprint1 == null && a1.getStateMgr().getCurrentStateType().isCompletedOrCancelled() && //
-            sprint2 == null && a2.getStateMgr().getStateType().isCompletedOrCancelled()) {
+         if (sprint1 == null && a1.getCurrentStateType().isCompletedOrCancelled() && //
+            sprint2 == null && a2.getCurrentStateType().isCompletedOrCancelled()) {
             return 0;
          }
-         if (sprint1 == null && a1.getStateMgr().getCurrentStateType().isCompletedOrCancelled()) {
+         if (sprint1 == null && a1.getCurrentStateType().isCompletedOrCancelled()) {
             return -1;
-         } else if (sprint2 == null && a2.getStateMgr().getStateType().isCompletedOrCancelled()) {
+         } else if (sprint2 == null && a2.getCurrentStateType().isCompletedOrCancelled()) {
             return 1;
          }
 
@@ -169,16 +169,16 @@ public class SortAgileBacklog extends XNavigateItemAction {
             return 0;
          }
 
-         if (a1.getStateMgr().getCurrentStateType().isCancelled()) {
+         if (a1.getCurrentStateType().isCancelled()) {
             return -1;
          }
-         if (a2.getStateMgr().getCurrentStateType().isCancelled()) {
+         if (a2.getCurrentStateType().isCancelled()) {
             return 1;
          }
-         if (a1.getStateMgr().getCurrentStateType().isCompleted()) {
+         if (a1.getCurrentStateType().isCompleted()) {
             return -1;
          }
-         if (a2.getStateMgr().getCurrentStateType().isCompleted()) {
+         if (a2.getCurrentStateType().isCompleted()) {
             return 1;
          }
          return -1 * a1.getCurrentStateName().compareTo(a2.getCurrentStateName());

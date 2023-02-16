@@ -242,7 +242,7 @@ public class KanbanOperations {
       //   "sam5us" : [ "3636","4325","2323" ]
       //  },
       List<String> assigneesIds = new LinkedList<>();
-      if (workItem.getStateMgr().getStateType().isInWork()) {
+      if (workItem.getCurrentStateType().isInWork()) {
          assigneesIds.addAll(getAssigneeUserIdsString(workItem, atsApi, teamMembers));
       } else {
          assigneesIds.addAll(getImplementerUserIdsString(workItem, atsApi, teamMembers));

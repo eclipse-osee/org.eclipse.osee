@@ -472,7 +472,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       if (teamWf != null) {
          IAtsVersion version = versionService.getTargetedVersion(teamWf);
          if (version != null) {
-            if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
+            if (!teamWf.getCurrentStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
                String errStr =
                   "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
                return "!Error " + errStr;

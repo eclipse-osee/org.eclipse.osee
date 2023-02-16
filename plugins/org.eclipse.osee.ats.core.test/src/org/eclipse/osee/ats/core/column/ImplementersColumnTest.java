@@ -77,7 +77,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromInWorkWorkflow_workItem() {
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Working);
       Assert.assertEquals("", impService.getImplementersStr(workItem));
    }
 
@@ -88,7 +88,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    public void testGetImplementersStrFromInWorkWorkflow_blankIfAssigned() {
       List<AtsUser> assigneesToReturn = new ArrayList<>();
       assigneesToReturn.addAll(Arrays.asList(steve, alice));
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Working);
       when(workItem.getAssignees()).thenReturn(assigneesToReturn);
       Assert.assertEquals("", impService.getImplementersStr(workItem));
    }
@@ -98,10 +98,10 @@ public class ImplementersColumnTest extends AbstractUserTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_blankIfNothingToShow() {
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       Assert.assertEquals("", impService.getImplementersStr(workItem));
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       Assert.assertEquals("", impService.getImplementersStr(workItem));
    }
 
@@ -110,11 +110,11 @@ public class ImplementersColumnTest extends AbstractUserTest {
     */
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_completedBySet() {
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
       Assert.assertEquals("steve", impService.getImplementersStr(workItem));
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
       Assert.assertEquals("steve", impService.getImplementersStr(workItem));
 
@@ -128,14 +128,14 @@ public class ImplementersColumnTest extends AbstractUserTest {
       List<AtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
       when(workItem.getCompletedFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
       Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("alice"));
       Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
       when(workItem.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
@@ -149,7 +149,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    @org.junit.Test
    public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssigneeWithUnassigned() {
       when(workItem.isCompleted()).thenReturn(true);
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
 
       // Add alice and unassigned as Implement assignees
       List<AtsUser> implementStateImplementers = new ArrayList<>();
@@ -165,7 +165,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       Assert.assertTrue(assigneeStr.contains("alice"));
       Assert.assertTrue(assigneeStr.contains("steve"));
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
       when(workItem.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
@@ -183,14 +183,14 @@ public class ImplementersColumnTest extends AbstractUserTest {
       implementStateImplementers.add(alice);
       implementStateImplementers.add(steve);
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
       when(workItem.getCompletedFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
       Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("alice"));
       Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
       when(workItem.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
@@ -205,7 +205,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    public void testGetImplementersStrFromCompletedCancelledWorkflow_fromAll() {
 
       // completed by is steve
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
 
       // "completed from state" had assignees alice and joe
@@ -221,7 +221,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       Assert.assertTrue(implementersStr.contains("steve"));
 
       // cancelled by is steve
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
 
       // "completed from state" has assignees joe and alice
@@ -246,14 +246,14 @@ public class ImplementersColumnTest extends AbstractUserTest {
       implementStateImplementers.add(alice);
 
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(alice);
       when(workItem.getCompletedFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
       Assert.assertEquals("alice", impService.getImplementersStr(workItem));
 
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(alice);
       when(workItem.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
@@ -265,7 +265,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       List<AtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedFromState()).thenReturn("Implement");
       when(workItem.getCompletedBy()).thenReturn(alice);
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
@@ -273,7 +273,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       impService.getImplementers_fromCompletedCancelledBy(workItem, implementers);
       Assert.assertEquals(implementers.iterator().next(), alice);
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledFromState()).thenReturn("Implement");
       when(workItem.getCancelledBy()).thenReturn(alice);
       when(workItem.getCancelledFromState()).thenReturn("Implement");
@@ -285,24 +285,24 @@ public class ImplementersColumnTest extends AbstractUserTest {
 
    @org.junit.Test
    public void testGetImplementersFromActionGroup() {
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Working);
       when(workItem.getCancelledBy()).thenReturn(alice);
-      when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Working);
+      when(workItem2.getCurrentStateType()).thenReturn(StateType.Working);
       when(workItem2.getCancelledBy()).thenReturn(steve);
 
       Assert.assertEquals("", impService.getImplementersStr(group));
 
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
-      when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
+      when(workItem2.getCurrentStateType()).thenReturn(StateType.Cancelled);
 
       Assert.assertEquals("alice; steve", impService.getImplementersStr(group));
    }
 
    @org.junit.Test
    public void testGetImplementersFromActionGroup_noDuplicates() {
-      when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
-      when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
+      when(workItem2.getCurrentStateType()).thenReturn(StateType.Cancelled);
       when(workItem2.getCancelledBy()).thenReturn(steve);
 
       List<AtsUser> implementers = impService.getActionGroupImplementers(group);

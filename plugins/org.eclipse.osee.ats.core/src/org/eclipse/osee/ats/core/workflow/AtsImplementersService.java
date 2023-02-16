@@ -79,9 +79,9 @@ public class AtsImplementersService implements IAtsImplementerService {
 
    public void getImplementers_fromCompletedCancelledFrom(IAtsWorkItem workItem, List<AtsUser> implementers) {
       String fromStateName = null;
-      if (workItem.getStateMgr().getStateType().isCompleted()) {
+      if (workItem.getCurrentStateType().isCompleted()) {
          fromStateName = workItem.getCompletedFromState();
-      } else if (workItem.getStateMgr().getStateType().isCancelled()) {
+      } else if (workItem.getCurrentStateType().isCancelled()) {
          fromStateName = workItem.getCancelledFromState();
       }
       if (Strings.isValid(fromStateName)) {
@@ -94,14 +94,14 @@ public class AtsImplementersService implements IAtsImplementerService {
    }
 
    public void getImplementers_fromCompletedCancelledBy(IAtsWorkItem workItem, List<AtsUser> implementers) {
-      if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
-         if (workItem.getStateMgr().getStateType().isCompleted()) {
+      if (workItem.getCurrentStateType().isCompletedOrCancelled()) {
+         if (workItem.getCurrentStateType().isCompleted()) {
             AtsUser completedBy = workItem.getCompletedBy();
             if (completedBy != null && !implementers.contains(completedBy)) {
                implementers.add(completedBy);
             }
          }
-         if (workItem.getStateMgr().getStateType().isCancelled()) {
+         if (workItem.getCurrentStateType().isCancelled()) {
             AtsUser cancelledBy = workItem.getCancelledBy();
             if (cancelledBy != null && !implementers.contains(cancelledBy)) {
                implementers.add(cancelledBy);
@@ -132,7 +132,7 @@ public class AtsImplementersService implements IAtsImplementerService {
    public List<AtsUser> getActionGroupImplementers(IAtsAction actionGroup) {
       List<AtsUser> implementers = new LinkedList<>();
       for (IAtsWorkItem action : actionGroup.getTeamWorkflows()) {
-         if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
+         if (action.getCurrentStateType().isCompletedOrCancelled()) {
             for (AtsUser user : getWorkItemImplementers(action)) {
                if (!implementers.contains(user)) {
                   implementers.add(user);

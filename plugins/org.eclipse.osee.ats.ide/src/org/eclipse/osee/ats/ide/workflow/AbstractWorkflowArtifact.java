@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -482,6 +483,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public void setTags(List<String> tags) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public StateType getCurrentStateType() {
+      return StateType.valueOf(getSoleAttributeValue(AtsAttributeTypes.CurrentStateType));
    }
 
 }

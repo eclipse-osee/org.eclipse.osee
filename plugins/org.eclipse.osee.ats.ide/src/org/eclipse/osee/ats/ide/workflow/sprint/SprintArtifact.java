@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.ide.workflow.sprint;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -54,7 +56,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    @Override
    public boolean isActive() {
-      return getStateMgr().getStateType().isInWork();
+      return getCurrentStateType().isInWork();
    }
 
    @Override
@@ -79,6 +81,11 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    public RelationTypeSide getMembersRelationType() {
       return AtsRelationTypes.AgileSprintToItem_AtsItem;
+   }
+
+   @Override
+   public StateType getCurrentStateType() {
+      return StateType.valueOf(getSoleAttributeValue(AtsAttributeTypes.CurrentStateType));
    }
 
 }

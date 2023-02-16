@@ -214,7 +214,7 @@ public class TransitionManager implements IExecuteListener {
                      workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
                         AtsCoreUsers.UNASSIGNED_USER);
                   // Allow anyone to transition any task to completed/cancelled/working if parent is working
-                  if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
+                  if (workItem.isTask() && workItem.getParentTeamWorkflow().getCurrentStateType().isCompletedOrCancelled()) {
                      results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
                      continue;
                   }
@@ -459,7 +459,7 @@ public class TransitionManager implements IExecuteListener {
          if (workItem.isTeamWorkflow()) {
             for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
                if (reviewService.getReviewBlockType(
-                  review) == ReviewBlockType.Transition && !review.getStateMgr().getStateType().isCompletedOrCancelled()) {
+                  review) == ReviewBlockType.Transition && !review.getCurrentStateType().isCompletedOrCancelled()) {
                   results.addResult(workItem, TransitionResult.COMPLETE_BLOCKING_REVIEWS);
                }
             }
@@ -471,7 +471,7 @@ public class TransitionManager implements IExecuteListener {
       if (workItem.isTeamWorkflow() && toStateDef.getStateType().isCancelledState()) {
          for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
             ReviewBlockType reviewBlockType = reviewService.getReviewBlockType(review);
-            boolean completedOrCancelled = review.getStateMgr().getStateType().isCompletedOrCancelled();
+            boolean completedOrCancelled = review.getCurrentStateType().isCompletedOrCancelled();
             if (reviewBlockType == ReviewBlockType.Transition && !completedOrCancelled) {
                results.addResult(workItem, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL);
                break;
@@ -491,7 +491,7 @@ public class TransitionManager implements IExecuteListener {
          RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
          checkTasksCompletedForState = false;
       }
-      if (checkTasksCompletedForState && workItem.getStateMgr().getStateType().isInWork()) {
+      if (checkTasksCompletedForState && workItem.getCurrentStateType().isInWork()) {
          Set<IAtsTask> tasksToCheck = new HashSet<>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
@@ -502,7 +502,7 @@ public class TransitionManager implements IExecuteListener {
             tasksToCheck.addAll(taskService.getTasks(workItem, workItem.getStateDefinition()));
          }
          for (IAtsTask task : tasksToCheck) {
-            if (task.getStateMgr().getStateType().isInWork()) {
+            if (task.getCurrentStateType().isInWork()) {
                results.addResult(workItem, TransitionResult.TASKS_NOT_COMPLETED);
                break;
             }

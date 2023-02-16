@@ -121,13 +121,13 @@ public class AtsWorkItemFilterTest {
    @Test
    public void testIsStateType() {
       when(teamWf1.getStateMgr()).thenReturn(teamWf1StateMgr);
-      when(teamWf1StateMgr.getStateType()).thenReturn(StateType.Completed);
+      when(teamWf1.getCurrentStateType()).thenReturn(StateType.Completed);
 
       when(teamWf2.getStateMgr()).thenReturn(teamWf2StateMgr);
-      when(teamWf2StateMgr.getStateType()).thenReturn(StateType.Cancelled);
+      when(teamWf2.getCurrentStateType()).thenReturn(StateType.Cancelled);
 
       when(task1.getStateMgr()).thenReturn(task1StateMgr);
-      when(task1StateMgr.getStateType()).thenReturn(StateType.Working);
+      when(task1.getCurrentStateType()).thenReturn(StateType.Working);
 
       AtsWorkItemFilter filter1 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter1.isStateType(StateType.Completed);

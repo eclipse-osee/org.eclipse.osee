@@ -47,6 +47,7 @@ public class MockWorkItem implements IAtsWorkItem {
    private AtsUser cancelledBy;
    private String completeFromState;
    private String cancelledFromState;
+   private StateType stateType;
 
    public MockWorkItem(String name, String currentStateName, WorkDefinition workDefinition, StateType StateType) {
       this.name = name;
@@ -206,12 +207,12 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public boolean isInWork() {
-      return getStateMgr().getStateType().isInWork();
+      return stateType.isInWork();
    }
 
    @Override
    public boolean isCompleted() {
-      return getStateMgr().getStateType().isCompleted();
+      return stateType.isCompleted();
    }
 
    @Override
@@ -221,7 +222,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public boolean isCancelled() {
-      return getStateMgr().getStateType().isCancelled();
+      return stateType.isCancelled();
    }
 
    @Override
@@ -292,6 +293,19 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public String getCurrentStateName() {
       return "";
+   }
+
+   @Override
+   public StateType getCurrentStateType() {
+      return null;
+   }
+
+   public StateType getStateType() {
+      return stateType;
+   }
+
+   public void setStateType(StateType stateType) {
+      this.stateType = stateType;
    }
 
 }

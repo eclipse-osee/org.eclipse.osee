@@ -96,7 +96,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
    }
 
    private double getRemainPointsFromArtifact(IAtsWorkItem workItem) {
-      if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+      if (workItem.getCurrentStateType().isCompletedOrCancelled()) {
          return 0;
       }
       double est = getTotalPoints(workItem);
