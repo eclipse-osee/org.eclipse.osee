@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,32 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
-import { BranchPickerStub } from '@osee/shared/components/testing';
 
-import { ReportsComponent } from './reports.component';
+import { TraceReportTableComponent } from './trace-report-table.component';
 
-describe('ReportsComponent', () => {
-	let component: ReportsComponent;
-	let fixture: ComponentFixture<ReportsComponent>;
+describe('NodeTraceReqTableComponent', () => {
+	let component: TraceReportTableComponent;
+	let fixture: ComponentFixture<TraceReportTableComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				RouterTestingModule,
-				NoopAnimationsModule,
-				BranchPickerStub,
-				HttpClientTestingModule,
-				ReportsComponent,
-			],
+			imports: [TraceReportTableComponent, NoopAnimationsModule],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(ReportsComponent);
+		fixture = TestBed.createComponent(TraceReportTableComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

@@ -30,6 +30,11 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('./lib/reports/diff-report/diff-report.routes'),
 	},
+	{
+		path: ':branchType/:branchId/traceReport',
+		loadChildren: () =>
+			import('./lib/reports/trace-report/trace-report.routes'),
+	},
 ];
 
 export default routes;

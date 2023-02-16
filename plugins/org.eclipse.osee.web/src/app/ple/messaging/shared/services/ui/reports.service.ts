@@ -13,18 +13,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { FilesService } from 'src/app/ple-services/http/files.service';
-import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { apiURL } from 'src/environments/environment';
 import { connection, MimReport } from '@osee/messaging/shared';
+import { NodeTraceReportItem } from '../../types/NodeTraceReport';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ReportsService {
 	constructor(
-		private uiService: BranchUIService,
+		private ui: UiService,
 		private http: HttpClient,
 		private fileService: FilesService
 	) {}
@@ -124,10 +125,27 @@ export class ReportsService {
 		);
 	}
 
-	private _diffReportRoute = combineLatest([
-		this.uiService.id,
-		this.uiService.type,
-	]).pipe(
+	private _nodeTraceReportRequirements = this.ui.id.pipe(
+		filter((v) => v !== undefined && v !== '' && v !== '-1'),
+		switchMap((id) =>
+			this.http.get<NodeTraceReportItem[]>(
+				apiURL + '/mim/reports/' + id + '/allRequirementsToInterface'
+			)
+		),
+		take(1)
+	);
+
+	private _nodeTraceReportInterfaceArtifacts = this.ui.id.pipe(
+		filter((v) => v !== undefined && v !== '' && v !== '-1'),
+		switchMap((id) =>
+			this.http.get<NodeTraceReportItem[]>(
+				apiURL + '/mim/reports/' + id + '/allInterfaceToRequirements'
+			)
+		),
+		take(1)
+	);
+
+	private _diffReportRoute = combineLatest([this.ui.id, this.ui.type]).pipe(
 		switchMap(([branchId, branchType]) =>
 			of(
 				'/ple/messaging/reports/' +
@@ -139,24 +157,51 @@ export class ReportsService {
 		)
 	);
 
+	private _nodeTraceReportRoute = combineLatest([
+		this.ui.id,
+		this.ui.type,
+	]).pipe(
+		switchMap(([branchId, branchType]) =>
+			of(
+				'/ple/messaging/reports/' +
+					branchType +
+					'/' +
+					branchId +
+					'/traceReport'
+			)
+		)
+	);
+
+	get nodeTraceReportRequirements() {
+		return this._nodeTraceReportRequirements;
+	}
+
+	get nodeTraceReportInterfaceArtifacts() {
+		return this._nodeTraceReportInterfaceArtifacts;
+	}
+
 	get diffReportRoute() {
 		return this._diffReportRoute;
 	}
 
+	get nodeTraceReportRoute() {
+		return this._nodeTraceReportRoute;
+	}
+
 	get branchId() {
-		return this.uiService.id;
+		return this.ui.id;
 	}
 
 	set BranchId(branchId: string) {
-		this.uiService.idValue = branchId;
+		this.ui.idValue = branchId;
 	}
 
 	get branchType() {
-		return this.uiService.type;
+		return this.ui.type;
 	}
 
 	set BranchType(branchType: string) {
-		this.uiService.typeValue = branchType;
+		this.ui.typeValue = branchType;
 	}
 
 	get connection() {

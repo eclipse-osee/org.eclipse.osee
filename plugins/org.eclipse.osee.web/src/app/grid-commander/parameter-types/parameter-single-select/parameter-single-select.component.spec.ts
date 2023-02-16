@@ -12,6 +12,9 @@
  **********************************************************************/
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ParameterSingleSelectComponent } from './parameter-single-select.component';
 
@@ -21,7 +24,12 @@ describe('ParameterSingleSelectComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule],
+			imports: [
+				HttpClientModule,
+				NoopAnimationsModule,
+				MatFormFieldModule,
+				MatSelectModule,
+			],
 			declarations: [ParameterSingleSelectComponent],
 		}).compileComponents();
 

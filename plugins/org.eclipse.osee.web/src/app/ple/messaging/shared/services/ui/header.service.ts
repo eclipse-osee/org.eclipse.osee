@@ -47,7 +47,8 @@ import {
 	transportType,
 	transportTypeSummaryHeaderDetail,
 } from '@osee/messaging/shared/types';
-import { changeReportRow } from 'src/app/shared/types/change-report/change-report';
+import { NodeTraceReportItem } from '../../types/NodeTraceReport';
+import { changeReportRow } from '@osee/shared/types/change-report';
 
 export const HeaderKeysEnum = {
 	NONE: '',
@@ -58,6 +59,7 @@ export const HeaderKeysEnum = {
 	IMPORT_NODE: 'importNode',
 	IMPORT_PLATFORM_TYPE: 'importPlatformType',
 	MESSAGE: 'message',
+	NODE_TRACE_REQ: 'nodeTraceReq',
 	STRUCTURE: 'structure',
 	SUBMESSAGE: 'submessage',
 } as const;
@@ -74,6 +76,7 @@ export class HeaderService {
 			ImportEnumSet &
 			messageToken &
 			platformTypeImportToken &
+			NodeTraceReportItem &
 			structure &
 			subMessage
 	>(
@@ -104,6 +107,12 @@ export class HeaderService {
 			case HeaderKeysEnum.IMPORT_PLATFORM_TYPE:
 				return of(
 					this._importPlatformTypeHeaders.find(
+						(h) => h.header === value
+					)
+				);
+			case HeaderKeysEnum.NODE_TRACE_REQ:
+				return of(
+					this._nodeTraceReportReqHeaders.find(
 						(h) => h.header === value
 					)
 				);
@@ -1006,6 +1015,24 @@ export class HeaderService {
 			header: 'applicability',
 			description: 'Enum Set applicability',
 			humanReadable: 'Applicability',
+		},
+	];
+
+	private _nodeTraceReportReqHeaders: headerDetail<NodeTraceReportItem>[] = [
+		{
+			header: 'name',
+			description: 'Requirement Name',
+			humanReadable: 'Name',
+		},
+		{
+			header: 'artifactType',
+			description: 'Requirement Artifact Type',
+			humanReadable: 'Artifact Type',
+		},
+		{
+			header: 'relatedItems',
+			description: 'Artifacts related to the requirement',
+			humanReadable: 'Traces To',
 		},
 	];
 
