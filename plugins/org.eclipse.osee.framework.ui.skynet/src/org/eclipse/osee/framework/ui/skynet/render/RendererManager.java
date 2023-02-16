@@ -219,6 +219,10 @@ public final class RendererManager {
       return open(artifacts, presentationType, new NullProgressMonitor(), new HashMap<RendererOption, Object>());
    }
 
+   public static String open(Collection<Artifact> artifacts, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) {
+      return open(artifacts, presentationType, new NullProgressMonitor(), rendererOptions);
+   }
+
    public static String open(Artifact artifact, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) {
       return open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), rendererOptions);
    }

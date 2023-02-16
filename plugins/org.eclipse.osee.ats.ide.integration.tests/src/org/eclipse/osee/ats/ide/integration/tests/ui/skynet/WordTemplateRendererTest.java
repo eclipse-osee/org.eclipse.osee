@@ -610,7 +610,6 @@ public class WordTemplateRendererTest {
       String contents;
       try {
          contents = getFileAsString(resultPath);
-         System.out.println(contents);
          Assert.assertTrue("Paragraph Number & Name Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
          basicDocumentCheck(contents, tabString, false, false);
