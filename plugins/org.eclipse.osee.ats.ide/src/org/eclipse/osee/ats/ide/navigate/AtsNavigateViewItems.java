@@ -479,10 +479,9 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new SearchNavigateItem(new NextVersionSearchItem(null, LoadView.WorldEditor), ATS_VERSIONS));
          items.add(new GenerateVersionReportItem());
          items.add(new GenerateFullVersionReportItem());
+         items.add(new MassEditTeamVersionItem("Team Versions", FrameworkImage.VERSION));
 
-         // Admin
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
-            items.add(new MassEditTeamVersionItem("Team Versions (Admin)", FrameworkImage.VERSION));
             items.add(new CreateNewVersionItem(null));
             items.add(new ReleaseVersionItem(null));
          }
