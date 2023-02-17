@@ -121,7 +121,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
          Artifact dropTarget = getSelectedArtifact(event);
          ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-         if (dropTarget != null) {
+         if (dropTarget != null && toBeDropped != null) {
             try {
                Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
                List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
@@ -140,10 +140,9 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                if (valid) {
                   for (Artifact art : artsOnSameBranchAsDestination) {
                      if (art.hasParent()) {
-                        valid =
-                           ServiceUtil.accessControlService().hasRelationTypePermission(art.getParent(),
-                              CoreRelationTypes.DefaultHierarchical_Child, Collections.emptyList(),
-                              PermissionEnum.WRITE, null).isSuccess();
+                        valid = ServiceUtil.accessControlService().hasRelationTypePermission(art.getParent(),
+                           CoreRelationTypes.DefaultHierarchical_Child, Collections.emptyList(), PermissionEnum.WRITE,
+                           null).isSuccess();
                      }
                      if (!valid) {
                         break;
