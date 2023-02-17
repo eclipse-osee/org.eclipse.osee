@@ -54,13 +54,9 @@ import org.eclipse.swt.dnd.TransferData;
 
 public class ArtifactTransfer extends ByteArrayTransfer {
 
-   /**
-    * Singleton instance.
-    */
    private static final ArtifactTransfer instance = new ArtifactTransfer();
 
-   // Create a unique ID to make sure that different Eclipse
-   // applications use different "types" of <code>ResourceTransfer</code>
+   // Create a unique ID to make sure that different Eclipse applications use different "types" of <code>ResourceTransfer</code>
    private static final String TYPE_NAME =
       "artifact-transfer-format:" + System.currentTimeMillis() + ":" + instance.hashCode(); //$NON-NLS-2$//$NON-NLS-1$
 
@@ -85,17 +81,15 @@ public class ArtifactTransfer extends ByteArrayTransfer {
       if (!(data instanceof ArtifactData)) {
          return;
       }
-
       ArtifactData artData = (ArtifactData) data;
+
       /**
-       * The resource serialization format is: (int) number of artifacts Then, the following for each resource: (int)
-       * artID (int) tagID Then the following (int) urlLength (int) sourceLength (chars) url (chars) source
+       * The resource serialization format is: (int) number of artifacts Then, the following for each resource: (long)
+       * artifactId (long) branchId Then the following (int) urlLength (int) sourceLength (chars) url (chars) source
        */
 
-      try {
-         ByteArrayOutputStream out = new ByteArrayOutputStream();
-         DataOutputStream dataOut = new DataOutputStream(out);
-
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      try (DataOutputStream dataOut = new DataOutputStream(out)) {
          // write the number of resources
          dataOut.writeInt(artData.getArtifacts().length);
 
@@ -107,11 +101,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
          dataOut.writeChars(artData.getUrl());
          dataOut.writeChars(artData.getSource());
 
-         // cleanup
-         dataOut.close();
-         out.close();
-         byte[] bytes = out.toByteArray();
-         super.javaToNative(bytes, transferData);
+         super.javaToNative(out.toByteArray(), transferData);
       } catch (Exception ex) {
          // it's best to send nothing if there were problems
          OseeLog.log(getClass(), Level.SEVERE, ex);
@@ -119,18 +109,20 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    }
 
    @Override
+   /**
+    * The resource serialization format is: (int) number of artifacts Then, the following for each resource: (long)
+    * artifactId (long) branchId
+    *
+    * @return a java <code>byte[]</code> containing the converted data if the conversion was successful; otherwise null
+    */
    public ArtifactData nativeToJava(TransferData transferData) {
-      /**
-       * The resource serialization format is: (int) number of artifacts Then, the following for each resource: (int)
-       * artID (int) tagID
-       */
-
       byte[] bytes = (byte[]) super.nativeToJava(transferData);
       if (bytes == null) {
+         OseeLog.log(getClass(), Level.WARNING, "super.nativeToJava(transferData) returned null");
          return null;
       }
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
-      try {
+
+      try (DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes))) {
          int count = in.readInt();
          Artifact[] artifacts = new Artifact[count];
          for (int i = 0; i < count; i++) {
@@ -154,7 +146,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    }
 
    /**
-    * Reads a resource from the given stream.
+    * Reads an artifact from the given stream.
     */
    private Artifact readArtifact(DataInputStream dataIn) throws IOException {
       return ArtifactQuery.getArtifactFromId(dataIn.readLong(), BranchId.valueOf(dataIn.readLong()));
