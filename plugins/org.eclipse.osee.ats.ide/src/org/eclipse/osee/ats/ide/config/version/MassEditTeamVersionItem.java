@@ -47,11 +47,11 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    private IAtsTeamDefinition selectedTeamDef;
 
    public MassEditTeamVersionItem(String name, KeyedImage oseeImage) {
-      super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS_ADMIN);
+      super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS);
    }
 
    public MassEditTeamVersionItem(String name, AtsImage oseeImage) {
-      super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS_ADMIN);
+      super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS);
    }
 
    private IAtsTeamDefinition getTeamDefinition() {
