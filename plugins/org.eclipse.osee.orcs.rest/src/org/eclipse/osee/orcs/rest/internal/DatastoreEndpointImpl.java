@@ -18,6 +18,7 @@ import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -81,13 +82,13 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
 
    @Override
    public UserToken getUserInfo(String userId, String externalUserInfo) {
-      if (!userId.equals("-1")) {
-         return userService.getUserByUserId(userId);
-      }
-      if (!externalUserInfo.equals("-1")) {
+      activityLog.createEntry(CoreActivityTypes.JAXRS_METHOD_CALL, "userId [%s]  externalUserInfo [%s]", userId,
+         externalUserInfo);
+
+      if (userId.equals("-1")) {
          return userService.getUserByUserId(externalUserInfo);
       }
-      return UserToken.SENTINEL;
+      return userService.getUserByUserId(userId);
    }
 
    /**

@@ -33,6 +33,9 @@ public interface ActivityLog {
 
    Long createUpdateableEntry(ActivityTypeToken type, Object... messageArgs);
 
+   /**
+    * create a single log entry with <code>COMPLETE_STATUS</code>
+    */
    Long createEntry(ActivityTypeToken type, Object... messageArgs);
 
    Long createEntry(ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs);
