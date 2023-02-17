@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -68,8 +69,11 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                   String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey);
                   orcsApi.userService().setUserForCurrentThread(loginId);
                }
+            } else if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
+               orcsApi.userService().setUserForCurrentThread(
+                  authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length()));
             } else {
-               setUserForCurrentThread(authHeader);
+               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader));
             }
          }
       } catch (Exception ex) {
@@ -91,10 +95,5 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
             activityLog.createThrowableEntry(JAXRS_METHOD_CALL_FILTER_ERROR, th);
          }
       }
-   }
-
-   private void setUserForCurrentThread(String userArtifactId) {
-      UserId accountId = UserId.valueOf(userArtifactId);
-      orcsApi.userService().setUserForCurrentThread(accountId);
    }
 }

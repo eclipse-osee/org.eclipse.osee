@@ -18,6 +18,8 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
  * @author Donald G. Dunne
@@ -32,6 +34,13 @@ public class OseeAccountClientRequestFilter implements ClientRequestFilter {
 
    @Override
    public void filter(ClientRequestContext context) {
-      context.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, userService.getUserIfLoaded().getIdString());
+      UserToken user = userService.getUserIfLoaded();
+      String authValue;
+      if (user.getLoginIds().isEmpty()) {
+         authValue = user.getIdString();
+      } else {
+         authValue = OseeProperties.LOGIN_ID_AUTH_SCHEME + user.getLoginIds().get(0);
+      }
+      context.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, authValue);
    }
 }

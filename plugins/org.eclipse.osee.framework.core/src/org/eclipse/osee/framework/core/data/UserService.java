@@ -55,7 +55,6 @@ public interface UserService {
     * @return the UserToken for the user whose org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId attribute
     * equals the userId parameter
     */
-
    UserToken getUserByUserId(String userId);
 
    IUserGroup getUserGroup(ArtifactToken userGroupArt);
@@ -64,6 +63,11 @@ public interface UserService {
 
    IUserGroup getUserGroupOrNull(IUserGroupArtifactToken userGroup);
 
+   /**
+    * This method should only be invoked on the client and never by applications.
+    *
+    * @return the UserToken if it has already been loaded; otherwise <code>UserToken.SENTINEL</code>
+    */
    UserToken getUserIfLoaded();
 
    UserToken getUserIfLoaded(Long accountId);
