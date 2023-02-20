@@ -16,12 +16,15 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
@@ -81,12 +84,37 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public UserToken getUserInfo(String userId, String externalUserInfo) {
-      activityLog.createEntry(CoreActivityTypes.JAXRS_METHOD_CALL, "userId [%s]  externalUserInfo [%s]", userId,
-         externalUserInfo);
+   public UserToken getUserInfo(HttpHeaders headers, String userId, String authHeader) {
+      String authHeaderHard = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
+      activityLog.createEntry(CoreActivityTypes.JAXRS_METHOD_CALL,
+         "userId " + userId + " authHeader " + authHeader + " authHeaderHard " + authHeaderHard);
 
-      if (userId.equals("-1")) {
-         return userService.getUserByUserId(externalUserInfo);
+      UserToken user = userService.getUser();
+      if (user.isInvalid()) {
+         if (userId != null) {
+            user = userService.getUserByUserId(userId);
+         }
+         if (user.isInvalid()) {
+            user = testAuthHeader(authHeaderHard);
+            if (user.isInvalid()) {
+               user = testAuthHeader(authHeader);
+            }
+         }
+      }
+
+      return user;
+   }
+
+   private UserToken testAuthHeader(String authHeader) {
+      if (Strings.isInValid(authHeader)) {
+         return UserToken.SENTINEL;
+      }
+
+      String userId;
+      if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
+         userId = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length());
+      } else {
+         userId = authHeader;
       }
       return userService.getUserByUserId(userId);
    }

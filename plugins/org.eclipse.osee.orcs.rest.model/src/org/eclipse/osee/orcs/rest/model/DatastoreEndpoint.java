@@ -15,12 +15,13 @@ package org.eclipse.osee.orcs.rest.model;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -58,14 +59,14 @@ public interface DatastoreEndpoint {
     *
     * @param userId This header is used when you can control the authentication provider to provide data closer to what
     * OSEE needs.
-    * @param externalUserInfo Typical use case is authentication is provided by an external service (i.e. Auth0,
-    * Firebase, KeyCloak etc). This should be the default authentication method for web clients.
+    * @param authHeader Typical use case is authentication is provided by an external service (i.e. Auth0, Firebase,
+    * KeyCloak etc). This should be the default authentication method for web clients.
     * @return The current logged in user.
     */
    @GET
    @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
-   UserToken getUserInfo(@DefaultValue("-1") @HeaderParam("osee.user.id") String userId, @DefaultValue("-1") @HeaderParam("osee_external_user_info") String externalUserInfo);
+   UserToken getUserInfo(@Context HttpHeaders headers, @HeaderParam("osee.user.id") String userId, @HeaderParam(HttpHeaders.AUTHORIZATION) String authHeader);
 
    /**
     * Clears the OSEE server's {@link UserToken} cache.
