@@ -26,9 +26,9 @@ describe('ParameterSingleSelectComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				HttpClientModule,
-				NoopAnimationsModule,
-				MatFormFieldModule,
 				MatSelectModule,
+				MatFormFieldModule,
+				NoopAnimationsModule,
 			],
 			declarations: [ParameterSingleSelectComponent],
 		}).compileComponents();

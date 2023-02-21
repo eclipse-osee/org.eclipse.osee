@@ -13,11 +13,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GridCommanderComponent } from './grid-commander.component';
+import { NonOseeToolbarComponent } from '../layout/lib/toolbar/non-osee-toolbar/non-osee-toolbar.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('./grid-commander.routes'),
+		component: NonOseeToolbarComponent,
 		outlet: 'toolbar',
 	},
 	{ path: '', component: GridCommanderComponent },

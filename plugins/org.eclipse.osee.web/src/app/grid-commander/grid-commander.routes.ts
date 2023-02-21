@@ -14,11 +14,10 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		loadComponent: () => import('./osee-toolbar/osee-toolbar.component'),
-	},
-	{
-		path: '**',
-		redirectTo: '',
+		loadComponent: () =>
+			import(
+				'../layout/lib/toolbar/non-osee-toolbar/non-osee-toolbar.component'
+			),
 	},
 ];
 

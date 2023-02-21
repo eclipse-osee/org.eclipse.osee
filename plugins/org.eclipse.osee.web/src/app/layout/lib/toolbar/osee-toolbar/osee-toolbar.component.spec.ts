@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf, AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterOutlet } from '@angular/router';
 
-import { ToolbarComponent } from './toolbar.component';
+import { OseeToolbarComponent } from './osee-toolbar.component';
 
 @Component({
 	selector: 'osee-display-user',
@@ -30,11 +30,11 @@ import { ToolbarComponent } from './toolbar.component';
 class MockOseeUserComponent {}
 
 describe('ToolbarComponent', () => {
-	let component: ToolbarComponent;
-	let fixture: ComponentFixture<ToolbarComponent>;
+	let component: OseeToolbarComponent;
+	let fixture: ComponentFixture<OseeToolbarComponent>;
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(ToolbarComponent, {
+		await TestBed.overrideComponent(OseeToolbarComponent, {
 			set: {
 				imports: [
 					MatToolbarModule,
@@ -49,11 +49,11 @@ describe('ToolbarComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [ToolbarComponent, NoopAnimationsModule],
+				imports: [OseeToolbarComponent, NoopAnimationsModule],
 			})
 			.compileComponents();
 
-		fixture = TestBed.createComponent(ToolbarComponent);
+		fixture = TestBed.createComponent(OseeToolbarComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
