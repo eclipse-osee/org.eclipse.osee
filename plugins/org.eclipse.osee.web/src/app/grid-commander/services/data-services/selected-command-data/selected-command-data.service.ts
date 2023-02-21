@@ -11,18 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import {
-	combineLatest,
-	debounceTime,
-	iif,
-	map,
-	of,
-	shareReplay,
-	switchMap,
-} from 'rxjs';
+import { debounceTime, iif, map, of, shareReplay, switchMap } from 'rxjs';
 import { Command } from '../../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { CommandGroupOptionsService } from '../commands/command-group-options.service';
-import { UserContextRelationsService } from '../context-relations/user-context-relations.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -32,8 +23,7 @@ export class SelectedCommandDataService {
 		this.commandGroupOptionsService.filteredCommandGroups;
 
 	constructor(
-		private commandGroupOptionsService: CommandGroupOptionsService,
-		private userContextRelations: UserContextRelationsService
+		private commandGroupOptionsService: CommandGroupOptionsService
 	) {}
 
 	private _selectedCommandObject$ = this._filteredCommandGroups$.pipe(
@@ -79,19 +69,6 @@ export class SelectedCommandDataService {
 					() => command.name === '' && command.id === '',
 					of(),
 					of(true)
-				)
-			)
-		);
-	}
-	public get contextData() {
-		return combineLatest([
-			this._selectedCommandObject$,
-			this.userContextRelations.contexts,
-		]).pipe(
-			switchMap(([selectedCommand, contexts]) =>
-				contexts.filter(
-					(context) =>
-						context.indexOf(selectedCommand.contextGroup) === 0
 				)
 			)
 		);

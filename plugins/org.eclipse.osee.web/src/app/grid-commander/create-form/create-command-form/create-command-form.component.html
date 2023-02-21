@@ -13,18 +13,28 @@
 <mat-card class="gc-card">
 	<div
 		class="form-group"
-		*ngIf="commandActionOptions | async as options">
+		*ngIf="createCommandFormOptions | async as formOptions">
 		<osee-parameter-single-select
-			[options]="options"
-			[label]="'This Command will: '"
+			[options]="formOptions.contexts"
+			[label]="'Add new Command to: '"
 			(selectionChange)="
-				onSelectionChange($event)
+				onContextSelectionChange($event)
 			"></osee-parameter-single-select>
+		<div
+			class="form-group"
+			*ngIf="formOptions.commandActions">
+			<osee-parameter-single-select
+				[options]="formOptions.commandActions"
+				[label]="'This Command will: '"
+				(selectionChange)="
+					onCommandSelectionChange($event)
+				"></osee-parameter-single-select>
 
-		<ng-container *ngIf="commandAction === 'Open a URL'">
-			<osee-open-url-form
-				(submitOpenURLCommandForm)="onSubmitHandler($event)">
-			</osee-open-url-form>
-		</ng-container>
+			<ng-container *ngIf="commandAction === 'Open a URL'">
+				<osee-open-url-form
+					(submitOpenURLCommandForm)="onSubmitHandler($event)">
+				</osee-open-url-form>
+			</ng-container>
+		</div>
 	</div>
 </mat-card>

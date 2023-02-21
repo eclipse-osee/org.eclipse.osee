@@ -20,9 +20,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { take } from 'rxjs';
 import { createArtifact } from '@osee/shared/types';
+import { combineLatest, map, take } from 'rxjs';
 import { ParameterTypesModule } from '../../parameter-types/parameter-types.module';
+import { ContextSelectionService } from '../../services/create-command-form-services/context-selection.service';
 import { CreateCommandWithParameterArtifactService } from '../../services/create-command-form-services/create-command-with-parameter-artifact.service';
 import { CreateCommandService } from '../../services/create-command-form-services/create-command.service';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
@@ -48,15 +49,25 @@ import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-f
 	styleUrls: ['./create-command-form.component.sass'],
 })
 export class CreateCommandFormComponent implements OnDestroy {
-	//Will eventually be the default value of the Create New Command Parameter
 	commandActionOptions = this.parameterDataService.parameterDefaultValue$;
-
+	availableContexts = this.contextSelectionService.availableContexts;
 	commandAction: string = '';
+
+	createCommandFormOptions = combineLatest([
+		this.availableContexts,
+		this.commandActionOptions,
+	]).pipe(
+		map(([contexts, commandActions]) => ({
+			contexts,
+			commandActions,
+		}))
+	);
 
 	constructor(
 		private createCommandService: CreateCommandService,
 		private parameterDataService: ParameterDataService,
-		private createCommandWithParameterArtifactService: CreateCommandWithParameterArtifactService
+		private createCommandWithParameterArtifactService: CreateCommandWithParameterArtifactService,
+		private contextSelectionService: ContextSelectionService
 	) {}
 
 	ngOnDestroy(): void {
@@ -73,7 +84,11 @@ export class CreateCommandFormComponent implements OnDestroy {
 			.subscribe();
 	}
 
-	onSelectionChange(e: { selectedOption: string }) {
+	onCommandSelectionChange(e: { selectedOption: string }) {
 		this.commandAction = e.selectedOption;
+	}
+
+	onContextSelectionChange(e: { selectedOption: string }) {
+		this.contextSelectionService.SelectedContext = e.selectedOption;
 	}
 }
