@@ -66,7 +66,7 @@ public class AddAttributeAction extends Action {
                if (dialog2.open() == Window.OK) {
                   SkynetTransaction transaction =
                      TransactionManager.createTransaction(artifact.getBranch(), "ArtEdAttr: Add Attribute");
-                  artifact.addAttribute(attrType, dialog2.getEntry());
+                  artifact.addAttributeFromString(attrType, dialog2.getEntry());
                   transaction.addArtifact(artifact);
                   transaction.execute();
                }
