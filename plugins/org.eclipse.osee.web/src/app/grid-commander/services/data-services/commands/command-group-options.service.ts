@@ -134,6 +134,7 @@ export class CommandGroupOptionsService {
 									(acc, curr) => {
 										acc.contextGroup = groupedObs.key;
 										acc.commands.push(curr);
+										this.commandsSortFunction(acc.commands);
 										return acc;
 									},
 									{ contextGroup: '', commands: [] } as {

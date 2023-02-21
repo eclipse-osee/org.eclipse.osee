@@ -11,8 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { map, repeatWhen, shareReplay } from 'rxjs';
+import {
+	concatMap,
+	distinct,
+	map,
+	of,
+	repeatWhen,
+	scan,
+	shareReplay,
+	switchMap,
+} from 'rxjs';
 import { UiService } from '../../../../ple-services/ui/ui.service';
+import {
+	Command,
+	UsersContext,
+} from '../../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { GetUserContextRelationsService } from '../../fetch-data-services/user-context-relations/get-user-context-relations.service';
 
 @Injectable({
@@ -21,7 +34,10 @@ import { GetUserContextRelationsService } from '../../fetch-data-services/user-c
 export class UserContextRelationsService {
 	contextData$ = this.getUserContextRelationsService
 		.getResponseUserContextData()
-		.pipe(repeatWhen(() => this.uiService.update));
+		.pipe(
+			switchMap((userContexts) => this.setContextPriority(userContexts)),
+			repeatWhen(() => this.uiService.update)
+		);
 
 	constructor(
 		private getUserContextRelationsService: GetUserContextRelationsService,
@@ -34,7 +50,13 @@ export class UserContextRelationsService {
 
 	private _commands = this.contextData$.pipe(
 		map((contexts) => contexts.map((context) => context.commands).flat()),
-		shareReplay()
+		concatMap((commands) => commands),
+		distinct((command) => command.name),
+		scan((acc, curr) => {
+			acc.push(curr);
+			return acc;
+		}, [] as Command[]),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	public get contexts() {
@@ -43,5 +65,14 @@ export class UserContextRelationsService {
 
 	public get commands() {
 		return this._commands;
+	}
+
+	setContextPriority(contexts: UsersContext[]) {
+		return of(
+			contexts.reduce((acc, curr) => {
+				if (curr.name === 'Default User Context') return [curr, ...acc];
+				return [...acc, curr];
+			}, [] as UsersContext[])
+		);
 	}
 }

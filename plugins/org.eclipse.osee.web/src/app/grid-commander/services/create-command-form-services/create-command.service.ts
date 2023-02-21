@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { createArtifact } from '@osee/shared/types';
 import {
 	combineLatest,
 	of,
@@ -21,16 +22,15 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '../../../ple-services/ui/ui.service';
-import { createArtifact } from '@osee/shared/types';
 import { CreateCommandandAndRelationsService } from '../create-command-artifact-and-relations/create-command-and-relations.service';
-import { SelectedCommandDataService } from '../data-services/selected-command-data/selected-command-data.service';
 import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.service';
+import { ContextSelectionService } from './context-selection.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CreateCommandService {
-	contextData = this.selectedCommandDataService.contextData;
+	contextData = this.contextSelectionService.contextDetails;
 
 	private _commandArtId: string = '';
 
@@ -40,9 +40,9 @@ export class CreateCommandService {
 		this.done.next(val);
 	}
 	constructor(
-		private selectedCommandDataService: SelectedCommandDataService,
 		private branchIdService: GCBranchIdService,
 		private createCommandAndRelationsService: CreateCommandandAndRelationsService,
+		private contextSelectionService: ContextSelectionService,
 		private uiService: UiService
 	) {}
 
