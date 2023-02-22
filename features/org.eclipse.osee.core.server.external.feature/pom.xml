@@ -29,9 +29,13 @@
                 			                   <plugin id="swagger-integration"/>
                 			                   <plugin id="swagger-annotations"/>
 							   <plugin id="swagger-core"/>
+							   <plugin id="jackson-dataformat-yaml"/>
 							   <plugin id="swagger-jaxrs2"/>
 							   <plugin id="org.hsqldb"/>
   							   <plugin id="com.sun.xml.txw2"/>
+  							   							<plugin id="snakeyaml"/>
+  							 <plugin id="jackson-datatype-jsr310"/>
+  							 <plugin id="commons-lang3"/>
 							   <plugin id="com.sun.istack.commons-runtime"/>
 							   <plugin id="org.glassfish.jaxb.core"/>
 						           <plugin id="org.glassfish.jaxb.runtime"/>
