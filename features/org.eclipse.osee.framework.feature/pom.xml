@@ -28,7 +28,12 @@
 						</goals>
 						<configuration>
 							<excludes>
+														   <plugin id="jackson-dataformat-yaml"/>
+														<plugin id="snakeyaml"/>
+						<plugin	id="jackson-datatype-jsr310"/>
 						           <plugin id="swagger-models"/>
+						           							          							 <plugin id="commons-lang3"/>
+						           
                 			                   <plugin id="swagger-integration"/>
                 			                   <plugin id="swagger-annotations"/>
 							   <plugin id="swagger-core"/>

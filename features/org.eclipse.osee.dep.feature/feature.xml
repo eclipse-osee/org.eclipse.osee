@@ -374,6 +374,42 @@
       <import plugin="org.apache.commons.pool" version="0.0.0" match="compatible"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
+		
+	<plugin	
+		id="jackson-datatype-jsr310"
+		download-size="0"
+      install-size="0"
+      version="0.0.0"
+      unpack="false"/>
+
+<plugin	
+		id="commons-lang3"
+		download-size="0"
+      install-size="0"
+      version="0.0.0"
+      unpack="false"/>
+
+
+<plugin
+         id="snakeyaml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+ <plugin
+         id="jackson-dataformat-yaml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="javax.validation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
  <plugin
          id="org.apache.commons.math3"
