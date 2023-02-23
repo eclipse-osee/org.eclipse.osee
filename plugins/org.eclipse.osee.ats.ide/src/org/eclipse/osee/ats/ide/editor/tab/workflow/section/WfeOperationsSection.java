@@ -186,9 +186,14 @@ public class WfeOperationsSection extends SectionPart {
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      if (!AtsApiService.get().getUserService().isAtsAdmin()) {
+
+      boolean isAdmin = AtsApiService.get().getUserService().isAtsAdmin();
+      boolean isDeleteWorkflowAdmin = AtsApiService.get().getUserService().isAtsDeleteWorkflowAdmin();
+
+      if (!isAdmin && !isDeleteWorkflowAdmin) {
          return;
       }
+
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
       section.setText("Admin");
 
@@ -199,13 +204,16 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      new XButtonViaAction(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
       new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor, false)).createWidgets(sectionBody, 2);
-      if (ShowBranchChangeDataAction.isApplicable(editor.getWorkItem())) {
-         new XButtonViaAction(new ShowBranchChangeDataAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+
+      if (isAdmin) {
+         new XButtonViaAction(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
+         if (ShowBranchChangeDataAction.isApplicable(editor.getWorkItem())) {
+            new XButtonViaAction(new ShowBranchChangeDataAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         }
+         new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsApiService.get())).createWidgets(
+            sectionBody, 2);
       }
-      new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsApiService.get())).createWidgets(
-         sectionBody, 2);
 
       for (IWfeOperationsSection operation : operationsSectionProviders) {
          operation.createAdminSection(editor, sectionBody, toolkit);

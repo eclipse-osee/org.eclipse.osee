@@ -235,6 +235,7 @@ public class AtsDbConfigBase {
          ArtifactToken userGroup = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups);
 
          changes.createArtifact(userGroup, AtsUserGroups.AtsAdmin);
+         changes.createArtifact(userGroup, AtsUserGroups.AtsDeleteWorkflowAdmin);
          changes.createArtifact(userGroup, AtsUserGroups.AtsTempAdmin);
          changes.execute();
       }

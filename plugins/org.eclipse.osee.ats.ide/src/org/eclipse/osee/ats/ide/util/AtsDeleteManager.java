@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -82,16 +83,32 @@ public class AtsDeleteManager {
          artBuilder.append(" < " + selectedArts.size() + " artifacts>");
       }
       boolean confirmDelete = true;
+      boolean isAtsAdmin = AtsApiService.get().getUserService().isAtsAdmin();
+      boolean isAtsDeleteWorkflowAdmin = AtsApiService.get().getUserService().isAtsDeleteWorkflowAdmin();
+
       // Prompt for delete if specified in options
       if (deleteOptions.contains(DeleteOption.Prompt)) {
-         MessageDialogWithToggle md =
-            MessageDialogWithToggle.openOkCancelConfirm(Displays.getActiveShell(), "Delete/Purge ATS Object",
+         // AtsDeleteWorkflowAdmin cannot purge. Prevent via dialog.
+         // Ensure that AtsAdmin is not limited if in AtsDeleteWorkflowAdmin
+         if (!isAtsAdmin && isAtsDeleteWorkflowAdmin) {
+            boolean confirmationFromDialog = MessageDialog.openConfirm(Displays.getActiveShell(), "Delete ATS Object",
+               "Prepare to Delete/ ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$",
+                  "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?");
+
+            confirmDelete = confirmationFromDialog;
+            purgeOption = false;
+         } else {
+            // Admins only can purge. Give them the option
+            MessageDialogWithToggle md = MessageDialogWithToggle.openOkCancelConfirm(Displays.getActiveShell(),
+               "Delete/Purge ATS Object",
                "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$",
                   "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
                "Purge", false, null, null);
-         confirmDelete = md.getReturnCode() == 0;
-         if (md.getToggleState()) {
-            purgeOption = true;
+            confirmDelete = md.getReturnCode() == 0;
+            if (md.getToggleState()) {
+               purgeOption = true;
+            }
+
          }
       }
 
@@ -106,6 +123,15 @@ public class AtsDeleteManager {
       getDeleteArtifacts(delArts, delBuilder, allDeleteArts, ignoredArts);
       // Need to have 'final' purge for use in the doWork below
       final boolean purge = purgeOption;
+
+      if (purge && isAtsDeleteWorkflowAdmin) {
+         // Prevent false popup in case Ats Admin is also Ats Delete Workflow Admin
+         if (!isAtsAdmin) {
+            AWorkbench.popup("Purge is an Admin-only function");
+            return;
+         }
+      }
+
       // Get final confirmation of all selected and related items to delete/purge
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          String results =

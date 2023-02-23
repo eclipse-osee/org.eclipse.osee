@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 public class AtsUserServiceClientImpl extends AbstractAtsUserService {
 
    Boolean atsAdmin = null;
+   Boolean atsDeleteWorkflowAdmin = null;
    private AtsUser currentUser;
 
    public AtsUserServiceClientImpl() {
@@ -86,6 +87,16 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
          atsAdmin = AtsApiService.get().userService().isInUserGroup(AtsUserGroups.AtsAdmin);
       }
       return atsAdmin;
+   }
+
+   @Override
+   public boolean isAtsDeleteWorkflowAdmin() {
+      if (atsDeleteWorkflowAdmin == null) {
+         atsDeleteWorkflowAdmin = AtsApiService.get().userService().isUserMember(AtsUserGroups.AtsDeleteWorkflowAdmin,
+            AtsApiService.get().getUserService().getCurrentUser());
+      }
+
+      return atsDeleteWorkflowAdmin;
    }
 
    @Override
