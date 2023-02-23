@@ -141,4 +141,9 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    public boolean isAtsAdmin() {
       return orcsApi.userService().isInUserGroup(AtsUserGroups.AtsAdmin);
    }
+
+   @Override
+   public boolean isAtsDeleteWorkflowAdmin() {
+      return orcsApi.userService().isUserMember(AtsUserGroups.AtsDeleteWorkflowAdmin, getCurrentUser());
+   }
 }

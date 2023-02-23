@@ -90,12 +90,13 @@ public class AtsArtifactChecks implements ArtifactCheck {
          }
 
          boolean isAtsAdmin = atsApi.getUserService().isAtsAdmin();
+         boolean isAtsDeleteWorkflowAdmin = atsApi.getUserService().isAtsDeleteWorkflowAdmin();
 
          checkActionableItems(isAtsAdmin, atsApi, allArtifacts, results);
          checkTeamDefinitions(isAtsAdmin, atsApi, allArtifacts, results);
          checkAtsWorkDefinitions(isAtsAdmin, atsApi, allArtifacts, results);
          checkUsers(isAtsAdmin, atsApi, allArtifacts, results);
-         checkActions(isAtsAdmin, atsApi, allArtifacts, results);
+         checkActions(isAtsAdmin, isAtsDeleteWorkflowAdmin, atsApi, allArtifacts, results);
          checkWorkPackages(isAtsAdmin, atsApi, allArtifacts, results);
       }
 
@@ -112,10 +113,10 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return allArtifacts;
    }
 
-   private void checkActions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkActions(boolean isAtsAdmin, boolean isAtsDeleteWorkflowAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
       for (ArtifactToken art : artifacts) {
-         if (!isAtsAdmin && isWorkflowOrAction(art) && !isTask(art)) {
-            results.errorf("Deletion of [%s] is only permitted by ATS Admin; %s invalid",
+         if ((!isAtsAdmin && !isAtsDeleteWorkflowAdmin) && isWorkflowOrAction(art) && !isTask(art)) {
+            results.errorf("Deletion of [%s] is only permitted by ATS Admin or ATS Delete Workflow Admin; %s invalid",
                atsApi.getStoreService().getArtifactTypeName(art), art.toStringWithId());
          }
          String error = isWorkflowOrActionPermittedByAnyone(atsApi, art, artifacts);
@@ -126,7 +127,6 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
    }
 
-   @SuppressWarnings("FormatString")
    private String isWorkflowOrActionPermittedByAnyone(AtsApi atsApi, ArtifactToken art, Collection<ArtifactToken> allArtifacts) {
       if (art.isOfType(AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow teamWf : atsApi.getWorkItemService().getTeams(art)) {
@@ -149,8 +149,9 @@ public class AtsArtifactChecks implements ArtifactCheck {
          }
 
          if (allInList && !allArtifacts.contains(action.getStoreObject())) {
-            return String.format("Can't delete all child workflow(s) without deleting action %s, use ATS World Editor",
-               teamWf.toStringWithId(), teamWf.getParentAction().getStoreObject().toStringWithId());
+            return String.format(
+               "Can't delete all child workflow(s) of %s without deleting action %s, use ATS World Editor",
+               teamWf.getParentAction().getStoreObject().toStringWithId(), art.toStringWithId());
          }
       }
       return null;

@@ -22,9 +22,11 @@ import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 public class AtsUserGroups {
 
    public static IUserGroupArtifactToken AtsAddAttrColumns =
-      UserGroupArtifactToken.valueOf(10847751L, "Ats Add Attr Columns");
-   public static IUserGroupArtifactToken AtsAdmin = UserGroupArtifactToken.valueOf(136750L, "Ats Admin");
-   public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "AtsTemp Admin");
+      UserGroupArtifactToken.valueOf(10847751L, "ATS Add Attr Columns");
+   public static IUserGroupArtifactToken AtsAdmin = UserGroupArtifactToken.valueOf(136750L, "ATS Admin");
+   public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "ATSTemp Admin");
+   public static IUserGroupArtifactToken AtsDeleteWorkflowAdmin =
+      UserGroupArtifactToken.valueOf(11200216L, "ATS Delete Workflow Admin");
    public static IUserGroupArtifactToken peerReviewCreationNotify =
       UserGroupArtifactToken.valueOf(8742803L, "Peer Review Creation");
 }

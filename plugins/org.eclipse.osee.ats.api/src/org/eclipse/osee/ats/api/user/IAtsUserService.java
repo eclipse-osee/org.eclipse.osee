@@ -44,6 +44,13 @@ public interface IAtsUserService {
 
    boolean isAtsAdmin();
 
+   /**
+    * Denotes if user is able to delete (but not purge) workflows.
+    *
+    * @return <code> true </code> if user is able to delete (but not purge) workflows.
+    */
+   boolean isAtsDeleteWorkflowAdmin();
+
    Collection<AtsUser> getUsers(Active active);
 
    void reloadCache();
