@@ -84,8 +84,6 @@ public interface ApplicabilityQuery {
 
    List<ArtifactToken> getConfigurationsForBranch(BranchId branch);
 
-   List<String> initializeAllApplicabilityTuples(BranchId branch);
-
    List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts, List<AttributeTypeToken> atts);
 
 }

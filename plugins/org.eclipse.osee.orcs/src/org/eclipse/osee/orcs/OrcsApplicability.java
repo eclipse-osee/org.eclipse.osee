@@ -119,7 +119,7 @@ public interface OrcsApplicability {
 
    XResultData updateCfgGroup(ConfigurationGroupDefinition group, BranchId branch);
 
-   XResultData validateCompoundApplicabilities(BranchId branch, boolean update);
+   XResultData validateCompoundApplicabilities(BranchId branch, boolean update, XResultData results);
 
    ProductTypeDefinition getProductType(String productType, BranchId branch);
 
@@ -144,4 +144,6 @@ public interface OrcsApplicability {
    XResultData createCompoundApplicabilityForBranch(String applicability, BranchId branch);
 
    XResultData deleteCompoundApplicabilityFromBranch(ApplicabilityId compApplicId, BranchId branch);
+
+   XResultData validate(BranchId branch, boolean update, XResultData results);
 }

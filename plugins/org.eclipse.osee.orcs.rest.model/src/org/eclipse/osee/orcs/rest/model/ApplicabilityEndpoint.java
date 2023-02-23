@@ -339,7 +339,7 @@ public interface ApplicabilityEndpoint {
    @PUT
    @Path("validate")
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData validate();
+   XResultData validate(@QueryParam("update") String update);
 
    @GET
    @Path("applicabilityToken/{id}")

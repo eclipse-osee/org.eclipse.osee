@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.rest.internal.writer.ApplicabilityFeatureMatrixStreamingOutput;
@@ -210,9 +211,17 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData validate() {
+   public XResultData validate(String update) {
       XResultData results = isAccess();
-      results = ops.validateCompoundApplicabilities(branch, false);
+      boolean makeUpdates = false;
+      if (Strings.isValid(update) && update.equals("true")) {
+         makeUpdates = true;
+      }
+      if (makeUpdates) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      }
+      results = ops.validate(branch, makeUpdates, results);
+      ops.validateCompoundApplicabilities(branch, makeUpdates, results);
       return results;
    }
 
@@ -398,7 +407,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          return access;
       }
       return ops.syncConfigGroup(branch);
-
    }
 
    @Override

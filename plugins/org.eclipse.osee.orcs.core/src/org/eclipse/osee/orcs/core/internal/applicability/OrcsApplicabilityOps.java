@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -77,6 +79,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -1957,9 +1960,285 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData validateCompoundApplicabilities(BranchId branch, boolean update) {
-      XResultData results = new XResultData();
-      List<String> actions = new ArrayList<>();
+   public XResultData validate(BranchId branch, boolean update, XResultData results) {
+
+      //for each configuration group validate that the ConfigurationGroup tag exists in itself and its members
+
+      for (ArtifactToken cfggroup : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(
+         branch)) {
+         //get all app tokens for the given cfg group
+         List<ApplicabilityToken> groupApps =
+            orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(cfggroup, branch);
+
+         //if this cfg group is missing its own config app token then add it
+         if (!groupApps.stream().anyMatch(a -> a.getName().equals("ConfigurationGroup = " + cfggroup.getName()))) {
+            results.addRaw("Add ConfigurationGroup = " + cfggroup.getName() + "to " + cfggroup.getName());
+            if (update) {
+               createApplicabilityForView(cfggroup, "ConfigurationGroup = " + cfggroup.getName(), branch);
+            }
+         }
+
+         //if this cfg group has any tokens that are for another config group remove them
+         for (ApplicabilityToken applicabilityToken : groupApps.stream().filter(
+            a -> a.getName().startsWith("ConfigurationGroup =")).collect(Collectors.toList())) {
+            if (!applicabilityToken.getName().equals("ConfigurationGroup = " + cfggroup.getName())) {
+               results.addRaw("Remove from " + cfggroup.getName() + " " + applicabilityToken.getName());
+               if (update) {
+                  removeApplicabilityFromView(branch, cfggroup, applicabilityToken.getName());
+               }
+            }
+         }
+
+         //if this cfg group is missing its own config app token then add it
+         if (!groupApps.stream().anyMatch(a -> a.getName().equals("Base"))) {
+            results.addRaw("Add Base to" + cfggroup.getName());
+            if (update) {
+               createApplicabilityForView(cfggroup, "Base", branch);
+            }
+         }
+         //make sure there are no non-member config apps in the group
+         //for each cfg in the cfg group, make sure the cfg group token is in the cfg AND the cfg token appears in the cfg group list
+
+         List<String> configAppsToRemoveFromGroup =
+            groupApps.stream().filter(a -> a.getName().startsWith("Config =")).map(b -> b.getName()).collect(
+               Collectors.toList());
+         for (ArtifactReadable cfg : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+            CoreArtifactTypes.BranchView).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_Group,
+               cfggroup).asArtifacts()) {
+
+            configAppsToRemoveFromGroup.remove("Config = " + cfg.getName());
+            //check that the current cfg app token exists in cfg group list
+            //if not add it
+            if (!groupApps.stream().anyMatch(a -> a.getName().equals("Config = " + cfg.getName()))) {
+               results.addRaw("Add Config = " + cfg.getName() + " to " + cfggroup.getName());
+               if (update) {
+                  createApplicabilityForView(cfggroup, "Config = " + cfg.getName(), branch);
+               }
+            }
+            //check that the current cfg has the cfg group token
+            List<ApplicabilityToken> cfgApps =
+               orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(cfg, branch);
+            if (!cfgApps.stream().anyMatch(a -> a.getName().equals("ConfigurationGroup = " + cfggroup.getName()))) {
+               results.addRaw("Add ConfigurationGroup = " + cfggroup.getName() + " to " + cfg.getName());
+               if (update) {
+                  createApplicabilityForView(cfg, "ConfigurationGroup = " + cfggroup.getName(), branch);
+               }
+            }
+         }
+         for (String str : configAppsToRemoveFromGroup) {
+            results.addRaw("Remove from " + cfggroup.getName() + " " + str);
+            if (update) {
+               removeApplicabilityFromView(branch, cfggroup, str);
+            }
+         }
+      }
+      for (ArtifactToken cfgArt : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationsForBranch(branch)) {
+         List<ApplicabilityToken> viewApps =
+            orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(cfgArt, branch);
+         //check that there aren't invalid Config tags in the given config's app token list
+         for (ApplicabilityToken appToken : viewApps.stream().filter(a -> a.getName().startsWith("Config =")).collect(
+            Collectors.toList())) {
+            if (!appToken.getName().equals("Config = " + cfgArt.getName())) {
+               results.addRaw("Remove from " + cfgArt.getName() + " " + appToken.getName());
+               if (update) {
+                  removeApplicabilityFromView(branch, cfgArt, appToken.getName());
+               }
+            }
+         }
+
+         //check that the current cfg app token exists in cfg list
+         //if not add it
+         if (!viewApps.stream().anyMatch(a -> a.getName().equals("Config = " + cfgArt.getName()))) {
+            results.addRaw("Add Config = " + cfgArt.getName() + " to " + cfgArt.getName());
+            if (update) {
+               createApplicabilityForView(cfgArt, "Config = " + cfgArt.getName(), branch);
+            }
+         }
+         //if this cfg is missing Base then add it
+         if (!viewApps.stream().anyMatch(a -> a.getName().equals("Base"))) {
+            results.addRaw("Add Base to " + cfgArt.getName());
+            if (update) {
+               createApplicabilityForView(cfgArt, "Base", branch);
+            }
+         }
+      }
+
+      List<String> syncAllApplicabilityTuples = syncAllApplicabilityTuples(branch, update, results);
+      results.addRaw("Results of sync All Applicability Tuples: " + syncAllApplicabilityTuples.toString());
+
+      return results;
+   }
+
+   /**
+    * This method was first used to initialize the tuple2 type ApplicabilityDefinition on baseline branches with Product
+    * Line capabilities. This was taken from the old getPossibleApplicabilities rest call and modified to add/introduce
+    * tuples. Currently this method is used to sync the ApplicabiltiyDefinition Tuples with Feature, Configuration and
+    * Configuration Group definitions
+    */
+
+   public List<String> syncAllApplicabilityTuples(BranchId branch, boolean update, XResultData results) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
+         "Syncing Tuple2 Entries for ApplicabilityDefinition Type");
+      TupleQuery query = orcsApi.getQueryFactory().tupleQuery();
+
+      GammaId gamma = GammaId.SENTINEL;
+      if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L),
+         "Base")).isValid()) {
+         tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L), "Base");
+      } else {
+         tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+      }
+
+      List<String> apps = new ArrayList<String>();
+      /**
+       * getApplicabilityTokens returns tokens based on tuples for ApplicabilityDefinition, which is what this method is
+       * initializing. For actual use, the tokens returned would need to be from the ViewApplicability tuple.
+       */
+      HashMap<Long, ApplicabilityToken> appTokens =
+         orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch);
+
+      for (ApplicabilityToken app : appTokens.values()) {
+         apps.add(app.getName());
+      }
+
+      List<String> applicsNoArtifacts = new ArrayList<>(); // Used to keep track of applicability's that exist but are not found within the 3 main loops
+      applicsNoArtifacts.addAll(apps);
+      applicsNoArtifacts.remove("Base");
+
+      for (ArtifactToken view : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationsForBranch(branch)) {
+         String str = "Config = " + view.getName();
+         Long strId = orcsApi.getKeyValueOps().getByValue(str);
+         Iterator<Long> iterator =
+            orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
+               strId).iterator();
+
+         List<Long> list = new ArrayList<>();
+         // Add each element of iterator to the List
+         iterator.forEachRemaining(list::add);
+         if (list.size() > 1 && list.contains(0L)) {
+            results.addRaw("Delete " + str + " from AppDef");
+            if (update) {
+               tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L), str);
+            }
+         } else if (list.size() == 0) {
+            results.addRaw("Add " + str + " to AppDef");
+            if (update) {
+               if (!(gamma =
+                  query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, view, str)).isValid()) {
+                  tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, view, str);
+               } else {
+                  tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+               }
+            }
+         }
+         if (!apps.contains(str)) {
+            apps.add(str);
+         }
+         applicsNoArtifacts.remove(str);
+      }
+      for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
+         for (String val : feature.getValues()) {
+            String str = feature.getName() + " = " + val;
+            Long strId = orcsApi.getKeyValueOps().getByValue(str);
+            Iterator<Long> iterator =
+               orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
+                  strId).iterator();
+
+            List<Long> list = new ArrayList<>();
+            // Add each element of iterator to the List
+            iterator.forEachRemaining(list::add);
+            if (list.size() > 1 && list.contains(0L)) {
+               results.addRaw("Delete " + str + " from AppDef");
+               if (update) {
+                  tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L), str);
+               }
+            } else if (list.size() == 0) {
+               results.addRaw("Add " + str + " to AppDef");
+               if (update) {
+                  if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition,
+                     ArtifactId.valueOf(feature.getId()), str)).isValid()) {
+                     tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(feature.getId()), str);
+                  } else {
+                     tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+                  }
+               }
+            }
+            if (!apps.contains(str)) {
+               apps.add(str);
+            }
+            applicsNoArtifacts.remove(str);
+         }
+      }
+      for (ArtifactToken group : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(
+         branch)) {
+         String str = "ConfigurationGroup = " + group.getName();
+         Long strId = orcsApi.getKeyValueOps().getByValue(str);
+         Iterator<Long> iterator =
+            orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
+               strId).iterator();
+
+         List<Long> list = new ArrayList<>();
+         // Add each element of iterator to the List
+         iterator.forEachRemaining(list::add);
+         if (list.size() > 1 && list.contains(0L)) {
+            results.addRaw("Remove " + str + " from AppDef");
+            if (update) {
+               tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L), str);
+            }
+         } else if (list.size() == 0) {
+            results.addRaw("Add " + str + " from AppDef");
+            if (update) {
+               if (!(gamma =
+                  query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, group, str)).isValid()) {
+                  tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, group, str);
+               } else {
+                  tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+               }
+            }
+         }
+         if (!apps.contains(str)) {
+            apps.add(str);
+         }
+         applicsNoArtifacts.remove(str);
+      }
+      for (String app : applicsNoArtifacts) {
+         // These applicabilities are mostly compounds and/or don't have associated artifacts.  Just using ID of 0 for E1
+         if (app.contains("&") || app.contains("|")) {
+            if (!(gamma = query.getTuple2GammaFromE1E2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L),
+               app)).isValid()) {
+               tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(0L), app);
+            } else {
+               tx.introduceTuple(CoreTupleTypes.ApplicabilityDefinition, gamma);
+            }
+         } else {
+
+            Long strId = orcsApi.getKeyValueOps().getByValue(app);
+            Iterator<Long> iterator =
+               orcsApi.getQueryFactory().tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ApplicabilityDefinition, branch,
+                  strId).iterator();
+
+            List<Long> list = new ArrayList<>();
+            // Add each element of iterator to the List
+            iterator.forEachRemaining(list::add);
+            for (Long e1Id : list) {
+               results.addRaw("Delete " + app + " from AppDef");
+               if (update) {
+                  tx.deleteTuple2(CoreTupleTypes.ApplicabilityDefinition, ArtifactId.valueOf(e1Id), app);
+               }
+            }
+         }
+
+      }
+      tx.commit();
+      List<String> appsNoDups = new ArrayList<>(new HashSet<>(apps));
+      Collections.sort(appsNoDups);
+      return appsNoDups;
+   }
+
+   @Override
+   public XResultData validateCompoundApplicabilities(BranchId branch, boolean update, XResultData results) {
+
+      List<String> actions = results.getResults();
       for (ArtifactId bView : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
          actions.addAll(updateCompoundApplicabilities(branch, bView, update).getResults());
       }
