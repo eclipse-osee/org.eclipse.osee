@@ -5,6 +5,12 @@
 <location path="${eclipse_home}" type="Profile"/>
 </locations>
 <includeBundles>
+<plugin id="jackson-dataformat-yaml"/>
+<plugin id="snakeyaml"/>
+<plugin id="commons-lang3"/>
+<plugin id="jackson-datatype-jsr310"/>
+<plugin id="javax.validation"/>
+<plugin id="io.github.classgraph"/>	
 <plugin id="ch.qos.logback.classic"/>
 <plugin id="ch.qos.logback.core"/>
 <plugin id="ch.qos.logback.slf4j"/>
