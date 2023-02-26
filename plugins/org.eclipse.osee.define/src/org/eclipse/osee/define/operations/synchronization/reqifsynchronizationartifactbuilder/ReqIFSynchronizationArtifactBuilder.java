@@ -179,7 +179,6 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    /**
     * Time {@link ZoneId} constant for "Zulu".
     */
-
    private static final ZoneId zoneIdZ = ZoneId.of("Z");
 
    /**

@@ -43,9 +43,11 @@ public class OpenNewAtsWorldEditorAction extends AbstractAtsAction {
    @Override
    public void runWithException() {
       IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
-      provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
-      provider.setTableLoadOptions(TableLoadOption.NoUI);
-      WorldEditor.open(provider);
+      if (provider != null) {
+         provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
+         provider.setTableLoadOptions(TableLoadOption.NoUI);
+         WorldEditor.open(provider);
+      }
    }
 
 }

@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -432,12 +433,12 @@ public class RankMapTest {
       Assert.assertEquals(this.rankMap.size(), entryCounter.get());
    }
 
-   @SuppressWarnings("unlikely-arg-type")
+   @SuppressWarnings({"unlikely-arg-type","CollectionIncompatibleType"})
    @Test
    public void testEntrySetContainsBadObject() {
       var entrySet = this.rankMap.entrySet();
 
-      Assert.assertFalse(entrySet.contains(5));
+      Assert.assertFalse(entrySet.contains("5"));
    }
 
    @Test
@@ -498,7 +499,7 @@ public class RankMapTest {
    public void testEntrySetRemoveAll() {
       var entrySet = this.rankMap.entrySet();
 
-      entrySet.removeAll(entrySet);
+      entrySet.clear();
    }
 
    @Test(expected = UnsupportedOperationException.class)

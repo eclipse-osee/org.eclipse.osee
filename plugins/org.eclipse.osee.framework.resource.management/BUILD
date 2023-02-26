@@ -2,13 +2,9 @@ java_library(
         name = "framework_resource_management",
         resources = ["xml_files"],
 	srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps",
-								"eclipse_core",
-								"eclipse_osgi_services",
-
-			],
-    visibility = ["//visibility:public"]
+                glob(["**/*.java"]),
+                deps = ["java_deps"],
+                visibility = ["//visibility:public"]
 )
 
 filegroup(
@@ -19,7 +15,6 @@ filegroup(
         ],
     visibility = ["//visibility:public"]
 )
-
 
 java_library(
         name = "java_deps",

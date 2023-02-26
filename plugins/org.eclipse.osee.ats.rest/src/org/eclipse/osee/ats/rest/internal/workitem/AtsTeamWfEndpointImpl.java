@@ -61,6 +61,9 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    @Override
    public List<ChangeItem> getChangeData(String id) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
+      if (workItem == null) {
+         return Collections.<ChangeItem> emptyList();
+      }
       if (!workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
       }
@@ -146,6 +149,9 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    @Override
    public List<IAtsGoal> getGoals(String id) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
+      if (workItem == null) {
+         throw new NullPointerException();
+      }
       if (!workItem.isTeamWorkflow()) {
          throw new UnsupportedOperationException();
       }

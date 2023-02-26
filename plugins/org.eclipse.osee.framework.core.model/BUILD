@@ -1,13 +1,9 @@
 java_library(
         name = "framework_core_model",
         srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps",
-								"eclipse_core",
-								"eclipse_osgi_services",
-								"eclipse_equinox_common"
-			],
-visibility = ["//visibility:public"]
+               glob(["**/*.java"]),
+               deps = ["java_deps",],
+               visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -28,32 +24,11 @@ java_library(
                 "@framework_jdk_core//:framework_jdk_core",
 		"@framework_core//:framework_core",
                 "@logger//:logger",
-                "@framework_logging//:framework_logging"
+                "@framework_logging//:framework_logging",
+		"@ext_jars//:eclipse_core",
+		"@ext_jars//:eclipse_equinox_common",
+		"@ext_jars//:eclipse_osgi_services"
                 ],
 )
 package(default_visibility = ["//visibility:public"])
-java_import(
-        name = "eclipse_core",
-        jars = [
-                "org.eclipse.core.runtime_3.18.0.v20200506-2143.jar",
-		"org.eclipse.core.resources_3.13.700.v20200209-1624.jar",
-		"org.eclipse.core.jobs_3.10.800.v20200421-0950.jar"
-      
-       ]
-)
-java_import(
-        name = "eclipse_equinox_common",
-        jars = [
-                "org.eclipse.equinox.common_3.12.0.v20200504-1602.jar",
-
-       ]
-)
-
-java_import(
-        name = "eclipse_osgi_services",
-        jars = [
-                "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar",
-               "org.eclipse.osgi_3.15.300.v20200520-1959.jar"
-       ]
-)
 

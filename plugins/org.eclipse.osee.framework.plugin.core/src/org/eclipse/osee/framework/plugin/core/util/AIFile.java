@@ -38,7 +38,9 @@ public final class AIFile {
             file.setContents(in, true, false, null); // steam will be closed before return
          } else {
             file.create(in, true, null);
-            in.close();
+            if (in != null) {
+               in.close();
+            }
          }
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);

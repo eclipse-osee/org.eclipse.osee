@@ -103,6 +103,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       return Long.valueOf(hexString);
    }
 
+   @SuppressWarnings("CollectionIncompatibleType")
    @Override
    protected void processData(Map<String, String> fieldMap) {
       boolean process = true;

@@ -38,7 +38,7 @@ public class DataConverters {
    /**
     * Time {@link ZoneId} constant for "Zulu".
     */
-
+   @SuppressWarnings("ZoneIdOfZ")
    private static final ZoneId zoneIdZ = ZoneId.of("Z");
 
    /**

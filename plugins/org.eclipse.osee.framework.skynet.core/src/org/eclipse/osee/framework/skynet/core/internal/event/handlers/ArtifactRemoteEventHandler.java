@@ -137,7 +137,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                         try {
                            if (modificationType == null) {
                               EventUtil.eventLog(String.format(
-                                 "REM: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
+                                 "REM: updateModifiedArtifact - Can't get mod type for %s's attribute %s.",
                                  artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                               continue;
                            }
@@ -157,7 +157,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                      // Process NEW attribute
                      else {
                         if (modificationType == null) {
-                           EventUtil.eventLog(String.format("REM: Can't get mod type for %s's attribute %d.",
+                           EventUtil.eventLog(String.format("REM: Can't get mod type for %s's attribute %s.",
                               artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                            continue;
                         }

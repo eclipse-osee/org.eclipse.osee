@@ -11,24 +11,29 @@ http_archive(
 )
 
 local_repository(
-     name = "framework_core",
-     path = "../org.eclipse.osee.framework.core",
-        )
+      name = "framework_core",
+      path = "../org.eclipse.osee.framework.core",
+    )
         
 local_repository(
-     name = "framework_jdk_core",
-     path = "../org.eclipse.osee.framework.jdk.core",
-       )
+      name = "framework_jdk_core",
+      path = "../org.eclipse.osee.framework.jdk.core",
+    )
 
 local_repository(
-     name = "framework_logging",
-     path = "../org.eclipse.osee.framework.logging",
-       )
+      name = "framework_logging",
+      path = "../org.eclipse.osee.framework.logging",
+    )
 
 local_repository(
-     name = "logger",
-     path = "../org.eclipse.osee.logger",
-      )
+      name = "logger",
+      path = "../org.eclipse.osee.logger",
+    )
+
+local_repository(
+      name = "ext_jars",
+      path = "../ext.jars",
+    )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
 

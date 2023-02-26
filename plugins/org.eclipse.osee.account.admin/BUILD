@@ -2,10 +2,21 @@ java_library(
         name = "account_admin",
         resources = ["x_files"],
 	srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps"],
-                        visibility = ["//visibility:public"]
-                        )
+                glob(["**/*.java"]),
+                deps = ["java_deps"],
+                visibility = ["//visibility:public"]
+              )
+
+filegroup(
+    name = "x_files",
+    srcs =
+          [
+            "OSGI-INF/account.admin.xml",
+            "OSGI-INF/subscriptions.admin.xml",
+           ]
+  ,
+    visibility = ["//visibility:public"]
+)
 
 java_library(
         name = "java_deps",
@@ -25,16 +36,5 @@ java_library(
 		"@authentication_admin//:authentication_admin",
 		"@account_rest_model//:account_rest_model"
                 ],
-)
-
-filegroup(
-    name = "x_files",
-    srcs =
-          [
-            "OSGI-INF/account.admin.xml",
-            "OSGI-INF/subscriptions.admin.xml",
-           ]
-  ,
-    visibility = ["//visibility:public"]
 )
 

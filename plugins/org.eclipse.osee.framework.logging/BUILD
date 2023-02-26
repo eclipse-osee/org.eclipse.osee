@@ -1,12 +1,10 @@
 java_library(
 	name = "framework_logging",
 	srcs =	
-	     #	glob(["src/org/eclipse/osee/framework/jdk/core/*/*.java"]),
-	     #  glob(["src/org/eclipse/osee/framework/jdk/core/persistence/*.java"]),	
 	        glob(["**/*.java"]),	
-			deps = ["java_deps","eclipse_osgi_services"],
-	visibility = ["//visibility:public"]
-)
+		deps = ["java_deps"],
+		visibility = ["//visibility:public"]
+	      )
 
 java_library(
         name = "java_deps",
@@ -22,13 +20,5 @@ java_library(
 		"@maven//:org_slf4j_slf4j_api",
 		"@framework_jdk_core//:framework_jdk_core"
                 ],
-)
-
-java_import(
-        name = "eclipse_osgi_services",
-        jars = [
-                "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar",
-               "org.eclipse.osgi_3.15.300.v20200520-1959.jar"
-       ]
 )
 

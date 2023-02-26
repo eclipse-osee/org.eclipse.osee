@@ -61,10 +61,14 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
    public JaxCountry getConfigObject(ArtifactId artifact) {
       JaxCountry jaxCountry = new JaxCountry();
       IAtsCountry country = atsApi.getProgramService().getCountryById(artifact);
+      if (country == null) {
+         throw new NullPointerException("Country is null");
+      }
       jaxCountry.setName(country.getName());
       jaxCountry.setId(country.getId());
       jaxCountry.setActive(country.isActive());
       jaxCountry.setDescription(country.getDescription());
+
       return jaxCountry;
    }
 

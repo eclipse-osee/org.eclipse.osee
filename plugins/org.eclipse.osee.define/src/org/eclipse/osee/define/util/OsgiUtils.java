@@ -49,8 +49,7 @@ public class OsgiUtils {
 
    private static String getAnnotationKey(String annotationKeyMethodName, Annotation theAnnotation) {
       try {
-         var key = theAnnotation.getClass().getMethod(annotationKeyMethodName).invoke(theAnnotation);
-
+         var key = theAnnotation.annotationType().getMethod(annotationKeyMethodName).invoke(theAnnotation);
          return (key instanceof String) ? (String) key : null;
       } catch (Exception e) {
          return null;
