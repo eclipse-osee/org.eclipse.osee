@@ -123,7 +123,7 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
                      }
                      listener.handleEvent(topicEvent, workItemArtIds);
                   } catch (Exception ex) {
-                     OseeLog.logf(getClass().getClass(), Level.SEVERE, ex,
+                     OseeLog.logf(getClass(), Level.SEVERE, ex,
                         "Error processing work item transition event handler for - %s", listener);
                   }
                }

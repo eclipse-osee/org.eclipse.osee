@@ -522,6 +522,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       activityMonitor.removeActivityThread();
    }
 
+   @SuppressWarnings("CollectionIncompatibleType")
    @Override
    public ActivityTypeToken getActivityType(ActivityTypeId typeId) {
       ActivityTypeToken type = types.get(typeId);
@@ -542,6 +543,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       this.enabled = enabled;
    }
 
+   @SuppressWarnings("CollectionIncompatibleType")
    @Override
    public ActivityTypeToken createIfAbsent(ActivityTypeToken token) {
       ActivityTypeToken type = types.get(token);

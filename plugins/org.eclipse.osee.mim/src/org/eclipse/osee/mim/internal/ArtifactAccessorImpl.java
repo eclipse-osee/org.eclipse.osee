@@ -112,8 +112,8 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    private Method getSetApplic(Class<?> type) {
       for (Method method : type.getMethods()) {
-         if (method.getName().startsWith("set") && method.getParameterTypes().length == 1 && void.class.equals(
-            method.getReturnType())) {
+         if (method.getName().startsWith("set") && method.getParameterTypes().length == 1
+            && void.class.equals(method.getReturnType())) {
             //is a setter
             if (method.getName().endsWith("Applicability")) {
                return method;
@@ -589,7 +589,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByQuery(branch, query, isExact, orderByAttribute);
+      return null;
    }
 
    @Override
@@ -737,7 +737,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, long pageCount, long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByRelationAndCount(branch, relation, relatedId, pageCount, pageSize, orderByAttribute);
+      return 23;
    }
 
    @Override

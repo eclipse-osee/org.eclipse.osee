@@ -86,10 +86,13 @@ public class WorkDefBuilder {
          StateToken fromLayoutStateToken = stateDefBuilder.getAndLayoutFromState();
          if (fromLayoutStateToken != null) {
             StateDefinition copyState = getStateDefinition(fromLayoutStateToken.getName());
-            if (stateDefBuilder.state.getOrdinal() < copyState.getOrdinal()) {
-               workDef.getResults().errorf("Cannot import layout from undefined state.");
+            if (copyState != null) {
+               if (stateDefBuilder.state.getOrdinal() < copyState.getOrdinal()) {
+                  workDef.getResults().errorf("Cannot import layout from undefined state.");
+               }
+
+               stateDefBuilder.state.setLayoutItems(copyState.getLayoutItems());
             }
-            stateDefBuilder.state.setLayoutItems(copyState.getLayoutItems());
          }
          StateToken defaultToStateToken = stateDefBuilder.getToDefaultStateToken();
          // toStates

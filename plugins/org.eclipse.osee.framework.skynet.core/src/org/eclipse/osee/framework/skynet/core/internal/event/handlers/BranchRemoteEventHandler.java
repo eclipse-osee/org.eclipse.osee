@@ -39,8 +39,10 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
    @Override
    public void handle(Transport transport, Sender sender, RemoteBranchEvent1 remoteEvent) {
       BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent(remoteEvent);
-      updateBranches(sender, branchEvent);
-      transport.send(sender, branchEvent);
+      if (branchEvent != null) {
+         updateBranches(sender, branchEvent);
+         transport.send(sender, branchEvent);
+      }
    }
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {

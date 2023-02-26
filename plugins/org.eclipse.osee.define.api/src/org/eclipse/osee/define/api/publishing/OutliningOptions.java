@@ -214,7 +214,7 @@ public class OutliningOptions implements ToMessage {
          "OutliningOptions::new, parameter \"headingAttributeType\" cannot be null.");
    }
 
-   public void setIncludeEmptyHeaders(boolean includeEmptyHeaders) {
+   public void setIncludeEmptyHeaders(Boolean includeEmptyHeaders) {
       if (Objects.nonNull(this.includeEmptyHeaders)) {
          throw new IllegalStateException(
             "OutliningOptions::setIncludeEmptyHeaders, member \"includeEmptyHeaders\" has already been set.");
@@ -232,7 +232,7 @@ public class OutliningOptions implements ToMessage {
          Objects.requireNonNull(outlineNumber, "OutliningOptions::new, parameter \"outlineNumber\" cannot be null.");
    }
 
-   public void setOutlineOnlyHeaderFolders(boolean outlineOnlyHeaderFolders) {
+   public void setOutlineOnlyHeaderFolders(Boolean outlineOnlyHeaderFolders) {
       if (Objects.nonNull(this.outlineOnlyHeaderFolders)) {
          throw new IllegalStateException(
             "OutliningOptions::setOutlineOnlyHeaderFolders, member \"outlineOnlyHeaderFolders\" has already been set.");
@@ -241,7 +241,7 @@ public class OutliningOptions implements ToMessage {
          "OutliningOptions::new, parameter \"outlineOnlyHeaderFolders\" cannot be null.");
    }
 
-   public void setOutlining(boolean outlining) {
+   public void setOutlining(Boolean outlining) {
       if (Objects.nonNull(this.outlining)) {
          throw new IllegalStateException("OutliningOptions::setOutlining, member \"outlining\" has already been set.");
       }
@@ -249,7 +249,7 @@ public class OutliningOptions implements ToMessage {
          Objects.requireNonNull(outlining, "OutliningOptions::new, parameter \"outlining\" cannot be null.");
    }
 
-   public void setOverrideOutlineNumber(boolean overrideOutlineNumber) {
+   public void setOverrideOutlineNumber(Boolean overrideOutlineNumber) {
       if (Objects.nonNull(this.overrideOutlineNumber)) {
          throw new IllegalStateException(
             "OutliningOptions::setOverrideOutlineNumber, member \"overrideOutlineNumber\" has already been set.");
@@ -258,7 +258,7 @@ public class OutliningOptions implements ToMessage {
          "OutliningOptions::new, parameter \"overrideOutlineNumber\" cannot be null.");
    }
 
-   public void setRecurseChildren(boolean recurseChildren) {
+   public void setRecurseChildren(Boolean recurseChildren) {
       if (Objects.nonNull(this.recurseChildren)) {
          throw new IllegalStateException(
             "OutliningOptions::setRecurseChildren, member \"recurseChildren\" has already been set.");
@@ -267,7 +267,7 @@ public class OutliningOptions implements ToMessage {
          "OutliningOptions::new, parameter \"recurseChildren\" cannot be null.");
    }
 
-   public void setTemplateFooter(boolean templateFooter) {
+   public void setTemplateFooter(Boolean templateFooter) {
       if (Objects.nonNull(this.templateFooter)) {
          throw new IllegalStateException(
             "OutliningOptions::setTemplateFooter, member \"templateFooter\" has already been set.");

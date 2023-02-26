@@ -167,13 +167,16 @@ public class SyncJiraOperation {
 
    private void loadTeamDefsAndSprints() {
       IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(syncTeam.getAgileTeamId());
-      syncTeam.setAgileTeam(aTeam);
-      for (IAgileSprint sprint : atsApi.getAgileService().getAgileSprints(aTeam)) {
-         syncTeam.getOrCreateSyncSprint(sprint);
-      }
 
-      for (IAtsTeamDefinition teamDef : atsApi.getAgileService().getAtsTeams(aTeam)) {
-         syncTeam.addTeamDef(teamDef);
+      syncTeam.setAgileTeam(aTeam);
+      if (aTeam != null) {
+         for (IAgileSprint sprint : atsApi.getAgileService().getAgileSprints(aTeam)) {
+            syncTeam.getOrCreateSyncSprint(sprint);
+         }
+
+         for (IAtsTeamDefinition teamDef : atsApi.getAgileService().getAtsTeams(aTeam)) {
+            syncTeam.addTeamDef(teamDef);
+         }
       }
    }
 

@@ -1,0 +1,127 @@
+
+java_import(
+        name = "junit",
+        jars = [
+                "org.junit_4.13.0.v20200204-1500.jar",
+       ],
+        visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "javax.annotation",
+        jars = [
+                "javax.annotation_1.3.5.v20200504-1837.jar",
+       ],
+        visibility = ["//visibility:public"]
+)
+
+java_import(
+        name = "eclipse_core",
+        jars = [
+                "org.eclipse.core.runtime_3.18.0.v20200506-2143.jar",
+                "org.eclipse.core.resources_3.13.700.v20200209-1624.jar",
+                "org.eclipse.core.jobs_3.10.800.v20200421-0950.jar",
+                "org.eclipse.core.commands_3.9.700.v20191217-1850.jar",
+                "org.eclipse.debug.core_3.15.100.v20200514-0816.jar"
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "eclipse_osgi_services",
+        jars = [
+                "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar",
+               "org.eclipse.osgi_3.15.300.v20200520-1959.jar"
+       ],
+              visibility = ["//visibility:public"]	 
+)
+
+java_import(
+        name = "eclipse_equinox_common",
+        jars = [
+                "org.eclipse.equinox.common_3.12.0.v20200504-1602.jar",
+                "org.eclipse.equinox.registry_3.8.800.v20200406-0956.jar",
+                "org.eclipse.equinox.preferences_3.8.0.v20200422-1833.jar",
+                "org.eclipse.equinox.app_1.4.500.v20200422-1833.jar",
+
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "nebula",
+        jars = [
+                "org.eclipse.nebula.widgets.xviewer.core_1.0.0.202212191054.jar",
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "apache_commons_lang",
+        jars = [
+                "org.apache.commons.lang_2.6.0.v201404270220.jar",
+                "org.apache.commons.io_2.6.0.v20190123-2029.jar",
+		"org.apache.commons.dbcp_1.4.0.v201204271417.jar",
+		"org.apache.commons.pool_1.6.0.v201204271246.jar"
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+
+java_import(
+        name = "rmf",
+        jars = [
+                "org.eclipse.rmf.reqif10_0.13.0.201509161042.jar",
+                "org.eclipse.rmf.reqif10.xhtml_0.13.0.201509161042.jar",
+                "org.eclipse.rmf.reqif10.serialization_0.13.0.201509161042.jar"
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "emf",
+        jars = [
+                "org.eclipse.emf.common_2.19.0.v20200324-0932.jar",
+		"org.eclipse.emf.ecore_2.22.0.v20200519-1135.jar",
+		"org.eclipse.emf.ecore.xmi_2.16.0.v20190528-0725.jar",
+		"org.eclipse.emf.ecore.edit_2.13.0.v20190822-1451.jar",
+		"org.eclipse.emf.ecore.change_2.14.0.v20190528-0725.jar",
+       		"org.eclipse.sphinx.emf.serialization_0.13.1.202210010314.jar"
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "jgit",
+        jars = [
+                "org.eclipse.jgit.ssh.jsch_5.8.0.202006091008-r.jar",
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "swt",
+        jars = [
+                "org.eclipse.swt_3.114.100.v20200604-0951.jar",
+                "org.eclipse.swt.win32.win32.x86_64_3.114.100.v20200604-0951.jar",
+                "org.eclipse.swt.gtk.linux.x86_64_3.114.100.v20200604-0951.jar",
+       ],
+       visibility = ["//visibility:public"]	
+)
+
+java_import(
+        name = "jface",
+        jars = [
+                "org.eclipse.jface_3.20.0.v20200505-1952.jar",
+       ],
+       visibility = ["//visibility:public"]
+)
+
+java_import(
+        name = "eclipse_ui",
+        jars = [
+                "org.eclipse.ui.forms_3.9.100.v20200413-1417.jar",
+                "org.eclipse.ui.workbench_3.119.0.v20200521-1247.jar"
+       ],
+       visibility = ["//visibility:public"]
+)

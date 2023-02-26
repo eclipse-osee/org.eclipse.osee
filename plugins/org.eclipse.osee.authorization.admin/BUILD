@@ -2,10 +2,20 @@ java_library(
         name = "authorization_admin",
         resources = ["x_files"],
         srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps",
-			],
-        visibility = ["//visibility:public"]
+                glob(["**/*.java"]),
+                deps = ["java_deps"],
+                visibility = ["//visibility:public"]
+)
+
+filegroup(
+    name = "x_files",
+    srcs =
+          [
+            "OSGI-INF/authorization.admin.xml",
+            "OSGI-INF/none.authorization.provider.xml",
+           ]
+  ,
+    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -22,19 +32,7 @@ java_library(
                 "@framework_jdk_core//:framework_jdk_core",
                 "@framework_core//:framework_core",
                 "@logger//:logger",
-                "@framework_core//:eclipse_osgi_services"
                 ],
-)
-
-filegroup(
-    name = "x_files",
-    srcs = 
-	  [
-	    "OSGI-INF/authorization.admin.xml",
-	    "OSGI-INF/none.authorization.provider.xml",
-	   ]   
-  , 
-    visibility = ["//visibility:public"]
 )
 
 package(default_visibility = ["//visibility:public"])

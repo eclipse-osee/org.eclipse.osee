@@ -25,9 +25,13 @@ public abstract class AbstractUserDefinedOrderComparator {
    protected final Map<String, Integer> value;
 
    public AbstractUserDefinedOrderComparator(List<String> guidOrder) {
-      value = new HashMap<>(guidOrder.size());
-      for (int i = 0; i < guidOrder.size(); i++) {
-         value.put(guidOrder.get(i), i);
+      if (guidOrder == null) {
+         value = new HashMap<>();
+      } else {
+         value = new HashMap<>(guidOrder.size());
+         for (int i = 0; i < guidOrder.size(); i++) {
+            value.put(guidOrder.get(i), i);
+         }
       }
    }
 

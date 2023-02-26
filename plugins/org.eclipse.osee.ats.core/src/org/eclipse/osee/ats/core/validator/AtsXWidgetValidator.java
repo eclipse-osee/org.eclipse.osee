@@ -63,6 +63,10 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
 
    public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+      if (valueProvider.getDateValues() == null) {
+         return new WidgetResult(WidgetStatus.Exception, "Date Values is null");
+
+      }
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {

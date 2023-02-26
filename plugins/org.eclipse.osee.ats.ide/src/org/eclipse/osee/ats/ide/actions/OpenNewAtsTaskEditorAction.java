@@ -43,9 +43,11 @@ public class OpenNewAtsTaskEditorAction extends AbstractAtsAction {
    @Override
    public void runWithException() {
       ITaskEditorProvider provider = openNewAtsTaskEditorHandler.getTaskEditorProviderCopy();
-      provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
-      provider.setTableLoadOptions(TableLoadOption.NoUI);
-      TaskEditor.open(provider);
+      if (provider != null) {
+         provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
+         provider.setTableLoadOptions(TableLoadOption.NoUI);
+         TaskEditor.open(provider);
+      }
    }
 
 }

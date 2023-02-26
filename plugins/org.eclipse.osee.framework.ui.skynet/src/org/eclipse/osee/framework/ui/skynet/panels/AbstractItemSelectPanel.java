@@ -68,8 +68,10 @@ public abstract class AbstractItemSelectPanel<T> {
    }
 
    private void fireSelectionEvent(Event event) {
-      for (Listener listener : listeners) {
-         listener.handleEvent(event);
+      synchronized (listeners) {
+         for (Listener listener : listeners) {
+            listener.handleEvent(event);
+         }
       }
    }
 

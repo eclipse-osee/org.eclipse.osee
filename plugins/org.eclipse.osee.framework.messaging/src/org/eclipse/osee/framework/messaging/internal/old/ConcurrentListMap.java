@@ -63,7 +63,7 @@ public class ConcurrentListMap<MAP_TYPE, LIST_TYPE> {
       }
    }
 
-   public void clear() {
+   public synchronized void clear() {
       data.clear();
    }
 }
