@@ -15,7 +15,9 @@ export const routes: Routes = [
 	{
 		path: '',
 		loadComponent: () =>
-			import('../../../layout/lib/toolbar/toolbar.component'),
+			import(
+				'../../../layout/lib/toolbar/osee-toolbar/osee-toolbar.component'
+			),
 		children: [
 			{
 				path: '',

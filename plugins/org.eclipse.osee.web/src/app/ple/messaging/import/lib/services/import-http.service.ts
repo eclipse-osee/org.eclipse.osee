@@ -22,7 +22,7 @@ import { apiURL } from '../../../../../../environments/environment';
 export class ImportHttpService {
 	constructor(private http: HttpClient) {}
 
-	getImportSummary(url: string, formData: FormData) {
+	getImportSummary(url: string, formData: FormData | File) {
 		return this.http.post<ImportSummary>(apiURL + url, formData);
 	}
 

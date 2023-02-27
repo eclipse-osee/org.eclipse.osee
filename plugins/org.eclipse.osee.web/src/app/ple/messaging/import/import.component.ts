@@ -12,11 +12,14 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import {
+	connection,
+	CrossReference,
 	elementImportToken,
 	enumeration,
 	HeaderKeysEnum,
@@ -31,7 +34,7 @@ import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
 } from '@osee/shared/components';
-import { from, iif, of, OperatorFunction } from 'rxjs';
+import { BehaviorSubject, from, iif, of, OperatorFunction } from 'rxjs';
 import { concatMap, filter, map, reduce, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
 import { ImportTableComponent } from './lib/components/import-table/import-table.component';
@@ -46,6 +49,7 @@ import { ImportService } from './lib/services/import.service';
 		NgIf,
 		NgFor,
 		AsyncPipe,
+		FormsModule,
 		MatButtonModule,
 		MatSelectModule,
 		ActionDropDownComponent,
@@ -84,6 +88,12 @@ export class ImportComponent implements OnInit, OnDestroy {
 		)
 	);
 
+	_selectedConnection = new BehaviorSubject<connection | undefined>(
+		undefined
+	);
+
+	connections = this.importService.connections;
+
 	importOptionSelectionText = this.importOptions.pipe(
 		switchMap((options) =>
 			iif(
@@ -94,8 +104,19 @@ export class ImportComponent implements OnInit, OnDestroy {
 		)
 	);
 
+	connectionSelectionText = this.connections.pipe(
+		switchMap((connections) =>
+			iif(
+				() => connections.length > 0,
+				of('Select a Connection'),
+				of('No connections available')
+			)
+		)
+	);
+
 	selectImportOption(event: MatSelectChange) {
 		this.importService.reset();
+		this.SelectedConnection = undefined;
 		this.importService.SelectedImportOption = event.value;
 	}
 
@@ -274,6 +295,33 @@ export class ImportComponent implements OnInit, OnDestroy {
 		'enums',
 		'applicability',
 	];
+
+	crossRefHeaders: (keyof CrossReference)[] = [
+		'name',
+		'crossReferenceValue',
+		'crossReferenceArrayValues',
+	];
+
+	setSelectedConnection(connection: connection) {
+		this.SelectedConnection = connection;
+	}
+
+	get selectedConnection() {
+		return this._selectedConnection;
+	}
+
+	set SelectedConnection(connection: connection | undefined) {
+		this._selectedConnection.next(connection);
+		this.SelectedConnectionId = connection?.id || '';
+	}
+
+	get selectedConnectionId() {
+		return this.importService.selectedConnectionId;
+	}
+
+	set SelectedConnectionId(id: string) {
+		this.importService.SelectedConnectionId = id;
+	}
 }
 
 export default ImportComponent;

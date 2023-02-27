@@ -119,6 +119,14 @@ export const importSummaryMock: ImportSummary = {
 			ordinal: 1,
 		},
 	],
+	crossReferences: [
+		{
+			id: '22',
+			name: 'CR1',
+			crossReferenceValue: 'Value 1',
+			crossReferenceArrayValues: '0=Test;1=Testing',
+		},
+	],
 	messageSubmessageRelations: {
 		'3': ['4'],
 	},
@@ -137,6 +145,9 @@ export const importSummaryMock: ImportSummary = {
 	enumSetEnumRelations: {
 		'8': ['9', '10'],
 	},
+	connectionCrossReferenceRelations: {
+		'1234': ['22'],
+	},
 };
 
 export const importOptionsMock: ImportOption[] = [
@@ -145,5 +156,6 @@ export const importOptionsMock: ImportOption[] = [
 		name: 'Option 1',
 		url: '',
 		transportType: '12345',
+		connectionRequired: false,
 	},
 ];

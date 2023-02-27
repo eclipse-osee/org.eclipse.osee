@@ -24,6 +24,7 @@ public class MimImportToken extends PLGenericDBObject {
 
    private String url;
    private String transportType;
+   private boolean connectionRequired;
 
    public MimImportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -35,6 +36,7 @@ public class MimImportToken extends PLGenericDBObject {
       this.setName(art.getName());
       this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.EndpointUrl, ""));
       this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.ImportTransportType, ""));
+      this.setConnectionRequired(art.getSoleAttributeValue(CoreAttributeTypes.ConnectionRequired, false));
    }
 
    /**
@@ -69,6 +71,14 @@ public class MimImportToken extends PLGenericDBObject {
     */
    public void setTransportType(String transportType) {
       this.transportType = transportType;
+   }
+
+   public boolean isConnectionRequired() {
+      return connectionRequired;
+   }
+
+   public void setConnectionRequired(boolean connectionRequired) {
+      this.connectionRequired = connectionRequired;
    }
 
 }

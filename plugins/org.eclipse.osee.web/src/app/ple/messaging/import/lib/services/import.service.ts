@@ -49,6 +49,7 @@ import {
 	StructuresService,
 	SubMessagesService,
 	TypesService,
+	CrossReferenceService,
 } from '@osee/messaging/shared';
 import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import { TransactionService } from '@osee/shared/transactions';
@@ -69,6 +70,7 @@ export class ImportService {
 		private elementService: ElementService,
 		private typesService: TypesService,
 		private enumSetService: EnumerationSetService,
+		private crossRefService: CrossReferenceService,
 		private transactionService: TransactionService
 	) {}
 
@@ -81,32 +83,59 @@ export class ImportService {
 		new BehaviorSubject<boolean | undefined>(undefined);
 	private _importInProgress$: BehaviorSubject<boolean> =
 		new BehaviorSubject<boolean>(false);
+	private _selectedConnectionId = new BehaviorSubject<string>('');
+
+	private _connections = this.branchId.pipe(
+		filter((v) => v !== ''),
+		switchMap((branchId) => this.connectionService.getConnections(branchId))
+	);
 
 	private _importSummary$ = combineLatest([
 		this.branchId,
 		this._selectedImportOption$,
 		this._importFile$,
 		this._importInProgress$,
+		this._selectedConnectionId,
 	]).pipe(
-		switchMap(([branchId, importOption, file, inProgress]) =>
-			iif(
-				() =>
-					importOption !== undefined &&
-					file !== undefined &&
-					inProgress,
-				of(new FormData()).pipe(
-					tap((formData) => {
-						formData.append('file', new Blob([file!]), file?.name);
-					}),
-					switchMap((formData) =>
-						this.importHttpService.getImportSummary(
-							importOption!.url.replace('<branchId>', branchId),
-							formData
+		filter(
+			([branchId, importOption, file, inProgress, connectionId]) =>
+				importOption !== undefined && file !== undefined && inProgress
+		),
+		switchMap(
+			([branchId, importOption, file, inProgress, connectionId]) => {
+				if (file?.name.endsWith('.json')) {
+					return this.importHttpService.getImportSummary(
+						importOption!.url
+							.replace('<branchId>', branchId)
+							.replace('<connectionId>', connectionId),
+						file
+					);
+				}
+				if (
+					file?.name.endsWith('.xlsx') ||
+					file?.name.endsWith('.xls')
+				) {
+					return of(new FormData()).pipe(
+						tap((formData) => {
+							formData.append(
+								'file',
+								new Blob([file!]),
+								file?.name
+							);
+						}),
+						switchMap((formData) =>
+							this.importHttpService.getImportSummary(
+								importOption!.url.replace(
+									'<branchId>',
+									branchId
+								),
+								formData
+							)
 						)
-					)
-				),
-				of(undefined)
-			)
+					);
+				}
+				return of(undefined);
+			}
 		),
 		filter((v) => v !== undefined) as OperatorFunction<
 			ImportSummary | undefined,
@@ -174,6 +203,10 @@ export class ImportService {
 		switchMap((summary) => of(summary.enums))
 	);
 
+	private _crossRefs$ = this._importSummary$.pipe(
+		switchMap((summary) => of(summary.crossReferences))
+	);
+
 	private _messageSubMessageRelations$ = this._importSummary$.pipe(
 		switchMap((summary) => of(summary.messageSubmessageRelations))
 	);
@@ -196,6 +229,10 @@ export class ImportService {
 
 	private _enumSetEnumRelations$ = this._importSummary$.pipe(
 		switchMap((summary) => of(summary.enumSetEnumRelations))
+	);
+
+	private _connectionCrossRefRelations$ = this._importSummary$.pipe(
+		switchMap((summary) => of(summary.connectionCrossReferenceRelations))
 	);
 
 	private _nodesTx$ = combineLatest([
@@ -583,6 +620,31 @@ export class ImportService {
 		)
 	);
 
+	private _crossRefsTx$ = combineLatest([
+		this._importTx$,
+		this._crossRefs$,
+		this.branchId,
+	]).pipe(
+		switchMap(([tx, crossRefs, branchId]) =>
+			of(crossRefs).pipe(
+				switchMap((crossRefs) =>
+					from(crossRefs).pipe(
+						switchMap((crossRef) =>
+							this.crossRefService.createCrossReferenceTx(
+								crossRef,
+								branchId,
+								tx,
+								crossRef.id
+							)
+						)
+					)
+				),
+				reduce(() => tx, tx),
+				startWith(tx)
+			)
+		)
+	);
+
 	private _messageSubMessageRelationsTx$ = combineLatest([
 		this._importTx$,
 		this._messageSubMessageRelations$,
@@ -766,6 +828,40 @@ export class ImportService {
 		)
 	);
 
+	private _connectionCrossRefRelationsTx$ = combineLatest([
+		this._importTx$,
+		this._connectionCrossRefRelations$,
+		this.branchId,
+		this.selectedConnectionId,
+	]).pipe(
+		switchMap(([tx, relations, branchId, selectedConnectionId]) =>
+			from(Object.keys(relations)).pipe(
+				switchMap((connectionId) =>
+					from(relations[connectionId]).pipe(
+						switchMap((crossRefId) =>
+							this.crossRefService
+								.createConnectionRelation(
+									selectedConnectionId,
+									crossRefId
+								)
+								.pipe(
+									switchMap((relation) =>
+										this.crossRefService.addRelation(
+											branchId,
+											relation,
+											tx
+										)
+									)
+								)
+						)
+					)
+				),
+				reduce(() => tx, tx),
+				startWith(tx)
+			)
+		)
+	);
+
 	// The last parameter of the below combineLatest is getting lost and not making it into the final combined tx. Having this placeholder as the last parameter causes just the placeholder to get lost instead.
 	private _placeholderTx$ = this._importTx$;
 
@@ -782,6 +878,7 @@ export class ImportService {
 		this._platformTypesTx$,
 		this._enumSetTx$,
 		this._enumsTx$,
+		this._crossRefsTx$,
 		this._messageSubMessageRelationsTx$,
 		this._subMessageStructureRelationsTx$,
 	]);
@@ -790,6 +887,7 @@ export class ImportService {
 		this._elementPlatformTypeRelationsTx$,
 		this._platformTypeEnumSetRelationsTx$,
 		this._enumSetEnumRelationsTx$,
+		this._connectionCrossRefRelationsTx$,
 		this._placeholderTx$,
 	]);
 
@@ -852,8 +950,10 @@ export class ImportService {
 		this.ImportFile = undefined;
 		this.ImportSuccess = undefined;
 		this.SelectedImportOption = undefined;
+		this.SelectedConnectionId = '';
 		this.ImportInProgress = false;
 		this.toggleDone = true;
+		this.SelectedConnectionId = '';
 	}
 
 	get branchId() {
@@ -882,6 +982,14 @@ export class ImportService {
 
 	set SelectedImportOption(importOption: ImportOption | undefined) {
 		this._selectedImportOption$.next(importOption);
+	}
+
+	get selectedConnectionId() {
+		return this._selectedConnectionId;
+	}
+
+	set SelectedConnectionId(id: string) {
+		this._selectedConnectionId.next(id);
 	}
 
 	get importSummary() {
@@ -915,5 +1023,9 @@ export class ImportService {
 
 	get importOptions() {
 		return this.importHttpService.getImportOptions();
+	}
+
+	get connections() {
+		return this._connections;
 	}
 }

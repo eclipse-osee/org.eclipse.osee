@@ -12,8 +12,8 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CrossReferenceService } from '../services/cross-reference.service';
-import { CrossReferenceServiceMock } from '../testing/cross-reference.service.mock';
+import { CrossReferenceService } from '@osee/messaging/shared';
+import { CrossReferenceServiceMock } from '@osee/messaging/shared/testing';
 
 import { CrossReferenceTableComponent } from './cross-reference-table.component';
 

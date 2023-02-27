@@ -23,15 +23,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { dialogRef } from '@osee/messaging/shared/testing';
+import { CrossReferenceService } from '@osee/messaging/shared';
+import {
+	CrossReferenceServiceMock,
+	dialogRef,
+} from '@osee/messaging/shared/testing';
 import {
 	ActionDropdownStub,
 	BranchPickerStub,
 } from '@osee/shared/components/testing';
 
 import { CrossReferenceComponent } from './cross-reference.component';
-import { CrossReferenceService } from './lib/services/cross-reference.service';
-import { CrossReferenceServiceMock } from './lib/testing/cross-reference.service.mock';
 
 describe('CrossReferenceComponent', () => {
 	let component: CrossReferenceComponent;
