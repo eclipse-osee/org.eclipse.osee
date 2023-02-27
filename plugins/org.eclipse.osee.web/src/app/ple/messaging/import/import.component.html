@@ -24,37 +24,76 @@
 				<ng-container *ngIf="importOptions | async as _importOptions">
 					<div class="import-form-container">
 						<h2>Import</h2>
-						<mat-form-field appearance="fill">
-							<mat-label>{{
-								importOptionSelectionText | async
-							}}</mat-label>
-							<mat-select
-								(selectionChange)="selectImportOption($event)"
-								[disabled]="_importOptions.length === 0"
-								[value]="importOptionSelection | async">
-								<mat-option
-									*ngFor="let option of _importOptions"
-									[value]="option"
-									[id]="option.id">
-									{{ option.name }}
-								</mat-option>
-							</mat-select>
-						</mat-form-field>
-						<ng-container *ngIf="importOptionSelection | async">
-							<label
-								for="file-upload"
-								class="input-label">
-								<button
-									mat-raised-button
-									color="primary">
-									Select File
-								</button>
-							</label>
-							<input
-								id="file-upload"
-								type="file"
-								(change)="selectFile($event)"
-								accept=".xlsx, .xls" />
+						<div class="form-fields-container">
+							<mat-form-field appearance="fill">
+								<mat-label>{{
+									importOptionSelectionText | async
+								}}</mat-label>
+								<mat-select
+									(selectionChange)="
+										selectImportOption($event)
+									"
+									[disabled]="_importOptions.length === 0"
+									[value]="importOptionSelection | async">
+									<mat-option
+										*ngFor="let option of _importOptions"
+										[value]="option"
+										[id]="option.id">
+										{{ option.name }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+							<ng-container
+								*ngIf="connections | async as _connections">
+								<mat-form-field
+									*ngIf="
+										(importOptionSelection | async)
+											?.connectionRequired
+									"
+									class="form-field"
+									appearance="fill">
+									<mat-label>{{
+										connectionSelectionText | async
+									}}</mat-label>
+									<mat-select
+										[ngModel]="selectedConnection | async"
+										(ngModelChange)="
+											setSelectedConnection($event)
+										"
+										[disabled]="_connections.length === 0">
+										<mat-option
+											*ngFor="let option of _connections"
+											[value]="option"
+											[id]="option.id!">
+											{{ option.name }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</ng-container>
+						</div>
+						<ng-container
+							*ngIf="importOptionSelection | async as option">
+							<ng-container
+								*ngIf="
+									!option.connectionRequired ||
+									(option.connectionRequired &&
+										(selectedConnectionId | async) !== '')
+								">
+								<label
+									for="file-upload"
+									class="input-label">
+									<button
+										mat-raised-button
+										color="primary">
+										Select File
+									</button>
+								</label>
+								<input
+									id="file-upload"
+									type="file"
+									(change)="selectFile($event)"
+									accept=".xlsx, .xls, .json" />
+							</ng-container>
 							<ng-container
 								*ngIf="
 									importSuccess | async as _importSuccess;
@@ -222,6 +261,23 @@
 												"
 												[tableTitle]="
 													'Enum Sets'
+												"></osee-import-table>
+										</ng-container>
+										<ng-container
+											*ngIf="
+												_importSummary.crossReferences
+													.length > 0
+											">
+											<osee-import-table
+												[data]="
+													_importSummary.crossReferences
+												"
+												[headers]="crossRefHeaders"
+												[headerKey]="
+													headerKeys.CROSS_REFERENCE
+												"
+												[tableTitle]="
+													'Cross References'
 												"></osee-import-table>
 										</ng-container>
 									</div>

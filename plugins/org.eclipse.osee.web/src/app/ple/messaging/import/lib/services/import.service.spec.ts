@@ -66,7 +66,7 @@ describe('ImportService', () => {
 			// The summary request should not be sent until an import option and file are selected
 			service.BranchId = '10';
 			service.SelectedImportOption = importOptionsMock[0];
-			service.ImportFile = new File([], '');
+			service.ImportFile = new File([], 'testFile.xlsx');
 			service.ImportInProgress = true;
 			cold('-a').subscribe(() => (service.toggleDone = true));
 			expectObservable(service.sendTransaction).toBe('(a|)', {
@@ -75,12 +75,25 @@ describe('ImportService', () => {
 		});
 	});
 
-	it('should get import summary', () => {
+	it('should get import summary from xlsx', () => {
 		scheduler.run(() => {
 			// The summary request should not be sent until an import option and file are selected
 			service.BranchId = '10';
 			service.SelectedImportOption = importOptionsMock[0];
-			service.ImportFile = new File([], '');
+			service.ImportFile = new File([], 'testFile.xlsx');
+			service.ImportInProgress = true;
+			scheduler
+				.expectObservable(service.importSummary)
+				.toBe('a', { a: importSummaryMock });
+		});
+	});
+
+	it('should get import summary from json', () => {
+		scheduler.run(() => {
+			// The summary request should not be sent until an import option and file are selected
+			service.BranchId = '10';
+			service.SelectedImportOption = importOptionsMock[0];
+			service.ImportFile = new File([], 'testFile.json');
 			service.ImportInProgress = true;
 			scheduler
 				.expectObservable(service.importSummary)

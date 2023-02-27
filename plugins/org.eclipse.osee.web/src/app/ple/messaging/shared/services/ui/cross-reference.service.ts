@@ -15,6 +15,7 @@ import {
 	connection,
 	ConnectionService,
 	CrossReference,
+	CrossReferenceHttpService,
 	PreferencesUIService,
 } from '@osee/messaging/shared';
 import {
@@ -37,7 +38,6 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { CrossReferenceHttpService } from './cross-reference.http.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -78,6 +78,25 @@ export class CrossReferenceService {
 		switchMap((branchId) => this.connectionService.getConnections(branchId))
 	);
 
+	createCrossReferenceTx(
+		crossRef: CrossReference,
+		branchId: string,
+		transaction: transaction | undefined,
+		key?: string
+	) {
+		return of(
+			this.txBuilder.createArtifact(
+				crossRef,
+				ARTIFACTTYPEIDENUM.CROSSREFERENCE,
+				[],
+				transaction,
+				branchId,
+				'Create Cross Reference',
+				key
+			)
+		);
+	}
+
 	createCrossReference(crossRef: CrossReference) {
 		return combineLatest([this.branchId, this.selectedConnectionId]).pipe(
 			take(1),
@@ -86,16 +105,11 @@ export class CrossReferenceService {
 					branchId !== '' && branchId !== '0' && connectionId !== ''
 			),
 			switchMap(([branchId, connection]) =>
-				of(
-					this.txBuilder.createArtifact(
-						crossRef,
-						ARTIFACTTYPEIDENUM.CROSSREFERENCE,
-						[],
-						undefined,
-						branchId,
-						'Create Cross Reference',
-						'CROSS_REF'
-					)
+				this.createCrossReferenceTx(
+					crossRef,
+					branchId,
+					undefined,
+					'CROSS_REF'
 				).pipe(
 					switchMap((tx) =>
 						this.createConnectionRelation(

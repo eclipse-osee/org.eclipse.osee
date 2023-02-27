@@ -18,7 +18,7 @@ import {
 import { ImportHttpService } from './import-http.service';
 
 export const importHttpServiceMock: Partial<ImportHttpService> = {
-	getImportSummary(url: string, formData: FormData) {
+	getImportSummary(url: string, formData: FormData | File) {
 		return of(importSummaryMock);
 	},
 

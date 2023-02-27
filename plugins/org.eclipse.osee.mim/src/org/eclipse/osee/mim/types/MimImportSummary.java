@@ -31,12 +31,14 @@ public class MimImportSummary {
    private final List<PlatformTypeImportToken> platformTypes;
    private final List<InterfaceEnumerationSet> enumSets;
    private final List<InterfaceEnumeration> enums;
+   private final List<CrossReference> crossReferences;
    private final Map<String, List<String>> messageSubmessageRelations;
    private final Map<String, List<String>> subMessageStructureRelations;
    private final Map<String, List<String>> structureElementRelations;
    private final Map<String, List<String>> elementPlatformTypeRelations;
    private final Map<String, List<String>> platformTypeEnumSetRelations;
    private final Map<String, List<String>> enumSetEnumRelations;
+   private final Map<String, List<String>> connectionCrossReferenceRelations;
 
    public MimImportSummary() {
       createPrimaryNode = false;
@@ -49,12 +51,14 @@ public class MimImportSummary {
       platformTypes = new LinkedList<>();
       enumSets = new LinkedList<>();
       enums = new LinkedList<>();
+      crossReferences = new LinkedList<>();
       messageSubmessageRelations = new HashMap<>();
       subMessageStructureRelations = new HashMap<>();
       structureElementRelations = new HashMap<>();
       elementPlatformTypeRelations = new HashMap<>();
       platformTypeEnumSetRelations = new HashMap<>();
       enumSetEnumRelations = new HashMap<>();
+      connectionCrossReferenceRelations = new HashMap<>();
    }
 
    public boolean isCreatePrimaryNode() {
@@ -125,6 +129,10 @@ public class MimImportSummary {
       return enums;
    }
 
+   public List<CrossReference> getCrossReferences() {
+      return crossReferences;
+   }
+
    public Map<String, List<String>> getMessageSubmessageRelations() {
       return messageSubmessageRelations;
    }
@@ -147,6 +155,10 @@ public class MimImportSummary {
 
    public Map<String, List<String>> getEnumSetEnumRelations() {
       return enumSetEnumRelations;
+   }
+
+   public Map<String, List<String>> getConnectionCrossReferenceRelations() {
+      return connectionCrossReferenceRelations;
    }
 
 }

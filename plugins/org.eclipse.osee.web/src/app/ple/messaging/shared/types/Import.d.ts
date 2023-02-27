@@ -5,6 +5,7 @@ import { enumeration, enumSet } from './enum';
 import { nodeToken } from './node';
 import { platformTypeImportToken } from './platformType';
 import { structure } from './structure';
+import { CrossReference } from './crossReference.d ';
 
 /*********************************************************************
  * Copyright (c) 2022 Boeing
@@ -31,12 +32,14 @@ export interface ImportSummary {
 	platformTypes: platformTypeImportToken[];
 	enumSets: enumSet[];
 	enums: enumeration[];
+	crossReferences: CrossReference[];
 	messageSubmessageRelations: importRelationMap;
 	subMessageStructureRelations: importRelationMap;
 	structureElementRelations: importRelationMap;
 	elementPlatformTypeRelations: importRelationMap;
 	platformTypeEnumSetRelations: importRelationMap;
 	enumSetEnumRelations: importRelationMap;
+	connectionCrossReferenceRelations: importRelationMap;
 }
 
 export interface importRelationMap {
@@ -48,6 +51,7 @@ export interface ImportOption {
 	name: string;
 	url: string;
 	transportType: string;
+	connectionRequired: boolean;
 }
 
 export interface ImportEnumSet extends enumSet {

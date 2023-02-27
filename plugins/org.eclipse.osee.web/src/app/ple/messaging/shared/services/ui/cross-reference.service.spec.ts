@@ -17,16 +17,16 @@ import {
 	transactionResultMock,
 	transactionServiceMock,
 } from '@osee/shared/transactions/testing';
-import { CrossReferenceHttpServiceMock } from '../testing/cross-reference.http.service.mock';
-import { CrossReferenceHttpService } from './cross-reference.http.service';
+import { CrossReferenceHttpServiceMock } from '../../testing/cross-reference.http.service.mock';
 import { CrossReferenceService } from './cross-reference.service';
-import { crossReferencesMock } from '../testing/cross-references.mock';
 import {
+	crossReferencesMock,
 	preferencesUiServiceMock,
 	sharedConnectionServiceMock,
 } from '@osee/messaging/shared/testing';
 import {
 	ConnectionService,
+	CrossReferenceHttpService,
 	PreferencesUIService,
 } from '@osee/messaging/shared';
 

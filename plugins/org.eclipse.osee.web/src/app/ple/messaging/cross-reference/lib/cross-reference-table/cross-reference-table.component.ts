@@ -1,6 +1,7 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+	CrossReferenceService,
 	HeaderKeysEnum,
 	HeaderService,
 	TableEditTextFieldComponent,
@@ -8,7 +9,6 @@ import {
 import { CrossReference } from 'src/app/ple/messaging/shared/types/crossReference.d ';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CrossReferenceService } from '../services/cross-reference.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';

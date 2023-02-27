@@ -13,7 +13,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { CrossReferenceService } from './lib/services/cross-reference.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,11 +24,11 @@ import {
 	BranchPickerComponent,
 	ActionDropDownComponent,
 } from '@osee/shared/components';
-import { connection } from '../shared';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { CrossReferenceTableComponent } from './lib/cross-reference-table/cross-reference-table.component';
+import { connection, CrossReferenceService } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-cross-reference',

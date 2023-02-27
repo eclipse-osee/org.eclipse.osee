@@ -17,6 +17,7 @@ import {
 	importSummaryMock,
 } from '../testing/import.response.mock';
 import { ImportOption } from '@osee/messaging/shared';
+import { connectionMock } from '@osee/messaging/shared/testing';
 
 export const importServiceMock: Partial<ImportService> = {
 	performImport() {},
@@ -63,5 +64,9 @@ export const importServiceMock: Partial<ImportService> = {
 
 	get importOptions() {
 		return of(importOptionsMock);
+	},
+
+	get connections() {
+		return of([connectionMock]);
 	},
 };

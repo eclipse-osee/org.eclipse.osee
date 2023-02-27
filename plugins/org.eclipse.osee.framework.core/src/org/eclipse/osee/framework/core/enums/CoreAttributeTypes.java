@@ -85,6 +85,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString Company = osee.createString(1152921504606847066L, "Company", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CompanyTitle = osee.createString(1152921504606847067L, "Company Title", MediaType.TEXT_PLAIN, "");
    ComponentAttributeType Component = osee.createEnum(new ComponentAttributeType());
+   AttributeTypeBoolean ConnectionRequired = osee.createBoolean(2323113524155051455L, "Connection Required", MediaType.TEXT_PLAIN, "Specifies if an import requires a connection to be provided");
    AttributeTypeString ContentUrl = osee.createString(1152921504606847100L, "Content URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Country = osee.createString(1152921504606847072L, "Country", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean CustomCommand = osee.createBoolean(317394570332960L, "Custom Command", MediaType.TEXT_PLAIN, "");

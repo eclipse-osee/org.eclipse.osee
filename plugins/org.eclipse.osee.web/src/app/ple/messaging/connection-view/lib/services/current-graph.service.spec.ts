@@ -40,6 +40,7 @@ import {
 	applicabilityListServiceMock,
 	MimPreferencesServiceMock,
 	MimPreferencesMock,
+	connectionServiceMock,
 } from '@osee/messaging/shared/testing';
 
 describe('CurrentGraphService', () => {
@@ -155,48 +156,6 @@ describe('CurrentGraphService', () => {
 			return of(transactionMock);
 		},
 	};
-	let connectionService: Partial<ConnectionService> = {
-		createConnection(
-			branchId: string,
-			connection: connection,
-			relations: relation[]
-		) {
-			return of(transactionMock);
-		},
-		createNodeRelation(nodeId: string, type: boolean) {
-			return iif(
-				() => type,
-				of({
-					typeName: 'Interface Connection Secondary Node',
-					sideB: nodeId,
-				}),
-				of({
-					typeName: 'Interface Connection Primary Node',
-					sideB: nodeId,
-				})
-			);
-		},
-		createTransportTypeRelation(transportTypeId, connectionId?: string) {
-			return of({
-				typeName: 'Interface Connection Transport Type',
-				sideA: connectionId,
-				sideB: transportTypeId,
-			});
-		},
-		changeConnection(branchId: string, connection: Partial<connection>) {
-			return of(transactionMock);
-		},
-		performMutation(transaction: transaction) {
-			return of(transactionResultMock);
-		},
-		deleteRelation(
-			branchId: string,
-			relation: relation,
-			transaction?: transaction
-		) {
-			return of(transactionMock);
-		},
-	};
 	let routeState: RouteStateService;
 
 	beforeEach(() => {
@@ -204,7 +163,7 @@ describe('CurrentGraphService', () => {
 			providers: [
 				{ provide: GraphService, useValue: graphService },
 				{ provide: NodeService, useValue: nodeService },
-				{ provide: ConnectionService, useValue: connectionService },
+				{ provide: ConnectionService, useValue: connectionServiceMock },
 				{
 					provide: ApplicabilityListService,
 					useValue: applicabilityListServiceMock,
