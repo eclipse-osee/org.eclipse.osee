@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -41,10 +42,12 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -532,4 +535,57 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return downloadBlockApplicability(id);
    }
 
+   @Override
+   public XResultData addApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2) {
+      XResultData response = new XResultData();
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Add Applicability Constraint");
+      GammaId gamma = GammaId.SENTINEL;
+      if (!(gamma = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2(
+         CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2)).isValid()) {
+         tx.addTuple2(CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2);
+      } else {
+         tx.introduceTuple(CoreTupleTypes.ApplicabilityConstraint, gamma);
+      }
+
+      TransactionToken commit = tx.commit();
+      if (commit.isValid()) {
+         response.addRaw(commit.toString());
+      } else {
+         response.error(
+            "Error occurred during commit of adding app Constraint: " + applicability1.getIdString() + " and " + applicability2.getIdString());
+      }
+      return response;
+   }
+
+   @Override
+   public XResultData removeApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2) {
+      XResultData response = new XResultData();
+      if (orcsApi.getQueryFactory().tupleQuery().doesTuple2Exist(CoreTupleTypes.ApplicabilityConstraint, applicability1,
+         applicability2)) {
+         TransactionBuilder tx =
+            orcsApi.getTransactionFactory().createTransaction(branch, "Add Applicability Constraint");
+         tx.deleteTuple2(CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2);
+         TransactionToken commit = tx.commit();
+         if (commit.isValid()) {
+            response.addRaw(commit.toString());
+         } else {
+            response.error(
+               "Error occurred during commit of adding app Constraint: " + applicability1.getIdString() + " and " + applicability2.getIdString());
+         }
+      }
+      return response;
+   }
+
+   @Override
+   public List<Pair<String, String>> getApplicabilityConstraints() {
+      List<Pair<String, String>> constraints = new ArrayList<>();
+      HashMap<Long, Long> list = new HashMap<>();
+      orcsApi.getQueryFactory().tupleQuery().getTuple2E1E2FromType(CoreTupleTypes.ApplicabilityConstraint, branch,
+         list::put);
+      for (Entry<Long, Long> entry : list.entrySet()) {
+         constraints.add(new Pair<>(orcsApi.getKeyValueOps().getByKey(entry.getKey()),
+            orcsApi.getKeyValueOps().getByKey(entry.getValue())));
+      }
+      return constraints;
+   }
 }
