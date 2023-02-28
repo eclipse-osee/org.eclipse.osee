@@ -58,6 +58,10 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<RelationTypeJoin, RelationTypeToken> RelationTypeJoin =
       Tuple2Type.valueOf(JoinFamily, 16L, TupleTypeImpl.RelationTypeJoin, RelationType);
 
+   //Modeling Feature dependence
+   public static final Tuple2Type<ApplicabilityId, ApplicabilityId> ApplicabilityConstraint =
+      Tuple2Type.valueOf(ProductLineFamily, 17L, ApplicabilityId::valueOf, ApplicabilityId::valueOf);
+
    // Data Maintenance
    public static final Tuple3Type<String, Long, Long> FixedMaintenanceData =
       Tuple3Type.valueOf(DefaultFamily, 5L, TupleTypeImpl.KeyedString, Function.identity(), Function.identity());

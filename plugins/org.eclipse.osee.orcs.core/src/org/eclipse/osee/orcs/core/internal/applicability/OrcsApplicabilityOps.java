@@ -1090,7 +1090,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                      validCnt++;
                   }
                }
-
             }
             if (cnt == validCnt) {
                validApplicability = true;
@@ -1147,7 +1146,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             //newValues minus existingValues = values to add
             newValues.removeAll(existingValues);
             for (String val : newValues) {
-               txMv.createApplicabilityForView(viewId, val);
+               if (passesApplicabilityConstraint(branch, viewId, applicability, results)) {
+                  txMv.createApplicabilityForView(viewId, val);
+               }
             }
             txMv.commit();
             updateCompoundApplicabilities(branch, viewId, true);
@@ -1161,15 +1162,17 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                      existingValues.add(appl);
                   }
                }
-               TransactionBuilder tx = txFactory.createTransaction(branch, "Set applicability for view");
+               if (passesApplicabilityConstraint(branch, viewId, applicability, results)) {
+                  TransactionBuilder tx = txFactory.createTransaction(branch, "Set applicability for view");
 
-               for (String existingValue : existingValues) {
-                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
+                  for (String existingValue : existingValues) {
+                     tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
+                  }
+
+                  tx.createApplicabilityForView(viewId, applicability);
+                  tx.commit();
+                  updateCompoundApplicabilities(branch, viewId, true);
                }
-
-               tx.createApplicabilityForView(viewId, applicability);
-               tx.commit();
-               updateCompoundApplicabilities(branch, viewId, true);
 
             } else {
                results.error(featureValue + " is an invalid value");
@@ -1179,6 +1182,26 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
 
       return results;
+   }
+
+   public boolean passesApplicabilityConstraint(BranchId branch, ArtifactId viewId, String applic, XResultData results) {
+      Long appId = orcsApi.getKeyValueOps().getByValue(applic);
+
+      List<ApplicabilityToken> constraints = new LinkedList<>();
+
+      orcsApi.getQueryFactory().tupleQuery().getTuple2NamedId(CoreTupleTypes.ApplicabilityConstraint, branch,
+         ApplicabilityId.valueOf(appId), (e2, value) -> constraints.add(ApplicabilityToken.valueOf(e2, value)));
+
+      for (ApplicabilityToken appMustExist : constraints) {
+
+         String requiredApp = orcsApi.getKeyValueOps().getByKey(appMustExist.getId());
+         if (!orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
+            requiredApp)) {
+            results.error("Applic: " + applic + " requires that " + requiredApp + " must also be applied for view");
+            return false;
+         }
+      }
+      return true;
    }
 
    @Override

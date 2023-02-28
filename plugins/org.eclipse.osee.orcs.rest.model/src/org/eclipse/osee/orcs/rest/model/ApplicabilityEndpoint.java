@@ -378,4 +378,19 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    Response uploadRunBlockApplicability(@QueryParam("view") Long view, InputStream zip);
 
+   @POST
+   @Path("constraint")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData addApplicabilityConstraint(@QueryParam("applicability1") ApplicabilityId applicability1, @QueryParam("applicability2") ApplicabilityId applicability2);
+
+   @DELETE
+   @Path("constraint")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData removeApplicabilityConstraint(@QueryParam("applicability1") ApplicabilityId applicability1, @QueryParam("applicability2") ApplicabilityId applicability2);
+
+   @GET
+   @Path("constraints")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Pair<String, String>> getApplicabilityConstraints();
+
 }
