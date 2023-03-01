@@ -98,7 +98,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       configurationsService = new AtsConfigurationsService(this, orcsApi);
       attributeResolverService = new AtsAttributeResolverServiceImpl(this);
       super.start();
-      getStateFactory().setEnableTransactionCheck(false); // Server doens't need to cache
 
       artifactResolver = new ArtifactResolverImpl(this);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);

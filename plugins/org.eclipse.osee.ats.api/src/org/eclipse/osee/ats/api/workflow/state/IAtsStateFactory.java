@@ -33,6 +33,4 @@ public interface IAtsStateFactory {
 
    void setStateMgr(IAtsWorkItem workItem, IAtsStateManager stateMgr);
 
-   void setEnableTransactionCheck(boolean enable);
-
 }
