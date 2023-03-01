@@ -142,7 +142,7 @@ public class MSWordTemplateRendererUtils {
     * </tr>
     * </table>
     * otherwise, {@link IRenderer#NO_MATCH}.
-    * 
+    *
     * @param presentationType the type of presentation to be made.
     * @param artifact the {@link Artifact} to be presented.
     * @param rendererOptions a {@link Map} of {@link RendererOption} key value pairs.
@@ -155,7 +155,7 @@ public class MSWordTemplateRendererUtils {
          return IRenderer.NO_MATCH;
       }
 
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.PrimaryAttribute) && artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
          return
             presentationType.matches(PresentationType.DEFAULT_OPEN, PresentationType.PREVIEW, PresentationType.PREVIEW_SERVER)
                ? ( artifact.getAttributeCount(CoreAttributeTypes.WordTemplateContent) > 0 )

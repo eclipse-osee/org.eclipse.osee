@@ -153,6 +153,9 @@
 	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
 	</extension>
+	<extension id="markdown" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.MarkdownRenderer"/>
+	</extension>
 	<extension id="ascii" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer"/>
 	</extension>

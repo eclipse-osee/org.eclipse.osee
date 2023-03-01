@@ -38,14 +38,18 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken AbstractHeading = osee.add(osee.artifactType(805L, "Abstract Heading", true, Artifact)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
-      .any(DoorsModId));
+      .any(DoorsModId)
+      .zeroOrOne(MarkdownContent)
+      .zeroOrOne(Extension));
    ArtifactTypeToken AbstractImplementationDetails = osee.add(osee.artifactType(921211884L, "Abstract Implementation Details", true, Artifact)
       .zeroOrOne(DataRightsBasis)
       .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
       .atLeastOne(Partition, Partition.Unspecified)
       .zeroOrOne(PotentialSecurityImpact)
       .zeroOrOne(SubjectMatterExpert)
-      .exactlyOne(Subsystem, Subsystem.Unspecified));
+      .exactlyOne(Subsystem, Subsystem.Unspecified)
+      .zeroOrOne(MarkdownContent)
+      .zeroOrOne(Extension));
    ArtifactTypeToken AbstractTestResult = osee.add(osee.artifactType(38L, "Abstract Test Result", true, Artifact));
    ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, Artifact)
       .any(ProductApplicability, "Unspecified"));
@@ -184,7 +188,9 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken Requirement = osee.add(osee.artifactType(21L, "Requirement", false, Artifact)
       .zeroOrOne(DataRightsBasis)
       .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
-      .zeroOrOne(SubjectMatterExpert));
+      .zeroOrOne(SubjectMatterExpert)
+      .zeroOrOne(MarkdownContent)
+      .zeroOrOne(Extension));
    ArtifactTypeToken AbstractSpecRequirement = osee.add(osee.artifactType(58551193202327573L, "Abstract Spec Requirement", false, Requirement)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
@@ -226,8 +232,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(IaPlan)
       .zeroOrOne(IdalRationale)
       .zeroOrOne(SoftwareControlCategory, SoftwareControlCategory.Unspecified)
-      .zeroOrOne(SoftwareControlCategoryRationale)
-      .zeroOrOne(MarkdownContent));
+      .zeroOrOne(SoftwareControlCategoryRationale));
    ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken InterfaceArtifact = osee.add(osee.artifactType(54733032508193943L, "Interface Artifact", true, Artifact));
    ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, InterfaceArtifact)
