@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * @author Donald G. Dunne
@@ -489,5 +490,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public StateType getCurrentStateType() {
       return StateType.valueOf(getSoleAttributeValue(AtsAttributeTypes.CurrentStateType));
    }
+
+   /**
+    * @return UnSet if not applicable
+    */
+   public abstract BooleanState isParentAtsArtifactLoaded();
 
 }

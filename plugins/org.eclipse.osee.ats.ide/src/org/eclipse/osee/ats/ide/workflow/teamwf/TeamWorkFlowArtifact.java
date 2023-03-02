@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * @author Donald G. Dunne
@@ -225,6 +226,11 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
       return AtsApiService.get().getActionableItemService().getActionableItems(this);
+   }
+
+   @Override
+   public BooleanState isParentAtsArtifactLoaded() {
+      return parentAction == null ? BooleanState.No : BooleanState.Yes;
    }
 
 }

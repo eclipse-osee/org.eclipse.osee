@@ -30,7 +30,11 @@ public class AtsAttributeQuery {
    public AtsAttributeQuery(AttributeTypeId attrType, Collection<String> values, QueryOption... queryOption) {
       this.attrType = attrType;
       this.values = values;
-      this.setQueryOption(queryOption);
+      if (queryOption.length > 0) {
+         this.setQueryOption(queryOption);
+      } else {
+         this.setQueryOption(QueryOption.CONTAINS_MATCH_OPTIONS);
+      }
    }
 
    public AtsAttributeQuery(AttributeTypeId attrType, String value, QueryOption... queryOption) {

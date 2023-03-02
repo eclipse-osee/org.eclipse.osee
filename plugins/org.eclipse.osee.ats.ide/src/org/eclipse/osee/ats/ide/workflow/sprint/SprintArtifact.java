@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * @author Donald G. Dunne
@@ -86,6 +87,11 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    @Override
    public StateType getCurrentStateType() {
       return StateType.valueOf(getSoleAttributeValue(AtsAttributeTypes.CurrentStateType));
+   }
+
+   @Override
+   public BooleanState isParentAtsArtifactLoaded() {
+      return BooleanState.UnSet;
    }
 
 }

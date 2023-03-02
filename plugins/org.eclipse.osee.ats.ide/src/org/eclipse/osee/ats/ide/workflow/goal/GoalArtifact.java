@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * @author Donald G. Dunne
@@ -52,6 +53,11 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
    @Override
    public List<Artifact> getMembers() {
       return AtsApiService.get().getGoalMembersCache().getMembers(this);
+   }
+
+   @Override
+   public BooleanState isParentAtsArtifactLoaded() {
+      return BooleanState.UnSet;
    }
 
 }

@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.artifact.prompt.StringHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -240,13 +240,14 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             asFormatType = "BranchId (Long)";
             numFormat = NumberFormat.getNumberInstance();
          }
-         StringHandlePromptChange prompt = new StringHandlePromptChange(attrType, false,
-            attrType.getName() + "\n\nAs " + asFormatType, java.util.Collections.emptyList(), numFormat);
+         EntryDialog dialog = new EntryDialog("Enter " + attrType.getName(),
+            "Enter " + attrType.getName() + "  (As " + asFormatType + ")\n\nNote: String search is a whole word search");
+         dialog.setNumberFormat(numFormat);
          if (!attrValue.getValues().isEmpty()) {
-            prompt.setInitialValue(attrValue.getValues().iterator().next());
+            dialog.setEntry(attrValue.getValues().iterator().next());
          }
-         if (prompt.promptOk()) {
-            String value = prompt.getEntry();
+         if (dialog.open() == Window.OK) {
+            String value = dialog.getEntry();
             setAttrValueAndUpdateLink(attrValue, attrType, value);
          }
       } else if (attrType.isBoolean()) {

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * @author Donald G. Dunne
@@ -152,6 +153,14 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    @Override
    public boolean isStandAloneReview() {
       return !getActionableItems().isEmpty();
+   }
+
+   @Override
+   public BooleanState isParentAtsArtifactLoaded() {
+      if (isStandAloneReview()) {
+         return BooleanState.UnSet;
+      }
+      return parentAwa == null ? BooleanState.No : BooleanState.Yes;
    }
 
 }
