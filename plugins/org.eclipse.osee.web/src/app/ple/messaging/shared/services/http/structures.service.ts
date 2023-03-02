@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from 'src/environments/environment';
@@ -23,7 +23,7 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import { HttpParamsType, relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -37,7 +37,7 @@ export class StructuresService {
 
 	getStructures(branchId: string) {
 		return this.http.get<Required<structure>[]>(
-			apiURL + '/mim/branch/' + branchId + '/structures/filter'
+			apiURL + '/mim/branch/' + branchId + '/structures'
 		);
 	}
 
@@ -47,12 +47,13 @@ export class StructuresService {
 		pageNum: string | number
 	) {
 		return this.http.get<Required<structure>[]>(
-			apiURL + '/mim/branch/' + branchId + '/structures/filter/' + filter,
+			apiURL + '/mim/branch/' + branchId + '/structures',
 			{
 				params: {
 					count: 3,
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+					filter: filter,
 				},
 			}
 		);
@@ -63,9 +64,20 @@ export class StructuresService {
 		messageId: string,
 		subMessageId: string,
 		connectionId: string,
+		viewId: string,
 		pageNum: number,
 		pageSize: number
 	) {
+		let params: HttpParamsType = {
+			count: pageSize,
+			pageNum: pageNum,
+		};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
 		return this.http.get<Required<structure>[]>(
 			apiURL +
 				'/mim/branch/' +
@@ -76,13 +88,9 @@ export class StructuresService {
 				messageId +
 				'/submessages/' +
 				subMessageId +
-				'/structures/filter/' +
-				filter,
+				'/structures',
 			{
-				params: {
-					count: pageSize,
-					pageNum: pageNum,
-				},
+				params: params,
 			}
 		);
 	}
@@ -92,8 +100,16 @@ export class StructuresService {
 		subMessageId: string,
 		structureId: string,
 		connectionId: string,
+		viewId: string,
 		filter?: string
 	) {
+		let params: HttpParamsType = {};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
 		return this.http.get<Required<structure>>(
 			apiURL +
 				'/mim/branch/' +
@@ -105,8 +121,8 @@ export class StructuresService {
 				'/submessages/' +
 				subMessageId +
 				'/structures/' +
-				structureId +
-				(filter !== undefined ? '/' + filter : '')
+				structureId,
+			{ params: params }
 		);
 	}
 

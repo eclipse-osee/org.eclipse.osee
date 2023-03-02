@@ -18,6 +18,7 @@ import type {
 	OseeEdge,
 	connection,
 } from '@osee/messaging/shared';
+import { HttpParamsType } from '@osee/shared/types';
 import { apiURL } from 'src/environments/environment';
 
 @Injectable({
@@ -26,10 +27,14 @@ import { apiURL } from 'src/environments/environment';
 export class GraphService {
 	constructor(private http: HttpClient) {}
 
-	getNodes(id: string) {
+	getNodes(id: string, viewId: string) {
+		let params: HttpParamsType = {};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
 		return this.http.get<{
 			nodes: OseeNode<nodeData>[];
 			edges: OseeEdge<connection>[];
-		}>(apiURL + '/mim/branch/' + id + '/graph');
+		}>(apiURL + '/mim/branch/' + id + '/graph', { params: params });
 	}
 }

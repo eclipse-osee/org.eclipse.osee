@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { iif, of } from 'rxjs';
+import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 
 import { CurrentGraphService } from './current-graph.service';
@@ -27,10 +27,11 @@ import {
 	ConnectionService,
 	MimPreferencesService,
 	NodeService,
+	SharedConnectionService,
 } from '@osee/messaging/shared';
-import type { connection, node } from '@osee/messaging/shared';
+import type { node } from '@osee/messaging/shared';
 import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
-import { relation, transaction } from '@osee/shared/types';
+import { transaction } from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,
@@ -40,6 +41,7 @@ import {
 	MimPreferencesServiceMock,
 	MimPreferencesMock,
 	connectionServiceMock,
+	sharedConnectionServiceMock,
 } from '@osee/messaging/shared/testing';
 
 describe('CurrentGraphService', () => {
@@ -180,7 +182,10 @@ describe('CurrentGraphService', () => {
 					provide: DifferenceReportService,
 					useValue: DifferenceReportServiceMock,
 				},
-				CurrentGraphService,
+				{
+					provide: SharedConnectionService,
+					useValue: sharedConnectionServiceMock,
+				},
 			],
 		});
 		service = TestBed.inject(CurrentGraphService);

@@ -46,7 +46,7 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
    private String logicalType;
    private String InterfacePlatformTypeMinval;
    private String InterfacePlatformTypeMaxval;
-   private String InterfacePlatformTypeDefaultValue;
+   private String InterfaceDefaultValue;
 
    public InterfaceStructureElementArrayToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -267,17 +267,17 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
    }
 
    /**
-    * @return the interfacePlatformTypeDefaultValue
+    * @return the InterfaceDefaultValue
     */
-   public String getInterfacePlatformTypeDefaultValue() {
-      return InterfacePlatformTypeDefaultValue;
+   public String getInterfaceDefaultValue() {
+      return InterfaceDefaultValue;
    }
 
    /**
-    * @param interfacePlatformTypeDefaultValue the interfacePlatformTypeDefaultValue to set
+    * @param InterfaceDefaultValue the InterfaceDefaultValue to set
     */
-   public void setInterfacePlatformTypeDefaultValue(String interfacePlatformTypeDefaultValue) {
-      InterfacePlatformTypeDefaultValue = interfacePlatformTypeDefaultValue;
+   public void setInterfaceDefaultValue(String InterfaceDefaultValue) {
+      InterfaceDefaultValue = InterfaceDefaultValue;
    }
 
    /**

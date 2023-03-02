@@ -32,4 +32,8 @@ export class SharedConnectionUIService {
 		private _mimRoute: MimRouteService,
 		private _connectionService: SharedConnectionService
 	) {}
+
+	get viewId() {
+		return this._mimRoute.viewId;
+	}
 }

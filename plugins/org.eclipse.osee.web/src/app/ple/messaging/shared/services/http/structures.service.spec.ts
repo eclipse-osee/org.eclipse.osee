@@ -75,7 +75,7 @@ describe('StructuresService', () => {
 			},
 		];
 		service
-			.getFilteredStructures('0', '0', '1', '2', '3', 1, 10)
+			.getFilteredStructures('0', '0', '1', '2', '3', '4', 1, 10)
 			.subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL +
@@ -87,9 +87,11 @@ describe('StructuresService', () => {
 				1 +
 				'/submessages/' +
 				2 +
-				'/structures/filter/' +
-				0 +
-				'?count=10&pageNum=1'
+				'/structures' +
+				'?count=10' +
+				'&pageNum=1' +
+				'&viewId=4' +
+				'&filter=0'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(testData);
@@ -168,7 +170,7 @@ describe('StructuresService', () => {
 		});
 	});
 	it('should fetch a structure', () => {
-		service.getStructure('10', '10', '10', '10', '10').subscribe();
+		service.getStructure('10', '10', '10', '10', '10', '10').subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/branch/' +
@@ -180,7 +182,8 @@ describe('StructuresService', () => {
 				'/submessages/' +
 				10 +
 				'/structures/' +
-				10
+				10 +
+				'?viewId=10'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(structuresMock3[0]);

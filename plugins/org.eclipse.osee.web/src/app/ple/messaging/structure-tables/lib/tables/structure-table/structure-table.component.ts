@@ -77,6 +77,7 @@ import {
 	EditViewFreeTextFieldDialogComponent,
 	CurrentStructureService,
 	HeaderService,
+	ViewSelectorComponent,
 } from '@osee/messaging/shared';
 import type {
 	structure,
@@ -122,6 +123,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 		ScrollingModule,
 		EditStructureFieldComponent,
 		AddStructureDialogComponent,
+		ViewSelectorComponent,
 		SubElementTableComponent,
 		HighlightFilteredTextDirective,
 		StructureTableLongTextFieldComponent,

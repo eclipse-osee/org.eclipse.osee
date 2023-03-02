@@ -10,13 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { applic } from '@osee/shared/types/applicability';
 import { of } from 'rxjs';
 import { ApplicabilityListUIService } from '../services/ui/applicability-list-ui.service';
 
+export const applicsMock: applic[] = [
+	{ id: '1', name: 'Base' },
+	{ id: '2', name: 'Second' },
+];
+
+export const viewsMock: applic[] = [
+	{ id: '10', name: 'Product A' },
+	{ id: '11', name: 'Product B' },
+];
+
 export const applicabilityListUIServiceMock: Partial<ApplicabilityListUIService> =
 	{
-		applic: of([
-			{ id: '1', name: 'Base' },
-			{ id: '2', name: 'Second' },
-		]),
+		applic: of(applicsMock),
+		views: of(viewsMock),
 	};

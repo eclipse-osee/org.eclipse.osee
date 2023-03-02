@@ -195,14 +195,14 @@ public class PlatformTypeToken extends PLGenericDBObject {
    }
 
    /**
-    * @return the interfacePlatformTypeDefaultValue
+    * @return the InterfaceDefaultValue
     */
    public String getInterfaceDefaultValue() {
       return this.InterfaceDefaultValue;
    }
 
    /**
-    * @param interfacePlatformTypeDefaultValue the interfacePlatformTypeDefaultValue to set
+    * @param InterfaceDefaultValue the InterfaceDefaultValue to set
     */
    public void setInterfaceDefaultValue(String interfaceDefaultValue) {
       this.InterfaceDefaultValue = interfaceDefaultValue;

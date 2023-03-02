@@ -36,9 +36,9 @@ describe('GraphService', () => {
 	});
 
 	it('should call /mim/branch/10/graph', () => {
-		service.getNodes('10').subscribe();
+		service.getNodes('10', '10').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/10/graph'
+			apiURL + '/mim/branch/10/graph?viewId=10'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({ nodes: [], edges: [] });

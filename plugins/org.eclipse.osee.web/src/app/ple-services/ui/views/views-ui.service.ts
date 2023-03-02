@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,16 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.controls-container
-    display: grid
-    grid-template-columns: 2fr 1fr 2fr
-    align-items: center
-    gap: 1em
-    padding-right: 2em
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
-.controls-right
-    display: flex
-    flex-direction: row
-    align-items: center
-    gap: 5px
-    margin-left: auto
+@Injectable({
+	providedIn: 'root',
+})
+export class ViewsUiService {
+	private _viewId = new BehaviorSubject<string>('');
+
+	constructor() {}
+
+	get viewId() {
+		return this._viewId;
+	}
+
+	set ViewId(id: string) {
+		this._viewId.next(id);
+	}
+}

@@ -34,6 +34,7 @@ import {
 	BranchPickerStub,
 } from '@osee/shared/components/testing';
 import { editAuthServiceMock } from '@osee/messaging/shared/testing';
+import { ViewSelectorMockComponent } from 'src/app/ple/messaging/shared/main-content/view-selector/view-selector.component.mock';
 
 describe('HostComponent', () => {
 	let component: HostComponent;
@@ -57,6 +58,7 @@ describe('HostComponent', () => {
 					ActionDropdownStub,
 					MockGraphComponent,
 					BranchPickerStub,
+					ViewSelectorMockComponent,
 				],
 			},
 		})
@@ -74,6 +76,7 @@ describe('HostComponent', () => {
 					HostComponent,
 					MockGraphComponent,
 					BranchPickerStub,
+					ViewSelectorMockComponent,
 				],
 				providers: [
 					{ provide: EditAuthService, useValue: editAuthServiceMock },

@@ -18,3 +18,4 @@ export * from './responses.d';
 export * from './http-methods.d';
 export * from './files.d';
 export * from './header-detail';
+export * from './http-params';

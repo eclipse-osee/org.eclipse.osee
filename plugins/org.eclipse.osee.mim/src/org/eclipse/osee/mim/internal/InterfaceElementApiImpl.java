@@ -99,8 +99,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId) {
-      return this.getAllRelated(branch, structureId, 0L, 0L);
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId) {
+      return this.getAllRelated(branch, structureId, viewId, 0L, 0L);
    }
 
    @Override
@@ -330,6 +330,11 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId, long pageNum, long pageSize) {
+      return this.getAllRelated(branch, structureId, viewId, pageNum, pageSize, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
    public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize) {
       return this.getAllRelatedAndFilter(branch, structureId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
@@ -391,11 +396,16 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
    @Override
    public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAllRelated(branch, structureId, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute);
+   }
+
+   @Override
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelation(branch,
                CoreRelationTypes.InterfaceStructureContent_Structure, structureId, this.getFollowRelationDetails(),
-               pageNum, pageSize, orderByAttribute);
+               pageNum, pageSize, orderByAttribute, viewId);
          elements = this.parseElements(branch, elements);
          return elements;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

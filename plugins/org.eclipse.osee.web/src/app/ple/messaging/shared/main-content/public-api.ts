@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './platform-type-card/platform-type-card.component';
+export * from './view-selector/view-selector.component';

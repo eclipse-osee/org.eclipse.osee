@@ -63,6 +63,7 @@ import {
 	messagesMock,
 } from '@osee/messaging/shared/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ViewSelectorMockComponent } from 'src/app/ple/messaging/shared/main-content/view-selector/view-selector.component.mock';
 
 let loader: HarnessLoader;
 
@@ -130,6 +131,7 @@ describe('MessageTableComponent', () => {
 					MockSingleDiffComponent,
 					HighlightFilteredTextDirective,
 					TwoLayerAddButtonComponent,
+					ViewSelectorMockComponent,
 				],
 				providers: [
 					{
@@ -175,6 +177,7 @@ describe('MessageTableComponent', () => {
 					MessageTableComponent,
 					MockSubMessageTableComponent,
 					MockAddMessageDialogComponent,
+					ViewSelectorMockComponent,
 				],
 				declarations: [],
 				providers: [

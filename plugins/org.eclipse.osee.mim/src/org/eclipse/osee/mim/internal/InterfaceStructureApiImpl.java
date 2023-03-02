@@ -118,19 +118,28 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure) {
-      return this.parseStructure(branch, structure, new LinkedList<InterfaceStructureElementToken>());
+      return this.parseStructure(branch, structure, ArtifactId.SENTINEL,
+         new LinkedList<InterfaceStructureElementToken>());
+   }
+
+   private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, ArtifactId viewId) {
+      return this.parseStructure(branch, structure, viewId, new LinkedList<InterfaceStructureElementToken>());
    }
 
    private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, String elementFilter) {
-      return this.parseStructure(branch, structure,
+      return this.parseStructure(branch, structure, ArtifactId.SENTINEL,
          this.interfaceElementApi.getAllRelatedAndFilter(branch, ArtifactId.valueOf(structure.getId()), elementFilter));
    }
 
    private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, List<InterfaceStructureElementToken> defaultElements) {
+      return this.parseStructure(branch, structure, ArtifactId.SENTINEL, defaultElements);
+   }
+
+   private InterfaceStructureToken parseStructure(BranchId branch, InterfaceStructureToken structure, ArtifactId viewId, List<InterfaceStructureElementToken> defaultElements) {
       try {
          Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
          elements.addAll(defaultElements.size() > 0 ? defaultElements : interfaceElementApi.getAllRelated(branch,
-            ArtifactId.valueOf(structure.getId())));
+            ArtifactId.valueOf(structure.getId()), viewId));
          Collection<InterfaceStructureElementToken> tempElements = new LinkedList<>();
          if (elements.size() >= 2) {
             Iterator<InterfaceStructureElementToken> elementIterator = elements.iterator();
@@ -330,12 +339,17 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId) {
+      return this.getRelated(branch, subMessageId, structureId, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, ArtifactId viewId) {
       InterfaceStructureToken structure;
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
-            InterfaceStructureToken.class);
-         structure = this.parseStructure(branch, structure);
+            viewId);
+         structure = this.parseStructure(branch, structure, viewId);
 
          return structure;
       } catch (Exception ex) {
@@ -384,13 +398,17 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter) {
+      return this.getRelatedAndFilter(branch, subMessageId, structureId, filter, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter, ArtifactId viewId) {
       InterfaceStructureToken structure;
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
-            InterfaceStructureToken.class);
+            viewId);
          structure = this.parseStructure(branch, structure, filter);
-
          return structure;
       } catch (Exception ex) {
          System.out.println(ex);
@@ -688,13 +706,18 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAllRelated(branch, subMessageId, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute);
+   }
+
+   @Override
+   public List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
-            pageNum, pageSize, orderByAttribute);
+            pageNum, pageSize, orderByAttribute, viewId);
          for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure, structure.getElements());
+            structure = this.parseStructure(branch, structure, viewId, structure.getElements());
          }
 
          return structureList;
@@ -719,19 +742,25 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       }
    }
 
+   @Override
+   public List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAllRelatedAndFilter(branch, subMessageId, ArtifactId.SENTINEL, filter, pageNum, pageSize,
+         orderByAttribute);
+   }
+
    /**
     * potentially not valid, need to decide the appropriate approach for structure filter
     */
 
    @Override
-   public List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId viewId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
             this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
          for (InterfaceStructureToken structure : structureList) {
-            structure = this.parseStructure(branch, structure, structure.getElements());
+            structure = this.parseStructure(branch, structure, viewId, structure.getElements());
          }
 
          return structureList;

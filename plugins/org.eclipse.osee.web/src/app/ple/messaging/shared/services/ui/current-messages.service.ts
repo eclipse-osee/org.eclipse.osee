@@ -65,22 +65,24 @@ export class CurrentMessagesService {
 		this.ui.filter,
 		this.BranchId,
 		this.connectionId,
+		this.viewId,
 		this.currentPage,
 		this.currentPageSize,
 	]).pipe(
 		filter(
-			([filter, branchId, connection, page, pageSize]) =>
+			([filter, branchId, connection, viewId, page, pageSize]) =>
 				connection !== '' && branchId !== ''
 		),
 		share(),
 		debounceTime(500),
 		distinctUntilChanged(),
-		switchMap(([filter, branchId, connection, page, pageSize]) =>
+		switchMap(([filter, branchId, connection, viewId, page, pageSize]) =>
 			this.messageService
 				.getFilteredMessages(
 					filter,
 					branchId,
 					connection,
+					viewId,
 					page + 1,
 					pageSize
 				)
@@ -95,8 +97,9 @@ export class CurrentMessagesService {
 	private _messages = combineLatest([
 		this.ui.isInDiff,
 		this._messagesList,
+		this.viewId,
 	]).pipe(
-		switchMap(([diffState, messageList]) =>
+		switchMap(([diffState, messageList, viewId]) =>
 			iif(
 				() => diffState,
 				this.differences.pipe(
@@ -116,7 +119,8 @@ export class CurrentMessagesService {
 												(message as messageWithChanges)
 													.deleted,
 											this.getMessageFromParent(
-												message.id
+												message.id,
+												viewId
 											).pipe(
 												switchMap((parentMessage) =>
 													this.mergeMessages(
@@ -192,10 +196,11 @@ export class CurrentMessagesService {
 	private _allMessages = combineLatest([
 		this.BranchId,
 		this.connectionId,
+		this.viewId,
 	]).pipe(
 		share(),
 		switchMap((x) =>
-			this.messageService.getFilteredMessages('', x[0], x[1]).pipe(
+			this.messageService.getFilteredMessages('', x[0], x[1], x[2]).pipe(
 				repeatWhen((_) => this.ui.UpdateRequired),
 				share()
 			)
@@ -276,6 +281,10 @@ export class CurrentMessagesService {
 
 	get connectionId() {
 		return this.ui.connectionId;
+	}
+
+	get viewId() {
+		return this.ui.viewId;
 	}
 
 	set messageId(value: string) {
@@ -423,7 +432,7 @@ export class CurrentMessagesService {
 		message.subMessages = submessages;
 		return of(message);
 	}
-	getMessageFromParent(messageId: string) {
+	getMessageFromParent(messageId: string, viewId: string) {
 		return combineLatest([
 			this.branchInfoService.currentBranchDetail,
 			this.connectionId,
@@ -433,7 +442,8 @@ export class CurrentMessagesService {
 				this.messageService.getMessage(
 					details.parentBranch.id,
 					messageId,
-					connectionId
+					connectionId,
+					viewId
 				)
 			)
 		);
@@ -508,11 +518,15 @@ export class CurrentMessagesService {
 		subMessageId: string,
 		afterSubMessage?: string
 	) {
-		return combineLatest([this.BranchId, this.connectionId]).pipe(
+		return combineLatest([
+			this.BranchId,
+			this.connectionId,
+			this.viewId,
+		]).pipe(
 			take(1),
-			switchMap(([branch, connection]) =>
+			switchMap(([branch, connection, viewId]) =>
 				this.messageService
-					.getMessage(branch, messageId, connection)
+					.getMessage(branch, messageId, connection, viewId)
 					.pipe(
 						take(1),
 						switchMap((foundMessage) =>

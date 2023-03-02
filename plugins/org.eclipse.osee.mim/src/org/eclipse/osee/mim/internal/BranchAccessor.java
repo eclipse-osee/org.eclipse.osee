@@ -30,11 +30,9 @@ import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
-import org.eclipse.osee.mim.InterfaceMessageFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureCountEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
-import org.eclipse.osee.mim.InterfaceStructureFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageFilterEndpoint;
@@ -74,12 +72,6 @@ public class BranchAccessor {
       return new InterfaceMessageEndpointImpl(branch, connectionId, mimApi.getInterfaceMessageApi());
    }
 
-   @Path("{branch}/connections/{connectionId}/messages/filter")
-   @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceMessageFilterEndpoint getMessageFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId) {
-      return new InterfaceMessageFilterEndpointImpl(branch, connectionId, mimApi.getInterfaceMessageApi());
-   }
-
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceSubMessageEndpoint getSubMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId) {
@@ -96,13 +88,6 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceStructureEndpoint getStructureEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId) {
       return new InterfaceStructureEndpointImpl(branch, messageId, subMessageId, mimApi.getInterfaceStructureApi());
-   }
-
-   @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/filter")
-   @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceStructureFilterEndpoint getStructureFilterEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId) {
-      return new InterfaceStructureFilterEndpointImpl(branch, messageId, subMessageId,
-         mimApi.getInterfaceStructureApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/count")

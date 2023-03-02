@@ -23,7 +23,7 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import { HttpParamsType, relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -45,25 +45,22 @@ export class MessagesService {
 		filter: string,
 		branchId: string,
 		connectionId: string,
+		viewId: string,
 		pageNum?: number,
 		pageSize?: number
 	): Observable<message[]> {
-		if (pageNum !== undefined && pageSize !== undefined) {
-			return this.http.get<message[]>(
-				apiURL +
-					'/mim/branch/' +
-					branchId +
-					'/connections/' +
-					connectionId +
-					'/messages/filter/' +
-					filter,
-				{
-					params: {
-						count: pageSize,
-						pageNum: pageNum,
-					},
-				}
-			);
+		let params: HttpParamsType = {};
+		if (pageNum) {
+			params = { ...params, pageNum: pageNum };
+		}
+		if (pageSize) {
+			params = { ...params, count: pageSize };
+		}
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
 		}
 		return this.http.get<message[]>(
 			apiURL +
@@ -71,8 +68,10 @@ export class MessagesService {
 				branchId +
 				'/connections/' +
 				connectionId +
-				'/messages/filter/' +
-				filter
+				'/messages',
+			{
+				params: params,
+			}
 		);
 	}
 
@@ -85,8 +84,13 @@ export class MessagesService {
 	getMessage(
 		branchId: string,
 		connectionId: string,
-		messageId: string
+		messageId: string,
+		viewId: string
 	): Observable<message> {
+		let params: HttpParamsType = {};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
 		return this.http.get<message>(
 			apiURL +
 				'/mim/branch/' +
@@ -94,7 +98,8 @@ export class MessagesService {
 				'/connections/' +
 				connectionId +
 				'/messages/' +
-				messageId
+				messageId,
+			{ params: params }
 		);
 	}
 

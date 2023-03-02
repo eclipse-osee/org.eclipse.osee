@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { ViewsUiService } from './views/views-ui.service';
 import { HttpLoadingService } from 'src/app/services/http-loading.service';
 import { BranchUIService } from './branch/branch-ui.service';
 import { DiffModeService } from './diff/diff-mode.service';
@@ -23,6 +24,7 @@ import { UpdateService } from './update/update.service';
 export class UiService {
 	constructor(
 		private branchService: BranchUIService,
+		private viewService: ViewsUiService,
 		private updateService: UpdateService,
 		private diffModeService: DiffModeService,
 		private loadingService: HttpLoadingService,
@@ -74,6 +76,14 @@ export class UiService {
 
 	set loading(value: boolean) {
 		this.loadingService.loading = value;
+	}
+
+	get viewId() {
+		return this.viewService.viewId;
+	}
+
+	set viewIdValue(id: string) {
+		this.viewService.ViewId = id;
 	}
 
 	public get errors() {
