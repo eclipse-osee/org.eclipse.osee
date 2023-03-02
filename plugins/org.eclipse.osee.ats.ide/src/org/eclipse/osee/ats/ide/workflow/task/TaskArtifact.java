@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 
 /**
  * @author Donald G. Dunne
@@ -96,6 +97,11 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
          parentTeamArt = (TeamWorkFlowArtifact) awa;
       }
       return parentTeamArt;
+   }
+
+   @Override
+   public BooleanState isParentAtsArtifactLoaded() {
+      return parentTeamArt == null ? BooleanState.No : BooleanState.Yes;
    }
 
 }

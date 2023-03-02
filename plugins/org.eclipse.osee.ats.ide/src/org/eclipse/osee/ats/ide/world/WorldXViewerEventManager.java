@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonsBooleanTriState.BooleanState;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -237,6 +238,9 @@ public class WorldXViewerEventManager {
                // If parent is loaded and child changed, refresh parent
                if (artifact instanceof AbstractWorkflowArtifact) {
                   AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
+                  if (smaArt.isParentAtsArtifactLoaded() != BooleanState.UnSet) {
+                     return;
+                  }
                   Artifact smaParent = smaArt.getParentAtsArtifact();
                   /**
                    * Only process parent artifacts once to reduce the amount of refresh. This is especially important
