@@ -27,6 +27,7 @@ import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
 } from '@osee/shared/components';
+import { ViewSelectorComponent } from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-connection-view-host',
@@ -44,6 +45,7 @@ import {
 		GraphComponent,
 		BranchPickerComponent,
 		MatTooltipModule,
+		ViewSelectorComponent,
 	],
 })
 export class HostComponent {

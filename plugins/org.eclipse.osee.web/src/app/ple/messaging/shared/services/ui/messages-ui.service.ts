@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { BehaviorSubject } from 'rxjs';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { MimRouteService } from './mim-route.service';
 
 @Injectable({
@@ -62,6 +62,14 @@ export class MessageUiService {
 
 	set connectionIdString(value: string) {
 		this._mimRoute.connectionIdString = value;
+	}
+
+	get viewId() {
+		return this.ui.viewId;
+	}
+
+	set ViewId(id: string) {
+		this.ui.viewIdValue = id;
 	}
 
 	set DiffMode(value: boolean) {

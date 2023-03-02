@@ -38,7 +38,6 @@ import {
 	switchMap,
 	take,
 	takeUntil,
-	tap,
 } from 'rxjs/operators';
 import { difference } from 'src/app/shared/types/change-report/change-report';
 
@@ -63,6 +62,7 @@ import {
 	EditViewFreeTextFieldDialogComponent,
 	CurrentMessagesService,
 	HeaderService,
+	ViewSelectorComponent,
 } from '@osee/messaging/shared';
 import type {
 	message,
@@ -131,6 +131,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 		HighlightFilteredTextDirective,
 		SubMessageTableComponent,
 		TwoLayerAddButtonComponent,
+		ViewSelectorComponent,
 	],
 })
 export class MessageTableComponent implements AfterViewChecked {

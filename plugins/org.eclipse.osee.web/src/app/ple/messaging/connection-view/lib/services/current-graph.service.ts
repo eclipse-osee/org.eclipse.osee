@@ -44,6 +44,7 @@ import {
 	ConnectionService,
 	NodeService,
 	PreferencesUIService,
+	SharedConnectionUIService,
 } from '@osee/messaging/shared';
 import type {
 	connection,
@@ -63,11 +64,14 @@ import { relation, transactionToken } from '@osee/shared/types';
 export class CurrentGraphService {
 	private _diff = this.diffService.diff;
 
-	private _graph = this.routeStateService.id.pipe(
-		switchMap((val) =>
+	private _graph = combineLatest([
+		this.routeStateService.id,
+		this.connectionUiService.viewId,
+	]).pipe(
+		switchMap(([val, viewId]) =>
 			iif(
 				() => val !== '' && val !== '-1' && val !== undefined,
-				this.graphService.getNodes(val).pipe(
+				this.graphService.getNodes(val, viewId).pipe(
 					map((split) => this.transform(split)),
 					repeatWhen((_) => this.updated),
 					share()
@@ -136,7 +140,8 @@ export class CurrentGraphService {
 		private applicabilityService: ApplicabilityListService,
 		private diffService: DiffUIService,
 		private sideNavService: SideNavService,
-		private preferenceService: PreferencesUIService
+		private preferenceService: PreferencesUIService,
+		private connectionUiService: SharedConnectionUIService
 	) {}
 	get differences() {
 		return this._differences;

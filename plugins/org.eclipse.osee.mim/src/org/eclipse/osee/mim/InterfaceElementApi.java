@@ -30,7 +30,7 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId);
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId);
 
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, AttributeTypeId orderByAttribute);
 
@@ -40,7 +40,11 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize);
 
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId, long pageNum, long pageSize);
+
    List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    InterfaceStructureElementToken getWithAllParentRelations(BranchId branch, ArtifactId elementId);
 

@@ -38,7 +38,7 @@ public class InterfaceLogicalTypeInteger extends InterfaceLogicalTypeGeneric {
          CoreAttributeTypes.InterfacePlatformTypeMaxval));
       fields.add(new InterfaceLogicalTypeField("Units", "InterfacePlatformTypeUnits", false, true,
          CoreAttributeTypes.InterfacePlatformTypeUnits));
-      fields.add(new InterfaceLogicalTypeField("Default Value", "InterfacePlatformTypeDefaultValue", false, true,
+      fields.add(new InterfaceLogicalTypeField("Default Value", "InterfaceDefaultValue", false, true,
          CoreAttributeTypes.InterfaceDefaultValue));
       this.setFields(fields);
    }

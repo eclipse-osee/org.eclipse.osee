@@ -504,7 +504,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             ArtifactId beforeArtifact = related.get(related.indexOf(afterArtifactId) + 1);
             Integer selectAfterIndex = orcsApi.getJdbcService().getClient().fetch(0,
                "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
-               getBranch(), artA, relType.getId(), afterArtifact);
+               getBranch(), artA, relType.getId(), afterArtifactId);
             Integer selectBeforeIndex = orcsApi.getJdbcService().getClient().fetch(0,
                "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
                getBranch(), artA, relType.getId(), beforeArtifact);

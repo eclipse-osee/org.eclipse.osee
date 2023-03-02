@@ -45,9 +45,9 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
 
    Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId);
+   InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId, ArtifactId viewId);
 
    List<RelationTypeSide> getFollowRelationDetails();
 
@@ -59,5 +59,5 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
 
    Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter);
 
-   Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 }

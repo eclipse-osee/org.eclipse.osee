@@ -19,12 +19,6 @@
 @media (prefers-color-scheme:dark)
   @include msg.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme)
 
-.full-width
-  width: 100%
-table
-  @extend .full-width
-.message-interface-table-view-width-100
-  @extend .full-width
 .mat-header-cell
   font-size: 14px
 .message-sub-detail-row:not(.message-sub-detail-row-expanded)
@@ -37,8 +31,6 @@ tr.message-expanded-detail-row
   overflow: hidden
   display: flex
   flex-direction: column
-.message-interface-table-filter-padding
-  padding-bottom: 1em
 .message-interface-table-view-message-header
   font-weight: bold
   padding: 0 2px 0 2px
@@ -62,21 +54,5 @@ tr.message-expanded-detail-row
 .mat-column-interfaceMessageNumber .mat-column-interfaceMessageRate
   padding-right: 1em
 
-.connections-button
-  margin: 1em 0 0 1em
-
-.message-interface-header
-  display: flex
-  flex-direction: row
-  justify-content: flex-end
-  padding: 0 1em
-  .grouped-buttons
-    display: flex
-    flex-direction: row
-    align-items: center
-    margin-top: 1em
-    gap: 5px
 .message-attribute-cell
   padding: 0 2px 0 2px
-.message-interface
-  padding-bottom: 0.5em

@@ -112,6 +112,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }
@@ -119,6 +120,11 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    @Override
    public Collection<InterfaceConnection> getAll(BranchId branch) {
       return this.getAll(branch, 0, 0);
+   }
+
+   @Override
+   public Collection<InterfaceConnection> getAll(BranchId branch, ArtifactId viewId) {
+      return this.getAll(branch, 0L, 0L, AttributeTypeId.SENTINEL, viewId);
    }
 
    @Override
@@ -154,10 +160,16 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
 
    @Override
    public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, pageNum, pageSize, orderByAttribute, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId) {
       try {
-         return this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute);
+         return this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute, viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<InterfaceConnection>();
    }

@@ -13,43 +13,41 @@
 <ng-container
 	class="hidden"
 	*ngIf="_messageData | async"></ng-container>
-<div class="message-element-interface">
-	<div class="message-element-interface-header">
-		<div class="message-element-interface-header grouped-buttons">
-			<ng-container *ngIf="(isEditing | async) === true">
-				<osee-undo-button-branch></osee-undo-button-branch>
-			</ng-container>
-			<ng-container *ngIf="inDiffMode | async as _diff">
-				<a
-					mat-raised-button
-					class="fit-buttons"
-					[routerLink]="
-						_diff === 'false'
-							? [
-									{
-										outlets: {
-											primary: 'diff',
-											rightSideNav: null
-										}
+<div class="message-element-interface-header">
+	<osee-view-selector></osee-view-selector>
+	<div class="grouped-buttons">
+		<ng-container *ngIf="(isEditing | async) === true">
+			<osee-undo-button-branch></osee-undo-button-branch>
+		</ng-container>
+		<ng-container *ngIf="inDiffMode | async as _diff">
+			<a
+				mat-raised-button
+				class="fit-buttons"
+				[routerLink]="
+					_diff === 'false'
+						? [
+								{
+									outlets: {
+										primary: 'diff',
+										rightSideNav: null
 									}
-							  ]
-							: structureId !== ''
-							? '../'
-							: '../'
-					"
-					><mat-icon *ngIf="_diff === 'false'"
-						>change_history</mat-icon
-					><mat-icon *ngIf="_diff === 'true'">visibility_off</mat-icon
-					><span>{{
-						_diff === 'false' ? 'Show Deltas' : 'Hide Deltas'
-					}}</span></a
-				>
-			</ng-container>
-			<osee-action-dropdown
-				category="3"
-				workType="MIM"
-				class="action-button fit-buttons"></osee-action-dropdown>
-		</div>
+								}
+						  ]
+						: structureId !== ''
+						? '../'
+						: '../'
+				"
+				><mat-icon *ngIf="_diff === 'false'">change_history</mat-icon
+				><mat-icon *ngIf="_diff === 'true'">visibility_off</mat-icon
+				><span>{{
+					_diff === 'false' ? 'Show Deltas' : 'Hide Deltas'
+				}}</span></a
+			>
+		</ng-container>
+		<osee-action-dropdown
+			category="3"
+			workType="MIM"
+			class="action-button fit-buttons"></osee-action-dropdown>
 	</div>
 </div>
 <ng-container>

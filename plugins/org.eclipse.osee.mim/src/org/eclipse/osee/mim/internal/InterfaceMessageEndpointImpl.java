@@ -16,6 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
@@ -36,13 +37,18 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllMessages(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
-      return this.messageApi.getAllForConnection(branch, ConnectionId, pageNum, pageSize, orderByAttributeTypeId);
+   public Collection<InterfaceMessageToken> getAllMessages(String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+      if (Strings.isValid(filter)) {
+         return this.messageApi.getAllForConnectionAndFilter(branch, ConnectionId, filter, viewId, pageNum, pageSize,
+            orderByAttributeTypeId);
+      }
+      return this.messageApi.getAllForConnection(branch, ConnectionId, viewId, pageNum, pageSize,
+         orderByAttributeTypeId);
    }
 
    @Override
-   public InterfaceMessageToken getInterfaceMessage(ArtifactId messageId) {
-      return this.messageApi.getRelatedToConnection(branch, ConnectionId, messageId);
+   public InterfaceMessageToken getInterfaceMessage(ArtifactId messageId, ArtifactId viewId) {
+      return this.messageApi.getRelatedToConnection(branch, ConnectionId, messageId, viewId);
    }
 
 }

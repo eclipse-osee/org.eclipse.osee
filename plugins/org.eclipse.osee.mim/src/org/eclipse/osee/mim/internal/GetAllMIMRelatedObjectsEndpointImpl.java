@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -78,16 +79,15 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
          for (StructurePath structure : structures) {
             //get all submessages
             for (InterfaceSubMessageToken submessage : this.subMessageApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceSubMessageContent_Structure, ArtifactId.valueOf(structure.getId()),
-               InterfaceSubMessageToken.class)) {
+               CoreRelationTypes.InterfaceSubMessageContent_Structure, ArtifactId.valueOf(structure.getId()))) {
                //get all messages
                for (InterfaceMessageToken message : this.messageApi.getAccessor().getAllByRelation(branch,
                   CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
-                  ArtifactId.valueOf(submessage.getId()), InterfaceMessageToken.class)) {
+                  ArtifactId.valueOf(submessage.getId()))) {
                   //get all connections
                   for (InterfaceConnection connection : this.interfaceConnectionApi.getAccessor().getAllByRelation(
                      branch, CoreRelationTypes.InterfaceConnectionContent_Message, ArtifactId.valueOf(message.getId()),
-                     InterfaceConnection.class)) {
+                     Arrays.asList(CoreRelationTypes.InterfaceConnectionTransportType_TransportType))) {
                      structure.addPath(new ResolvedStructurePath(message.getName() + " > " + submessage.getName(),
                         "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString()));
                   }

@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
@@ -41,13 +42,13 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
    }
 
    @Override
-   public GraphView getAllNodesAndEdges() {
+   public GraphView getAllNodesAndEdges(ArtifactId viewId) {
       try {
          GraphView graph = new GraphView();
          graph.setEdges(new LinkedList<ConnectionView>());
          graph.setNodes(new LinkedList<NodeView>());
-         Collection<InterfaceNode> nodes = interfaceNodeApi.getAccessor().getAll(branch, InterfaceNode.class);
-         Collection<InterfaceConnection> edges = interfaceConnectionApi.getAll(branch);
+         Collection<InterfaceNode> nodes = interfaceNodeApi.getAccessor().getAll(branch, viewId);
+         Collection<InterfaceConnection> edges = interfaceConnectionApi.getAll(branch, viewId);
          for (InterfaceNode node : nodes) {
             graph.addNode(new NodeView(node));
          }

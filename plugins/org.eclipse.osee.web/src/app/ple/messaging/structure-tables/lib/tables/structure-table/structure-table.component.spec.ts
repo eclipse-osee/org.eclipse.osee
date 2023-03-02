@@ -70,6 +70,7 @@ import {
 } from '@osee/messaging/shared/testing';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ViewSelectorMockComponent } from 'src/app/ple/messaging/shared/main-content/view-selector/view-selector.component.mock';
 
 describe('StructureTableComponent', () => {
 	let component: StructureTableComponent;
@@ -140,6 +141,7 @@ describe('StructureTableComponent', () => {
 						SubElementTableComponentMock,
 						EditElementFieldComponent,
 						EditStructureFieldComponentMock,
+						ViewSelectorMockComponent,
 						MockSingleDiffComponent,
 						AddElementDialogComponent,
 						HighlightFilteredTextDirective,

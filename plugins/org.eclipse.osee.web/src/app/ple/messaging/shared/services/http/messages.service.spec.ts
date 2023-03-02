@@ -125,16 +125,15 @@ describe('MessagesService', () => {
 	});
 
 	it('should get filtered messages', () => {
-		service.getFilteredMessages('', '10', '10', 1, 10).subscribe();
+		service.getFilteredMessages('', '10', '10', '10', 1, 10).subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/branch/' +
 				10 +
 				'/connections/' +
 				10 +
-				'/messages/filter/' +
-				'' +
-				'?count=10&pageNum=1'
+				'/messages' +
+				'?pageNum=1&count=10&viewId=10'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});
@@ -142,9 +141,16 @@ describe('MessagesService', () => {
 	});
 
 	it('should get a specific message', () => {
-		service.getMessage('10', '10', '10').subscribe();
+		service.getMessage('10', '10', '10', '10').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/' + 10 + '/connections/' + 10 + '/messages/10'
+			apiURL +
+				'/mim/branch/' +
+				10 +
+				'/connections/' +
+				10 +
+				'/messages/' +
+				10 +
+				'?viewId=10'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

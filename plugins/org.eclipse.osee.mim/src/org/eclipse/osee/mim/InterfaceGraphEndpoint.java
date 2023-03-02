@@ -15,7 +15,9 @@ package org.eclipse.osee.mim;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.mim.types.GraphView;
 
 /**
@@ -31,6 +33,6 @@ public interface InterfaceGraphEndpoint {
     *
     * @return graph of all nodes/edges
     */
-   GraphView getAllNodesAndEdges();
+   GraphView getAllNodesAndEdges(@QueryParam("viewId") ArtifactId viewId);
 
 }

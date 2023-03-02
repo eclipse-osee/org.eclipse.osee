@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -41,6 +41,10 @@ export class MimRouteService {
 	}
 	get id() {
 		return this._ui.idAsObservable;
+	}
+
+	get viewId() {
+		return this._ui.viewId;
 	}
 
 	set typeValue(value: string) {

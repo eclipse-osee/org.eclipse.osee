@@ -36,7 +36,7 @@ public interface InterfaceMessageEndpoint {
     *
     * @return messages and submessages
     */
-   Collection<InterfaceMessageToken> getAllMessages(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceMessageToken> getAllMessages(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")
@@ -47,6 +47,6 @@ public interface InterfaceMessageEndpoint {
     * @param messageId message id to look for
     * @return interface message that is found
     */
-   InterfaceMessageToken getInterfaceMessage(@PathParam("id") ArtifactId messageId);
+   InterfaceMessageToken getInterfaceMessage(@PathParam("id") ArtifactId messageId, @QueryParam("viewId") ArtifactId viewId);
 
 }

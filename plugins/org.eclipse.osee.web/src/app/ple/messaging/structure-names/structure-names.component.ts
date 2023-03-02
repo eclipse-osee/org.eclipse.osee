@@ -13,6 +13,7 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,6 +36,7 @@ import { HttpLoadingService } from '../../../services/http-loading.service';
 		RouterLink,
 		AsyncPipe,
 		FormsModule,
+		MatButtonModule,
 		MatInputModule,
 		MatFormFieldModule,
 		MatIconModule,

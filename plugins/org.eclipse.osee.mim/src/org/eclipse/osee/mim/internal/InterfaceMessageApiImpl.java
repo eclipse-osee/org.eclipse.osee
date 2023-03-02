@@ -131,10 +131,11 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId) {
+   public InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId, ArtifactId viewId) {
       try {
-         return this.setUpMessage(branch, this.getAccessor().getByRelation(branch, messageId,
-            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, this.getFollowRelationDetails()));
+         return this.setUpMessage(branch,
+            this.getAccessor().getByRelation(branch, messageId, CoreRelationTypes.InterfaceConnectionContent_Connection,
+               connectionId, this.getFollowRelationDetails(), viewId));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -216,7 +217,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize) {
-      return this.getAllForConnection(branch, connectionId, pageNum, pageSize, AttributeTypeId.SENTINEL);
+      return this.getAllForConnection(branch, connectionId, ArtifactId.SENTINEL, pageNum, pageSize,
+         AttributeTypeId.SENTINEL);
    }
 
    @Override
@@ -248,7 +250,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, AttributeTypeId orderByAttribute) {
-      return this.getAllForConnection(branch, connectionId, 0L, 0L, orderByAttribute);
+      return this.getAllForConnection(branch, connectionId, ArtifactId.SENTINEL, 0L, 0L, orderByAttribute);
    }
 
    @Override
@@ -264,11 +266,11 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceMessageToken> messages =
             this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
-               connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute).stream().map(
+               connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute, viewId).stream().map(
                   m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
          messages.stream().forEach(m -> {
             if (m.getInterfaceMessageType().equals("Operational")) {
@@ -285,18 +287,19 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter) {
-      return this.getAllForConnectionAndFilter(branch, connectionId, filter, 0L, 0L, AttributeTypeId.SENTINEL);
+      return this.getAllForConnectionAndFilter(branch, connectionId, filter, ArtifactId.SENTINEL, 0L, 0L,
+         AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       List<InterfaceMessageToken> messages = new LinkedList<InterfaceMessageToken>();
       List<AttributeTypeId> messageAttributes = createMessageAttributes();
       List<AttributeTypeId> subMessageAttributes = createSubMessageAttributes();
       try {
          messages = this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
-            this.fullRelations, pageNum, pageSize, orderByAttribute, subMessageAttributes).stream().map(
+            this.fullRelations, pageNum, pageSize, orderByAttribute, subMessageAttributes, viewId).stream().map(
                m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
 
          messages.stream().forEach(m -> {

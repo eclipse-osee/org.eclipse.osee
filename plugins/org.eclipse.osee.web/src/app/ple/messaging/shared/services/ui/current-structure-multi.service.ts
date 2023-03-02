@@ -62,6 +62,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 		this.ui.messageId,
 		this.ui.subMessageId,
 		this.ui.connectionId,
+		this.ui.viewId,
 		this.currentPage,
 		this.currentPageSize,
 	]).pipe(
@@ -75,6 +76,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 				messageId,
 				subMessageId,
 				connectionId,
+				viewId,
 				page,
 				pageSize,
 			]) =>
@@ -90,6 +92,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 				messageId,
 				subMessageId,
 				connectionId,
+				viewId,
 				page,
 				pageSize,
 			]) =>
@@ -100,6 +103,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 						messageId,
 						subMessageId,
 						connectionId,
+						viewId,
 						page + 1,
 						pageSize
 					)
@@ -121,6 +125,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 			this.MessageId,
 			this.SubMessageId,
 			this.connectionId,
+			this.ui.viewId,
 		]),
 	]).pipe(
 		switchMap(
@@ -128,7 +133,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 				isInDiff,
 				differences,
 				structures,
-				[branchId, parentBranch, messageId, subMessageId, connectionId],
+				[
+					branchId,
+					parentBranch,
+					messageId,
+					subMessageId,
+					connectionId,
+					viewId,
+				],
 			]) =>
 				isInDiff && differences !== undefined && differences.length > 0
 					? this._parseDifferences(
@@ -138,7 +150,8 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 							branchId,
 							messageId,
 							subMessageId,
-							connectionId
+							connectionId,
+							viewId
 					  )
 					: of(structures)
 		)
@@ -170,7 +183,8 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 		branchId: string,
 		messageId: string,
 		subMessageId: string,
-		connectionId: string
+		connectionId: string,
+		viewId: string
 	) {
 		let structures = JSON.parse(
 			JSON.stringify(_oldStructures)
@@ -1690,6 +1704,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	parentBranch,
 																	messageId,
 																	subMessageId,
+																	viewId,
 																	change.artIdB,
 																	connectionId
 																)

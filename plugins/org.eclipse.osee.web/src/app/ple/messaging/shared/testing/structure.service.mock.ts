@@ -28,6 +28,7 @@ export const structureServiceMock: Partial<StructuresService> = {
 		messageId: string,
 		subMessageId: string,
 		connectionId: string,
+		viewId: string,
 		pageNum: number
 	) {
 		return of(structuresMock3);

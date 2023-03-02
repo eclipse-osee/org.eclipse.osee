@@ -36,7 +36,7 @@ public interface InterfaceStructureEndpoint {
     *
     * @return all structures for a given sub message
     */
-   Collection<InterfaceStructureToken> getAllStructures(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceStructureToken> getAllStructures(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")
@@ -47,16 +47,6 @@ public interface InterfaceStructureEndpoint {
     * @param structureId id of structure to fetch
     * @return structure that is fetched
     */
-   InterfaceStructureToken getStructure(@PathParam("id") ArtifactId structureId);
+   InterfaceStructureToken getStructure(@PathParam("id") ArtifactId structureId, @QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
 
-   @GET()
-   @Path("{id}/{filter}")
-   @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * Gets a specific structure of a given sub message
-    *
-    * @param structureId id of structure to fetch
-    * @return structure that is fetched
-    */
-   InterfaceStructureToken getStructureAndFilterElements(@PathParam("id") ArtifactId structureId, @PathParam("filter") String filter);
 }

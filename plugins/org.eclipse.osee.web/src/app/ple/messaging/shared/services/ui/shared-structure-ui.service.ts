@@ -26,15 +26,18 @@ export class SharedStructureUIService {
 		this._mimRoute.messageId,
 		this._mimRoute.submessageId,
 		this._mimRoute.singleStructureId,
+		this._mimRoute.viewId,
 	]).pipe(
-		switchMap(([branch, connection, message, submessage, structure]) =>
-			this.structureService.getStructure(
-				branch,
-				message,
-				submessage,
-				structure,
-				connection
-			)
+		switchMap(
+			([branch, connection, message, submessage, structure, viewId]) =>
+				this.structureService.getStructure(
+					branch,
+					message,
+					submessage,
+					structure,
+					connection,
+					viewId
+				)
 		)
 	);
 	constructor(

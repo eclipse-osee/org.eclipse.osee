@@ -54,6 +54,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 		this.MessageId,
 		this.SubMessageId,
 		this.connectionId,
+		this.ui.viewId,
 		this.ui.filter,
 		this.singleStructureId,
 	]).pipe(
@@ -64,6 +65,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 				messageId,
 				subMessageId,
 				connectionId,
+				viewId,
 				filterString,
 				structureId,
 			]) =>
@@ -81,6 +83,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 				messageId,
 				subMessageId,
 				connectionId,
+				viewId,
 				filterString,
 				structureId,
 			]) =>
@@ -91,6 +94,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 						subMessageId,
 						structureId,
 						connectionId,
+						viewId,
 						filterString
 					),
 					this.ui.isInDiff,

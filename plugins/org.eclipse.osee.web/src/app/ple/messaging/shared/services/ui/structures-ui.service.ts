@@ -13,9 +13,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
 import { MimRouteService } from './mim-route.service';
 import { changeInstance } from '@osee/shared/types/change-report';
+import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -84,6 +84,14 @@ export class StructuresUiService {
 
 	set connectionIdString(value: string) {
 		this._mimRoute.connectionIdString = value;
+	}
+
+	get viewId() {
+		return this.ui.viewId;
+	}
+
+	set ViewId(id: string) {
+		this.ui.viewIdValue = id;
 	}
 
 	get branchType() {

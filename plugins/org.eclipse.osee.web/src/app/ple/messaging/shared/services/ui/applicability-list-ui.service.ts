@@ -11,7 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { share, switchMap, repeatWhen, shareReplay } from 'rxjs/operators';
+import {
+	share,
+	switchMap,
+	repeatWhen,
+	shareReplay,
+	filter,
+} from 'rxjs/operators';
 import { UiService } from 'src/app/ple-services/ui/ui.service';
 import { ApplicabilityListService } from '../http/applicability-list.service';
 
@@ -34,10 +40,20 @@ export class ApplicabilityListUIService {
 		private applicabilityService: ApplicabilityListService
 	) {}
 
+	_views = this.ui.id.pipe(
+		filter((v) => v !== ''),
+		switchMap((id) => this.applicabilityService.getViews(id)),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
 	/**
 	 * @todo update the updating observable to have some specificity
 	 */
 	get applic() {
 		return this._applics;
+	}
+
+	get views() {
+		return this._views;
 	}
 }

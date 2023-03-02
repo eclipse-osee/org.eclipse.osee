@@ -96,9 +96,10 @@ export abstract class CurrentStructureService {
 			this.connectionId,
 			this.MessageId,
 			this.SubMessageId,
+			this.ui.viewId,
 		]).pipe(
-			switchMap(([branch, connection, id, submessageId]) =>
-				this.messages.getMessage(branch, connection, id).pipe(
+			switchMap(([branch, connection, id, submessageId, viewId]) =>
+				this.messages.getMessage(branch, connection, id, viewId).pipe(
 					repeat({ delay: () => this.ui.UpdateRequired }),
 					tap((value) => {
 						this.BreadCrumb =

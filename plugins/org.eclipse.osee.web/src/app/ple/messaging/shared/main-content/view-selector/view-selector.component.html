@@ -1,0 +1,39 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form>
+	<mat-form-field
+		class="view-form-field"
+		appearance="fill">
+		<mat-label>Select a view</mat-label>
+		<input
+			type="text"
+			matInput
+			[matAutocomplete]="auto"
+			(keyup)="applyFilter($event)" />
+		<mat-autocomplete
+			autoActiveFirstOption
+			#auto="matAutocomplete">
+			<mat-option (click)="selectView(noneOption)">
+				{{ noneOption.name }}
+			</mat-option>
+			<ng-container *ngIf="views | async as _views">
+				<mat-option
+					*ngFor="let option of _views"
+					[value]="option.name"
+					(click)="selectView(option)">
+					{{ option.name }}
+				</mat-option>
+			</ng-container>
+		</mat-autocomplete>
+	</mat-form-field>
+</form>
