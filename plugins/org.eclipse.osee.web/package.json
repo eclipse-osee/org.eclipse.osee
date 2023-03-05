@@ -15,6 +15,7 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
+		"prebuild": "node appicons-offline.js",
 		"build": "ng build",
 		"build-stats": "ng build --stats-json -c production && webpack-bundle-analyzer dist/osee/production/stats.json",
 		"test": "ng test",

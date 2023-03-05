@@ -86,6 +86,16 @@ spec:
       }
     }
 
+    stage ('Run Icon Script'){
+      steps{
+        container('node'){
+          dir('plugins/org.eclipse.osee.web'){
+            sh 'npm run prebuild'
+          }
+        }
+      }
+    }
+
     stage('Build Production') {
       steps {
         container('node') {
