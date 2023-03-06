@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,11 +33,16 @@ import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.details.ArtEdDetailsTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.rel.ArtEdRelationsTab;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.ui.skynet.markedit.OseeMarkdownEditorInput;
+import org.eclipse.osee.framework.ui.skynet.markedit.edit.OmeEditTab;
+import org.eclipse.osee.framework.ui.skynet.markedit.html.OmeHtmlTab;
+import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -59,6 +65,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    private ArtEdAttrTab attrTab;
    private ArtEdRelationsTab relTab;
    private ArtEdDetailsTab detailsTab;
+
+   private OmeEditTab mdEditTab;
+   private OmeHtmlTab mdHtmlTab;
 
    public IActionContributor getActionBarContributor() {
       if (actionBarContributor == null) {
@@ -110,6 +119,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
+         if (mdEditTab != null) {
+            mdEditTab.doSave();
+         }
          getFormPage().doSave(monitor);
          Artifact artifact = getEditorInput().getArtifact();
          artifact.persist(String.format("%s - %s", getClass().getSimpleName(), artifact.toStringWithId()));
@@ -197,9 +209,39 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      createMarkdownTabs();
       createAttributesTab();
       createRelationsTab();
       createDetailsTab();
+   }
+
+   @Override
+   protected void pageChange(int newPageIndex) {
+      super.pageChange(newPageIndex);
+      if (mdHtmlTab == null) {
+         return;
+      }
+      if (newPageIndex != -1 && pages.size() > newPageIndex) {
+         Object page = pages.get(newPageIndex);
+         if (page != null && page.equals(mdHtmlTab)) {
+            mdHtmlTab.handleRefreshAction();
+         }
+      }
+   }
+
+   private void createMarkdownTabs() {
+      Artifact art = getArtifactFromEditorInput();
+      if (art.isOfType(CoreArtifactTypes.Markdown)) {
+         ArtOmeData omeData = new ArtOmeData(new OseeMarkdownEditorInput(art));
+         try {
+            mdEditTab = new OmeEditTab(this, omeData);
+            addPage(mdEditTab);
+            mdHtmlTab = new OmeHtmlTab(this, omeData);
+            addPage(mdHtmlTab);
+         } catch (PartInitException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
    }
 
    private void createAttributesTab() {
@@ -316,6 +358,12 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       if (attrTab != null) {
          attrTab.refresh();
       }
+      if (mdEditTab != null) {
+         mdEditTab.refresh();
+      }
+      if (mdHtmlTab != null) {
+         mdHtmlTab.refresh();
+      }
       if (relTab != null) {
          relTab.refresh();
       }
@@ -369,6 +417,10 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             }
          }
       });
+   }
+
+   public AttributesFormSection getAttributeFormSection() {
+      return formPage.getAttrFormSection();
    }
 
 }

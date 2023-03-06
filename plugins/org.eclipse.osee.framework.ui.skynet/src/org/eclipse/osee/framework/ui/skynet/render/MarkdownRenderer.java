@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -76,15 +77,16 @@ public class MarkdownRenderer extends FileSystemRenderer {
          imageDescriptor = ArtifactImageManager.getImageDescriptor(artifact);
       }
 
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Preview Markdown Editor", imageDescriptor));
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Markdown Editor", imageDescriptor));
+      commands.add(
+         new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Preview Markdown Editor - External", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Markdown Editor - External", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.EDIT, "org.eclipse.osee.framework.ui.skynet.othereditor.command",
          imageDescriptor));
    }
 
    @Override
    public String getName() {
-      return "Markdown Editor";
+      return "External Markdown Editor";
    }
 
    @Override
@@ -99,7 +101,8 @@ public class MarkdownRenderer extends FileSystemRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PrimaryAttribute)) {
+      if (artifact.isOfType(CoreArtifactTypes.Markdown) || artifact.isAttributeTypeValid(
+         CoreAttributeTypes.PrimaryAttribute)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
             return PRESENTATION_SUBTYPE_MATCH;
          } else if (presentationType.matches(DIFF)) {

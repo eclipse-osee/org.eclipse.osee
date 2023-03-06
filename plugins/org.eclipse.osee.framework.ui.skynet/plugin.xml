@@ -1743,5 +1743,15 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam">
       </Operation>
    </extension>
-   
+     <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            id="org.eclipse.osee.framework.ui.skynet.markedit.OseeMarkdownEditor"
+            name="Osee Markdown Editor"
+            icon="OSEE-INF/images/oseeMarkdownEdit.gif"
+            extensions="omd"
+            class="org.eclipse.osee.framework.ui.skynet.markedit.OseeMarkdownEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">
+      </editor>
+   </extension>
 </plugin>

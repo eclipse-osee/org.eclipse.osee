@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -23,6 +25,9 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -54,6 +59,9 @@ public class AtsDbConfigDemoOp {
       createDemoWebConfig();
 
       atsApi.setConfigValue(AtsUtil.SINGLE_SERVER_DEPLOYMENT, "true");
+
+      createMarkdownRequirements();
+
       return new XResultData();
    }
 
@@ -84,6 +92,27 @@ public class AtsDbConfigDemoOp {
       changes.relate(sawBld2Ver, AtsRelationTypes.ParallelVersion_Child, sawBld1Ver);
       changes.relate(sawBld2Ver, AtsRelationTypes.ParallelVersion_Child, sawBld3Ver);
 
+      changes.execute();
+   }
+
+   private void createMarkdownRequirements() {
+      IAtsChangeSet changes = atsApi.createChangeSet("Populate Demo DB - Create Markdown", SAW_Bld_1);
+      ArtifactToken parent =
+         atsApi.getQueryService().getArtifact(CoreArtifactTokens.SoftwareRequirementsFolder, SAW_Bld_1);
+
+      ArtifactToken robotArt = changes.createArtifact(parent, DemoArtifactToken.RobotApiSwMarkdown);
+
+      for (String childName : Arrays.asList("CISST fundamental data types", "Events", "Functional Specification",
+         "Interface Initialization", "Read-only Robots", "Robot Interfaces", "Robot collaboration",
+         "Virtual fixtures")) {
+         ArtifactToken artifact =
+            changes.createArtifact(robotArt, CoreArtifactTypes.SoftwareRequirementMarkdown, childName);
+         String markdown = String.format("## %s \n\nThe API shall generate %s to notify the user " //
+            + "application about asynchronous actions detected by the lower level software.  " //
+            + "The %s of the individual and collaborative robot objects shall be documented " //
+            + "in an external database/document.", childName, childName, childName, childName);
+         changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
+      }
       changes.execute();
    }
 

@@ -89,6 +89,7 @@ public class ArtifactFormPage extends FormPage {
    private LoadingComposite loadingComposite;
    private final ArtifactEditor editor;
    private ArtifactFormPageViewApplicability applPart;
+   private AttributesFormSection attrFormSection;
 
    public ArtifactFormPage(ArtifactEditor editor, String id, String title) {
       super(editor, id, title);
@@ -226,8 +227,9 @@ public class ArtifactFormPage extends FormPage {
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
 
-      sectionParts.put(SectionEnum.Attributes,
-         new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED));
+      attrFormSection =
+         new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED);
+      sectionParts.put(SectionEnum.Attributes, attrFormSection);
       if (!ServiceUtil.accessControlService().isOseeAdmin()) {
          sectionParts.put(SectionEnum.Relations, new RelationsFormSection(getEditor(), form.getBody(), toolkit,
             sectionStyle | ExpandableComposite.EXPANDED, true));
@@ -381,5 +383,9 @@ public class ArtifactFormPage extends FormPage {
          getArtifactEditorInput().getArtifact().reloadAttributesAndRelations();
          refresh();
       }
+   }
+
+   public AttributesFormSection getAttrFormSection() {
+      return attrFormSection;
    }
 }

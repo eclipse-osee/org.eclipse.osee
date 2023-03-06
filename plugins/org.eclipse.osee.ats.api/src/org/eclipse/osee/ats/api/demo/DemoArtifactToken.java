@@ -219,6 +219,11 @@ public final class DemoArtifactToken {
    public static final IAtsTeamDefinitionArtifactToken Process_Team = AtsTeamDefinitionArtifactToken.valueOf(55170736L, "Process_Team");
 
    //////////////////////////////////
+   // Other
+   //////////////////////////////////
+  public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667264415544L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+
+   //////////////////////////////////
    // System Safety
    //////////////////////////////////
 

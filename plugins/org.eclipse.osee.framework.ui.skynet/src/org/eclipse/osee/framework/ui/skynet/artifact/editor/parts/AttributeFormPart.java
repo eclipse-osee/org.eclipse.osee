@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -172,6 +174,10 @@ public class AttributeFormPart extends AbstractFormPart {
       boolean isEditable = !artifact.isReadOnly();
 
       for (AttributeTypeToken attributeType : attributeTypes) {
+         if (artifact.isOfType(CoreArtifactTypes.Markdown) && attributeType.equals(
+            CoreAttributeTypes.MarkdownContent)) {
+            continue;
+         }
          Composite internalComposite;
          if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType)) {
             internalComposite = createAttributeTypeControlsInSection(composite, attributeType, isEditable, 15);
@@ -258,6 +264,10 @@ public class AttributeFormPart extends AbstractFormPart {
             String.format("Error creating controls for: [%s] [%s]", attributeType.getName(), ex.getLocalizedMessage()));
       }
       return internalComposite;
+   }
+
+   public void addXWidgetValidationListener(XWidget xWidget) {
+      xWidget.addXModifiedListener(new XWidgetValidationListener());
    }
 
    private Composite createAttributeTypeControlsInSection(Composite parent, AttributeTypeToken attributeType, boolean isEditable, int leftMargin) {
