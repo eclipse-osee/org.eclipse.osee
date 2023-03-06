@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
@@ -155,7 +156,7 @@ public class MSWordTemplateRendererUtils {
          return IRenderer.NO_MATCH;
       }
 
-      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.PrimaryAttribute) && artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
+      if ((!artifact.isOfType(CoreArtifactTypes.Markdown) && !artifact.isAttributeTypeValid(CoreAttributeTypes.PrimaryAttribute)) && artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
          return
             presentationType.matches(PresentationType.DEFAULT_OPEN, PresentationType.PREVIEW, PresentationType.PREVIEW_SERVER)
                ? ( artifact.getAttributeCount(CoreAttributeTypes.WordTemplateContent) > 0 )

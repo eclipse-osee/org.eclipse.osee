@@ -40,9 +40,9 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuis;
+import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 
 /**

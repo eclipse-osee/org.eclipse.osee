@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -126,7 +127,8 @@ public final class RendererManager {
     */
 
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
-      if (presentationType == DEFAULT_OPEN && RendererManager.isDefaultArtifactEditor()) {
+      if (presentationType == DEFAULT_OPEN && (RendererManager.isDefaultArtifactEditor() || artifact.isOfType(
+         CoreArtifactTypes.Markdown))) {
          presentationType = GENERAL_REQUESTED;
       }
       IRenderer bestRendererPrototype = null;
