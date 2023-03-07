@@ -37,8 +37,12 @@ public class ValidateWorkDefinitionsOperation {
       XResultData results = new XResultData();
       for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
          results.logf("Validating workDef [%s]\n", workDef.getName());
+         results.logf("--- Validating header\n");
+         for (LayoutItem layoutItem : workDef.getHeaderDef().getLayoutItems()) {
+            validateLayoutItem(layoutItem, results);
+         }
          for (StateDefinition stateDef : workDef.getStates()) {
-            results.logf("   Validating state [%s]\n", stateDef.getName());
+            results.logf("--- Validating state [%s]\n", stateDef.getName());
             for (LayoutItem layoutItem : stateDef.getLayoutItems()) {
                validateLayoutItem(layoutItem, results);
             }
@@ -54,8 +58,11 @@ public class ValidateWorkDefinitionsOperation {
          if (attrTypeTok != null) {
             AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(attrTypeTok.getId());
             if (attrType == null) {
-               results.errorf("      Type [%s] for widget [%s] is not valid.\n", attrTypeTok.toStringWithId(),
+               results.errorf("------ Type %s for widget %s is not valid.\n", attrTypeTok.toStringWithId(),
                   widgetDef.toStringWithId());
+            } else {
+               results.logf("------ Type %s for widget %s\n",
+                  (attrTypeTok.isValid() ? attrTypeTok.toStringWithId() : "N/A"), widgetDef.toStringWithId());
             }
          }
       } else if (layoutItem instanceof CompositeLayoutItem) {
