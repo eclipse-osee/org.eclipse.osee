@@ -1,0 +1,37 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<button
+	mat-raised-button
+	[matMenuTriggerFor]="roleMenu"
+	class="icon-button"
+	color="primary">
+	<mat-icon>transfer_within_a_station</mat-icon>
+	Edit Role
+</button>
+<mat-menu #roleMenu="matMenu">
+	<button
+		mat-menu-item
+		(click)="addRoles()">
+		<mat-icon color="success">add</mat-icon>Add Role
+	</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="deleteRoleMenu">
+		<mat-icon color="warn">delete</mat-icon>Delete Role
+	</button>
+</mat-menu>
+<mat-menu #deleteRoleMenu="matMenu">
+	<ng-container>
+		<button mat-menu-item>Test</button>
+	</ng-container>
+</mat-menu>

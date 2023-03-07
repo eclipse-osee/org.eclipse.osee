@@ -1,0 +1,75 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+
+<h1
+	mat-dialog-title
+	class="dialog-title">
+	Course Info
+</h1>
+<div
+	mat-dialog-content
+	class="course-content">
+	<ng-container *ngFor="let course of courses$ | async">
+		<div class="course-item">
+			<div class="course-label">Name:</div>
+			<div class="course-value">
+				{{ course.courseTitle }}
+			</div>
+		</div>
+		<div class="course-item">
+			<div class="course-label">ID:</div>
+			<div class="course-value">
+				{{ course.courseID }}
+			</div>
+		</div>
+		<div class="course-item">
+			<div class="course-label">Delivery Method:</div>
+			<div class="course-value">
+				{{ course.deliveryMethod }}
+			</div>
+		</div>
+		<div class="course-item">
+			<div class="course-label">Optional:</div>
+			<div class="course-value">
+				{{ course.optional }}
+			</div>
+		</div>
+		<div class="course-item">
+			<div class="course-label">Status:</div>
+			<div class="course-value">
+				{{ course.status }}
+			</div>
+		</div>
+		<div class="course-item">
+			<div class="course-label">Document Title:</div>
+			<div class="course-value">
+				{{ course.docTitle }}
+			</div>
+		</div>
+		<div class="course-item">
+			<div class="course-label">Link:</div>
+			<div class="course-value">
+				<button (click)="goToLink(course.link)">
+					<mat-icon color="primary">open_in_new</mat-icon>
+				</button>
+			</div>
+		</div>
+	</ng-container>
+</div>
+<div mat-dialog-actions>
+	<button
+		mat-raised-button
+		(click)="onCancelClick()">
+		Close
+	</button>
+</div>

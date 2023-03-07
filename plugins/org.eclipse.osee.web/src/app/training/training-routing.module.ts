@@ -10,33 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@mixin dialog-classes {
-	.dialog-full-width {
-		width: 100%;
-	}
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-	.dialog-font-size {
-		font-size: 18px;
-	}
+import { TrainingComponent } from './training.component';
 
-	.dialog-section-header {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-	}
+const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
+		outlet: 'toolbar',
+	},
+	{ path: '', component: TrainingComponent },
+];
 
-	.dialog-section-header-text {
-		padding-right: 1rem;
-		font-weight: bold;
-	}
-
-	.dialog-divider {
-		border-top-width: 2px;
-	}
-
-	.dialog-title {
-		font-weight: bold;
-	}
-}
+@NgModule({
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
+})
+export class TrainingRoutingModule {}

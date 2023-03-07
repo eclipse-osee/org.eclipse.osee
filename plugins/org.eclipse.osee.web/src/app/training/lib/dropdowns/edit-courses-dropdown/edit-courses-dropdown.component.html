@@ -1,0 +1,37 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<button
+	mat-raised-button
+	[matMenuTriggerFor]="courseMenu"
+	class="icon-button"
+	color="primary">
+	<mat-icon>import_contacts</mat-icon>
+	Edit Courses
+</button>
+<mat-menu #courseMenu="matMenu">
+	<button
+		mat-menu-item
+		(click)="addCourses()">
+		<mat-icon color="success">add</mat-icon>Add Course
+	</button>
+	<button
+		mat-menu-item
+		[matMenuTriggerFor]="deleteCourseMenu">
+		<mat-icon color="warn">delete</mat-icon>Delete Course
+	</button>
+</mat-menu>
+<mat-menu #deleteCourseMenu="matMenu">
+	<ng-container>
+		<button mat-menu-item>Test</button>
+	</ng-container>
+</mat-menu>
