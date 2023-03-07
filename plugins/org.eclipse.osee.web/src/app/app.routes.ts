@@ -29,6 +29,10 @@ export const routes: Routes = [
 		loadChildren: () => import('./ple/ple.routes'),
 	},
 	{
+		path: 'training',
+		loadChildren: () => import('./training/training.routes'),
+	},
+	{
 		path: '', //todo remove when main app page is made
 		redirectTo: 'ple',
 		pathMatch: 'full',

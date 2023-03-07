@@ -10,33 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@mixin dialog-classes {
-	.dialog-full-width {
-		width: 100%;
-	}
-
-	.dialog-font-size {
-		font-size: 18px;
-	}
-
-	.dialog-section-header {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.dialog-section-header-text {
-		padding-right: 1rem;
-		font-weight: bold;
-	}
-
-	.dialog-divider {
-		border-top-width: 2px;
-	}
-
-	.dialog-title {
-		font-weight: bold;
-	}
+export interface TrainingCourse {
+	courseID: string;
+	courseTitle: string;
+	deliveryMethod: string;
+	optional: boolean;
+	status: boolean;
+	docTitle: string;
+	link: string;
+}
+export interface TrainingCourseRecord {
+	userName: string;
+	courseID: string;
+	startDate: string;
+	endDate: string;
+}
+export class DefaultTrainingCourseRecord implements TrainingCourseRecord {
+	public userName = '';
+	public courseID = '';
+	public startDate = '';
+	public endDate = '';
 }

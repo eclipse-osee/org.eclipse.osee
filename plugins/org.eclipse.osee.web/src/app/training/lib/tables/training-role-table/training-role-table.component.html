@@ -1,0 +1,56 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="coursesAsMatTableDataSource$ | async as data">
+	<table
+		mat-table
+		[dataSource]="data"
+		class="mat-elevation-z8 training-table">
+		<!-- If there is no data for the table, display a no data message -->
+		<div *matNoDataRow>No Roles</div>
+
+		<ng-container *ngFor="let header of headers">
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					[ngClass]="{
+						'column-border': header !== 'endDate'
+					}">
+					<div class="table-header-cell">
+						{{
+							(getTableHeadersByName(header) | async)
+								?.humanReadable || ''
+						}}
+					</div>
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let item; let row = index"
+					[ngClass]="{
+						'column-border': header !== 'endDate',
+						'table-row-even': row % 2 === 0,
+						'table-row-odd': row % 2 !== 0
+					}">
+					{{ item[header] }}
+				</td>
+			</ng-container>
+		</ng-container>
+
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: headers"></tr>
+	</table>
+</ng-container>

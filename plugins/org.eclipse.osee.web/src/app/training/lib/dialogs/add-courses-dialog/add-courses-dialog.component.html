@@ -1,0 +1,132 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #addCourseForm="ngForm">
+	<h1
+		mat-dialog-title
+		class="dialog-title">
+		Add Course
+	</h1>
+	<!-- Dialog Content -->
+	<div mat-dialog-content>
+		<div class="users">
+			<div class="dialog-section-header">
+				<mat-label class="dialog-section-header-text"
+					>Select User</mat-label
+				>
+				<div class="tw-flex-1">
+					<mat-divider class="dialog-divider"></mat-divider>
+				</div>
+			</div>
+
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Select a User</mat-label>
+				<mat-select
+					name="username"
+					[(ngModel)]="data.userName"
+					required>
+					<ng-container>
+						<mat-option [value]="(userInfo | async)?.name">{{
+							(userInfo | async)?.name
+						}}</mat-option>
+					</ng-container>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<br />
+		<div class="courses">
+			<div class="dialog-section-header">
+				<mat-label class="dialog-section-header-text"
+					>Select Course</mat-label
+				>
+				<div class="tw-flex-1">
+					<mat-divider class="dialog-divider"></mat-divider>
+				</div>
+			</div>
+
+			<mat-selection-list
+				name="course"
+				[(ngModel)]="data.courseID"
+				[multiple]="false"
+				required
+				color="primary">
+				<mat-list-option
+					*ngFor="let course of test_courses | async"
+					[value]="course.courseID">
+					{{ course.courseID }} - {{ course.courseTitle }}
+				</mat-list-option>
+			</mat-selection-list>
+		</div>
+		<br />
+		<div class="due-date">
+			<div class="dialog-section-header">
+				<mat-label class="dialog-section-header-text"
+					>Select Due Date</mat-label
+				>
+				<div class="tw-flex-1">
+					<mat-divider class="dialog-divider"></mat-divider>
+				</div>
+			</div>
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Enter a date range</mat-label>
+				<mat-date-range-input [rangePicker]="rangePicker">
+					<input
+						matStartDate
+						name="startDate"
+						[(ngModel)]="data.startDate"
+						required
+						placeholder="Start date" />
+					<input
+						matEndDate
+						name="endDate"
+						[(ngModel)]="data.endDate"
+						required
+						placeholder="End date" />
+				</mat-date-range-input>
+				<mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+				<mat-datepicker-toggle
+					matIconSuffix
+					[for]="rangePicker"></mat-datepicker-toggle>
+				<mat-date-range-picker #rangePicker>
+					<mat-date-range-picker-actions>
+						<button
+							mat-raised-button
+							matDateRangePickerCancel>
+							Cancel
+						</button>
+						<button
+							mat-raised-button
+							color="primary"
+							matDateRangePickerApply>
+							Apply
+						</button>
+					</mat-date-range-picker-actions>
+				</mat-date-range-picker>
+			</mat-form-field>
+		</div>
+	</div>
+
+	<!-- Action Buttons -->
+	<div mat-dialog-actions>
+		<button
+			mat-raised-button
+			(click)="onCancelClick()">
+			Cancel
+		</button>
+		<button
+			mat-raised-button
+			[disabled]="addCourseForm.invalid"
+			color="primary">
+			Confirm
+		</button>
+	</div>
+</form>

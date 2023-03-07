@@ -10,33 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@mixin dialog-classes {
-	.dialog-full-width {
-		width: 100%;
-	}
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../modern-ple-theme.scss' as theme;
 
-	.dialog-font-size {
-		font-size: 18px;
-	}
+@mixin density($config-or-theme) {
+	$density: mat.get-density-config($config-or-theme);
 
-	.dialog-section-header {
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
+	.training-page {
+		margin: calc(2em + 0.5em * $density); // calculates margin
 	}
+}
 
-	.dialog-section-header-text {
-		padding-right: 1rem;
-		font-weight: bold;
-	}
+@mixin theme($theme) {
+	$density: mat.get-density-config($theme);
 
-	.dialog-divider {
-		border-top-width: 2px;
-	}
-
-	.dialog-title {
-		font-weight: bold;
+	@if $density {
+		@include density($density);
 	}
 }
