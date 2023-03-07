@@ -138,9 +138,10 @@ public class SystemSubsystemReport extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMsWord, branch);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      Artifact subsysTopFolder = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.SubSystemRequirementsFolder);
+      Artifact subsysTopFolder =
+         ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SubSystemRequirementsFolder, branch);
 
-      sysReqs = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.SystemRequirementsFolder).getDescendants();
+      sysReqs = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SystemRequirementsFolder, branch).getDescendants();
 
       if (sysReqs != null && !sysReqs.isEmpty()) {
          ViewIdUtility.removeExcludedArtifacts(sysReqs.iterator(), findExcludedArtifactsByView);

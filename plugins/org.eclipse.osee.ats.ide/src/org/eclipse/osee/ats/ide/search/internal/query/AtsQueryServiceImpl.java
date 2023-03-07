@@ -261,7 +261,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       if (artifact instanceof Artifact) {
          result = (Artifact) artifact;
       } else if (artifact instanceof ArtifactToken) {
-         result = ArtifactQuery.getArtifactOrNull((ArtifactToken) artifact, DeletionFlag.EXCLUDE_DELETED);
+         if (((ArtifactToken) artifact).getBranch().isInvalid()) {
+            result = ArtifactQuery.getArtifactOrNull(artifact, atsApi.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+         } else {
+            result = ArtifactQuery.getArtifactOrNull((ArtifactToken) artifact, DeletionFlag.EXCLUDE_DELETED);
+         }
       } else if (artifact instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) artifact;
          if (atsObject.getStoreObject() instanceof Artifact) {
