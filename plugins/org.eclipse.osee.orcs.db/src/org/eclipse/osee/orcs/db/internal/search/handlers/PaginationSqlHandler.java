@@ -32,42 +32,63 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
 
    @Override
    public void startWithPreSelect(AbstractSqlWriter writer) {
-      writer.write("SELECT * FROM (\n");
+      if (criteria.isValid()) {
+         writer.write("SELECT * FROM (\n");
+      }
    }
 
    @Override
    public void endWithPreSelect(AbstractSqlWriter writer) {
-      Long tempLowerBound = (criteria.getPageNum() - 1) * criteria.getPageSize();
-      Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
-      Long upperBound =
-         tempLowerBound == 0 ? lowerBound + criteria.getPageSize() : lowerBound + criteria.getPageSize() - 1L;
-      writer.startRecursiveCommonTableExpression("WHERE rn BETWEEN " + lowerBound + " AND " + upperBound, "");
+      if (criteria.isValid()) {
+         Long tempLowerBound = (criteria.getPageNum() - 1) * criteria.getPageSize();
+         Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+         Long upperBound =
+            tempLowerBound == 0 ? lowerBound + criteria.getPageSize() : lowerBound + criteria.getPageSize() - 1L;
+         writer.startRecursiveCommonTableExpression("WHERE rn BETWEEN " + lowerBound + " AND " + upperBound, "");
+      }
    }
 
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
-      //do nothing
-      writer.write(",\n row_number() over (");
-      if (writer.getJdbcClient().getDbType().isPaginationOrderingSupported()) {
-         //note: need to leverage writer.getJdbcClient().getDbType() to be able to control attribute sorting vs relation sorting since HSQL doesn't support row_number() over (ORDER BY x)
-
-         if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains(
-            "ATTRIBUTE") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
-            writer.write("ORDER BY ");
-         }
-         boolean firstOrderBy = true;
-         if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("ATTRIBUTE")) {
-            String attrTable = writer.getFirstAlias(OseeDb.ATTRIBUTE_TABLE);
-            if (attrTable != null) {
-               writer.write(attrTable);
-               writer.write(".value");
-               firstOrderBy = false;
+      if (criteria.isValid()) {
+         writer.write(",\n row_number() over (");
+         if (writer.getJdbcClient().getDbType().isPaginationOrderingSupported()) {
+            /**
+             * note: need to leverage writer.getJdbcClient().getDbType() to be able to control attribute sorting vs
+             * relation sorting since HSQL doesn't support row_number() over (ORDER BY x)
+             */
+            if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains(
+               "ATTRIBUTE") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+               writer.write("ORDER BY ");
             }
-            if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+            boolean firstOrderBy = true;
+            if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("ATTRIBUTE")) {
+               String attrTable = writer.getFirstAlias(OseeDb.ATTRIBUTE_TABLE);
+               if (attrTable != null) {
+                  writer.write(attrTable);
+                  writer.write(".value");
+                  firstOrderBy = false;
+               }
+               if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+                  String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
+                  if (relTable != null) {
+                     if (!firstOrderBy) {
+                        writer.write(", ");
+                     }
+                     writer.write(relTable);
+                     writer.write(".rel_type, ");
+                     writer.write(relTable);
+                     writer.write(".rel_order ");
+                     firstOrderBy = false;
+                  }
+               }
+            } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+
                String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
                if (relTable != null) {
                   if (!firstOrderBy) {
                      writer.write(", ");
+
                   }
                   writer.write(relTable);
                   writer.write(".rel_type, ");
@@ -76,32 +97,25 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
                   firstOrderBy = false;
                }
             }
-         } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
-
-            String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
-            if (relTable != null) {
-               if (!firstOrderBy) {
-                  writer.write(", ");
-
-               }
-               writer.write(relTable);
-               writer.write(".rel_type, ");
-               writer.write(relTable);
-               writer.write(".rel_order ");
-               firstOrderBy = false;
+            if (firstOrderBy) {
+               writer.write("1");
             }
          }
-         if (firstOrderBy) {
-            writer.write("1");
-         }
-      }
 
-      writer.write(") rn");
+         writer.write(") rn");
+      } else {
+         writer.write(",0 as rn");
+      }
    }
 
    @Override
    public boolean shouldWriteAnd() {
       return false;
+   }
+
+   @Override
+   public boolean criteriaIsValid() {
+      return criteria.isValid();
    }
 
    @Override

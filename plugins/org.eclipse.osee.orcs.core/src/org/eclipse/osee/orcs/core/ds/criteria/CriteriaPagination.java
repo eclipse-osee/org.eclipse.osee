@@ -55,4 +55,11 @@ public class CriteriaPagination extends Criteria {
       return getClass().getSimpleName() + " " + pageNum + " " + pageSize;
    }
 
+   public boolean isValid() {
+      if (Conditions.notNull(pageSize) && pageSize > 0) {
+         return true;
+      }
+      return false;
+   }
+
 }

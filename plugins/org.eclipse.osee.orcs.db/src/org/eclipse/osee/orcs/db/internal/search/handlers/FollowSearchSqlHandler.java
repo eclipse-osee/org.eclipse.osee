@@ -119,4 +119,8 @@ WHERE
       return attrSearchAlias;
    }
 
+   @Override
+   public boolean hasPredicates() {
+      return false;
+   }
 }

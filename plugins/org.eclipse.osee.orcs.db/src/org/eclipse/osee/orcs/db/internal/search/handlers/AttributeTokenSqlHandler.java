@@ -204,7 +204,10 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    public void addPredicates(AbstractSqlWriter writer) {
       if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
          writer.writeEquals(artAlias, attrAlias, "art_id");
+      } else {
+         writer.write("1 = 1");
       }
+      ;
    }
 
    @Override

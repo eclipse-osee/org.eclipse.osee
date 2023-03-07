@@ -36,6 +36,10 @@ public abstract class SqlHandler<T extends Criteria> {
       // do nothing
    }
 
+   public T getData() {
+      return this.getData();
+   }
+
    public void addTables(AbstractSqlWriter writer) {
       // do nothing
    }
@@ -57,6 +61,10 @@ public abstract class SqlHandler<T extends Criteria> {
    }
 
    public boolean shouldWriteAnd() {
+      return true;
+   }
+
+   public boolean criteriaIsValid() {
       return true;
    }
 
