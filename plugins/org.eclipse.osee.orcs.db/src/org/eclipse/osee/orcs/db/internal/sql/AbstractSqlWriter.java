@@ -58,6 +58,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private String tupleAlias;
    private String tupleTxsAlias;
    private String multiTableHintParameter = "";
+   private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData rootQueryData) {
       this.joinFactory = joinFactory;
@@ -102,6 +103,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    protected String write(Iterable<SqlHandler<?>> handlers, String ctePrefix) {
+
       String cteAlias = null;
       writeToWithClause(handlers);
       if (ctePrefix == null) {
@@ -334,7 +336,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       while (iterator.hasNext()) {
          SqlHandler<?> handler = iterator.next();
          setHandlerLevel(handler);
-         if (handler.hasPredicates()) {
+         if (handler.hasPredicates() && handler.criteriaIsValid()) {
             if (first) {
                first = false;
             } else {

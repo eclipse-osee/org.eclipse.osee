@@ -89,6 +89,11 @@ public class AttributeSortSqlHandler extends SqlHandler<CriteriaAttributeSort> {
 
    }
 
+   @Override
+   public boolean criteriaIsValid() {
+      return criteria.isValid();
+   }
+
    @Override()
    public boolean shouldWriteAnd() {
       System.out.println(criteria.isValid());

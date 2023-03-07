@@ -84,7 +84,6 @@ public class SqlHandlerFactoryUtilTest {
       Iterator<SqlHandler<?>> iterator = handlers.iterator();
       assertHandler(iterator.next(), ArtifactIdsSqlHandler.class, SqlHandlerPriority.ARTIFACT_ID);
       assertHandler(iterator.next(), ArtifactGuidSqlHandler.class, SqlHandlerPriority.ARTIFACT_GUID);
-      assertHandler(iterator.next(), RelatedToSqlHandler.class, SqlHandlerPriority.RELATED_TO_ART_IDS);
       assertHandler(iterator.next(), AttributeRawSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_VALUE);
 
       assertHandler(iterator.next(), AttributeTokenSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TOKENIZED_VALUE,
@@ -92,9 +91,10 @@ public class SqlHandlerFactoryUtilTest {
       assertHandler(iterator.next(), AttributeTypeExistsSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS);
       assertHandler(iterator.next(), AttributeTypeNotExistsSqlHandler.class,
          SqlHandlerPriority.ATTRIBUTE_TYPE_NOT_EXISTS);
-      assertHandler(iterator.next(), RelationTypeExistsSqlHandler.class, SqlHandlerPriority.RELATION_TYPE_EXISTS);
       assertHandler(iterator.next(), ArtifactTypeSqlHandler.class, SqlHandlerPriority.ARTIFACT_TYPE);
+      assertHandler(iterator.next(), RelatedToSqlHandler.class, SqlHandlerPriority.RELATED_TO_ART_IDS);
       assertHandler(iterator.next(), RelationTypeFollowSqlHandler.class, SqlHandlerPriority.FOLLOW_RELATION_TYPES);
+      assertHandler(iterator.next(), RelationTypeExistsSqlHandler.class, SqlHandlerPriority.RELATION_TYPE_EXISTS);
    }
 
    private void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority) {

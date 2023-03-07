@@ -13,6 +13,7 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -32,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowSearchSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.PaginationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -41,6 +43,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private final List<AbstractJoinQuery> joinTables = new ArrayList<>();
+   private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
    private final AbstractSqlWriter parentWriter;
    private final List<Object> parameters = new ArrayList<>();
    private String fieldAlias;
@@ -134,10 +137,18 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             handlerSlim.setData((CriteriaRelationTypeFollow) criteria);
             handlers.add(handlerSlim);
             previousFollow = handlerSlim;
+            if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
+               CriteriaPagination.class)) {
+               PaginationSqlHandler pHandler = new PaginationSqlHandler();
+               pHandler.setData(new CriteriaPagination(0, 0));
+               handlers.add(pHandler); //to ensure 0 rn is added in the right order via handler
+            }
          } else {
             handlers.add(handlerFactory.createHandler(criteria));
          }
       }
+      //sort handlers
+      Collections.sort(handlers, HANDLER_COMPARATOR);
       String artWithAlias = write(handlers, "artWith");
       artWithAliases.add(artWithAlias);
       QueryData tempQueryDataCursor = queryDataCursor;
@@ -390,13 +401,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          for (SqlHandler<?> handler : handlers) {
             handler.writeSelectFields(this);
          }
-         if (queryDataCursor.getParentQueryData() != null && this.rootQueryData.hasCriteriaType(
-            CriteriaPagination.class)) {
-            write(", 0 as rn");
-         }
-
       }
-
    }
 
    @Override
