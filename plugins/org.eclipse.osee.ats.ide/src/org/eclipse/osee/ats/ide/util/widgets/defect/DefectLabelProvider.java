@@ -105,6 +105,22 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       return "Unhandled Column";
    }
 
+   /**
+    * Provides the XViewerSorter the actual Date object to sort instead of having to convert the text back to Date (and
+    * loose the precision)
+    */
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (!(element instanceof ReviewDefectItem)) {
+         return "";
+      }
+      ReviewDefectItem item = (ReviewDefectItem) element;
+      if (xCol.getId().equals(PeerReviewDefectXViewerColumns.Created_Date_Col.getId())) {
+         return item.getDate();
+      }
+      return super.getBackingData(element, xCol, columnIndex);
+   }
+
    @Override
    public void dispose() {
       // do nothing
