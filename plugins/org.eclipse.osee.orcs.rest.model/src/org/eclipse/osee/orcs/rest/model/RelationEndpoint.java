@@ -72,4 +72,18 @@ public interface RelationEndpoint {
    @Consumes({MediaType.TEXT_PLAIN})
    Response createRelationByType(@PathParam("sideA") ArtifactId sideA, @PathParam("sideB") ArtifactId sideB, @PathParam("relationType") RelationTypeToken relationType);
 
+   /**
+    * Convert specific relation on an artifact to its newer version
+    *
+    * @param artId: the Artifact whose relations are being converted
+    * @param oldRelationType: relation type which uses osee_relation_link_id
+    * @param newRelationType: relation type which uses osee_relation
+    * @return list of updated relations
+    */
+   @POST
+   @Path("convert/artifact/{artifactA}/{oldRelationType}/{newRelationType}")
+   @Consumes({MediaType.TEXT_PLAIN})
+   @Produces({MediaType.APPLICATION_JSON})
+   List<RelationTypeToken> convertRelations(@PathParam("artifactA") ArtifactId artifactA, @PathParam("oldRelationType") RelationTypeToken oldRelationType, @PathParam("newRelationType") RelationTypeToken newRelationType);
+
 }

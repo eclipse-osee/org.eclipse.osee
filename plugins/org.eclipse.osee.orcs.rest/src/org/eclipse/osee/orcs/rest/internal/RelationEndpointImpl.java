@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -65,5 +66,24 @@ public class RelationEndpointImpl implements RelationEndpoint {
    public List<ArtifactToken> getRelatedRecursive(ArtifactId artifact, RelationTypeToken relationType, ArtifactId view) {
       RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B);
       return orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(sideB, artifact).asArtifactTokens();
+   }
+
+   @Override
+   public List<RelationTypeToken> convertRelations(ArtifactId artToken, RelationTypeToken oldRelationType, RelationTypeToken newRelationType) {
+      RelationTypeSide sideB = new RelationTypeSide(oldRelationType, RelationSide.SIDE_B);
+      ArtifactReadable art = orcsApi.getQueryFactory().fromBranch(branch).andId(artToken).asArtifact();
+
+      if (art.getRelatedCount(sideB) > 0) {
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+            String.format("Converting relations for artifact %s.  Old Relation = %s New Relation = %s",
+               artToken.getIdString(), newRelationType.getName(), oldRelationType.getName()));
+         for (ArtifactReadable artB : art.getRelated(sideB).getList()) {
+            tx.relate(art, newRelationType, artB);
+            //tx.unrelate(art, oldRelationType, artB);  --this line can wait until we've done more testing
+         }
+         tx.commit();
+      }
+
+      return null;
    }
 }
