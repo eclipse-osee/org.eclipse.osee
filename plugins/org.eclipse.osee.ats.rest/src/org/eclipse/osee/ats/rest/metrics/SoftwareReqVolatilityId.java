@@ -16,16 +16,19 @@ package org.eclipse.osee.ats.rest.metrics;
  * @author Stephen J. Molaro
  */
 public enum SoftwareReqVolatilityId {
-   ACT("Action ID"),
+   ACT("Action Id"),
+   TW("Worflow Id"),
    ActionName("Action Name"),
    Program("Program"),
    Build("Build"),
-   Date("Date"),
+   Date("Creation Date"),
    Completed("Completed Date"),
-   Added("Added"),
-   Modified("Modified"),
-   Deleted("Deleted"),
-
+   AddedReq("Added (Software Reqs)"),
+   ModifiedReq("Modified (Software Reqs)"),
+   DeletedReq("Deleted (Software Reqs)"),
+   AddedImpl("Added (Impl Details)"),
+   ModifiedImpl("Modified (Impl Details)"),
+   DeletedImpl("Deleted (Impl Details)"),
    Week("Week"),
    Month("Month");
 

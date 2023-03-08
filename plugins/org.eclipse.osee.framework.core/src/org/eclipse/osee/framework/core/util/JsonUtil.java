@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -102,6 +104,19 @@ public class JsonUtil {
    public static <T> T readValue(ObjectMapper mapper, String content, Class<T> valueType) {
       try {
          return mapper.readValue(content, valueType);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   public static <T> List<T> readValues(String content, Class<T> valueType) {
+      return readValues(mapper, content, valueType);
+   }
+
+   public static <T> List<T> readValues(ObjectMapper mapper, String content, Class<T> valueType) {
+      try {
+         JavaType type = mapper.getTypeFactory().constructCollectionType(List.class, valueType);
+         return mapper.readValue(content, type);
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }

@@ -33,11 +33,11 @@ import static org.eclipse.osee.ats.api.util.AtsImage.WORK_PACKAGE;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BranchDiffData;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranchName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.TaskChangeType;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -176,6 +176,7 @@ public interface AtsArtifactTypes {
       .exactlyOne(AtsId, "0")
       .zeroOrOne(Assumptions)
       .zeroOrOne(BlockedReason)
+      .zeroOrOne(BranchDiffData)
       .zeroOrOne(HoldReason)
       .zeroOrOne(CancelledReasonEnum, null)
       .zeroOrOne(CancelledBy)
@@ -295,8 +296,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TaskAutoGenVersion)
       .any(TaskAutoGenType)
       .zeroOrOne(WcafeImpact)
-      .zeroOrOne(UsesResolutionOptions)
-      .zeroOrOne(TaskChangeType));
+      .zeroOrOne(UsesResolutionOptions));
 
    // Change Request
    ArtifactTypeToken AbstractChangeRequestWorkflow = osee.add(osee.artifactType(458278L, "Abstract Change Request", true, Artifact));

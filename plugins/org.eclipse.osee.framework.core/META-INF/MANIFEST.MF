@@ -79,4 +79,5 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.xml.publishing
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,
- javax.ws.rs
+ javax.ws.rs,
+ com.fasterxml.jackson.core.jackson-databind

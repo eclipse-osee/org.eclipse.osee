@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTableColumn;
@@ -317,22 +316,6 @@ public class CreateChangeReportTasksOperation {
 
                   boolean autoGen = atsApi.getTaskService().isAutoGen(taskMatch.getTaskWf());
                   boolean deReferenced = atsApi.getTaskService().isAutoGenDeReferenced(taskMatch.getTaskWf());
-
-                  int taskGenTypeCount = atsApi.getAttributeResolver().getAttributeCount(taskMatch.getTaskWf(),
-                     CoreAttributeTypes.TaskChangeType);
-
-                  if (changes != null && taskGenTypeCount == 0 && Strings.isValid(taskMatch.getAutoTaskGenType())) {
-                     if (taskMatch.getAutoTaskGenType().equals("ChgRptAdd")) {
-                        changes.addAttribute(taskMatch.getTaskWf().getArtifactId(), CoreAttributeTypes.TaskChangeType,
-                           CoreAttributeTypes.TaskChangeType.Add);
-                     } else if (taskMatch.getAutoTaskGenType().equals("ChgRptMod")) {
-                        changes.addAttribute(taskMatch.getTaskWf().getArtifactId(), CoreAttributeTypes.TaskChangeType,
-                           CoreAttributeTypes.TaskChangeType.Modify);
-                     } else if (taskMatch.getAutoTaskGenType().equals("ChgRptDelete")) {
-                        changes.addAttribute(taskMatch.getTaskWf().getArtifactId(), CoreAttributeTypes.TaskChangeType,
-                           CoreAttributeTypes.TaskChangeType.Delete);
-                     }
-                  }
 
                   if (!autoGen || deReferenced) {
                      crtd.getResults().success(ChangeReportTaskMatchResult.TaskExistsNeedsDereference.getName(),
@@ -632,20 +615,6 @@ public class CreateChangeReportTasksOperation {
       if (ver == null) {
          crtd.getResults().errorf("No provider configured to set TaskAutoGenVersion, aborting...");
          return;
-      }
-
-      if (Strings.isValid(taskMatch.getAutoTaskGenType())) {
-         task.addAttribute(AtsAttributeTypes.TaskAutoGenType, taskMatch.getAutoTaskGenType());
-
-         if (taskMatch.getAutoTaskGenType().equals("ChgRptAdd")) {
-            task.addAttribute(CoreAttributeTypes.TaskChangeType, CoreAttributeTypes.TaskChangeType.Add);
-         } else if (taskMatch.getAutoTaskGenType().equals("ChgRptMod")) {
-            task.addAttribute(CoreAttributeTypes.TaskChangeType, CoreAttributeTypes.TaskChangeType.Modify);
-         } else if (taskMatch.getAutoTaskGenType().equals("ChgRptDelete")) {
-            task.addAttribute(CoreAttributeTypes.TaskChangeType, CoreAttributeTypes.TaskChangeType.Delete);
-         } else {
-            task.addAttribute(CoreAttributeTypes.TaskChangeType, CoreAttributeTypes.TaskChangeType.Unspecified);
-         }
       }
 
       task.addAttribute(AtsAttributeTypes.TaskAutoGenVersion, ver.getName());

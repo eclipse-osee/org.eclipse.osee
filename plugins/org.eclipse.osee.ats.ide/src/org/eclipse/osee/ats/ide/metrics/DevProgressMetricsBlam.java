@@ -11,7 +11,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -56,12 +55,7 @@ public class DevProgressMetricsBlam extends AbstractBlam {
    private static final String VERSION = "Version";
    private static final String START_DATE = "Start Date";
    private static final String END_DATE = "End Date";
-   private static final String DAY_OF_WEEK = "Select they day of the week (Default - Monday)";
-   private static final String DURATION = "Select they length of iteration (Default - Weekly)";
-   private static final String SHOW_PERIODIC = "Show Periodic Workflow Table";
-   private static final String SHOW_NONPERIODIC = "Show Workflow Table";
-   private static final String SHOW_PERIODIC_TASK = "Show Periodic Task Table";
-   private static final String SHOW_NONPERIODIC_TASK = "Show Task Table";
+   private static final String ALL_TIME = "All Time";
 
    private XHyperlabelTeamDefinitionSelection programWidget;
    private XHyperlabelVersionSelection versionWidget;
@@ -69,23 +63,8 @@ public class DevProgressMetricsBlam extends AbstractBlam {
    private XDateDam endDateWidget;
    private Date startDate;
    private Date endDate;
-   private int dayOfWeek;
-   private boolean showPeriodic;
-   private boolean showNonPeriodic;
-   private boolean showPeriodicTask;
-   private boolean showNonPeriodicTask;
-   private int duration;
+   private boolean allTime;
    private Collection<IAtsVersion> versions;
-
-   public enum Days {
-      SUNDAY,
-      MONDAY,
-      TUESDAY,
-      WEDNESDAY,
-      THURSDAY,
-      FRIDAY,
-      SATURDAY
-   }
 
    @Override
    public String getName() {
@@ -137,16 +116,10 @@ public class DevProgressMetricsBlam extends AbstractBlam {
 
                startDate = (Date) variableMap.getValue(START_DATE);
                endDate = (Date) variableMap.getValue(END_DATE);
-               dayOfWeek = getDayOfWeekAsInt(variableMap.getString(DAY_OF_WEEK));
-               duration = getIterationInt(variableMap.getString(DURATION));
-               showPeriodic = variableMap.getBoolean(SHOW_PERIODIC);
-               showNonPeriodic = variableMap.getBoolean(SHOW_NONPERIODIC);
-               showPeriodicTask = variableMap.getBoolean(SHOW_PERIODIC_TASK);
-               showNonPeriodicTask = variableMap.getBoolean(SHOW_NONPERIODIC_TASK);
+               allTime = variableMap.getBoolean(ALL_TIME);
 
                Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().devProgressReport(
-                  selectedVersion.getName(), startDate, endDate, dayOfWeek, duration, showPeriodic, showNonPeriodic,
-                  showPeriodicTask, showNonPeriodicTask);
+                  selectedVersion.getName(), startDate, endDate, allTime);
 
                if (res == null) {
                   return;
@@ -185,12 +158,7 @@ public class DevProgressMetricsBlam extends AbstractBlam {
       wb.andWidget(VERSION, "XHyperlabelVersionSelection").endWidget();
       wb.andWidget(START_DATE, "XDateDam").endWidget();
       wb.andWidget(END_DATE, "XDateDam").endWidget();
-      wb.andWidget(DAY_OF_WEEK, getWeekdaysXCombo()).andDefault("Monday").endWidget();
-      wb.andWidget(DURATION, "XCombo(Week,1-Day,3-Days)").andDefault("Week").endWidget();
-      wb.andWidget(SHOW_NONPERIODIC, "XCheckBox").endWidget();
-      wb.andWidget(SHOW_NONPERIODIC_TASK, "XCheckBox").endWidget();
-      wb.andWidget(SHOW_PERIODIC, "XCheckBox").endWidget();
-      wb.andWidget(SHOW_PERIODIC_TASK, "XCheckBox").endWidget();
+      wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
       return wb.getItems();
    }
 
@@ -220,46 +188,4 @@ public class DevProgressMetricsBlam extends AbstractBlam {
       cal.set(Calendar.DAY_OF_MONTH, 1);
       startDateWidget.setDate(cal.getTime());
    }
-
-   private String getWeekdaysXCombo() {
-      StringBuilder builder = new StringBuilder();
-      String[] weekdays = new DateFormatSymbols().getWeekdays();
-      builder.append("XCombo(");
-      for (int i = 1; i < 8; i++) {
-         if (i != 1) {
-            builder.append(",");
-         }
-         builder.append(weekdays[i]);
-      }
-      builder.append(")");
-      return builder.toString();
-   }
-
-   public static int getDayOfWeekAsInt(String dayAsString) {
-      int toReturn = 2;
-      try {
-         if (!dayAsString.contains("select")) {
-            Days day = Days.valueOf(dayAsString.toUpperCase());
-            toReturn = day.ordinal() + 1;
-         }
-      } catch (Exception ex) {
-         //Do Nothing
-      }
-      return toReturn;
-   }
-
-   public static int getIterationInt(String durationString) {
-      int toReturn = 7;
-      try {
-         if (durationString.equals("1-Day")) {
-            toReturn = 1;
-         } else if (durationString.equals("3-Days")) {
-            toReturn = 3;
-         }
-      } catch (Exception ex) {
-         //Do Nothing
-      }
-      return toReturn;
-   }
-
 }
