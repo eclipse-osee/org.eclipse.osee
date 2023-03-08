@@ -125,6 +125,7 @@ export const importSummaryMock: ImportSummary = {
 			name: 'CR1',
 			crossReferenceValue: 'Value 1',
 			crossReferenceArrayValues: '0=Test;1=Testing',
+			crossReferenceAdditionalContent: 'Additional Content',
 		},
 	],
 	messageSubmessageRelations: {

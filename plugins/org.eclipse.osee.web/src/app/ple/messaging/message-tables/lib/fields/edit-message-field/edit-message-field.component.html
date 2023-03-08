@@ -76,20 +76,10 @@
 		</ng-container>
 	</ng-container>
 	<ng-template #generalEdit>
-		<ng-container
-			*ngIf="header === 'interfaceMessageNumber'; else stringEdit">
-			<input
-				matInput
-				type="number"
-				[(ngModel)]="value"
-				(ngModelChange)="updateMessage(value)" />
-		</ng-container>
-		<ng-template #stringEdit>
-			<input
-				matInput
-				[(ngModel)]="value"
-				(ngModelChange)="updateMessage(value)" />
-		</ng-template>
+		<input
+			matInput
+			[(ngModel)]="value"
+			(ngModelChange)="updateMessage(value)" />
 	</ng-template>
 </mat-form-field>
 <ng-template #writeAccess>

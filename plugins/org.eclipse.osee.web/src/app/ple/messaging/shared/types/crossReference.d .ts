@@ -15,6 +15,7 @@ export interface CrossReference {
 	name: string;
 	crossReferenceValue: string;
 	crossReferenceArrayValues: string;
+	crossReferenceAdditionalContent: string;
 }
 
 export interface CrossRefKeyValue {

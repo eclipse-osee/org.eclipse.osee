@@ -12,9 +12,15 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class CrossReference extends PLGenericDBObject {
 
@@ -22,6 +28,7 @@ public class CrossReference extends PLGenericDBObject {
 
    private String crossReferenceValue;
    private String crossReferenceArrayValues;
+   private String crossReferenceAdditionalContent;
 
    public CrossReference(ArtifactToken art) {
       super(art);
@@ -33,14 +40,20 @@ public class CrossReference extends PLGenericDBObject {
          this.setCrossReferenceValue(art.getSoleAttributeAsString(CoreAttributeTypes.CrossReferenceValue, ""));
          this.setCrossReferenceArrayValues(
             art.getSoleAttributeAsString(CoreAttributeTypes.CrossReferenceArrayValues, ""));
+         this.setCrossReferenceAdditionalContent(
+            art.getSoleAttributeAsString(CoreAttributeTypes.CrossReferenceAdditionalContent, ""));
       } else {
          this.setCrossReferenceValue("");
          this.setCrossReferenceArrayValues("");
+         this.setCrossReferenceAdditionalContent("");
       }
    }
 
-   public CrossReference(Long id, String name) {
+   public CrossReference(Long id, String name, String value, String arrayValues, String additionalContent) {
       super(id, name);
+      this.setCrossReferenceValue(value);
+      this.setCrossReferenceArrayValues(arrayValues);
+      this.setCrossReferenceAdditionalContent(additionalContent);
    }
 
    public CrossReference() {
@@ -60,6 +73,24 @@ public class CrossReference extends PLGenericDBObject {
 
    public void setCrossReferenceArrayValues(String crossReferenceArrayValues) {
       this.crossReferenceArrayValues = crossReferenceArrayValues;
+   }
+
+   public String getCrossReferenceAdditionalContent() {
+      return crossReferenceAdditionalContent;
+   }
+
+   public void setCrossReferenceAdditionalContent(String crossReferenceAdditionalContent) {
+      this.crossReferenceAdditionalContent = crossReferenceAdditionalContent;
+   }
+
+   @JsonIgnore
+   public List<NameValuePair> getNameValuePairs() {
+      return Arrays.asList(getCrossReferenceArrayValues().split(";")).stream().map(arv -> {
+         if (Strings.isValid(arv)) {
+            return new NameValuePair(arv.split("=")[1], arv.split("=")[0]);
+         }
+         return null;
+      }).collect(Collectors.toList());
    }
 
 }

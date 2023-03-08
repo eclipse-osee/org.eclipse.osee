@@ -126,6 +126,7 @@ export class CrossReferenceTableComponent implements OnDestroy {
 	headers: (keyof CrossReference)[] = [
 		'name',
 		'crossReferenceValue',
+		'crossReferenceAdditionalContent',
 		'crossReferenceArrayValues',
 	];
 
