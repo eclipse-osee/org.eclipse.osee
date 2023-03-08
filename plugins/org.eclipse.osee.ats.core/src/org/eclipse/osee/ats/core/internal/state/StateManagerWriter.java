@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.ats.core.internal.state;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.WorkState;
@@ -45,13 +48,12 @@ public class StateManagerWriter {
 
       String currentStateName = stateMgr.getCurrentStateNameInternal();
 
-      // Uncomment when attrs make it through F18 / AMS releases
-      //      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStateName, changes);
-      //      List<Object> assigneeIds = new ArrayList<>();
-      //      for (AtsUser user : stateMgr.getAssignees()) {
-      //         assigneeIds.add(user.getArtifactId().getIdString());
-      //      }
-      //      changes.setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, assigneeIds);
+      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStateName, changes);
+      List<Object> assigneeIds = new ArrayList<>();
+      for (AtsUser user : stateMgr.getAssignees()) {
+         assigneeIds.add(user.getIdString());
+      }
+      changes.setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, assigneeIds);
 
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
          workStateFactory.toStoreStr(stateMgr, currentStateName), changes);
