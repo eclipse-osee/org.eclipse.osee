@@ -281,7 +281,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, InterfaceArtifact));
    ArtifactTypeToken CrossReference = osee.add(osee.artifactType(5198407772394384771L, "Cross Reference", false, Artifact)
       .exactlyOne(CrossReferenceValue)
-      .zeroOrOne(CrossReferenceArrayValues));
+      .zeroOrOne(CrossReferenceArrayValues)
+      .zeroOrOne(CrossReferenceAdditionalContent));
    ArtifactTypeToken TransportType = osee.add(osee.artifactType(6663383168705248989L, "Transport Type", false, Artifact)
       .exactlyOne(ByteAlignValidation)
       .zeroOrOne(ByteAlignValidationSize)

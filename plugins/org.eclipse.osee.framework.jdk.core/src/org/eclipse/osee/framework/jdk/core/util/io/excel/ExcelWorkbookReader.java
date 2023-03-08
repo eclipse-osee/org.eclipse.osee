@@ -79,10 +79,17 @@ public class ExcelWorkbookReader {
       }
       switch (cell.getCellType()) {
          case STRING:
-         case FORMULA:
             return cell.getStringCellValue();
+         case FORMULA:
+            try {
+               return cell.getStringCellValue();
+            } catch (IllegalStateException ex) {
+               return cell.getNumericCellValue();
+            }
          case NUMERIC:
             return cell.getNumericCellValue();
+         case BLANK:
+            return "";
          default:
             return null;
       }

@@ -30,4 +30,9 @@ export const crossReferenceHeaderDetails: headerDetail<CrossReference>[] = [
 			'Key-value pairs returned by cross reference lookup (if cross reference represents an array)',
 		humanReadable: 'Array Values',
 	},
+	{
+		header: 'crossReferenceAdditionalContent',
+		description: 'Additional content related to the cross reference',
+		humanReadable: 'Additional Content',
+	},
 ];

@@ -67,6 +67,7 @@ export class NewCrossReferenceDialogComponent {
 		name: '',
 		crossReferenceValue: '',
 		crossReferenceArrayValues: '',
+		crossReferenceAdditionalContent: '',
 	};
 
 	arrayValues: CrossRefKeyValue[] = [];

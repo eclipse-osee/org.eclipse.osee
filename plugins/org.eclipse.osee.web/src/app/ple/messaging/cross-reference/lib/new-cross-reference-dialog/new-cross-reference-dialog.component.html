@@ -32,6 +32,14 @@
 					name="field-value"
 					data-cy="field-value" />
 			</mat-form-field>
+			<mat-form-field class="full-width">
+				<mat-label>Additional Content</mat-label>
+				<input
+					matInput
+					[(ngModel)]="crossReference.crossReferenceAdditionalContent"
+					name="field-additional"
+					data-cy="field-additional" />
+			</mat-form-field>
 		</div>
 		<div class="array-fields">
 			<h4 class="array-fields-header">Array Values</h4>
