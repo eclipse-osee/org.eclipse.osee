@@ -142,6 +142,7 @@ public class Pdd92CreateDemoReviews {
          "Negate logic", "Fixed", "There.java:Line 234", new Date(), ""));
       for (ReviewDefectItem defect : defects) {
          defect.setClosed(true);
+         defect.setClosedUserId(AtsApiService.get().getUserService().getCurrentUserId());
       }
       changes.execute();
 

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -64,6 +65,13 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.Closed_By_Col)) {
+         try {
+            User user = UserManager.getUserByUserId(defectItem.getClosedUserId());
+            return ArtifactImageManager.getImage(user);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
       return null;
    }
@@ -79,6 +87,18 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          } catch (OseeCoreException ex) {
             name = String.format("Erroring getting user name: [%s]", ex.getLocalizedMessage());
             OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+         return name;
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Closed_By_Col)) {
+         String name = "";
+         if (Strings.isValid(defectItem.getClosedUserId())) {
+            try {
+               AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getClosedUserId());
+               name = atsUser.getName();
+            } catch (OseeCoreException ex) {
+               name = String.format("Erroring getting user name: [%s]", ex.getLocalizedMessage());
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
          return name;
       } else if (aCol.equals(PeerReviewDefectXViewerColumns.Closed_Col)) {

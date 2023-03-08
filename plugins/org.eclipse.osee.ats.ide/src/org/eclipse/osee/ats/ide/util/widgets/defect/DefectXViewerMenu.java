@@ -441,6 +441,11 @@ public class DefectXViewerMenu {
       for (ReviewDefectItem defectItem : defectItems) {
          if (defectItem.isClosed() != closed) {
             defectItem.setClosed(closed);
+            if (closed) {
+               defectItem.setClosedUserId(AtsApiService.get().getUserService().getCurrentUserId());
+            } else {
+               defectItem.setClosedUserId("");
+            }
             if (!modified) {
                modified = true;
             }
