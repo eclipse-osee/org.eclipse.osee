@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.rest.metrics;
 
 import java.util.Date;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -36,18 +37,25 @@ public class MetricsEndpointImpl implements MetricsEndpointApi {
    @Path("DevProgress/{targetVersion}")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response devProgressReport(@PathParam("targetVersion") String targetVersion, @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate, @QueryParam("weekday") int weekday, @QueryParam("iterationLength") int iterationLength, @QueryParam("periodic") boolean periodic, @QueryParam("nonPeriodic") boolean nonPeriodic, @QueryParam("periodicTask") boolean periodicTask, @QueryParam("nonPeriodicTask") boolean nonPeriodicTask) {
+   public Response devProgressReport(@PathParam("targetVersion") String targetVersion, @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate, @QueryParam("allTime") boolean allTime) {
       return (new MetricsReportOperations(atsApi, orcsApi)).generateDevProgressReport(targetVersion, startDate, endDate,
-         weekday, iterationLength, periodic, nonPeriodic, periodicTask, nonPeriodicTask);
+         allTime);
    }
 
    @Override
    @Path("SoftwareReqVolatility/{targetVersion}")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response softwareReqVolatility(@PathParam("targetVersion") String targetVersion, @QueryParam("includeUnchangedCode") boolean includeUnchangedCode) {
-      return (new MetricsReportOperations(atsApi, orcsApi)).generateSoftwareReqVolatility(targetVersion,
-         includeUnchangedCode);
+   public Response softwareReqVolatility(@PathParam("targetVersion") String targetVersion, @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate, @QueryParam("allTime") boolean allTime, @QueryParam("implDetails") boolean implDetails) {
+      return (new MetricsReportOperations(atsApi, orcsApi)).generateSoftwareReqVolatility(targetVersion, startDate,
+         endDate, allTime, implDetails);
+   }
+
+   @Override
+   @Path("BranchDiffData/{atsId}")
+   @POST
+   public Response setBranchDiffData(@PathParam("atsId") String atsId) {
+      return (new MetricsReportOperations(atsApi, orcsApi)).setBranchDiffData(atsId);
    }
 
 }

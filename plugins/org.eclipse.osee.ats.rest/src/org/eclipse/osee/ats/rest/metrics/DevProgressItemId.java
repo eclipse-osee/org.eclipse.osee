@@ -41,17 +41,7 @@ public enum DevProgressItemId {
    CancelledAddModCount("Cancelled Add/Mod UI Count"),
    TotalDeletedCount("Statusable Deleted UI Count"),
    CompletedDeletedCount("Completed Deleted UI Count"),
-   CancelledDeletedCount("Cancelled Deleted UI Count"),
-
-   TSK("Task ID"),
-   TSKName("Task Name"),
-   TSKType("Task Type"),
-   TSKEndorse("Task Endorse Date"),
-   TSKAnalyze("Task Analyze Date"),
-   TSKAuthorize("Task Authorize Date"),
-   TSKImplement("Task Implement Date"),
-   TSKComplete("Task Complete Date"),
-   TSKCancelled("Task Cancelled Date");
+   CancelledDeletedCount("Cancelled Deleted UI Count");
 
    private final String displayName;
 

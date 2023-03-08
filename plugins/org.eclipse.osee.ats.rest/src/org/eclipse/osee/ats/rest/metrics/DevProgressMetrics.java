@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -48,23 +47,17 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Stephen J. Molaro
  */
-public final class DevProgressMetricsReport implements StreamingOutput {
+public final class DevProgressMetrics implements StreamingOutput {
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
    private String programVersion;
    private final String targetVersion;
    private final Date startDate;
    private final Date endDate;
-   private final int dayOfWeek;
-   private final int duration;
-   private final boolean periodic;
-   private final boolean nonPeriodic;
-   private final boolean periodicTask;
-   private final boolean nonPeriodicTask;
+   private final boolean allTime;
 
    private ExcelXmlWriter writer;
    private final QueryBuilder query;
-   private final Calendar baseCalendar;
 
    Pattern UI_NAME = Pattern.compile("\\{.*\\}");
    Pattern UI_DELETED = Pattern.compile("^\\(Deleted\\)$");
@@ -94,40 +87,15 @@ public final class DevProgressMetricsReport implements StreamingOutput {
       DevProgressItemId.CompletedDeletedCount,
       DevProgressItemId.CancelledDeletedCount};
 
-   private final DevProgressItemId[] taskColumns = {
-      DevProgressItemId.ACT,
-      DevProgressItemId.TW,
-      DevProgressItemId.Program,
-      DevProgressItemId.Build,
-      DevProgressItemId.TW,
-      DevProgressItemId.TSK,
-      DevProgressItemId.TSKName,
-      DevProgressItemId.TSKType,
-      DevProgressItemId.Date,
-      DevProgressItemId.Created,
-      DevProgressItemId.State,
-      DevProgressItemId.TSKEndorse,
-      DevProgressItemId.TSKAnalyze,
-      DevProgressItemId.TSKAuthorize,
-      DevProgressItemId.TSKImplement,
-      DevProgressItemId.TSKComplete,
-      DevProgressItemId.TSKCancelled};
-
-   public DevProgressMetricsReport(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, int dayOfWeek, int duration, boolean periodic, boolean nonPeriodic, boolean periodicTask, boolean nonPeriodicTask) {
+   public DevProgressMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
       this.programVersion = null;
       this.targetVersion = targetVersion;
       this.startDate = startDate;
       this.endDate = endDate;
-      this.dayOfWeek = dayOfWeek;
-      this.duration = duration;
-      this.periodic = periodic;
-      this.nonPeriodic = nonPeriodic;
-      this.periodicTask = periodicTask;
-      this.nonPeriodicTask = nonPeriodicTask;
+      this.allTime = allTime;
       this.query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
-      this.baseCalendar = getBaseCalendar();
    }
 
    @Override
@@ -149,25 +117,9 @@ public final class DevProgressMetricsReport implements StreamingOutput {
    private void writeReport() throws IOException {
       Collection<IAtsTeamWorkflow> workflows = getDatedWorkflows();
       if (!workflows.isEmpty()) {
-
          Set<IAtsAction> actionableItems = getDatedActions(workflows);
-
-         if (periodic) {
-            writer.startSheet("Periodic Data", actionColumns.length);
-            fillActionableData(actionableItems, actionColumns.length);
-         }
-         if (nonPeriodic) {
-            writer.startSheet("Non-Periodic Data", actionColumns.length);
-            fillActionableData(actionableItems, actionColumns.length);
-         }
-         if (periodicTask) {
-            writer.startSheet("Periodic Data", taskColumns.length);
-            fillTaskData(workflows, taskColumns.length);
-         }
-         if (nonPeriodicTask) {
-            writer.startSheet("Periodic Data", taskColumns.length);
-            fillTaskData(workflows, taskColumns.length);
-         }
+         writer.startSheet("Non-Periodic Data", actionColumns.length);
+         fillActionableData(actionableItems, actionColumns.length);
       }
    }
 
@@ -182,12 +134,15 @@ public final class DevProgressMetricsReport implements StreamingOutput {
          try {
             if ((workflow.isWorkType(WorkType.Requirements) || workflow.isWorkType(
                WorkType.Code)) || workflow.isWorkType(WorkType.Test)) {
-
-               if ((workflow.getCreatedDate().before(endDate))) {
-                  if ((workflow.isCompleted() && workflow.getCompletedDate() != null && workflow.getCompletedDate().before(
-                     startDate)) || (workflow.isCancelled() && workflow.getCancelledDate() != null && workflow.getCancelledDate().before(
-                        startDate))) {
-                     continue;
+               if (allTime) {
+                  datedWorkflowArts.add(workflow);
+               } else if ((workflow.getCreatedDate().before(endDate))) {
+                  if (allTime) {
+                     if ((workflow.isCompleted() && workflow.getCompletedDate() != null && workflow.getCompletedDate().before(
+                        startDate)) || (workflow.isCancelled() && workflow.getCancelledDate() != null && workflow.getCancelledDate().before(
+                           startDate))) {
+                        continue;
+                     }
                   }
                   datedWorkflowArts.add(workflow);
                }
@@ -230,21 +185,7 @@ public final class DevProgressMetricsReport implements StreamingOutput {
             }
          }
          buffer[5] = createdDate;
-
-         if (periodic) {
-            Calendar incrementedCalendar = new GregorianCalendar();
-            incrementedCalendar.setTime(baseCalendar.getTime());
-            while (incrementedCalendar.getTime().before(endDate)) {
-               if (createdDate.before(incrementedCalendar.getTime())) {
-                  fillTeamWfData(buffer, incrementedCalendar.getTime(), actionItem);
-               }
-               incrementedCalendar.add(Calendar.DAY_OF_MONTH, duration);
-            }
-
-         } else if (nonPeriodic) {
-            fillTeamWfData(buffer, endDate, actionItem);
-         }
-
+         fillTeamWfData(buffer, endDate, actionItem);
       }
       writer.endSheet();
    }
@@ -502,94 +443,6 @@ public final class DevProgressMetricsReport implements StreamingOutput {
 
    }
 
-   private void fillTaskData(Collection<IAtsTeamWorkflow> workflows, int numColumns) throws IOException {
-      Object[] buffer = new Object[numColumns];
-      for (int i = 0; i < numColumns; ++i) {
-         buffer[i] = taskColumns[i].getDisplayName();
-      }
-      writer.writeRow(buffer);
-
-      for (IAtsTeamWorkflow workflow : workflows) {
-         buffer[0] = workflow.getParentAction().getAtsId();
-         buffer[1] = workflow.getAtsId();
-         buffer[2] = programVersion;
-         buffer[3] = targetVersion;
-         Collection<IAtsTask> tasks = getTaskList(workflow, endDate);
-
-         for (IAtsTask task : tasks) {
-            buffer[4] = task.getAtsId();
-            buffer[5] = task.getName();
-            if (periodicTask) {
-               Calendar incrementedCalendar = new GregorianCalendar();
-               incrementedCalendar.setTime(baseCalendar.getTime());
-               while (incrementedCalendar.getTime().before(endDate)) {
-                  if (workflow.getCreatedDate().before(incrementedCalendar.getTime()) && task.getCreatedDate().before(
-                     incrementedCalendar.getTime())) {
-                     fillTaskStateData(buffer, incrementedCalendar.getTime(), task);
-                  }
-                  incrementedCalendar.add(Calendar.DAY_OF_MONTH, duration);
-               }
-            } else if (nonPeriodicTask) {
-               fillTaskStateData(buffer, endDate, task);
-            }
-         }
-
-      }
-      writer.endSheet();
-   }
-
-   private void fillTaskStateData(Object[] buffer, Date rowDate, IAtsTask task) {
-
-      List<StateDefinition> stateList = task.getWorkDefinition().getStates();
-
-      String stateAtDate = getStateAtDate(task, rowDate);
-      buffer[6] = rowDate;
-      buffer[7] = task.getCreatedDate();
-      buffer[8] = stateAtDate;
-      if (stateAtDate.equals("None")) {
-         buffer[9] = null;
-         buffer[10] = null;
-         buffer[11] = null;
-         buffer[12] = null;
-         buffer[13] = null;
-      } else if (stateAtDate.equals("Analyze")) {
-         buffer[9] = getStateStartDate(task, rowDate, "Analyze");
-         buffer[10] = null;
-         buffer[11] = null;
-         buffer[12] = null;
-         buffer[13] = null;
-      } else if (stateAtDate.equals("Authorize")) {
-         buffer[9] = getStateStartDate(task, rowDate, "Analyze");
-         buffer[10] = getStateStartDate(task, rowDate, "Authorize");
-         buffer[11] = null;
-         buffer[12] = null;
-         buffer[13] = null;
-      } else if (stateAtDate.equals("Implement") || stateAtDate.equals("Test") || stateAtDate.equals("Coded")) {
-         buffer[9] = getStateStartDate(task, rowDate, "Analyze");
-         buffer[10] = getStateStartDate(task, rowDate, "Authorize");
-         buffer[11] = getStateStartDate(task, rowDate, "Implement");
-         buffer[12] = null;
-         buffer[13] = null;
-      } else if (stateAtDate.equals("Completed")) {
-         buffer[9] = getStateStartDate(task, rowDate, "Analyze");
-         buffer[10] = getStateStartDate(task, rowDate, "Authorize");
-         buffer[11] = getStateStartDate(task, rowDate, "Implement");
-         buffer[12] = getStateStartDate(task, rowDate, "Completed");
-         buffer[13] = null;
-      } else if (stateAtDate.equals("Cancelled")) {
-         buffer[9] = getStateStartDate(task, rowDate, "Analyze");
-         buffer[10] = getStateStartDate(task, rowDate, "Authorize");
-         buffer[11] = getStateStartDate(task, rowDate, "Implement");
-         buffer[12] = null;
-         buffer[13] = getStateStartDate(task, rowDate, "Cancelled");
-      }
-      try {
-         writer.writeRow(buffer);
-      } catch (IOException ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-   }
-
    private String getStateAtDate(IAtsWorkItem teamWorkflow, Date iterationDate) {
       List<String> stateList = new ArrayList<String>();
       try {
@@ -720,13 +573,4 @@ public final class DevProgressMetricsReport implements StreamingOutput {
       }
       return iterationTasks.size();
    }
-
-   private Calendar getBaseCalendar() {
-      Calendar calendarIncrement = new GregorianCalendar();
-      calendarIncrement.setTime(startDate);
-      int weekAdjustment = (dayOfWeek - calendarIncrement.get(Calendar.DAY_OF_WEEK)) % 7;
-      calendarIncrement.add(Calendar.DAY_OF_MONTH, weekAdjustment);
-      return calendarIncrement;
-   }
-
 }

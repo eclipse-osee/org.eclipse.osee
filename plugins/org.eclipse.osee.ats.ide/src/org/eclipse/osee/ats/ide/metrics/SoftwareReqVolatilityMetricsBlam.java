@@ -11,11 +11,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.metrics.DevProgressMetricsBlam.Days;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelVersionSelection;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -54,13 +53,19 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    private static final String NAME = "Software Requirements Volatility Metrics BLAM";
    private static final String TEAM_DEFINITIONS = "Team Definition(s)";
    private static final String VERSION = "Version";
-   private static final String INCLUDE_UNCHANGED_CODE = "Include Req Changed with Unchanged Code";
+   private static final String START_DATE = "Start Date";
+   private static final String END_DATE = "End Date";
+   private static final String ALL_TIME = "All Time";
+   private static final String IMPL_DETAILS = "Include Implementation Details";
 
    private XHyperlabelTeamDefinitionSelection programWidget;
    private XHyperlabelVersionSelection versionWidget;
    private XDateDam startDateWidget;
    private XDateDam endDateWidget;
-   private boolean includeUnchangedCode;
+   private Date startDate;
+   private Date endDate;
+   private boolean allTime;
+   private boolean implDetails;
 
    private Collection<IAtsVersion> versions;
 
@@ -71,7 +76,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Generates Software Requirements Volatility Metrics Report based on selected version. If 'Include Req Changed with Unchanged Code' is selected, requirements changes that led to no change in the code will be included.";
+      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date.";
    }
 
    @Override
@@ -91,6 +96,12 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                versionWidget.getLabelHyperlink().redraw();
             }
          });
+      } else if (xWidget.getLabel().equalsIgnoreCase(START_DATE)) {
+         startDateWidget = (XDateDam) xWidget;
+         initializeWidgets();
+      } else if (xWidget.getLabel().equalsIgnoreCase(END_DATE)) {
+         endDateWidget = (XDateDam) xWidget;
+         initializeWidgets();
       }
    }
 
@@ -105,10 +116,14 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                   System.getProperty("user.name"), File.separator);
 
                Version selectedVersion = versionWidget.getSelectedVersion();
-               includeUnchangedCode = variableMap.getBoolean(INCLUDE_UNCHANGED_CODE);
+
+               startDate = (Date) variableMap.getValue(START_DATE);
+               endDate = (Date) variableMap.getValue(END_DATE);
+               allTime = variableMap.getBoolean(ALL_TIME);
+               implDetails = variableMap.getBoolean(IMPL_DETAILS);
 
                Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
-                  selectedVersion.getName(), includeUnchangedCode);
+                  selectedVersion.getName(), startDate, endDate, allTime, implDetails);
 
                if (res == null) {
                   return;
@@ -144,7 +159,10 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget(TEAM_DEFINITIONS, "XHyperlabelTeamDefinitionSelection").endWidget();
       wb.andWidget(VERSION, "XHyperlabelVersionSelection").endWidget();
-      wb.andWidget(INCLUDE_UNCHANGED_CODE, "XCheckBox").endWidget();
+      wb.andWidget(START_DATE, "XDateDam").endWidget();
+      wb.andWidget(END_DATE, "XDateDam").endWidget();
+      wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
+      wb.andWidget(IMPL_DETAILS, "XCheckBox").endWidget();
       return wb.getItems();
    }
 
@@ -174,46 +192,4 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       cal.set(Calendar.DAY_OF_MONTH, 1);
       startDateWidget.setDate(cal.getTime());
    }
-
-   private String getWeekdaysXCombo() {
-      StringBuilder builder = new StringBuilder();
-      String[] weekdays = new DateFormatSymbols().getWeekdays();
-      builder.append("XCombo(");
-      for (int i = 1; i < 8; i++) {
-         if (i != 1) {
-            builder.append(",");
-         }
-         builder.append(weekdays[i]);
-      }
-      builder.append(")");
-      return builder.toString();
-   }
-
-   public static int getDayOfWeekAsInt(String dayAsString) {
-      int toReturn = 2;
-      try {
-         if (!dayAsString.contains("select")) {
-            Days day = Days.valueOf(dayAsString.toUpperCase());
-            toReturn = day.ordinal() + 1;
-         }
-      } catch (Exception ex) {
-         //Do Nothing
-      }
-      return toReturn;
-   }
-
-   public static int getIterationInt(String durationString) {
-      int toReturn = 7;
-      try {
-         if (durationString.equals("1-Day")) {
-            toReturn = 1;
-         } else if (durationString.equals("3-Days")) {
-            toReturn = 3;
-         }
-      } catch (Exception ex) {
-         //Do Nothing
-      }
-      return toReturn;
-   }
-
 }
