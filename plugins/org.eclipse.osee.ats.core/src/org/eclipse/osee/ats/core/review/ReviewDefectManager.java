@@ -239,7 +239,7 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
    public String getTable() {
       StringBuilder builder = new StringBuilder();
       builder.append(
-         "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Id</TH><TH>Completed</TH></THEAD></TR>");
+         "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH><TH>Resolution</TH><TH>Id</TH><TH>Closed</TH><TH>Closed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
          String userId = item.getUserId();
          AtsUser user = atsApi.getUserService().getUserByUserId(userId);
@@ -258,6 +258,9 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
          builder.append("<TD>" + item.getResolution() + "</TD>");
          builder.append("<TD>" + item.getId() + "</TD>");
          builder.append("<TD>" + item.isClosed() + "</TD>");
+         String closedUserId = item.getClosedUserId();
+         AtsUser closedUser = atsApi.getUserService().getUserByUserId(closedUserId);
+         builder.append("<TD>" + closedUser.getName() + "</TD>");
          builder.append("</TR>");
 
       }

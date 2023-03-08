@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.defect;
 
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Closed_By_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Closed_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Created_Date_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.DefectId_Col;
@@ -39,8 +40,8 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
    public DefectXViewerFactory(IOseeTreeReportProvider reportProvider, List<XViewerColumn> defectCols) {
       super(NAMESPACE, reportProvider);
       if (defectCols.isEmpty()) {
-         registerColumns(DefectId_Col, Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col,
-            Injection_Activity_Col, Description_Col, Location_Col, Resolution_Col, Notes_Col);
+         registerColumns(DefectId_Col, Severity_Col, Disposition_Col, Closed_Col, Closed_By_Col, User_Col,
+            Created_Date_Col, Injection_Activity_Col, Description_Col, Location_Col, Resolution_Col, Notes_Col);
       } else {
          registerColumns(defectCols);
       }

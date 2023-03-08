@@ -42,6 +42,7 @@ public class ReviewDefectItem {
    private InjectionActivity injectionActivity = InjectionActivity.None;
    private String notes = "";
    private boolean closed = false;
+   private String closedUserId = "";
    public static enum Severity {
       None,
       Major,
@@ -168,7 +169,9 @@ public class ReviewDefectItem {
             //
             "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
             //
-            "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><notes>" + notes + "</notes><id>" + id + "</id>");
+            "</location><resolution>" + resolution + "</resolution>" + "<closed>" + closed + "</closed>" + "<notes>" + notes +
+            //
+            "</notes><id>" + id + "</id> + \"<closeduserid>\" + closedUserId + \"</closeduserid>\"");
       if (andGuid) {
          sb.append("<guid>" + guid + "</guid>");
       }
@@ -183,6 +186,7 @@ public class ReviewDefectItem {
       date.setTime(Long.valueOf(AXml.getTagData(xml, "date")));
       this.date = date;
       this.userId = AXml.getTagData(xml, "user");
+      this.closedUserId = AXml.getTagData(xml, "closeduserid");
       this.description = AXml.getTagData(xml, "description");
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");
@@ -315,5 +319,13 @@ public class ReviewDefectItem {
 
    public void setGuid(String guid) {
       this.guid = guid;
+   }
+
+   public String getClosedUserId() {
+      return closedUserId;
+   }
+
+   public void setClosedUserId(String closedUserId) {
+      this.closedUserId = closedUserId;
    }
 }

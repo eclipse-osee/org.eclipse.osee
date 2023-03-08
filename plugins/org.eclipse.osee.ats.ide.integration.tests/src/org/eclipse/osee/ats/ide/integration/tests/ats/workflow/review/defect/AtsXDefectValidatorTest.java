@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.core.review.ReviewDefectError;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
 import org.junit.Assert;
 import org.mockito.Mock;
@@ -116,6 +117,7 @@ public class AtsXDefectValidatorTest {
       // Invalid closed
       item = getValidItem();
       item.setClosed(false);
+      item.setClosedUserId("");
       itemValueProvider = new MockDefectValueProvider(Arrays.asList(item));
       result =
          validator.validateTransition(workItem, itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
@@ -131,6 +133,7 @@ public class AtsXDefectValidatorTest {
          new ReviewDefectItem(userId, Severity.Issue, Disposition.Accept, InjectionActivity.Software_Design,
             "this is the description", "this is the resolution", "this is the location", date, "this is the notes");
       item.setClosed(true);
+      item.setClosedUserId(AtsApiService.get().getUserService().getCurrentUserId());
       return item;
    }
 }
