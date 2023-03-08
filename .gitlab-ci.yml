@@ -23,7 +23,7 @@ Get file list:
   script:
     - git --version
     - git fetch
-    - FILES=$(git diff --name-only origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME | awk '{print $1}' | sed "s/^/'/;s/$/'/")
+    - FILES=$(git diff --name-only origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
     - echo $FILES > $VARIABLES_FILE
     - echo "Files to validate:"
     - echo $FILES | tr " " "\n"
