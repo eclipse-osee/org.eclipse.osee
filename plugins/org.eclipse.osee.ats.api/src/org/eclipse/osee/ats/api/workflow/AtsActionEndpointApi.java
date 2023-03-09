@@ -108,6 +108,15 @@ public interface AtsActionEndpointApi {
    String getActionState(@PathParam("ids") String ids);
 
    /**
+    * @query_string <art type id>=<value>
+    * @return json representation of the matching workItem(s)
+    */
+   @Path("query/lastmod")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public Collection<WorkItemLastMod> queryOpenLastMod(@Context UriInfo uriInfo);
+
+   /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>
     * @return json representation of the matching workItem(s)
     */
