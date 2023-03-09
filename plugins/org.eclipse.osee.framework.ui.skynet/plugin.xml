@@ -1650,17 +1650,6 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeAttributesBlam">
       </Operation>
    </extension>
-   <extension
-         point="org.eclipse.ui.exportWizards">
-      <wizard
-            category="org.eclipse.osee.framework.ui.skynet.export"
-            class="org.eclipse.osee.framework.ui.skynet.export.OseeTypesExportWizard"
-            icon="OSEE-INF/images/gears.gif"
-            id="org.eclipse.osee.framework.ui.skynet.osee.types.export"
-            name="Osee Types Export">
-      </wizard>
-   </extension>
-   
   <extension point="org.eclipse.ui.commands">
       <command
             id="org.eclipse.osee.framework.ui.skynet.renderer.command"
