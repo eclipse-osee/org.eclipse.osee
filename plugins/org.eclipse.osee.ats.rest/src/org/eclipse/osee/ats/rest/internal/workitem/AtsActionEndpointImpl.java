@@ -60,6 +60,7 @@ import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
+import org.eclipse.osee.ats.api.workflow.WorkItemLastMod;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
@@ -80,6 +81,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -97,6 +99,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -413,6 +416,34 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public String getActionState(String ids) {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return atsApi.getActionService().getActionStateJson(workItems);
+   }
+
+   /**
+    * @query_string <art type id>=<value>
+    * @return json representation of the matching workItem(s)
+    */
+   @Override
+   public Collection<WorkItemLastMod> queryOpenLastMod(UriInfo uriInfo) {
+      List<WorkItemLastMod> items = new ArrayList<>();
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
+      Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
+      for (Entry<String, List<String>> entry : entrySet) {
+         if (entry.getKey().equals("ArtTypeId")) {
+            String artTypeIdStr = entry.getValue().iterator().next();
+            Long artTypeId = Long.valueOf(artTypeIdStr);
+            ArtifactTypeToken artType = atsApi.tokenService().getArtifactType(artTypeId);
+            for (ArtifactToken art : atsApi.getQueryService().createQuery(artType).andAttr(
+               AtsAttributeTypes.CurrentStateType, StateType.Working.name(),
+               QueryOption.EXACT_MATCH_OPTIONS).getArtifacts()) {
+               TransactionId lastModTransId = ((ArtifactReadable) art).getLastModifiedTransaction();
+               TransactionReadable tx = orcsApi.getTransactionFactory().getTx(lastModTransId);
+               String atsId =
+                  atsApi.getAttributeResolver().getSoleAttributeValueAsString(art, AtsAttributeTypes.AtsId, "");
+               items.add(new WorkItemLastMod(atsId, art.getIdString(), tx.getDate().getTime()));
+            }
+         }
+      }
+      return items;
    }
 
    /**

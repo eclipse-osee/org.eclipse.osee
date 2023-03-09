@@ -48,12 +48,14 @@ import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Donald G. Dunne
@@ -173,6 +175,9 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             }
          }
       }
+      TransactionId lastModTransId = ((ArtifactReadable) workItem.getStoreObject()).getLastModifiedTransaction();
+      TransactionReadable tx = orcsApi.getTransactionFactory().getTx(lastModTransId);
+      writer.writeStringField("LastModDate", tx.getDate().toString());
       writer.writeEndObject();
    }
 
