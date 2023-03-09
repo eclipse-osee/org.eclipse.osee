@@ -48,6 +48,7 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
+   @SuppressWarnings("ModifyingCollectionWithItself")
    public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       super(title, message, contentProvider, labelProvider, new AttributeTypeNameComparator());
       this.selectables.addAll(selectables);

@@ -50,6 +50,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
+   @SuppressWarnings("FormatString")
    private void displayReport(IProgressMonitor monitor) throws Exception {
       XResultData rd = new XResultData();
       try {

@@ -54,6 +54,7 @@ public abstract class XArtifactReferencedAttributeWidget extends XTextFlatDam {
       return ArtifactToken.SENTINEL;
    }
 
+   @SuppressWarnings("FormatString")
    @Override
    public void saveToArtifact() {
       List<String> values = getInput();
