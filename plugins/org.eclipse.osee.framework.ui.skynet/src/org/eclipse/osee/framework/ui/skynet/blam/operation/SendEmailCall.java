@@ -27,6 +27,7 @@ public final class SendEmailCall implements Callable<String> {
       this.description = description;
    }
 
+   @SuppressWarnings("ArrayToString")
    @Override
    public String call() {
       XResultData results = emailMessage.sendLocalThread();
