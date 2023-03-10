@@ -92,7 +92,7 @@ public class ArtEdRelationsTab extends FormPage implements IRefreshActionHandler
 
       Label dragDropLabel = new Label(bodyComp, SWT.BORDER);
       dragDropLabel.setText("Click here to drag this \"" + artifact.getArtifactTypeName() + "\"");
-      GridData gd = new GridData(GridData.FILL_BOTH);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.heightHint = 25;
       dragDropLabel.setLayoutData(gd);
       new ArtifactDragAndDrop(dragDropLabel, artifact, ArtifactEditor.EDITOR_ID);
