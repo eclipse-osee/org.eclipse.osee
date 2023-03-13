@@ -41,7 +41,10 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
    public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
       // Test for null attribute values
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem)) {
-         if (attr.getValue() == null) {
+         if (attr.getAttributeType().getDescription().startsWith(AttributeTypeToken.MISSING_TYPE)) {
+            results.log(workItem.getStoreObject(), getClass().getSimpleName() + ".MissingAttributeType",
+               String.format("Error: %s for " + workItem.getAtsId(), attr.getIdString()));
+         } else if (attr.getValue() == null) {
             error(results, workItem, "Error: Types: " + attr.getAttributeType().getName() + " - Null Attribute");
             if (changes != null) {
                changes.deleteAttribute(workItem, attr);
