@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -48,7 +48,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       TABLE_TAG,
       TABLE_TAG_EMPTY,
       TABLE_TAG_WITH_ATTRS,
-      WordUtil.BODY_END};
+      WordCoreUtilClient.BODY_END};
 
    // A regex for reading xml elements. Assumes that an element never has a descendant with the same name as itself
    private static final Pattern internalAttributeElementsPattern = Pattern.compile(
@@ -107,7 +107,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
 
-         if (Readers.forward(reader, WordUtil.BODY_START) == null) {
+         if (Readers.forward(reader, WordCoreUtilClient.BODY_START) == null) {
             handleFormatError(source, "no start of body tag");
          }
          CharSequence element;
@@ -117,7 +117,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
          // Process the next available body tag
          while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
-            if (element == WordUtil.BODY_END) {
+            if (element == WordCoreUtilClient.BODY_END) {
                delegate.finish();
                return;
             } else {
@@ -193,7 +193,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
             reqListMatcher.reset(numberCandidate);
 
             if (reqNumberMatcher.matches()) {
-               if (WordUtil.isHeadingStyle(paragraphStyle)) {
+               if (WordCoreUtilClient.isHeadingStyle(paragraphStyle)) {
                   headerNumber = numberCandidate;
                   if (headerNumber.endsWith(".0")) {
                      headerNumber = headerNumber.substring(0, headerNumber.length() - 2);

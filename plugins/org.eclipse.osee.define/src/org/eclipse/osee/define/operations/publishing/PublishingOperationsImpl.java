@@ -20,8 +20,6 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.DefineOperations;
@@ -36,7 +34,6 @@ import org.eclipse.osee.define.rest.internal.wordupdate.WordMLApplicabilityHandl
 import org.eclipse.osee.define.rest.internal.wordupdate.WordMlLinkHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -45,7 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.core.util.ReportConstants;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -516,19 +513,15 @@ public class PublishingOperationsImpl implements PublishingOperations {
       String PL_HIGHLIGHT =
          "<w:highlight w:val=\"light-gray\"></w:highlight><w:shd w:color=\"auto\" w:fill=\"BFBFBF\" w:val=\"clear\"></w:shd>";
       String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
-      Pattern REVIEW_COMMENT = Pattern.compile(
-         "<aml:annotation[^>]*w:type=\"Word.Comment.Start\"/?>(</aml:annotation>)?[\\s\\S]+?<aml:annotation[^>]*w:type=\"Word.Comment.End\"/?>(</aml:annotation>)?[\\s\\S]+?</aml:annotation></w:r>");
 
-      data = WordUtilities.reassignBinDataID(data);
+      data = WordCoreUtilServer.reassignBinDataID(data);
       data = WordMlLinkHandler.renderPlainTextWithoutLinks(orcsApi.getQueryFactory(), branchId, data);
-      data = WordUtilities.reassignBookMarkID(data);
-      data = WordUtilities.removeNewLines(data);
+      data = WordCoreUtilServer.reassignBookMarkID(data).toString();
+      data = WordCoreUtilServer.removeNewLines(data);
 
       // if no extra paragraphs have been added this will replace the normal footer
-      data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
-      data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
-      data = data.replaceAll(ReportConstants.EMPTY_SECTION_BREAK, ReportConstants.PAGE_BREAK);
-      data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
+      var charSequenceData = WordCoreUtil.removeFootersAndNoDataRightsStatements(data);
+      data = WordCoreUtil.replaceEmptySectionBreaksWithPageBreaks(charSequenceData).toString();
 
       if (!data.contains("<w:tbl>")) {
          int lastIndex = data.lastIndexOf("<w:p wsp:rsidR=");
@@ -545,12 +538,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
       data = data.replaceAll(PL_STYLE, "");
       data = data.replaceAll(PL_HIGHLIGHT, "");
       data = data.replaceAll(EMPTY_PARAGRAPHS, "");
-      Matcher commentMatch = REVIEW_COMMENT.matcher(data);
-      if (commentMatch.find()) {
-         data = data.replaceAll(ReportConstants.WORD_COMMENT_START, "");
-         data = data.replaceAll(ReportConstants.WORD_COMMENT_END, "");
-         data = data.replaceAll(ReportConstants.WORD_COMMENT, "");
-      }
+      data = WordCoreUtil.removeReviewComments(data).toString();
+
       return data;
    }
 

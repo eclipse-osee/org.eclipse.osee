@@ -16,11 +16,25 @@ package org.eclipse.osee.framework.core.util;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({AbstractOperationTest.class, ConditionsTest.class, XResultDataTest.class, ManifestTest.class})
 /**
  * @author Roberto E. Escobar
  */
+
+//@formatter:off
+@RunWith(Suite.class)
+@Suite.SuiteClasses
+   (
+      {
+         AbstractOperationTest.class,
+         ConditionsTest.class,
+         ManifestTest.class,
+         WordCoreUtilTest.class,
+         XResultDataTest.class
+      }
+   )
 public class UtilCoreTestSuite {
    // Test Suite
 }
+//@formatter:on
+
+/* EOF */

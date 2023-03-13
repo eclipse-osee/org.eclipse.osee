@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
-import org.eclipse.osee.framework.core.util.PageOrientation;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 
 /**
  * This class defines defaults and constants for the Data Rights Manager.
@@ -46,11 +46,11 @@ class DataRightConfiguration {
    static final String defaultClassification = "Unspecified";
 
    /**
-    * The {@link PageOrientation} to use for an artifact when the artifact does not have the
+    * The {@link WordCoreUtil.pageType} to use for an artifact when the artifact does not have the
     * {@link #pageOrientationAttribute} defined or it contains an invalid or invalid values.
     */
 
-   static final PageOrientation defaultPageOrientation = PageOrientation.PORTRAIT;
+   static final WordCoreUtil.pageType defaultPageOrientation = WordCoreUtil.pageType.PORTRAIT;
 
    /**
     * The {@link ArtifactToken} for the artifact to extract data right classification mappings from.

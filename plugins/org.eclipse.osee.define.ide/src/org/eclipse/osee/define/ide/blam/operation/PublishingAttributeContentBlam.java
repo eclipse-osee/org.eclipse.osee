@@ -20,10 +20,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -103,6 +107,13 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
    private static String messageId64Positive = "a long greater than zero";
 
    /**
+    * Transaction identifier entry error message prefix.
+    */
+
+   private static String messageTransactionIdentifierMustEnter =
+      "Must enter Transaction Identifier as a long greater than zero or as \"SENTINEL\".";
+
+   /**
     * BLAM XWidget variable name and title for the template selection parameter &quot;Artifact Identifier&quot;.
     */
 
@@ -119,6 +130,12 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
     */
 
    private static String variableBranchIdentifier = "Branch Identifier";
+
+   /**
+    * BLAM XWidget variable name and title for the transaction selection parameter &quot;Transaction Identifier&quot;.
+    */
+
+   private static String variableTransactionIdentifier = "Transaction Identifier";
 
    /**
     * Message built based upon {@link #useLongIds} toggle for artifact identifier entry errors.
@@ -173,6 +190,7 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
     */
 
    private long getIdentifier(String blamVariable, String mustEnterMessage, boolean forceLong, StringBuilder message) {
+
       var identifierString = this.variableMap.getString(blamVariable);
 
       if (Objects.isNull(identifierString)) {
@@ -180,10 +198,18 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
          return -2l;
       }
 
+      if( "SENTINEL".equals( identifierString ) ) {
+         return -1;
+      }
+
       Long identifier;
+
       try {
-         identifier = this.useLongIds || forceLong ? Long.valueOf(identifierString) : Long.valueOf(
-            Integer.valueOf(identifierString));
+         //@formatter:off
+         identifier = this.useLongIds || forceLong
+                         ? Long.valueOf( identifierString )
+                         : Long.valueOf( Integer.valueOf( identifierString ) );
+         //@formatter:on
       } catch (Exception e) {
          message.append(mustEnterMessage).append("\n");
          return -2l;
@@ -209,6 +235,7 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
                 .andWidget( PublishingAttributeContentBlam.variableBranchIdentifier,        "XText" ).endWidget()
                 .andWidget( PublishingAttributeContentBlam.variableArtifactIdentifier,      "XText" ).endWidget()
                 .andWidget( PublishingAttributeContentBlam.variableAttributeTypeIdentifier, "XText" ).endWidget()
+                .andWidget( PublishingAttributeContentBlam.variableTransactionIdentifier,   "XText" ).endWidget()
                 .getItems();
       //@formatter:on
    }
@@ -252,6 +279,15 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
                   true,
                   message
                );
+
+         var transactionIdentifier =
+            this.getIdentifier
+               (
+                  PublishingAttributeContentBlam.variableTransactionIdentifier,
+                  PublishingAttributeContentBlam.messageTransactionIdentifierMustEnter,
+                  true,
+                  message
+               );
          //@formatter:on
 
          if (message.length() > 0) {
@@ -259,7 +295,25 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
             return;
          }
 
-         var artifact = ArtifactQuery.getArtifactFromId(artifactIdentifier, BranchId.valueOf(branchIdentifier));
+         //@formatter:off
+         var artifact =
+            ( transactionIdentifier == -1L )
+               ? ArtifactQuery.getArtifactFromId
+                    (
+                      artifactIdentifier,
+                      BranchId.valueOf(branchIdentifier)
+                    )
+               : ArtifactQuery.getHistoricalArtifactFromId
+                    (
+                       ArtifactId.valueOf( artifactIdentifier ),
+                       TransactionToken.valueOf
+                          (
+                             TransactionId.valueOf( transactionIdentifier ),
+                             BranchId.valueOf( branchIdentifier )
+                          ),
+                       DeletionFlag.EXCLUDE_DELETED
+                    );
+         //@formatter:on
 
          if (!artifact.isAttributeTypeValid(AttributeTypeId.valueOf(attributeTypeIdentifier))) {
             AWorkbench.popup(PublishingAttributeContentBlam.messageAttributeIdentifierNotValidForArtifact);
@@ -294,6 +348,8 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
                .append( branchIdentifier )
                .append( "-" )
                .append( attributeTypeIdentifier )
+               .append( "-" )
+               .append( transactionIdentifier )
                .append( "-" )
                .append( Lib.getDateTimeString() )
                .append( ".txt" )

@@ -14,10 +14,11 @@
 package org.eclipse.osee.define.operations.publishing.datarights;
 
 import java.util.Objects;
+import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
-import org.eclipse.osee.framework.core.util.PageOrientation;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
@@ -47,7 +48,7 @@ class DataRightEntry {
     * Saves the page orientation determined for the artifact.
     */
 
-   private final PageOrientation orientation;
+   private final WordCoreUtil.pageType orientation;
 
    /**
     * Creates a new record from the specified <code>artifactReadable</code> and <code>overrideClassification</code>.
@@ -101,7 +102,7 @@ class DataRightEntry {
       this.orientation =
          DataRightsClassification.isValid( overrideClassification )
             ? DataRightConfiguration.defaultPageOrientation
-            : this.extractPageOrientation( artifactReadable );
+            : WordCoreUtilServer.getPageOrientation( artifactReadable );
       //@formatter:on
    }
 
@@ -126,30 +127,6 @@ class DataRightEntry {
             DataRightConfiguration.defaultClassification);
       } catch (Exception e) {
          return DataRightConfiguration.defaultClassification;
-      }
-   }
-
-   /**
-    * Gets the page orientation from the <code>ArtifactReadable</code>'s
-    * {@link DataRightConfiguration#pageOrientationAttribute}. The {@link DataRightConfiguration#defaultPageOrientation}
-    * will be returned if unable to read the artifact's attribute or if the artifact is
-    * {@link ArtifactReadable#SENTINEL}.
-    *
-    * @param artifactReadable the artifact to extract the page orientation from.
-    * @return the page orientation.
-    */
-
-   private PageOrientation extractPageOrientation(ArtifactReadable artifactReadable) {
-
-      if (artifactReadable.isInvalid()) {
-         return DataRightConfiguration.defaultPageOrientation;
-      }
-
-      try {
-         return PageOrientation.fromString(artifactReadable.getSoleAttributeAsString(
-            DataRightConfiguration.pageOrientationAttribute, DataRightConfiguration.defaultPageOrientation.name()));
-      } catch (Exception e) {
-         return DataRightConfiguration.defaultPageOrientation;
       }
    }
 
@@ -179,7 +156,7 @@ class DataRightEntry {
     * @return the page orientation.
     */
 
-   public PageOrientation getOrientation() {
+   public WordCoreUtil.pageType getOrientation() {
       return orientation;
    }
 

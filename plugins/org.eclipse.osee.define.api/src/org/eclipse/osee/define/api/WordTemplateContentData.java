@@ -19,12 +19,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
  * @author Morgan E. Cook
  */
+
 public class WordTemplateContentData implements ToMessage {
 
    private ArtifactId artId;
@@ -37,14 +39,16 @@ public class WordTemplateContentData implements ToMessage {
     * This member is optional and maybe <code>null</code>.
     */
 
-   private String linkType;
+   private LinkType linkType;
 
    /**
     * This member is optional and maybe <code>null</code>.
     */
 
    private String oseeLink;
+
    private String permanentLinkUrl;
+
    private PresentationType presentationType;
 
    /**
@@ -53,7 +57,16 @@ public class WordTemplateContentData implements ToMessage {
 
    private String sessionId;
 
+   /**
+    * This member is required and maybe {@link TransactionToken#SENTINEL}.
+    */
+
    private TransactionToken txId;
+
+   /**
+    * This member is required an maybe {@link ArtifactId#SENTINEL}.
+    */
+
    private ArtifactId viewId;
 
    public ArtifactId getArtId() {
@@ -76,7 +89,7 @@ public class WordTemplateContentData implements ToMessage {
       return isEdit;
    }
 
-   public String getLinkType() {
+   public LinkType getLinkType() {
       return linkType;
    }
 
@@ -105,6 +118,31 @@ public class WordTemplateContentData implements ToMessage {
    }
 
    /**
+    * Predicate to determine if the member {@link #linkType} is non-<code>null</code>.
+    *
+    * @return <code>true</code>, when the member {@link #linkType} is non-<code>null</code>; otherwise;
+    * <code>false</code>.
+    */
+
+   public boolean isLinkTypeValid() {
+      return Objects.nonNull(this.linkType);
+   }
+
+   /**
+    * Predicate to determine if the member {@link #txId} is a valid {@link TransactionId}.
+    *
+    * @return <code>true</code>, when the {@link #txId} is valid; otherwise, <code>false</code>.
+    */
+
+   public boolean isTxIdValid() {
+      //@formatter:off
+      return
+            Objects.nonNull( this.txId )
+         && this.txId.isValid();
+      //@formatter:on
+   }
+
+   /**
     * Validates that required class members have been set.
     *
     * @return <code>true</code>, when the class members have been populated; otherwise, <code>false</code>.
@@ -124,27 +162,77 @@ public class WordTemplateContentData implements ToMessage {
       //@formatter:on
    }
 
+   /**
+    * Predicate to determine if the member {@link #viewId} is a valid {@link ArtifactId}.
+    *
+    * @return <code>true</code>, when the {@link #viewId} is valid; otherwise, <code>false</code>.
+    */
+
+   public boolean isViewIdValid() {
+      //@formatter:off
+      return
+            Objects.nonNull( this.viewId )
+         && this.viewId.isValid();
+      //@formatter:on
+   }
+
+   /**
+    * Sets the {@link ArtifactId}. Used for deserialization.
+    *
+    * @param artId the artifact identifier. Maybe {@link ArtifactId#SENTINEL} but not <code>null</code>.
+    * @throws NullPointerException when the parameter <code>artId</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #artId} has already been set.
+    */
+
    public void setArtId(ArtifactId artId) {
-      this.artId = artId;
+      if (Objects.nonNull(this.artId)) {
+         throw new IllegalStateException("WordTemplateContentData::setArtId, member \"artId\" has already been set.");
+      }
+      this.artId =
+         Objects.requireNonNull(artId, "WordTemplateContentData::setArtId, parameter \"artId\" cannot be null.");
    }
 
    public void setArtIsChanged(boolean artIsChanged) {
       this.artIsChanged = artIsChanged;
    }
 
+   /**
+    * Sets the {@link BranchId}. Used for deserialization.
+    *
+    * @param branch the branch identifier. Maybe {@link BranchId#SENTINEL} but not <code>null</code>.
+    * @throws NullPointerException when the parameter <code>branchId</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #branch} has already been set.
+    */
+
    public void setBranch(BranchId branch) {
-      this.branch = branch;
+      if (Objects.nonNull(this.branch)) {
+         throw new IllegalStateException("WordTemplateContentData::setBranch, member \"branch\" has already been set.");
+      }
+      this.branch =
+         Objects.requireNonNull(branch, "WordTemplateContentData::setBranch, parameter \"branch\" cannot be null.");
    }
 
+   /**
+    * Sets the footer content string. Used for deserialization.
+    *
+    * @param footer the footer content. Maybe an empty {@link String} but not <code>null</code>.
+    * @throws NullPointerException when the parameter <code>footer</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #footer} has already been set.
+    */
+
    public void setFooter(String footer) {
-      this.footer = footer;
+      if (Objects.nonNull(this.footer)) {
+         throw new IllegalStateException("WordTemplateContentData::setFooter, member \"footer\" has already been set.");
+      }
+      this.footer =
+         Objects.requireNonNull(footer, "WordTemplateContentData::setFooter, parameter \"footer\" cannot be null.");
    }
 
    public void setIsEdit(boolean isEdit) {
       this.isEdit = isEdit;
    }
 
-   public void setLinkType(String linkType) {
+   public void setLinkType(LinkType linkType) {
       this.linkType = linkType;
    }
 
@@ -152,24 +240,73 @@ public class WordTemplateContentData implements ToMessage {
       this.oseeLink = oseeLink;
    }
 
+   /**
+    * Sets the permanent link URL. Used for deserialization.
+    *
+    * @param permanentLinkUrl the permanent link URL. Maybe an empty {@link String} but not <code>null</code>.
+    * @throws NullPointerException when the parameter <code>permanentLinkUrl</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #permanentLinkUrl} has already been set.
+    */
+
    public void setPermanentLinkUrl(String permanentLinkUrl) {
-      this.permanentLinkUrl = permanentLinkUrl;
+      if (Objects.nonNull(this.permanentLinkUrl)) {
+         throw new IllegalStateException(
+            "WordTemplateContentData::setPermanentLinkUrl, member \"permanentLinkUrl\" has already been set.");
+      }
+      this.permanentLinkUrl = Objects.requireNonNull(permanentLinkUrl,
+         "WordTemplateContentData::setPermanentLinkUrl, parameter \"permanentLinkUrl\" cannot be null.");
    }
 
+   /**
+    * Sets the presentation type. Used for deserialization.
+    *
+    * @param presentationType the {@link PresentationType}. This parameter cannot be <code>null</code>.
+    * @throws NullPointerException when the parameter <code>presentationType</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #presentationType} has already been set.
+    */
+
    public void setPresentationType(PresentationType presentationType) {
-      this.presentationType = presentationType;
+      if (Objects.nonNull(this.presentationType)) {
+         throw new IllegalStateException(
+            "WordTemplateContentData::setPresentationType, member \"presentationType\" has already been set.");
+      }
+      this.presentationType = Objects.requireNonNull(presentationType,
+         "WordTemplateContentData::setPresentationType, parameter \"presentationType\" cannot be null.");
    }
 
    public void setSessionId(String sessionId) {
       this.sessionId = sessionId;
    }
 
+   /**
+    * Sets the transaction identifier. Used for deserialization.
+    *
+    * @param txId the transaction identifier. Maybe {@link TransactionToken#SENTINEL} but not <code>null</code>.
+    * @throws NullPointerException when the parameter <code>txId</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #txId} has already been set.
+    */
+
    public void setTxId(TransactionToken txId) {
-      this.txId = txId;
+      if (Objects.nonNull(this.txId)) {
+         throw new IllegalStateException("WordTemplateContentData::setTxId, member \"txId\" has already been set.");
+      }
+      this.txId = Objects.requireNonNull(txId, "WordTemplateContentData::setTxId, parameter \"txId\" cannot be null.");
    }
 
+   /**
+    * Sets the view identifier. Used for deserialization.
+    *
+    * @param viewId the {@link ArtifactId} of the view. Maybe {@link ArtifactId#SENTINEL} but not <code>null</code>.
+    * @throws NullPointerException when the parameter <code>viewId</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #viewId} has already been set.
+    */
+
    public void setViewId(ArtifactId viewId) {
-      this.viewId = viewId;
+      if (Objects.nonNull(this.viewId)) {
+         throw new IllegalStateException("WordTemplateContentData::setViewId, member \"viewId\" has already been set.");
+      }
+      this.viewId =
+         Objects.requireNonNull(viewId, "WordTemplateContentData::setViewId, parameter \"viewId\" cannot be null.");
    }
 
    /**

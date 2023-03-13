@@ -19,7 +19,25 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
- * An immutable integer range with an inclusive starting point and exclusive ending point intended for use with strings.
+ * An immutable integer range intended for use with {@link CharSequence} implementations. A positive range has a
+ * starting point that is less than or equal to the ending point. A negative range has a starting point that is greater
+ * than the ending point. The inclusivity of the end points is determined by the range sense as follows:
+ * <dl>
+ * <dt>Positive Range</dt>
+ * <dd>
+ * <ul>
+ * <li>Starting point is inclusive.</li>
+ * <li>Ending point is exclusive.</li>
+ * </ul>
+ * </dd>
+ * <dt>Negative Range</dt>
+ * <dd>
+ * <ul>
+ * <li>Starting point is exclusive.</li>
+ * <li>Ending point is inclusive.</li>
+ * </ul>
+ * </dd>
+ * </dl>
  *
  * @author Loren K. Ashley
  */
@@ -30,22 +48,53 @@ public class StringRange implements ToMessage {
     * Option flag that requires the start and end points to be greater than or equal to zero.
     */
 
-   public static int NonNegativeEndpoints = 1;
+   public static int NONNEGATIVE_ENDPOINTS = 0x01;
 
    /**
     * Option flag that requires the end point to be greater than or equal to the start point.
     */
 
-   public static int NonNegativeRange = 2;
+   public static int NONNEGATIVE_RANGE = 0x02;
 
    /**
-    * The exclusive ending point of the range.
+    * Array of error message titles.
+    * <dl>
+    * <dt>0</dt>
+    * <dd>No error condition, this entry is not used.</dd>
+    * <dt>1</dt>
+    * <dd>Error message for a negative range.</dd>
+    * <dt>2</dt>
+    * <dd>Error message for a range endpoint being negative.</dd>
+    * <dt>3</dt>
+    * <dd>Error message for when the range is negative and a range endpoint being negative</dd>
+    * </dl>
+    */
+
+   //@formatter:off
+   private static String[] errorTitles =
+   {
+      "",
+      "StringRange::new, range length is negative.",
+      "StringRange::new, range end point(s) are negative.",
+      "StringRange::new, range length is negative and range end point(s) are negative."
+   };
+   //@formatter:on
+
+   /**
+    * The range ending point according to the range sense as follows:
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>The exclusive ending point of the range.</dd>
+    * <dt>Negative Range</dt>
+    * <dd>The inclusive ending point of the range.</dd>
+    * </dl>
     */
 
    private final int end;
 
    /**
-    * The inclusive number of integers between the starting point and the ending point minus one.
+    * For a positive range, the number of characters in the range. For a negative range, minus 1 times the number of
+    * characters in the range.
     */
 
    private final int length;
@@ -57,16 +106,38 @@ public class StringRange implements ToMessage {
    private final int options;
 
    /**
-    * The inclusive starting point of the range.
+    * The range starting point according to the range sense as follows:
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>The inclusive starting point of the range.</dd>
+    * <dt>Negative Range</dt>
+    * <dd>The exclusive starting point of the range.</dd>
+    * </dl>
     */
 
    private final int start;
 
    /**
     * Creates a new {@link StringRange} without any checks.
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is inclusive.</li>
+    * <li>Ending point is exclusive.</li>
+    * </ul>
+    * </dd>
+    * <dt>Negative Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is exclusive.</li>
+    * <li>Ending point is inclusive.</li>
+    * </ul>
+    * </dd>
+    * </dl>
     *
-    * @param start the starting point, inclusive.
-    * @param end the ending point, exclusive.
+    * @param start the starting point.
+    * @param end the ending point.
     */
 
    public StringRange(int start, int end) {
@@ -84,9 +155,27 @@ public class StringRange implements ToMessage {
     * <dt>NonNegativeEndpoints</dt>
     * <dd>When specified, <code>start</code> &gt;= 0 &amp; <code>end</code> &gt;= 0</dd>
     * </dl>
+    * The inclusivity of the end points is as follows:
+    * <p>
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is inclusive.</li>
+    * <li>Ending point is exclusive.</li>
+    * </ul>
+    * </dd>
+    * <dt>Negative Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is exclusive.</li>
+    * <li>Ending point is inclusive.</li>
+    * </ul>
+    * </dd>
+    * </dl>
     *
-    * @param start the starting point, inclusive.
-    * @param end the ending point, exclusive.
+    * @param start the starting point.
+    * @param end the ending point.
     * @param options flags for end point checks to be performed.
     * @throws IndexOutOfBoundsException when an end point or the end points do not conform to check specified by the
     * parameter <code>options</code>.
@@ -101,39 +190,24 @@ public class StringRange implements ToMessage {
 
       //@formatter:off
       var status =   (
-                        ( (    ( this.options & NonNegativeRange ) > 0 )
-                            && ( this.length < 0                       ) )
+                        ( (    ( this.options & NONNEGATIVE_RANGE ) > 0 )
+                            && ( this.length < 0                        ) )
                            ? 1 : 0
                      )
                    + (
-                        ( (    ( this.options & NonNegativeEndpoints ) > 0 )
+                        ( (    ( this.options & NONNEGATIVE_ENDPOINTS ) > 0 )
                             && (    ( this.start < 0 )
-                                 || ( this.end   < 0 )                     ) )
+                                 || ( this.end   < 0 )                      ) )
                            ? 2 : 0
                      );
 
       if( status > 0 ) {
 
-         String title;
-
-         switch( status ) {
-            case 1:
-               title = "StringRange::new, range length is negative.";
-               break;
-            case 2:
-               title = "StringRange::new, range end point(s) are negative.";
-               break;
-            case 3:
-            default:
-               title = "StringRange::new, range length is negative and range end point(s) are negative.";
-               break;
-         }
-
          throw
             new IndexOutOfBoundsException
                    (
                       new Message()
-                             .title( title )
+                             .title( StringRange.errorTitles[ status ] )
                              .indentInc()
                              .segment( "Start",  this.start  )
                              .segment( "End",    this.end    )
@@ -151,11 +225,29 @@ public class StringRange implements ToMessage {
     * <dt>NonNegativeRange</dt>
     * <dd>When specified validates, <code>end</code> &gt;= <code>start</code></dd>
     * <dt>NonNegativeEndpoints</dt>
-    * <dd>When specified, <code>start</code> &gt;= 0 &amp; <code>end</code> &gt;= 0</dd>
+    * <dd>When specified, <code>start + offset</code> &gt;= 0 &amp; <code>end + offset</code> &gt;= 0</dd>
+    * </dl>
+    * The inclusivity of the end points is as follows:
+    * <p>
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is inclusive.</li>
+    * <li>Ending point is exclusive.</li>
+    * </ul>
+    * </dd>
+    * <dt>Negative Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is exclusive.</li>
+    * <li>Ending point is inclusive.</li>
+    * </ul>
+    * </dd>
     * </dl>
     *
-    * @param start the starting point, inclusive.
-    * @param end the ending point, exclusive.
+    * @param start the starting point.
+    * @param end the ending point.
     * @param offset the <code>offset</code> is added to the <code>start</code> and <code>end</code> before performing
     * the checks and creating the {@link StringRange}.
     * @param options flags for end point checks to be performed.
@@ -165,6 +257,16 @@ public class StringRange implements ToMessage {
 
    public StringRange(int start, int end, int offset, int options) {
       this(start + offset, end + offset, options);
+   }
+
+   /**
+    * Gets the number of characters in the range. The value is always non-negative.
+    *
+    * @return the number of characters in the range.
+    */
+
+   public int absLength() {
+      return this.length >= 0 ? this.length : -this.length;
    }
 
    /**
@@ -182,9 +284,36 @@ public class StringRange implements ToMessage {
    }
 
    /**
-    * Gets the exclusive ending point of the range.
+    * Calculates the index for the underlying storage from an index within the {@link StringRange}.
     *
-    * @return the ending point, exclusive.
+    * @param index the index within the {@link StringRange}.
+    * @return the index for the underlying storage.
+    * @throws IndexOutOfBoundException when the provided <code>index</code> is not within the range.
+    */
+
+   public int baseIndex(int index) {
+      //@formatter:off
+      var baseIndex =
+           this.start
+         + ( this.isPositive()
+                ? index
+                : -index -1 );
+      //@formatter:on
+      this.requireInRange(baseIndex);
+
+      return baseIndex;
+   }
+
+   /**
+    * Gets ending point of the range.
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>Ending point is exclusive.</dd>
+    * <dt>Negative Range</dt>
+    * <dd>Ending point is inclusive.</dd>
+    * </dl>
+    *
+    * @return the ending point.
     */
 
    public int end() {
@@ -193,6 +322,8 @@ public class StringRange implements ToMessage {
 
    /**
     * {@inheritDoc}
+    * <p>
+    * Only the members {@link #start} and {@link #end} are compared. The {@link #options} are not compared.
     */
 
    @Override
@@ -230,11 +361,11 @@ public class StringRange implements ToMessage {
     * to the range as follows:
     * <dl>
     * <dt>NonNegative Range ({@link #start} &gt;= {@link #end})</dt>
-    * <dd>The result is in range (<code>true</code>) when {@link start} &lt;= <code>index</code> and <code>index</code>
-    * &lt; {@link #end}.</dd>
+    * <dd>The result is in range (<code>true</code>) when {@link #start} &lt;= <code>index</code> &lt;
+    * {@link #end}.</dd>
     * <dt>Negative Range ({@link #start} &lt; {@link #end})</dt>
-    * <dd>The result is in range (<code>true</code>) when {@link start} &lt;= <code>index</code> or <code>index</code>
-    * &lt; {@link #end}.</dd>
+    * <dd>The result is in range (<code>true</code>) when {@link #end} &lt;= <code>index</code> &lt;
+    * {@link #start}.</dd>
     * </dl>
     * <h2>Examples</h2>
     *
@@ -256,10 +387,10 @@ public class StringRange implements ToMessage {
     *          |       |
     *          v       v
     *    0 1 2 3 4 5 6 7 8 9
-    *  <-*****         *****->
-    *    ^             ^
-    *    |             |
-    *    +- in range   +- in range
+    *          *******
+    *          ^
+    *          |
+    *          +- in range
     * </pre>
     *
     * @param index the value to test.
@@ -272,24 +403,13 @@ public class StringRange implements ToMessage {
          ( this.start <= this.end )
             ?    ( index >= this.start )
               && ( index <  this.end   )
-            :    ( index >= this.start )
-              || ( index <  this.end   );
+            :    ( index >= this.end   )
+              && ( index <  this.start );
       //@formatter:on
    }
 
    /**
-    * Predicate to determine if the specified <code>range</code> is within the range. The result is determined according
-    * to the range senses as follows:
-    * <dl>
-    * <dt>NonNegative Range, NonNegative Check Range</dt>
-    * <dd><code>range.start</code> &gt;= {@link #start} && <code>range.end</code> &lt;= {@link #end}</dd>
-    * <dt>NonNegative Range, Negative Check Range</dt>
-    * <dd><code>false</code> always</dd>
-    * <dt>Negative Range, NonNegative Check Range</dt>
-    * <dd><code>range.start</code> &gt;= {@link #start} || <code>range.end</code> &lt;= {@link #end}</dd>
-    * <dt>Negative Range, Negative Check Range</dt>
-    * <dd><code>range.start</code> &gt;= {@link #start} && <code>range.end</code> &lt;= {@link #end}</dd>
-    * </dl>
+    * Predicate to determine if the specified <code>range</code> is within the range.
     * <h2>Examples</h2>
     *
     * <pre>
@@ -304,7 +424,7 @@ public class StringRange implements ToMessage {
     *            |   |
     *            t   f
     *
-    *    The check range can fit within the range.
+    *   ( t >= s ) && ( f <= e )
     *
     * NonNegative Range (s=3,e=7) Negative Check Range (t=6,f=4)
     *          s       e
@@ -312,44 +432,39 @@ public class StringRange implements ToMessage {
     *          v       v
     *    0 1 2 3 4 5 6 7 8 9
     *          *******           <- Range
-    *  <-*******     *******->   <- Check Range
+    *            ***             <- Check Range
     *            ^   ^
     *            |   |
     *            f   t
     *
-    *    The check range can never fit within the range. The range if finite. The
-    *    check range extends to positive and negative infinity.
+    *   ( f >= s ) && ( t <= e )
     *
-    * Negative Range (s=7,e=2) NonNegative Check Range (ta=0,fa=2)
-    *                          NonNegative Check Range (tb=8,fb=10)
+    * Negative Range (s=7,e=3) NonNegative Check Range (t=4,f=6)
+    *
     *          e       s
     *          |       |
     *          v       v
     *    0 1 2 3 4 5 6 7 8 9 A
-    *  <-*****         *******->   <- Range
-    *    ***             ***       <- Check Ranges a and b
-    *    ^   ^           ^   ^
-    *    |   |           |   |
-    *    ta  fa          tb  fb
+    *          *******           <- Range
+    *            ***             <- Check Range
+    *            ^   ^
+    *            |   |
+    *            t   f
     *
-    *    The check range can fit within the portion of the range extending to
-    *    positive infinity or it can fit within the portion of the range extending
-    *    to negative infinity.
+    *    ( t >= e ) && ( f <= s )
     *
-    * Negative Range (s=7,e=2) Negative Check Range (t=8,f=2)
+    * Negative Range (s=7,e=3) Negative Check Range (t=6,f=4)
     *          e       s
     *          |       |
     *          v       v
     *    0 1 2 3 4 5 6 7 8 9 A
-    *  <-*****         *******->   <- Range
-    *  <-***             *****->   <- Check Range
-    *        ^           ^
-    *        |           |
-    *        f           t
+    *          *******             <- Range
+    *            ***               <- Check Range
+    *            ^   ^
+    *            |   |
+    *            f   t
     *
-    *    The check range fits within the range when the upper portion of the check range
-    *    starts with or after the upper portion of the range and the lower portion of the
-    *    check range ends before or with the lower portion of the range.
+    *    ( f >= e ) && ( t <= s )
     * </pre>
     *
     * @param range the range to test.
@@ -357,37 +472,28 @@ public class StringRange implements ToMessage {
     */
 
    public boolean isInRange(StringRange range) {
+
       //@formatter:off
-      switch(    ( this.start <= this.end   ? 0 : 2 )
-               + ( range.start <= range.end ? 0 : 1 ) )
-      {
-         /* this nonNegativeRange, range nonNegativeRange */
-         case 0:
-         /* this negativeRange,    range negativeRange    */
-         case 3:
-            return
-                   ( range.start >= this.start )
-               &&  ( range.end   <= this.end   );
-
-         /* this nonNegativeRange, range negativeRange    */
-         case 1:
-            return false;
-
-         /* this negativeRange,    range nonNegativeRange */
-         case 2:
-            return
-                   ( range.start >= this.start )
-               ||  ( range.end   <= this.end   );
-      }
+      return
+            Math.min( range.start, range.end ) >= Math.min( this.start, this.end )
+         && Math.max( range.start, range.end ) <= Math.max( this.start, this.end );
       //@formatter:on
-      /* Cannot get here */
-      return false;
+   }
+
+   /**
+    * Predicate to determine if the range is positive or negative.
+    *
+    * @return <code>true<code>, when {@link #start} &lt;= {@link #end}; otherwise <code>false</code>.
+    */
+
+   public boolean isPositive() {
+      return this.start <= this.end;
    }
 
    /**
     * The inclusive number of integers between the starting point and the ending point minus one.
     *
-    * @return the number of integers in the range.
+    * @return the number of integers in the range, a negative range will have a negative length.
     */
 
    public int length() {
@@ -573,13 +679,121 @@ public class StringRange implements ToMessage {
    }
 
    /**
-    * Gets the inclusive starting point of the range.
+    * Gets the starting point of the range.
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>Starting point is inclusive.</dd>
+    * <dt>Negative Range</dt>
+    * <dd>Starting point is exclusive.</dd>
+    * </dl>
     *
-    * @return the starting point, inclusive.
+    * @return the starting point.
     */
 
    public int start() {
       return this.start;
+   }
+
+   /**
+    * Creates a new {@link StringRange} that is a sub range of this one with the same options as this
+    * {@link StringRange}.
+    * <p>
+    * The inclusivity of the end points is as follows:
+    * <p>
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is inclusive.</li>
+    * <li>Ending point is exclusive.</li>
+    * </ul>
+    * </dd>
+    * <dt>Negative Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is exclusive.</li>
+    * <li>Ending point is inclusive.</li>
+    * </ul>
+    * </dd>
+    * </dl>
+    *
+    * @param start the index for the start of the subrange.
+    * @param end the index for the end of the subrange.
+    * @return a new {@link StringRange} that is a subrange of this one.
+    */
+
+   StringRange subRange(int start, int end) {
+      return this.subRange(start, end, this.options);
+   }
+
+   /**
+    * Creates a new {@link StringRange} that is a sub range of this one with the checks specified by
+    * <code>options</code>. The sense of the returned range is determined as follows:
+    * <p>
+    * <table border="1">
+    * <tr>
+    * <th>Range Sense</th>
+    * <th>Sub-Range Sense</th>
+    * <th>Returned Range Sense</th>
+    * </tr>
+    * <tr>
+    * <td>Positive</td>
+    * <td>Positive</td>
+    * <td>Positive</td>
+    * </tr>
+    * <tr>
+    * <td>Positive</td>
+    * <td>Negative</td>
+    * <td>Negative</td>
+    * </tr>
+    * <tr>
+    * <td>Negative</td>
+    * <td>Positive</td>
+    * <td>Negative</td>
+    * </tr>
+    * <tr>
+    * <td>Negative</td>
+    * <td>Negative</td>
+    * <td>Positive</td>
+    * </tr>
+    * </table>
+    * <dl>
+    * <dt>NonNegativeRange</dt>
+    * <dd>When specified validates, <code>end</code> &gt;= <code>start</code></dd>
+    * <dt>NonNegativeEndpoints</dt>
+    * <dd>When specified, <code>start</code> &gt;= 0 &amp; <code>end</code> &gt;= 0</dd>
+    * </dl>
+    * The inclusivity of the end points is as follows:
+    * <p>
+    * <dl>
+    * <dt>Positive Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is inclusive.</li>
+    * <li>Ending point is exclusive.</li>
+    * </ul>
+    * </dd>
+    * <dt>Negative Range</dt>
+    * <dd>
+    * <ul>
+    * <li>Starting point is exclusive.</li>
+    * <li>Ending point is inclusive.</li>
+    * </ul>
+    * </dd>
+    * </dl>
+    *
+    * @param start the index for the start of the subrange.
+    * @param end the index for the end of the subrange.
+    * @param options flags for end point checks to be performed.
+    */
+
+   StringRange subRange(int start, int end, int options) {
+      //@formatter:off
+      return
+         this.isPositive()
+            ? new StringRange(  start,  end, this.start, options )
+            : new StringRange( -start, -end, this.start, options );
+      //@formatter:on
    }
 
    /**

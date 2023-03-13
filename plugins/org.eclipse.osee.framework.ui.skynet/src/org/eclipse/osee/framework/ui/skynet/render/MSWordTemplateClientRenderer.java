@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
@@ -384,7 +384,7 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
          }
       }
 
-      templateContent = WordUtil.removeGUIDFromTemplate(templateContent);
+      templateContent = WordCoreUtilClient.removeGUIDFromTemplate(templateContent);
 
       return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, templateStyles, null, null,
          (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE), presentationType);
@@ -471,7 +471,7 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
          wtcData.setBranch(artifact.getBranch());
          wtcData.setFooter(presentationType != PresentationType.SPECIALIZED_EDIT ? footer : "");
          wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
-         wtcData.setLinkType(linkType != null ? linkType.toString() : null);
+         wtcData.setLinkType(linkType);
          wtcData.setTxId(txId);
          wtcData.setPresentationType(presentationType);
          ArtifactId view = (ArtifactId) getRendererOptionValue(RendererOption.VIEW);

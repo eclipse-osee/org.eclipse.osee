@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,7 +61,7 @@ public class RelationOrderRenderer {
       WordMLProducer writer = producer;
       try {
          writer.startTable();
-         writer.addWordMl("<w:tblPr><w:tblW w:w=\"8200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");
+         writer.addTablePresentation(WordCoreUtil.tablePresentation.WIDTH_5_694_BORDER_NONE_JUSTIFIED_CENTER);
          if (!relationOrderData.hasEntries()) {
             writer.addTableRow(NO_DATA_TAG);
          } else {

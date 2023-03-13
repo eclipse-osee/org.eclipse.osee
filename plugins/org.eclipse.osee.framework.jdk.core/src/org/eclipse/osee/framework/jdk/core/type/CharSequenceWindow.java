@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Objects;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
  * Provides a {@link CharSequence} implementation for a portion of a {@link CharSequence}. If the backing
@@ -22,13 +23,35 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
  * {@link CharSequenceWindow} and the {@link CharSequenceWindow} end points may become out of range resulting in an
  * {@link IndexOutOfBoundsException}.
  * <p>
+ * This implementation supports negative ranges where the starting index is greater than the ending index. A
+ * {@link CharSequenceWindow} with a negative range will provide the characters in the reverse order of the characters
+ * in the backing {@link CharSequence}.
+ * <p>
+ * The inclusivity of the end points is as follows:
+ * <p>
+ * <dl>
+ * <dt>Positive Range</dt>
+ * <dd>
+ * <ul>
+ * <li>Starting point is inclusive.</li>
+ * <li>Ending point is exclusive.</li>
+ * </ul>
+ * </dd>
+ * <dt>Negative Range</dt>
+ * <dd>
+ * <ul>
+ * <li>Starting point is exclusive.</li>
+ * <li>Ending point is inclusive.</li>
+ * </ul>
+ * </dd>
+ * </dl>
  * The purpose of this class is to provide a &quot;substring view&quot; of a {@link CharSequence} without making a copy
  * of the source data.
  *
  * @author Loren K. Ashley
  */
 
-public class CharSequenceWindow implements CharSequence {
+public class CharSequenceWindow implements CharSequence, ToMessage {
 
    /**
     * The {@link CharSequence} to have a portion be windowed as a {@link CharSequence}.
@@ -47,41 +70,49 @@ public class CharSequenceWindow implements CharSequence {
     * inclusive stating position through the end of the provided {@link CharSequence}.
     *
     * @param charSequence the {@link CharSequence} to create a window for.
-    * @param start the inclusive starting character position for the {@link CharSequenceWindow} within the provided
+    * @param start the starting character position for the {@link CharSequenceWindow} within the provided
     * {@link CharSequence}.
     * @throws NullPointerException when the parameter <code>charSequence</code> is <code>null</code>.
-    * @throws IndexOutOfBounds when:
-    * <ul>
-    * <li><code>start</code> is less than zero or,</li>
-    * <li><code>start</code> is greater than the string length.</li>
-    * </ul>
+    * @throws IndexOutOfBounds when the range specified by <code>start</code> and the length of the provided
+    * <code>charSequence</code> is outside the range of the provided <code>charSequence</code>.
     */
 
    public CharSequenceWindow(CharSequence charSequence, int start) {
+
       this.charSequence =
          Objects.requireNonNull(charSequence, "CharSequenceWindow::new, parameter \"charSequence\" cannot be null.");
+
       //@formatter:off
       try {
+
+         var checkStringRange = new StringRange(0,charSequence.length());
+
          this.stringRange =
             new StringRange
                    (
                       start,
                       charSequence.length(),
-                        StringRange.NonNegativeEndpoints
-                      | StringRange.NonNegativeRange
+                      StringRange.NONNEGATIVE_ENDPOINTS
                    );
+
+         checkStringRange.requireInRange(this.stringRange);
+
       } catch( IndexOutOfBoundsException ioobe ) {
+
          var exception =
             new IndexOutOfBoundsException
                    (
                       new Message()
                              .title( "CharSequenceWindow::new, window range out of bounds." )
                              .indentInc()
-                             .segment( "CharSequence", charSequence )
-                             .segment( "Start",        start        )
+                             .segment( "CharSequence", charSequence          )
+                             .segment( "Start",        start                 )
+                             .segment( "End",          charSequence.length() )
                              .toString()
                    );
+
          exception.initCause( ioobe );
+
          throw exception;
       }
       //@formatter:on
@@ -89,52 +120,41 @@ public class CharSequenceWindow implements CharSequence {
 
    /**
     * Creates a {@link CharSequenceWindow} implementation for a portion of the provided {@link CharSequecne} between the
-    * inclusive starting position and the exclusive ending position.
+    * starting position and the ending position. This constructor maybe used to create a {@link CharSequence} with a
+    * negative range.
     *
     * @param charSequence the {@link CharSequence} to create a window for.
-    * @param start the inclusive starting character position for the {@link CharSequenceWindow} within the provided
+    * @param start the starting character position for the {@link CharSequenceWindow} within the provided
     * {@link CharSequence}.
-    * @param end the exclusive character position for the end of the {@link CharSequenceWindow} within the provided
+    * @param end the ending character position for the {@link CharSequenceWindow} within the provided
     * {@link CharSequence}.
     * @throws NullPointerException when the parameter <code>charSequence</code> is <code>null</code>.
-    * @throws IndexOutOfBounds when:
-    * <ul>
-    * <li><code>start</code> is less than zero,</li>
-    * <li><code>end</code> is less than zero,</li>
-    * <li><code>end</code> is less than <code>start</code>, or</li>
-    * <li><code>end</code> is greater than the character sequence length.</li>
-    * </ul>
+    * @throws IndexOutOfBounds when the range specified by <code>start</code> and <code>end</code> is outside the range
+    * of the provided <code>charSequence</code>.
     */
 
    public CharSequenceWindow(CharSequence charSequence, int start, int end) {
+
       this.charSequence =
          Objects.requireNonNull(charSequence, "CharSequenceWindow::new, parameter \"charSequence\" cannot be null.");
-      //@formatter:off
-      if(end > charSequence.length() ) {
-         throw
-            new IndexOutOfBoundsException
-                   (
-                      new Message()
-                             .title( "CharSequenceWindow::new, parameter \"end\" past end of \"charSequence\"." )
-                             .indentInc()
-                             .segment( "CharSequence", charSequence )
-                             .segment( "Start",        start        )
-                             .segment( "End",          end          )
-                             .toString()
-                   );
-      }
 
+      //@formatter:off
       try
       {
+         var checkStringRange = new StringRange(0,charSequence.length());
+
          this.stringRange =
             new StringRange
                    (
                       start,
                       end,
-                        StringRange.NonNegativeEndpoints
-                      | StringRange.NonNegativeRange
+                      StringRange.NONNEGATIVE_ENDPOINTS
                    );
+
+         checkStringRange.requireInRange( this.stringRange );
+
       } catch( IndexOutOfBoundsException ioobe ) {
+
          var exception =
             new IndexOutOfBoundsException
                    (
@@ -146,68 +166,27 @@ public class CharSequenceWindow implements CharSequence {
                              .segment( "End",          end          )
                              .toString()
                    );
+
          exception.initCause( ioobe );
+
          throw exception;
       }
       //@formatter:on
    }
 
    /**
-    * Creates a {@link CharSequenceWindow} implementation for a portion of the provided {@link CharSequence}.
+    * Private constructor creates a {@link CharSequenceWindow} implementation for a portion of the provided
+    * {@link CharSequence}. The <code>charSequence</code> must already be validated as non-null before calling this
+    * constructor. The <code>stringRange</code> must already be validated before calling this constructor.
     *
     * @param charSequence the {@link CharSequence} to create a window for.
-    * @param stringRange a {@link StringRange} containing the inclusive starting and exclusive ending character
-    * positions for the {@link CharSequenceWindow} within the provided {@link CharSequenced}.
-    * @throws NullPointerException when the parameter <code>charSequence</code> is <code>null</code>.
-    * @throws IndexOutOfBounds when:
-    * <ul>
-    * <li><code>stringRange</code> has negative end points,</li>
-    * <li><code>stringRange</code> is a negative range, or</li>
-    * <li><code>stringRange</code> end is greater than the character sequence length.</li>
-    * </ul>
+    * @param stringRange a {@link StringRange} containing the starting and ending character positions for the
+    * {@link CharSequenceWindow} within the provided {@link CharSequenced}.
     */
 
    private CharSequenceWindow(CharSequence charSequence, StringRange stringRange) {
-      this.charSequence =
-         Objects.requireNonNull(charSequence, "CharSequenceWindow::new, parameter \"charSequence\" cannot be null.");
-      //@formatter:off
-      if(stringRange.end() > charSequence.length() ) {
-         throw
-            new IndexOutOfBoundsException
-                   (
-                      new Message()
-                             .title( "CharSequenceWindow::new, parameter \"stringRange\" past end of \"charSequence\"." )
-                             .indentInc()
-                             .segment( "CharSequence", charSequence )
-                             .segment( "Range",        stringRange  )
-                             .toString()
-                   );
-      }
-
-      try {
-         this.stringRange =
-            new StringRange
-                   (
-                      stringRange.start(),
-                      stringRange.end(),
-                        StringRange.NonNegativeEndpoints
-                      | StringRange.NonNegativeRange
-                   );
-      } catch( IndexOutOfBoundsException ioobe ) {
-         var exception =
-            new IndexOutOfBoundsException
-                   (
-                      new Message()
-                      .title( "CharSequenceWindow::new, window range out of bounds." )
-                      .indentInc()
-                      .segment( "CharSequence", charSequence )
-                      .segment( "Range",        stringRange  )
-                      .toString()
-                   );
-         exception.initCause( ioobe );
-         throw exception;
-      }
-      //@formatter:on
+      this.charSequence = charSequence;
+      this.stringRange = stringRange;
    }
 
    /**
@@ -216,7 +195,7 @@ public class CharSequenceWindow implements CharSequence {
 
    @Override
    public int length() {
-      return this.stringRange.length();
+      return this.stringRange.absLength();
    }
 
    /**
@@ -227,9 +206,8 @@ public class CharSequenceWindow implements CharSequence {
 
    @Override
    public char charAt(int index) {
-      var stringIndex = this.stringRange.start() + index;
-      this.stringRange.requireInRange(stringIndex);
-      return this.charSequence.charAt(stringIndex);
+      var baseIndex = this.stringRange.baseIndex(index);
+      return this.charSequence.charAt(baseIndex);
    }
 
    /**
@@ -243,15 +221,15 @@ public class CharSequenceWindow implements CharSequence {
 
       //@formatter:off
       try {
+
          offsetStringRange =
-            new StringRange
-                   (
-                      start,
-                      end,
-                      this.stringRange.start(),
-                        StringRange.NonNegativeEndpoints
-                      | StringRange.NonNegativeRange
-                   );
+            this.stringRange.subRange
+               (
+                  start,
+                  end,
+                  StringRange.NONNEGATIVE_ENDPOINTS
+               );
+
       } catch( IndexOutOfBoundsException ioobe ) {
          var exception =
             new IndexOutOfBoundsException
@@ -264,7 +242,9 @@ public class CharSequenceWindow implements CharSequence {
                          .segment( "End",                end   )
                          .toString()
                    );
+
          exception.initCause( ioobe );
+
          throw exception;
       }
 
@@ -289,8 +269,49 @@ public class CharSequenceWindow implements CharSequence {
     */
 
    @Override
+   public Message toMessage(int indent, Message message) {
+      var outMessage = Objects.nonNull(message) ? message : new Message();
+
+      //@formatter:off
+      outMessage
+         .indent( indent )
+         .title( "CharSequenceWindow" )
+         .indentInc()
+         .segment( "CharSequence", this.charSequence )
+         .segment( "StringRange",  this.stringRange  )
+         .indentDec()
+         ;
+      //@formatter:off
+
+      return outMessage;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public String toString() {
-      return this.charSequence.subSequence(this.stringRange.start(), this.stringRange.end()).toString();
+
+      if (this.stringRange.isPositive()) {
+
+         return this.charSequence.subSequence(this.stringRange.start(), this.stringRange.end()).toString();
+
+      } else {
+
+         var charArray = new char[this.stringRange.absLength()];
+
+         //@formatter:off
+         for( int i = this.stringRange.start() - 1, e = this.stringRange.end(), j = 0;
+              i >= e;
+              i--, j++ ) {
+         //@formatter:on
+
+            charArray[j] = this.charSequence.charAt(i);
+         }
+
+         return new String(charArray);
+      }
    }
 }
 

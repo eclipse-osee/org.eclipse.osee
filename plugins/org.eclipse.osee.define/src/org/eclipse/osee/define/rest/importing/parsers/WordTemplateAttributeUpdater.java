@@ -16,7 +16,7 @@ package org.eclipse.osee.define.rest.importing.parsers;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
+import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -56,7 +56,7 @@ public class WordTemplateAttributeUpdater {
       StringBuilder content = new StringBuilder(2000);
       try (BufferedReader reader = Files.newBufferedReader(Paths.get(source))) {
 
-         if (Readers.forward(reader, WordUtilities.BODY_START) == null) {
+         if (Readers.forward(reader, WordCoreUtilServer.BODY_START) == null) {
             results.errorf("no start of body tag for file %s", source.toString());
          }
          Readers.xmlForward(reader, content, "w:body");

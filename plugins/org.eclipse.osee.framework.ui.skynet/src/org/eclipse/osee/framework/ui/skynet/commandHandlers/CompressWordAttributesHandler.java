@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -63,7 +63,7 @@ public class CompressWordAttributesHandler extends CommandHandler {
                monitor.beginTask("Analyzing attributes", total);
 
                for (Artifact artifact : artifacts) {
-                  if (WordUtil.revertNonusefulWordChanges(artifact, "osee_compression_gammas")) {
+                  if (WordCoreUtilClient.revertNonusefulWordChanges(artifact, "osee_compression_gammas")) {
                      count++;
                   }
                   monitor.worked(1);

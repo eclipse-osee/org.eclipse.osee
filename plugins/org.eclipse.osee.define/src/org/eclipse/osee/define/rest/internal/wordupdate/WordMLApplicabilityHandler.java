@@ -149,7 +149,8 @@ public class WordMLApplicabilityHandler {
          }
       }
 
-      toReturn = removeEmptyLists(toReturn);
+      toReturn = WordCoreUtil.removeEmptyLists(toReturn).toString();
+
       if (applicBlockCount != 0) {
          logger.error("An applicability block of text is missing an End Feature/Configuration tag");
       }
@@ -223,10 +224,6 @@ public class WordMLApplicabilityHandler {
 
       String toInsert = applicabilityOps.evaluateApplicabilityExpression(branch, view, applicabilityBlock);
       return insertMissingbinData(toInsert, binDataMap);
-   }
-
-   private String removeEmptyLists(String wordML) {
-      return wordML.replaceAll(WordCoreUtil.EMPTY_LIST_REGEX, "");
    }
 
    private String insertMissingbinData(String toInsert, Map<String, String> binDataMap) {
@@ -303,14 +300,14 @@ public class WordMLApplicabilityHandler {
 
       // Adjust start and end insert indicies if tags are inside a table
       if (!applic.getInsideText().contains(WordCoreUtil.TABLE) && applic.getInsideText().contains(
-         WordCoreUtil.TABLE_CELL)) {
+         WordCoreUtil.TABLE_COLUMN)) {
          String findStartOfRow = toReturn.substring(0, applic.getStartInsertIndex());
          int startRowIndex = findStartOfRow.lastIndexOf(WordCoreUtil.START_TABLE_ROW);
 
          if (startRowIndex != -1) {
             // find end of row after the END configuration/feature tag
             String findEndOfRow = toReturn.substring(matcher.end());
-            int endRowIndex = findEndOfRow.indexOf(WordCoreUtil.END_TABLE_ROW);
+            int endRowIndex = findEndOfRow.indexOf(WordCoreUtil.TABLE_ROW_END);
             if (endRowIndex != -1) {
                endRowIndex = endRowIndex + matcher.end() + 7;
                String fullText = toReturn.substring(startRowIndex, endRowIndex);

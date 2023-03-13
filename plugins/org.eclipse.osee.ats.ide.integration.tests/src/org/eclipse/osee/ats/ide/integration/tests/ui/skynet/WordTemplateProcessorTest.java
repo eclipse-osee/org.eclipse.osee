@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -31,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -41,14 +44,37 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 /**
  * @author Karol M. Wilk
  * @link: WordTemplateProcessor
  */
 public class WordTemplateProcessorTest {
+
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * </dl>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         ;
+   //@formatter:on
 
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
@@ -181,7 +207,20 @@ public class WordTemplateProcessorTest {
       String filePath = RendererManager.open(myRootArtifact, PresentationType.PREVIEW, rendererOptions);
 
       String fileContents = Lib.fileToString(new File(filePath));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, true), fileContents.contains(expected));
+      //@formatter:off
+      Asserts.assertTrue
+         (
+            () -> new Message()
+                         .title( "Expected contents not found in publish file." )
+                         .indentInc()
+                         .segment( "Artifact",         artifact     )
+                         .segment( "File Path",        filePath     )
+                         .follows( "File Contents",    fileContents )
+                         .follows( "Expected Content", expected     )
+                         .toString(),
+            fileContents.contains( expected )
+         );
+      //@formatter:on
       Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, false), !fileContents.contains(notExpected));
    }
 

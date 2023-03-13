@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -176,7 +176,8 @@ public class DefaultArtifactRenderer implements IRenderer {
 
       if (allAttrs) {
          if (!attributeType.matches(CoreAttributeTypes.PlainTextContent)) {
-            wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getUnqualifiedName()) + ": </w:t></w:r>");
+            wordMl.addWordMl(
+               "<w:r><w:t> " + XmlEncoderDecoder.textToXml(attributeType.getUnqualifiedName()) + ": </w:t></w:r>");
          } else {
             wordMl.addWordMl("<w:r><w:t> </w:t></w:r>");
          }
@@ -192,7 +193,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       } else {
          String valueList = artifact.getAttributesToString(attributeType);
          if (format.contains(">x<")) {
-            wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(valueList).toString() + "<"));
+            wordMl.addWordMl(format.replace(">x<", ">" + XmlEncoderDecoder.textToXml(valueList).toString() + "<"));
          } else {
             wordMl.addTextInsideParagraph(valueList);
          }

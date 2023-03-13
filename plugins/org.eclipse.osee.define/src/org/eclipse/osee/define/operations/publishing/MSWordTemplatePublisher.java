@@ -24,10 +24,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWord
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordOleData;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.core.util.ReportConstants.CONTINUOUS;
-import static org.eclipse.osee.framework.core.util.ReportConstants.FTR;
-import static org.eclipse.osee.framework.core.util.ReportConstants.PAGE_SZ;
-import static org.eclipse.osee.framework.core.util.ReportConstants.PG_SZ;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +53,6 @@ import org.eclipse.osee.define.api.publishing.datarights.DataRightResult;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
 import org.eclipse.osee.define.operations.publishing.datarights.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -70,14 +65,14 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
-import org.eclipse.osee.framework.core.util.WordMLWriter;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -93,10 +88,8 @@ public class MSWordTemplatePublisher {
    protected static final Object ARTIFACT_ID = "Artifact Id";
    protected static final String ARTIFACT_TYPE = "Artifact Type";
    protected static final String APPLICABILITY = "Applicability";
-   protected static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    protected static final String FONT = "Times New Roman";
-   protected static final String LANDSCAPE = "Landscape";
-   protected static final String CHANGE_TAG = WordUtilities.CHANGE_TAG;
+   protected static final String CHANGE_TAG = WordCoreUtilServer.CHANGE_TAG;
 
    private static final String LABEL_EMPTY = "<w:r><w:t> </w:t></w:r>";
    private static final String LABEL_START = "<w:r><w:t>";
@@ -204,16 +197,16 @@ public class MSWordTemplatePublisher {
    }
 
    /**
-    * Second step of the publishing process. This method is where the WordMLWriter is set up and the word xml starts to
-    * be written. The default version changes some elements of the template first. Then is the start of the template up
-    * until the marking where the artifact content should be. The artifacts/content is then inserted in the middle via
-    * processContent. Finally the rest of the template's word content is placed at the end to finish off the published
-    * document.
+    * Second step of the publishing process. This method is where the WordMLProducer is set up and the word xml starts
+    * to be written. The default version changes some elements of the template first. Then is the start of the template
+    * up until the marking where the artifact content should be. The artifacts/content is then inserted in the middle
+    * via processContent. Finally the rest of the template's word content is placed at the end to finish off the
+    * published document.
     */
 
-   protected void applyContentToTemplate(List<ArtifactReadable> artifacts, String templateContent) {
+   protected void applyContentToTemplate(List<ArtifactReadable> artifacts, CharSequence templateContent) {
 
-      WordMLWriter wordMl = new WordMLWriter(writer);
+      WordMLProducer wordMl = new WordMLProducer(this.writer);
 
       //@formatter:off
       templateContent =
@@ -237,7 +230,8 @@ public class MSWordTemplatePublisher {
             },
             ( tail ) ->
             {
-               wordMl.addWordMl( this.updateFooter( tail ) );
+               var cleanFooterText = WordCoreUtil.cleanupFooter( tail );
+               wordMl.addWordMl( cleanFooterText );
             }
          );
       //@formatter:on
@@ -250,7 +244,7 @@ public class MSWordTemplatePublisher {
     * be overriden by subclasses.
     */
 
-   protected void processContent(List<ArtifactReadable> artifacts, WordMLWriter wordMl) {
+   protected void processContent(List<ArtifactReadable> artifacts, WordMLProducer wordMl) {
       artifacts.forEach((artifact) -> processArtifact(artifact, wordMl));
    }
 
@@ -260,7 +254,7 @@ public class MSWordTemplatePublisher {
     * through each artifacts' child recursively if the option is enabled. Within each artifact, the metadata and
     * attributes are published.
     */
-   protected void processArtifact(ArtifactReadable artifact, WordMLWriter wordMl) {
+   protected void processArtifact(ArtifactReadable artifact, WordMLProducer wordMl) {
       if (!processedArtifacts.contains(artifact)) {
          boolean startedSection = false;
 
@@ -298,7 +292,7 @@ public class MSWordTemplatePublisher {
     * attributes are processed. The reason this method returns a boolean is to say whether or not the MS Word section
     * was begun with a header.
     */
-   protected boolean renderArtifact(ArtifactReadable artifact, WordMLWriter wordMl) {
+   protected boolean renderArtifact(ArtifactReadable artifact, WordMLProducer wordMl) {
       var outlining = this.templatePublishingData.getOutliningOptions().isOutlining();
       var publishInline = artifact.getSoleAttributeValue(PublishInline, false);
       var startedSection = false;
@@ -373,20 +367,27 @@ public class MSWordTemplatePublisher {
     * the paragraph number if needed.
     */
 
-   protected String setUpTemplateContent(WordMLWriter wordMl, ArtifactReadable artifact, String templateContent, int maxOutline) {
-      templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
-      if (outlineNumber.equals("")) {
-         outlineNumber = getParagraphNumber(artifact, templateContent);
+   protected CharSequence setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, CharSequence templateContent, int maxOutline) {
+
+      CharSequence cleanTemplateContent = WordCoreUtil.cleanupPageNumberTypeStart1(templateContent);
+
+      if (this.outlineNumber.equals("")) {
+         this.outlineNumber = this.getParagraphNumber(artifact, cleanTemplateContent);
       }
-      templateContent = wordMl.setHeadingNumbers(outlineNumber, templateContent, null);
+
+      cleanTemplateContent =
+         WordCoreUtil.initializePublishingTemplateOutliningNumbers(outlineNumber, cleanTemplateContent, null);
+
+      wordMl.setNextParagraphNumberTo(outlineNumber);
+
       if (maxOutline != 9) {
          wordMl.setMaxOutlineLevel(maxOutline);
       }
 
-      return templateContent;
+      return cleanTemplateContent;
    }
 
-   protected String setUpTemplateContent(WordMLWriter wordMl, ArtifactReadable artifact, String templateContent) {
+   protected CharSequence setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, CharSequence templateContent) {
       return setUpTemplateContent(wordMl, artifact, templateContent, 9);
    }
 
@@ -395,14 +396,14 @@ public class MSWordTemplatePublisher {
     * as the start of the outline number. Otherwise the default is to start at 1
     */
 
-   private String getParagraphNumber(ArtifactReadable artifactReadable, String templateContent) {
+   private String getParagraphNumber(ArtifactReadable artifactReadable, CharSequence templateContent) {
 
       var startParagraphNumber = "1";
 
       //@formatter:off
       if(    Objects.isNull( artifactReadable )
           || Objects.isNull( templateContent )
-          || templateContent.isEmpty()
+          || ( templateContent.length() == 0 )
           || !PublishingTemplateInsertTokenType.ARTIFACT.equals(WordCoreUtil.getInsertHereTokenType(templateContent))) {
          return startParagraphNumber;
       }
@@ -415,17 +416,6 @@ public class MSWordTemplatePublisher {
       }
 
       return startParagraphNumber;
-   }
-
-   /**
-    * Cleans up the final section of the template to fix styling
-    */
-
-   protected String updateFooter(String endOfTemplate) {
-      // footer cleanup
-      endOfTemplate = endOfTemplate.replaceAll(FTR, "");
-      endOfTemplate = endOfTemplate.replaceFirst(PAGE_SZ, CONTINUOUS + PG_SZ);
-      return endOfTemplate;
    }
 
    //--- ProcessContent Helper Methods ---//
@@ -695,6 +685,11 @@ public class MSWordTemplatePublisher {
    /**
     * The default footer for artifacts is an empty string. If data rights/orientation are needed in the footer, this
     * method should be overridden to support that.
+    *
+    * @param artifact the {@link ArtifactReadable} to get the footer for.
+    * @return a {@link String} possibly empty containing the artifact's footer.
+    * @implSpec Overrides of this method should never return <code>null</code>. Overrides must return an empty
+    * {@link String} when the artifact does not have a footer.
     */
 
    protected String getArtifactFooter(ArtifactReadable artifact) {
@@ -709,7 +704,7 @@ public class MSWordTemplatePublisher {
     * artifacts. Also puts the artifact and paragraph number into a hashmap together for potential updating of paragraph
     * numbers
     */
-   protected void setArtifactOutlining(ArtifactReadable artifact, WordMLWriter wordMl) {
+   protected void setArtifactOutlining(ArtifactReadable artifact, WordMLProducer wordMl) {
       AttributeTypeToken attrToken = AttributeTypeToken.valueOf(headingAttributeType.getIdString());
       String headingText = artifact.getSoleAttributeAsString(attrToken, "");
       if (changedArtifacts.contains(artifact)) {
@@ -730,7 +725,7 @@ public class MSWordTemplatePublisher {
     * Loops through and processes each metadata item that was parsed from earlier when handling the rendererOptions.
     */
 
-   protected void renderMetadata(ArtifactReadable artifact, WordMLWriter wordMl) {
+   protected void renderMetadata(ArtifactReadable artifact, WordMLProducer wordMl) {
       this.templatePublishingData.getMetadataElements().stream().forEach(
          (metadataElement) -> this.renderMetadata(artifact, wordMl, metadataElement));
    }
@@ -739,7 +734,7 @@ public class MSWordTemplatePublisher {
     * Adds the metadata element to the artifact, currently the default implementation ignores applicability
     */
 
-   protected void renderMetadata(ArtifactReadable artifact, WordMLWriter wordMl, MetadataOptions element) {
+   protected void renderMetadata(ArtifactReadable artifact, WordMLProducer wordMl, MetadataOptions element) {
       wordMl.startParagraph();
       String name = element.getType();
       String format = element.getFormat();
@@ -760,10 +755,10 @@ public class MSWordTemplatePublisher {
       }
       if (!format.isEmpty() || !label.isEmpty()) {
          if (label.contains(">x<")) {
-            wordMl.addWordMl(label.replace(">x<", ">" + Xml.escape(name + ": ").toString() + "<"));
+            wordMl.addWordMl(label.replace(">x<", ">" + XmlEncoderDecoder.textToXml(name + ": ").toString() + "<"));
          }
          if (format.contains(">x<")) {
-            wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(value).toString() + "<"));
+            wordMl.addWordMl(format.replace(">x<", ">" + XmlEncoderDecoder.textToXml(value).toString() + "<"));
          }
       } else {
          wordMl.addTextInsideParagraph(name + ": " + value);
@@ -778,7 +773,7 @@ public class MSWordTemplatePublisher {
     * preview.
     */
 
-   protected void renderAttributes(ArtifactReadable artifact, WordMLWriter wordMl) {
+   protected void renderAttributes(ArtifactReadable artifact, WordMLProducer wordMl) {
       var outlining = this.templatePublishingData.getOutliningOptions().isOutlining();
       for (AttributeOptions attributeOptions : this.templatePublishingData.getAttributeElements()) {
          String attributeName = attributeOptions.getAttributeName();
@@ -826,7 +821,7 @@ public class MSWordTemplatePublisher {
     * valid attribute
     */
 
-   protected void renderAttribute(ArtifactReadable artifact, WordMLWriter wordMl, AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType) {
+   protected void renderAttribute(ArtifactReadable artifact, WordMLProducer wordMl, AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType) {
 
       /*
        * Do not publish OleData or RelationOrder
@@ -837,7 +832,7 @@ public class MSWordTemplatePublisher {
       }
 
       if (attributeType.equals(WordTemplateContent)) {
-         renderWordTemplateContent(attributeType, artifact, presentationType, wordMl, attributeOptions.getFormat(),
+         renderWordTemplateContent(artifact, presentationType, wordMl, attributeOptions.getFormat(),
             attributeOptions.getLabel());
          return;
       }
@@ -863,10 +858,17 @@ public class MSWordTemplatePublisher {
     * and storing it for later use
     */
 
-   protected void populateArtifactWordContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter wordMl, String format, String label) {
-      String footer = getArtifactFooter(artifact);
-      String data =
-         getWordTemplateContentData(attributeType, artifact, presentationType, wordMl, format, label, footer);
+   protected void populateArtifactWordContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer wordMl) {
+      //Default implementation returns an empty string.
+      String footer = this.getArtifactFooter(artifact);
+
+      //@formatter:off
+      assert
+           Objects.nonNull( footer )
+         : "MSWordTemplatePublisher::populateArtifactWordContent, an artifact's footer must never be null.";
+      //@formatter:on
+
+      String data = this.getWordTemplateContentData(artifact, presentationType, footer);
 
       wordContentMap.put(artifact, data);
       if (artifact.isOfType(HeadingMsWord)) {
@@ -880,64 +882,106 @@ public class MSWordTemplatePublisher {
     * artifacts that are linking to artifacts that aren't included in the publish.
     */
 
-   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter wordMl, String format, String label) {
-      String footer = getArtifactFooter(artifact);
+   protected void renderWordTemplateContent(ArtifactReadable artifact, PresentationType presentationType, WordMLProducer wordMl, String format, String label) {
 
-      String data =
-         getWordTemplateContentData(attributeType, artifact, presentationType, wordMl, format, label, footer);
+      //Default implementation returns an empty string.
+      String footer = this.getArtifactFooter(artifact);
 
-      if (data != null) {
-         wordMl.addWordMl(data);
-      } else if (footer != null) {
-         wordMl.addWordMl(footer);
-      }
-
-      if (data != null && WordCoreUtil.containsLists(data)) {
-         wordMl.resetListValue();
-      }
-   }
-
-   protected String getWordTemplateContentData(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label, String footer) {
-      WordMLWriter wordMl = producer;
-      String data = null;
-
-      LinkType linkType = publishingOptions.linkType;
+      //@formatter:off
+      assert
+           Objects.nonNull( footer )
+         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
+      //@formatter:on
 
       if (label.length() > 0) {
          wordMl.addParagraph(label);
       }
 
-      TransactionToken txId = null;
-      if (artifact.isHistorical()) {
-         txId = orcsApi.getTransactionFactory().getTx(artifact.getTransaction());
-      } else {
-         txId = TransactionToken.SENTINEL;
+      String dataAndFooter = this.getWordTemplateContentData(artifact, presentationType, footer);
+
+      if (Objects.nonNull(dataAndFooter)) {
+
+         /*
+          * The artifact had WordTemplateContent or WordML was generated for the artifact. The footer will have been
+          * appended to the WordML for the artifact.
+          */
+
+         wordMl.addWordMl(dataAndFooter);
+
+         if (WordCoreUtil.containsLists(dataAndFooter)) {
+            wordMl.resetListValue();
+         }
+
+         return;
       }
 
+      if (!footer.isBlank()) {
+
+         /*
+          * No WordML was obtained for the artifact. The artifact's footer has content so it is appended to the publish.
+          */
+
+         wordMl.addWordMl(footer);
+      }
+
+   }
+
+   /**
+    * Uses a {@link WordTemplateContentRendererHandler} to get or generate Word ML content for an artifact.
+    *
+    * @param artifact the {@link ArtifactReadable} to get or generate Word ML content data for.
+    * @param presentationType the type of presentation the Word ML is being generated for.
+    * @param footer a Word ML string that will be appended to the end of the Word ML generated for the artifact. This
+    * parameter maybe an empty string but not <code>null</code>.
+    * @return when the Word ML for the artifact is generated, a {@link String} containing the Word ML generated for the
+    * artifact; otherwise, <code>null</code>.
+    */
+
+   private String getWordTemplateContentData(ArtifactReadable artifact, PresentationType presentationType, String footer) {
+
+      //@formatter:off
       WordTemplateContentData wtcData = new WordTemplateContentData();
       wtcData.setArtId(artifact);
       wtcData.setBranch(artifact.getBranch());
       wtcData.setFooter(footer);
       wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
-      wtcData.setLinkType(linkType != null ? linkType.toString() : null);
-      wtcData.setTxId(txId);
+      wtcData.setLinkType( this.publishingOptions.linkType );
+      wtcData.setTxId
+                 (
+                   artifact.isHistorical()
+                      ? this.orcsApi.getTransactionFactory().getTx( artifact.getTransaction() )
+                      : TransactionToken.SENTINEL
+                 );
       wtcData.setPresentationType(presentationType);
-      wtcData.setViewId(publishingOptions.view);
-      wtcData.setPermanentLinkUrl(new ArtifactUrlServer(orcsApi).getSelectedPermanentLinkUrl());
-      wtcData.setArtIsChanged(changedArtifacts.contains(artifact));
+      wtcData.setViewId(this.publishingOptions.view);
+      wtcData.setPermanentLinkUrl(new ArtifactUrlServer(this.orcsApi).getSelectedPermanentLinkUrl());
+      wtcData.setArtIsChanged(this.changedArtifacts.contains(artifact));
+
+      assert
+           wtcData.isValid()
+         : new Message()
+                  .title( "MSWordTemplatePublisher::getWordTemplateContentData, created." )
+                  .indentInc()
+                  .segment( "WordTemplateContentData", wtcData );
+      //@formatter:on
 
       Pair<String, Set<String>> content = null;
+
       try {
-         WordTemplateContentRendererHandler rendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
-         content = rendererHandler.renderWordML(wtcData);
+         content = new WordTemplateContentRendererHandler(orcsApi, logger).renderWordML(wtcData);
       } catch (Exception ex) {
          this.publishingErrorLog.error(artifact, ex.toString());
       }
 
-      if (content != null) {
-         data = content.getFirst();
-         processLinkErrors(artifact, data, content.getSecond());
+      if (Objects.isNull(content)) {
+         return null;
       }
+
+      @SuppressWarnings("null")
+      var data = content.getFirst();
+      var unknownGuids = content.getSecond();
+
+      this.processLinkErrors(artifact, data, unknownGuids);
 
       return data;
    }
@@ -971,11 +1015,19 @@ public class MSWordTemplatePublisher {
          return MSWordTemplatePublisher.LABEL_EMPTY;
       }
 
+      var attributeTypeTokenName = XmlEncoderDecoder.textToXml(attributeTypeToken.getName());
+
       //@formatter:off
       return
-         new StringBuilder( 1024 )
+         new StringBuilder
+                (
+                     MSWordTemplatePublisher.LABEL_START.length()
+                   + attributeTypeTokenName.length()
+                   + 2
+                   + MSWordTemplatePublisher.LABEL_END.length()
+                )
                 .append( MSWordTemplatePublisher.LABEL_START )
-                .append( Xml.escape( attributeTypeToken.getName() ) )
+                .append( attributeTypeTokenName )
                 .append( ": " )
                 .append( MSWordTemplatePublisher.LABEL_END )
                 .toString();
@@ -984,22 +1036,23 @@ public class MSWordTemplatePublisher {
 
    /**
     * For non word template content attributes, this method appends the attribute title and attribute values to the
-    * WordMLWriter.
+    * WordMLProducer.
     */
 
-   private void renderSpecifiedAttribute(AttributeTypeToken attributeType, String attrValues, WordMLWriter wordMlWriter, String format, String label) {
+   private void renderSpecifiedAttribute(AttributeTypeToken attributeType, String attrValues, WordMLProducer WordMLProducer, String format, String label) {
 
-      wordMlWriter.startParagraph();
+      WordMLProducer.startParagraph();
 
-      wordMlWriter.addWordMl(label);
+      WordMLProducer.addWordMl(label);
 
       if (format.contains(">x<")) {
-         wordMlWriter.addWordMl(format.replace(">x<", ">" + Xml.escape(attrValues).toString() + "<"));
+         WordMLProducer.addWordMl(
+            format.replace(">x<", ">" + XmlEncoderDecoder.textToXml(attrValues).toString() + "<"));
       } else {
-         wordMlWriter.addTextInsideParagraph(attrValues);
+         WordMLProducer.addTextInsideParagraph(attrValues);
       }
 
-      wordMlWriter.endParagraph();
+      WordMLProducer.endParagraph();
    }
 
    /**
@@ -1015,10 +1068,12 @@ public class MSWordTemplatePublisher {
 
    /**
     * While processing the Word Template Content of an artifact, this method is used for keeping track of OSEE links
-    * inside that content and how it relates to the other artifacts that are in this published document.<br/>
+    * inside that content and how it relates to the other artifacts that are in this published document.
+    * <p>
     * BookmarkedIds tracks artifacts that have been seen and book marked in the published, these artifacts are capable
-    * of being linked to from other artifacts<br/>
-    * HyperlinkedIds tracks the artifacts that have been linked to from another artifact
+    * of being linked to from other artifacts.
+    * <p>
+    * HyperlinkedIds tracks the artifacts that have been linked to from another artifact.
     */
 
    protected void processLinkErrors(ArtifactReadable artifact, String data, Set<String> unknownIds) {
@@ -1050,7 +1105,7 @@ public class MSWordTemplatePublisher {
       }
    }
 
-   protected void addLinkNotInPublishErrors(WordMLWriter wordMl) {
+   protected void addLinkNotInPublishErrors(WordMLProducer wordMl) {
       if (!hyperlinkedIds.isEmpty()) {
          for (Map.Entry<String, ArtifactReadable> link : hyperlinkedIds.entrySet()) {
             String idString = link.getKey();
@@ -1074,7 +1129,8 @@ public class MSWordTemplatePublisher {
       }
    }
 
-   protected String removeUnusedBookmark(String data) {
+   protected String removeUnusedBookmark(CharSequence input) {
+      String data = input.toString();
       Pattern bookmarkHyperlinkPattern = Pattern.compile(WordCoreUtil.OSEE_BOOKMARK_REGEX);
       Matcher match = bookmarkHyperlinkPattern.matcher(data);
       String id = "";
@@ -1120,11 +1176,11 @@ public class MSWordTemplatePublisher {
     * Uses the in place getWordMlBookmark but splits the results into a length 2 string array. The regex used to split
     * the string is a positive lookbehind on a closing tag, this technically retrieves 2 matches but due to the split
     * limit, only the first one will be used. This works assuming the bookmark only has a start and end aml:annotation
-    * tag.
+    * tag. TODO: use precompiled regex
     */
 
    protected String[] getSplitWordMlBookmark(ArtifactReadable artifact) {
-      String wordMlBookmark = getWordMlBookmark(artifact);
+      String wordMlBookmark = getWordMlBookmark(artifact).toString();
       return wordMlBookmark.split("(?<=>)", 2);
    }
 
@@ -1132,9 +1188,10 @@ public class MSWordTemplatePublisher {
     * Creates a new bookmark using a given artifact for use in the document as necessary. This method will handle the
     * bookmark/hyperlink storages to reflect that the given artifact has a bookmark.
     */
-   protected String getWordMlBookmark(ArtifactReadable artifact) {
-      String bookmark = WordCoreUtil.getWordMlBookmark(artifact.getId());
-      bookmark = WordUtilities.reassignBookMarkID(bookmark);
+   protected CharSequence getWordMlBookmark(ArtifactReadable artifact) {
+
+      CharSequence bookmark = WordCoreUtil.getWordMlBookmark(artifact.getId());
+      bookmark = WordCoreUtilServer.reassignBookMarkID(bookmark);
 
       String guid = artifact.getGuid();
       bookmarkedIds.add(guid);
@@ -1145,61 +1202,7 @@ public class MSWordTemplatePublisher {
       return bookmark;
    }
 
-   protected String addChapterNumToCaption(String data) {
-      String[] emptySplitBookmark = {"", ""};
-      return addChapterNumToCaptionAndBookmark(data, emptySplitBookmark);
-   }
-
-   protected String addChapterNumToCaptionAndBookmark(String data, String[] splitBookmark) {
-      Pattern oldCaptionPattern = Pattern.compile(
-         "(<w:p(( [^>]*?>)|>))(.*?)<w:fldSimple w:instr=\" SEQ (Figure|Table) \\\\\\* ARABIC \">.*?</w:fldSimple>(.*?)(</w:p[^>]*?>)");
-      String newCaptionTemplate =
-         "%s%s%s<w:fldSimple w:instr=\" STYLEREF 1 \\s \"><w:r><w:rPr><w:noProof/></w:rPr><w:t> #</w:t></w:r></w:fldSimple><w:r><w:noBreakHyphen/></w:r><w:fldSimple w:instr=\" SEQ %s \\* ARABIC \\s 1 \"><w:r><w:rPr><w:noProof/></w:rPr><w:t> #</w:t></w:r></w:fldSimple>%s<w:r><w:t>%s</w:t></w:r>%s";
-
-      Matcher matcher = oldCaptionPattern.matcher(data);
-      int matcherIndex = 0;
-      while (matcher.find(matcherIndex)) {
-         String paraStart = matcher.group(1);
-         String preStyleRefTags = matcher.group(4); // Normally contains figure or table text
-         String seqType = matcher.group(5); // Figure or Table
-         String captionText = Strings.xmlToText(matcher.group(6));
-         captionText = Xml.escape(captionText).toString(); // Re-escaping characters such as &, <, >, and "
-         String paraEnd = matcher.group(7);
-
-         String newCaption = String.format(newCaptionTemplate, paraStart, splitBookmark[0], preStyleRefTags, seqType,
-            splitBookmark[1], captionText, paraEnd);
-
-         data = data.replace(matcher.group(0), newCaption);
-         matcherIndex = matcher.start() + newCaption.length();
-         matcher = oldCaptionPattern.matcher(data);
-      }
-
-      return data;
-   }
-
-   protected String changeHyperlinksToReferences(String data) {
-      Pattern internalDocLinkRegex = Pattern.compile(
-         "<w:r><w:fldChar w:fldCharType=\"begin\"/>.*?<w:instrText>\\s+HYPERLINK[^<>]+\"OSEE\\.([^\"]*)\"\\s+</w:instrText>.*?<w:fldChar w:fldCharType=\"separate\"/>.*?<w:rStyle w:val=\"Hyperlink\"/>(.*?)<w:fldChar w:fldCharType=\"end\"/></w:r>");
-
-      Matcher matcher = internalDocLinkRegex.matcher(data);
-      int matcherIndex = 0;
-      while (matcher.find(matcherIndex)) {
-         String guid = matcher.group(1);
-         String referenceText = Strings.xmlToText(matcher.group(2));
-         referenceText = Xml.escape(referenceText).toString(); // Re-escaping characters such as &, <, >, and "
-         boolean isHeader = headerGuids.contains(guid);
-
-         String newReference = WordCoreUtil.getWordMlReference(guid, isHeader, referenceText);
-
-         data = data.replace(matcher.group(0), newReference);
-         matcherIndex = matcher.start() + newReference.length();
-         matcher = internalDocLinkRegex.matcher(data);
-      }
-
-      return data;
-   }
-
-   protected void startOutlineSubSectionAndBookmark(WordMLWriter wordMl, ArtifactReadable artifact) {
+   protected void startOutlineSubSectionAndBookmark(WordMLProducer wordMl, ArtifactReadable artifact) {
       String[] splitBookmark = getSplitWordMlBookmark(artifact);
       wordMl.addWordMl(splitBookmark[0]);
       wordMl.startOutlineSubSection(FONT, artifact.getName(), null);

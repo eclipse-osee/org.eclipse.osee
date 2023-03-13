@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.define.api.WordArtifactChange;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
+import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -129,7 +130,7 @@ public class WordUpdateArtifact {
                   artChange.addChangedAttributeType(WordOleData);
                } else if (oleDataElement != null && singleArtifact) {
                   txBuilder.setSoleAttributeFromStream(artifact, CoreAttributeTypes.WordOleData,
-                     new ByteArrayInputStream(WordUtilities.getFormattedContent(oleDataElement)));
+                     new ByteArrayInputStream(WordCoreUtilServer.getFormattedContent(oleDataElement)));
                   artChange.setChanged(true);
                   if (!containsOleData) {
                      artChange.setCreated(true);
@@ -137,7 +138,7 @@ public class WordUpdateArtifact {
                   artChange.addChangedAttributeType(WordOleData);
                }
                String content = Lib.inputStreamToString(
-                  new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
+                  new ByteArrayInputStream(WordCoreUtilServer.getFormattedContent(extractorData.getParentEelement())));
 
                boolean hasTrackedChanges = WordCoreUtil.containsWordAnnotations(content);
                QueryFactory query = orcsApi.getQueryFactory();
@@ -164,7 +165,7 @@ public class WordUpdateArtifact {
                          * This code pulls out all of the stuff after the inserted listnum reordering stuff. This needs
                          * to be here so that we remove unwanted template information from single editing
                          */
-                        content = content.replace(WordUtilities.LISTNUM_FIELD_HEAD, "");
+                        content = content.replace(WordCoreUtilServer.LISTNUM_FIELD_HEAD, "");
                      }
                      LinkType linkType = LinkType.OSEE_SERVER_LINK;
                      content = WordMlLinkHandler.unlink(queryFactory, linkType, artifact, content);
@@ -225,9 +226,9 @@ public class WordUpdateArtifact {
    private boolean hasChangedContent(ArtifactReadable artifact, String content) {
       String originalContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent, "");
 
-      return !WordUtilities.textOnly(originalContent).equals(
-         WordUtilities.textOnly(content)) || !WordUtilities.referencesOnly(originalContent).equals(
-            WordUtilities.referencesOnly(content));
+      return !WordCoreUtil.textOnly(originalContent).equals(
+         WordCoreUtil.textOnly(content)) || !WordCoreUtilServer.referencesOnly(originalContent).equals(
+            WordCoreUtilServer.referencesOnly(content));
    }
 
    private boolean checkIfSafetyRelated(ArtifactReadable artifact, AttributeTypeToken dalAttrType) {

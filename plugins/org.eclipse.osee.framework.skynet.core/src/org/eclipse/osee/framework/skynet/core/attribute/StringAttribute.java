@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 
 /**
  * @author Ryan D. Brooks
@@ -49,8 +49,8 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
 
    @Override
    protected String modifyWordValue(String value) {
-      value = WordUtil.checkForTrackedChanges(value, getArtifact());
-      value = WordUtil.removeWordMarkupSmartTags(value);
+      value = WordCoreUtilClient.checkForTrackedChanges(value, getArtifact());
+      value = WordCoreUtilClient.removeWordMarkupSmartTags(value);
       return value;
    }
 

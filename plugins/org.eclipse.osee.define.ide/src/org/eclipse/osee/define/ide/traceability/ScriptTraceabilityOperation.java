@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.swt.program.Program;
 
@@ -273,7 +273,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
                   //There is no WordTemplateContent in a button requirement so we need to verify it exists
                   //If its not there we need to render the button requirement in Word and pull out the body.
                   if (reqArtifact.getAttributeCount(CoreAttributeTypes.WordTemplateContent) > 0) {
-                     textContent = WordUtil.textOnly(
+                     textContent = WordCoreUtil.textOnly(
                         reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "")).toUpperCase();
                   } else {
                      List<Attribute<?>> attributes = reqArtifact.getAttributes();

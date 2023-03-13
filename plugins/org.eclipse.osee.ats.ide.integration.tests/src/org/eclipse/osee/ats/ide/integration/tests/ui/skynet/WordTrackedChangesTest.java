@@ -49,9 +49,9 @@ public class WordTrackedChangesTest {
 
    @Test
    public void testRemoveTrackChanges() throws Exception {
-      String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
-      content = WordCoreUtil.removeAnnotations(content);
-      assertFalse(WordCoreUtil.containsWordAnnotations(content));
+      var content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
+      var cleanContent = WordCoreUtil.removeAnnotations(content);
+      assertFalse(WordCoreUtil.containsWordAnnotations(cleanContent));
    }
 
    @Test

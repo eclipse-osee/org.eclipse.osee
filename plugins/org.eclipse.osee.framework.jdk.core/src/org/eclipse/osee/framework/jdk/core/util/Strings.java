@@ -254,15 +254,6 @@ public class Strings {
       return !isValid(value);
    }
 
-   public static String xmlToText(String str) {
-      String removed = str.replaceAll("<[^>]+>", "");
-      removed = removed.replaceAll("&amp;", "&");
-      removed = removed.replaceAll("&lt;", "<");
-      removed = removed.replaceAll("&gt;", ">");
-      removed = removed.replaceAll("&quot;", "\"");
-      return removed;
-   }
-
    public static boolean isPrintable(String str) {
       return str.equals(removeNonPrintableCharacters(str));
    }
