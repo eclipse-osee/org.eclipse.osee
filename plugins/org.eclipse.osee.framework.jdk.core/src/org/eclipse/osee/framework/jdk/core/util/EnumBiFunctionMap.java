@@ -61,7 +61,7 @@ public class EnumBiFunctionMap<K extends Enum<K>, T, U, R> extends AbstractEnumF
    }
 
    /**
-    * Creates an immutable {@link EnumFunctionMap} with the specified entries.
+    * Creates an immutable {@link EnumBiFunctionMap} with the specified entries.
     *
     * @param <K> the enumeration type whose members may be used as keys in this map.
     * @param <T> the type of the first argument to the {@link BiFunction} functional interface.

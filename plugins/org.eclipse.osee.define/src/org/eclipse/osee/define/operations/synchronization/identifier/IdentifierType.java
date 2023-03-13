@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.osee.define.operations.synchronization.LinkType;
+import org.eclipse.osee.define.operations.synchronization.forest.Forest;
 import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
 
 /**
@@ -59,6 +60,12 @@ public enum IdentifierType implements LinkType {
    ENUM_VALUE("EV"),
 
    /**
+    * The {@link IdentifierType} for the {@link Forest}.
+    */
+
+   FOREST("F"),
+
+   /**
     * The {@link IdentifierType} for Header {@link GroveThing} Synchronization Artifact things.
     */
 
@@ -80,19 +87,29 @@ public enum IdentifierType implements LinkType {
 
    /**
     * The {@link IdentifierType} for Specter Spec Object {@link GroveThing} Synchronization Artifact things. Specter
-    * Spec Objects are members of the {@link IdentifierTypeGroup#OBJECT} and
-    * {@link IdentifierTypeGroup#RELATABLE_OBJECT} groups. Specter Spec Objects represent Spec Objects that are not in
-    * the Synchronization Artifact that are related to a Spec Object in the Synchronization Artifact.
+    * Spec Objects are members of the groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#OBJECT},</li>
+    * <li>{@link IdentifierTypeGroup#SUBORDINATE_OBJECT}, and</li>
+    * <li>{@link IdentifierTypeGroup#RELATABLE_OBJECT}</li>
+    * </ul>
+    * Specter Spec Objects represent Spec Objects that are not in the Synchronization Artifact that are related to a
+    * Spec Object in the Synchronization Artifact.
     */
 
-   SPECTER_SPEC_OBJECT("SSO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
+   SPECTER_SPEC_OBJECT("SSO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.SUBORDINATE_OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
 
    /**
     * The {@link IdentifierType} for Spec Object {@link GroveThing} Synchronization Artifact things. Spec Objects are
-    * members of the {@link IdentifierTypeGroup#OBJECT} and {@link IdentifierTypeGroup#RELATABLE_OBJECT} groups.
+    * members of the groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#OBJECT},</li>
+    * <li>{@link IdentifierTypeGroup#SUBORDINATE_OBJECT}, and</li>
+    * <li>{@link IdentifierTypeGroup#RELATABLE_OBJECT}</li>
+    * </ul>
     */
 
-   SPEC_OBJECT("SO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
+   SPEC_OBJECT("SO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.SUBORDINATE_OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
 
    /**
     * The {@link IdentifierType} for Spec Object Type {@link GroveThing} Synchronization Artifact things. Spec Object
@@ -103,10 +120,14 @@ public enum IdentifierType implements LinkType {
 
    /**
     * The {@link IdentifierType} for Spec Relation {@link GroveThing} Synchronization Artifact things. Spec Relations
-    * are members of the {@link IdentifierTypeGroup#OBJECT} group.
+    * are members of the groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#OBJECT}, and</li>
+    * <li>{@link IdentifierTypeGroup#SUBORDINATE_OBJECT}</li>
+    * </ul>
     */
 
-   SPEC_RELATION("SR", IdentifierTypeGroup.OBJECT),
+   SPEC_RELATION("SR", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.SUBORDINATE_OBJECT),
 
    /**
     * The {@link IdentifierType} for Spec Relation Type {@link GroveThing} Synchronization Artifact things. Spec

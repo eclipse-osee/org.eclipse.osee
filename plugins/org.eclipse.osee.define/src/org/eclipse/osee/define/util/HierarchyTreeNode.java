@@ -15,6 +15,7 @@ package org.eclipse.osee.define.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -39,40 +40,10 @@ import java.util.stream.StreamSupport;
 class HierarchyTreeNode<K, V> {
 
    /**
-    * Reference to the containing {@link HierarchyTree}.
+    * Maintains a count of the nodes number of children. Used for implementation of the {@link Spliterator}.
     */
 
-   HierarchyTree<K, V> tree;
-
-   /**
-    * A unique identifier for the node.
-    */
-
-   K key;
-
-   /**
-    * A reference to the value represented by this tree node.
-    */
-
-   V value;
-
-   /**
-    * Reference to the hierarchical parent node. For the root node this will be null.
-    */
-
-   HierarchyTreeNode<K, V> parent;
-
-   /**
-    * Reference to the first child node
-    */
-
-   HierarchyTreeNode<K, V> firstChild;
-
-   /**
-    * Reference to the last child node
-    */
-
-   HierarchyTreeNode<K, V> lastChild;
+   int childCount;
 
    /**
     * Child node list cursor used by iterators and navigation methods. The terms next and previous refer to the node
@@ -83,10 +54,34 @@ class HierarchyTreeNode<K, V> {
    HierarchyTreeNode<K, V> currChild;
 
    /**
-    * Maintains a count of the nodes number of children. Used for implementation of the {@link Spliterator}.
+    * Reference to the first child node
     */
 
-   int childCount;
+   HierarchyTreeNode<K, V> firstChild;
+
+   /**
+    * A unique identifier for the node.
+    */
+
+   final K key;
+
+   /**
+    * Reference to the last child node
+    */
+
+   HierarchyTreeNode<K, V> lastChild;
+
+   /**
+    * Reference to this node's following hierarchical sibling.
+    */
+
+   HierarchyTreeNode<K, V> nextSibling;
+
+   /**
+    * Reference to the hierarchical parent node. For the root node this will be null.
+    */
+
+   HierarchyTreeNode<K, V> parent;
 
    /**
     * Reference to this node's previous hierarchical sibling.
@@ -95,10 +90,16 @@ class HierarchyTreeNode<K, V> {
    HierarchyTreeNode<K, V> previousSibling;
 
    /**
-    * Reference to this node's following hierarchical sibling.
+    * Reference to the containing {@link HierarchyTree}.
     */
 
-   HierarchyTreeNode<K, V> nextSibling;
+   final HierarchyTree<K, V> tree;
+
+   /**
+    * A reference to the value represented by this tree node.
+    */
+
+   final V value;
 
    /**
     * Creates a new hierarchically unattached node.
@@ -109,9 +110,9 @@ class HierarchyTreeNode<K, V> {
     */
 
    HierarchyTreeNode(HierarchyTree<K, V> tree, K key, V value) {
-      this.tree = tree;
-      this.key = key;
-      this.value = value;
+      this.tree = Objects.requireNonNull(tree, "HierarchyTreeNode::new, parameter \"tree\" cannot be null.");
+      this.key = Objects.requireNonNull(key, "HierarchyTreeNode::new, parameter \"key\" cannot be null.");
+      this.value = Objects.requireNonNull(value, "HierarchyTreeNode::new, parameter \"value\" cannot be null.");
 
       this.parent = null;
       this.firstChild = null;
@@ -122,93 +123,15 @@ class HierarchyTreeNode<K, V> {
       this.nextSibling = null;
    }
 
-   //Data
-
    /**
-    * Gets the node's key value.
+    * Returns the node referenced by the child list cursor. If there are no children this method will return
+    * <code>null</code>.
     *
-    * @return the node key value.
+    * @return the node referenced by the child list cursor.
     */
 
-   K getKey() {
-      return this.key;
-   }
-
-   /**
-    * Gets the node's value.
-    *
-    * @return the node value.
-    */
-
-   V getValue() {
-      return this.value;
-   }
-
-   //Navigation Up
-
-   /**
-    * Gets a reference to the {@link HierarchyTree} that contains this node.
-    *
-    * @return the containing {@link HierarchyTree}.
-    */
-
-   HierarchyTree<K, V> getTree() {
-      return this.tree;
-   }
-
-   /**
-    * Predicate to determine if the node has a hierarchical parent. The root node of the tree will not have a parent.
-    *
-    * @return <code>true</code>, when the node has a hierarchical parent; otherwise, <code>false</code>.
-    */
-
-   boolean hasParent() {
-      return this.parent != null;
-   }
-
-   /**
-    * Gets a reference to the {@link HierarchyTreeNode} that is the hierarchical parent of this node. For the root node
-    * this will return <code>null</code>.
-    *
-    * @return the hierarchical parent node.
-    */
-
-   HierarchyTreeNode<K, V> getParent() {
-      return this.parent;
-   }
-
-   //Child list navigation
-
-   /**
-    * Predicate to determine if the child list contains any nodes.
-    *
-    * @return <code>true</code>, when child nodes are present; otherwise, <code>false</code>.
-    */
-
-   boolean hasChild() {
-      return this.firstChild != null;
-   }
-
-   /**
-    * Predicate to determine if the child list contains a node after the child list cursor.
-    *
-    * @return <code>true</code>, when the child list contains a node after the child list cursor; otherwise,
-    * <code>false</code>.
-    */
-
-   boolean hasNextChild() {
-      return (this.currChild != null) && (this.currChild.nextSibling != null);
-   }
-
-   /**
-    * Predicate to determine if the child list contains a node before the child list cursor.
-    *
-    * @return <code>true</code>, when the child list contains a node before the child list cursor; otherwise,
-    * <code>false</code>.
-    */
-
-   boolean hasPreviousChild() {
-      return (this.currChild != null) && (this.currChild.previousSibling != null);
+   HierarchyTreeNode<K, V> getCurrentChild() {
+      return this.currChild;
    }
 
    /**
@@ -223,6 +146,16 @@ class HierarchyTreeNode<K, V> {
    }
 
    /**
+    * Gets the node's key value.
+    *
+    * @return the node key value.
+    */
+
+   K getKey() {
+      return this.key;
+   }
+
+   /**
     * Returns the last child node and sets the child list cursor to the last node. If there are no children this method
     * will return <code>null</code>.
     *
@@ -234,14 +167,13 @@ class HierarchyTreeNode<K, V> {
    }
 
    /**
-    * Returns the node referenced by the child list cursor. If there are no children this method will return
-    * <code>null</code>.
+    * Gets this node's following sibling.
     *
-    * @return the node referenced by the child list cursor.
+    * @return the following sibling node or <code>null</code>.
     */
 
-   HierarchyTreeNode<K, V> getCurrentChild() {
-      return this.currChild;
+   HierarchyTreeNode<K, V> getNext() {
+      return this.nextSibling;
    }
 
    /**
@@ -259,6 +191,27 @@ class HierarchyTreeNode<K, V> {
    }
 
    /**
+    * Gets a reference to the {@link HierarchyTreeNode} that is the hierarchical parent of this node. For the root node
+    * this will return <code>null</code>.
+    *
+    * @return the hierarchical parent node.
+    */
+
+   HierarchyTreeNode<K, V> getParent() {
+      return this.parent;
+   }
+
+   /**
+    * Gets this node's previous sibling.
+    *
+    * @return the previous sibling node or <code>null</code>.
+    */
+
+   HierarchyTreeNode<K, V> getPrevious() {
+      return this.previousSibling;
+   }
+
+   /**
     * Returns the child node before the child list cursor and moves the list cursor one node up. This method will return
     * <code>null</code> when the list is empty or the list cursor is at the beginning of the list.
     *
@@ -273,6 +226,36 @@ class HierarchyTreeNode<K, V> {
    }
 
    /**
+    * Gets a reference to the {@link HierarchyTree} that contains this node.
+    *
+    * @return the containing {@link HierarchyTree}.
+    */
+
+   HierarchyTree<K, V> getTree() {
+      return this.tree;
+   }
+
+   /**
+    * Gets the node's value.
+    *
+    * @return the node value.
+    */
+
+   V getValue() {
+      return this.value;
+   }
+
+   /**
+    * Predicate to determine if the child list contains any nodes.
+    *
+    * @return <code>true</code>, when child nodes are present; otherwise, <code>false</code>.
+    */
+
+   boolean hasChild() {
+      return this.firstChild != null;
+   }
+
+   /**
     * Predicate to determine if the node has any hierarchical children.
     *
     * @return <code>true</code>, when the node has hierarchical children; otherwise, <code>false</code>.
@@ -280,6 +263,128 @@ class HierarchyTreeNode<K, V> {
 
    boolean hasChildren() {
       return this.firstChild != null;
+   }
+
+   /**
+    * Predicate to determine if this node has a following sibling.
+    *
+    * @return <code>true</code>, when the node has a following sibling; otherwise, <code>false</code>.
+    */
+
+   boolean hasNext() {
+      return this.nextSibling != null;
+   }
+
+   /**
+    * Predicate to determine if the child list contains a node after the child list cursor.
+    *
+    * @return <code>true</code>, when the child list contains a node after the child list cursor; otherwise,
+    * <code>false</code>.
+    */
+
+   boolean hasNextChild() {
+      return (this.currChild != null) && (this.currChild.nextSibling != null);
+   }
+
+   /**
+    * Predicate to determine if the node has a hierarchical parent. The root node of the tree will not have a parent.
+    *
+    * @return <code>true</code>, when the node has a hierarchical parent; otherwise, <code>false</code>.
+    */
+
+   boolean hasParent() {
+      return this.parent != null;
+   }
+
+   /**
+    * Predicate to determine if this node has a previous sibling.
+    *
+    * @return <code>true</code>, when the node has a previous sibling; otherwise, <code>false</code>.
+    */
+
+   boolean hasPrevious() {
+      return this.previousSibling != null;
+   }
+
+   /**
+    * Predicate to determine if the child list contains a node before the child list cursor.
+    *
+    * @return <code>true</code>, when the child list contains a node before the child list cursor; otherwise,
+    * <code>false</code>.
+    */
+
+   boolean hasPreviousChild() {
+      return (this.currChild != null) && (this.currChild.previousSibling != null);
+   }
+
+   /**
+    * Inserts a new node after the child node list cursor.
+    *
+    * @param key unique identifier for the new node.
+    * @param value the value referenced by the node.
+    */
+
+   void insertAfter(K key, V value) {
+      if ((this.currChild == null) || (this.currChild == this.lastChild)) {
+         insertLast(key, value);
+
+         if (this.currChild == null) {
+            this.currChild = this.lastChild;
+         }
+
+         return;
+      }
+
+      var newChild = new HierarchyTreeNode<K, V>(this.tree, key, value);
+
+      var formerNextSibling = this.currChild.nextSibling;
+
+      newChild.parent = this;
+      newChild.previousSibling = this.currChild;
+      newChild.nextSibling = formerNextSibling;
+
+      this.tree.put(key, newChild);
+
+      this.currChild.nextSibling = newChild;
+
+      formerNextSibling.previousSibling = newChild;
+
+      this.childCount++;
+   }
+
+   /**
+    * Inserts a new node before the child node list cursor.
+    *
+    * @param key a unique identifier for the new node.
+    * @param value the value referenced by the node.
+    */
+
+   void insertBefore(K key, V value) {
+      if ((this.currChild == null) || (this.currChild == this.firstChild)) {
+         this.insertFirst(key, value);
+
+         if (this.currChild == null) {
+            this.currChild = this.firstChild;
+         }
+
+         return;
+      }
+
+      var newChild = new HierarchyTreeNode<K, V>(this.tree, key, value);
+
+      var formerPreviousSibling = this.currChild.previousSibling;
+
+      newChild.parent = this;
+      newChild.previousSibling = formerPreviousSibling;
+      newChild.nextSibling = this.currChild;
+
+      this.tree.put(key, newChild);
+
+      formerPreviousSibling.nextSibling = newChild;
+
+      this.currChild.previousSibling = newChild;
+
+      this.childCount++;
    }
 
    /**
@@ -344,88 +449,6 @@ class HierarchyTreeNode<K, V> {
       }
 
       this.childCount++;
-   }
-
-   /**
-    * Inserts a new node before the child node list cursor.
-    *
-    * @param key a unique identifier for the new node.
-    * @param value the value referenced by the node.
-    */
-
-   void insertBefore(K key, V value) {
-      if ((this.currChild == null) || (this.currChild == this.firstChild)) {
-         this.insertFirst(key, value);
-
-         if (this.currChild == null) {
-            this.currChild = this.firstChild;
-         }
-
-         return;
-      }
-
-      var newChild = new HierarchyTreeNode<K, V>(this.tree, key, value);
-
-      var formerPreviousSibling = this.currChild.previousSibling;
-
-      newChild.parent = this;
-      newChild.previousSibling = formerPreviousSibling;
-      newChild.nextSibling = this.currChild;
-
-      this.tree.put(key, newChild);
-
-      formerPreviousSibling.nextSibling = newChild;
-
-      this.currChild.previousSibling = newChild;
-
-      this.childCount++;
-   }
-
-   /**
-    * Inserts a new node after the child node list cursor.
-    *
-    * @param key unique identifier for the new node.
-    * @param value the value referenced by the node.
-    */
-
-   void insertAfter(K key, V value) {
-      if ((this.currChild == null) || (this.currChild == this.lastChild)) {
-         insertLast(key, value);
-
-         if (this.currChild == null) {
-            this.currChild = this.lastChild;
-         }
-
-         return;
-      }
-
-      var newChild = new HierarchyTreeNode<K, V>(this.tree, key, value);
-
-      var formerNextSibling = this.currChild.nextSibling;
-
-      newChild.parent = this;
-      newChild.previousSibling = this.currChild;
-      newChild.nextSibling = formerNextSibling;
-
-      this.tree.put(key, newChild);
-
-      this.currChild.nextSibling = newChild;
-
-      formerNextSibling.previousSibling = newChild;
-
-      this.childCount++;
-   }
-
-   /**
-    * Sets this node as the current node on the parent node's child node list.
-    */
-
-   void setCurrent() {
-      if (this.parent == null) {
-         return;
-      }
-
-      this.parent.currChild = this;
    }
 
    /**
@@ -525,6 +548,18 @@ class HierarchyTreeNode<K, V> {
             throw new UnsupportedOperationException();
          }
       };
+   }
+
+   /**
+    * Sets this node as the current node on the parent node's child node list.
+    */
+
+   void setCurrent() {
+      if (this.parent == null) {
+         return;
+      }
+
+      this.parent.currChild = this;
    }
 
    /**
@@ -657,8 +692,8 @@ class HierarchyTreeNode<K, V> {
 
       return new Spliterator<K>() {
 
-         boolean first = true;
          Spliterator<K> childSpliteratorChildKeysDeep = null;
+         boolean first = true;
 
          @Override
          public int characteristics() {
@@ -743,48 +778,6 @@ class HierarchyTreeNode<K, V> {
 
    Stream<K> streamChildKeysDeep() {
       return StreamSupport.stream(this.spliteratorChildKeysDeep(), false);
-   }
-
-   // Navigation Horizontal
-
-   /**
-    * Predicate to determine if this node has a previous sibling.
-    *
-    * @return <code>true</code>, when the node has a previous sibling; otherwise, <code>false</code>.
-    */
-
-   boolean hasPrevious() {
-      return this.previousSibling != null;
-   }
-
-   /**
-    * Gets this node's previous sibling.
-    *
-    * @return the previous sibling node or <code>null</code>.
-    */
-
-   HierarchyTreeNode<K, V> getPrevious() {
-      return this.previousSibling;
-   }
-
-   /**
-    * Predicate to determine if this node has a following sibling.
-    *
-    * @return <code>true</code>, when the node has a following sibling; otherwise, <code>false</code>.
-    */
-
-   boolean hasNext() {
-      return this.nextSibling != null;
-   }
-
-   /**
-    * Gets this node's following sibling.
-    *
-    * @return the following sibling node or <code>null</code>.
-    */
-
-   HierarchyTreeNode<K, V> getNext() {
-      return this.nextSibling;
    }
 
 }

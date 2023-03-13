@@ -253,6 +253,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
    ReqIF reqIf;
 
    /**
+    * Saves the {@link SynchronizationArtifact} the ReqIF DOM is to be built from.
+    */
+
+   private SynchronizationArtifact synchronizationArtifact;
+
+   /**
     * Constructor initializes the ReqIF model.
     */
 
@@ -260,6 +266,19 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       this.reqIf = null;
       this.attributeValueCount = null;
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws NullPointerException when the parameter <code>synchronizationArtifact</code> is <code>null</code>.
+    */
+
+   @Override
+   public void initialize(SynchronizationArtifact synchronizationArtifact) {
+
+      this.synchronizationArtifact = Objects.requireNonNull(synchronizationArtifact,
+         "ReqIFSynchronizationArtifactBuilder::initialize, the parameter \"synchronizationArtifact\" cannot be null.");
    }
 
    /**
@@ -276,10 +295,10 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
     */
 
    @Override
-   public boolean build(SynchronizationArtifact synchronizationArtifact) {
+   public boolean build() {
 
       this.reqIf = ReqIF10Factory.eINSTANCE.createReqIF();
-      var forest = synchronizationArtifact.getForest();
+      var forest = this.synchronizationArtifact.getForest();
 
       //@formatter:off
       var attributeValueGrove     = forest.getGrove(IdentifierType.ATTRIBUTE_VALUE);
