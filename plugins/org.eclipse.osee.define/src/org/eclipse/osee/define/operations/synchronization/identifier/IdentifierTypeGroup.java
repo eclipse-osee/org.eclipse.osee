@@ -25,7 +25,7 @@ public enum IdentifierTypeGroup implements LinkType {
 
    /**
     * Things that contain a "unit" of data are categorized as objects. This group includes the Synchronization Artifact
-    * Specification, Spec Object, and Spec Relations.
+    * Specification, Spec Object, Specter SPec Object, and Spec Relations.
     */
 
    OBJECT,
@@ -36,6 +36,13 @@ public enum IdentifierTypeGroup implements LinkType {
     */
 
    RELATABLE_OBJECT,
+
+   /**
+    * Non-root level things that contain a "unit" of data are categorized as subordinate objects. This group includes
+    * the Synchronization Artifact Spec Object, Specter Spec Object, and Spec Relations.
+    */
+
+   SUBORDINATE_OBJECT,
 
    /**
     * Things that define the structure of an {@link OBJECT} are categorized as types. This group includes the

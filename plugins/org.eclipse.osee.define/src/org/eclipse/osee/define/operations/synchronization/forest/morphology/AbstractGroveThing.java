@@ -14,7 +14,6 @@
 package org.eclipse.osee.define.operations.synchronization.forest.morphology;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,6 @@ import org.eclipse.osee.define.operations.synchronization.identifier.Identifier;
 import org.eclipse.osee.define.operations.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.define.operations.synchronization.identifier.IdentifierTypeGroup;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -717,7 +715,7 @@ public class AbstractGroveThing implements GroveThing {
          .indent( indent )
          .title( name )
          .indentInc()
-         .segment( "Grove Thing Keys", this.primaryKeys )
+         .segmentIndexedArray( "Grove Thing Keys", this.primaryKeys )
          ;
 
       /*

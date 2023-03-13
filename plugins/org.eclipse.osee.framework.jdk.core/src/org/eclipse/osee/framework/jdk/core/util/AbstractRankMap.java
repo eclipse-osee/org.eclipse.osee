@@ -1168,6 +1168,44 @@ public class AbstractRankMap<V> implements RankMap<V> {
 
    /**
     * {@inheritDoc}
+    */
+
+   @Override
+   public int size(Object... keys) {
+
+      var keyCount = Objects.nonNull(keys) ? keys.length : 0;
+
+      if (keyCount > this.rank) {
+         throw new RankMapTooManyKeysException(this, keys);
+      }
+
+      //@formatter:off
+      assert
+             (    Objects.isNull( this.keyValidators )
+               || ParameterArray.validateElements( keys, this.keyValidators ) )
+         : "AbstractRankMap::size, key set failed validation.";
+      //@formatter:on
+
+      var subMapOrEntry = this.getSubMapOrEntry(keys, keyCount);
+
+      if (keyCount == this.rank) {
+         //got entry
+         return Objects.nonNull(subMapOrEntry) ? 1 : 0;
+      }
+
+      //got submap
+
+      if (Objects.isNull(subMapOrEntry)) {
+         return 0;
+      }
+
+      var subMap = (Map<Object, Object>) subMapOrEntry;
+
+      return subMap.size();
+   }
+
+   /**
+    * {@inheritDoc}
     *
     * @throws RankMapTooManyKeysException {@inheritDoc}
     */

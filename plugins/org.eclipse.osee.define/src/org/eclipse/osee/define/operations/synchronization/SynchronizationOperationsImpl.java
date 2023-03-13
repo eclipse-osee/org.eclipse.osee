@@ -14,8 +14,6 @@
 package org.eclipse.osee.define.operations.synchronization;
 
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.define.api.synchronization.ExportRequest;
@@ -82,30 +80,6 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
          Objects.isNull( SynchronizationOperationsImpl.synchronizationOperationsImpl )
             ? ( SynchronizationOperationsImpl.synchronizationOperationsImpl = new SynchronizationOperationsImpl( Objects.requireNonNull( orcsApi ) ) )
             : SynchronizationOperationsImpl.synchronizationOperationsImpl;
-      //@formatter:on
-   }
-
-   /**
-    * Builds an exception message containing the message and stack trace from the provided exception. This is done so
-    * that the full server stack trace is sent to the client in the exception message.
-    *
-    * @param e the {@link Throwable} to create a message for.
-    * @return the exception message with full stack trace.
-    */
-
-   private static String buildExceptionMessage(Throwable e) {
-      var stringWriter = new StringWriter();
-      var printWriter = new PrintWriter(stringWriter);
-      e.printStackTrace(printWriter);
-
-      //@formatter:off
-      return
-         new StringBuilder( 2 * 1024 )
-                .append( "\n" )
-                .append( "<---S-E-R-V-E-R---E-X-C-E-P-T-I-O-N--->" ).append( "\n" )
-                .append( e.getMessage() ).append( "\n" )
-                .append( stringWriter.toString() ).append( "\n" )
-                .toString();
       //@formatter:on
    }
 

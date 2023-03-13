@@ -297,6 +297,18 @@ public interface RankMap<V> {
    int size();
 
    /**
+    * Determines the number of values in the sub-map specified by the <code>keys</code>. When no keys are specified the
+    * size of the primary map is determined. When a full set of keys are specified, one is returned when the map
+    * contains an entry for the specified keys; otherwise, zero is returned.
+    *
+    * @param keys an array of keys. The number of keys specified should be less than or equal to the rank of the map.
+    * This parameter may be <code>null</code> or an empty array.
+    * @return the number of entries in at the level specified by the keys.
+    */
+
+   int size(Object... keys);
+
+   /**
     * Returns an unordered {@link Stream} of the values stored in the map under the provided keys. When no keys are
     * provided the {@link Stream} will contain all of the values within the map.
     *

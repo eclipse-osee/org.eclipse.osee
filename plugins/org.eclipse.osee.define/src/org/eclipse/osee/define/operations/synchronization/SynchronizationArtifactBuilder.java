@@ -32,6 +32,7 @@ import org.eclipse.rmf.reqif10.EnumValue;
  * <dt>Methods that must be implemented for export operations:</dt>
  * <dd>
  * <ul>
+ * <li>{@link #initialize},</li>
  * <li>{@link #getConverter},</li>
  * <li>{@link #build},and</li>
  * <li>{@link #serialize}.</li>
@@ -119,6 +120,18 @@ public interface SynchronizationArtifactBuilder {
     */
 
    /**
+    * This method is called with the built {@link SynchronizationArtifact} before the export methods
+    * {@link #getConverter} or {@link #build} are invoked. This provides the {@link SynchronizationArtifactBuilder}
+    * implementation an opportunity to perform any necessary setup before the process of building the foreign DOM
+    * begins.
+    *
+    * @param synchronizationArtifact the {@link SynchronizationArtifact} containing the {@link GroveThing}s to be
+    * assembled into a foreign DOM.
+    */
+
+   void initialize(SynchronizationArtifact synchronizationArtifact);
+
+   /**
     * Gets a converter method implementing the {@link Consumer} functional interface for the {@link GroveThing} type
     * associated with the specified {@link IdentifierType}.
     *
@@ -134,12 +147,10 @@ public interface SynchronizationArtifactBuilder {
     * This method is called to assemble the Synchronization Artifact DOM after all of the {@link GroveThing}s have been
     * converted from the native OSEE things into foreign things.
     *
-    * @param synchronizationArtifact the {@link SynchronizationArtifact} containing the {@link GroveThing}s to be
-    * assembled.
     * @return <code>true</code>, when building completed successfully; otherwise, <code>false</code>.
     */
 
-   boolean build(SynchronizationArtifact synchronizationArtifact);
+   boolean build();
 
    /**
     * Creates an {@link InputStream} the serialized Synchronization Artifact may be read from.

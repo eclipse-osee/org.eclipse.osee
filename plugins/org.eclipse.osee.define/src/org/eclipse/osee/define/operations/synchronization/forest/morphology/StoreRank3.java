@@ -26,7 +26,6 @@ import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
 import org.eclipse.osee.define.operations.synchronization.identifier.Identifier;
 import org.eclipse.osee.define.operations.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.define.util.HierarchyTree;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ParameterArray;
 

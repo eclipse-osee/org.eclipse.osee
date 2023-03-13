@@ -213,6 +213,12 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
       this.processCommonObjectTypeGroveThings();
 
       /*
+       * Initialize the SynchronizationArtifactBuilder with the SynchronizationArtifact
+       */
+
+      this.synchronizationArtifactBuilder.initialize(this);
+
+      /*
        * Create foreign things for all of the native things in each grove. The forest stream is an ordered stream. Grove
        * streams are unordered.
        */
@@ -228,10 +234,10 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
       //@formatter:on
 
       /*
-       * Assemble the final Synchronization Artifact.
+       * Build the foreign DOM.
        */
 
-      this.synchronizationArtifactBuilder.build(this);
+      this.synchronizationArtifactBuilder.build();
    }
 
    /**
