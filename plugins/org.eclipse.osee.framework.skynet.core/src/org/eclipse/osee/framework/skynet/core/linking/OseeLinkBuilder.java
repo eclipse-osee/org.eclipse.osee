@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
 
@@ -30,14 +30,11 @@ public class OseeLinkBuilder {
       super();
    }
 
-   private String escapeXml(String source) {
-      return Xml.escape(source).toString();
-   }
-
    private String getLinkId(LinkType destLinkType, Artifact artifact, PresentationType presentationType) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
-         toReturn = escapeXml(new ArtifactUrlClient().getOpenInOseeLink(artifact, presentationType).toString());
+         toReturn = XmlEncoderDecoder.textToXml(
+            new ArtifactUrlClient().getOpenInOseeLink(artifact, presentationType).toString()).toString();
       } else {
          toReturn = artifact.getIdString();
       }
@@ -58,7 +55,7 @@ public class OseeLinkBuilder {
       if (artifact.isDeleted()) {
          builder.append(" (DELETED)");
       }
-      return escapeXml(builder.toString());
+      return XmlEncoderDecoder.textToXml(builder).toString();
    }
 
    public String getWordMlLink(LinkType destLinkType, Artifact artifact) {
@@ -66,10 +63,11 @@ public class OseeLinkBuilder {
    }
 
    public String getWordMlLink(LinkType destLinkType, Artifact artifact, PresentationType presentationType) {
-      String linkFormat = WordCoreUtil.getLinkFormat(destLinkType);
+
       String linkId = getLinkId(destLinkType, artifact, presentationType);
       String linkText = getLinkText(destLinkType, artifact);
-      return String.format(linkFormat, linkId, linkText);
+
+      return WordCoreUtil.getLink(destLinkType, linkId, linkText).toString();
    }
 
 }

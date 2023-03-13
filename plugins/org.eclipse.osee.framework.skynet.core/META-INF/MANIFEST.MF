@@ -41,6 +41,8 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.google.common.base,
  com.google.common.collect,
+ com.google.common.escape,
+ com.google.common.html,
  jakarta.xml.bind,
  jakarta.xml.bind.annotation,
  javax.ws.rs.core,

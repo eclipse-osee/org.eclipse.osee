@@ -19,11 +19,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @see WordOutlineTest
@@ -135,7 +135,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
                return;
             }
             previousNamedArtifact = roughArtifact;
-            processHeadingText(roughArtifact, WordUtil.textOnly(outlineName.toString()));
+            processHeadingText(roughArtifact, WordCoreUtil.textOnly(outlineName.toString()));
             roughArtMeta.put(number, paragraphStyle);
             resetReqNumber();
          } else {

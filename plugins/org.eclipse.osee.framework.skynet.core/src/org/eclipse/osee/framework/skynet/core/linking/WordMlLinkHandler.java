@@ -250,7 +250,7 @@ public class WordMlLinkHandler {
             for (String guid : unknownGuids) {
                Collection<MatchRange> matches = matchMap.getValues(guid);
                for (MatchRange match : matches) {
-                  String replaceWith = WordCoreUtil.getOseeLinkMarker(guid);
+                  var replaceWith = WordCoreUtil.getOseeLinkMarker(guid);
                   changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }
@@ -260,7 +260,7 @@ public class WordMlLinkHandler {
                unknown.addAll(unknownGuids);
                for (String guid : unknownGuids) {
                   for (MatchRange match : matchMap.getValues(guid)) {
-                     String link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
+                     var link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
                      changeSet.replace(match.start(), match.end(), link);
                   }
                }
@@ -270,13 +270,13 @@ public class WordMlLinkHandler {
       // Items found in branch
       for (Artifact artifact : artifactsFromSearch) {
          for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
-            String replaceWith = null;
             if (isUnliking) {
-               replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getGuid());
+               var replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getGuid());
+               changeSet.replace(match.start(), match.end(), replaceWith);
             } else {
-               replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, presentationType);
+               var replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, presentationType);
+               changeSet.replace(match.start(), match.end(), replaceWith);
             }
-            changeSet.replace(match.start(), match.end(), replaceWith);
          }
       }
       return changeSet.applyChangesToSelf().toString();

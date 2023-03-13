@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
+import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
@@ -50,7 +50,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       TABLE_TAG,
       TABLE_TAG_EMPTY,
       TABLE_TAG_WITH_ATTRS,
-      WordUtilities.BODY_END};
+      WordCoreUtilServer.BODY_END};
 
    // A regex for reading xml elements. Assumes that an element never has a descendant with the same name as itself
    private static final Pattern internalAttributeElementsPattern = Pattern.compile(
@@ -109,7 +109,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
 
-         if (Readers.forward(reader, WordUtilities.BODY_START) == null) {
+         if (Readers.forward(reader, WordCoreUtilServer.BODY_START) == null) {
             handleFormatError(source, "no start of body tag");
          }
          CharSequence element;
@@ -119,7 +119,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
          // Process the next available body tag
          while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
-            if (element == WordUtilities.BODY_END) {
+            if (element == WordCoreUtilServer.BODY_END) {
                delegate.finish(orcsApi, results, collector);
                return results;
             } else {
@@ -196,7 +196,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
             reqListMatcher.reset(numberCandidate);
 
             if (reqNumberMatcher.matches()) {
-               if (WordUtilities.isHeadingStyle(paragraphStyle)) {
+               if (WordCoreUtilServer.isHeadingStyle(paragraphStyle)) {
                   headerNumber = numberCandidate;
                   if (headerNumber.endsWith(".0")) {
                      headerNumber = headerNumber.substring(0, headerNumber.length() - 2);

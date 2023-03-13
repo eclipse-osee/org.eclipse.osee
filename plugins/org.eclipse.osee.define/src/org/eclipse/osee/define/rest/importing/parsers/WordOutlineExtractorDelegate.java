@@ -22,8 +22,8 @@ import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.osee.define.api.importing.RoughArtifact;
 import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.api.importing.RoughArtifactKind;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -133,7 +133,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
                return results;
             }
             previousNamedArtifact = roughArtifact;
-            processHeadingText(roughArtifact, WordUtilities.textOnly(outlineName.toString()));
+            processHeadingText(roughArtifact, WordCoreUtil.textOnly(outlineName.toString()));
             roughArtMeta.put(number, paragraphStyle);
             resetReqNumber();
          } else {

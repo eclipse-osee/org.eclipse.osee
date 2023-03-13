@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest.internal.wordupdate;
+package org.eclipse.osee.define.operations.publishing;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -23,16 +23,22 @@ import java.util.regex.Pattern;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.osee.define.rest.internal.wordupdate.UpdateBookmarkIds;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.w3c.dom.Element;
 
 /**
+ * @implNote Methods that are not specific to the OSEE server should be implemented in the class {@link WordCoreUtil}.
+ * This class should only implement methods that need OSEE server specific types.
  * @author David W. Miller
+ * @author Loren K. Ashley
  */
-public class WordUtilities {
+public class WordCoreUtilServer {
 
    public static final String CHANGE_TAG = "[*] ";
    public static final String CHANGE_TAG_WORDML =
@@ -41,7 +47,6 @@ public class WordUtilities {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
    private static final Pattern binIdPattern = Pattern.compile("wordml://(.+?)[.]");
-   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
    private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
    private static int bookMarkId = 1000;
@@ -65,10 +70,37 @@ public class WordUtilities {
       return data.toByteArray();
    }
 
-   public static String textOnly(String str) {
-      str = paragraphPattern.matcher(str).replaceAll(" ");
-      str = tagKiller.matcher(str).replaceAll("").trim();
-      return Xml.unescape(str).toString();
+   /**
+    * Gets the page orientation from the <code>ArtifactReadable</code>'s {@link CoreAttributeTypes#PageOrientation}
+    * attribute. The {@link WordCoreUtil.pageType#getDefault()} will be returned if unable to read the artifact's
+    * attribute or if the artifact is {@link ArtifactReadable#SENTINEL}.
+    *
+    * @param artifactReadable the artifact to extract the page orientation from.
+    * @return the page orientation.
+    */
+
+   public static WordCoreUtil.pageType getPageOrientation(ArtifactReadable artifactReadable) {
+
+      var defaultPageType = WordCoreUtil.pageType.getDefault();
+
+      if (artifactReadable.isInvalid()) {
+         return defaultPageType;
+      }
+
+      if (!artifactReadable.isAttributeTypeValid(CoreAttributeTypes.PageOrientation)) {
+         return defaultPageType;
+      }
+
+      try {
+         var pageTypeString =
+            artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.PageOrientation, defaultPageType.name());
+
+         return WordCoreUtil.pageType.fromString(pageTypeString);
+
+      } catch (Exception e) {
+
+         return defaultPageType;
+      }
    }
 
    public static String referencesOnly(String content) {
@@ -132,8 +164,8 @@ public class WordUtilities {
     * @return the content with the ending bookmark IDs being reassigned to a unique number. This is done to ensure all
     * versions of MS Word will function correctly.
     */
-   public static String reassignBookMarkID(String content) {
-      return updateBookmarkIds.fixTags(content);
+   public static CharSequence reassignBookMarkID(CharSequence content) {
+      return WordCoreUtilServer.updateBookmarkIds.fixTags(content);
    }
 
    /**

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
-import org.eclipse.osee.framework.core.util.WordMLWriter;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 
@@ -69,12 +69,12 @@ public class PublishingArtifactError {
       //@formatter:on
    }
 
-   public void publish(WordMLWriter wordMlWriter) {
+   public void publish(WordMLProducer WordMLProducer) {
       //@formatter:off
       Objects.requireNonNull
          (
-            wordMlWriter,
-            "PublishingArtifactError::publish, parameter \"wordMlWriter\" cannot be null."
+            WordMLProducer,
+            "PublishingArtifactError::publish, parameter \"WordMLProducer\" cannot be null."
          );
 
       var thingIdentifiers =
@@ -92,7 +92,7 @@ public class PublishingArtifactError {
             .map( ( thing ) -> ((HasArtifactType) thing).getArtifactType().getName() )
             .collect( Collectors.joining( "\n" ) );
 
-      wordMlWriter.addErrorRow
+      WordMLProducer.addErrorRow
          (
             thingIdentifiers,
             thingNames,

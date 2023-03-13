@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -41,8 +43,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -51,8 +56,29 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class WordMlLinkHandlerTest {
 
-   @Rule
-   public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd>
+    * </dl>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
+         ;
+   //@formatter:on
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();

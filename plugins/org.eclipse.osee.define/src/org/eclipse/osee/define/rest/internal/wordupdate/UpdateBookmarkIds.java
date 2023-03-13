@@ -42,6 +42,14 @@ public class UpdateBookmarkIds {
 
    private static final String WORD_AML_ID_ATTRIBUTE = "aml:id";
 
+   //@formatter:off
+   private static final int WORD_WRAP_SIZE =
+        UpdateBookmarkIds.WORD_PREFIX.length()
+      + UpdateBookmarkIds.WORD_BODY_START.length()
+      + UpdateBookmarkIds.WORD_BODY_END.length()
+      + UpdateBookmarkIds.WORD_DOC_END.length();
+   //@formatter:on
+
    private static final String XPATH_EXPRESSION =
       "//aml:annotation[@w:type='Word.Bookmark.End' or @w:type='Word.Bookmark.Start']";
 
@@ -88,13 +96,26 @@ public class UpdateBookmarkIds {
     * maintaining the strange order of the start and end tags that Word seems to produce. Not doing so, or resequencing
     * this order can and will produce strange results in the behavior of the document's references.
     */
-   public String fixTags(String content) {
-      String toReturn = content;
+
+   public CharSequence fixTags(CharSequence content) {
+
       boolean changesMade = false;
       try {
 
-         Document document =
-            Jaxp.readXmlDocumentNamespaceAware(WORD_PREFIX + WORD_BODY_START + content + WORD_BODY_END + WORD_DOC_END);
+         var size = UpdateBookmarkIds.WORD_WRAP_SIZE + content.length();
+
+         //@formatter:off
+         var xmlString = new StringBuilder( size * 2 )
+                                .append( WORD_PREFIX )
+                                .append( WORD_BODY_START )
+                                .append( content )
+                                .append( WORD_BODY_END )
+                                .append( WORD_DOC_END )
+                                .toString()
+                                ;
+         //@formatter:on
+
+         Document document = Jaxp.readXmlDocumentNamespaceAware(xmlString);
          Element element = document.getDocumentElement();
 
          XPath xPath = Jaxp.createXPath();
@@ -123,13 +144,14 @@ public class UpdateBookmarkIds {
 
          if (changesMade) {
             //This technique is necessary because Word does not support start and ending empty tags.
-            toReturn = stripOffBodyTag(Jaxp.xmlToString(document, false));
+            var newText = this.stripOffBodyTag(Jaxp.xmlToString(document, false));
+            return newText;
          }
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
 
-      return toReturn;
+      return content;
    }
 
    private int incrementBookmarkId() {

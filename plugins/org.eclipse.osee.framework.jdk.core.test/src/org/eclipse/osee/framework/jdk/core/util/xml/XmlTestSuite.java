@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 //@formatter:off
    JAXPTest.class,
+   XmlTest.class
 //@formatter:on
 })
 public class XmlTestSuite {

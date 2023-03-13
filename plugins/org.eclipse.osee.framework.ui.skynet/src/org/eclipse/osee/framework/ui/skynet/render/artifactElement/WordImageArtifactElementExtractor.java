@@ -269,14 +269,14 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       int imageCheckSum;
 
       if (lookingForStart) {
-         binData = WordCoreUtil.START_BIN_DATA;
+         binData = WordCoreUtil.BIN_DATA;
 
          if (START_IMAGE_CHECKSUM == -1) {
             START_IMAGE_CHECKSUM = getCheckSum(binData);
          }
          imageCheckSum = START_IMAGE_CHECKSUM;
       } else {
-         binData = WordCoreUtil.END_BIN_DATA;
+         binData = WordCoreUtil.BIN_DATA_END;
 
          if (END_IMAGE_CHECKSUM == -1) {
             END_IMAGE_CHECKSUM = getCheckSum(binData);

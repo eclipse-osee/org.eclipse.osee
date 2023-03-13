@@ -1192,15 +1192,17 @@ public class Message {
    }
 
    /**
-    * Adds a new title line with the provided title.
+    * Adds a new title line with the provided title when non-<code>null</code>.
     *
-    * @param title the title for the line.
+    * @param title the title for the line, maybe <code>null</code>.
     * @return this {@link Message}.
     */
 
    public Message title(CharSequence title) {
       this.cachedResult = null;
-      this.lines.add(new Line(this.indent, title));
+      if (Objects.nonNull(title)) {
+         this.lines.add(new Line(this.indent, title));
+      }
       return this;
    }
 

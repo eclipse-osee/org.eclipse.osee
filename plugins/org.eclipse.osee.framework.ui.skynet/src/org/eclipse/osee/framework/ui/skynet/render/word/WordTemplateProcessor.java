@@ -57,18 +57,16 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.RendererUtil;
-import org.eclipse.osee.framework.core.util.ReportConstants;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -79,6 +77,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -106,7 +105,6 @@ public class WordTemplateProcessor {
    private static final Object ARTIFACT_ID = "Artifact Id";
    private static final String APPLICABILITY = "Applicability";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
-   public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
 
    private static final Program wordApp = Program.findProgram("doc");
@@ -355,7 +353,8 @@ public class WordTemplateProcessor {
          charBak = new CharBackedInputStream();
          var wordMl = new WordMLProducer(charBak);
 
-         templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
+         //TODO: change templateContent from Sting to CharSequence
+         templateContent = WordCoreUtil.cleanupPageNumberTypeStart1(templateContent).toString();
 
          if (!templateStyles.isEmpty()) {
             templateContent = templateContent.replaceAll(STYLES, templateStyles);
@@ -368,13 +367,16 @@ public class WordTemplateProcessor {
                : outlineNumber;
          //@formatter:on
 
-         templateContent = wordMl.setHeadingNumbers(this.outlineNumber, templateContent, outlineType);
+         var cleanTemplateContent =
+            WordCoreUtil.initializePublishingTemplateOutliningNumbers(this.outlineNumber, templateContent, outlineType);
+
+         wordMl.setNextParagraphNumberTo(this.outlineNumber);
 
          var objectMapper = new ObjectMapper();
          var jsonNode = objectMapper.readTree(templateOptions);
          this.elementType = jsonNode.get("ElementType").asText();
 
-         Consumer<String> segmentProcessor;
+         Consumer<CharSequence> segmentProcessor;
 
          //@formatter:off
          switch( this.elementType )
@@ -384,9 +386,9 @@ public class WordTemplateProcessor {
                this.parseOutliningOptions( templateOptions );
 
                segmentProcessor =
-                  new Consumer<String> () {
+                  new Consumer<CharSequence> () {
                      @Override
-                     public void accept( String segment ) {
+                     public void accept( CharSequence segment ) {
 
                         wordMl.addWordMl( segment );
 
@@ -413,9 +415,9 @@ public class WordTemplateProcessor {
             case WordTemplateProcessor.NESTED_TEMPLATE:
             {
                segmentProcessor =
-                  new Consumer<String> () {
+                  new Consumer<CharSequence> () {
                      @Override
-                     public void accept( String segment ) {
+                     public void accept( CharSequence segment ) {
 
                         wordMl.addWordMl( segment );
 
@@ -434,9 +436,13 @@ public class WordTemplateProcessor {
 
          WordCoreUtil.processPublishingTemplate
             (
-               templateContent,
+               cleanTemplateContent,
                segmentProcessor,
-               ( tail ) -> wordMl.addWordMl( this.updateFooter( tail ) )
+               ( tail ) ->
+               {
+                  var cleanFooterText = WordCoreUtil.cleanupFooter( tail );
+                  wordMl.addWordMl( cleanFooterText );
+               }
            );
          //@formatter:on
 
@@ -643,14 +649,6 @@ public class WordTemplateProcessor {
       }
    }
 
-   private String updateFooter(String endOfTemplate) {
-      // footer cleanup
-      endOfTemplate = endOfTemplate.replaceAll(ReportConstants.FTR, "");
-      endOfTemplate =
-         endOfTemplate.replaceFirst(ReportConstants.PAGE_SZ, ReportConstants.CONTINUOUS + ReportConstants.PG_SZ);
-      return endOfTemplate;
-   }
-
    private String peekAtFirstArtifactToGetParagraphNumber(String templateContent, List<Artifact> artifacts) {
 
       var startParagraphNumber = "1";
@@ -839,7 +837,7 @@ public class WordTemplateProcessor {
 
                String footer = "";
                if (!templateFooter) {
-                  PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
+                  WordCoreUtil.pageType orientation = WordCoreUtilClient.getPageOrientation(artifact);
                   footer = dataRightContentBuilder.getContent(artifact, orientation);
                }
 
@@ -926,10 +924,10 @@ public class WordTemplateProcessor {
       }
       if (!format.isEmpty() || !label.isEmpty()) {
          if (label.contains(">x<")) {
-            wordMl.addWordMl(label.replace(">x<", ">" + Xml.escape(name + ": ").toString() + "<"));
+            wordMl.addWordMl(label.replace(">x<", ">" + XmlEncoderDecoder.textToXml(name + ": ").toString() + "<"));
          }
          if (format.contains(">x<")) {
-            wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(value).toString() + "<"));
+            wordMl.addWordMl(format.replace(">x<", ">" + XmlEncoderDecoder.textToXml(value).toString() + "<"));
          }
       } else {
          wordMl.addTextInsideParagraph(name + ": " + value);
@@ -1021,7 +1019,7 @@ public class WordTemplateProcessor {
             outlineLevel++;
          }
       }
-      wordMl.startOutlineSubSection("Heading" + outlineLevel, paragraphNumber, "Times New Roman", headingText);
+      wordMl.startOutlineSubSection("Heading", outlineLevel, paragraphNumber, "Times New Roman", headingText);
 
       return paragraphNumber;
    }

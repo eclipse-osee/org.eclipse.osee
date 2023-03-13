@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.CharBuffer;
+import java.util.Objects;
 import java.util.regex.Matcher;
 
 /**
@@ -68,6 +69,16 @@ public class ChangeSet implements CharSequence {
             writer.write(source.charAt(i));
          }
       }
+   }
+
+   /**
+    * Predicate to determine if the {@link ChangeSet} has any registered changes.
+    *
+    * @return <code>true</code>, when the {@link ChangeSet} has at least one change; otherwise <code>false</code>.
+    */
+
+   public boolean hasChanges() {
+      return Objects.nonNull(this.firstChange);
    }
 
    public int getSourceLength() {
@@ -152,6 +163,29 @@ public class ChangeSet implements CharSequence {
     */
    public void replace(int srcStartIndex, int srcEndIndex, String newChars) {
       replace(srcStartIndex, srcEndIndex, newChars.toCharArray());
+   }
+
+   /**
+    * Adds a new {@link CharacterChanger} to the {@link ChangeSet} that is backed by a {@link StringBuilder} for the
+    * replacement text.
+    *
+    * @param srcStartIndex the inclusive starting index of the character range to be replaced in the {@link ChangeSet}.
+    * @param srcEndIndex the exclusive ending index of the character range to be replaced in the {@link ChangeSet}.
+    * @param stringBuilder a {@link StringBuilder} containing the replacement text.
+    * @throws NullPointerException when the parameter <code>stringBuilder</code> is <code>null</code>.
+    * @throws IndexOutOfBoundsException when any of the following are true:
+    * <ul>
+    * <li><code>srcStartIndex</code> is less than zero, or</li>
+    * <li><code>srcEndIndex</code> is less than <code>srcStartIndex</code>.</li>
+    * </ul>
+    * @throws IllegalArgumentException when the character range in the {@link ChangeSet} specified by
+    * <code>srcStartIndex</code> and <code>srcEndIndex</code> overlaps with the character range of another
+    * {@link CharacterChanger} in the {@link ChangeSet}.
+    */
+
+   public void replace(int srcStartIndex, int srcEndIndex, StringBuilder stringBuilder) {
+      var characterChanger = new StringBuilderChanger(srcStartIndex, srcEndIndex, stringBuilder);
+      this.addChanger(characterChanger);
    }
 
    public void delete(int srcStartIndex, int srcEndIndex) {

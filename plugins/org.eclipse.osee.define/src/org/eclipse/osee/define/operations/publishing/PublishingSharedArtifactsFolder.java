@@ -153,7 +153,7 @@ public abstract class PublishingSharedArtifactsFolder {
       var sharedFolderOptional =
          ( sharedFolderArtifactToken instanceof ArtifactReadable )
               ? Optional.of( (ArtifactReadable) sharedFolderArtifactToken )
-              : publishingUtils.getArtifactReadableByIdentifier( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken );
+              : publishingUtils.getArtifactReadableByIdentifierFilteredForView( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken );
 
       if( sharedFolderOptional.isEmpty() ) {
          return
@@ -292,7 +292,7 @@ public abstract class PublishingSharedArtifactsFolder {
       var sharedFolderOptional =
          ( sharedFolderArtifactToken instanceof ArtifactReadable )
               ? Optional.of( (ArtifactReadable) sharedFolderArtifactToken )
-              : publishingUtils.getArtifactReadableByIdentifier( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken );
+              : publishingUtils.getArtifactReadableByIdentifierFilteredForView( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken );
 
       if( sharedFolderOptional.isEmpty() ) {
          return

@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.util.PageOrientation;
-import org.eclipse.osee.framework.core.util.ReportConstants;
+import org.eclipse.osee.framework.core.util.WordCoreUtil.pageType;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 
 /**
  * Encapsulates a {@link Map} of {@link DataRightAnchor} objects by {@link ArtifactId} for the sequence of artifacts
@@ -89,11 +89,11 @@ public class DataRightContentBuilder {
     * </dl>
     *
     * @param artifactId the identifier of an artifact from the sequence that was processed by the Data Rights manger.
-    * @param orientation the {@link PageOrientation}.
+    * @param orientation the {@link WordCoreUtil.pageType}.
     * @return the Word ML footer content to be inserted into the publish after the artifact content.
     */
 
-   public String getContent(ArtifactId artifactId, PageOrientation orientation) {
+   public String getContent(ArtifactId artifactId, WordCoreUtil.pageType orientation) {
 
       if (Objects.isNull(artifactId) || ArtifactId.SENTINEL.equals(artifactId)) {
 
@@ -115,6 +115,12 @@ public class DataRightContentBuilder {
          return "";
       }
 
+      //@formatter:off
+      var pageType = orientation.isLandscape()
+                        ? WordCoreUtil.pageType.LANDSCAPE
+                        : WordCoreUtil.pageType.PORTRAIT;
+      //@formatter:on
+
       if (dataRightAnchor.getNewFooter()) {
 
          /*
@@ -130,9 +136,10 @@ public class DataRightContentBuilder {
          //@formatter:on
 
          var footer = dataRight.getContent();
-         footer = String.format(ReportConstants.NEW_PAGE_TEMPLATE, footer + this.getPageAdds(orientation));
 
-         return footer;
+         var newPage = pageType.getNewPage(footer);
+
+         return newPage.toString();
       }
 
       if (!dataRightAnchor.getIsContinuous()) {
@@ -141,31 +148,12 @@ public class DataRightContentBuilder {
           * Artifact classification or the page orientation has changed. Set page break since next footer differs.
           */
 
-         var footer = String.format(ReportConstants.NEW_PAGE_TEMPLATE, this.getPageAdds(orientation));
+         var newPage = pageType.getNewPage("");
 
-         return footer;
+         return newPage.toString();
       }
 
       return "";
-   }
-
-   /**
-    * Gets the Word ML for the page orientation and page margins from {@link ReportConstants} definitions.
-    *
-    * @return the page orientation and page margins Word ML as a {@link String}.
-    */
-
-   private String getPageAdds(PageOrientation orientation) {
-      //@formatter:off
-      return
-         String.format
-            (
-               ReportConstants.PAGE_ADDS,
-               orientation.isLandscape()
-                  ? ReportConstants.LANDSCAPE_ORIENT
-                  : ReportConstants.PORTRAIT_ORIENT
-            );
-      //@formatter:on
    }
 
 }

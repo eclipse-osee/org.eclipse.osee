@@ -59,19 +59,13 @@ public class TokenMatcher {
     * Saves the exclusive ending character position of the last match.
     */
 
-   private int end;
+   private int endExclusive;
 
    /**
     * The {@link CharSequence} to search for pattern matches.
     */
 
    private final CharSequence input;
-
-   /**
-    * The maximum number of characters to search backwards for the prefix pattern.
-    */
-
-   private final int prefixBackupSafety;
 
    /**
     * Saves the prefix {@link Matcher} for the last full prefix match attempt. This member is used for the prefix match
@@ -87,21 +81,6 @@ public class TokenMatcher {
    private final Function<CharSequence, Matcher> prefixMatcherFunction;
 
    /**
-    * The first character of the prefix. The {@link CharSequence} is searched backwards from the core token
-    * {@link Pattern} match for this character. If found within the safety limit, the prefix {@link Pattern}s are
-    * applied anchored at the found prefix character.
-    */
-
-   private final char prefixStartChar;
-
-   /**
-    * A {@link Function} to obtain a {@link Matcher} to search a {@link CharSequence} for the prefix start
-    * {@link Pattern}.
-    */
-
-   private final Function<CharSequence, Matcher> prefixStartMatcherFunction;
-
-   /**
     * When <code>true</code>, the suffix and prefix patterns must be found after and before the core token match for a
     * successful match. When <code>false</code>, a core token match is sufficient for a successful match.
     */
@@ -109,10 +88,16 @@ public class TokenMatcher {
    private final boolean prefixSuffixRequired;
 
    /**
+    * Saves the inclusive starting position of the prefix.
+    */
+
+   private int prefixStartInclusive;
+
+   /**
     * Saves the inclusive starting character position of the last match.
     */
 
-   int start;
+   private int startInclusive;
 
    /**
     * State flag to indicate the {@link TokenMatcher} search of the {@link CharSequence} has started.
@@ -137,7 +122,7 @@ public class TokenMatcher {
     * Saves the suffix search start position in the {@link CharSequence} after the last core token match.
     */
 
-   private int suffixStart;
+   private int suffixStartInclusive;
 
    /**
     * Package private constructor used by {@link TokenPattern#tokenMatcher} method for creating new
@@ -163,9 +148,6 @@ public class TokenMatcher {
       (
          CharSequence                    input,
          Boolean                         prefixSuffixRequired,
-         int                             prefixBackupSafety,
-         char                            prefixStartChar,
-         Function<CharSequence, Matcher> prefixStartMatcherFunction,
          Function<CharSequence, Matcher> prefixMatcherFunction,
          Function<CharSequence, Matcher> coreTokenMatcherFunction,
          Function<CharSequence, Matcher> suffixMatcherFunction
@@ -174,9 +156,6 @@ public class TokenMatcher {
       //@formatter:on
       this.input = input;
       this.prefixSuffixRequired = prefixSuffixRequired;
-      this.prefixBackupSafety = prefixBackupSafety;
-      this.prefixStartChar = prefixStartChar;
-      this.prefixStartMatcherFunction = prefixStartMatcherFunction;
       this.prefixMatcherFunction = prefixMatcherFunction;
       this.coreTokenMatcherFunction = coreTokenMatcherFunction;
       this.suffixMatcherFunction = suffixMatcherFunction;
@@ -185,64 +164,12 @@ public class TokenMatcher {
       this.suffixMatcher = null;
       this.prefixMatcher = null;
 
-      this.start = 0;
-      this.end = -1;
-      this.suffixStart = -1;
+      this.startInclusive = 0;
+      this.endExclusive = -1;
+      this.prefixStartInclusive = -1;
+      this.suffixStartInclusive = -1;
       this.started = false;
       this.done = false;
-   }
-
-   /**
-    * Searches the character sequence backwards for the prefix.
-    *
-    * @param index the position in the input to start searching backwards for the prefix from.
-    * @return when prefix is found, the character index in the search string where the prefix was found; otherwise, -1.
-    */
-
-   private int backMatch(int index) {
-
-      var s = index;
-      var safety = index - (this.prefixBackupSafety >= 0 ? this.prefixBackupSafety : index);
-      safety = safety > 0 ? safety : 0;
-      char c;
-      do {
-
-         //back up looking for the prefix start char
-         do {
-            s--;
-            c = this.input.charAt(s);
-         } while ((c != this.prefixStartChar) && (s >= safety));
-
-         if (c != this.prefixStartChar) {
-            //safety expired, the prefix start char was not found
-            return -1;
-         }
-
-         //the prefix start char was found, check for the prefix start pattern
-         var checkStringWindow = new CharSequenceWindow(this.input, s);
-         var prefixStartMatcher = this.prefixStartMatcherFunction.apply(checkStringWindow);
-
-         if (prefixStartMatcher.lookingAt()) {
-            //prefix start pattern found, check for full prefix pattern
-            this.prefixMatcher = this.prefixMatcherFunction.apply(checkStringWindow);
-            //@formatter:off
-            if (    ( this.prefixMatcher.lookingAt()          )
-                 && ( s + this.prefixMatcher.end() == index   ) )
-            {
-            //@formatter:on
-               //prefix pattern verified
-               return s;
-            } else {
-               //prefix start pattern found, but whole prefix pattern did not match everything back to the core token match
-               this.prefixMatcher = null;
-               return -1;
-            }
-         }
-         //was not paragraph tag, keep looking
-      } while (s > safety);
-
-      //safety expired
-      return -1;
    }
 
    /**
@@ -336,14 +263,14 @@ public class TokenMatcher {
       if (!this.started || this.done) {
          throw new IllegalStateException();
       }
-      return this.end;
+      return this.endExclusive;
    }
 
    /**
     * Attempts to find the next occurrence of the "insert thing here" token within the provided string. This method
     * starts at the beginning of the provided string, or, if a previous invocation of the method was successful, at the
     * first character after the last found "insert thing here" token. When a match is found, the location of the matched
-    * "insert thing here" token can be obtained via the {@link #start} and {@link #end} methods.
+    * "insert thing here" token can be obtained via the {@link #startInclusive} and {@link #endExclusive} methods.
     *
     * @return <code>true</code>, when an "insert thing here" token is found; otherwise, <code>false</code>.
     */
@@ -351,18 +278,18 @@ public class TokenMatcher {
    public boolean find() {
 
       if (this.done) {
-         //a prior invocation determined there are none or no-more Core Tokens.
+         //a prior invocation determined there are none or no more Core Tokens.
          throw new IllegalStateException();
       }
 
       while (this.coreTokenMatcher.find()) {
 
          //The next Core Token was found
-         var coreTokenStart = this.coreTokenMatcher.start();
-         var coreTokenEnd = this.coreTokenMatcher.end();
+         var coreTokenStartInclusive = this.coreTokenMatcher.start();
+         var coreTokenEndExclusive = this.coreTokenMatcher.end();
 
          //Check for the Suffix after the Core Token
-         var suffixStringWindow = new CharSequenceWindow(this.input, coreTokenEnd);
+         var suffixStringWindow = new CharSequenceWindow(this.input, coreTokenEndExclusive);
          var suffixMatcher = this.suffixMatcherFunction.apply(suffixStringWindow);
 
          if (!suffixMatcher.lookingAt()) {
@@ -373,9 +300,11 @@ public class TokenMatcher {
                continue;
             } else {
                //Prefix and Suffix are not required, return the Core Token match
-               this.start = coreTokenStart;
-               this.end = coreTokenEnd;
-               this.suffixStart = -1;
+               this.startInclusive = coreTokenStartInclusive;
+               this.endExclusive = coreTokenEndExclusive;
+               this.prefixStartInclusive = -1;
+               this.suffixStartInclusive = -1;
+               this.prefixMatcher = null;
                this.suffixMatcher = null;
                this.started = true;
                this.done = false;
@@ -384,12 +313,13 @@ public class TokenMatcher {
          }
 
          //The Suffix is present
-         var tailEnd = suffixMatcher.end();
+         var suffixLength = suffixMatcher.end();
 
-         //look backwards for the Prefix
-         var backMatch = this.backMatch(coreTokenStart);
+         //Check for the Prefix before the Core Token
+         var prefixStringWindow = new CharSequenceWindow(this.input, coreTokenStartInclusive, 0);
+         var prefixMatcher = this.prefixMatcherFunction.apply(prefixStringWindow);
 
-         if (backMatch == -1) {
+         if (!prefixMatcher.lookingAt()) {
             //The Prefix is NOT present
 
             if (this.prefixSuffixRequired) {
@@ -397,9 +327,11 @@ public class TokenMatcher {
                continue;
             } else {
                //Prefix and Suffix are not required, return the core token match
-               this.start = coreTokenStart;
-               this.end = coreTokenEnd;
-               this.suffixStart = -1;
+               this.startInclusive = coreTokenStartInclusive;
+               this.endExclusive = coreTokenEndExclusive;
+               this.prefixStartInclusive = -1;
+               this.suffixStartInclusive = -1;
+               this.prefixMatcher = null;
                this.suffixMatcher = null;
                this.started = true;
                this.done = false;
@@ -407,25 +339,105 @@ public class TokenMatcher {
             }
          }
 
+         //The Prefix is present
+         var prefixLength = prefixMatcher.end();
+
          //The Prefix and Suffix were found, return the entire match
-         this.start = backMatch;
-         this.end = coreTokenEnd + tailEnd;
-         this.suffixStart = coreTokenEnd;
+         this.startInclusive = coreTokenStartInclusive - prefixLength;
+         this.endExclusive = coreTokenEndExclusive + suffixLength;
+         this.prefixStartInclusive = coreTokenStartInclusive - 1;
+         this.suffixStartInclusive = coreTokenEndExclusive;
+         this.prefixMatcher = prefixMatcher;
          this.suffixMatcher = suffixMatcher;
          this.started = true;
          this.done = false;
          return true;
       }
 
-      //There are no-more core tokens
+      //There are no more core tokens
 
-      this.start = -1;
-      this.end = -1;
-      this.suffixStart = -1;
+      this.startInclusive = -1;
+      this.endExclusive = -1;
+      this.prefixStartInclusive = -1;
+      this.suffixStartInclusive = -1;
+      this.prefixMatcher = null;
       this.suffixMatcher = null;
       this.started = true;
       this.done = true;
       return false;
+   }
+
+   /**
+    * Gets the offset in the {@link CharSequence} being matched by the {@link TokenMatcher} after the last character of
+    * the subsequence captured by the given group in the prefix pattern during the previous match operation.
+    *
+    * @param group the index of a capturing group in the prefix pattern.
+    * @return
+    * <dl>
+    * <dt>When the last match operation was successful and the prefix pattern matched:</dt>
+    * <dd>the offset in the {@link CharSequence} being matched by the {@link TokenMatcher} after the last character of
+    * the subsequence captured by the given group in the prefix pattern.</dd>
+    * <dt>When the last match operation was successful and the prefix pattern did not match:</dt>
+    * <dd>-1</dd>
+    * </dl>
+    * @throws IllegalStateException when no match has yet been attempted or the previous match attempt failed.
+    * @throws IndexOutOfBoundsException when there is no capturing group in the prefix pattern with the specified index.
+    */
+
+   public int prefixEnd(int group) {
+      if (!this.started || this.done) {
+         throw new IllegalStateException();
+      }
+      //add 1 to make the end exclusive
+      return Objects.nonNull(this.prefixMatcher) ? this.prefixStartInclusive - this.prefixMatcher.start(group) + 1 : -1;
+   }
+
+   /**
+    * Returns the input subsequence matched by the specified prefix pattern group as a {@link CharSequenceWindow}. The
+    * returned {@link CharSequenceWindow} will order the characters in the same direction as the {@link CharSequence}
+    * being searched by the {@link TokenMatcher}.
+    *
+    * @param group the index of a capturing group in the prefix pattern.
+    * @return the input subsequence matched by the prefix token pattern group as a {@link CharSequence} backed by the
+    * input {@link CharSequence} during the previous match, or <code>null</code> if the group failed to match part of
+    * the input {@link CharSequence}.
+    * @throws IllegalStateException when no match has yet been attempted or the previous match attempt failed.
+    * @throws IndexOutOfBoundsException when there is no capturing group in the prefix pattern with the specified index.
+    */
+
+   public CharSequence prefixGroupCharSequence(int group) {
+      if (!this.started || this.done) {
+         throw new IllegalStateException();
+      }
+      var startInclusive = this.prefixStart(group);
+      var endExclusive = this.prefixEnd(group);
+      var charSequenceWindow = new CharSequenceWindow(this.input, startInclusive, endExclusive);
+      return charSequenceWindow;
+   }
+
+   /**
+    * Gets the offset in the {@link CharSequence} being matched by the {@link TokenMatcher} of the first character of
+    * the subsequence captured by the given group in the prefix pattern during the previous match operation.
+    *
+    * @param group the index of a capturing group in the prefix pattern.
+    * @return
+    * <dl>
+    * <dt>When the last match operation was successful and the prefix pattern matched:</dt>
+    * <dd>the offset in the {@link CharSequence} being matched by the {@link TokenMatcher} of the first character of the
+    * subsequence captured by the given group in the prefix pattern.</dd>
+    * <dt>When the last match operation was successful and the prefix pattern did not match:</dt>
+    * <dd>-1</dd>
+    * </dl>
+    * @throws IllegalStateException when no match has yet been attempted or the previous match attempt failed.
+    * @throws IndexOutOfBoundsException when there is no capturing group in the prefix pattern with the specified index.
+    */
+
+   public int prefixStart(int group) {
+      if (!this.started || this.done) {
+         throw new IllegalStateException();
+      }
+      //add 1 because this.prefixMatcher.end(group) is exclusive which causes the start position (negative range) to overshoot by 1.
+      return Objects.nonNull(this.prefixMatcher) ? this.prefixStartInclusive - this.prefixMatcher.end(group) + 1 : -1;
    }
 
    /**
@@ -441,7 +453,7 @@ public class TokenMatcher {
       if (!this.started || this.done) {
          throw new IllegalStateException();
       }
-      return this.start;
+      return this.startInclusive;
    }
 
    /**
@@ -465,7 +477,7 @@ public class TokenMatcher {
       if (!this.started || this.done) {
          throw new IllegalStateException();
       }
-      return Objects.nonNull(this.suffixMatcher) ? this.suffixMatcher.end(group) + this.suffixStart : -1;
+      return Objects.nonNull(this.suffixMatcher) ? this.suffixMatcher.end(group) + this.suffixStartInclusive : -1;
    }
 
    /**
@@ -542,7 +554,7 @@ public class TokenMatcher {
       if (!this.started || this.done) {
          throw new IllegalStateException();
       }
-      return Objects.nonNull(this.suffixMatcher) ? this.suffixMatcher.start(group) + this.suffixStart : -1;
+      return Objects.nonNull(this.suffixMatcher) ? this.suffixMatcher.start(group) + this.suffixStartInclusive : -1;
    }
 
 }

@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -55,45 +54,155 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 /**
  * Provides utility methods for parsing wordML.
  *
+ * @implNote Methods that are not specific to the OSEE client should be implemented in the class {@link WordCoreUtil}.
+ * This class should only implement methods that need OSEE client specific types.
  * @author Jeff C. Phillips
  * @author Paul K. Waldfogel
+ * @author Loren K. Ashley
  */
-public class WordUtil {
+public class WordCoreUtilClient {
 
-   public static final String BODY_START = "<w:body>";
+   private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    public static final String BODY_END = "</w:body>";
+   public static final String BODY_START = "<w:body>";
+
+   private static int bookMarkId = 1000;
    private static final String[] NUMBER =
       new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+   private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
+   private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
 
    private static final String SELECT_WORD_VALUES =
       "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
-   private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
-   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
-   private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
-   private static int bookMarkId = 1000;
    private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
-
-   private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
+   private static final String wordBody = WordCoreUtilClient.BODY_START + WordCoreUtilClient.BODY_END;
    private static final String wordLeader1 =
       "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
    private static final String wordLeader2 =
       "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
-   private static final String wordBody = WordUtil.BODY_START + WordUtil.BODY_END;
    private static final String wordTrailer = "</w:wordDocument> ";
    private static final String emptyDocumentContent = wordLeader1 + wordLeader2 + wordBody + wordTrailer;
 
-   public WordUtil() {
-      super();
+   //For Word Documents
+   public static String checkForTrackedChanges(String value, Artifact art) {
+      String returnValue = value;
+
+      BranchId branch = art.getBranch();
+
+      if (WordCoreUtil.containsWordAnnotations(value) && !BranchManager.getType(branch).isMergeBranch()) {
+         try {
+            String message =
+               "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.";
+            IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(promptStatus);
+            @SuppressWarnings("unchecked")
+            Pair<MutableBoolean, Integer> answer =
+               (Pair<MutableBoolean, Integer>) handler.handleStatus(promptStatus, message);
+            MutableBoolean first = answer.getFirst();
+            boolean isOkToRemove = first.getValue();
+            if (isOkToRemove) {
+               returnValue = WordCoreUtil.removeAnnotations(value).toString();
+            } else {
+               throw new OseeCoreException(
+                  "Artifact [%s], Branch[%s] contains track changes. Please remove them and save again.", art, branch);
+            }
+         } catch (CoreException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         } catch (ClassCastException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+      }
+      return returnValue;
+   }
+
+   public static String elementNameFor(String artifactName) {
+      // Since artifact names are free text it is important to reformat the name
+      // to ensure it is suitable as an element name
+      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive
+      // spaces are in the name
+      String elementName = artifactName.trim().replaceAll("[^A-Za-z0-9]", "_");
+
+      // Ensure the name did not end up empty
+      if (elementName.equals("")) {
+         elementName = "nameless";
+      }
+
+      // Fix the first character if it is a number by replacing it with its name
+      char firstChar = elementName.charAt(0);
+      if (firstChar >= '0' && firstChar <= '9') {
+         elementName = NUMBER[firstChar - '0'] + elementName.substring(1);
+      }
+
+      return elementName;
+   }
+
+   //For Whole Word Documents
+   public static String getEmptyDocumentContent() {
+      return emptyDocumentContent;
+   }
+
+   public final static String getGUIDFromFile(File file) throws IOException {
+      String guid = null;
+      byte[] myBytes = new byte[4096];
+
+      InputStream stream = null;
+      try {
+         stream = new BufferedInputStream(new FileInputStream(file));
+         if (stream.read(myBytes) == -1) {
+            throw new IOException("Buffer underrun");
+         }
+      } finally {
+         Lib.close(stream);
+      }
+
+      String leadingPartOfFile = new String(myBytes, "UTF-8");
+      String[] splitsBeforeAndAfter =
+         leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
+      if (splitsBeforeAndAfter.length == 3) {
+         guid = splitsBeforeAndAfter[1];
+      }
+      return guid;
    }
 
    /**
-    * @return - Returns the content with the ending bookmark IDs being reassigned to a unique number. This is done to
-    * ensure all versions of MS Word will function correctly.
+    * Gets the page orientation from the <code>Artifact</code>'s {@link CoreAttributeTypes#pageOrientation} attribute.
+    * The {@link WordCoreUtil.pageType#getDefault()} will be used if unable to read the artifact's attribute or if the
+    * artifact is {@link Artifact#SENTINEL}.
+    *
+    * @param artifact the artifact to extract the page orientation from.
+    * @return the page orientation.
     */
 
-   public static String reassignBookMarkID(String content) {
-      return updateBookmarkIds.fixTags(content);
+   public static WordCoreUtil.pageType getPageOrientation(Artifact artifact) {
+
+      var defaultPageType = WordCoreUtil.pageType.getDefault();
+
+      if (artifact.isInvalid()) {
+         return defaultPageType;
+      }
+
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.PageOrientation)) {
+         return defaultPageType;
+      }
+
+      try {
+         var pageTypeString =
+            artifact.getSoleAttributeValue(CoreAttributeTypes.PageOrientation, defaultPageType.name());
+
+         return WordCoreUtil.pageType.fromString(pageTypeString);
+
+      } catch (Exception e) {
+         return defaultPageType;
+      }
+   }
+
+   public static boolean isHeadingStyle(String paragraphStyle) {
+      if (paragraphStyle == null) {
+         return false;
+      } else {
+         String style = paragraphStyle.toLowerCase();
+         // TODO get this list of styles from the Extension Point
+         return style.startsWith("heading") || style.startsWith("toc") || style.startsWith("outline");
+      }
    }
 
    /**
@@ -123,6 +232,66 @@ public class WordUtil {
          return changeSet.toString();
       }
       return content;
+   }
+
+   /**
+    * @return - Returns the content with the ending bookmark IDs being reassigned to a unique number. This is done to
+    * ensure all versions of MS Word will function correctly.
+    */
+
+   public static String reassignBookMarkID(String content) {
+      return updateBookmarkIds.fixTags(content);
+   }
+
+   public static String referencesOnly(String content) {
+      List<String> references = new ArrayList<>();
+
+      Matcher referenceMatcher = referencePattern.matcher(content);
+      while (referenceMatcher.find()) {
+         String reference = referenceMatcher.group(1);
+         references.add(reference);
+      }
+
+      //Collections.sort(references);
+      StringBuilder sb = new StringBuilder();
+      for (String reference : references) {
+         sb.append(reference);
+         sb.append("\n");
+      }
+
+      return sb.toString();
+   }
+
+   public final static String removeGUIDFromTemplate(String template) {
+      String newTemplate = "";
+
+      String[] splitsBeforeAndAfter = template.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
+
+      if (splitsBeforeAndAfter.length == 3) {
+         newTemplate = splitsBeforeAndAfter[0] + " " + splitsBeforeAndAfter[2];
+      } else {
+         newTemplate = template;
+      }
+      return newTemplate;
+   }
+
+   public final static String removeWordMarkupSmartTags(String wordMarkup) {
+      if (wordMarkup != null) {
+         String[] splitsOnSmartTagStart = wordMarkup.split("<[/]{0,1}st\\d{1,22}");// example smart
+         // (cough, cough)
+         // tags
+         // <st1:place>|</st1:place>
+         if (splitsOnSmartTagStart.length > 1) {
+            StringBuilder myStringBuilder = new StringBuilder(splitsOnSmartTagStart[0]);
+            for (int i = 1; i < splitsOnSmartTagStart.length; i++) {
+               int smartTagEndingIndex = splitsOnSmartTagStart[i].indexOf(">");
+               myStringBuilder.append(splitsOnSmartTagStart[i].substring(smartTagEndingIndex + 1));
+            }
+            wordMarkup = myStringBuilder.toString();
+         }
+      }
+
+      return wordMarkup;
    }
 
    /**
@@ -164,7 +333,7 @@ public class WordUtil {
                newest = nextNewest;
                nextNewest = iter.next();
 
-               if (WordUtil.textOnly(newest.getFirst()).equals(nextNewest.getFirst())) {
+               if (WordCoreUtil.textOnly(newest.getFirst()).equals(nextNewest.getFirst())) {
                   repeatGammas.add(newest.getSecond());
                }
             }
@@ -195,150 +364,7 @@ public class WordUtil {
       }
    }
 
-   public static String elementNameFor(String artifactName) {
-      // Since artifact names are free text it is important to reformat the name
-      // to ensure it is suitable as an element name
-      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive
-      // spaces are in the name
-      String elementName = artifactName.trim().replaceAll("[^A-Za-z0-9]", "_");
-
-      // Ensure the name did not end up empty
-      if (elementName.equals("")) {
-         elementName = "nameless";
-      }
-
-      // Fix the first character if it is a number by replacing it with its name
-      char firstChar = elementName.charAt(0);
-      if (firstChar >= '0' && firstChar <= '9') {
-         elementName = NUMBER[firstChar - '0'] + elementName.substring(1);
-      }
-
-      return elementName;
-   }
-
-   public static String textOnly(String str) {
-      str = paragraphPattern.matcher(str).replaceAll(" ");
-      str = tagKiller.matcher(str).replaceAll("").trim();
-      return Xml.unescape(str).toString();
-   }
-
-   public static String referencesOnly(String content) {
-      List<String> references = new ArrayList<>();
-
-      Matcher referenceMatcher = referencePattern.matcher(content);
-      while (referenceMatcher.find()) {
-         String reference = referenceMatcher.group(1);
-         references.add(reference);
-      }
-
-      //Collections.sort(references);
-      StringBuilder sb = new StringBuilder();
-      for (String reference : references) {
-         sb.append(reference);
-         sb.append("\n");
-      }
-
-      return sb.toString();
-   }
-
-   public static boolean isHeadingStyle(String paragraphStyle) {
-      if (paragraphStyle == null) {
-         return false;
-      } else {
-         String style = paragraphStyle.toLowerCase();
-         // TODO get this list of styles from the Extension Point
-         return style.startsWith("heading") || style.startsWith("toc") || style.startsWith("outline");
-      }
-   }
-
-   public final static String removeWordMarkupSmartTags(String wordMarkup) {
-      if (wordMarkup != null) {
-         String[] splitsOnSmartTagStart = wordMarkup.split("<[/]{0,1}st\\d{1,22}");// example smart
-         // (cough, cough)
-         // tags
-         // <st1:place>|</st1:place>
-         if (splitsOnSmartTagStart.length > 1) {
-            StringBuilder myStringBuilder = new StringBuilder(splitsOnSmartTagStart[0]);
-            for (int i = 1; i < splitsOnSmartTagStart.length; i++) {
-               int smartTagEndingIndex = splitsOnSmartTagStart[i].indexOf(">");
-               myStringBuilder.append(splitsOnSmartTagStart[i].substring(smartTagEndingIndex + 1));
-            }
-            wordMarkup = myStringBuilder.toString();
-         }
-      }
-
-      return wordMarkup;
-   }
-
-   public final static String getGUIDFromFile(File file) throws IOException {
-      String guid = null;
-      byte[] myBytes = new byte[4096];
-
-      InputStream stream = null;
-      try {
-         stream = new BufferedInputStream(new FileInputStream(file));
-         if (stream.read(myBytes) == -1) {
-            throw new IOException("Buffer underrun");
-         }
-      } finally {
-         Lib.close(stream);
-      }
-
-      String leadingPartOfFile = new String(myBytes, "UTF-8");
-      String[] splitsBeforeAndAfter =
-         leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
-      if (splitsBeforeAndAfter.length == 3) {
-         guid = splitsBeforeAndAfter[1];
-      }
-      return guid;
-   }
-
-   public final static String removeGUIDFromTemplate(String template) {
-      String newTemplate = "";
-
-      String[] splitsBeforeAndAfter = template.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
-
-      if (splitsBeforeAndAfter.length == 3) {
-         newTemplate = splitsBeforeAndAfter[0] + " " + splitsBeforeAndAfter[2];
-      } else {
-         newTemplate = template;
-      }
-      return newTemplate;
-   }
-
-   //For Word Documents
-   public static String checkForTrackedChanges(String value, Artifact art) {
-      String returnValue = value;
-
-      BranchId branch = art.getBranch();
-
-      if (WordCoreUtil.containsWordAnnotations(value) && !BranchManager.getType(branch).isMergeBranch()) {
-         try {
-            String message =
-               "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.";
-            IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(promptStatus);
-            @SuppressWarnings("unchecked")
-            Pair<MutableBoolean, Integer> answer =
-               (Pair<MutableBoolean, Integer>) handler.handleStatus(promptStatus, message);
-            MutableBoolean first = answer.getFirst();
-            boolean isOkToRemove = first.getValue();
-            if (isOkToRemove) {
-               returnValue = WordCoreUtil.removeAnnotations(value);
-            } else {
-               throw new OseeCoreException(
-                  "Artifact [%s], Branch[%s] contains track changes. Please remove them and save again.", art, branch);
-            }
-         } catch (CoreException ex) {
-            OseeCoreException.wrapAndThrow(ex);
-         } catch (ClassCastException ex) {
-            OseeCoreException.wrapAndThrow(ex);
-         }
-      }
-      return returnValue;
-   }
-
-   //For Whole Word Documents
-   public static String getEmptyDocumentContent() {
-      return emptyDocumentContent;
+   public WordCoreUtilClient() {
+      super();
    }
 }

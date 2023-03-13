@@ -67,6 +67,7 @@ public class CharSequenceWindowTest {
 
    @Test
    public void abc() {
+
       var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 0, 3);
 
       Assert.assertEquals(3, sw.length());
@@ -77,6 +78,7 @@ public class CharSequenceWindowTest {
 
    @Test
    public void stu() {
+
       var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 18, 21);
 
       Assert.assertEquals(3, sw.length());
@@ -122,23 +124,6 @@ public class CharSequenceWindowTest {
    }
 
    @Test(expected = IndexOutOfBoundsException.class)
-   public void negativeRange() {
-      @SuppressWarnings("unused")
-      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 0);
-   }
-
-   @Test
-   public void subSequence() {
-      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 9);
-
-      Assert.assertEquals("defghi", sw.toString());
-
-      var ss = sw.subSequence(2, 4);
-
-      Assert.assertEquals("fg", ss.toString());
-   }
-
-   @Test(expected = IndexOutOfBoundsException.class)
    public void subSequenceEnd() {
       var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 9);
 
@@ -165,7 +150,152 @@ public class CharSequenceWindowTest {
       Assert.assertEquals("defghi", sw.toString());
 
       @SuppressWarnings("unused")
+      var ss = sw.subSequence(0, 7);
+   }
+
+   @Test
+   public void rang0x3() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 0, 3);
+
+      Assert.assertEquals(3, sw.length());
+      Assert.assertEquals("abc", sw.toString());
+   }
+
+   @Test
+   public void negativeRange3x0() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 0);
+
+      Assert.assertEquals(3, sw.length());
+      Assert.assertEquals("cba", sw.toString());
+   }
+
+   @Test
+   public void range23x26() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 23, 26);
+
+      Assert.assertEquals(3, sw.length());
+      Assert.assertEquals("xyz", sw.toString());
+   }
+
+   @Test
+   public void negativeRange26x23() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 26, 23);
+
+      Assert.assertEquals(3, sw.length());
+      Assert.assertEquals("zyx", sw.toString());
+   }
+
+   @Test
+   public void range3x9SubSequence2x4() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 9);
+
+      Assert.assertEquals(6, sw.length());
+      Assert.assertEquals("defghi", sw.toString());
+
+      var ss = sw.subSequence(2, 4);
+
+      Assert.assertEquals(2, ss.length());
+      Assert.assertEquals("fg", ss.toString());
+   }
+
+   @Test
+   public void range3x9NegativeSubSequence4x2() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 9);
+
+      Assert.assertEquals(6, sw.length());
+      Assert.assertEquals("defghi", sw.toString());
+
       var ss = sw.subSequence(4, 2);
+
+      Assert.assertEquals(2, ss.length());
+      Assert.assertEquals("gf", ss.toString());
+   }
+
+   @Test
+   public void negativeRange9x3SubSequence2x4() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 9, 3);
+
+      Assert.assertEquals(6, sw.length());
+      Assert.assertEquals("ihgfed", sw.toString());
+
+      var ss = sw.subSequence(2, 4);
+
+      Assert.assertEquals(2, ss.length());
+      Assert.assertEquals("gf", ss.toString());
+   }
+
+   @Test
+   public void negativeRange9x3NegativeSubSequence4x2() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 9, 3);
+
+      Assert.assertEquals(6, sw.length());
+      Assert.assertEquals("ihgfed", sw.toString());
+
+      var ss = sw.subSequence(4, 2);
+
+      Assert.assertEquals(2, ss.length());
+      Assert.assertEquals("fg", ss.toString());
+   }
+
+   @Test
+   public void subSequence3x9CharAt() {
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 3, 9);
+
+      Assert.assertEquals(6, sw.length());
+      Assert.assertEquals("defghi", sw.toString());
+
+      var c = sw.charAt(0);
+      Assert.assertEquals('d', c);
+
+      c = sw.charAt(1);
+      Assert.assertEquals('e', c);
+
+      c = sw.charAt(2);
+      Assert.assertEquals('f', c);
+
+      c = sw.charAt(3);
+      Assert.assertEquals('g', c);
+
+      c = sw.charAt(4);
+      Assert.assertEquals('h', c);
+
+      c = sw.charAt(5);
+      Assert.assertEquals('i', c);
+   }
+
+   @Test
+   public void subSequenceNegativeRange9x3CharAt() {
+
+      var sw = new CharSequenceWindow(this.testCharSequenceSupplier.get(), 9, 3);
+
+      Assert.assertEquals(6, sw.length());
+      Assert.assertEquals("ihgfed", sw.toString());
+
+      var c = sw.charAt(0);
+      Assert.assertEquals('i', c);
+
+      c = sw.charAt(1);
+      Assert.assertEquals('h', c);
+
+      c = sw.charAt(2);
+      Assert.assertEquals('g', c);
+
+      c = sw.charAt(3);
+      Assert.assertEquals('f', c);
+
+      c = sw.charAt(4);
+      Assert.assertEquals('e', c);
+
+      c = sw.charAt(5);
+      Assert.assertEquals('d', c);
    }
 
 }

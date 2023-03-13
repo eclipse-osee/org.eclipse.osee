@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -124,6 +125,85 @@ public class PublishingUtils {
    }
 
    /**
+    * Finds an artifact possibly deleted on a branch by artifact identifier and transaction identifier with delete
+    * attributes.
+    *
+    * @param branchId the branch identifier.
+    * @param artifactId the identifier of the artifact to get.
+    * @param transactionId the transaction identifier to get the artifact from.
+    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
+    * artifact; otherwise, and empty {@link Optional}.
+    */
+
+   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes(BranchId branchId, ArtifactId artifactId, TransactionId transactionId) {
+      this.startOperation();
+      try {
+         //@formatter:off
+         return
+            Optional.of
+               (
+                 this.queryFactory
+                    .fromBranch( branchId )
+                    .fromTransaction( transactionId )
+                    .andId( artifactId )
+                    .includeDeletedArtifacts()
+                    .includeDeletedAttributes()
+                    .getArtifact()
+               );
+         //@formatter:on
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+   }
+
+   /**
+    * Finds an artifact possibly deleted on a branch by artifact identifier with deleted attributes.
+    *
+    * @param branchId the branch identifier.
+    * @param artifactId the identifier of the artifact to get.
+    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
+    * artifact; otherwise, and empty {@link Optional}.
+    */
+
+   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes(BranchId branchId, ArtifactId artifactId) {
+      this.startOperation();
+      try {
+        //@formatter:off
+        return
+           Optional.of
+              (
+                this.queryFactory
+                   .fromBranch( branchId )
+                   .andId( artifactId )
+                   .includeDeletedArtifacts()
+                   .includeDeletedAttributes()
+                   .getArtifact()
+              );
+        //@formatter:on
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+   }
+
+   /**
     * Finds an artifact by its artifact identifier.
     *
     * @param branchId the branch identifier.
@@ -133,7 +213,7 @@ public class PublishingUtils {
     * artifact; otherwise, an empty {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getArtifactReadableByIdentifier(BranchId branchId, ArtifactId viewId, ArtifactId artifactId) {
+   public Optional<ArtifactReadable> getArtifactReadableByIdentifierFilteredForView(BranchId branchId, ArtifactId viewId, ArtifactId artifactId) {
       this.startOperation();
       try {
          //@formatter:off

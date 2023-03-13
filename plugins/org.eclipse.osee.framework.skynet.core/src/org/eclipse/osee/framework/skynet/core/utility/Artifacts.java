@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import com.google.common.html.HtmlEscapers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -87,14 +87,15 @@ public final class Artifacts {
    }
 
    public static Map<String, String> getDetailsKeyValues(Artifact artifact) {
+      var htmlEscaper = HtmlEscapers.htmlEscaper();
       Map<String, String> details = new HashMap<>();
       if (artifact != null) {
          details.put("Artifact Id", artifact.getIdString());
-         details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
+         details.put("GUID", String.valueOf(htmlEscaper.escape(artifact.getGuid())));
          details.put("Artifact Token", String.format("[%s]-[%d]", artifact.getSafeName(), artifact.getId()));
-         details.put("Branch", String.valueOf(Xml.escape(artifact.getBranchToken().getName())));
+         details.put("Branch", String.valueOf(htmlEscaper.escape(artifact.getBranchToken().getName())));
          details.put("Branch Uuid", artifact.getBranch().getIdString());
-         details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));
+         details.put("Artifact Type Name", String.valueOf(htmlEscaper.escape(artifact.getArtifactTypeName())));
          details.put("Artifact Type Id", artifact.getArtifactType().getIdString());
          details.put("Gamma Id", String.valueOf(artifact.getGammaId()));
          details.put("Historical", String.valueOf(artifact.isHistorical()));
@@ -118,6 +119,7 @@ public final class Artifacts {
    }
 
    public static String getDetailsFormText(Map<String, String> keyValues, String fontName, int fontSize) {
+      var htmlEscaper = HtmlEscapers.htmlEscaper();
       String template = "<b>%s:</b> %s<br/>";
       StringBuilder sb = new StringBuilder();
       sb.append("<body style='overflow:hidden'>");
@@ -131,7 +133,7 @@ public final class Artifacts {
          Arrays.sort(keys);
          for (String key : keys) {
             try {
-               sb.append(String.format(template, key, Xml.escape(keyValues.get(key))));
+               sb.append(String.format(template, key, htmlEscaper.escape(keyValues.get(key))));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

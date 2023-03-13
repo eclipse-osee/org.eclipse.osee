@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.define.api.publishing.PublishingArtifactError;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
-import org.eclipse.osee.framework.core.util.WordMLWriter;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
@@ -110,12 +110,12 @@ public class PublishingErrorLog {
    }
 
    /**
-    * Publishes the error log to the provided {@link WordMLWriter} in a table format. The error log is not cleared.
+    * Publishes the error log to the provided {@link WordMLProducer} in a table format. The error log is not cleared.
     *
-    * @param wordMl the {@link WordMLWriter} to publish the error log to.
+    * @param wordMl the {@link WordMLProducer} to publish the error log to.
     */
 
-   public void publishErrorLog(WordMLWriter wordMl) {
+   public void publishErrorLog(WordMLProducer wordMl) {
 
       if (this.publishingErrors.isEmpty()) {
          return;

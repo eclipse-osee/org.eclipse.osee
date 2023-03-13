@@ -40,24 +40,6 @@ public class TokenPattern {
    private static final int regexOptions = Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE;
 
    /**
-    * The maximum number of characters to search backwards for the prefix.
-    */
-
-   private final int prefixBackupSafety;
-
-   /**
-    * The first character of the optional prefix.
-    */
-
-   private final char prefixStartChar;
-
-   /**
-    * A regular expression that can identify the starting character sequence of the prefix.
-    */
-
-   private final Pattern prefixStartTokenPattern;
-
-   /**
     * When <code>true</code> the prefix and suffix are required to match for a successful match.
     */
 
@@ -102,18 +84,12 @@ public class TokenPattern {
          TokenPattern
             (
                Boolean prefixSuffixRequired,
-               int     prefixBackupSafety,
-               char    prefixStartChar,
-               Pattern prefixStartTokenPattern,
                Pattern prefixPattern,
                Pattern coreTokenPattern,
                Pattern suffixPattern
             )
       {
          this.prefixSuffixRequired    = prefixSuffixRequired;
-         this.prefixBackupSafety      = prefixBackupSafety;
-         this.prefixStartChar         = prefixStartChar;
-         this.prefixStartTokenPattern = prefixStartTokenPattern;
          this.prefixPattern           = prefixPattern;
          this.coreTokenPattern        = coreTokenPattern;
          this.suffixPattern           = suffixPattern;
@@ -141,32 +117,24 @@ public class TokenPattern {
       compile
          (
             Boolean prefixSuffixRequired,
-            int     prefixBackupSafety,
-            char    prefixStartChar,
-            String  prefixStartTokenRegexp,
             String  prefixRegexp,
             String  coreTokenRegexp,
             String  suffixRegexp
          )
    {
       Objects.requireNonNull( prefixSuffixRequired,   "TokenMatcher::new, parameter \"prefixSuffixRequired\" cannot be null."   );
-      Objects.requireNonNull( prefixStartTokenRegexp, "TokenMatcher::new, parameter \"prefixStartTokenRegexp\" cannot be null." );
       Objects.requireNonNull( prefixRegexp,           "TokenMatcher::new, parameter \"prefixRegexp\" cannot be null."           );
       Objects.requireNonNull( coreTokenRegexp,        "TokenMatcher::new, parameter \"coreTokenRegexp\" cannot be null."        );
       Objects.requireNonNull( suffixRegexp,           "TokenMatcher::new, parameter \"suffixRegexp\" cannot be null."           );
 
-      var prefixStartTokenPattern = TokenPattern.compilePattern( prefixStartTokenRegexp );
-      var prefixPattern           = TokenPattern.compilePattern( prefixRegexp           );
-      var coreTokenPattern        = TokenPattern.compilePattern( coreTokenRegexp        );
-      var suffixPattern           = TokenPattern.compilePattern( suffixRegexp           );
+      var prefixPattern    = TokenPattern.compilePattern( prefixRegexp           );
+      var coreTokenPattern = TokenPattern.compilePattern( coreTokenRegexp        );
+      var suffixPattern    = TokenPattern.compilePattern( suffixRegexp           );
 
       return
          new TokenPattern
                 (
                    prefixSuffixRequired,
-                   prefixBackupSafety,
-                   prefixStartChar,
-                   prefixStartTokenPattern,
                    prefixPattern,
                    coreTokenPattern,
                    suffixPattern
@@ -200,14 +168,6 @@ public class TokenPattern {
                    (
                      input,
                      this.prefixSuffixRequired,
-                     this.prefixBackupSafety,
-                     this.prefixStartChar,
-                     new Function<CharSequence,Matcher>() {
-                        @Override
-                        public Matcher apply(CharSequence charSequence) {
-                           return TokenPattern.this.prefixStartTokenPattern.matcher( charSequence );
-                        }
-                     },
                      new Function<CharSequence,Matcher>() {
                         @Override
                         public Matcher apply(CharSequence charSequence) {

@@ -197,7 +197,7 @@ public class WordMlLinkHandler {
             if (!unknownGuids.isEmpty()) {
                for (String guid : unknownGuids) {
                   for (MatchRange match : matchMap.getValues(guid)) {
-                     String link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
+                     var link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
                      changeSet.replace(match.start(), match.end(), link);
                   }
                }
@@ -324,7 +324,7 @@ public class WordMlLinkHandler {
             for (String guid : unknownGuids) {
                Collection<MatchRange> matches = matchMap.getValues(guid);
                for (MatchRange match : matches) {
-                  String replaceWith = WordCoreUtil.getOseeLinkMarker(guid);
+                  var replaceWith = WordCoreUtil.getOseeLinkMarker(guid);
                   changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }
@@ -334,7 +334,7 @@ public class WordMlLinkHandler {
                unknown.addAll(unknownGuids);
                for (String guid : unknownGuids) {
                   for (MatchRange match : matchMap.getValues(guid)) {
-                     String link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
+                     var link = WordCoreUtil.getUnknownArtifactLink(guid, branch);
                      changeSet.replace(match.start(), match.end(), link);
                   }
                }
@@ -346,25 +346,27 @@ public class WordMlLinkHandler {
       if (matcher.find()) {
          for (ArtifactReadable artifact : artifactsFromSearch) {
             for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
-               String replaceWith = null;
                if (isUnlinking) {
-                  replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getGuid());
+                  var replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getGuid());
+                  changeSet.replace(match.start(), match.end(), replaceWith);
                } else {
-                  replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
+                  var replaceWith =
+                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
+                  changeSet.replace(match.start(), match.end(), replaceWith);
                }
-               changeSet.replace(match.start(), match.end(), replaceWith);
             }
          }
       } else {
          for (ArtifactReadable artifact : artifactsFromSearch) {
             for (MatchRange match : matchMap.getValues(artifact.getIdString())) {
-               String replaceWith = null;
                if (isUnlinking) {
-                  replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getIdString());
+                  var replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getIdString());
+                  changeSet.replace(match.start(), match.end(), replaceWith);
                } else {
-                  replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
+                  var replaceWith =
+                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
+                  changeSet.replace(match.start(), match.end(), replaceWith);
                }
-               changeSet.replace(match.start(), match.end(), replaceWith);
             }
          }
       }

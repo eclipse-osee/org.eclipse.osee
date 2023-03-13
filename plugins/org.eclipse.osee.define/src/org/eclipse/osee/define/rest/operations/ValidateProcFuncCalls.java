@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -348,7 +349,7 @@ public class ValidateProcFuncCalls {
       Matcher m = curlBracePattern.matcher(reqXmlStrOrig);
       while (m.find()) {
          String name = m.group(1);
-         String fixedName = Strings.xmlToText(name);
+         String fixedName = Xml.xmlToTextString(name);
          fixedName = fixedName.toUpperCase();
          fixedName = fixedName.replaceAll(" ", "_");
          if (!name.equals(fixedName)) {
@@ -370,7 +371,7 @@ public class ValidateProcFuncCalls {
 
             String srch = searchReplaceLines[x];
             srch = srch.replaceAll("}.*$", "}");
-            srch = Xml.escape(srch).toString();
+            srch = XmlEncoderDecoder.textToXml(srch).toString();
 
             String repl = searchReplaceLines[x + 2];
             if (srch.equals(repl)) {

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.publishing.PublishingOptions;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.util.WordMLWriter;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -47,7 +47,7 @@ public class MSWordPreviewPublisher extends MSWordTemplatePublisher {
     */
 
    @Override
-   protected void processContent(List<ArtifactReadable> artifacts, WordMLWriter wordMl) {
+   protected void processContent(List<ArtifactReadable> artifacts, WordMLProducer wordMl) {
 
       var includeEmptyHeaders = this.templatePublishingData.getOutliningOptions().isIncludeEmptyHeaders();
       var recurseChildren = this.templatePublishingData.getOutliningOptions().isRecurseChildren();
