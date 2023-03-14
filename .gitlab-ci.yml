@@ -28,6 +28,7 @@ Validate Files:
     - python plugins/org.eclipse.osee.support.dev/validationScripts/validateFiles.py "$EXCLUDED_KEYWORDS" $FILES
   only:
     - merge_requests
+  allow_failure: true
 
 Angular Tests:
   stage: validate

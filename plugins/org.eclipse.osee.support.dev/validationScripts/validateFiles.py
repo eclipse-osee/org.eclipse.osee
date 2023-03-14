@@ -33,8 +33,8 @@ def main(argv):
         if fileNameResults != None:
             findings.append("Found keyword \"" + fileNameResults[0] + "\" in file name of " + file)
         # Do not check contents of binary files such as images
-        if not isBinaryFile(file):
-            with open(file, 'r', encoding="utf-8", errors="ignore") as f:
+        try:
+            with open(file, 'r') as f:
                 lines = f.readlines()
                 requireDistStatement = isDistStatementRequired(file, exclusionsRegex)
                 distStatementFound = False
@@ -46,6 +46,9 @@ def main(argv):
                         findings.append("Found keyword \"" + searchResults[0] + "\" on line " + str(lines.index(line)) + " of " + file + "\n  -->  " + line)
                 if requireDistStatement and not distStatementFound:
                     findings.append("No distribution statement in " + file)
+        except UnicodeDecodeError:
+            findings.append("Non-text data found in " + file)
+            continue
 
     if len(findings) > 0:
         for finding in findings:
