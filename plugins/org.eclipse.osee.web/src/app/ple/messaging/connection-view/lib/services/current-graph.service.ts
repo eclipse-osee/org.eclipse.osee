@@ -143,6 +143,15 @@ export class CurrentGraphService {
 		private preferenceService: PreferencesUIService,
 		private connectionUiService: SharedConnectionUIService
 	) {}
+
+	get branchType() {
+		return this.connectionUiService.branchId;
+	}
+
+	get branchId() {
+		return this.connectionUiService.branchType;
+	}
+
 	get differences() {
 		return this._differences;
 	}
@@ -904,11 +913,19 @@ export class CurrentGraphService {
 		return combineLatest([
 			this.routeStateService.id,
 			this.routeStateService.type,
+			this.routeStateService.viewId,
 			this.InDiff,
 		]).pipe(
-			switchMap(([id, type, diff]) =>
+			switchMap(([id, type, viewId, diff]) =>
 				of({
-					beginning: '/ple/messaging/' + type + '/' + id + '/',
+					beginning:
+						'/ple/messaging/connections/' +
+						type +
+						'/' +
+						id +
+						'/' +
+						viewId +
+						'/',
 					end: diff ? '/diff' : '',
 				})
 			)

@@ -33,6 +33,7 @@ export * from './ui/applicability-list-ui.service';
 export * from './ui/difference-report-branch-info.service';
 export * from './ui/current-diff-report.service';
 export * from './ui/cross-reference.service';
+export * from './ui/views-routed-ui.service';
 export * from './public/edit-auth-service.service';
 export * from './http/applicability-list.service';
 export * from './http/connection.service';

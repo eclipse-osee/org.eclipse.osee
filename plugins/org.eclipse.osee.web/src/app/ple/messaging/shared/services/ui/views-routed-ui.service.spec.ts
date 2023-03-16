@@ -10,22 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { TestBed } from '@angular/core/testing';
 
-@Injectable({
-	providedIn: 'root',
-})
-export class ViewsUiService {
-	private _viewId = new BehaviorSubject<string>('-1');
+import { ViewsRoutedUiService } from './views-routed-ui.service';
 
-	constructor() {}
+describe('ViewsRoutedUiService', () => {
+	let service: ViewsRoutedUiService;
 
-	get viewId() {
-		return this._viewId;
-	}
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(ViewsRoutedUiService);
+	});
 
-	set ViewId(id: string) {
-		this._viewId.next(id);
-	}
-}
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

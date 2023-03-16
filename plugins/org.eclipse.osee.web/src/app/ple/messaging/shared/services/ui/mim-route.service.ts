@@ -47,6 +47,10 @@ export class MimRouteService {
 		return this._ui.viewId;
 	}
 
+	set ViewId(id: string) {
+		this._ui.viewIdValue = id;
+	}
+
 	set typeValue(value: string) {
 		this._ui.typeValue = value;
 	}

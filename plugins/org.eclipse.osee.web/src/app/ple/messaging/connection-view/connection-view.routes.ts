@@ -26,10 +26,14 @@ const routes: Routes = [
 	},
 	{
 		path: ':branchType/:branchId',
+		redirectTo: ':branchType/:branchId/-1',
+	},
+	{
+		path: ':branchType/:branchId/:viewId',
 		loadComponent: () => import('./connection-view.component'),
 	},
 	{
-		path: ':branchType/:branchId/diff',
+		path: ':branchType/:branchId/:viewId/diff',
 		loadComponent: () => import('./connection-view.component'),
 		resolve: {
 			diff: diffReportResolverFn,

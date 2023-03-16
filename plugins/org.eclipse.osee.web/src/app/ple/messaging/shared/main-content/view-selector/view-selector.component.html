@@ -19,11 +19,15 @@
 			type="text"
 			matInput
 			[matAutocomplete]="auto"
-			(keyup)="applyFilter($event)" />
+			[ngModel]="(selectedView | async)?.name || ''"
+			(keyup)="applyFilter($event)"
+			name="autocomplete-text" />
 		<mat-autocomplete
 			autoActiveFirstOption
 			#auto="matAutocomplete">
-			<mat-option (click)="selectView(noneOption)">
+			<mat-option
+				[value]="noneOption.name"
+				(click)="selectView(noneOption)">
 				{{ noneOption.name }}
 			</mat-option>
 			<ng-container *ngIf="views | async as _views">
