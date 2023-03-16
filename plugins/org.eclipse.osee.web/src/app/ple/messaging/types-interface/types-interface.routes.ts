@@ -31,11 +31,6 @@ const routes: Routes = [
 		path: ':branchType/:branchId/:type',
 		loadComponent: () => import('./types-interface.component'),
 	},
-	{
-		path: '',
-		loadComponent: () => import('./lib/menus/usermenu/usermenu.component'),
-		outlet: 'userMenu',
-	},
 ];
 
 export default routes;

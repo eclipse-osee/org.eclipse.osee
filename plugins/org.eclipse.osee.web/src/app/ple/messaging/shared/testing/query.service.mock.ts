@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { MimQuery } from '@osee/messaging/shared/types';
+import type { MimQuery } from '@osee/messaging/shared/query';
 import { of } from 'rxjs';
 import { QueryService } from '../services/http/query.service';
 

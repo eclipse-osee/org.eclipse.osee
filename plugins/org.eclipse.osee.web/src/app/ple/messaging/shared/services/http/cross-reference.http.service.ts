@@ -12,8 +12,8 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CrossReference } from '@osee/messaging/shared';
-import { apiURL } from 'src/environments/environment';
+import type { CrossReference } from '@osee/messaging/shared/types';
+import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

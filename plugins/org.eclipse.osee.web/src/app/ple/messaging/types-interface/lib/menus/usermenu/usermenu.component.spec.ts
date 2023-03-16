@@ -23,11 +23,14 @@ import { currentTypesServiceMock } from '../../testing/current.types.service.moc
 import { CurrentTypesService } from '../../services/current-types.service';
 
 import { UsermenuComponent } from './usermenu.component';
-import { EditAuthService, PreferencesUIService } from '@osee/messaging/shared';
 import {
 	preferencesUiServiceMock,
 	editAuthServiceMock,
 } from '@osee/messaging/shared/testing';
+import {
+	PreferencesUIService,
+	EditAuthService,
+} from '@osee/messaging/shared/services';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

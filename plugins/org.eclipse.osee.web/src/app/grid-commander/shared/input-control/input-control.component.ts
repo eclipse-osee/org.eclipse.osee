@@ -30,11 +30,11 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { HighlightFilteredTextDirective } from '../../../shared/utils/directives/highlight-filtered-text.directive';
 import { MatOptionModule } from '@angular/material/core';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-input-control',

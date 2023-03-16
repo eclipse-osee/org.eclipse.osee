@@ -22,7 +22,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import {
 	PlatformTypeQuery,
-	EnumsService,
 	andQuery,
 	andUnitQuery,
 	andBitSizeQuery,
@@ -33,8 +32,9 @@ import {
 	andMsbValQuery,
 	andNameQuery,
 	andDescriptionQuery,
-} from '@osee/messaging/shared';
-import type { PlatformType } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/query';
+import { EnumsService } from '@osee/messaging/shared/services';
+import type { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-platform-type-query',

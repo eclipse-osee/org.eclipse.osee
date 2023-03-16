@@ -33,11 +33,6 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import {
-	EnumsService,
-	STRUCTURE_SERVICE_TOKEN,
-	WarningDialogService,
-} from '@osee/messaging/shared';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import {
 	enumsServiceMock,
@@ -45,6 +40,9 @@ import {
 	CurrentStateServiceMock,
 	unitsMock,
 } from '@osee/messaging/shared/testing';
+import { EnumsService } from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 
 describe('EditElementFieldComponent', () => {
 	let component: EditElementFieldComponent;

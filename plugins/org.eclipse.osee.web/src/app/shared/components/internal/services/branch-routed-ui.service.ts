@@ -12,16 +12,13 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BranchUIService } from '../../../../ple-services/ui/branch/branch-ui.service';
+import { UiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class BranchRoutedUIService {
-	constructor(
-		private branchService: BranchUIService,
-		private router: Router
-	) {}
+	constructor(private branchService: UiService, private router: Router) {}
 
 	set branchType(value: string) {
 		let baseUrl;

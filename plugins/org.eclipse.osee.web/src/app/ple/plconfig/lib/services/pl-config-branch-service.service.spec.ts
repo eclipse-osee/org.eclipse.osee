@@ -16,7 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { concatMap, take } from 'rxjs/operators';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import { configuration } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';

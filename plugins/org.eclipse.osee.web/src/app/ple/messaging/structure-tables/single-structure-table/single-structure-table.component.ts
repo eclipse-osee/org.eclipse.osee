@@ -15,11 +15,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, iif, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
-import { StructureTableComponent } from '../lib/tables/structure-table/structure-table.component';
-import {
-	CurrentStructureService,
-	STRUCTURE_SERVICE_TOKEN,
-} from '@osee/messaging/shared';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { StructureTableComponent } from '@osee/messaging/structure-tables';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-messaging-single-structure-table',

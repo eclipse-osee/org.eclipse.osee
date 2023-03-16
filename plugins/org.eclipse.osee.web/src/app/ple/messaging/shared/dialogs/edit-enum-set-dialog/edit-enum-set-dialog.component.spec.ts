@@ -28,7 +28,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
 	EnumerationSetService,
 	ApplicabilityListService,

@@ -28,7 +28,7 @@ import type {
 	nodeDataWithChanges,
 	OseeNode,
 	transportType,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';

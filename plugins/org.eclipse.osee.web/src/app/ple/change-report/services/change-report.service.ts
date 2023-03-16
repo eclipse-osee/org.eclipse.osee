@@ -13,8 +13,7 @@
 import { Injectable } from '@angular/core';
 import { TransactionService } from '@osee/shared/transactions';
 import { iif, of, shareReplay, switchMap, take } from 'rxjs';
-import { ActionService } from 'src/app/ple-services/http/action.service';
-import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
+import { ActionService, BranchInfoService } from '@osee/shared/services';
 import { ChangeReportHttpService } from './change-report-http.service';
 
 @Injectable({

@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { apiURL } from '../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 import { UsersContext } from '../../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { GCBranchIdService } from '../branch/gc-branch-id.service';
 

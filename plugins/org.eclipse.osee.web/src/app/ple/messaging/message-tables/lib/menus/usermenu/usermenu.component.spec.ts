@@ -25,7 +25,7 @@ import {
 	CurrentMessagesService,
 	EditAuthService,
 	PreferencesUIService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import {
 	CurrentMessageServiceMock,
 	preferencesUiServiceMock,

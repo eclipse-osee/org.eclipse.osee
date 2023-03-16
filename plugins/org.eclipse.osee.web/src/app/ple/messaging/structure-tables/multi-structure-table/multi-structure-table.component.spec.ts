@@ -16,14 +16,14 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 import { MultiStructureTableComponent } from './multi-structure-table.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StructureTableComponentMock } from '../lib/tables/structure-table/structure-table.component.mock';
 import { AsyncPipe } from '@angular/common';
-import {
-	CurrentStructureMultiService,
-	MULTI_STRUCTURE_SERVICE,
-	STRUCTURE_SERVICE_TOKEN,
-} from '@osee/messaging/shared';
 import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
+import { StructureTableComponentMock } from '@osee/messaging/structure-tables/testing';
+import { CurrentStructureMultiService } from '@osee/messaging/shared/services';
+import {
+	STRUCTURE_SERVICE_TOKEN,
+	MULTI_STRUCTURE_SERVICE,
+} from '@osee/messaging/shared/tokens';
 
 let loader: HarnessLoader;
 

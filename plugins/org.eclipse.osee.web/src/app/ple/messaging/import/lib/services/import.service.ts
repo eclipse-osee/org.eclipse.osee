@@ -42,7 +42,7 @@ import {
 	SubMessagesService,
 	TypesService,
 	CrossReferenceService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import type {
 	ImportOption,
 	nodeToken,
@@ -52,8 +52,8 @@ import type {
 	node,
 	structure,
 	message,
-} from '@osee/messaging/shared';
-import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
+} from '@osee/messaging/shared/types';
+import { UiService } from '@osee/shared/services';
 import { TransactionService } from '@osee/shared/transactions';
 import { transaction } from '@osee/shared/types';
 
@@ -62,7 +62,7 @@ import { transaction } from '@osee/shared/types';
 })
 export class ImportService {
 	constructor(
-		private uiService: BranchUIService,
+		private uiService: UiService,
 		private importHttpService: ImportHttpService,
 		private nodeService: NodeService,
 		private connectionService: ConnectionService,

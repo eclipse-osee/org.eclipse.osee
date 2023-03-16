@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 import type { affectedArtifact } from '@osee/messaging/shared/types';
 import { iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 @Injectable({

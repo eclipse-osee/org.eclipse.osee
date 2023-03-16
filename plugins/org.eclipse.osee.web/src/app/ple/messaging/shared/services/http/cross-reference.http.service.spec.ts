@@ -15,8 +15,8 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { crossReferencesMock } from 'src/app/ple/messaging/shared/testing/cross-references.mock';
-import { apiURL } from 'src/environments/environment';
+import { crossReferencesMock } from '@osee/messaging/shared/testing';
+import { apiURL } from '@osee/environments';
 import { CrossReferenceHttpService } from './cross-reference.http.service';
 
 describe('CrossReferenceHttpService', () => {

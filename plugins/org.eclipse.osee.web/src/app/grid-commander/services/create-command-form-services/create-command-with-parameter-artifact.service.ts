@@ -20,7 +20,7 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs';
-import { UiService } from '../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { createArtifact } from '@osee/shared/types';
 import { CreateCommandService } from './create-command.service';
 import { CreateParameterService } from './create-parameter.service';

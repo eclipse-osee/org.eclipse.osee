@@ -12,7 +12,3 @@
  **********************************************************************/
 export * from './role.guard';
 export * from './user-data-account.service';
-export * from './user-data-account.service.mock';
-export * from './user-header-demo.service';
-export * from './user-header-prod.service';
-export * from './user-header.service';

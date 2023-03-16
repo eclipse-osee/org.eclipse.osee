@@ -16,14 +16,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
+	EditDefinitionsDropdownComponent,
+	ApplicabilityTableComponent,
+	PlConfigUIStateService,
+} from '@osee/plconfig';
+import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
 } from '@osee/shared/components';
 import { combineLatest, iif, Observable, of, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { EditDefinitionsDropdownComponent } from './lib/dropdowns/edit-definitions-dropdown/edit-definitions-dropdown.component';
-import { PlConfigUIStateService } from './lib/services/pl-config-uistate.service';
-import { ApplicabilityTableComponent } from './lib/table/applicability-table/applicability-table.component';
 
 @Component({
 	selector: 'osee-plconfig',

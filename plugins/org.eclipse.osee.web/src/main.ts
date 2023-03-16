@@ -12,7 +12,7 @@
  **********************************************************************/
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 
-import { environment } from './environments/environment';
+import { environment, UserHeaderService } from '@osee/environments';
 import { AppComponent } from './app/app.component';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -24,8 +24,7 @@ import {
 	UrlSerializer,
 	withInMemoryScrolling,
 } from '@angular/router';
-import { UserHeaderService } from './app/auth/user-header.service';
-import { GlobalHttpInterceptors } from './app/interceptors/interceptor-provider';
+import { GlobalHttpInterceptors } from '@osee/interceptors';
 import { routes } from './app/app.routes';
 
 if (environment.production) {

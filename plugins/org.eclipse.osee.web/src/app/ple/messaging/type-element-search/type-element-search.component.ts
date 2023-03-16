@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { MessagingControlsComponent } from '@osee/messaging/shared';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { map } from 'rxjs/operators';
 import { RouterStateService } from './lib/services/router-state.service';
 import { ElementTableComponent } from './lib/tables/element-table/element-table.component';

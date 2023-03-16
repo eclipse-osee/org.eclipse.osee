@@ -38,15 +38,7 @@ import { AddElementDialog } from './add-element-dialog';
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
 import { PlatformTypeQueryMock } from '../testing/platform-type-query.component.mock';
-import {
-	ApplicabilityListService,
-	EnumerationSetService,
-	EnumsService,
-	MimPreferencesService,
-	STRUCTURE_SERVICE_TOKEN,
-	TypesService,
-} from '@osee/messaging/shared';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
@@ -58,8 +50,16 @@ import {
 	enumerationSetServiceMock,
 	applicabilityListServiceMock,
 	CurrentStateServiceMock,
-	MockNewTypeDialogComponent,
 } from '@osee/messaging/shared/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
+import {
+	MimPreferencesService,
+	TypesService,
+	EnumsService,
+	EnumerationSetService,
+	ApplicabilityListService,
+} from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 describe('AddElementDialogComponent', () => {
 	let component: AddElementDialogComponent;
@@ -192,7 +192,7 @@ describe('AddElementDialogComponent', () => {
 			);
 			await addTypeBtn.click();
 			nestedDialog = fixture.debugElement.query(
-				By.directive(MockNewTypeDialogComponent)
+				By.directive(MockNewTypeFormComponent)
 			);
 			fixture.detectChanges();
 			nestedDialog.componentInstance.closeDialog();

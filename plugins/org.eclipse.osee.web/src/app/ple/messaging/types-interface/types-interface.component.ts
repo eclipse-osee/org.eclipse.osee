@@ -13,7 +13,7 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MessagingControlsComponent } from '@osee/messaging/shared';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { PlMessagingTypesUIService } from './lib/services/pl-messaging-types-ui.service';
 import { TypeGridComponent } from './lib/type-grid/type-grid/type-grid.component';
 

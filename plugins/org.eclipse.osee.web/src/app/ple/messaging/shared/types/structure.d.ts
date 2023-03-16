@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { applic } from '@osee/shared/types/applicability';
-import type { difference } from 'src/app/shared/types/change-report/change-report';
+import type { difference } from '@osee/shared/types/change-report';
 import type { element, elementWithChanges } from './element';
 
 export interface structure {

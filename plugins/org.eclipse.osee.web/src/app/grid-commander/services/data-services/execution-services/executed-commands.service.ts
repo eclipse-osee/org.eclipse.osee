@@ -23,7 +23,7 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs';
-import { UiService } from '../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { executedCommand } from '../../../types/grid-commander-types/executedCommand';
 import { GCBranchIdService } from '../../fetch-data-services/branch/gc-branch-id.service';
 import { CommandGroupOptionsService } from '../commands/command-group-options.service';

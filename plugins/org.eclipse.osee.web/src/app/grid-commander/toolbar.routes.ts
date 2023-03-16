@@ -15,9 +15,7 @@ export const routes: Routes = [
 	{
 		path: '',
 		loadComponent: () =>
-			import(
-				'../layout/lib/toolbar/non-osee-toolbar/non-osee-toolbar.component'
-			),
+			import('./non-osee-toolbar/non-osee-toolbar.component'),
 	},
 ];
 

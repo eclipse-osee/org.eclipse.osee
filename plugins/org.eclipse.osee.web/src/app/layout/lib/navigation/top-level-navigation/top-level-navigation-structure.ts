@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { navigationElement } from '@osee/shared/types';
-import { UserRoles } from 'src/app/shared/types/auth/user-roles';
+import { UserRoles } from '@osee/shared/types/auth';
 
 // Adding element(s) requires:
 // - Defining the element(s) in this file
@@ -20,7 +20,7 @@ import { UserRoles } from 'src/app/shared/types/auth/user-roles';
 // if isDropdown, it has children
 // if !isDropdown, it has no children
 
-const navigationStructure: navigationElement[] = [
+export const navigationStructure: navigationElement[] = [
 	// Level-1
 	{
 		label: 'Product Line Engineering',
@@ -192,4 +192,3 @@ const navigationStructure: navigationElement[] = [
 		],
 	},
 ];
-export default navigationStructure;

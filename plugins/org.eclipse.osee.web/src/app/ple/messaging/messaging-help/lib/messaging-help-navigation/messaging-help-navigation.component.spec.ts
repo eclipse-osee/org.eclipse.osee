@@ -12,7 +12,8 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 import { MessagingHelpNavigationComponent } from './messaging-help-navigation.component';
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { MimRouteService } from '@osee/messaging/shared';
+import { MimRouteService } from '@osee/messaging/shared/services';
 
 @Injectable({
 	providedIn: 'root',

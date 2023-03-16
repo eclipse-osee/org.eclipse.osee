@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StructureNamesService } from '@osee/messaging/shared';
+import { StructureNamesService } from '@osee/messaging/shared/services';
 import {
 	MessagingControlsMockComponent,
 	structuresNameServiceMock,

@@ -12,12 +12,7 @@
  **********************************************************************/
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	crossReferenceHeaderDetails,
-	CrossReferenceService,
-	TableEditTextFieldComponent,
-} from '@osee/messaging/shared';
-import { CrossReference } from 'src/app/ple/messaging/shared/types/crossReference.d ';
+import { crossReferenceHeaderDetails } from '@osee/messaging/shared/table-headers';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,10 +23,12 @@ import { filter, switchMap, take, tap } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService, HeaderService } from '@osee/shared/services';
 import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/new-cross-reference-dialog.component';
 import { SplitStringPipe } from '@osee/shared/utils';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import type { CrossReference } from '@osee/messaging/shared/types';
+import { TableEditTextFieldComponent } from '@osee/messaging/shared/forms';
+import { CrossReferenceService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-cross-reference-table',

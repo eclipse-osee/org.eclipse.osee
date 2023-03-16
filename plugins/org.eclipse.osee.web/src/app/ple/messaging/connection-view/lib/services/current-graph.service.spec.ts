@@ -17,20 +17,10 @@ import { TestScheduler } from 'rxjs/testing';
 import { CurrentGraphService } from './current-graph.service';
 import { GraphService } from './graph.service';
 import { RouteStateService } from './route-state-service.service';
-import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
-import { BranchInfoServiceMock } from '../../../../../ple-services/http/branch-info.service.mock';
-import { DifferenceReportService } from '../../../../../ple-services/http/difference-report.service';
-import { DifferenceReportServiceMock } from '../../../../../ple-services/http/difference-report.service.mock';
-import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
-import {
-	ApplicabilityListService,
-	ConnectionService,
-	MimPreferencesService,
-	NodeService,
-	SharedConnectionService,
-} from '@osee/messaging/shared';
-import type { node } from '@osee/messaging/shared';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { BranchInfoService } from '@osee/shared/services';
+
+import type { node } from '@osee/messaging/shared/types';
+import { UserDataAccountService } from '@osee/auth';
 import { transaction } from '@osee/shared/types';
 import {
 	transactionMock,
@@ -43,6 +33,15 @@ import {
 	connectionServiceMock,
 	sharedConnectionServiceMock,
 } from '@osee/messaging/shared/testing';
+import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
+import {
+	ApplicabilityListService,
+	ConnectionService,
+	MimPreferencesService,
+	NodeService,
+	SharedConnectionService,
+} from '@osee/messaging/shared/services';
 
 describe('CurrentGraphService', () => {
 	let service: CurrentGraphService;
@@ -178,10 +177,6 @@ describe('CurrentGraphService', () => {
 					useValue: userDataAccountServiceMock,
 				},
 				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
-				{
-					provide: DifferenceReportService,
-					useValue: DifferenceReportServiceMock,
-				},
 				{
 					provide: SharedConnectionService,
 					useValue: sharedConnectionServiceMock,
@@ -797,16 +792,6 @@ describe('CurrentGraphService', () => {
 				expectedMarble,
 				expectedfilterValues
 			);
-		});
-	});
-
-	it('should get diff service diff', () => {
-		scheduler.run(({ expectObservable }) => {
-			routeState.branchId = '10';
-			expectObservable(service.diff).toBe('(b|)', {
-				a: changeReportMock,
-				b: undefined,
-			});
 		});
 	});
 });

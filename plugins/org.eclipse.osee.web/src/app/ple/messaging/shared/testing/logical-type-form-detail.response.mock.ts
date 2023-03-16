@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import type { logicalTypeFormDetail } from '@osee/messaging/shared/types';
-import { PLATFORMTYPEATTRIBUTETYPEIDENUM } from '@osee/messaging/shared/types';
+import { PLATFORMTYPEATTRIBUTETYPEIDENUM } from '@osee/messaging/shared/attr';
 
 export const logicalTypeFormDetailMock: logicalTypeFormDetail = {
 	fields: [

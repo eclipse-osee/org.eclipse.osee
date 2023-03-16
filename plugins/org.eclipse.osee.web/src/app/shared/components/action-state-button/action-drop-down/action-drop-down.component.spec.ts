@@ -18,8 +18,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ActionService } from '../../../../ple-services/http/action.service';
-import { actionServiceMock } from '../../../../ple-services/http/action.service.mock';
+import { ActionService } from '@osee/shared/services';
 import { ActionDropDownComponent } from './action-drop-down.component';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import {
@@ -29,11 +28,12 @@ import {
 } from '../internal/services/action-state-button.service.mock';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { CreateAction } from '@osee/shared/types/configuration-management';
-import { MockUserResponse } from '../../../../testing/user.response.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { MockActionUserService } from '../internal/services/action-user.service.mock';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
+import { actionServiceMock, MockUserResponse } from '@osee/shared/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('ActionDropDownComponent', () => {
 	let component: ActionDropDownComponent;

@@ -16,8 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { apiURL } from 'src/environments/environment';
-import { MockUserResponse } from '../../../../../testing/user.response.mock';
+import { apiURL } from '@osee/environments';
 
 import { MimPreferencesService } from './mim-preferences.service';
 import type { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
@@ -26,6 +25,7 @@ import {
 	transactionServiceMock,
 	transactionResultMock,
 } from '@osee/shared/transactions/testing';
+import { MockUserResponse } from '@osee/shared/testing';
 
 const testGlobalUserPrefs: MimUserGlobalPreferences = {
 	id: '1',

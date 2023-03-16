@@ -14,10 +14,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		loadComponent: () =>
-			import(
-				'../../../layout/lib/toolbar/osee-toolbar/osee-toolbar.component'
-			),
+		loadComponent: () => import('@osee/toolbar/component'),
 		children: [
 			{
 				path: '',

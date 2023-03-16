@@ -14,7 +14,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BranchPickerComponent } from '@osee/shared/components';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { ChangeReportTableComponent } from './components/change-report-table/change-report-table.component';
 
 @Component({

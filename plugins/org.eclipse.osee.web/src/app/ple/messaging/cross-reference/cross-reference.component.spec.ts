@@ -23,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CrossReferenceService } from '@osee/messaging/shared';
+import { CrossReferenceService } from '@osee/messaging/shared/services';
 import {
 	CrossReferenceServiceMock,
 	dialogRef,

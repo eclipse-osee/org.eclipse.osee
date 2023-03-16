@@ -31,8 +31,8 @@ import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { GraphLinkMenuComponent } from './graph-link-menu.component';
-import { EnumsService } from '@osee/messaging/shared';
-import type { connectionWithChanges } from '@osee/messaging/shared';
+import { EnumsService } from '@osee/messaging/shared/services';
+import type { connectionWithChanges } from '@osee/messaging/shared/types';
 import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
 describe('GraphLinkMenuComponent', () => {

@@ -40,20 +40,10 @@ import { StructureTableComponent } from './structure-table.component';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { TestScheduler } from 'rxjs/testing';
-import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { EditElementFieldComponent } from '../../fields/edit-element-field/edit-element-field.component';
-import { CurrentBranchTransactionService } from '../../../../../../ple-services/httpui/current-branch-transaction.service';
-import { currentBranchTransactionServiceMock } from '../../../../../../ple-services/httpui/current-branch-transaction.service.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-	CurrentStructureMultiService,
-	CurrentStructureService,
-	EditAuthService,
-	MULTI_STRUCTURE_SERVICE,
-	PreferencesUIService,
-} from '@osee/messaging/shared';
-import type { structure } from '@osee/messaging/shared';
+import type { structure } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { TwoLayerAddButtonHarness } from '@osee/shared/components/testing';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
@@ -68,6 +58,14 @@ import {
 } from '@osee/messaging/shared/testing';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MockSingleDiffComponent } from '@osee/shared/testing';
+import {
+	PreferencesUIService,
+	CurrentStructureMultiService,
+	CurrentStructureService,
+	EditAuthService,
+} from '@osee/messaging/shared/services';
+import { MULTI_STRUCTURE_SERVICE } from '@osee/messaging/shared/tokens';
 
 describe('StructureTableComponent', () => {
 	let component: StructureTableComponent;
@@ -109,10 +107,6 @@ describe('StructureTableComponent', () => {
 					useValue: CurrentStateServiceMock,
 				},
 				MULTI_STRUCTURE_SERVICE,
-				{
-					provide: CurrentBranchTransactionService,
-					useValue: currentBranchTransactionServiceMock, //@todo remove when undo button has a mock
-				},
 				{
 					provide: MatDialog,
 					useValue: {

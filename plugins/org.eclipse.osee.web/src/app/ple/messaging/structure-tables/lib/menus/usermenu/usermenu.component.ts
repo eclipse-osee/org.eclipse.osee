@@ -28,16 +28,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-	ColumnPreferencesDialogComponent,
 	CurrentStructureService,
 	HeaderService,
 	PreferencesUIService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import type {
 	element,
 	settingsDialogData,
 	structure,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

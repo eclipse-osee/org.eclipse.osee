@@ -50,13 +50,12 @@ import {
 	scan,
 	startWith,
 } from 'rxjs/operators';
-import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
+import { LayoutNotifierService } from '@osee/layout/notification';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { HttpLoadingService } from '../../../../../../services/http-loading.service';
-import { UiService } from '../../../../../../ple-services/ui/ui.service';
+import { HttpLoadingService } from '@osee/shared/services/network';
 import { DataSource } from '@angular/cdk/collections';
 import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
 import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
@@ -74,29 +73,38 @@ import { EditStructureFieldComponent } from '../../fields/edit-structure-field/e
 import { SubElementTableComponent } from '../sub-element-table/sub-element-table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
-import {
-	STRUCTURE_SERVICE_TOKEN,
-	defaultEditElementProfile,
-	defaultEditStructureProfile,
-	defaultViewElementProfile,
-	defaultViewStructureProfile,
-	StructureDataSource,
-	EditViewFreeTextFieldDialogComponent,
-	CurrentStructureService,
-	HeaderService,
-	ViewSelectorComponent,
-	MessagingControlsComponent,
-} from '@osee/messaging/shared';
 import type {
 	structure,
 	structureWithChanges,
 	element,
 	EditViewFreeTextDialog,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { TwoLayerAddButtonComponent } from '@osee/shared/components';
+import {
+	ActionDropDownComponent,
+	TwoLayerAddButtonComponent,
+	UndoButtonBranchComponent,
+} from '@osee/shared/components';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { UiService } from '@osee/shared/services';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import {
+	MessagingControlsComponent,
+	ViewSelectorComponent,
+} from '@osee/messaging/shared/main-content';
+import {
+	CurrentStructureService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
+import {
+	defaultEditElementProfile,
+	defaultViewElementProfile,
+	defaultEditStructureProfile,
+	defaultViewStructureProfile,
+} from '@osee/messaging/shared/constants';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { StructureDataSource } from '@osee/messaging/shared/datasources';
 
 @Component({
 	selector: 'osee-structure-table',

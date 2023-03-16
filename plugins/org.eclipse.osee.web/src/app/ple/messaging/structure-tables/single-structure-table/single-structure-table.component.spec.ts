@@ -13,16 +13,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { StructureTableComponentMock } from '../lib/tables/structure-table/structure-table.component.mock';
 
 import { SingleStructureTableComponent } from './single-structure-table.component';
 import { AsyncPipe } from '@angular/common';
-import {
-	SINGLE_STRUCTURE_SERVICE,
-	STRUCTURE_SERVICE_TOKEN,
-	CurrentStructureSingleService,
-} from '@osee/messaging/shared';
 import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
+import { StructureTableComponentMock } from '@osee/messaging/structure-tables/testing';
+import { CurrentStructureSingleService } from '@osee/messaging/shared/services';
+import {
+	STRUCTURE_SERVICE_TOKEN,
+	SINGLE_STRUCTURE_SERVICE,
+} from '@osee/messaging/shared/tokens';
 
 describe('SingleStructureTableComponent', () => {
 	let component: SingleStructureTableComponent;

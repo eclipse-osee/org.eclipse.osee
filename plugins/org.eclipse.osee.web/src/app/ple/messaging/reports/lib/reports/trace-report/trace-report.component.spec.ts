@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReportsService } from '@osee/messaging/shared';
+import { ReportsService } from '@osee/messaging/shared/services';
 import { ReportsServiceMock } from 'src/app/ple/messaging/shared/testing/reports-service.mock';
 
 import { NodeTraceReportRequirementsComponent } from './trace-report.component';

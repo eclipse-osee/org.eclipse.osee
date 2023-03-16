@@ -15,8 +15,8 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from '../../../../../../environments/environment';
-import { PlatformTypeQuery } from '../../types/MimQuery';
+import { apiURL } from '@osee/environments';
+import { PlatformTypeQuery } from '../../query/MimQuery';
 
 import { QueryService } from './query.service';
 

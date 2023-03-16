@@ -30,7 +30,6 @@ import type {
 	enumerationSet,
 	PlatformType,
 } from '@osee/messaging/shared/types';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/types';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -42,6 +41,7 @@ import {
 import { map, switchMap, tap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import { EnumFormComponent } from '../enum-form/enum-form.component';
+import { PlatformTypeSentinel } from './PlatformTypeInstance';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',

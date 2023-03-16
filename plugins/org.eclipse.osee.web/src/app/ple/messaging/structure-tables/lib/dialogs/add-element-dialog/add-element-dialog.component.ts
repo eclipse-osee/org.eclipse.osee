@@ -30,7 +30,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
-import { UiService } from '../../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { AddElementDialog } from './add-element-dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -46,22 +46,24 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-	STRUCTURE_SERVICE_TOKEN,
 	PlatformTypeQuery,
 	andQuery,
 	andNameQuery,
-	NewTypeFormComponent,
-	CurrentStructureService,
-	TypesUIService,
-} from '@osee/messaging/shared';
+	MimQuery,
+} from '@osee/messaging/shared/query';
 import type {
 	element,
 	newPlatformTypeDialogReturnData,
 	enumeration,
-	MimQuery,
 	PlatformType,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
+import {
+	CurrentStructureService,
+	TypesUIService,
+} from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
@@ -107,15 +109,17 @@ export class AddElementDialogComponent implements OnInit {
 		switchMap(([mode, query]) =>
 			iif(
 				() => mode === true && query !== undefined,
-				this.structures.query(query as MimQuery<PlatformType>).pipe(
-					distinctUntilChanged(),
-					map((result) => {
-						if (result.length === 1) {
-							this.data.type = result[0];
-						}
-						return result;
-					})
-				),
+				this.structures
+					.query<PlatformType>(query as MimQuery<PlatformType>)
+					.pipe(
+						distinctUntilChanged(),
+						map((result) => {
+							if (result.length === 1) {
+								this.data.type = result[0];
+							}
+							return result;
+						})
+					),
 				of(undefined)
 			)
 		),

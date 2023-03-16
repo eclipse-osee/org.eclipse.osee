@@ -17,8 +17,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CurrentBranchTransactionService } from '../../../../ple-services/httpui/current-branch-transaction.service';
-import { currentBranchTransactionServiceMock } from '../../../../ple-services/httpui/current-branch-transaction.service.mock';
+
+import { currentBranchTransactionServiceMock } from '../internal/services/current-branch-transaction.service.mock';
+import { CurrentBranchTransactionService } from '../internal/services/current-branch-transaction.service';
 
 import { UndoButtonBranchComponent } from './undo-button-branch.component';
 

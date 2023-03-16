@@ -23,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { ActionService } from '../../../../ple-services/http/action.service';
+import { ActionService } from '@osee/shared/services';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import { actionStateButtonServiceMock } from '../internal/services/action-state-button.service.mock';
 import { ActionUserService } from '../internal/services/action-user.service';

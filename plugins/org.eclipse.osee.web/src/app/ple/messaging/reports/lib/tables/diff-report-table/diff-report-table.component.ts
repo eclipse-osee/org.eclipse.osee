@@ -14,7 +14,7 @@ import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { HeaderService } from '@osee/shared/services';
 import type { headerDetail } from '@osee/shared/types';
 
 @Component({

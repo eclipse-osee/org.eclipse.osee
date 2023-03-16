@@ -31,16 +31,16 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { SubElementTableComponent } from './sub-element-table.component';
-import {
-	CurrentStructureMultiService,
-	CurrentStructureService,
-	STRUCTURE_SERVICE_TOKEN,
-} from '@osee/messaging/shared';
-import { MockSubElementTableComponent } from 'src/app/ple/messaging/structure-tables/lib/menus/testing/sub-element-table-dropdown.component.mock';
+import { MockSubElementTableComponent } from '../../menus/testing/sub-element-table-dropdown.component.mock';
 import {
 	CurrentStateServiceMock,
 	elementsMock,
 } from '@osee/messaging/shared/testing';
+import {
+	CurrentStructureService,
+	CurrentStructureMultiService,
+} from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 describe('SubElementTableComponent', () => {
 	let component: SubElementTableComponent;

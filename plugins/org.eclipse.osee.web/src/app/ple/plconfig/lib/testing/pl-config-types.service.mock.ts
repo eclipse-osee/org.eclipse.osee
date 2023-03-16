@@ -10,14 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { MockXResultData } from '@osee/shared/testing';
 import { of } from 'rxjs';
 import { PlConfigTypesService } from '../services/pl-config-types.service';
 import {
-	ProductType,
 	productType,
 	RequiredProductType,
 } from '../types/pl-config-product-types';
-import { MockXResultData } from '../../../../testing/XResultData.response.mock';
 
 export const plConfigTypesServiceMock: Partial<PlConfigTypesService> = {
 	getProductTypes(branchId: string) {

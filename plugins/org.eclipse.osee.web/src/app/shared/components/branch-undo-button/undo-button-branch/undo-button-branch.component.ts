@@ -14,7 +14,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CurrentBranchTransactionService } from '../../../../ple-services/httpui/current-branch-transaction.service';
+import { CurrentBranchTransactionService } from '../internal/services/current-branch-transaction.service';
 
 @Component({
 	selector: 'osee-undo-button-branch',

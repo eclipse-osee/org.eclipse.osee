@@ -36,7 +36,7 @@ import { MatOptionModule } from '@angular/material/core';
 import {
 	CurrentTransportTypeService,
 	EnumsService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import {
 	dialogRef,

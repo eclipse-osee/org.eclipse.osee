@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { connectionDiffItem } from '@osee/messaging/shared';
-import { headerDetail } from '@osee/shared/types';
+import type { connectionDiffItem } from '@osee/messaging/shared/types';
+import type { headerDetail } from '@osee/shared/types';
 
 export const connectionDiffHeaderDetails: headerDetail<connectionDiffItem>[] = [
 	{

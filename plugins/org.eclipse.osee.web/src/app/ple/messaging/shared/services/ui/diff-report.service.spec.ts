@@ -12,15 +12,11 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { ActionService } from 'src/app/ple-services/http/action.service';
-import { actionServiceMock } from 'src/app/ple-services/http/action.service.mock';
-import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
-import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
-import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
-import { DiffReportBranchService } from 'src/app/ple-services/ui/diff/diff-report-branch.service';
-import { diffReportBranchServiceMock } from 'src/app/ple-services/ui/diff/diff-report-branch.service.mock';
-import { testBranchInfo } from 'src/app/testing/branch-info.response.mock';
-import { testBranchActions } from 'src/app/testing/configuration-management.response.mock';
+import {
+	ActionService,
+	BranchInfoService,
+	UiService,
+} from '@osee/shared/services';
 import type { branchSummary } from '../../types/DifferenceReport';
 
 import { DiffReportService } from './diff-report.service';
@@ -34,20 +30,30 @@ import {
 	structureElementDiffsMock,
 	connectionDiffsMock,
 	CurrentDifferenceReportServiceMock,
+	DifferenceReportServiceMock,
 } from '@osee/messaging/shared/testing';
-import { CurrentDiffReportService } from 'src/app/ple/messaging/shared/public-api';
+import {
+	CurrentDiffReportService,
+	DifferenceReportService,
+} from '@osee/messaging/shared/services';
+import {
+	BranchInfoServiceMock,
+	actionServiceMock,
+	testBranchInfo,
+	testBranchActions,
+} from '@osee/shared/testing';
 
 describe('DiffReportService', () => {
 	let service: DiffReportService;
 	let scheduler: TestScheduler;
-	let uiService: BranchUIService;
+	let uiService: UiService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			providers: [
 				{
-					provide: DiffReportBranchService,
-					useValue: diffReportBranchServiceMock,
+					provide: DifferenceReportService,
+					useValue: DifferenceReportServiceMock,
 				},
 				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
 				{ provide: ActionService, useValue: actionServiceMock },
@@ -58,7 +64,7 @@ describe('DiffReportService', () => {
 			],
 		});
 		service = TestBed.inject(DiffReportService);
-		uiService = TestBed.inject(BranchUIService);
+		uiService = TestBed.inject(UiService);
 	});
 
 	beforeEach(

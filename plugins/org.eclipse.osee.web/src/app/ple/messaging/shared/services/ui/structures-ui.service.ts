@@ -15,7 +15,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { MimRouteService } from './mim-route.service';
 import { changeInstance } from '@osee/shared/types/change-report';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',

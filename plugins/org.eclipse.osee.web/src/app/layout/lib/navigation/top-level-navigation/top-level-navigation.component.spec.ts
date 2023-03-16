@@ -17,9 +17,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { TestScheduler } from 'rxjs/testing';
-import navigationStructure from './top-level-navigation-structure';
+import { navigationStructure } from './top-level-navigation-structure';
+
 import { TopLevelNavigationComponent } from './top-level-navigation.component';
 
 export const tests = (

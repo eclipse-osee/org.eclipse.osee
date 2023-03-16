@@ -13,24 +13,23 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { changeReportMock } from 'src/app/ple-services/http/change-report.mock';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { ActionService, UiService } from '@osee/shared/services';
 import {
 	testApplicabilityTag,
 	testBranchApplicability,
 } from '../testing/mockBranchService';
-import { testBranchListing } from '../../../../testing/branch-listing.response.mock';
-import {
-	testBranchActions,
-	testWorkFlow,
-} from '../../../../testing/configuration-management.response.mock';
-import { MockXResultData } from '../../../../testing/XResultData.response.mock';
-import { ActionService } from '../../../../ple-services/http/action.service';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
 import { PlConfigTypesService } from './pl-config-types.service';
 import { plConfigTypesServiceMock } from '../testing/pl-config-types.service.mock';
+import {
+	testBranchListing,
+	MockXResultData,
+	testBranchActions,
+	testWorkFlow,
+	changeReportMock,
+} from '@osee/shared/testing';
 
 describe('PlConfigCurrentBranchService diffs', () => {
 	let service: PlConfigCurrentBranchService;

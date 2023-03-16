@@ -11,12 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import { AboutComponent } from './about.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 	},
 	{ path: '', loadComponent: () => import('./about.component') },

@@ -43,9 +43,8 @@ import {
 	ARTIFACTTYPEIDENUM,
 	RelationTypeId,
 } from '@osee/shared/types/constants';
-import { SideNavService } from '../../../../../shared-services/ui/side-nav.service';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 import type { ConnectionNode } from '@osee/messaging/shared/types';
-import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
 import type {
 	messageWithChanges,
 	subMessageWithChanges,
@@ -54,6 +53,7 @@ import type {
 	settingsDialogData,
 } from '@osee/messaging/shared/types';
 import { transaction, transactionToken } from '@osee/shared/types';
+import { SideNavService } from '@osee/shared/services/layout';
 
 @Injectable({
 	providedIn: 'root',

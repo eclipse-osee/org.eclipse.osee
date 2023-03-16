@@ -12,27 +12,23 @@
  **********************************************************************/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CrossReference } from '../shared/types/crossReference.d ';
 import { MatDialog } from '@angular/material/dialog';
-import { NewCrossReferenceDialogComponent } from './lib/new-cross-reference-dialog/new-cross-reference-dialog.component';
 import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
-import {
-	BranchPickerComponent,
-	ActionDropDownComponent,
-} from '@osee/shared/components';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { CrossReferenceTableComponent } from './lib/cross-reference-table/cross-reference-table.component';
+import { connection } from '@osee/messaging/shared/types';
 import {
-	connection,
-	CrossReferenceService,
-	MessagingControlsComponent,
-} from '@osee/messaging/shared';
+	CrossReferenceTableComponent,
+	NewCrossReferenceDialogComponent,
+} from '@osee/messaging/cross-reference';
+import { CrossReferenceService } from '@osee/messaging/shared/services';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 @Component({
 	selector: 'osee-cross-reference',

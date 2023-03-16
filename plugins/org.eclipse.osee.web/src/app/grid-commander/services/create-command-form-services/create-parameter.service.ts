@@ -21,7 +21,7 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs';
-import { UiService } from '../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { createArtifact } from '@osee/shared/types';
 import { CreateParameterAndRelationsService } from '../create-command-artifact-and-relations/create-parameter-and-relations.service';
 import { CommandGroupOptionsService } from '../data-services/commands/command-group-options.service';

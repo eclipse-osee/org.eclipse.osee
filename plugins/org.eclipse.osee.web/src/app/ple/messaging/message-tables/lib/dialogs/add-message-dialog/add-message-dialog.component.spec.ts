@@ -24,7 +24,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CurrentMessagesService, EnumsService } from '@osee/messaging/shared';
+import {
+	CurrentMessagesService,
+	EnumsService,
+} from '@osee/messaging/shared/services';
 import { CurrentMessageServiceMock } from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
 import { AddMessageDialog } from '../../types/AddMessageDialog';

@@ -12,8 +12,8 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from '../../../../../../environments/environment';
-import type { MimQuery } from '../../types/MimQuery';
+import { apiURL } from '@osee/environments';
+import type { MimQuery } from '../../query/MimQuery';
 
 @Injectable({
 	providedIn: 'root',

@@ -12,9 +12,9 @@
  **********************************************************************/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CurrentMessagesService } from '@osee/messaging/shared';
+import { MessageTableComponent } from '@osee/messaging/message-tables';
+import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
-import { MessageTableComponent } from './lib/tables/message-table/message-table.component';
 
 @Component({
 	selector: 'osee-messaging-message-page',

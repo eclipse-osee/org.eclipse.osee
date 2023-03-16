@@ -14,7 +14,7 @@ import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import { map, of, switchMap, take } from 'rxjs';
-import { apiURL, OSEEAuthURL } from 'src/environments/environment';
+import { apiURL, OSEEAuthURL } from '@osee/environments';
 
 export const OseeAuthInterceptor = (
 	req: HttpRequest<unknown>,

@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { ActionStateButtonService } from '@osee/shared/components';
 import { ConfigurationDropdownComponent } from '../configuration-dropdown/configuration-dropdown.component';
 import { ConfigurationGroupDropdownComponent } from '../configuration-group-dropdown/configuration-group-dropdown.component';
 import { FeatureDropdownComponent } from '../feature-dropdown/feature-dropdown.component';
@@ -20,6 +19,7 @@ import { ProductTypeDropDownComponent } from '../product-type-drop-down/product-
 import { MatMenuModule } from '@angular/material/menu';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { CurrentActionService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-edit-definitions-dropdown',
@@ -42,6 +42,6 @@ export class EditDefinitionsDropdownComponent {
 	isTeamLead = this.actionStateService.isTeamLead;
 
 	constructor(
-		private actionStateService: ActionStateButtonService //kinda hacky, but best place for it to live for now
+		private actionStateService: CurrentActionService //kinda hacky, but best place for it to live for now
 	) {}
 }

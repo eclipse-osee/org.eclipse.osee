@@ -17,7 +17,7 @@ import {
 	BranchPickerComponent,
 	UndoButtonBranchComponent,
 } from '@osee/shared/components';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { iif, of, switchMap } from 'rxjs';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';

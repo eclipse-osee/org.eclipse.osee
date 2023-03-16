@@ -18,7 +18,7 @@ import {
 } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { dialogRef } from '@osee/messaging/shared/testing';
-import { CrossReference } from 'src/app/ple/messaging/shared/types/crossReference.d ';
+import type { CrossReference } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { NewCrossReferenceDialogComponent } from './new-cross-reference-dialog.component';
 

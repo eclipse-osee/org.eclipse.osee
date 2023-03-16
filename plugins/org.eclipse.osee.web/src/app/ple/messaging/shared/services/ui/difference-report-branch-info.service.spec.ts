@@ -16,12 +16,11 @@ import {
 	differenceReportMock,
 	DifferenceReportServiceMock,
 } from '@osee/messaging/shared/testing';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 import { DifferenceReportBranchInfoService } from './difference-report-branch-info.service';
 import { DifferenceReportService } from '../http/difference-report.service';
-import { DifferenceBranchInfoService } from 'src/app/ple-services/ui/diff/difference-branch-info.service';
-import { DifferenceBranchInfoServiceMock } from 'src/app/ple-services/ui/diff/difference-branch-info.service.mock';
+import { BranchInfoService, UiService } from '@osee/shared/services';
+import { BranchInfoServiceMock } from '@osee/shared/testing';
 
 describe('DifferenceReportBranchInfoService', () => {
 	let service: DifferenceReportBranchInfoService;
@@ -35,10 +34,7 @@ describe('DifferenceReportBranchInfoService', () => {
 					provide: DifferenceReportService,
 					useValue: DifferenceReportServiceMock,
 				},
-				{
-					provide: DifferenceBranchInfoService,
-					useValue: DifferenceBranchInfoServiceMock,
-				},
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
 			],
 		});
 		service = TestBed.inject(DifferenceReportBranchInfoService);

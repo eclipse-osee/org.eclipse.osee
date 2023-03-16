@@ -29,17 +29,17 @@ import { TestScheduler } from 'rxjs/testing';
 import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-message-table-titles-to-string.pipe';
 import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
-import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 
 import { SubMessageTableComponent } from './sub-message-table.component';
 import { MockEditMessageFieldComponent } from '../../testing/edit-sub-message-field.component.mock';
-import { CurrentMessagesService } from '@osee/messaging/shared';
+import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
 	CurrentMessageServiceMock,
 	messagesMock,
 	subMessagesMock,
 } from '@osee/messaging/shared/testing';
+import { MockSingleDiffComponent } from '@osee/shared/testing';
 
 describe('SubMessageTableComponent', () => {
 	let component: SubMessageTableComponent;

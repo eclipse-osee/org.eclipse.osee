@@ -23,7 +23,7 @@ import { MessageDiffsComponent } from '../../diffs/message-diffs/message-diffs.c
 import { NodeDiffsComponent } from '../../diffs/node-diffs/node-diffs.component';
 import { StructureDiffsComponent } from '../../diffs/structure-diffs/structure-diffs.component';
 import { SubmessageDiffsComponent } from '../../diffs/submessage-diffs/submessage-diffs.component';
-import { DiffReportService } from '@osee/messaging/shared';
+import { DiffReportService } from '@osee/messaging/shared/services';
 import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
 
 describe('DiffReportComponent', () => {

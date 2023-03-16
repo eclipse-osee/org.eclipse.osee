@@ -13,24 +13,27 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { ActionService } from '../../../../../ple-services/http/action.service';
-import { actionServiceMock } from '../../../../../ple-services/http/action.service.mock';
-import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
-import { BranchInfoServiceMock } from '../../../../../ple-services/http/branch-info.service.mock';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
 import {
-	testCommitResponse,
-	testDataTransitionResponse,
-} from '../../../../../testing/configuration-management.response.mock';
-import { MockXResultData } from '../../../../../testing/XResultData.response.mock';
-import { testnewActionResponse } from '../../../../../testing/new-action.response.mock';
-import { MockUserResponse } from '../../../../../testing/user.response.mock';
+	ActionService,
+	BranchInfoService,
+	UiService,
+} from '@osee/shared/services';
 import { CreateAction } from '@osee/shared/types/configuration-management';
 
 import { ActionStateButtonService } from './action-state-button.service';
 import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
 import { branchRoutedUiServiceMock } from '../../../internal/services/branch-routed-ui.service.mock';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
+import {
+	actionServiceMock,
+	BranchInfoServiceMock,
+	MockUserResponse,
+	testnewActionResponse,
+	testCommitResponse,
+	MockXResultData,
+	testDataTransitionResponse,
+} from '@osee/shared/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('ActionStateButtonService', () => {
 	let service: ActionStateButtonService;

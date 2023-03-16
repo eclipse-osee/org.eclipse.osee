@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import type { message } from '../../types/messages';
 import type { connection } from '../../types/connection';
 import type { ConnectionNode } from '../../types/connection-nodes';

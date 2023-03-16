@@ -16,12 +16,13 @@ import type { settingsDialogData } from '@osee/messaging/shared/types';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 import { PreferencesUIService } from './preferences-ui.service';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { TransactionService } from '@osee/shared/transactions';
 import {
 	transactionServiceMock,
 	transactionResultMock,
 } from '@osee/shared/transactions/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 export function preferencesTest(
 	mimPreferencesServiceMock: Partial<MimPreferencesService>

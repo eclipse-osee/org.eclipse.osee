@@ -33,7 +33,7 @@ import {
 import {
 	EnumerationSetQuery,
 	andDescriptionQuery,
-} from '@osee/messaging/shared/types';
+} from '@osee/messaging/shared/query';
 import type { enumeration } from '@osee/messaging/shared/types';
 import { combineLatest, from, of, Subject } from 'rxjs';
 import {

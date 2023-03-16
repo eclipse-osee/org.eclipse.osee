@@ -28,7 +28,7 @@ import {
 	ConnectionService,
 	CrossReferenceHttpService,
 	PreferencesUIService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 
 describe('CrossReferenceService', () => {
 	let service: CrossReferenceService;

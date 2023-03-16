@@ -20,7 +20,7 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import type { transportType } from '@osee/messaging/shared/types';
 import { TransportTypeService } from '../http/transport-type.service';

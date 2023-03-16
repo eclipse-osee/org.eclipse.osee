@@ -19,14 +19,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import {
-	CurrentStructureNamesService,
-	MessagingControlsComponent,
-} from '@osee/messaging/shared';
+import { CurrentStructureNamesService } from '@osee/messaging/shared/services';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { UiService } from '../../../ple-services/ui/ui.service';
-import { HttpLoadingService } from '../../../services/http-loading.service';
+import { HttpLoadingService } from '@osee/shared/services/network';
+import { UiService } from '@osee/shared/services';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+
 @Component({
 	selector: 'osee-messaging-structure-names',
 	templateUrl: './structure-names.component.html',

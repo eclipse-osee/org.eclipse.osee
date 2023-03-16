@@ -14,9 +14,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import { concatMap, reduce, shareReplay, take } from 'rxjs/operators';
-import { environment, OSEEAuthURL } from 'src/environments/environment';
 import { user, UserRoles } from '@osee/shared/types/auth';
-import { UserHeaderService } from './user-header.service';
+import {
+	UserHeaderService,
+	OSEEAuthURL,
+	environment,
+} from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

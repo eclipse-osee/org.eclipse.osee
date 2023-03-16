@@ -10,13 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { MockXResultData } from '@osee/shared/testing';
 import { iif, of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../services/pl-config-current-branch.service';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import { editConfiguration } from '../types/pl-config-configurations';
 import { modifyFeature } from '../types/pl-config-features';
 import { testBranchApplicability } from './mockBranchService';
-import { MockXResultData } from '../../../../testing/XResultData.response.mock';
 
 export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
 	{

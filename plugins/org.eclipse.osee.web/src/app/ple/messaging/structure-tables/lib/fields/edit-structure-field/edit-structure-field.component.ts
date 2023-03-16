@@ -28,13 +28,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import type { structure } from '@osee/messaging/shared/types';
 import {
 	CurrentStructureService,
 	EnumsService,
-	STRUCTURE_SERVICE_TOKEN,
-	WarningDialogService,
-} from '@osee/messaging/shared';
-import type { structure } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
+import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 
 @Component({
 	selector: 'osee-messaging-edit-structure-field',

@@ -47,10 +47,11 @@ import {
 	EnumerationUIService,
 	ApplicabilityListUIService,
 } from '@osee/messaging/shared/services';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('NewTypeFormComponent', () => {
 	let component: NewTypeFormComponent;

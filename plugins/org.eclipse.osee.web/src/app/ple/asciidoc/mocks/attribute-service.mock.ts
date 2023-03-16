@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Observable, of } from 'rxjs';
-import { AttributeService } from 'src/app/ple-services/http/attribute.service';
+import { AttributeService } from '@osee/shared/services';
 
 let bogusObservable$ = new Observable<string>();
 

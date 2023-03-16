@@ -26,8 +26,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { CurrentMessagesService } from '@osee/messaging/shared';
-import type { subMessage } from '@osee/messaging/shared';
+import { CurrentMessagesService } from '@osee/messaging/shared/services';
+import type { subMessage } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 
 @Component({

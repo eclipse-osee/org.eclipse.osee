@@ -30,8 +30,8 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 import { DeleteSubmessageDialogComponent } from '../../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveSubmessageDialogComponent } from '../../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
-import { difference } from 'src/app/shared/types/change-report/change-report';
-import { UiService } from '../../../../../../ple-services/ui/ui.service';
+import { difference } from '@osee/shared/types/change-report';
+import { UiService } from '@osee/shared/services';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EditSubMessageFieldComponent } from '../../fields/edit-sub-message-field/edit-sub-message-field.component';
@@ -40,21 +40,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
-	EditViewFreeTextFieldDialogComponent,
 	CurrentMessagesService,
 	HeaderService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import type {
 	message,
 	subMessage,
 	messageWithChanges,
 	subMessageWithChanges,
 	EditViewFreeTextDialog,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import {
 	HighlightFilteredTextDirective,
 	DisplayTruncatedStringWithFieldOverflowPipe,
 } from '@osee/shared/utils';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 
 @Component({
 	selector: 'osee-messaging-sub-message-table',

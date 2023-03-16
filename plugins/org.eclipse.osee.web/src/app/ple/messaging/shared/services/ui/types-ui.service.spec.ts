@@ -21,7 +21,7 @@ import {
 	transactionResultMock,
 } from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 import { EnumsService } from '../http/enums.service';
 import { TypesService } from '../http/types.service';

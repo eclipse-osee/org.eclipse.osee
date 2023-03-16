@@ -47,12 +47,10 @@ import type {
 	newPlatformTypeDialogReturnData,
 	PlatformType,
 	enumeration,
-} from '@osee/messaging/shared';
-import {
-	PlatformTypeCardComponent,
-	NewTypeDialogComponent,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { NewTypeDialogComponent } from '../../new-type-dialog/new-type-dialog.component';
 
 @Component({
 	selector: 'osee-messaging-types-type-grid',

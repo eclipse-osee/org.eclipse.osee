@@ -23,8 +23,8 @@ import type {
 	newConnection,
 	node,
 	transportType,
-} from '@osee/messaging/shared';
-import { CurrentTransportTypeService } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';

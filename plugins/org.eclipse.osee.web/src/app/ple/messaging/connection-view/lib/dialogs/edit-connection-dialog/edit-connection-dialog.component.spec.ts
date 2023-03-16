@@ -31,11 +31,11 @@ import { EditConnectionDialogComponent } from './edit-connection-dialog.componen
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
-import type { connection } from '@osee/messaging/shared';
+import type { connection } from '@osee/messaging/shared/types';
 import {
 	CurrentTransportTypeService,
 	EnumsService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 
 import {
 	dialogRef,

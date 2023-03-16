@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import navigationStructure from '../../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
+import { navigationStructure } from '@osee/layout/routing';
 
 const help = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
@@ -20,8 +20,7 @@ const help = navigationStructure[0].children
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () =>
-			import('../../../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 	},
 	{

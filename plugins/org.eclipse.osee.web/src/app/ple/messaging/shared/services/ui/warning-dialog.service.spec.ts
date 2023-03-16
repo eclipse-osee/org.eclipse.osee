@@ -20,7 +20,7 @@ import {
 } from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { WarningDialogService } from './warning-dialog.service';

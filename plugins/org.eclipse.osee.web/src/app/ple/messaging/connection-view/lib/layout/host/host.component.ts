@@ -18,10 +18,8 @@ import { applic } from '@osee/shared/types/applicability';
 import { iif, of } from 'rxjs';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { GraphComponent } from '../graph/graph.component';
-import {
-	MessagingControlsComponent,
-	ViewSelectorComponent,
-} from '@osee/messaging/shared';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { ViewSelectorComponent } from '@osee/messaging/shared/main-content';
 
 @Component({
 	selector: 'osee-connection-view-host',

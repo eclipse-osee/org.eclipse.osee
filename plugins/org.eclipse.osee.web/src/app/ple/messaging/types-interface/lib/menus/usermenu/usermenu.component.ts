@@ -16,15 +16,13 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import type { settingsDialogData } from '@osee/messaging/shared';
-import {
-	PreferencesUIService,
-	ColumnPreferencesDialogComponent,
-} from '@osee/messaging/shared';
+import type { settingsDialogData } from '@osee/messaging/shared/types';
+import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { combineLatest } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

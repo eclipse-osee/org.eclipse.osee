@@ -15,7 +15,7 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { PlConfigTypesService } from './pl-config-types.service';
 

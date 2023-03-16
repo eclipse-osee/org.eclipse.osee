@@ -18,7 +18,7 @@ import {
 	ValidationErrors,
 } from '@angular/forms';
 import { CurrentQueryService } from '@osee/messaging/shared/services';
-import { andDescriptionQuery, MimQuery } from '@osee/messaging/shared/types';
+import { andDescriptionQuery, MimQuery } from '@osee/messaging/shared/query';
 import type { enumerationSet } from '@osee/messaging/shared/types';
 import { Observable, of, switchMap, take } from 'rxjs';
 

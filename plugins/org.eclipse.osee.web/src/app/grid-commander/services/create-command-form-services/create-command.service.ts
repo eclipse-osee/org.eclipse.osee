@@ -21,7 +21,7 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs';
-import { UiService } from '../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { CreateCommandandAndRelationsService } from '../create-command-artifact-and-relations/create-command-and-relations.service';
 import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.service';
 import { ContextSelectionService } from './context-selection.service';

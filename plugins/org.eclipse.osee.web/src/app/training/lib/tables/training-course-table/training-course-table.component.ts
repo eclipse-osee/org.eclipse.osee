@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { HeaderService } from '@osee/shared/services';
 import { Component } from '@angular/core';
 import { TrainingCourseService } from '../../services/training-course.service';
 import { TrainingCourseRecord } from '../../types/training-course';

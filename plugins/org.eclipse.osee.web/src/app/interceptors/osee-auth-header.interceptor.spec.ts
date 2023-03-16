@@ -21,8 +21,9 @@ import {
 	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
-import { apiURL, OSEEAuthURL } from 'src/environments/environment';
+import { UserDataAccountService } from '@osee/auth';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { apiURL, OSEEAuthURL } from '@osee/environments';
 import { OseeAuthInterceptor } from './osee-auth-header.interceptor';
 
 describe('OSEEAuthHeaderInterceptor', () => {

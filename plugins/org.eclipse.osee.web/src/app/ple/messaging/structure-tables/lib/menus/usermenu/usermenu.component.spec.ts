@@ -20,16 +20,16 @@ import { of } from 'rxjs';
 
 import { UsermenuComponent } from './usermenu.component';
 import {
-	CurrentStructureService,
-	EditAuthService,
-	MULTI_STRUCTURE_SERVICE,
-	PreferencesUIService,
-} from '@osee/messaging/shared';
-import {
 	editAuthServiceMock,
 	preferencesUiServiceMock,
 	CurrentStateServiceMock,
 } from '@osee/messaging/shared/testing';
+import {
+	EditAuthService,
+	PreferencesUIService,
+	CurrentStructureService,
+} from '@osee/messaging/shared/services';
+import { MULTI_STRUCTURE_SERVICE } from '@osee/messaging/shared/tokens';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

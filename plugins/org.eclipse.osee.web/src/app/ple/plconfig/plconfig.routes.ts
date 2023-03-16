@@ -16,7 +16,7 @@ import { diffReportResolverFn } from '@osee/shared/resolvers';
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 	},
 	{ path: '', loadComponent: () => import('./plconfig.component') },
@@ -41,8 +41,7 @@ const routes: Routes = [
 	},
 	{
 		path: '',
-		loadComponent: () =>
-			import('../diff-views/single-diff/single-diff.component'),
+		loadComponent: () => import('@osee/diff/views'),
 		outlet: 'rightSideNav',
 	},
 ];

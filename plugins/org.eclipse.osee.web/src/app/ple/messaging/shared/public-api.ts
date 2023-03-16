@@ -10,16 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './types/';
-export * from './tokens/';
-export * from './constants/';
-export * from './datasources/';
-export * from './table-headers/';
-export * from './directives/';
-export * from './functions/';
-export * from './main-content/';
-export * from './forms/';
-export * from './dialogs/';
-export * from './services/';
-export * from './headers/';
-export * from './preferences/';
+export default 0;

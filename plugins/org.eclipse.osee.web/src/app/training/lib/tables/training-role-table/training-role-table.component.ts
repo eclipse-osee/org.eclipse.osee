@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { HeaderService } from '@osee/shared/services';
 import { TrainingRoleRecord } from '../../types/training-role';
 import { trainingRoleHeaderDetails } from './training-role-table-header';
 import { MatTableDataSource } from '@angular/material/table';

@@ -12,15 +12,15 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { DifferenceReportService } from '../http/difference-report.service';
-import { DifferenceBranchInfoService } from 'src/app/ple-services/ui/diff/difference-branch-info.service';
 import { take, switchMap } from 'rxjs';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class DifferenceReportBranchInfoService {
 	constructor(
-		private branchInfoService: DifferenceBranchInfoService,
+		private branchInfoService: CurrentBranchInfoService,
 		private reportService: DifferenceReportService
 	) {}
 

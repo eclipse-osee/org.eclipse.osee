@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CrossReference } from '@osee/messaging/shared';
+import type { CrossReference } from '@osee/messaging/shared/types';
 
 export const crossReferencesMock: CrossReference[] = [
 	{

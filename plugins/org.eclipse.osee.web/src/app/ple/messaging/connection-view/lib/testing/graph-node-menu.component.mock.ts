@@ -17,7 +17,7 @@ import type {
 	OseeEdge,
 	connection,
 	connectionWithChanges,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-graph-node-menu',

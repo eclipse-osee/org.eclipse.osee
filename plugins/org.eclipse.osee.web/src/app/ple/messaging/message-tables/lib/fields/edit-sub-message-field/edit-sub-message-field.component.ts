@@ -30,11 +30,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {
-	CurrentMessagesService,
-	WarningDialogService,
-} from '@osee/messaging/shared';
-import type { subMessage } from '@osee/messaging/shared';
+import { CurrentMessagesService } from '@osee/messaging/shared/services';
+import type { subMessage } from '@osee/messaging/shared/types';
+import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',

@@ -24,11 +24,11 @@ import {
 	switchMap,
 } from 'rxjs/operators';
 import {
-	ColumnPreferencesDialogComponent,
 	CurrentMessagesService,
 	PreferencesUIService,
-} from '@osee/messaging/shared';
-import type { settingsDialogData } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
+import type { settingsDialogData } from '@osee/messaging/shared/types';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

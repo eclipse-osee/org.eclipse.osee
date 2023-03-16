@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NamedIdAndDescription } from '@osee/shared/types';
-import { difference } from 'src/app/shared/types/change-report/change-report';
+import { difference } from '@osee/shared/types/change-report';
 import { showable } from './base-types/showable';
 import { extendedFeature, extendedFeatureWithChanges } from './features/base';
 import {

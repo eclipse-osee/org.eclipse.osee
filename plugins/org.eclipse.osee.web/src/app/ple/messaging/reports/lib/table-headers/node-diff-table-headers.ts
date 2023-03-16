@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { nodeDiffItem } from '@osee/messaging/shared';
-import { headerDetail } from '@osee/shared/types';
+import type { nodeDiffItem } from '@osee/messaging/shared/types';
+import type { headerDetail } from '@osee/shared/types';
 
 export const nodeDiffHeaderDetails: headerDetail<nodeDiffItem>[] = [
 	{ header: 'name', description: 'Name of node', humanReadable: 'Name' },

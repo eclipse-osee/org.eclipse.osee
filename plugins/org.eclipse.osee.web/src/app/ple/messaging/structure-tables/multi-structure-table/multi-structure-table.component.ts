@@ -14,12 +14,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { combineLatest, iif, of } from 'rxjs';
-import { StructureTableComponent } from '../lib/tables/structure-table/structure-table.component';
 import { AsyncPipe } from '@angular/common';
-import {
-	CurrentStructureService,
-	STRUCTURE_SERVICE_TOKEN,
-} from '@osee/messaging/shared';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { StructureTableComponent } from '@osee/messaging/structure-tables';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-messaging-multi-structure-table-page',

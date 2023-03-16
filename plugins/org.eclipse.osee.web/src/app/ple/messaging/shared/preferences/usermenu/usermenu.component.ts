@@ -17,11 +17,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import type { settingsDialogData } from '@osee/messaging/shared/types';
-import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
 import { map, share, shareReplay, take, switchMap } from 'rxjs/operators';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-messaging-usermenu',

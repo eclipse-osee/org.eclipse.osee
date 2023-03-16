@@ -21,9 +21,12 @@ import { CurrentQueryService } from '@osee/messaging/shared/services';
 import type {
 	logicalTypeFormDetail,
 	PlatformType,
-	MimQuery,
 } from '@osee/messaging/shared/types';
-import { andQuery, PlatformTypeQuery } from '@osee/messaging/shared/types';
+import {
+	andQuery,
+	MimQuery,
+	PlatformTypeQuery,
+} from '@osee/messaging/shared/query';
 import { Observable, of, switchMap, take } from 'rxjs';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 

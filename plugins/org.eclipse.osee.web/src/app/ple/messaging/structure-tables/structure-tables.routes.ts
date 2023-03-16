@@ -14,7 +14,7 @@ import { Route } from '@angular/router';
 import {
 	MULTI_STRUCTURE_SERVICE,
 	SINGLE_STRUCTURE_SERVICE,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/tokens';
 import { diffReportResolverFn } from '@osee/shared/resolvers';
 
 const routes: Route[] = [
@@ -68,20 +68,9 @@ const routes: Route[] = [
 	},
 	{
 		path: '',
-		loadComponent: () =>
-			import('../../diff-views/single-diff/single-diff.component'),
+		loadComponent: () => import('@osee/diff/views'),
 		outlet: 'rightSideNav',
 	},
-	{
-		path: '',
-		loadComponent: () => import('./lib/menus/usermenu/usermenu.component'),
-		outlet: 'userMenu',
-	},
-	// {
-	// 	path: '',
-	// 	loadComponent: () => import('@osee/messaging/shared/headers'),
-	// 	outlet: 'navigationHeader',
-	// },
 ];
 
 export default routes;

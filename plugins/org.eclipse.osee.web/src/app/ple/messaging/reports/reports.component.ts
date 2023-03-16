@@ -19,11 +19,11 @@ import { applic } from '@osee/shared/types/applicability';
 import {
 	ApplicabilityListService,
 	ConnectionService,
-	MessagingControlsComponent,
 	ReportsService,
-} from '@osee/messaging/shared';
-import type { connection, MimReport } from '@osee/messaging/shared';
-import { UiService } from '../../../ple-services/ui/ui.service';
+} from '@osee/messaging/shared/services';
+import type { connection, MimReport } from '@osee/messaging/shared/types';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { UiService } from '@osee/shared/services';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';

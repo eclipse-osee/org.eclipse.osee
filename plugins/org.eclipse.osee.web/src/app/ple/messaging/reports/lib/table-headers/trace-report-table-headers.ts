@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NodeTraceReportItem } from '@osee/messaging/shared';
-import { headerDetail } from '@osee/shared/types';
+import type { NodeTraceReportItem } from '@osee/messaging/shared/types';
+import type { headerDetail } from '@osee/shared/types';
 
 export const nodeTraceReportHeaderDetails: headerDetail<NodeTraceReportItem>[] =
 	[

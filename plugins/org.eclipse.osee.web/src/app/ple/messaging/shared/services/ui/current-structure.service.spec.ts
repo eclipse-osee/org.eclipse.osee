@@ -17,7 +17,6 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
-import { DiffReportBranchService } from '../../../../../ple-services/ui/diff/diff-report-branch.service';
 import { ApplicabilityListService } from '../http/applicability-list.service';
 import { ElementService } from '../http/element.service';
 import { MimPreferencesService } from '../http/mim-preferences.service';
@@ -25,9 +24,7 @@ import { QueryService } from '../http/query.service';
 import { StructuresService } from '../http/structures.service';
 import { TypesService } from '../http/types.service';
 import { CurrentStructureMultiService } from './current-structure-multi.service';
-import { diffReportBranchServiceMock } from '../../../../../ple-services/ui/diff/diff-report-branch.service.mock';
 import { of } from 'rxjs';
-import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
 import { CurrentStructureService } from './current-structure.service';
 import { CurrentStructureSingleService } from './current-structure-single.service';
 import { StructuresUiService } from './structures-ui.service';
@@ -52,8 +49,10 @@ import type {
 	structure,
 	structureWithChanges,
 } from '@osee/messaging/shared/types';
-import { PlatformTypeQuery } from '@osee/messaging/shared/types';
+import { PlatformTypeQuery } from '@osee/messaging/shared/query';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { BranchInfoService } from '@osee/shared/services';
+import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
 
 const servicesUnderTest: {
 	service: typeof CurrentStructureService;
@@ -128,8 +127,8 @@ servicesUnderTest.forEach((testCase) => {
 					},
 					{ provide: StructuresUiService },
 					{
-						provide: DiffReportBranchService,
-						useValue: diffReportBranchServiceMock,
+						provide: BranchInfoService,
+						useValue: BranchInfoServiceMock,
 					},
 					{ provide: QueryService, useValue: QueryServiceMock },
 					CurrentStructureMultiService,
@@ -159,7 +158,7 @@ servicesUnderTest.forEach((testCase) => {
 
 		it('should get filtered structures', () => {
 			scheduler.run(() => {
-				service.branchId = '0';
+				service.branchId = '10';
 				service.filter = '0';
 				service.messageId = '1';
 				service.subMessageId = '2';
@@ -529,8 +528,8 @@ servicesUnderTest.forEach((testCase) => {
 					},
 					{ provide: StructuresUiService },
 					{
-						provide: DiffReportBranchService,
-						useValue: diffReportBranchServiceMock,
+						provide: BranchInfoService,
+						useValue: BranchInfoServiceMock,
 					},
 					CurrentStructureService,
 				],

@@ -23,7 +23,7 @@ import type {
 	editPlatformTypeDialogData,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
 import {
 	EditEnumSetDialogComponent,
 	EditTypeDialogComponent,

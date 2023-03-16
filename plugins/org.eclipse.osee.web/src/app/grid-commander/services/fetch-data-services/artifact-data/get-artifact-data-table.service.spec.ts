@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from '../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 import {
 	HttpClientTestingModule,
 	HttpTestingController,

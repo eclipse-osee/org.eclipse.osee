@@ -24,12 +24,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
-	STRUCTURE_SERVICE_TOKEN,
 	CurrentStructureService,
 	EnumsService,
-} from '@osee/messaging/shared';
-import type { structure } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
+import type { structure } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { AddStructureDialog } from './add-structure-dialog';
 

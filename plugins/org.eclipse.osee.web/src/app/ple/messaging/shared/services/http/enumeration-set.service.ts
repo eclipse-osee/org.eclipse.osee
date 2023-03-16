@@ -18,7 +18,7 @@ import {
 } from '@osee/shared/transactions';
 import { relation, transaction } from '@osee/shared/types';
 import { of } from 'rxjs';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import type { enumeration, enumerationSet, enumSet } from '../../types/enum';
 

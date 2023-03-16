@@ -19,7 +19,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { CurrentTransportTypeService } from '@osee/messaging/shared';
+import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
 import {
 	CurrentTransportTypeServiceMock,
 	MessagingControlsMockComponent,

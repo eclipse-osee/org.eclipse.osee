@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { affectedArtifactHttpServiceMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { BranchedAffectedArtifactService } from './branched-affected-artifact.service';

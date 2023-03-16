@@ -28,7 +28,10 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf, AsyncPipe, NgFor } from '@angular/common';
-import type { PlatformType, settingsDialogData } from '@osee/messaging/shared';
+import type {
+	PlatformType,
+	settingsDialogData,
+} from '@osee/messaging/shared/types';
 import { transactionMock } from '@osee/shared/transactions/testing';
 import { MockPlatformTypeCardComponent } from '@osee/messaging/shared/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';

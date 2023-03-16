@@ -21,8 +21,8 @@ import {
 	sharedConnectionServiceMock,
 	structureServiceMock,
 } from '@osee/messaging/shared/testing';
-import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
-import { BranchInfoServiceMock } from '../../../../../ple-services/http/branch-info.service.mock';
+import { BranchInfoService } from '@osee/shared/services';
+import { BranchInfoServiceMock } from '@osee/shared/testing';
 
 import { MimHeaderComponent } from './mim-header.component';
 const headerUnderTest = [

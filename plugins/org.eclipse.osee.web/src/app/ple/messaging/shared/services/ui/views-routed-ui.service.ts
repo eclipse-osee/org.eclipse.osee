@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ViewsUiService } from 'src/app/ple-services/ui/views/views-ui.service';
+import { ViewsUiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
