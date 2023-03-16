@@ -29,6 +29,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.actions.MyFavoritesAction;
 import org.eclipse.osee.ats.ide.actions.MyWorldAction;
+import org.eclipse.osee.ats.ide.actions.MyWorldBetaAction;
 import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
@@ -281,6 +282,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(new RefreshAction(this));
       toolbarManager.add(new MyWorldAction());
+      toolbarManager.add(new MyWorldBetaAction());
       toolbarManager.add(new MyFavoritesAction());
       toolbarManager.add(new CollapseAllAction(xNavComp.getFilteredTree().getViewer()));
       toolbarManager.add(new ExpandAllAction(xNavComp.getFilteredTree().getViewer()));

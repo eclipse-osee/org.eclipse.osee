@@ -13,14 +13,10 @@
 
 package org.eclipse.osee.ats.core.column;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -44,19 +40,20 @@ public class StateColumn extends AbstractServicesColumn {
             String block = " " + ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Blocked)";
             return hold + block;
          }
+
+         String currStateName =
+            atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.CurrentStateName, "");
+         if (Strings.isInValid(currStateName)) {
+            currStateName = ((IAtsWorkItem) atsObject).getCurrentStateName();
+         }
+
          if (Strings.isValid(isBlocked)) {
-            return ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Blocked)";
+            return currStateName + " (Blocked)";
          } else if (Strings.isValid(isHold)) {
-            return ((IAtsWorkItem) atsObject).getCurrentStateName() + " (Hold)";
+            return currStateName + " (Hold)";
          } else {
-            return ((IAtsWorkItem) atsObject).getCurrentStateName();
+            return currStateName;
          }
-      } else if (atsObject instanceof IAtsAction) {
-         Set<String> strs = new HashSet<>();
-         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-            strs.add(team.getCurrentStateName());
-         }
-         return org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", strs);
       }
       return "";
    }

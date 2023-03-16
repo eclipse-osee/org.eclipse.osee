@@ -207,6 +207,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addTopSearchItems() {
       ElapsedTime time2 = new ElapsedTime("NVI - addAtsSectionChildren - My World", debug);
       items.add(new SearchNavigateItem(new MyWorldSearchItem("My World", true), TOP));
+      items.add(new SearchNavigateItem(new MyWorldSearchItem("My World (Beta)", true, true), TOP));
       time2.end();
 
       time2.start("NVI - addAtsSectionChildren - Recently Visited");

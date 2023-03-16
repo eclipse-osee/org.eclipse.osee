@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -457,6 +458,15 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          toReturn.addAll(fromIds);
       }
       return toReturn;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getAssigned(AtsUser user, boolean useNewAttr) {
+      if (useNewAttr) {
+         return atsApi.getQueryService().getArtifacts(AtsAttributeTypes.CurrentStateAssignee,
+            user.getArtifactId().getIdString(), atsApi.getAtsBranch());
+      }
+      return java.util.Collections.emptyList();
    }
 
 }
