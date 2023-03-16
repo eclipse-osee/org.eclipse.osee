@@ -65,6 +65,9 @@ export class HostComponent {
 		private graphService: CurrentGraphService
 	) {}
 
+	branchId = this.graphService.branchId;
+	branchType = this.graphService.branchType;
+
 	viewDiff(open: boolean, value: string | number | applic, header: string) {
 		this.graphService.sideNav = {
 			opened: open,

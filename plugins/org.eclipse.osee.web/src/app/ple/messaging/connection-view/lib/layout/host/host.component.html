@@ -14,7 +14,11 @@
 	<osee-branch-picker
 		category="3"
 		class="controls-left"></osee-branch-picker>
-	<osee-view-selector class="tw-ml-auto"></osee-view-selector>
+	<div>
+		<osee-view-selector
+			*ngIf="(branchId | async) && (branchType | async)"
+			class="tw-ml-auto"></osee-view-selector>
+	</div>
 	<div class="controls-right">
 		<ng-container *ngIf="(inEditMode | async) === true">
 			<osee-undo-button-branch></osee-undo-button-branch>

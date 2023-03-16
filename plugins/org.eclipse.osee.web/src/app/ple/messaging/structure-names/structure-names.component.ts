@@ -60,8 +60,14 @@ export class StructureNamesComponent implements OnInit {
 				: names
 		)
 	);
-	basePath = combineLatest([this.uiService.id, this.uiService.type]).pipe(
-		switchMap(([id, type]) => of(`../../../${type}/${id}`))
+	basePath = combineLatest([
+		this.uiService.id,
+		this.uiService.type,
+		this.uiService.viewId,
+	]).pipe(
+		switchMap(([id, type, viewId]) =>
+			of(`../../../connections/${type}/${id}/${viewId}`)
+		)
 	);
 	loading = this.loadingService.isLoading;
 	constructor(

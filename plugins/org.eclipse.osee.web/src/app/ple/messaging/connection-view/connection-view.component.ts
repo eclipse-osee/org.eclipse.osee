@@ -41,6 +41,7 @@ export class ConnectionViewComponent implements OnInit {
 			if (mode) {
 				this.routerState.branchId = params.get('branchId') || '';
 				this.routerState.branchType = params.get('branchType') || '';
+				this.routerState.ViewId = params.get('viewId') || '';
 				/**
 				 * Set params to uninitalized state for invalid routes
 				 */
@@ -52,6 +53,7 @@ export class ConnectionViewComponent implements OnInit {
 				///////////////////////////////////////////////////////////
 				this.routerState.DiffMode = false;
 			} else {
+				this.routerState.ViewId = params.get('viewId') || '';
 				this.routerState.connectionId = '';
 				this.routerState.messageId = '';
 				this.routerState.subMessageId = '';

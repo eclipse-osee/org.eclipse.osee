@@ -57,17 +57,6 @@ const routes: Routes = [
 		loadComponent: () => import('./messaging.component'),
 	},
 	{
-		path: ':branchType/:branchId/:connection/messages/:messageId/:subMessageId/elements',
-		title: connections?.pageTitle || 'OSEE',
-		loadChildren: () =>
-			import('./structure-tables/structure-tables.routes'),
-	},
-	{
-		path: ':branchType/:branchId/:connection/messages',
-		title: connections?.pageTitle || 'OSEE',
-		loadChildren: () => import('./message-tables/message-page.routes'),
-	},
-	{
 		path: 'types',
 		title: types?.pageTitle || 'OSEE',
 		loadChildren: () => import('./types-interface/types-interface.routes'),
@@ -76,6 +65,17 @@ const routes: Routes = [
 		path: 'connections',
 		title: connections?.pageTitle || 'OSEE',
 		loadChildren: () => import('./connection-view/connection-view.routes'),
+	},
+	{
+		path: 'connections/:branchType/:branchId/:viewId/:connection/messages',
+		title: connections?.pageTitle || 'OSEE',
+		loadChildren: () => import('./message-tables/message-page.routes'),
+	},
+	{
+		path: 'connections/:branchType/:branchId/:viewId/:connection/messages/:messageId/:subMessageId/elements',
+		title: connections?.pageTitle || 'OSEE',
+		loadChildren: () =>
+			import('./structure-tables/structure-tables.routes'),
 	},
 	{
 		path: 'typeSearch',

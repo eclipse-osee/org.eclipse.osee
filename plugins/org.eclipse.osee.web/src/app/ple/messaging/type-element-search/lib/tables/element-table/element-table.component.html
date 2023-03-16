@@ -63,10 +63,11 @@
 									<a
 										mat-button
 										[routerLink]="
-											'/ple/messaging/' +
+											'/ple/messaging/connections/' +
 											_type +
 											'/' +
 											_id +
+											'/-1/' +
 											element.paths[0]
 										"
 										>Go to</a
@@ -109,7 +110,13 @@
 					<a
 						mat-button
 						[routerLink]="
-							'/ple/messaging/' + _type + '/' + _id + path + '/.'
+							'/ple/messaging/connections/' +
+							_type +
+							'/' +
+							_id +
+							'/-1/' +
+							path +
+							'/.'
 						"
 						class="menu-link"
 						>{{ names[i] }}</a

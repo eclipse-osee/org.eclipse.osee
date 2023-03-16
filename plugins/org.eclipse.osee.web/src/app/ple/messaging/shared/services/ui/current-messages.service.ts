@@ -287,6 +287,10 @@ export class CurrentMessagesService {
 		return this.ui.viewId;
 	}
 
+	set ViewId(id: string) {
+		this.ui.ViewId = id;
+	}
+
 	set messageId(value: string) {
 		this.ui.messageId = value;
 	}
@@ -1313,14 +1317,18 @@ export class CurrentMessagesService {
 		return combineLatest([
 			this.ui.type,
 			this.BranchId,
+			this.viewId,
 			this.connectionId,
 		]).pipe(
-			switchMap(([type, id, connection]) =>
+			switchMap(([type, id, viewId, connection]) =>
 				of(
 					'/ple/messaging/' +
+						'connections/' +
 						type +
 						'/' +
 						id +
+						'/' +
+						viewId +
 						'/' +
 						connection +
 						'/messages/'

@@ -167,6 +167,14 @@ export abstract class CurrentStructureService {
 		return this.ui.branchType.getValue();
 	}
 
+	get viewId() {
+		return this.ui.viewId;
+	}
+
+	set ViewId(id: string) {
+		this.ui.ViewId = id;
+	}
+
 	set messageId(value: string) {
 		this.ui.messageIdString = value;
 	}

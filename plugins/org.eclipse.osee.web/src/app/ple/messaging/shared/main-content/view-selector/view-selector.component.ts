@@ -14,19 +14,22 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
+import {
+	ApplicabilityListUIService,
+	ViewsRoutedUiService,
+} from '@osee/messaging/shared/services';
 import {
 	BehaviorSubject,
 	combineLatest,
 	filter,
 	from,
+	of,
 	scan,
 	switchMap,
 } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
 
 @Component({
 	selector: 'osee-view-selector',
@@ -44,7 +47,7 @@ import { UiService } from 'src/app/ple-services/ui/ui.service';
 export class ViewSelectorComponent {
 	constructor(
 		private applicService: ApplicabilityListUIService,
-		private uiService: UiService
+		private viewsService: ViewsRoutedUiService
 	) {}
 
 	filterText = new BehaviorSubject<string>('');
@@ -65,8 +68,15 @@ export class ViewSelectorComponent {
 		)
 	);
 
+	selectedView = combineLatest([this.views, this.viewsService.viewId]).pipe(
+		switchMap(([views, viewId]) => {
+			const view = views.find((v) => v.id === viewId);
+			return view ? of(view) : of(this.noneOption);
+		})
+	);
+
 	selectView(view: applic) {
-		this.uiService.viewIdValue = view.id;
+		this.viewsService.ViewId = view.id;
 	}
 
 	applyFilter(text: Event) {

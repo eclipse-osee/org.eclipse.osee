@@ -11,21 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
+import { ViewsUiService } from 'src/app/ple-services/ui/views/views-ui.service';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ViewsUiService {
-	private _viewId = new BehaviorSubject<string>('-1');
-
-	constructor() {}
+export class ViewsRoutedUiService {
+	constructor(private viewsService: ViewsUiService, private router: Router) {}
 
 	get viewId() {
-		return this._viewId;
+		return this.viewsService.viewId;
 	}
 
 	set ViewId(id: string) {
-		this._viewId.next(id);
+		const formattedViewId = this.viewId.getValue().replace('-', '%2D');
+		const formattedId = id.replace('-', '%2D');
+		this.viewsService.ViewId = id;
+		this.router.navigateByUrl(
+			this.router.url.replace(formattedViewId, formattedId)
+		);
 	}
 }

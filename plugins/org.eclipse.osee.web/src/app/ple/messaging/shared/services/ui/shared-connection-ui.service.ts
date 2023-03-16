@@ -36,4 +36,12 @@ export class SharedConnectionUIService {
 	get viewId() {
 		return this._mimRoute.viewId;
 	}
+
+	get branchId() {
+		return this._mimRoute.id;
+	}
+
+	get branchType() {
+		return this._mimRoute.type;
+	}
 }
