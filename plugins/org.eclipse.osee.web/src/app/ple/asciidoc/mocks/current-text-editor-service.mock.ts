@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Observable } from 'rxjs';
-import { transactionResult } from 'src/app/shared/types/change-report/transaction';
+import { transactionResult } from '@osee/shared/types/change-report';
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
 
 let bogusObservable$ = new Observable<string>();

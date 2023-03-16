@@ -18,10 +18,9 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService, HeaderService } from '@osee/shared/services';
 import { changeReportRow } from '@osee/shared/types/change-report';
 import { ChangeReportService } from '../../services/change-report.service';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
 import { changeReportHeaders } from './change-report-table-headers';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';

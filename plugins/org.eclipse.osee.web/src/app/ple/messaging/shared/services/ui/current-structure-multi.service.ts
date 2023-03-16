@@ -121,7 +121,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 		this._structuresNoDiff,
 		combineLatest([
 			this.BranchId,
-			this.diffReportService.parentBranch,
+			this.branchInfoService.parentBranch,
 			this.MessageId,
 			this.SubMessageId,
 			this.connectionId,

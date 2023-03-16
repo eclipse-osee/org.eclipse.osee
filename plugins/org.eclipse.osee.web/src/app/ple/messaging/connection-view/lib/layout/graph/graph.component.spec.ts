@@ -44,8 +44,8 @@ import type {
 	connectionWithChanges,
 	OseeEdge,
 	node,
-} from '@osee/messaging/shared';
-import { EnumsService } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { EnumsService } from '@osee/messaging/shared/services';
 import { RouteStateService } from '../../services/route-state-service.service';
 import { enumsServiceMock } from '@osee/messaging/shared/testing';
 

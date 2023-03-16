@@ -22,18 +22,19 @@ import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SubElementTableDropdownComponent } from './sub-element-table-dropdown.component';
-import {
-	CurrentStructureService,
-	EnumerationUIService,
-	PreferencesUIService,
-	STRUCTURE_SERVICE_TOKEN,
-} from '@osee/messaging/shared';
+
 import {
 	CurrentStateServiceMock,
 	enumerationUiServiceMock,
 	preferencesUiServiceMock,
 	elementsMock,
 } from '@osee/messaging/shared/testing';
+import {
+	CurrentStructureService,
+	EnumerationUIService,
+	PreferencesUIService,
+} from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 describe('SubElementTableDropdownComponent', () => {
 	let component: SubElementTableDropdownComponent;

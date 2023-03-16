@@ -13,7 +13,7 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { map } from 'rxjs/operators';
-import { UiService } from '../../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { ElementTableSearchComponent } from '../../forms/element-table-search/element-table-search.component';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
@@ -23,8 +23,8 @@ import { MatButtonModule } from '@angular/material/button';
 import type {
 	element,
 	elementWithPathsAndButtons,
-} from '@osee/messaging/shared';
-import { HeaderService } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { HeaderService } from '@osee/messaging/shared/services';
 import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils';
 
 @Component({

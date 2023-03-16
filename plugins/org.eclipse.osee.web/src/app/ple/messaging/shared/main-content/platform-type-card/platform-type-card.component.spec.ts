@@ -37,7 +37,7 @@ import type {
 	editPlatformTypeDialogData,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
 import {
 	EditEnumSetDialogComponent,
 	EditTypeDialogComponent,
@@ -50,9 +50,10 @@ import {
 	EnumsService,
 	ApplicabilityListService,
 } from '@osee/messaging/shared/services';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 let loader: HarnessLoader;
 

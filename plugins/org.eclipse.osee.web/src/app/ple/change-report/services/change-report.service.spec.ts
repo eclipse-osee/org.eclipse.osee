@@ -17,17 +17,18 @@ import {
 	transactionInfoMock,
 } from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { ActionService } from 'src/app/ple-services/http/action.service';
-import { actionServiceMock } from 'src/app/ple-services/http/action.service.mock';
-import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
-import { BranchInfoServiceMock } from 'src/app/ple-services/http/branch-info.service.mock';
-import { testBranchInfo } from '../../../testing/branch-info.response.mock';
-import { testBranchActions } from '../../../testing/configuration-management.response.mock';
+import { ActionService, BranchInfoService } from '@osee/shared/services';
 import { changeReportHttpServiceMock } from '../mocks/change-report-http.service.mock';
 import { changeReportMock } from '../mocks/changeReportMock';
 import { ChangeReportHttpService } from './change-report-http.service';
 
 import { ChangeReportService } from './change-report.service';
+import {
+	actionServiceMock,
+	BranchInfoServiceMock,
+	testBranchActions,
+	testBranchInfo,
+} from '@osee/shared/testing';
 
 describe('ChangeReportService', () => {
 	let service: ChangeReportService;

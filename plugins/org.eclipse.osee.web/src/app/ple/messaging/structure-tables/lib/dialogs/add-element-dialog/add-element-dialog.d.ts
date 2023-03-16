@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import type { element, PlatformType } from '@osee/messaging/shared';
+import type { element, PlatformType } from '@osee/messaging/shared/types';
 
 export interface AddElementDialog {
 	id: string;

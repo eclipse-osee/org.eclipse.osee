@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CrossReference, CrossReferenceService } from '@osee/messaging/shared';
+
+import { CrossReferenceService } from '@osee/messaging/shared/services';
+import { CrossReference } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { connectionMock } from './connection.response.mock';

@@ -28,11 +28,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
-import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
+import { LayoutNotifierService } from '@osee/layout/notification';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { applic } from '@osee/shared/types/applicability';
-import { difference } from 'src/app/shared/types/change-report/change-report';
-import { UiService } from '../../../../../../ple-services/ui/ui.service';
+import { difference } from '@osee/shared/types/change-report';
+import { UiService } from '@osee/shared/services';
 import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
@@ -44,21 +44,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
-import {
-	STRUCTURE_SERVICE_TOKEN,
-	EditEnumSetDialogComponent,
-	EditViewFreeTextFieldDialogComponent,
-	CurrentStructureService,
-	EnumerationUIService,
-	HeaderService,
-	PreferencesUIService,
-} from '@osee/messaging/shared';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type {
 	structure,
 	enumerationSet,
 	element,
 	EditViewFreeTextDialog,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
+import {
+	CurrentStructureService,
+	EnumerationUIService,
+	HeaderService,
+	PreferencesUIService,
+} from '@osee/messaging/shared/services';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',

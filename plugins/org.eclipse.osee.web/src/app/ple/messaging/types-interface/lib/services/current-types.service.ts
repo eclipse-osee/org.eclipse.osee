@@ -29,12 +29,12 @@ import {
 	TypesService,
 	PreferencesUIService,
 	TypesUIService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import type {
 	PlatformType,
 	enumeration,
 	settingsDialogData,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
 
 @Injectable({

@@ -15,9 +15,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject, of } from 'rxjs';
 
 import { MessagePageComponent } from './message-page.component';
-import { MockMessageTableComponent } from './lib/testing/message-table.component.mock';
-import { CurrentMessagesService } from '@osee/messaging/shared';
-import type { message } from '@osee/messaging/shared';
+import { CurrentMessagesService } from '@osee/messaging/shared/services';
+import type { message } from '@osee/messaging/shared/types';
+import { MockMessageTableComponent } from '@osee/messaging/message-tables/testing';
 
 describe('MessageInterfaceComponent', () => {
 	let component: MessagePageComponent;

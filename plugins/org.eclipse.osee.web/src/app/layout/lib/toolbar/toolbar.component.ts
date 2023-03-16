@@ -10,18 +10,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpLoadingService } from '../../../services/http-loading.service';
-import { SideNavService } from '../../../shared-services/ui/side-nav.service';
+import { Component, inject, Input } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { HttpLoadingService } from '@osee/shared/services/network';
 import { map } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterOutlet } from '@angular/router';
+import { DisplayUserComponent } from './user-display/display-user.component';
+import { SideNavService } from '@osee/shared/services/layout';
 
 @Component({
 	selector: 'osee-toolbar',
 	standalone: true,
-	imports: [CommonModule],
-	template: ``,
-	styles: [],
+	templateUrl: './toolbar.component.html',
+	styleUrls: ['./toolbar.component.sass'],
+	imports: [
+		MatToolbarModule,
+		MatButtonModule,
+		MatIconModule,
+		RouterOutlet,
+		NgIf,
+		AsyncPipe,
+		MatProgressSpinnerModule,
+		DisplayUserComponent,
+	],
 })
 export class ToolbarComponent {
 	private loadingService: HttpLoadingService = inject(HttpLoadingService);
@@ -29,7 +44,7 @@ export class ToolbarComponent {
 	topLevelNavIcon = this.sideNavService.leftSideNav.pipe(map((v) => v.icon));
 	isLoading = this.loadingService.isLoading;
 
-	oseeToolbar: boolean = true;
+	@Input() oseeToolbar: boolean = true;
 	toggleTopLevelNavIcon() {
 		this.sideNavService.toggleLeftSideNav = '';
 	}

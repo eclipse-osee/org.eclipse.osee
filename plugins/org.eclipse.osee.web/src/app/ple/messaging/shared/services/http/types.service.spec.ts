@@ -16,7 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { TypesService } from './types.service';
 import { platformTypesMock } from '@osee/messaging/shared/testing';

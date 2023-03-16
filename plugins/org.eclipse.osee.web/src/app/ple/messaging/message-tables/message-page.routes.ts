@@ -31,19 +31,8 @@ const routes: Routes = [
 	},
 	{
 		path: '',
-		loadComponent: () =>
-			import('../../diff-views/single-diff/single-diff.component'),
+		loadComponent: () => import('@osee/diff/views'),
 		outlet: 'rightSideNav',
-	},
-	{
-		path: '',
-		loadComponent: () => import('./lib/menus/usermenu/usermenu.component'),
-		outlet: 'userMenu',
-	},
-	{
-		path: '',
-		loadComponent: () => import('@osee/messaging/shared/headers'),
-		outlet: 'navigationHeader',
 	},
 ];
 

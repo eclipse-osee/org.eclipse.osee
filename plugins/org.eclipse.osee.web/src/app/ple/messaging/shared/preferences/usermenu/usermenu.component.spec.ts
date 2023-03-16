@@ -21,12 +21,15 @@ import { of } from 'rxjs';
 
 import { UsermenuComponent } from './usermenu.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditAuthService, PreferencesUIService } from '@osee/messaging/shared';
+import {
+	EditAuthService,
+	PreferencesUIService,
+} from '@osee/messaging/shared/services';
 import {
 	editAuthServiceMock,
 	preferencesUiServiceMock,
 } from '@osee/messaging/shared/testing';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 
 describe('UsermenuComponent', () => {
 	let component: UsermenuComponent;

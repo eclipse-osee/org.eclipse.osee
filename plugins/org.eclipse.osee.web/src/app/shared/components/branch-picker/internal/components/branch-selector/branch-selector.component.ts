@@ -17,10 +17,10 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { HttpLoadingService } from '../../../../../../services/http-loading.service';
 import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { BranchListService } from '../../../../internal/services/branch-list.service';
 import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
+import { HttpLoadingService } from '@osee/shared/services/network';
 
 @Component({
 	selector: 'osee-branch-selector',

@@ -28,10 +28,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AddStructureDialog } from './add-structure-dialog';
 
 import { AddStructureDialogComponent } from './add-structure-dialog.component';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared';
-import type { structure } from '@osee/messaging/shared';
+
+import type { structure } from '@osee/messaging/shared/types';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 describe('AddStructureDialogComponent', () => {
 	let component: AddStructureDialogComponent;

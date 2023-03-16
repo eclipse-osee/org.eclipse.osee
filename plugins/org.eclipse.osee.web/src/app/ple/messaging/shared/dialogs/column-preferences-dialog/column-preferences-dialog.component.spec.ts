@@ -31,7 +31,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { ColumnPreferencesDialogComponent } from './column-preferences-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';

@@ -31,25 +31,25 @@ import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/rem
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { UiService } from '../../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {
-	STRUCTURE_SERVICE_TOKEN,
-	EditEnumSetDialogComponent,
-	EditViewFreeTextFieldDialogComponent,
-	CurrentStructureService,
-	EnumerationUIService,
-	HeaderService,
-} from '@osee/messaging/shared';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type {
 	element,
 	structure,
 	enumerationSet,
 	EditViewFreeTextDialog,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
+import {
+	CurrentStructureService,
+	EnumerationUIService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 
 /**
  * Required attributes:

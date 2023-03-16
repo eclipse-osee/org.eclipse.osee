@@ -10,10 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './affected-artifact-dialog/affected-artifact-dialog.component';
-export * from './column-preferences-dialog/column-preferences-dialog.component';
 export * from './edit-enum-set-dialog/edit-enum-set-dialog.component';
 export * from './edit-type-dialog/edit-type-dialog.component';
-export * from './edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 export * from './new-transport-type-dialog/new-transport-type-dialog.component';
-export * from './new-type-dialog/new-type-dialog.component';

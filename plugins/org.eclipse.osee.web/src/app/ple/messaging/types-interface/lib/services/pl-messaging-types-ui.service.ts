@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',

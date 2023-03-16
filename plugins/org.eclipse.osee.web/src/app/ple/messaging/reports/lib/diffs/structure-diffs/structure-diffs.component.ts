@@ -12,11 +12,11 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { DiffReportService } from '@osee/messaging/shared';
+import { DiffReportService } from '@osee/messaging/shared/services';
 import type {
 	structureDiffItem,
 	elementDiffItem,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
 import { elementDiffHeaderDetails } from '../../table-headers/element-diff-table-headers';

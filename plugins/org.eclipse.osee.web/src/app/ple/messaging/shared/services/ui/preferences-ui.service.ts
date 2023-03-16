@@ -26,7 +26,7 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { transactionResult } from '@osee/shared/types/change-report';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import navigationStructure from '../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
+import { navigationStructure } from '@osee/layout/routing';
 
 const ple = navigationStructure[0].children.find(
 	(page) => page.label === 'Product Line Engineering - Home'
@@ -29,7 +29,7 @@ const asciidoc = navigationStructure[0].children.find(
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 		pathMatch: 'full',
 	},

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { NodeTraceReportItem } from '@osee/messaging/shared';
+import type { NodeTraceReportItem } from '@osee/messaging/shared/types';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { HeaderService } from '@osee/shared/services';
 import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-table-headers';
 
 @Component({

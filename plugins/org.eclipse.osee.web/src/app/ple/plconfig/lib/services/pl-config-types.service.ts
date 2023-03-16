@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { response } from '@osee/shared/types';
 import { productType, ProductType } from '../types/pl-config-product-types';
 

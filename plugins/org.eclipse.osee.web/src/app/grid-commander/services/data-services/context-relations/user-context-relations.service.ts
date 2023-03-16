@@ -21,7 +21,7 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { UiService } from '../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import {
 	Command,
 	UsersContext,

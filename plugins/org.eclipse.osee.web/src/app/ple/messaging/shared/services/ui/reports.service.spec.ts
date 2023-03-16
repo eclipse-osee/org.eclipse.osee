@@ -17,7 +17,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { mimReportsMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { NodeTraceReportMock } from '../../testing/node-trace-report-mock';
 
 import { ReportsService } from './reports.service';

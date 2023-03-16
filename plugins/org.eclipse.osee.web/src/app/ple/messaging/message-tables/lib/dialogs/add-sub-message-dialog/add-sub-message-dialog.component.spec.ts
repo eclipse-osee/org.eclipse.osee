@@ -27,7 +27,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import type { subMessage } from '@osee/messaging/shared';
+import type { subMessage } from '@osee/messaging/shared/types';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 

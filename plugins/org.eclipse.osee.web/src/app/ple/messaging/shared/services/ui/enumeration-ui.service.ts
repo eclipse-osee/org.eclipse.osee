@@ -26,7 +26,7 @@ import {
 	concatMap,
 	reduce,
 } from 'rxjs/operators';
-import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
+import { UiService } from '@osee/shared/services';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 
 @Injectable({
@@ -40,7 +40,7 @@ export class EnumerationUIService {
 	);
 	constructor(
 		private enumSetService: EnumerationSetService,
-		private ui: BranchUIService
+		private ui: UiService
 	) {}
 	createEnumSetToPlatformTypeRelation(sideA?: string) {
 		return this.enumSetService.createEnumSetToPlatformTypeRelation(sideA);

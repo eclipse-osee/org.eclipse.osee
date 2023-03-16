@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { of, take, switchMap, tap } from 'rxjs';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { RowObj } from '../../../types/grid-commander-types/table-data-types';
 import { ExecutedCommandsArtifactService } from '../../data-services/execution-services/executed-commands-artifact.service';
 import { GCBranchIdService } from '../../fetch-data-services/branch/gc-branch-id.service';

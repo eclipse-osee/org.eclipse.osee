@@ -18,7 +18,7 @@ import { TestBed } from '@angular/core/testing';
 import { transaction } from '@osee/shared/types';
 import { transactionMock } from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { ConnectionService } from './connection.service';
 

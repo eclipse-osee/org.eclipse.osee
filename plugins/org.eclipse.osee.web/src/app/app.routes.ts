@@ -15,13 +15,13 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('./layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 		pathMatch: 'full',
 	},
 	{
 		path: '',
-		loadChildren: () => import('./layout/lib/navigation/navigation.routes'),
+		loadChildren: () => import('@osee/layout'),
 		outlet: 'TopLevelNav',
 	},
 	{
@@ -39,11 +39,11 @@ export const routes: Routes = [
 	},
 	{
 		path: '404',
-		loadChildren: () => import('./page-not-found/page-not-found.routes'),
+		loadChildren: () => import('@osee/page-not-found'),
 	},
 	{
 		path: 'about',
-		loadChildren: () => import('./about/about.routes'),
+		loadChildren: () => import('@osee/about'),
 	},
 	{
 		path: 'gc',
@@ -51,7 +51,7 @@ export const routes: Routes = [
 	},
 	{
 		path: '**',
-		loadChildren: () => import('./layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 	},
 	{

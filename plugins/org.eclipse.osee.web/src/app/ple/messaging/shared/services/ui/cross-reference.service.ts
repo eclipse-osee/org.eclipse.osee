@@ -12,17 +12,15 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import {
-	connection,
 	ConnectionService,
-	CrossReference,
 	CrossReferenceHttpService,
 	PreferencesUIService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import type { relation, transaction } from '@osee/shared/types';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {
 	BehaviorSubject,
@@ -37,7 +35,8 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
+import type { CrossReference, connection } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',

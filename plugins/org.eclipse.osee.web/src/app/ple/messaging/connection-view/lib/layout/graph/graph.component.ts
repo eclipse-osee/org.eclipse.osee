@@ -15,7 +15,7 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
-import { CreateNewNodeDialogComponent } from '../../../lib/dialogs/create-new-node-dialog/create-new-node-dialog.component';
+import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
 import { Subject } from 'rxjs';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { AsyncPipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -33,7 +33,7 @@ import type {
 	nodeDataWithChanges,
 	OseeEdge,
 	OseeNode,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-connection-view-graph',

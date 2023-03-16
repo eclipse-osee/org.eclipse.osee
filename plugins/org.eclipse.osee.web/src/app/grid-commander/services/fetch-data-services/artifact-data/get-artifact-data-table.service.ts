@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { apiURL } from '../../../../../environments/environment';
-import { UiService } from '../../../../ple-services/ui/ui.service';
+import { apiURL } from '@osee/environments';
+import { UiService } from '@osee/shared/services';
 import { ResponseTableData } from '../../../types/grid-commander-types/table-data-types';
 import { BehaviorSubject } from 'rxjs';
 

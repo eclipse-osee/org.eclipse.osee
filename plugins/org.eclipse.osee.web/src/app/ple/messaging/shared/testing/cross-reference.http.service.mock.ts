@@ -1,7 +1,5 @@
-import {
-	CrossReference,
-	CrossReferenceHttpService,
-} from '@osee/messaging/shared';
+import { CrossReferenceHttpService } from '@osee/messaging/shared/services';
+import { CrossReference } from '@osee/messaging/shared/types';
 import { Observable, of } from 'rxjs';
 import { crossReferencesMock } from './cross-references.mock';
 

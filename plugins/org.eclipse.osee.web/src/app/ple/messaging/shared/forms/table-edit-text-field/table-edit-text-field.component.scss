@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use '../../../../../../sass-utils/mat-form-utils' as utils;
-@use '../../../../../../sass-utils/mdc-migration/_form-field';
-@use '../../../../../../modern-ple-theme';
+@use 'mat-form-utils' as utils;
+@use 'mdc-migration/_form-field';
+@use 'modern-ple-theme';
 
 :host-context(.light-theme) {
 	@include form-field.legacy(

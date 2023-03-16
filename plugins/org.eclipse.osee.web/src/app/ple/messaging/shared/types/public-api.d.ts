@@ -26,8 +26,6 @@ export * from './Import';
 export * from './logicaltype';
 export * from './messages';
 export * from './mim.preferences';
-export * from './MimAttributes';
-export * from './MimQuery';
 export * from './newTypeDialogDialogData';
 export * from './node';
 export * from './NodeTraceReport';

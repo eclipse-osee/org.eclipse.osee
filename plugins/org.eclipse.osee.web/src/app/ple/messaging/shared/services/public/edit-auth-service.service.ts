@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import type { branchApplicability } from '@osee/messaging/shared/types';
 import { BehaviorSubject, iif, Observable, of } from 'rxjs';
 import { switchMap, share } from 'rxjs/operators';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

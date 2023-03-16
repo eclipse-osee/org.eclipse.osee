@@ -13,7 +13,7 @@
 import { HttpRequest, HttpHandlerFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { finalize, tap } from 'rxjs';
-import { HttpLoadingService } from '../services/http-loading.service';
+import { HttpLoadingService } from '@osee/shared/services/network';
 
 let requests: HttpRequest<any>[] = [];
 export const LoadingIndicatorInterceptor = (

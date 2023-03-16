@@ -15,7 +15,7 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { transactionInfo } from '@osee/shared/types/change-report';
 import { transactionInfoMock } from './testing/transaction.mock';
 

@@ -32,12 +32,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
 	CurrentStructureService,
-	STRUCTURE_SERVICE_TOKEN,
 	WarningDialogService,
-} from '@osee/messaging/shared';
-import type { element, PlatformType } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
+import type { element, PlatformType } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
 	Subject,

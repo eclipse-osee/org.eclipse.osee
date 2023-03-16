@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { SplitStringPipe } from 'src/app/shared/utils/pipes/split-string.pipe';
+import { SplitStringPipe } from './split-string.pipe';
 
 describe('SplitOnSemicolonPipe', () => {
 	it('create an instance', () => {

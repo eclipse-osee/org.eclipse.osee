@@ -12,8 +12,8 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from '../../../../../../environments/environment';
-import type { StructurePath } from '@osee/messaging/shared';
+import { apiURL } from '@osee/environments';
+import type { StructurePath } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',

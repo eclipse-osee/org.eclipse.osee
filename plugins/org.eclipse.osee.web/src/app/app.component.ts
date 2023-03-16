@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { map } from 'rxjs';
-import { SideNavService } from './shared-services/ui/side-nav.service';
-import { NavContainerComponent } from './layout/lib/containers/nav-container.component';
+import { SideNavService } from '@osee/shared/services/layout';
+import { NavContainerComponent } from '@osee/layout/container';
 import { RouterOutlet } from '@angular/router';
 
 @Component({

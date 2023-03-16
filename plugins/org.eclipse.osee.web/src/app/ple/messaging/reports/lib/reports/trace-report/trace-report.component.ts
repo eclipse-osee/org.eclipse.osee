@@ -12,9 +12,9 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReportsService } from '@osee/messaging/shared';
+import { ReportsService } from '@osee/messaging/shared/services';
 import { ActivatedRoute } from '@angular/router';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { TraceReportTableComponent } from '../../tables/trace-report-table/trace-report-table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';

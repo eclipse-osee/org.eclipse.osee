@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { filter, switchMap } from 'rxjs/operators';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { StructureNamesService } from '../http/structure-names.service';
 
 @Injectable({

@@ -12,14 +12,15 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
-	ApplicabilityListService,
+	TypesService,
+	MimPreferencesService,
 	EnumerationSetService,
 	EnumsService,
-	MimPreferencesService,
-	TypesService,
-} from '@osee/messaging/shared';
+	ApplicabilityListService,
+} from '@osee/messaging/shared/services';
 import {
 	typesServiceMock,
 	MimPreferencesServiceMock,

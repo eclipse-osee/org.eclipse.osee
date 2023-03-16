@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { changeInstance } from '@osee/shared/types/change-report';
 
 @Injectable({

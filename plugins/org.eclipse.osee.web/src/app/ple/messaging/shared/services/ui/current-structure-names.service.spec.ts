@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { structuresNameServiceMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { StructureNamesService } from '../http/structure-names.service';
 
 import { CurrentStructureNamesService } from './current-structure-names.service';

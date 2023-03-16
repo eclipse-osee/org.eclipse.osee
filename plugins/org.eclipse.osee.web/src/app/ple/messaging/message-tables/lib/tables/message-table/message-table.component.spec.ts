@@ -37,7 +37,6 @@ import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 import { MockAddMessageDialogComponent } from '../../testing/add-message-dialog.component.mock';
 import { MockSubMessageTableComponent } from '../../testing/sub-message-table.component.mock';
 import { MockEditMessageFieldComponent } from '../../testing/edit-message-field.component.mock';
@@ -47,8 +46,8 @@ import {
 	EditAuthService,
 	EnumsService,
 	MessageUiService,
-} from '@osee/messaging/shared';
-import type { message } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
+import type { message } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { TwoLayerAddButtonHarness } from '@osee/shared/components/testing';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
@@ -61,6 +60,7 @@ import {
 	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MockSingleDiffComponent } from '@osee/shared/testing';
 
 let loader: HarnessLoader;
 

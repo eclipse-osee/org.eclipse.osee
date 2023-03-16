@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import type { subMessage, message } from '@osee/messaging/shared';
+import type { subMessage, message } from '@osee/messaging/shared/types';
 
 export interface RemoveSubMessageDialogData {
 	submessage: subMessage;

@@ -15,7 +15,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { plCurrentBranchServiceMock } from '../testing/mockPlCurrentBranchService.mock';
-import { MockXResultData } from '../../../../testing/XResultData.response.mock';
 import { response } from '@osee/shared/types';
 import { CfgGroupDialog } from '../types/pl-config-cfggroups';
 import { PLEditConfigData } from '../types/pl-edit-config-data';
@@ -24,6 +23,7 @@ import { DialogService } from './dialog.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
 import { modifyFeature, PLEditFeatureData } from '../types/pl-config-features';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MockXResultData } from '@osee/shared/testing';
 
 describe('DialogService', () => {
 	let service: DialogService;

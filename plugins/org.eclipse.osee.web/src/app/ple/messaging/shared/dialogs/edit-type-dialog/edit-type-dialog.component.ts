@@ -47,7 +47,7 @@ import type {
 	editPlatformTypeDialogData,
 	enumeratedPlatformType,
 } from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import { TypesService, EnumsService } from '@osee/messaging/shared/services';
 import { MatOptionLoadingComponent } from '@osee/shared/components';

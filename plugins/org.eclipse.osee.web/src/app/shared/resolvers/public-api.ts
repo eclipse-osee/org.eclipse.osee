@@ -10,4 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './diff-report-resolver.resolver';
+export * from './diff/diff-report-resolver.resolver';

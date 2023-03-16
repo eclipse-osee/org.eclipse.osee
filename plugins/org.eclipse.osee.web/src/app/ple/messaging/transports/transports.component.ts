@@ -20,14 +20,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { UiService } from '../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import {
 	CurrentTransportTypeService,
 	HeaderService,
-	MessagingControlsComponent,
-	NewTransportTypeDialogComponent,
-} from '@osee/messaging/shared';
-import type { transportType } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
+import type { transportType } from '@osee/messaging/shared/types';
+import { NewTransportTypeDialogComponent } from '@osee/messaging/shared/dialogs';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 @Component({
 	selector: 'osee-transports',

@@ -15,8 +15,7 @@ import { Routes } from '@angular/router';
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () =>
-			import('../../../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 	},
 	{ path: '', loadComponent: () => import('./reports.component') },
@@ -27,13 +26,11 @@ const routes: Routes = [
 	},
 	{
 		path: ':branchType/:branchId/differences',
-		loadChildren: () =>
-			import('./lib/reports/diff-report/diff-report.routes'),
+		loadChildren: () => import('@osee/messaging/reports/diff'),
 	},
 	{
 		path: ':branchType/:branchId/traceReport',
-		loadChildren: () =>
-			import('./lib/reports/trace-report/trace-report.routes'),
+		loadChildren: () => import('@osee/messaging/reports/trace'),
 	},
 ];
 

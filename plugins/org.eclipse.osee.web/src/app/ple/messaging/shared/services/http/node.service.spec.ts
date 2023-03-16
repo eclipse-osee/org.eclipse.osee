@@ -21,7 +21,7 @@ import {
 	transactionMock,
 } from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { NodeService } from './node.service';
 

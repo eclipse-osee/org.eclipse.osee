@@ -27,10 +27,12 @@ import {
 	changeTypeNumber,
 	ModificationType,
 } from '@osee/shared/types/change-report';
-import { BranchInfoService } from 'src/app/ple-services/http/branch-info.service';
+import {
+	ActionService,
+	BranchInfoService,
+	UiService,
+} from '@osee/shared/services';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
-import { ActionService } from 'src/app/ple-services/http/action.service';
-import { BranchUIService } from 'src/app/ple-services/ui/branch/branch-ui.service';
 import type {
 	branchSummary,
 	DifferenceReport,
@@ -57,7 +59,7 @@ import { CurrentDiffReportService } from './current-diff-report.service';
 export class DiffReportService {
 	constructor(
 		private diffService: CurrentDiffReportService,
-		private uiService: BranchUIService,
+		private uiService: UiService,
 		private branchInfoService: BranchInfoService,
 		private actionService: ActionService
 	) {}

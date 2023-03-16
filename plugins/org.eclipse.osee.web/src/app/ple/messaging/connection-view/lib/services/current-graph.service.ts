@@ -27,7 +27,6 @@ import {
 import { GraphService } from './graph.service';
 import { RouteStateService } from './route-state-service.service';
 import { applic } from '@osee/shared/types/applicability';
-import { DiffUIService } from 'src/app/ple-services/httpui/diff-uiservice.service';
 import {
 	ARTIFACTTYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
@@ -37,15 +36,15 @@ import {
 	changeTypeEnum,
 	itemTypeIdRelation,
 } from '@osee/shared/types/change-report';
-import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
-import { RelationTypeId } from 'src/app/shared/types/constants/RelationTypeId.enum';
+import { SideNavService } from '@osee/shared/services/layout';
+import { RelationTypeId } from '@osee/shared/types/constants';
 import {
 	ApplicabilityListService,
 	ConnectionService,
 	NodeService,
 	PreferencesUIService,
 	SharedConnectionUIService,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import type {
 	connection,
 	connectionWithChanges,
@@ -55,15 +54,13 @@ import type {
 	OseeEdge,
 	OseeNode,
 	transportType,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { relation, transactionToken } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CurrentGraphService {
-	private _diff = this.diffService.diff;
-
 	private _graph = combineLatest([
 		this.routeStateService.id,
 		this.connectionUiService.viewId,
@@ -138,7 +135,6 @@ export class CurrentGraphService {
 		private connectionService: ConnectionService,
 		private routeStateService: RouteStateService,
 		private applicabilityService: ApplicabilityListService,
-		private diffService: DiffUIService,
 		private sideNavService: SideNavService,
 		private preferenceService: PreferencesUIService,
 		private connectionUiService: SharedConnectionUIService
@@ -187,10 +183,6 @@ export class CurrentGraphService {
 	}
 	get sideNavContent() {
 		return this.sideNavService.rightSideNavContent;
-	}
-
-	get diff() {
-		return this._diff;
 	}
 
 	set sideNav(value: {

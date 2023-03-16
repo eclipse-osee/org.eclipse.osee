@@ -1,4 +1,4 @@
-import type { MIMATTRIBUTETYPEID } from './MimAttributes';
+import type { MIMATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
 import type { PlatformType } from './platformType';
 
 /*********************************************************************

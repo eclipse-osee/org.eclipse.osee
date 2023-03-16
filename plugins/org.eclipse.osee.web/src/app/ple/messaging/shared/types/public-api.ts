@@ -12,7 +12,7 @@
  **********************************************************************/
 export * from './affectedArtifact.d';
 export * from './branch.applic.d';
-export * from './connection';
+export * from './connection.d';
 export * from './connection-nodes.d';
 export * from './crossReference.d ';
 export * from './DifferenceReport.d';
@@ -27,11 +27,7 @@ export * from './Import.d';
 export * from './logicaltype.d';
 export * from './messages.d';
 export * from './mim.preferences.d';
-export * from './MimAttributes';
-export * from './MimQuery';
 export * from './newTypeDialogDialogData.d';
 export * from './node.d';
 export * from './NodeTraceReport.d';
 export * from './platformType.d';
-export * from './EditPlatformTypeDialogDataMode.enum';
-export * from './PlatformTypeInstance';

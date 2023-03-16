@@ -20,11 +20,14 @@ import { ConnectionDiffsComponent } from '../../diffs/connection-diffs/connectio
 import { MessageDiffsComponent } from '../../diffs/message-diffs/message-diffs.component';
 import { SubmessageDiffsComponent } from '../../diffs/submessage-diffs/submessage-diffs.component';
 import { StructureDiffsComponent } from '../../diffs/structure-diffs/structure-diffs.component';
-import { DiffReportService, HeaderService } from '@osee/messaging/shared';
+import {
+	DiffReportService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
 import type {
 	branchSummary,
 	diffReportSummaryItem,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-diff-report',

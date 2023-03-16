@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { UiService } from '@osee/shared/services';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',

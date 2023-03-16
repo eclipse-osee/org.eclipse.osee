@@ -34,8 +34,8 @@ import { ElementService } from '../http/element.service';
 import { TypesUIService } from './types-ui.service';
 import { ApplicabilityListUIService } from './applicability-list-ui.service';
 import { PreferencesUIService } from './preferences-ui.service';
-import { DiffReportBranchService } from '../../../../../ple-services/ui/diff/diff-report-branch.service';
-import { SideNavService } from '../../../../../shared-services/ui/side-nav.service';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { SideNavService } from '@osee/shared/services/layout';
 import { EnumsService } from '../http/enums.service';
 import { QueryService } from '../http/query.service';
 import {
@@ -48,11 +48,11 @@ import type {
 	structureWithChanges,
 	PlatformType,
 	element,
-	MimQuery,
 	settingsDialogData,
 	elementWithChanges,
 } from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
+import type { MimQuery } from '@osee/messaging/shared/query';
 @Injectable({
 	providedIn: 'root',
 })
@@ -68,7 +68,7 @@ export abstract class CurrentStructureService {
 		protected typeService: TypesUIService,
 		protected applicabilityService: ApplicabilityListUIService,
 		protected preferenceService: PreferencesUIService,
-		protected diffReportService: DiffReportBranchService,
+		protected branchInfoService: CurrentBranchInfoService,
 		protected sideNavService: SideNavService,
 		protected enumListService: EnumsService,
 		protected queryService: QueryService
@@ -975,7 +975,7 @@ export abstract class CurrentStructureService {
 		return this.BranchId.pipe(
 			switchMap((id) =>
 				this.queryService
-					.query(id, query)
+					.query<T>(id, query)
 					.pipe(shareReplay({ bufferSize: 1, refCount: true }))
 			)
 		);

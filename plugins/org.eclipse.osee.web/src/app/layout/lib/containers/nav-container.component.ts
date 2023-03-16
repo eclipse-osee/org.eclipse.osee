@@ -14,7 +14,7 @@ import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
-import { SideNavService } from '../../../shared-services/ui/side-nav.service';
+import { SideNavService } from '@osee/shared/services/layout';
 import { map } from 'rxjs';
 
 @Component({

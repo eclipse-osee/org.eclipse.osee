@@ -22,7 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
-import { ActionService } from '../../../../ple-services/http/action.service';
+import { ActionService } from '@osee/shared/services';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { MockActionUserService } from '../internal/services/action-user.service.mock';
 

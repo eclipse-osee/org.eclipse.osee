@@ -14,10 +14,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ConnectionViewComponent } from './connection-view.component';
-import { graphServiceMock } from './lib/testing/current-graph.service.mock';
-import { CurrentGraphService } from './lib/services/current-graph.service';
-import { MockHostComponent } from './lib/testing/host.component.mock';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CurrentGraphService } from '@osee/messaging/connection-view';
+import {
+	MockHostComponent,
+	graphServiceMock,
+} from '@osee/messaging/connection-view/testing';
 
 describe('ConnectionViewComponent', () => {
 	let component: ConnectionViewComponent;

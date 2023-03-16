@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
-import { AttributeService } from 'src/app/ple-services/http/attribute.service';
+import { AttributeService } from '@osee/shared/services';
 import { attributeServiceMock } from '../mocks/attribute-service.mock';
 import { CurrentTextEditorService } from './current-text-editor.service';
 

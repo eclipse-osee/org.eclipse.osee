@@ -22,7 +22,7 @@ import {
 } from '@osee/shared/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { relation } from '@osee/shared/types';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { SubMessagesService } from './sub-messages.service';
 

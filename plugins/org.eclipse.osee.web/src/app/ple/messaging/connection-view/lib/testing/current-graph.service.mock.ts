@@ -13,15 +13,11 @@
 import { of, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { CurrentGraphService } from '../services/current-graph.service';
 import { applic } from '@osee/shared/types/applicability';
-import { changeReportMock } from '../../../../../ple-services/http/change-report.mock';
 import { changeInstance } from '@osee/shared/types/change-report';
-import type {
-	node,
-	connection,
-	settingsDialogData,
-} from '@osee/messaging/shared';
+import type { node, connection } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { MimPreferencesMock } from '@osee/messaging/shared/testing';
+import { changeReportMock } from '@osee/shared/testing';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;
@@ -75,7 +71,6 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
 		{ id: '2', name: 'Second' },
 	]),
 	preferences: of(MimPreferencesMock),
-	diff: of(changeReportMock),
 	InDiff: new BehaviorSubject<boolean>(true),
 	differences: new BehaviorSubject<changeInstance[] | undefined>(
 		changeReportMock

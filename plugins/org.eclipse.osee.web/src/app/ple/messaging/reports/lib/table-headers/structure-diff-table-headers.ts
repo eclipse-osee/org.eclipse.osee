@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { structureDiffItem } from '@osee/messaging/shared';
-import { headerDetail } from '@osee/shared/types';
+import type { structureDiffItem } from '@osee/messaging/shared/types';
+import type { headerDetail } from '@osee/shared/types';
 
 export const structureDiffHeaderDetails: headerDetail<structureDiffItem>[] = [
 	{

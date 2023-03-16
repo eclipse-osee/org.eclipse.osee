@@ -17,9 +17,9 @@ import type {
 	nodeData,
 	OseeEdge,
 	connection,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { HttpParamsType } from '@osee/shared/types';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Routes } from '@angular/router';
 import { RoleGuard } from '@osee/auth';
-import navigationStructure from '../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
+import { navigationStructure } from '@osee/layout/routing';
 
 const messaging = navigationStructure[0].children.filter(
 	(c) => c.label === 'Messaging Configuration'
@@ -47,7 +47,7 @@ const help = navigationStructure[0].children
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('../../layout/lib/toolbar/toolbar.routes'),
+		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 		pathMatch: 'full',
 	},

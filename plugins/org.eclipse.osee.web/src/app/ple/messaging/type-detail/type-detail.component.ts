@@ -13,12 +13,10 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-	PlatformTypeCardComponent,
-	TypesUIService,
-} from '@osee/messaging/shared';
+import { TypesUIService } from '@osee/messaging/shared/services';
+import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
+import { TypeDetailService } from '@osee/messaging/type-detail';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { TypeDetailService } from './lib/services/type-detail-service.service';
 
 @Component({
 	selector: 'osee-messaging-type-detail',

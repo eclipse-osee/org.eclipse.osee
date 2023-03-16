@@ -31,7 +31,7 @@ import {
 	map,
 	filter,
 } from 'rxjs/operators';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { applic } from '@osee/shared/types/applicability';
 import { TypesService } from '../http/types.service';
 import { EnumerationUIService } from './enumeration-ui.service';

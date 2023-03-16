@@ -19,7 +19,7 @@ import {
 import { StructuresService } from './structures.service';
 import { HttpClient } from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import type { structure } from '@osee/messaging/shared/types';
 import { structuresMock3 } from '@osee/messaging/shared/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';

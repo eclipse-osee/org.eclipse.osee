@@ -10,24 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgIf, AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterOutlet } from '@angular/router';
 
 import { OseeToolbarComponent } from './osee-toolbar.component';
 
 @Component({
-	selector: 'osee-display-user',
+	selector: 'osee-toolbar',
 	template: '<p>Mock Component</p>',
 	standalone: true,
 })
-class MockOseeUserComponent {}
+class MockOseeToolbarComponent {
+	@Input() oseeToolbar = true;
+}
 
 describe('ToolbarComponent', () => {
 	let component: OseeToolbarComponent;
@@ -36,16 +32,7 @@ describe('ToolbarComponent', () => {
 	beforeEach(async () => {
 		await TestBed.overrideComponent(OseeToolbarComponent, {
 			set: {
-				imports: [
-					MatToolbarModule,
-					MatButtonModule,
-					MatIconModule,
-					RouterOutlet,
-					NgIf,
-					AsyncPipe,
-					MatProgressSpinnerModule,
-					MockOseeUserComponent,
-				],
+				imports: [MockOseeToolbarComponent],
 			},
 		})
 			.configureTestingModule({

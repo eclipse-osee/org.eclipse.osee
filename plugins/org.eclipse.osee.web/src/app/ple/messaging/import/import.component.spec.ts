@@ -18,14 +18,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
+import { ImportService } from '@osee/messaging/import';
+import { importServiceMock } from '@osee/messaging/import/testing';
 import {
 	ActionDropdownStub,
 	BranchPickerStub,
 } from '@osee/shared/components/testing';
 
 import { ImportComponent } from './import.component';
-import { ImportService } from './lib/services/import.service';
-import { importServiceMock } from './lib/services/import.service.mock';
 
 describe('ImportComponent', () => {
 	let component: ImportComponent;

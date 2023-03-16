@@ -50,7 +50,7 @@ import { CurrentStructureService } from './current-structure.service';
 export class CurrentStructureSingleService extends CurrentStructureService {
 	private _structures = combineLatest([
 		this.BranchId,
-		this.diffReportService.parentBranch,
+		this.branchInfoService.parentBranch,
 		this.MessageId,
 		this.SubMessageId,
 		this.connectionId,

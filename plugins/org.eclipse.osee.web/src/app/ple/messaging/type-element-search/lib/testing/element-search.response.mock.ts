@@ -14,7 +14,7 @@
 import type {
 	element,
 	elementWithPathsAndButtons,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 
 export const elementSearch1: element[] = [
 	{

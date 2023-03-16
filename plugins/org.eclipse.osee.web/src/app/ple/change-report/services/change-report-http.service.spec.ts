@@ -15,7 +15,7 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { changeReportMock } from '../mocks/changeReportMock';
 
 import { ChangeReportHttpService } from './change-report-http.service';

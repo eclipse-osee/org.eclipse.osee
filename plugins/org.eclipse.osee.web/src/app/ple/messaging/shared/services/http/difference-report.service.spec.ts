@@ -16,7 +16,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { differenceReportMock } from '@osee/messaging/shared/testing';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { DifferenceReportService } from './difference-report.service';
 

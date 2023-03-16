@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import type { transportType } from '@osee/messaging/shared/types';
 

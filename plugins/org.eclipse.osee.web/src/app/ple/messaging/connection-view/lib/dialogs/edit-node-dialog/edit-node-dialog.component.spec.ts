@@ -29,7 +29,7 @@ import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { EditNodeDialogComponent } from './edit-node-dialog.component';
-import type { node } from '@osee/messaging/shared';
+import type { node } from '@osee/messaging/shared/types';
 import { dialogRef } from '@osee/messaging/shared/testing';
 
 describe('EditNodeDialogComponent', () => {

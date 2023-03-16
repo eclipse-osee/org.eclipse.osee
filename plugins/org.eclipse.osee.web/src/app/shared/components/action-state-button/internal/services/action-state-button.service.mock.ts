@@ -11,19 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { testBranchInfo } from '../../../../../testing/branch-info.response.mock';
-import {
-	testBranchActions,
-	testCommitResponse,
-	testDataTransitionResponse,
-	testWorkFlow,
-} from '../../../../../testing/configuration-management.response.mock';
-import { MockXResultData } from '../../../../../testing/XResultData.response.mock';
-import { MockNamedId } from '../../../../../testing/NamedId.response.mock';
-import { testnewActionResponse } from '../../../../../testing/new-action.response.mock';
-import { MockUserResponse } from '../../../../../testing/user.response.mock';
+
 import { CreateAction } from '@osee/shared/types/configuration-management';
 import { ActionStateButtonService } from './action-state-button.service';
+import {
+	testBranchActions,
+	testWorkFlow,
+	testBranchInfo,
+	MockNamedId,
+	MockUserResponse,
+	testCommitResponse,
+	testDataTransitionResponse,
+	MockXResultData,
+	testnewActionResponse,
+} from '@osee/shared/testing';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 	approvedState: of('false'),

@@ -21,10 +21,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TrainingRoleServiceMock } from './../../testing/training-role.service.mock';
 import { TrainingRoleService } from './../../services/training-role.service';
 import { AddRolesDialogComponent } from './add-roles-dialog.component';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('AddRolesDialogComponent', () => {
 	let component: AddRolesDialogComponent;

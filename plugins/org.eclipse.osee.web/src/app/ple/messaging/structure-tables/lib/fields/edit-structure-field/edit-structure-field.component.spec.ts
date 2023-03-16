@@ -28,17 +28,18 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { EditStructureFieldComponent } from './edit-structure-field.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import {
-	EnumsService,
-	StructuresUiService,
-	STRUCTURE_SERVICE_TOKEN,
-	WarningDialogService,
-} from '@osee/messaging/shared';
+
 import {
 	CurrentStateServiceMock,
 	enumsServiceMock,
 	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
+import {
+	StructuresUiService,
+	EnumsService,
+} from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 
 describe('EditStructureFieldComponent', () => {
 	let component: EditStructureFieldComponent;

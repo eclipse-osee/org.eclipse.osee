@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { UserHeaderDemoService } from '@osee/auth';
+import { UserHeaderDemoService } from './internal/user-header-demo.service';
 
 export const environment = {
 	production: true,

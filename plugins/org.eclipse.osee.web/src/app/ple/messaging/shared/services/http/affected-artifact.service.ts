@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 import type { affectedArtifact } from '../../types/affectedArtifact';
 
 @Injectable({

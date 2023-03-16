@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { MockXResultData } from '@osee/shared/testing';
 import { of } from 'rxjs';
 import { DialogService } from '../services/dialog.service';
 import { extendedFeature } from '../types/features/base';
-import { MockXResultData } from '../../../../testing/XResultData.response.mock';
 
 export const DialogServiceMock: Partial<DialogService> = {
 	openConfigMenu(header: string, editable: string) {

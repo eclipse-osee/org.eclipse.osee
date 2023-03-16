@@ -15,11 +15,11 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { apiURL } from '../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 
 import { BranchListService } from './branch-list.service';
 import { BranchCategoryService } from './branch-category.service';
-import { UiService } from '../../../../ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { branch } from '@osee/shared/types';
 
 describe('BranchListService', () => {

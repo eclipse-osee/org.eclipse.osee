@@ -18,7 +18,7 @@ import {
 	shareReplay,
 	filter,
 } from 'rxjs/operators';
-import { UiService } from 'src/app/ple-services/ui/ui.service';
+import { UiService } from '@osee/shared/services';
 import { ApplicabilityListService } from '../http/applicability-list.service';
 
 @Injectable({

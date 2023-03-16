@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,18 +27,16 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { ApplicabilityTableComponent } from './lib/table/applicability-table/applicability-table.component';
-import { CompoundApplicabilityDropdownComponent } from './lib/dropdowns/compound-applicability-dropdown/compound-applicability-dropdown.component';
-import { ConfigurationDropdownComponent } from './lib/dropdowns/configuration-dropdown/configuration-dropdown.component';
-import { ConfigurationGroupDropdownComponent } from './lib/dropdowns/configuration-group-dropdown/configuration-group-dropdown.component';
-import { EditDefinitionsDropdownComponent } from './lib/dropdowns/edit-definitions-dropdown/edit-definitions-dropdown.component';
-import { FeatureDropdownComponent } from './lib/dropdowns/feature-dropdown/feature-dropdown.component';
-import { ProductTypeDropDownComponent } from './lib/dropdowns/product-type-drop-down/product-type-drop-down.component';
 import { PlconfigComponent } from './plconfig.component';
 import {
 	ActionDropdownStub,
 	BranchPickerStub,
 } from '@osee/shared/components/testing';
+import {
+	EditDefinitionsDropdownComponent,
+	ApplicabilityTableComponent,
+} from '@osee/plconfig';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('PlconfigComponent', () => {
 	let component: PlconfigComponent;
@@ -48,7 +45,7 @@ describe('PlconfigComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
-				HttpClientModule,
+				HttpClientTestingModule,
 				MatDialogModule,
 				MatMenuModule,
 				MatIconModule,
@@ -65,11 +62,6 @@ describe('PlconfigComponent', () => {
 				NoopAnimationsModule,
 				ActionDropdownStub,
 				BranchPickerStub,
-				ConfigurationDropdownComponent,
-				ConfigurationGroupDropdownComponent,
-				FeatureDropdownComponent,
-				ProductTypeDropDownComponent,
-				CompoundApplicabilityDropdownComponent,
 				EditDefinitionsDropdownComponent,
 				ApplicabilityTableComponent,
 				PlconfigComponent,

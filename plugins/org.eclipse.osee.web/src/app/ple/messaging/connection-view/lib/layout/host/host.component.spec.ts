@@ -23,16 +23,16 @@ import { HostComponent } from './host.component';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MockSingleDiffComponent } from '../../../../../diff-views/single-diff/single-diff.component.mock';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { NgIf, AsyncPipe } from '@angular/common';
-import { EditAuthService } from '@osee/messaging/shared';
+import { EditAuthService } from '@osee/messaging/shared/services';
 import {
 	editAuthServiceMock,
 	MessagingControlsMockComponent,
 	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
+import { MockSingleDiffComponent } from '@osee/shared/testing';
 
 describe('HostComponent', () => {
 	let component: HostComponent;

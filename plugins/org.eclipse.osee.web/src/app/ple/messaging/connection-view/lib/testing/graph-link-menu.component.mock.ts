@@ -18,7 +18,7 @@ import type {
 	node,
 	nodeData,
 	nodeDataWithChanges,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-graph-link-menu',

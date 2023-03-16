@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { apiURL } from '../../../../../../environments/environment';
+import { apiURL } from '@osee/environments';
 import type { connection, _newConnection } from '../../types/connection';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {

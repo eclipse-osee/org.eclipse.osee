@@ -13,12 +13,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { connectionDiffItem } from '@osee/messaging/shared';
+
 import { TestScheduler } from 'rxjs/testing';
 import { connectionDiffsMock } from '@osee/messaging/shared/testing';
 
 import { DiffReportTableComponent } from './diff-report-table.component';
 import { connectionDiffHeaderDetails } from '../../table-headers/connection-diff-table-headers';
+import type { connectionDiffItem } from '@osee/messaging/shared/types';
 
 describe('DiffReportTableComponent', () => {
 	let component: DiffReportTableComponent<connectionDiffItem>;

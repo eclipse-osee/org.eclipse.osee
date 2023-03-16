@@ -12,7 +12,7 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { PreferencesUIService } from '@osee/messaging/shared';
+import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { tap } from 'rxjs';
 
 @Component({

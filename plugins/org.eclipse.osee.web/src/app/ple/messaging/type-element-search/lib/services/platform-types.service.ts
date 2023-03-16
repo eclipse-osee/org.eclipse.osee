@@ -12,8 +12,8 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import type { elementWithPathsAndButtons } from '@osee/messaging/shared';
-import { apiURL } from '../../../../../../environments/environment';
+import type { elementWithPathsAndButtons } from '@osee/messaging/shared/types';
+import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

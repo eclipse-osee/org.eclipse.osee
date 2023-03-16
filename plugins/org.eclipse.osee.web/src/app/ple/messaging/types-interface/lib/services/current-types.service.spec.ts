@@ -19,14 +19,7 @@ import { TestScheduler } from 'rxjs/testing';
 
 import { CurrentTypesService } from './current-types.service';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import {
-	ApplicabilityListService,
-	EnumerationSetService,
-	EnumsService,
-	MimPreferencesService,
-	TypesService,
-} from '@osee/messaging/shared';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import {
 	transactionBuilderMock,
@@ -41,6 +34,14 @@ import {
 	platformTypes1,
 	MimPreferencesMock,
 } from '@osee/messaging/shared/testing';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
+import {
+	MimPreferencesService,
+	TypesService,
+	EnumsService,
+	EnumerationSetService,
+	ApplicabilityListService,
+} from '@osee/messaging/shared/services';
 
 describe('CurrentTypesServiceService', () => {
 	let service: CurrentTypesService;

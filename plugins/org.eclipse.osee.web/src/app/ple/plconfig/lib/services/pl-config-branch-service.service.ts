@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { share, tap } from 'rxjs/operators';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../types/pl-config-branch';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';

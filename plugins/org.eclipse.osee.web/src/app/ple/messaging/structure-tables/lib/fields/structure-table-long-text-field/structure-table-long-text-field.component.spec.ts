@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PreferencesUIService } from '@osee/messaging/shared';
+import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { preferencesUiServiceMock } from '@osee/messaging/shared/testing';
 
 import { StructureTableLongTextFieldComponent } from './structure-table-long-text-field.component';

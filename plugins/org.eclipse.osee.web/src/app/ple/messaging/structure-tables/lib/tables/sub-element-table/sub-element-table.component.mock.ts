@@ -13,7 +13,7 @@
 import { EventEmitter, Output } from '@angular/core';
 import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import type { structure } from '@osee/messaging/shared';
+import type { structure } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',

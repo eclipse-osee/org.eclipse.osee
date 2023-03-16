@@ -12,8 +12,8 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { changeReportRow } from 'src/app/shared/types/change-report/change-report';
-import { apiURL } from 'src/environments/environment';
+import { changeReportRow } from '@osee/shared/types/change-report';
+import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

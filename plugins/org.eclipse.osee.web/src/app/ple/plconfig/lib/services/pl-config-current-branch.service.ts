@@ -63,7 +63,7 @@ import {
 	editConfiguration,
 } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { ActionService } from '../../../../ple-services/http/action.service';
+import { ActionService } from '@osee/shared/services';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
 import {
@@ -74,7 +74,7 @@ import {
 	extendedFeature,
 	extendedFeatureWithChanges,
 } from '../types/features/base';
-import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
+import { SideNavService } from '@osee/shared/services/layout';
 import { applic } from '@osee/shared/types/applicability';
 import { transactionToken } from '@osee/shared/types/change-report';
 import { NamedId } from '@osee/shared/types';

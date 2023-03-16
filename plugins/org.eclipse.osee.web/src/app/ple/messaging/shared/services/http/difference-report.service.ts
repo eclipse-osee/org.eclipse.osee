@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import type { DifferenceReport } from '@osee/messaging/shared/types';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',

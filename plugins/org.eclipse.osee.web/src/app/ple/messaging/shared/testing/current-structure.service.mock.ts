@@ -26,11 +26,11 @@ import type {
 	structure,
 	settingsDialogData,
 	PlatformType,
-	MimQuery,
 	element,
 } from '@osee/messaging/shared/types';
 import { transactionToken } from '@osee/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
+import type { MimQuery } from '@osee/messaging/shared/query';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;

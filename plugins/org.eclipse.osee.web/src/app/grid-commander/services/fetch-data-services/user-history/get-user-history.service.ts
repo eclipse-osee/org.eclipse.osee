@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import { userHistory } from '../../../types/grid-commander-types/userHistory';
 
 @Injectable({

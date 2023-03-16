@@ -10,36 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
-import { DisplayUserComponent } from '../../../../user-display/display-user.component';
 import { ToolbarComponent } from '../toolbar.component';
 
 @Component({
 	selector: 'osee-osee-toolbar',
 	standalone: true,
-	templateUrl: '../toolbar.component.html',
-	styleUrls: ['../toolbar.component.sass'],
-	imports: [
-		MatToolbarModule,
-		MatButtonModule,
-		MatIconModule,
-		RouterOutlet,
-		NgIf,
-		AsyncPipe,
-		MatProgressSpinnerModule,
-		DisplayUserComponent,
-	],
+	template: `<osee-toolbar [oseeToolbar]="true"></osee-toolbar>`,
+	imports: [ToolbarComponent],
 })
-export class OseeToolbarComponent extends ToolbarComponent {
-	constructor() {
-		super();
-	}
+export class OseeToolbarComponent {
+	constructor() {}
 }
 
 export default OseeToolbarComponent;

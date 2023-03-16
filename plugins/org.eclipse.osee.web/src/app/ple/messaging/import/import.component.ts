@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import {
+import type {
 	connection,
 	CrossReference,
 	elementImportToken,
@@ -25,11 +25,10 @@ import {
 	ImportEnumSet,
 	ImportSummary,
 	messageToken,
-	MessagingControlsComponent,
 	nodeToken,
 	platformTypeImportToken,
 	subMessage,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import {
 	importEnumSetHeaderDetails,
 	importMessageHeaderDetails,
@@ -39,12 +38,12 @@ import {
 	subMessageHeaderDetails,
 	importElementHeaderDetails,
 	crossReferenceHeaderDetails,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/table-headers';
 import { BehaviorSubject, from, iif, of, OperatorFunction } from 'rxjs';
 import { concatMap, filter, map, reduce, switchMap } from 'rxjs/operators';
-import { UiService } from '../../../ple-services/ui/ui.service';
-import { ImportTableComponent } from './lib/components/import-table/import-table.component';
-import { ImportService } from './lib/services/import.service';
+import { UiService } from '@osee/shared/services';
+import { ImportService, ImportTableComponent } from '@osee/messaging/import';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 @Component({
 	selector: 'osee-import',

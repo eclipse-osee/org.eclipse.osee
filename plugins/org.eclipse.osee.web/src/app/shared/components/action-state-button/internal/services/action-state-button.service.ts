@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { iif, of, combineLatest, BehaviorSubject, from } from 'rxjs';
+import { iif, of, combineLatest, BehaviorSubject } from 'rxjs';
 import {
 	filter,
 	switchMap,
@@ -22,18 +22,18 @@ import {
 	tap,
 	map,
 	distinctUntilChanged,
-	concatMap,
 } from 'rxjs/operators';
-import { ActionService } from '../../../../../ple-services/http/action.service';
-import { BranchInfoService } from '../../../../../ple-services/http/branch-info.service';
-import { CurrentBranchInfoService } from '../../../../../ple-services/httpui/current-branch-info.service';
-import { UiService } from '../../../../../ple-services/ui/ui.service';
+import {
+	ActionService,
+	BranchInfoService,
+	CurrentActionService,
+	CurrentBranchInfoService,
+	UiService,
+} from '@osee/shared/services';
 import { BranchCategoryService } from '../../../internal/services/branch-category.service';
 import { UserDataAccountService } from '@osee/auth';
 import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
 import {
-	actionImpl,
-	teamWorkflowImpl,
 	transitionAction,
 	CreateAction,
 	CreateNewAction,
@@ -51,7 +51,8 @@ export class ActionStateButtonService {
 		private currentBranchService: CurrentBranchInfoService,
 		private accountService: UserDataAccountService,
 		private branchedRouter: BranchRoutedUIService,
-		private branchCategoryService: BranchCategoryService
+		private branchCategoryService: BranchCategoryService,
+		private currentActionService: CurrentActionService
 	) {}
 
 	set category(category: string) {
@@ -91,40 +92,8 @@ export class ActionStateButtonService {
 		return this.actionService.getChangeTypes(actionableItem);
 	}
 	private _branchState = this.currentBranchService.currentBranchDetail;
-	private _branchAction = this.branchState.pipe(
-		switchMap((val) =>
-			iif(
-				() =>
-					val.associatedArtifact != '-1' &&
-					typeof val !== 'undefined' &&
-					val.associatedArtifact !== '',
-				this.actionService.getAction(val.associatedArtifact).pipe(
-					//repeatWhen((_) => this.uiService.update),
-					share()
-				),
-				of([new actionImpl()])
-			)
-		),
-		share(),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-	private _branchWorkflow = this.branchAction.pipe(
-		switchMap((val) =>
-			iif(
-				() =>
-					val.length > 0 &&
-					val[0]?.TeamWfAtsId != '' &&
-					typeof val[0]?.id !== 'undefined',
-				this.actionService.getWorkFlow(val[0]?.id).pipe(
-					//repeatWhen((_) => this.uiService.update),
-					share()
-				),
-				of(new teamWorkflowImpl())
-			)
-		),
-		share(),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
+	private _branchAction = this.currentActionService.branchAction;
+	private _branchWorkflow = this.currentActionService.branchWorkFlow;
 
 	private _branchApproved = this.branchAction.pipe(
 		switchMap((action) =>
@@ -147,31 +116,9 @@ export class ActionStateButtonService {
 			)
 		)
 	);
-	private _teamsLeads = this.branchWorkFlow.pipe(
-		switchMap((workflow) =>
-			iif(
-				() => workflow['ats.Team Definition Reference'].length > 0,
-				this.actionService.getTeamLeads(
-					workflow['ats.Team Definition Reference']
-				),
-				of([])
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
+	private _teamsLeads = this.currentActionService.teamsLeads;
 
-	private _isATeamLead = combineLatest([this.teamsLeads, this.user]).pipe(
-		switchMap(([leads, user]) =>
-			of([leads, user]).pipe(
-				concatMap(([leadsResponse, currentUser]) =>
-					from(leads).pipe(
-						filter((val) => val.id === user.id),
-						map((v) => true)
-					)
-				)
-			)
-		)
-	);
+	private _isATeamLead = this.currentActionService.isTeamLead;
 	private _branchTransitionable = this.branchWorkFlow.pipe(
 		switchMap((workflow) =>
 			iif(() => workflow.State === 'InWork', of('true'), of('false'))

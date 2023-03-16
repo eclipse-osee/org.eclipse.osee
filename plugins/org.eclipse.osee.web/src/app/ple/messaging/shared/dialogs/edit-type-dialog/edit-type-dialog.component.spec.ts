@@ -39,7 +39,7 @@ import {
 	QueryServiceMock,
 } from '@osee/messaging/shared/testing';
 import type { editPlatformTypeDialogData } from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/types';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
 import {
 	QueryService,
 	TypesService,

@@ -13,15 +13,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subject } from 'rxjs';
-import { RouterStateService } from './lib/services/router-state.service';
-import { MockElementTableComponent } from './lib/testing/element-table.component.mock';
-import { MockElementTableSearchComponent } from './lib/testing/element-table-search.component.mock';
 
 import { TypeElementSearchComponent } from './type-element-search.component';
 import {
 	ActionDropdownStub,
 	BranchPickerStub,
 } from '@osee/shared/components/testing';
+import { RouterStateService } from '@osee/messaging/type-element-search';
+import {
+	MockElementTableComponent,
+	MockElementTableSearchComponent,
+} from '@osee/messaging/type-element-search/testing';
 import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
 
 describe('TypeElementSearchComponent', () => {

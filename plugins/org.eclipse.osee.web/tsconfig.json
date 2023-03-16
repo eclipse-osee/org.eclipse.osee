@@ -32,11 +32,73 @@
 		"lib": ["ES2022", "dom"],
 		"useDefineForClassFields": false,
 		"paths": {
+			"@osee/about": ["src/app/about"],
 			"@osee/auth": ["src/app/auth"],
+			"@osee/diff/views": ["src/app/diff-views"],
+			"@osee/environments": ["src/environments"],
+			"@osee/interceptors": ["src/app/interceptors"],
+			"@osee/layout": ["src/app/layout"],
+			"@osee/layout/notification": ["src/app/layout/lib/notification"],
+			"@osee/layout/container": ["src/app/layout/lib/containers"],
+			"@osee/layout/routing": ["src/app/layout/lib/routing"],
+			"@osee/messaging/connection-view": [
+				"src/app/ple/messaging/connection-view/lib"
+			],
+			"@osee/messaging/cross-reference": [
+				"src/app/ple/messaging/cross-reference/lib"
+			],
+			"@osee/messaging/help/overview": [
+				"src/app/ple/messaging/messaging-help/lib/overview"
+			],
+			"@osee/messaging/help/column-descriptions": [
+				"src/app/ple/messaging/messaging-help/lib/column-descriptions-message-help"
+			],
+			"@osee/messaging/import": ["src/app/ple/messaging/import/lib"],
+			"@osee/messaging/message-tables": [
+				"src/app/ple/messaging/message-tables/lib"
+			],
+			"@osee/messaging/message-tables/menus": [
+				"src/app/ple/messaging/message-tables/lib/menus"
+			],
+			"@osee/messaging/reports/diff": [
+				"src/app/ple/messaging/reports/lib/diff"
+			],
+			"@osee/messaging/reports/trace": [
+				"src/app/ple/messaging/reports/lib/trace"
+			],
+			"@osee/messaging/structure-tables": [
+				"src/app/ple/messaging/structure-tables/lib"
+			],
+			"@osee/messaging/structure-tables/menus": [
+				"src/app/ple/messaging/structure-tables/lib/menus"
+			],
+			"@osee/messaging/type-detail": [
+				"src/app/ple/messaging/type-detail/lib"
+			],
+			"@osee/messaging/type-element-search": [
+				"src/app/ple/messaging/type-element-search/lib"
+			],
+			"@osee/messaging/types-interface": [
+				"src/app/ple/messaging/types-interface/lib"
+			],
+			"@osee/messaging/types-interface/menus": [
+				"src/app/ple/messaging/types-interface/lib/menus"
+			],
+			"@osee/page-not-found": ["src/app/page-not-found"],
+			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
+			"@osee/toolbar": ["src/app/layout/lib/toolbar"],
+			"@osee/toolbar/component": [
+				"src/app/layout/lib/toolbar/osee-toolbar/osee-toolbar.component"
+			],
 			"@osee/shared/utils": ["src/app/shared/utils"],
 			"@osee/shared/resolvers": ["src/app/shared/resolvers"],
 			"@osee/shared/components": ["src/app/shared/components"],
 			"@osee/shared/matchers": ["src/app/shared/matchers"],
+			"@osee/shared/services": ["src/app/shared/services"],
+			"@osee/shared/services/layout": ["src/app/shared/services/layout"],
+			"@osee/shared/services/network": [
+				"src/app/shared/services/network"
+			],
 			"@osee/shared/validators": ["src/app/shared/validators"],
 			"@osee/shared/transactions": ["src/app/shared/transactions"],
 			"@osee/shared/types": ["src/app/shared/types"],
@@ -52,6 +114,9 @@
 			],
 			"@osee/shared/types/constants": ["src/app/shared/types/constants"],
 			"@osee/messaging/shared": ["src/app/ple/messaging/shared"],
+			"@osee/messaging/shared/attr": [
+				"src/app/ple/messaging/shared/attr"
+			],
 			"@osee/messaging/shared/types": [
 				"src/app/ple/messaging/shared/types"
 			],
@@ -67,6 +132,9 @@
 			"@osee/messaging/shared/tokens": [
 				"src/app/ple/messaging/shared/tokens"
 			],
+			"@osee/messaging/shared/enumerations": [
+				"src/app/ple/messaging/shared/enumerations"
+			],
 			"@osee/messaging/shared/directives": [
 				"src/app/ple/messaging/shared/directives"
 			],
@@ -79,14 +147,35 @@
 			"@osee/messaging/shared/forms": [
 				"src/app/ple/messaging/shared/forms"
 			],
+			"@osee/messaging/shared/datasources": [
+				"src/app/ple/messaging/shared/datasources"
+			],
 			"@osee/messaging/shared/dialogs": [
 				"src/app/ple/messaging/shared/dialogs"
+			],
+			"@osee/messaging/shared/dialogs/preferences": [
+				"src/app/ple/messaging/shared/dialogs/preferences"
+			],
+			"@osee/messaging/shared/dialogs/warnings": [
+				"src/app/ple/messaging/shared/dialogs/warnings"
+			],
+			"@osee/messaging/shared/dialogs/free-text": [
+				"src/app/ple/messaging/shared/dialogs/free-text"
 			],
 			"@osee/messaging/shared/services": [
 				"src/app/ple/messaging/shared/services"
 			],
+			"@osee/messaging/shared/services/warnings": [
+				"src/app/ple/messaging/shared/services/warnings"
+			],
 			"@osee/messaging/shared/preferences": [
 				"src/app/ple/messaging/shared/preferences"
+			],
+			"@osee/messaging/shared/query": [
+				"src/app/ple/messaging/shared/query"
+			],
+			"@osee/messaging/shared/table-headers": [
+				"src/app/ple/messaging/shared/table-headers"
 			]
 		}
 	},

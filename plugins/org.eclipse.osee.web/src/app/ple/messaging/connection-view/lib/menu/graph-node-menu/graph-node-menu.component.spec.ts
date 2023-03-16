@@ -35,8 +35,8 @@ import { GraphNodeMenuComponent } from './graph-node-menu.component';
 import type {
 	nodeDataWithChanges,
 	_newConnection,
-} from '@osee/messaging/shared';
-import { EnumsService } from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
+import { EnumsService } from '@osee/messaging/shared/services';
 import { enumsServiceMock } from '@osee/messaging/shared/testing';
 
 describe('GraphNodeMenuComponent', () => {

@@ -13,8 +13,8 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, iif, of } from 'rxjs';
 import { share, switchMap } from 'rxjs/operators';
-import { BranchInfoService } from '../../../../ple-services/http/branch-info.service';
-import { BranchUIService } from '../../../../ple-services/ui/branch/branch-ui.service';
+import { BranchInfoService } from '@osee/shared/services';
+import { UiService } from '@osee/shared/services';
 import { BranchCategoryService } from './branch-category.service';
 
 @Injectable({
@@ -51,7 +51,7 @@ export class BranchListService {
 
 	constructor(
 		private branchService: BranchInfoService,
-		private ui: BranchUIService,
+		private ui: UiService,
 		private categoryService: BranchCategoryService
 	) {}
 

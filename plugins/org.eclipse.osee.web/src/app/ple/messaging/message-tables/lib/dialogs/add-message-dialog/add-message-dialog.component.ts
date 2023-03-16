@@ -25,7 +25,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { EnumsService, CurrentMessagesService } from '@osee/messaging/shared';
+import {
+	EnumsService,
+	CurrentMessagesService,
+} from '@osee/messaging/shared/services';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-message-dialog.component';
 

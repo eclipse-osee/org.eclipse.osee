@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { apiURL } from 'src/environments/environment';
+import { apiURL } from '@osee/environments';
 import type { element } from '../../types/element';
 import {
 	ATTRIBUTETYPEIDENUM,

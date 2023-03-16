@@ -13,7 +13,7 @@
 import { Component, Input } from '@angular/core';
 import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { tap } from 'rxjs';
-import { PreferencesUIService } from '@osee/messaging/shared';
+import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({

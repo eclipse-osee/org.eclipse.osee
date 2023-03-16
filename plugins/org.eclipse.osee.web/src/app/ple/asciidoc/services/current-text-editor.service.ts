@@ -23,7 +23,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { AttributeService } from 'src/app/ple-services/http/attribute.service';
+import { AttributeService } from '@osee/shared/services';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { TextEditorUiService } from './text-editor-ui.service';
 

@@ -39,9 +39,8 @@ import {
 	take,
 	takeUntil,
 } from 'rxjs/operators';
-import { difference } from 'src/app/shared/types/change-report/change-report';
+import { difference } from '@osee/shared/types/change-report';
 
-import { HttpLoadingService } from '../../../../../../services/http-loading.service';
 import { applic } from '@osee/shared/types/applicability';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
@@ -59,21 +58,24 @@ import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-
 import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 import { MatInputModule } from '@angular/material/input';
 import {
-	EditViewFreeTextFieldDialogComponent,
 	CurrentMessagesService,
 	HeaderService,
-	MessagingControlsComponent,
-	ViewSelectorComponent,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/services';
 import type {
 	message,
 	messageWithChanges,
 	messageChanges,
 	EditViewFreeTextDialog,
-} from '@osee/messaging/shared';
+} from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { HttpLoadingService } from '@osee/shared/services/network';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import {
+	MessagingControlsComponent,
+	ViewSelectorComponent,
+} from '@osee/messaging/shared/main-content';
 
 @Component({
 	selector: 'osee-messaging-message-table',

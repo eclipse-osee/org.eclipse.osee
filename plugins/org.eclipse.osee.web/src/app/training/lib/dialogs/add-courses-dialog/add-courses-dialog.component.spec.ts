@@ -21,10 +21,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TrainingCourseService } from './../../services/training-course.service';
 import { AddCoursesDialogComponent } from './add-courses-dialog.component';
-import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
+import { UserDataAccountService } from '@osee/auth';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { TrainingCourseServiceMock } from 'src/app/training/lib/testing/training-course.service.mock';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('AddCoursesDialogComponent', () => {
 	let component: AddCoursesDialogComponent;

@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { applic } from '@osee/shared/types/applicability';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { HeaderService } from 'src/app/ple-services/ui/header.service';
+import { HeaderService } from '@osee/shared/services';
 import { headerDetail } from '@osee/shared/types';
 
 @Component({
