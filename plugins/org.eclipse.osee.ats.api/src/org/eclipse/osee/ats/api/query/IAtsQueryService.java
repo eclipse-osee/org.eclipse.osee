@@ -239,4 +239,6 @@ public interface IAtsQueryService {
 
    List<ArtifactToken> getArtifactsFromIds(Collection<String> atsIds);
 
+   Collection<ArtifactToken> getAssigned(AtsUser user, boolean useNewAttr);
+
 }

@@ -229,7 +229,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          }
 
          // add link column (on all customizations)
-         rowStrs.add(AHTML.getHyperlink("/ats/ui/action/" + workItem.getAtsId(), "open"));
+         rowStrs.add(AHTML.getHyperlinkNewTab("/ats/ui/action/" + workItem.getAtsId(), "open"));
          colOptions.add("");
 
          sb.append(AHTML.addRowMultiColumnTable(rowStrs.toArray(new String[rowStrs.size()]), null));

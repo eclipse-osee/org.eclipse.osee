@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
@@ -112,7 +113,8 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
       healthChecks.add(new TestStateMgrAndDupStates());
-      healthChecks.add(new TestCurrentStateIsInWorkDef());
+      healthChecks.add(new TestCurrentState());
+      healthChecks.add(new TestAssignees());
       healthChecks.add(new TestWorkflowHasAction());
       healthChecks.add(new TestTeamDefinitionsBaslineBranch());
       healthChecks.add(new TestTeamDefinitionsWorkDefRef());
@@ -434,8 +436,44 @@ public class AtsHealthCheckOperation {
       return badIds;
    }
 
-   private class TestCurrentStateIsInWorkDef implements IAtsHealthCheck {
+   private class TestAssignees implements IAtsHealthCheck {
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+         if (workItem.isInWork()) {
+            String currentStatename =
+               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
+            List<Long> userArtIds = new ArrayList<>();
+            for (AtsUser user : atsApi.getWorkStateFactory().getUsers(currentStatename)) {
+               userArtIds.add(user.getArtifactId().getId());
+            }
+            List<Long> currUserArtIds = new ArrayList<>();
+            for (String id : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
+               AtsAttributeTypes.CurrentStateAssignee)) {
+               if (Strings.isNumeric(id)) {
+                  currUserArtIds.add(Long.valueOf(id));
+               } else {
+                  results.log(artifact, "TestAssignees",
+                     String.format("Error: Invalid Current State Assigne [%s] for %s", id, workItem.toStringWithId()));
+               }
+            }
+            if (Collections.setComplement(currUserArtIds,
+               userArtIds).size() > 0 || Collections.setComplement(userArtIds, currUserArtIds).size() > 0) {
+               changes.setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee,
+                  Collections.castAll(userArtIds));
+               results.log(artifact, "TestAssignees", String.format(
+                  "Info: Updated Current State Assignees attr to [%s] for %s", userArtIds, workItem.toStringWithId()));
+            }
+         }
+         return true;
+      }
+   }
 
+   /**
+    * Test current state in work def and is set in new ats.Current State Name attr
+    *
+    * @author Donald G. Dunne
+    */
+   private class TestCurrentState implements IAtsHealthCheck {
       @Override
       public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
          if (workItem.isInWork()) {
@@ -448,11 +486,18 @@ public class AtsHealthCheckOperation {
                   String.format("Error: Current State [%s] not valid for Work Definition [%s] for " + //
                      artifact.toStringWithId(), currentStatename, workDef.getName()));
             }
+            String currStateNameAttr =
+               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, "");
+            if (!currentStatename.equals(currStateNameAttr)) {
+               changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStatename);
+               results.log(artifact, "TestCurrentStateIsInWorkDef", String.format(
+                  "Info: Updated Current State Name attr to [%s] for %s", currentStatename, workItem.toStringWithId()));
+            }
          }
          return true;
       }
-
    }
+
    private class TestActionableItemsLoad implements IAtsHealthCheck {
 
       @Override

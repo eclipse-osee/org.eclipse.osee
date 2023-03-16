@@ -19,9 +19,10 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.ide.util.AtsEditors;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -29,13 +30,26 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class MyWorldSearchItem extends UserSearchItem {
 
+   private boolean useNewAttr;
+
    public MyWorldSearchItem(String name, boolean currentUser) {
       this(name, null);
       setUseCurrentUser(currentUser);
    }
 
+   public MyWorldSearchItem(String name, boolean currentUser, boolean useNewAttr) {
+      this(name, null);
+      setUseCurrentUser(currentUser);
+      this.useNewAttr = useNewAttr;
+   }
+
    public MyWorldSearchItem(String name, AtsUser user) {
+      this(name, user, false);
+   }
+
+   public MyWorldSearchItem(String name, AtsUser user, boolean useNewAttr) {
       super(name, user, AtsImage.GLOBE);
+      this.useNewAttr = useNewAttr;
    }
 
    public MyWorldSearchItem(MyWorldSearchItem myWorldSearchItem) {
@@ -44,7 +58,8 @@ public class MyWorldSearchItem extends UserSearchItem {
 
    @Override
    public Collection<Artifact> searchIt(AtsUser user) {
-      Set<Artifact> assigned = AtsEditors.getAssigned(user);
+      Collection<Artifact> assigned =
+         Collections.castAll(AtsApiService.get().getQueryService().getAssigned(user, useNewAttr));
 
       Set<Artifact> results = new HashSet<>(assigned.size());
       for (Artifact artifact : assigned) {

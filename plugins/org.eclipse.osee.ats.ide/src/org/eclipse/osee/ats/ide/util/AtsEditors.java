@@ -25,7 +25,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -47,7 +46,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -214,18 +212,6 @@ public final class AtsEditors {
 
    public static void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) {
       TaskEditor.open(new TaskEditorSimpleProvider(name, artifacts));
-   }
-
-   /**
-    * return currently assigned state machine artifacts
-    */
-   public static Set<Artifact> getAssigned(AtsUser user) {
-      Set<Artifact> assigned = new HashSet<>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
-         "<" + user.getUserId() + ">", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
-         assigned.add(artifact);
-      }
-      return assigned;
    }
 
    public static Image getImage(Collection<AtsUser> atsUsers) {
