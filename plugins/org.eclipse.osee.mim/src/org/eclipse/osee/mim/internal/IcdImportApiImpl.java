@@ -54,8 +54,9 @@ public class IcdImportApiImpl implements MimImportApi {
 
    private Long id = 1L;
 
-   public IcdImportApiImpl(BranchId branch, InputStream inputStream, MimApi mimApi) {
-      this.reader = new ExcelWorkbookReader(inputStream, WorkbookFormat.XLSX);
+   public IcdImportApiImpl(BranchId branch, String fileName, InputStream inputStream, MimApi mimApi) {
+      this.reader = new ExcelWorkbookReader(inputStream,
+         fileName != null && fileName.toLowerCase().endsWith("xls") ? WorkbookFormat.XLS : WorkbookFormat.XLSX);
       this.mimApi = mimApi;
       this.branch = branch;
    }
@@ -148,15 +149,16 @@ public class IcdImportApiImpl implements MimImportApi {
       Map<String, InterfaceElementImportToken> elements = new HashMap<>();
       Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
       List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
+      Map<String, InterfaceEnumerationSet> enumsToUpdate = new HashMap<>();
 
       for (PlatformTypeToken type : existingPlatformTypes) {
-         String typeKey = type.getInterfaceLogicalType().equals("enumeration") ? getEnumNameKey(
-            type.getEnumSet().getName()) : mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(
+         String typeKey = type.getInterfaceLogicalType().equals("enumeration") ? getEnumSetKey(
+            type.getEnumSet()) : mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(
                type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
                type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeValidRangeDescription(),
                type.getInterfacePlatformTypeUnits(), type.getInterfaceDefaultValue(),
                Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
-         platformTypes.put(typeKey, new PlatformTypeImportToken(type.getId(), type.getName()));
+         platformTypes.put(typeKey, new PlatformTypeImportToken(type.getId(), type.getName(), type.getEnumSet()));
       }
 
       // Create a boolean type to avoid extra processing for booleans
@@ -171,24 +173,30 @@ public class IcdImportApiImpl implements MimImportApi {
       for (String sheetName : structureSheetNames) {
          reader.setActiveSheet(sheetName);
          InterfaceStructureToken structure = readStructure(primaryNode, secondaryNode, submessageIds);
-         readStructureElements(structure, elements, platformTypes, platformTypesToCreate);
+         readStructureElements(structure, elements, platformTypes, platformTypesToCreate, enumsToUpdate,
+            primaryNodeName + "_" + secondaryNodeName);
       }
 
       for (PlatformTypeImportToken pTypeToken : platformTypesToCreate) {
          summary.getPlatformTypes().add(pTypeToken);
       }
 
-      // Sort messages by node and message number
+      // Sort messages by node and message number. Messages are grouped by primary node, and within those
+      // groups are sorted by message number, with numbers coming before letters.
       Collections.sort(summary.getMessages(), new Comparator<InterfaceMessageToken>() {
          @Override
          public int compare(InterfaceMessageToken o1, InterfaceMessageToken o2) {
             if (o1.getInitiatingNode().getName().equals(o2.getInitiatingNode().getName())) {
-               if (Integer.parseInt(o1.getInterfaceMessageNumber()) > Integer.parseInt(
-                  o2.getInterfaceMessageNumber())) {
-                  return 1;
-               } else {
-                  return -1;
+               boolean isO1Numeric = isStringNumeric(o1.getInterfaceMessageNumber());
+               boolean isO2Numeric = isStringNumeric(o2.getInterfaceMessageNumber());
+               if (isO1Numeric && isO2Numeric) {
+                  return (int) Double.parseDouble(o1.getInterfaceMessageNumber()) > (int) Double.parseDouble(
+                     o2.getInterfaceMessageNumber()) ? 1 : -1;
                }
+               if (!isO1Numeric && !isO2Numeric) {
+                  return o1.getInterfaceMessageNumber().compareTo(o2.getInterfaceMessageNumber());
+               }
+               return isO2Numeric ? 1 : -1;
             }
             if (o1.getInitiatingNode().getName().equals(primaryNode.getName())) {
                return -1;
@@ -239,7 +247,7 @@ public class IcdImportApiImpl implements MimImportApi {
          subMessage.setInterfaceSubMessageNumber("" + subMsgNum);
          subMessage.setDescription("");
          subMessageIds.add("" + id);
-         subMessageIdMap.put(getSubMessageMapKey(messageNumber, subMsgNum + "", node.getName()), id);
+         subMessageIdMap.put(getSubMessageMapKey(messageNumber + "", subMsgNum + "", node.getName()), id);
          incrementId();
          summary.getSubMessages().add(subMessage);
          subMsgNum++;
@@ -258,7 +266,7 @@ public class IcdImportApiImpl implements MimImportApi {
       String maxSim = reader.getCellValue(structureRow, 7).toString();
       String nodeName = reader.getCellStringValue(structureRow, 10);
       String msgNum = reader.getCellStringValue(structureRow, 11);
-      String subMsgNum = reader.getCellStringValue(structureRow, 12);
+      String subMsgNum = reader.getCellValue(structureRow, 12).toString();
       String taskfileType = reader.getCellValue(structureRow, 13).toString();
       String description = reader.getCellStringValue(structureRow, 14);
 
@@ -269,6 +277,10 @@ public class IcdImportApiImpl implements MimImportApi {
       structure.setInterfaceMinSimultaneity(toIntString(minSim));
       structure.setInterfaceMaxSimultaneity(toIntString(maxSim));
       structure.setDescription(description);
+
+      msgNum = isStringNumeric(msgNum) ? ((int) Double.parseDouble(msgNum)) + "" : msgNum;
+      subMsgNum = subMsgNum.equals("n/a") ? "0" : subMsgNum;
+      subMsgNum = isStringNumeric(subMsgNum) ? ((int) Double.parseDouble(subMsgNum)) + "" : subMsgNum;
 
       // task file is "n/a" for some structures. In that case, set to 0.
       int taskFile;
@@ -336,7 +348,8 @@ public class IcdImportApiImpl implements MimImportApi {
       return structure;
    }
 
-   private void readStructureElements(InterfaceStructureToken structure, Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes, List<PlatformTypeImportToken> platformTypesToCreate) {
+   private void readStructureElements(InterfaceStructureToken structure, Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes, List<PlatformTypeImportToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate, String connectionName) {
+      Boolean hasDefaultValue = reader.getCellStringValue(3, 18).equals("Default Value");
       int rowIndex = 4;
       InterfaceElementImportToken previousElement = InterfaceElementImportToken.SENTINEL;
       PlatformTypeImportToken previousPType = PlatformTypeImportToken.SENTINEL;
@@ -352,9 +365,13 @@ public class IcdImportApiImpl implements MimImportApi {
          String notes = reader.getCellStringValue(rowIndex, 12);
          String defaultValue = reader.getCellStringValue(rowIndex, 13);
 
+         if (hasDefaultValue) {
+            defaultValue = reader.getCellStringValue(rowIndex, 18);
+         }
+
          // Instrumentation message elements don't have names which will cause issues, so we set a name here.
          // The merged cells containing the instrumentation message text begin on the logicalType cell.
-         if (name.isEmpty() && numBytes == 0 && logicalType.toLowerCase().contains("instrumentation message")) {
+         if (name.isEmpty() && logicalType.toLowerCase().contains("instrumentation message")) {
             name = structure.getName();
          }
 
@@ -368,46 +385,105 @@ public class IcdImportApiImpl implements MimImportApi {
             enumName = enumName.isEmpty() || (enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches(
                "^\\d+\\s*")) ? name : enumName;
 
-            String key = getEnumNameKey(enumName);
-            key = key.isEmpty() ? enumName : key;
-
-            if (platformTypes.containsKey(key)) {
-               pType = platformTypes.get(key);
-            } else {
-               pType = new PlatformTypeImportToken(id, enumName, logicalType, (numBytes * 8) + "", "", "", units, "",
-                  defaultValue, validRange);
-               incrementId();
-               platformTypes.put(getEnumNameKey(enumName), pType);
-               platformTypesToCreate.add(pType);
-
-               InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(id, enumName);
-               incrementId();
-               enumSet.setApplicability(ApplicabilityToken.BASE);
-               summary.getEnumSets().add(enumSet);
-               summary.getPlatformTypeEnumSetRelations().put(pType.getIdString(),
-                  new LinkedList<>(Arrays.asList(enumSet.getIdString())));
-
+            InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(id, enumName);
+            incrementId();
+            enumSet.setApplicability(ApplicabilityToken.BASE);
+            if (!enumName.matches("^C\\d+$")) {
                String enumSetDescription = "";
                for (String line : enumDesc.split("\n")) {
                   if (line.trim().matches("^\\s*\\d+\\s*[-=].*") || line.trim().matches("^0x.*\\s*[-=].*")) {
                      String[] splitLine = line.trim().split("\\s*[-=]\\s*", 2);
+                     InterfaceEnumeration enumeration =
+                        new InterfaceEnumeration(id, splitLine[1].split("//")[0].trim());
+                     incrementId();
                      long ordinal =
                         splitLine[0].matches("^0x.*") ? Long.decode(splitLine[0].trim()) : Long.parseLong(splitLine[0]);
                      InterfaceEnumOrdinalType ordinalType =
                         splitLine[0].matches("^0x.*") ? InterfaceEnumOrdinalType.HEX : InterfaceEnumOrdinalType.LONG;
-                     InterfaceEnumeration enumeration = new InterfaceEnumeration(id, splitLine[1].trim());
-                     incrementId();
                      enumeration.setApplicability(ApplicabilityToken.BASE);
                      enumeration.setOrdinal(ordinal);
                      enumeration.setOrdinalType(ordinalType);
-                     summary.getEnums().add(enumeration);
-                     List<String> rels =
-                        summary.getEnumSetEnumRelations().getOrDefault(enumSet.getIdString(), new LinkedList<>());
-                     rels.add(enumeration.getIdString());
-                     summary.getEnumSetEnumRelations().put(enumSet.getIdString(), rels);
+                     enumSetDescription += enumeration.toString() + "\n";
+                     enumSet.getEnumerations().add(enumeration);
                   }
                }
                enumSet.setDescription(enumSetDescription.trim());
+            }
+
+            String pTypeKey = getEnumSetKey(enumSet);
+            pTypeKey = pTypeKey.isEmpty() ? enumName : pTypeKey;
+
+            boolean create = false;
+
+            // Case 1: The first time the enum set was read it was empty. If the full enum set description is read,
+            //         update the existing one with enumerations and set up relations.
+            if (enumsToUpdate.containsKey(enumName) && enumSet.getEnumerations().size() > 0) {
+               InterfaceEnumerationSet setToUpdate = enumsToUpdate.get(enumName);
+               pType = platformTypes.get(getEnumSetKey(setToUpdate));
+               platformTypes.remove(getEnumSetKey(setToUpdate));
+               setToUpdate.setEnumerations(enumSet.getEnumerations());
+               platformTypes.put(getEnumSetKey(setToUpdate), pType);
+               enumsToUpdate.remove(enumName);
+
+               for (InterfaceEnumeration enumeration : enumSet.getEnumerations()) {
+                  summary.getEnums().add(enumeration);
+                  List<String> rels =
+                     summary.getEnumSetEnumRelations().getOrDefault(enumSet.getIdString(), new LinkedList<>());
+                  rels.add(enumeration.getIdString());
+                  summary.getEnumSetEnumRelations().put(enumSet.getIdString(), rels);
+               }
+            }
+            // Case 2: The key exists in the map. Use the type from that key
+            else if (platformTypes.containsKey(pTypeKey)) {
+               pType = platformTypes.get(pTypeKey);
+            }
+            // Case 3: The key does not exist in the map and the set is empty. This can happen when the ICD just has the name of a previously defined enum set,
+            //         or the defined enum set has not been read from another structure page yet.
+            //         Search the platform types to create for that name first to make sure it's from this ICD, or the full list otherwise.
+            else if (enumSet.getEnumerations().isEmpty()) {
+               pType = platformTypesToCreate.stream().filter(e -> e.getEnumSet() != null).filter(
+                  e -> e.getEnumSet().getName().equals(enumSet.getName())).findFirst().orElse(
+                     PlatformTypeImportToken.SENTINEL);
+               if (!pType.isValid()) {
+                  pType = platformTypes.values().stream().filter(e -> e.getEnumSet() != null).filter(
+                     e -> e.getEnumSet().getName().equals(enumSet.getName())).findFirst().orElse(
+                        PlatformTypeImportToken.SENTINEL);
+                  if (!pType.isValid()) {
+                     create = true;
+                     enumsToUpdate.put(enumSet.getName(), enumSet);
+                  }
+               }
+            } else {
+               create = true;
+            }
+
+            // Case 4: The enum set does not exist and needs to be created.
+            if (create) {
+               String pTypeName = enumName;
+               // Search the platform types to see if there is already a type with this enum name. If there is, append the connection in parenthesis.
+               final String n = pTypeName;
+               if (platformTypes.values().stream().filter(t -> t.getName().equals(n)).findFirst().orElse(
+                  PlatformTypeImportToken.SENTINEL).isValid()) {
+                  pTypeName += " (" + connectionName + ")";
+               }
+               pType = new PlatformTypeImportToken(id, pTypeName, logicalType, (numBytes * 8) + "", "", "", units, "",
+                  defaultValue, validRange);
+               pType.setEnumSet(enumSet);
+               incrementId();
+               platformTypes.put(pTypeKey, pType);
+               platformTypesToCreate.add(pType);
+
+               summary.getEnumSets().add(enumSet);
+               summary.getPlatformTypeEnumSetRelations().put(pType.getIdString(),
+                  new LinkedList<>(Arrays.asList(enumSet.getIdString())));
+
+               for (InterfaceEnumeration enumeration : enumSet.getEnumerations()) {
+                  summary.getEnums().add(enumeration);
+                  List<String> rels =
+                     summary.getEnumSetEnumRelations().getOrDefault(enumSet.getIdString(), new LinkedList<>());
+                  rels.add(enumeration.getIdString());
+                  summary.getEnumSetEnumRelations().put(enumSet.getIdString(), rels);
+               }
             }
          } else {
             // Transform data
@@ -415,7 +491,7 @@ public class IcdImportApiImpl implements MimImportApi {
             validRange = validRange.contains("n/a") ? "" : validRange;
             String minVal = "";
             String maxVal = "";
-            String[] range = validRange.split(" to ");
+            String[] range = validRange.replace("--", "").replace("---", "").split(" to ");
             if (range.length == 1 && range[0].split(" ").length == 1) {
                minVal = range[0].trim();
                maxVal = range[0].trim();
@@ -520,8 +596,14 @@ public class IcdImportApiImpl implements MimImportApi {
       return result;
    }
 
-   private String getEnumNameKey(String enumName) {
-      return enumName.toUpperCase().replace(" ", "_");
+   private boolean isStringNumeric(String input) {
+      return input.matches("^(\\d+.)*\\d+$");
+   }
+
+   private String getEnumSetKey(InterfaceEnumerationSet enumSet) {
+      String key = String.join(";",
+         enumSet.getEnumerations().stream().map(e -> e.getOrdinal() + "=" + e.getName()).collect(Collectors.toList()));
+      return enumSet.getName().toUpperCase().replace(" ", "_") + "_" + key.hashCode();
    }
 
    private boolean compareElementsForArray(String name1, String name2, Long pTypeId1, Long pTypeId2) {

@@ -48,8 +48,12 @@ describe('ImportHttpService', () => {
 	});
 
 	it('should get import summary', () => {
-		service.getImportSummary('/test/url', new FormData()).subscribe();
-		const req = httpTestingController.expectOne(apiURL + '/test/url');
+		service
+			.getImportSummary('/test/url', 'filename', new FormData())
+			.subscribe();
+		const req = httpTestingController.expectOne(
+			apiURL + '/test/url?fileName=filename'
+		);
 		expect(req.request.method).toEqual('POST');
 		req.flush(importSummaryMock);
 		httpTestingController.verify();
