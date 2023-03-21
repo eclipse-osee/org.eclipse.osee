@@ -1,4 +1,4 @@
-<!--
+/*********************************************************************
  * Copyright (c) 2021 Boeing
  *
  * This program and the accompanying materials are made
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
- -->
-<osee-messaging-controls [actionControls]="true"></osee-messaging-controls>
-<osee-messaging-types-type-grid
-	[filterValue]="filterValue"></osee-messaging-types-type-grid>
+ **********************************************************************/
+@use 'mat-form-utils' as utils;
+
+@include utils.remove-field-subscript-wrapper('branch-form-field');

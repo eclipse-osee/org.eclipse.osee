@@ -17,17 +17,11 @@ import { map, share, shareReplay, switchMap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import { iif, of } from 'rxjs';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
 import { GraphComponent } from '../graph/graph.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-	UndoButtonBranchComponent,
-	ActionDropDownComponent,
-	BranchPickerComponent,
-} from '@osee/shared/components';
-import { ViewSelectorComponent } from '@osee/messaging/shared';
+	MessagingControlsComponent,
+	ViewSelectorComponent,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-connection-view-host',
@@ -37,14 +31,8 @@ import { ViewSelectorComponent } from '@osee/messaging/shared';
 	imports: [
 		NgIf,
 		AsyncPipe,
-		UndoButtonBranchComponent,
-		MatButtonModule,
-		RouterLink,
-		MatIconModule,
-		ActionDropDownComponent,
 		GraphComponent,
-		BranchPickerComponent,
-		MatTooltipModule,
+		MessagingControlsComponent,
 		ViewSelectorComponent,
 	],
 })

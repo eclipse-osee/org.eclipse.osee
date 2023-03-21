@@ -27,11 +27,8 @@ import { CrossReferenceService } from '@osee/messaging/shared';
 import {
 	CrossReferenceServiceMock,
 	dialogRef,
+	MessagingControlsMockComponent,
 } from '@osee/messaging/shared/testing';
-import {
-	ActionDropdownStub,
-	BranchPickerStub,
-} from '@osee/shared/components/testing';
 
 import { CrossReferenceComponent } from './cross-reference.component';
 
@@ -44,9 +41,8 @@ describe('CrossReferenceComponent', () => {
 			set: {
 				imports: [
 					CommonModule,
-					ActionDropdownStub,
-					BranchPickerStub,
 					FormsModule,
+					MessagingControlsMockComponent,
 					MatButtonModule,
 					MatFormFieldModule,
 					MatIconModule,

@@ -10,9 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="branch-controls">
-	<osee-branch-picker category="3"></osee-branch-picker>
-
+<osee-messaging-controls [actionControls]="true">
 	<ng-container *ngIf="connections | async as _connections">
 		<mat-form-field
 			class="form-field"
@@ -35,11 +33,7 @@
 			</mat-select>
 		</mat-form-field>
 	</ng-container>
-
-	<osee-action-dropdown
-		category="3"
-		workType="MIM"></osee-action-dropdown>
-</div>
+</osee-messaging-controls>
 <ng-container *ngIf="branchId | async as _branch">
 	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
 		<ng-container *ngIf="branchType | async as _branchType">

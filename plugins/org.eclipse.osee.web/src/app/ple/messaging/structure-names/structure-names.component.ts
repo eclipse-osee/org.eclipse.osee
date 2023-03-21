@@ -19,8 +19,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CurrentStructureNamesService } from '@osee/messaging/shared';
-import { BranchPickerComponent } from '@osee/shared/components';
+import {
+	CurrentStructureNamesService,
+	MessagingControlsComponent,
+} from '@osee/messaging/shared';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
@@ -41,7 +43,7 @@ import { HttpLoadingService } from '../../../services/http-loading.service';
 		MatFormFieldModule,
 		MatIconModule,
 		MatExpansionModule,
-		BranchPickerComponent,
+		MessagingControlsComponent,
 	],
 })
 export class StructureNamesComponent implements OnInit {

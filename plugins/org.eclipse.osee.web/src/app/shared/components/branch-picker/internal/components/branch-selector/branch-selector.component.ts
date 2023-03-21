@@ -25,7 +25,7 @@ import { BranchRoutedUIService } from '../../../../internal/services/branch-rout
 @Component({
 	selector: 'osee-branch-selector',
 	templateUrl: './branch-selector.component.html',
-	styleUrls: ['./branch-selector.component.sass'],
+	styleUrls: ['./branch-selector.component.scss'],
 	standalone: true,
 	imports: [
 		MatFormFieldModule,

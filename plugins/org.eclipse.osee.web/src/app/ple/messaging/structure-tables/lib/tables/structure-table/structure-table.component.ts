@@ -78,6 +78,7 @@ import {
 	CurrentStructureService,
 	HeaderService,
 	ViewSelectorComponent,
+	MessagingControlsComponent,
 } from '@osee/messaging/shared';
 import type {
 	structure,
@@ -86,11 +87,7 @@ import type {
 	EditViewFreeTextDialog,
 } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import {
-	ActionDropDownComponent,
-	TwoLayerAddButtonComponent,
-	UndoButtonBranchComponent,
-} from '@osee/shared/components';
+import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
@@ -107,8 +104,6 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 		AsyncPipe,
 		RouterLink,
 		MatIconModule,
-		ActionDropDownComponent,
-		UndoButtonBranchComponent,
 		TwoLayerAddButtonComponent,
 		MatFormFieldModule,
 		FormsModule,
@@ -123,6 +118,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 		ScrollingModule,
 		EditStructureFieldComponent,
 		AddStructureDialogComponent,
+		MessagingControlsComponent,
 		ViewSelectorComponent,
 		SubElementTableComponent,
 		HighlightFilteredTextDirective,

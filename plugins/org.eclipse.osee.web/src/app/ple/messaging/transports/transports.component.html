@@ -10,14 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="transports-header">
-	<osee-branch-picker category="3"></osee-branch-picker>
-	<div class="transports-header actions">
-		<osee-action-dropdown
-			category="3"
-			workType="MIM"></osee-action-dropdown>
-	</div>
-</div>
+<osee-messaging-controls [actionControls]="true"></osee-messaging-controls>
 <table
 	mat-table
 	[dataSource]="(transports | async) || []"

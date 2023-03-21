@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
 import {
 	ActionDropdownStub,
 	BranchPickerStub,
@@ -39,8 +40,7 @@ describe('ImportComponent', () => {
 					AsyncPipe,
 					MatButtonModule,
 					MatSelectModule,
-					ActionDropdownStub,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 				],
 				providers: [
 					{ provide: ImportService, useValue: importServiceMock },
@@ -54,9 +54,8 @@ describe('ImportComponent', () => {
 					MatSelectModule,
 					NoopAnimationsModule,
 					RouterTestingModule,
-					ActionDropdownStub,
-					BranchPickerStub,
 					ImportComponent,
+					MessagingControlsMockComponent,
 				],
 				providers: [
 					{ provide: ImportService, useValue: importServiceMock },

@@ -62,6 +62,7 @@ import {
 	EditViewFreeTextFieldDialogComponent,
 	CurrentMessagesService,
 	HeaderService,
+	MessagingControlsComponent,
 	ViewSelectorComponent,
 } from '@osee/messaging/shared';
 import type {
@@ -71,11 +72,7 @@ import type {
 	EditViewFreeTextDialog,
 } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import {
-	UndoButtonBranchComponent,
-	ActionDropDownComponent,
-	TwoLayerAddButtonComponent,
-} from '@osee/shared/components';
+import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
@@ -125,13 +122,12 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 		AddSubMessageDialogComponent,
 		RemoveMessageDialogComponent,
 		DeleteMessageDialogComponent,
-		UndoButtonBranchComponent,
-		ActionDropDownComponent,
 		EditMessageFieldComponent,
 		HighlightFilteredTextDirective,
 		SubMessageTableComponent,
 		TwoLayerAddButtonComponent,
 		ViewSelectorComponent,
+		MessagingControlsComponent,
 	],
 })
 export class MessageTableComponent implements AfterViewChecked {

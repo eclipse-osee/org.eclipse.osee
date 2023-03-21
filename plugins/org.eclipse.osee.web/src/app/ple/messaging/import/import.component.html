@@ -10,12 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="branch-controls">
-	<osee-branch-picker category="3"></osee-branch-picker>
-	<osee-action-dropdown
-		category="3"
-		workType="MIM"></osee-action-dropdown>
-</div>
+<osee-messaging-controls [actionControls]="true"></osee-messaging-controls>
 <ng-container *ngIf="branchId | async as _branch">
 	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
 		<ng-container *ngIf="branchType | async as _branchType">
@@ -116,7 +111,7 @@
 									<div class="import-summary">
 										<h3>
 											The following will be imported from
-											<span class="font-bold">{{
+											<span class="tw-font-bold">{{
 												selectedImportFileName | async
 											}}</span>
 										</h3>

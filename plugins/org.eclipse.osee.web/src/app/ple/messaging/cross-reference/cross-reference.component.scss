@@ -10,13 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.branch-controls {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	padding-right: 2em;
-}
+@use 'mat-form-utils' as utils;
+
+@include utils.remove-field-subscript-wrapper('form-field');
 
 .add-button {
 	position: absolute;
