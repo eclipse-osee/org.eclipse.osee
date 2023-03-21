@@ -73,14 +73,15 @@ export class BranchRoutedUIService {
 			baseUrl = this.router.url;
 		}
 		const [initialURL, idURL] = baseUrl;
-		const remainingURL = idURL.includes(
+		let remainingURL = idURL.includes(
 			'/' + this.branchService.id.getValue() + '/'
 		)
 			? idURL
 					.split('/' + this.branchService.id.getValue() + '/')[1]
 					.replace(/ /g, '%20')
 					.split('/')
-			: '';
+			: [];
+		remainingURL = remainingURL.map((u) => u.replace('%2D', '-'));
 		this.branchService.typeValue = value.type;
 		this.branchService.idValue = value.id;
 		this.router.navigate([

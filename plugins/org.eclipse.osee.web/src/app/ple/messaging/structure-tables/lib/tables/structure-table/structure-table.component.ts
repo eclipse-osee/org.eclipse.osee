@@ -17,7 +17,14 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import {
+	Component,
+	Inject,
+	Input,
+	OnDestroy,
+	OnInit,
+	ViewChild,
+} from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
@@ -143,7 +150,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 		]),
 	],
 })
-export class StructureTableComponent implements OnInit {
+export class StructureTableComponent implements OnInit, OnDestroy {
 	expandedElement = this.structureService.expandedRows;
 	@Input() previousLink = '../../../../';
 	@Input() structureId = '';
@@ -455,6 +462,11 @@ export class StructureTableComponent implements OnInit {
 	ngOnInit(): void {
 		this._moveView.subscribe();
 	}
+
+	ngOnDestroy(): void {
+		this.structureService.filter = '';
+	}
+
 	valueTracker(index: any, item: any) {
 		return index;
 	}

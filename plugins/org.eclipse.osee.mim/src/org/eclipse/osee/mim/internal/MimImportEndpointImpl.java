@@ -42,13 +42,13 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
    }
 
    @Override
-   public MimImportSummary getImportSummary(BranchId branch, InputStream stream) {
+   public MimImportSummary getImportSummary(BranchId branch, String fileName, InputStream stream) {
       try {
          // Transfer to output stream to prevent the stream from closing mid-read
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          stream.transferTo(outputStream);
          MimImportApi importer =
-            new IcdImportApiImpl(branch, new ByteArrayInputStream(outputStream.toByteArray()), mimApi);
+            new IcdImportApiImpl(branch, fileName, new ByteArrayInputStream(outputStream.toByteArray()), mimApi);
          outputStream.close();
          stream.close();
          return importer.getSummary();

@@ -110,6 +110,7 @@ export class ImportService {
 						importOption!.url
 							.replace('<branchId>', branchId)
 							.replace('<connectionId>', connectionId),
+						file.name,
 						file
 					);
 				}
@@ -131,6 +132,7 @@ export class ImportService {
 									'<branchId>',
 									branchId
 								),
+								file.name,
 								formData
 							)
 						)

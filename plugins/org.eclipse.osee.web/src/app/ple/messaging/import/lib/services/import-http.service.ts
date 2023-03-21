@@ -22,8 +22,12 @@ import { apiURL } from '../../../../../../environments/environment';
 export class ImportHttpService {
 	constructor(private http: HttpClient) {}
 
-	getImportSummary(url: string, formData: FormData | File) {
-		return this.http.post<ImportSummary>(apiURL + url, formData);
+	getImportSummary(url: string, fileName: string, formData: FormData | File) {
+		return this.http.post<ImportSummary>(apiURL + url, formData, {
+			params: {
+				fileName: fileName,
+			},
+		});
 	}
 
 	getImportOptions() {

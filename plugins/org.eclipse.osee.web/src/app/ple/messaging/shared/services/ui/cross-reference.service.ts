@@ -162,13 +162,14 @@ export class CrossReferenceService {
 			let updatedCrossRef = { ...currentCrossRef } as CrossReference;
 			updatedCrossRef[attribute] = value;
 			const update = this.branchId.pipe(
+				filter((v) => v !== ''),
 				switchMap((branchId) =>
 					of(
 						this.txBuilder.modifyArtifact(
 							updatedCrossRef,
 							undefined,
 							branchId,
-							'Update Cross Reference'
+							'Update Cross Reference Attribute'
 						)
 					).pipe(
 						switchMap((tx) =>
@@ -189,6 +190,7 @@ export class CrossReferenceService {
 
 	updateCrossReference(crossRef: CrossReference) {
 		return this.branchId.pipe(
+			filter((v) => v !== ''),
 			switchMap((branchId) =>
 				of(
 					this.txBuilder.modifyArtifact(

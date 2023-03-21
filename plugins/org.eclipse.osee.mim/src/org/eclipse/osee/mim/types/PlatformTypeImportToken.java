@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
@@ -39,9 +40,12 @@ public class PlatformTypeImportToken extends PLGenericDBObject {
 
    private String InterfacePlatformTypeValidRangeDescription;
 
-   public PlatformTypeImportToken(Long id, String name) {
+   private InterfaceEnumerationSet enumSet;
+
+   public PlatformTypeImportToken(Long id, String name, InterfaceEnumerationSet enumSet) {
       super(id, name);
       setInterfaceDefaultValue("");
+      this.enumSet = enumSet;
    }
 
    public PlatformTypeImportToken(Long id, String name, String logicalType, String bitSize, String minVal, String maxVal, String units, String description, String defaultValue, String validRange) {
@@ -172,6 +176,15 @@ public class PlatformTypeImportToken extends PLGenericDBObject {
     */
    public void setInterfacePlatformTypeValidRangeDescription(String interfacePlatformTypeValidRangeDescription) {
       InterfacePlatformTypeValidRangeDescription = interfacePlatformTypeValidRangeDescription;
+   }
+
+   @JsonIgnore
+   public InterfaceEnumerationSet getEnumSet() {
+      return enumSet;
+   }
+
+   public void setEnumSet(InterfaceEnumerationSet enumSet) {
+      this.enumSet = enumSet;
    }
 
 }

@@ -46,6 +46,11 @@ public class PLGenericDBObject extends NamedIdBase {
       // Not doing anything
    }
 
+   @JsonIgnore
+   public ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(super.getId());
+   }
+
    @Override
    @JsonIgnore
    public String getIdString() {
