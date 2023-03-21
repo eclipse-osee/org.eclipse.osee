@@ -55,11 +55,7 @@ import {
 } from '@osee/messaging/shared';
 import type { structure } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import {
-	ActionDropdownStub,
-	TwoLayerAddButtonHarness,
-	UndoButtonBranchMockComponent,
-} from '@osee/shared/components/testing';
+import { TwoLayerAddButtonHarness } from '@osee/shared/components/testing';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import {
 	preferencesUiServiceMock,
@@ -67,10 +63,11 @@ import {
 	editAuthServiceMock,
 	structuresMock,
 	structuresMockWithChanges,
+	ViewSelectorMockComponent,
+	MessagingControlsMockComponent,
 } from '@osee/messaging/shared/testing';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { ViewSelectorMockComponent } from 'src/app/ple/messaging/shared/main-content/view-selector/view-selector.component.mock';
 
 describe('StructureTableComponent', () => {
 	let component: StructureTableComponent;
@@ -145,7 +142,6 @@ describe('StructureTableComponent', () => {
 						MockSingleDiffComponent,
 						AddElementDialogComponent,
 						HighlightFilteredTextDirective,
-						ActionDropdownStub,
 						NgIf,
 						NgFor,
 						NgClass,
@@ -153,8 +149,8 @@ describe('StructureTableComponent', () => {
 						AsyncPipe,
 						RouterLink,
 						MatIconModule,
-						UndoButtonBranchMockComponent,
 						TwoLayerAddButtonComponent,
+						MessagingControlsMockComponent,
 						MatFormFieldModule,
 						FormsModule,
 						MatInputModule,

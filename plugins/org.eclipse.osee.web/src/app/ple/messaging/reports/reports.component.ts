@@ -14,11 +14,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { combineLatest, from, iif, of } from 'rxjs';
-import { filter, map, scan, startWith, switchMap, tap } from 'rxjs/operators';
+import { filter, map, scan, startWith, switchMap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import {
 	ApplicabilityListService,
 	ConnectionService,
+	MessagingControlsComponent,
 	ReportsService,
 } from '@osee/messaging/shared';
 import type { connection, MimReport } from '@osee/messaging/shared';
@@ -29,7 +30,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { BranchPickerComponent } from '@osee/shared/components';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
@@ -49,7 +49,7 @@ import { MatInputModule } from '@angular/material/input';
 		MatOptionModule,
 		MatCheckboxModule,
 		MatButtonModule,
-		BranchPickerComponent,
+		MessagingControlsComponent,
 	],
 })
 export class ReportsComponent implements OnInit {

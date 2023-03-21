@@ -1,0 +1,53 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	class="tw-flex tw-flex-row tw-items-end tw-justify-between tw-gap-4 tw-py-4 tw-pl-4 tw-pr-8">
+	<osee-branch-picker
+		*ngIf="branchControls"
+		class="tw-min-w-[350px] tw-max-w-lg"
+		category="3"></osee-branch-picker>
+
+	<!-- Any content can be inserted between the branch picker and the action controls -->
+	<ng-content></ng-content>
+
+	<div
+		class="tw-ml-auto tw-flex tw-min-w-[480px] tw-max-w-lg tw-flex-row tw-items-center tw-justify-end tw-gap-1">
+		<ng-container
+			*ngIf="
+				actionControls && (branchId | async) && (branchType | async)
+			">
+			<ng-container *ngIf="(inEditMode | async) === true">
+				<osee-undo-button-branch></osee-undo-button-branch>
+			</ng-container>
+			<ng-container *ngIf="diff">
+				<ng-container *ngIf="inDiffMode | async as _diff">
+					<a
+						mat-raised-button
+						[routerLink]="diffRouteLink"
+						matTooltip="Show differences between current branch and product line"
+						><mat-icon *ngIf="_diff === 'false'"
+							>change_history</mat-icon
+						><mat-icon *ngIf="_diff === 'true'"
+							>visibility_off</mat-icon
+						>{{
+							_diff === 'false' ? 'Show Deltas' : 'Hide Deltas'
+						}}</a
+					>
+				</ng-container>
+			</ng-container>
+			<osee-action-dropdown
+				category="3"
+				workType="MIM"></osee-action-dropdown>
+		</ng-container>
+	</div>
+</div>

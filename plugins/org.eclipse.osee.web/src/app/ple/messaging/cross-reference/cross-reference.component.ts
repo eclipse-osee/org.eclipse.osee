@@ -28,15 +28,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { CrossReferenceTableComponent } from './lib/cross-reference-table/cross-reference-table.component';
-import { connection, CrossReferenceService } from '@osee/messaging/shared';
+import {
+	connection,
+	CrossReferenceService,
+	MessagingControlsComponent,
+} from '@osee/messaging/shared';
 
 @Component({
 	selector: 'osee-cross-reference',
 	standalone: true,
 	imports: [
 		CommonModule,
-		ActionDropDownComponent,
-		BranchPickerComponent,
 		CrossReferenceTableComponent,
 		FormsModule,
 		MatButtonModule,
@@ -44,6 +46,7 @@ import { connection, CrossReferenceService } from '@osee/messaging/shared';
 		MatIconModule,
 		MatSelectModule,
 		RouterLink,
+		MessagingControlsComponent,
 	],
 	templateUrl: './cross-reference.component.html',
 	styleUrls: ['./cross-reference.component.scss'],

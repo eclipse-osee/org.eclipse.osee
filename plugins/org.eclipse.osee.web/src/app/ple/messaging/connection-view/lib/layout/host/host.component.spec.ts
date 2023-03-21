@@ -29,12 +29,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { EditAuthService } from '@osee/messaging/shared';
 import {
-	UndoButtonBranchMockComponent,
-	ActionDropdownStub,
-	BranchPickerStub,
-} from '@osee/shared/components/testing';
-import { editAuthServiceMock } from '@osee/messaging/shared/testing';
-import { ViewSelectorMockComponent } from 'src/app/ple/messaging/shared/main-content/view-selector/view-selector.component.mock';
+	editAuthServiceMock,
+	MessagingControlsMockComponent,
+	ViewSelectorMockComponent,
+} from '@osee/messaging/shared/testing';
 
 describe('HostComponent', () => {
 	let component: HostComponent;
@@ -53,12 +51,10 @@ describe('HostComponent', () => {
 					RouterTestingModule,
 					NgIf,
 					AsyncPipe,
-					UndoButtonBranchMockComponent,
 					MockSingleDiffComponent,
-					ActionDropdownStub,
 					MockGraphComponent,
-					BranchPickerStub,
 					ViewSelectorMockComponent,
+					MessagingControlsMockComponent,
 				],
 			},
 		})
@@ -69,14 +65,12 @@ describe('HostComponent', () => {
 					MatButtonModule,
 					MatSidenavModule,
 					RouterTestingModule,
-					UndoButtonBranchMockComponent,
 					NoopAnimationsModule,
 					MockSingleDiffComponent,
-					ActionDropdownStub,
 					HostComponent,
 					MockGraphComponent,
-					BranchPickerStub,
 					ViewSelectorMockComponent,
+					MessagingControlsMockComponent,
 				],
 				providers: [
 					{ provide: EditAuthService, useValue: editAuthServiceMock },

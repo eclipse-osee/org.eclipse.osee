@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,5 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-.full-width
-    width: 80%
+import { Component, Input } from '@angular/core';
+
+@Component({
+	selector: 'osee-messaging-controls',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class MessagingControlsMockComponent {
+	@Input() branchControls: boolean = true;
+	@Input() actionControls: boolean = false;
+	@Input() diff: boolean = false;
+	@Input() diffRouteLink: string | any | null | undefined = null;
+}

@@ -24,6 +24,7 @@ import {
 	BranchPickerStub,
 	UndoButtonBranchMockComponent,
 } from '@osee/shared/components/testing';
+import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
 
 describe('TypesInterfaceComponent', () => {
 	let component: TypesInterfaceComponent;
@@ -71,11 +72,9 @@ describe('TypesInterfaceComponent', () => {
 		await TestBed.overrideComponent(TypesInterfaceComponent, {
 			set: {
 				imports: [
-					BranchPickerStub,
 					NgIf,
 					AsyncPipe,
-					UndoButtonBranchMockComponent,
-					ActionDropdownStub,
+					MessagingControlsMockComponent,
 					MockTypeGridComponent,
 				],
 				providers: [

@@ -50,20 +50,17 @@ import {
 } from '@osee/messaging/shared';
 import type { message } from '@osee/messaging/shared';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import {
-	ActionDropdownStub,
-	TwoLayerAddButtonHarness,
-	UndoButtonBranchMockComponent,
-} from '@osee/shared/components/testing';
+import { TwoLayerAddButtonHarness } from '@osee/shared/components/testing';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import {
 	CurrentMessageServiceMock,
 	editAuthServiceMock,
 	enumsServiceMock,
 	messagesMock,
+	MessagingControlsMockComponent,
+	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { ViewSelectorMockComponent } from 'src/app/ple/messaging/shared/main-content/view-selector/view-selector.component.mock';
 
 let loader: HarnessLoader;
 
@@ -123,8 +120,7 @@ describe('MessageTableComponent', () => {
 					MatMenuModule,
 					MatDialogModule,
 					MatPaginatorModule,
-					ActionDropdownStub,
-					UndoButtonBranchMockComponent,
+					MessagingControlsMockComponent,
 					MockSubMessageTableComponent,
 					MockAddMessageDialogComponent,
 					MockEditMessageFieldComponent,
@@ -159,7 +155,7 @@ describe('MessageTableComponent', () => {
 					MatTooltipModule,
 					MatMenuModule,
 					MatDialogModule,
-					UndoButtonBranchMockComponent,
+					MessagingControlsMockComponent,
 					RouterTestingModule.withRoutes([
 						{ path: 'diff', component: MessageTableComponent },
 						{
@@ -170,7 +166,6 @@ describe('MessageTableComponent', () => {
 					]),
 					MockSingleDiffComponent,
 					HighlightFilteredTextDirective,
-					ActionDropdownStub,
 					AddMessageDialogComponent,
 					MockEditMessageFieldComponent,
 					ConvertMessageTableTitlesToStringPipe,

@@ -12,10 +12,7 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import {
-	BranchPickerComponent,
-	ActionDropDownComponent,
-} from '@osee/shared/components';
+import { MessagingControlsComponent } from '@osee/messaging/shared';
 import { map } from 'rxjs/operators';
 import { RouterStateService } from './lib/services/router-state.service';
 import { ElementTableComponent } from './lib/tables/element-table/element-table.component';
@@ -25,11 +22,7 @@ import { ElementTableComponent } from './lib/tables/element-table/element-table.
 	templateUrl: './type-element-search.component.html',
 	styleUrls: ['./type-element-search.component.sass'],
 	standalone: true,
-	imports: [
-		BranchPickerComponent,
-		ActionDropDownComponent,
-		ElementTableComponent,
-	],
+	imports: [MessagingControlsComponent, ElementTableComponent],
 })
 export class TypeElementSearchComponent implements OnInit {
 	constructor(

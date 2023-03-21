@@ -22,6 +22,7 @@ import {
 	ActionDropdownStub,
 	BranchPickerStub,
 } from '@osee/shared/components/testing';
+import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
 
 describe('TypeElementSearchComponent', () => {
 	let component: TypeElementSearchComponent;
@@ -34,8 +35,7 @@ describe('TypeElementSearchComponent', () => {
 		await TestBed.overrideComponent(TypeElementSearchComponent, {
 			set: {
 				imports: [
-					ActionDropdownStub,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 					MockElementTableComponent,
 					MockElementTableSearchComponent,
 				],
@@ -43,8 +43,7 @@ describe('TypeElementSearchComponent', () => {
 		})
 			.configureTestingModule({
 				imports: [
-					ActionDropdownStub,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 					TypeElementSearchComponent,
 					MockElementTableComponent,
 					MockElementTableSearchComponent,

@@ -77,3 +77,5 @@ export * from './difference-report.service.mock';
 export * from './difference-report-branch-info.service.mock';
 export * from './current-diff-report.service.mock';
 export * from './mim-reports.mock';
+export * from './view-selector.component.mock';
+export * from './messaging-controls.component.mock';

@@ -24,13 +24,10 @@ import { UiService } from '../../../ple-services/ui/ui.service';
 import {
 	CurrentTransportTypeService,
 	HeaderService,
+	MessagingControlsComponent,
 	NewTransportTypeDialogComponent,
 } from '@osee/messaging/shared';
 import type { transportType } from '@osee/messaging/shared';
-import {
-	BranchPickerComponent,
-	ActionDropDownComponent,
-} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-transports',
@@ -46,8 +43,7 @@ import {
 		MatButtonModule,
 		MatIconModule,
 		MatDialogModule,
-		BranchPickerComponent,
-		ActionDropDownComponent,
+		MessagingControlsComponent,
 	],
 })
 export class TransportsComponent implements OnInit, OnDestroy {

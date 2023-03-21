@@ -21,8 +21,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterLink } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StructureNamesService } from '@osee/messaging/shared';
-import { structuresNameServiceMock } from '@osee/messaging/shared/testing';
-import { BranchPickerStub } from '@osee/shared/components/testing';
+import {
+	MessagingControlsMockComponent,
+	structuresNameServiceMock,
+} from '@osee/messaging/shared/testing';
 
 import { StructureNamesComponent } from './structure-names.component';
 
@@ -43,7 +45,7 @@ describe('StructureNamesComponent', () => {
 					MatFormFieldModule,
 					MatIconModule,
 					MatExpansionModule,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 				],
 			},
 		})
@@ -56,7 +58,7 @@ describe('StructureNamesComponent', () => {
 					MatIconModule,
 					MatInputModule,
 					NoopAnimationsModule,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 					StructureNamesComponent,
 				],
 				providers: [

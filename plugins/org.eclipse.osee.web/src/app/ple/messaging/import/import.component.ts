@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import type {
+import {
 	connection,
 	CrossReference,
 	elementImportToken,
@@ -25,6 +25,7 @@ import type {
 	ImportEnumSet,
 	ImportSummary,
 	messageToken,
+	MessagingControlsComponent,
 	nodeToken,
 	platformTypeImportToken,
 	subMessage,
@@ -39,10 +40,6 @@ import {
 	importElementHeaderDetails,
 	crossReferenceHeaderDetails,
 } from '@osee/messaging/shared';
-import {
-	ActionDropDownComponent,
-	BranchPickerComponent,
-} from '@osee/shared/components';
 import { BehaviorSubject, from, iif, of, OperatorFunction } from 'rxjs';
 import { concatMap, filter, map, reduce, switchMap } from 'rxjs/operators';
 import { UiService } from '../../../ple-services/ui/ui.service';
@@ -61,10 +58,9 @@ import { ImportService } from './lib/services/import.service';
 		FormsModule,
 		MatButtonModule,
 		MatSelectModule,
-		ActionDropDownComponent,
-		BranchPickerComponent,
 		MatTableModule,
 		ImportTableComponent,
+		MessagingControlsComponent,
 	],
 })
 export class ImportComponent implements OnInit, OnDestroy {

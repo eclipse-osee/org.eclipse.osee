@@ -20,11 +20,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { CurrentTransportTypeService } from '@osee/messaging/shared';
-import { CurrentTransportTypeServiceMock } from '@osee/messaging/shared/testing';
 import {
-	ActionDropdownStub,
-	BranchPickerStub,
-} from '@osee/shared/components/testing';
+	CurrentTransportTypeServiceMock,
+	MessagingControlsMockComponent,
+} from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
 
 import { TransportsComponent } from './transports.component';
@@ -44,8 +43,7 @@ describe('TransportsComponent', () => {
 					MatTooltipModule,
 					MatButtonModule,
 					MatIconModule,
-					ActionDropdownStub,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 				],
 			},
 		})
@@ -57,8 +55,7 @@ describe('TransportsComponent', () => {
 					MatTooltipModule,
 					MatIconModule,
 					NoopAnimationsModule,
-					ActionDropdownStub,
-					BranchPickerStub,
+					MessagingControlsMockComponent,
 					TransportsComponent,
 				],
 				providers: [

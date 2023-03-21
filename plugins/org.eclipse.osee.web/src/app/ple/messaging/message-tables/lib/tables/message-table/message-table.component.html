@@ -10,42 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-row tw-justify-between tw-py-2 tw-px-4">
+<osee-messaging-controls
+	[branchControls]="false"
+	[actionControls]="true"
+	[diff]="true"
+	[diffRouteLink]="
+		(inDiffMode | async) === 'false'
+			? [
+					{
+						outlets: {
+							primary: 'diff',
+							rightSideNav: null
+						}
+					}
+			  ]
+			: '../'
+	">
 	<osee-view-selector></osee-view-selector>
-	<div class="tw-mt-4 tw-flex tw-items-center tw-gap-1">
-		<ng-container *ngIf="(inEditMode | async) === true">
-			<osee-undo-button-branch
-				class="message-element-interface-button-header"></osee-undo-button-branch>
-		</ng-container>
-		<ng-container *ngIf="inDiffMode | async as _diff">
-			<a
-				mat-raised-button
-				class="message-element-interface-button-header"
-				[routerLink]="
-					_diff === 'false'
-						? [
-								{
-									outlets: {
-										primary: 'diff',
-										rightSideNav: null
-									}
-								}
-						  ]
-						: '../'
-				"
-				><mat-icon *ngIf="_diff === 'false'">change_history</mat-icon
-				><mat-icon *ngIf="_diff === 'true'">visibility_off</mat-icon
-				><span>{{
-					_diff === 'false' ? 'Show Deltas' : 'Hide Deltas'
-				}}</span></a
-			>
-		</ng-container>
-		<osee-action-dropdown
-			category="3"
-			workType="MIM"
-			class="action-button"></osee-action-dropdown>
-	</div>
-</div>
+</osee-messaging-controls>
 <osee-two-layer-add-button
 	*ngIf="(inEditMode | async) === true"
 	class="new-message-button"

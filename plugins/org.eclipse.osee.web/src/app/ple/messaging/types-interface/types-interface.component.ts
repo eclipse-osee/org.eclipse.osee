@@ -13,12 +13,7 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-	BranchPickerComponent,
-	UndoButtonBranchComponent,
-	ActionDropDownComponent,
-} from '@osee/shared/components';
-import { CurrentTypesService } from './lib/services/current-types.service';
+import { MessagingControlsComponent } from '@osee/messaging/shared';
 import { PlMessagingTypesUIService } from './lib/services/pl-messaging-types-ui.service';
 import { TypeGridComponent } from './lib/type-grid/type-grid/type-grid.component';
 
@@ -27,22 +22,13 @@ import { TypeGridComponent } from './lib/type-grid/type-grid/type-grid.component
 	templateUrl: './types-interface.component.html',
 	styleUrls: ['./types-interface.component.sass'],
 	standalone: true,
-	imports: [
-		BranchPickerComponent,
-		NgIf,
-		AsyncPipe,
-		UndoButtonBranchComponent,
-		ActionDropDownComponent,
-		TypeGridComponent,
-	],
+	imports: [NgIf, AsyncPipe, TypeGridComponent, MessagingControlsComponent],
 })
 export class TypesInterfaceComponent implements OnInit {
 	filterValue: string = '';
-	inEditMode = this._typesService.inEditMode;
 	constructor(
 		private route: ActivatedRoute,
-		private uiService: PlMessagingTypesUIService,
-		private _typesService: CurrentTypesService
+		private uiService: PlMessagingTypesUIService
 	) {}
 
 	ngOnInit(): void {
