@@ -45,15 +45,31 @@ public class CreateNewDemoChangeRequestBlamTest {
    }
 
    @org.junit.Test
-   public void testCreate() {
+   public void testCreate() throws InterruptedException {
 
       CreateNewDemoChangeRequestBlam blam = new CreateNewDemoChangeRequestBlam();
 
       ActionResult actionResult = CreateNewChangeRequestTestUtility.testCreate(blam, TITLE);
       Assert.assertTrue(actionResult.getResults().isSuccess());
 
+      // Use "explicit wait" technique to reduce erroneous and unpredictable test failure
+
+      int timeoutSeconds = 3;
+      int pollingIntervalMilliseconds = 100;
+      int elapsedTime = 0;
+
       ArtifactToken artifactByName =
          atsApi.getQueryService().getArtifactByName(DemoArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
+
+      while (elapsedTime < (timeoutSeconds * 1000) && artifactByName == null) {
+         Thread.sleep(pollingIntervalMilliseconds);
+         elapsedTime += pollingIntervalMilliseconds;
+
+         artifactByName =
+            atsApi.getQueryService().getArtifactByName(DemoArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
+      }
+
+      System.out.println("Waited for " + pollingIntervalMilliseconds + " milliseconds...");
       Assert.assertNotNull(artifactByName);
 
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
