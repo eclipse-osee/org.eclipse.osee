@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -59,7 +59,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
 
    public MarkdownRenderer(Map<RendererOption, Object> rendererOptions) {
       super(rendererOptions);
-      this.comparator = new PlainTextDiffRenderer();
+      this.comparator = new MarkdownDiffRenderer();
    }
 
    public MarkdownRenderer() {
