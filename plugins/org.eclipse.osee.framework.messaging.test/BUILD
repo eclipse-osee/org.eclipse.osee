@@ -1,27 +1,22 @@
+java_test(
+        name = "AllMessagingIntegrationTestSuite",
+        resources = ["test_messages"],
+	srcs =
+                        glob(["**/*.java"]),
+                        deps = ["java_deps",
+			],
+                        visibility = ["//visibility:public"]
+                        )
 
-java_library(
-        name = "framework_messaging",
-        resources = ["x_files"],
-        srcs = glob(["**/*.java"]),
-	deps = ["java_deps", "//framework_core_packages"],
-        visibility = ["//visibility:public"]
-
-)
 
 filegroup(
-    name = "x_files",
+    name = "test_messages",
     srcs = 
 	  [
-	    "OSGI-INF/ConsoleDebugSupport.xml",
-	    "OSGI-INF/legacy.messaging.gateway.xml",
-	    "OSGI-INF/message.service.command.xml",
-	    "OSGI-INF/message.service.xml",
-	    "msgSchemas/serviceMessages.xsd",
-	    "jaxb/README.txt",
 	    "jaxb/testMessages.xsd",
-	    "design/OSEE Service and Messaging Architecture.xml",
 	   ]   
   , 
+    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -39,8 +34,15 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
+		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
-		"@ext_jars//:eclipse_osgi_services",
+                "@framework_core//:framework_core",
+		#"@framework_messaging//:jms",
+                "@framework_logging//:framework_logging",
+		"@framework_jdk_core//:framework_jdk_core",
+		"@framework_messaging//:framework_messaging"
                 ],
 )
+package(default_visibility = ["//visibility:public"])
+

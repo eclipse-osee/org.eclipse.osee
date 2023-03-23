@@ -1,11 +1,14 @@
+
 java_library(
         name = "orcs_db",
         resources = ["xml_file","xml_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages","//:jdbc","//:jaxrs","//:orcs",
+                "//:framework_core_model","//:framework_resource_management","//:orcs_core",
+	        "//:console_admin","//:activity_api"],
+        visibility = ["//visibility:public"]
+
+)
 
 filegroup(
     name = "xml_file",
@@ -17,8 +20,7 @@ filegroup(
 
 filegroup(
     name = "xml_files",
-    srcs =  
-         glob(["OSGI-INF/*.xml"]),
+    srcs =  glob(["OSGI-INF/*.xml"]),
 )
 
 java_library(
@@ -36,29 +38,10 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-		"@framework_core_model//:framework_core_model",
-                "@activity_api//:activity_api",
-		"@framework_resource_management//:framework_resource_management",
-		"@jdbc//:jdbc",
-		"@jaxrs//:jaxrs",
-		"@orcs//:orcs",
-		"@orcs_core//:orcs_core",
-		"@console_admin//:console_admin",
-		"@framework_logging//:framework_logging",
-		"@logger//:logger",
 		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:apache_commons_lang"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
 
-java_import(
-        name = "apache_commons",
-        jars = [
-                "org.apache.commons.lang_2.6.0.v201404270220.jar",
-       ]
-)
 

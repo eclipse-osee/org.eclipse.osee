@@ -112,8 +112,8 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    private Method getSetApplic(Class<?> type) {
       for (Method method : type.getMethods()) {
-         if (method.getName().startsWith("set") && method.getParameterTypes().length == 1
-            && void.class.equals(method.getReturnType())) {
+         if (method.getName().startsWith("set") && method.getParameterTypes().length == 1 && void.class.equals(
+            method.getReturnType())) {
             //is a setter
             if (method.getName().endsWith("Applicability")) {
                return method;

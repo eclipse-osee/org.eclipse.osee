@@ -1,10 +1,10 @@
+package(default_visibility = ["//visibility:public"])
 
 java_import(
         name = "junit",
         jars = [
                 "org.junit_4.13.0.v20200204-1500.jar",
        ],
-        visibility = ["//visibility:public"]	
 )
 
 java_import(
@@ -12,7 +12,6 @@ java_import(
         jars = [
                 "javax.annotation_1.3.5.v20200504-1837.jar",
        ],
-        visibility = ["//visibility:public"]
 )
 
 java_import(
@@ -32,7 +31,6 @@ java_import(
 				"org.eclipse.zest.core_1.5.300.201606061308.jar",
 				"org.eclipse.zest.layouts_1.1.300.201606061308.jar"
        ],
-       visibility = ["//visibility:public"]	
 )
 
 java_import(
@@ -42,7 +40,6 @@ java_import(
                "org.eclipse.osgi_3.15.300.v20200520-1959.jar",
 			   "org.eclipse.osgi.compatibility.state_1.1.800.v20200511-1223.jar"
        ],
-              visibility = ["//visibility:public"]	 
 )
 
 java_import(
@@ -54,7 +51,6 @@ java_import(
                 "org.eclipse.equinox.app_1.4.500.v20200422-1833.jar",
 
        ],
-       visibility = ["//visibility:public"]	
 )
 
 java_import(
@@ -63,7 +59,6 @@ java_import(
                 "org.eclipse.nebula.widgets.xviewer.core_1.0.0.202212191054.jar",
 				"org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar"
        ],
-       visibility = ["//visibility:public"]	
 )
 
 java_import(
@@ -74,7 +69,6 @@ java_import(
 		"org.apache.commons.dbcp_1.4.0.v201204271417.jar",
 		"org.apache.commons.pool_1.6.0.v201204271246.jar"
        ],
-       visibility = ["//visibility:public"]	
 )
 
 
@@ -85,7 +79,6 @@ java_import(
                 "org.eclipse.rmf.reqif10.xhtml_0.13.0.201509161042.jar",
                 "org.eclipse.rmf.reqif10.serialization_0.13.0.201509161042.jar"
        ],
-       visibility = ["//visibility:public"]	
 )
 
 java_import(
@@ -98,7 +91,6 @@ java_import(
 		"org.eclipse.emf.ecore.change_2.14.0.v20190528-0725.jar",
        		"org.eclipse.sphinx.emf.serialization_0.13.1.202210010314.jar"
        ],
-       visibility = ["//visibility:public"]	
 )
 
 java_import(
@@ -106,17 +98,19 @@ java_import(
         jars = [
                 "org.eclipse.jgit.ssh.jsch_5.8.0.202006091008-r.jar",
        ],
-       visibility = ["//visibility:public"]	
 )
 
 java_import(
         name = "swt",
-        jars = [
-                "org.eclipse.swt_3.114.100.v20200604-0951.jar",
-                "org.eclipse.swt.win32.win32.x86_64_3.114.100.v20200604-0951.jar",
-                "org.eclipse.swt.gtk.linux.x86_64_3.114.100.v20200604-0951.jar",
-       ],
-       visibility = ["//visibility:public"]	
+        jars = 
+               select ({
+
+                   "@platforms//os:windows": ["org.eclipse.swt.win32.win32.x86_64_3.114.100.v20200604-0951.jar","org.eclipse.swt_3.114.100.v20200604-0951.jar"],
+                   "@platforms//os:linux": ["org.eclipse.swt.gtk.linux.x86_64_3.114.100.v20200604-0951.jar","org.eclipse.swt_3.114.100.v20200604-0951.jar"],
+                 
+	           }
+                )
+       
 )
 
 java_import(
@@ -127,7 +121,6 @@ java_import(
 				"org.eclipse.text_3.10.200.v20200428-0633.jar",
 				"com.lowagie.text_2.1.7.v201004222200.jar"
        ],
-       visibility = ["//visibility:public"]
 )
 
 java_import(
@@ -174,5 +167,4 @@ java_import(
 				"org.eclipse.jdt.ui_3.21.100.v20200602-0959.jar",
 				"org.eclipse.jdt.core.manipulation_1.14.0.v20200526-0740.jar"
        ],
-       visibility = ["//visibility:public"]
 )

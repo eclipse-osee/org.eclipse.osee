@@ -2,7 +2,7 @@ java_library(
         name = "cache_admin",
         srcs =
                 glob(["**/*.java"]),
-                deps = ["java_deps"],
+                deps = ["java_deps", "//org.eclipse.osee.framework.jdk.core:framework_jdk_core"],
                 visibility = ["//visibility:public"]
               )
 
@@ -21,7 +21,5 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
                 ],
 )
-package(default_visibility = ["//visibility:public"])

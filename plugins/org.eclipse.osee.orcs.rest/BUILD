@@ -1,11 +1,14 @@
+
 java_library(
         name = "orcs_rest",
         resources = ["osee_files","xml_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages","//:framework_core_server","//:framework_core_model",
+                "//:activity_api", "//:orcs", "//:orcs_core","//:jdbc","//:jaxrs", "//:orcs_rest_model",
+                "//:framework_resource_management", "//:console_admin","//:activity"],
+        visibility = ["//visibility:public"]
+
+)
 
 filegroup(
     name = "osee_files",
@@ -39,24 +42,8 @@ java_library(
 		"@maven//:io_swagger_core_v3_swagger_core",
 		"@maven//:io_swagger_core_v3_swagger_jaxrs2",
 		"@maven//:io_swagger_core_v3_swagger_models",
-		"@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-		"@framework_core_server//:framework_core_server",
-		"@framework_core_model//:framework_core_model",
-                "@activity_api//:activity_api",
-		"@framework_resource_management//:framework_resource_management",
-		"@jdbc//:jdbc",
-		"@jaxrs//:jaxrs",
-		"@orcs//:orcs",
-		"@orcs_core//:orcs_core",
-		"@orcs_rest_model//:orcs_rest_model",
-		"@console_admin//:console_admin",
-		"@framework_logging//:framework_logging",
-		"@logger//:logger",
 		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:eclipse_osgi_services",
-		"@activity//:activity"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
 

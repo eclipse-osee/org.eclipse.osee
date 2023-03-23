@@ -1,11 +1,10 @@
 java_test(
         name = "FrameworkCoreTestSuite",
-        srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps",
-			],
-                        visibility = ["//visibility:public"]
-                        )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//org.eclipse.osee.framework.jdk.core:framework_jdk_core",
+                "//org.eclipse.osee.framework.core:framework_core","//org.eclipse.osee.logger:logger"],
+        visibility = ["//visibility:public"]
+)
 
 java_library(
         name = "java_deps",
@@ -25,9 +24,6 @@ java_library(
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
 		"@maven//:org_junit_junit5_api",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-                "@logger//:logger",
 		"@ext_jars//:eclipse_equinox_common", 
 		"@ext_jars//:eclipse_osgi_services",
                 ],

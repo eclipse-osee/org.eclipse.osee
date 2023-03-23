@@ -1,10 +1,11 @@
+
 java_library(
         name = "template_engine",
         resources = ["x_files","html_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.jaxrs:jaxrs"],
+        visibility = ["//visibility:public"]
+
 )
 
 filegroup(
@@ -21,14 +22,11 @@ filegroup(
 	    "src/org/eclipse/osee/template/engine/js/oseeCore.js"
 	  ]   
   , 
-    visibility = ["//visibility:public"]
 )
 
 filegroup(
     name = "html_files",
-    srcs =
-            glob(["src/org/eclipse/osee/template/engine/xml/*.xml"]),
-            visibility = ["//visibility:public"]
+    srcs = glob(["src/org/eclipse/osee/template/engine/xml/*.xml"]),
 )
 
 java_library(
@@ -46,11 +44,6 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
-                "@logger//:logger",
-                "@framework_logging//:framework_logging",
-		"@jaxrs//:jaxrs",
 		"@ext_jars//:eclipse_osgi_services"
                 ],
 )
-package(default_visibility = ["//visibility:public"])

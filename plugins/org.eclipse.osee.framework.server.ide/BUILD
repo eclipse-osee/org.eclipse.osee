@@ -1,11 +1,13 @@
+
 java_library(
         name = "framework_server_ide",
         resources = ["xml_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages","//:framework_core_server","//:framework_core_model",
+                "//:framework_resource_management", "//:jdbc","//:jaxrs","//:orcs","//:orcs_core",
+	        "//:console_admin","//:activity_api","//:framework_server_ide_api"],
+
+)
 
 filegroup(
     name = "xml_files",
@@ -32,24 +34,9 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:javax_servlet_javax_servlet_api",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
 		"@ext_jars//:eclipse_core",
-		"@framework_core_model//:framework_core_model",
-		"@framework_core_server//:framework_core_server",
-	        "@framework_server_ide_api//:framework_server_ide_api",
-                "@activity_api//:activity_api",
-		"@framework_resource_management//:framework_resource_management",
-		"@jdbc//:jdbc",
-	        "@jaxrs//:jaxrs",
-		"@orcs//:orcs",
-		"@orcs_core//:orcs_core",
-		"@console_admin//:console_admin",
-		"@framework_logging//:framework_logging",
-		"@logger//:logger",
 		"@ext_jars//:nebula",
 		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:eclipse_osgi_services"
                 ],
 )
-package(default_visibility = ["//visibility:public"])

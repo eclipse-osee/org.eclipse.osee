@@ -1,11 +1,10 @@
 java_test(
         name = "JdkCoreTestSuite",
        	resources = ["xml_files"],
-	srcs =
-                 glob(["**/*.java"]),
-                 deps = ["java_deps",],
-                 visibility = ["//visibility:public"]
-                        )
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core:framework_jdk_core"],
+        visibility = ["//visibility:public"]
+)
 
 filegroup(
     name = "xml_files",
@@ -36,7 +35,6 @@ java_library(
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
 		"@maven//:org_junit_junit5_api",
-                "@framework_jdk_core//:framework_jdk_core",
                 ],
 )
 

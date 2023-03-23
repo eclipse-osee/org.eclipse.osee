@@ -1,10 +1,9 @@
 java_library(
         name = "account_rest_model",
-        srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps"],
-                        visibility = ["//visibility:public"]
-                        )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages"],
+        visibility = ["//visibility:public"]
+)
 
 java_library(
         name = "java_deps",
@@ -17,9 +16,6 @@ java_library(
                 "@maven//:javax_ws_rs_javax_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
-                "@framework_jdk_core//:framework_jdk_core",
-                "@framework_core//:framework_core",
-                "@logger//:logger"
                 ],
 )
 

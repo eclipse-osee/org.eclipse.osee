@@ -70,9 +70,10 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             joinQuery = writer.writeJoin(typeIds);
          }
          List<QueryOption> asList = Arrays.asList(criteria.getOptions());
-         if ((asList.contains(QueryOption.CASE__MATCH) && asList.contains(QueryOption.TOKEN_DELIMITER__EXACT)
-            && asList.contains(QueryOption.TOKEN_MATCH_ORDER__MATCH))
-            || Arrays.equals(criteria.getOptions(), QueryOption.EXACT_MATCH_OPTIONS)) {
+         if ((asList.contains(QueryOption.CASE__MATCH) && asList.contains(
+            QueryOption.TOKEN_DELIMITER__EXACT) && asList.contains(
+               QueryOption.TOKEN_MATCH_ORDER__MATCH)) || Arrays.equals(criteria.getOptions(),
+                  QueryOption.EXACT_MATCH_OPTIONS)) {
             attrAlias = writer.startCommonTableExpression("att");
             writeAttrWithNoGamma(writer, joinQuery);
          } else {
