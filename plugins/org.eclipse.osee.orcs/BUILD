@@ -1,9 +1,13 @@
+
 java_library(
         name = "orcs",
-        srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-		visibility = ["//visibility:public"]
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.jdbc:jdbc",
+                "//org.eclipse.osee.framework.resource.management:framework_resource_management",
+                "//org.eclipse.osee.framework.core.model:framework_core_model",
+                "//org.eclipse.osee.activity.api:activity_api"],
+	visibility = ["//visibility:public"]
+
 )
 
 java_library(
@@ -21,13 +25,6 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-		"@framework_core_model//:framework_core_model",
-                "@activity_api//:activity_api",
-		"@framework_resource_management//:framework_resource_management",
-		"@jdbc//:jdbc",
-		"@jaxrs//:jaxrs"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
+

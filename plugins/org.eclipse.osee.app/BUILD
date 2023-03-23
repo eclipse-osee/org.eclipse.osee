@@ -1,18 +1,20 @@
+
 java_library(
         name = "app",
         resources = ["js_files","applet_files","html_files"],
-        srcs =                
-		glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages","//org.eclipse.osee.jdbc:jdbc",
+                "//org.eclipse.osee.template.engine:template_engine", "//org.eclipse.osee.orcs:orcs"],
+        visibility = ["//visibility:public"]
+
+)
 
 filegroup(
     name = "js_files",
     srcs = 
 	    glob(["OSGI-INF/oseeApp/js/*.js"])
   , 
-    visibility = ["//visibility:public"]
+
 )
 
 filegroup(
@@ -27,7 +29,6 @@ filegroup(
 	]
 
   ,
-    visibility = ["//visibility:public"]
 )
 
 filegroup(
@@ -35,7 +36,6 @@ filegroup(
     srcs =
             glob(["OSEE-INF/oseeApp/*.html"])
   ,
-    visibility = ["//visibility:public"]
 )
 
 
@@ -56,18 +56,6 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
 		"@maven//:javax_servlet_javax_servlet_api",
-                "@framework_core//:framework_core",
-		"@framework_core_server//:framework_core_server",
-                "@framework_logging//:framework_logging",
-		"@framework_jdk_core//:framework_jdk_core",
 		"@ext_jars//:eclipse_osgi_services",
-		"@framework_core_model//:framework_core_model",
-        	"@logger//:logger",
-		"@jdbc//:jdbc",
-		"@orcs//:orcs",
-		"@console_admin//:console_admin",
-		"@cache_admin//:cache_admin",
-		"@template_engine//:template_engine"
 		],
 )
-package(default_visibility = ["//visibility:public"])

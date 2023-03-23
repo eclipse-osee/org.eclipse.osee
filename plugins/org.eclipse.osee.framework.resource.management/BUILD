@@ -1,10 +1,11 @@
+
 java_library(
         name = "framework_resource_management",
         resources = ["xml_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages"],
+        visibility = ["//visibility:public"]
+
 )
 
 filegroup(
@@ -13,7 +14,6 @@ filegroup(
         [
         "OSGI-INF/resource.manager.xml"
         ],
-    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -31,26 +31,7 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-                "@logger//:logger",
-                "@framework_logging//:framework_logging"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
-java_import(
-        name = "eclipse_core",
-        jars = [
-                "org.eclipse.core.runtime_3.18.0.v20200506-2143.jar",
-       ]
-)
 
-
-java_import(
-        name = "eclipse_osgi_services",
-        jars = [
-                "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar",
-               "org.eclipse.osgi_3.15.300.v20200520-1959.jar"
-       ]
-)
 

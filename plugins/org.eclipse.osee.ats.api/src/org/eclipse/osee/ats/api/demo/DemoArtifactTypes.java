@@ -46,7 +46,7 @@ public interface DemoArtifactTypes {
    AttributeTypeString IncludeBuild = atsDemo.createString(6624602983846643901L, "demo.code.Include Build", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger LocAffected = atsDemo.createIntegerNoTag(2266722106367646882L, "demo.code.LOC Affected", MediaType.TEXT_PLAIN, "Total Lines of Code Affected");
    AttributeTypeInteger LocReviewed = ats.createInteger(2266722106367646342L, "demo.code.LOC Reviewed", MediaType.TEXT_PLAIN, "Total Lines of Code Reviewed");
-   ComputedCharacteristicDelta LocRemaining = ats.createComp(ComputedCharacteristicDelta::new, 89273067834049579L, "demo.code.LOC Remaining", "Total Lines of Code Remaining", LocAffected, LocReviewed);
+   //ComputedCharacteristicDelta LocRemaining = ats.createComp(ComputedCharacteristicDelta::new, 89273067834049579L, "demo.code.LOC Remaining", "Total Lines of Code Remaining", LocAffected, LocReviewed);
    AttributeTypeString OriginatingBuild = atsDemo.createString(6539429238794418072L, "demo.code.Originating Build", MediaType.TEXT_PLAIN, "");
    CodeReqDocAttributeType ReqDoc = atsDemo.createEnumNoTag(new CodeReqDocAttributeType());
    AttributeTypeString Subsystem = atsDemo.createString(1152921504606847248L, "demo.code.Subsystem", MediaType.TEXT_PLAIN, "");
@@ -89,7 +89,7 @@ public interface DemoArtifactTypes {
       .zeroOrOne(IncludeBuild)
       .zeroOrOne(LocAffected)
       .zeroOrOne(LocReviewed)
-      .computed(LocRemaining)
+     // .computed(LocRemaining)
       .zeroOrOne(OriginatingBuild)
       .zeroOrOne(ReqDoc, ReqDoc.Unknown)
       .zeroOrOne(Subsystem)

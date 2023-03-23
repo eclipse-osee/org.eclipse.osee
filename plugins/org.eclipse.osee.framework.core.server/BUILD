@@ -1,19 +1,20 @@
+
 java_library(
         name = "framework_core_server",
         resources = ["xml_files"],
-        srcs =                
-			glob(["**/*.java"]),
-                        deps = ["java_deps",
-			],
-                        visibility = ["//visibility:public"]
-                        )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages",
+                 "//org.eclipse.osee.framework.core.model:framework_core_model",
+                 "//org.eclipse.osee.orcs:orcs", "//org.eclipse.osee.jdbc:jdbc",
+                 "//org.eclipse.osee.cache.admin:cache_admin", "//org.eclipse.osee.console.admin:console_admin"],
+        visibility = ["//visibility:public"]
+        
+)
 
 filegroup(
     name = "xml_files",
-    srcs = 
-	    glob(["OSGI-INF/*.xml"])
+    srcs = glob(["OSGI-INF/*.xml"])
   , 
-    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -33,16 +34,6 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
 		"@maven//:javax_servlet_javax_servlet_api",
-                "@framework_core//:framework_core",
-                "@framework_logging//:framework_logging",
-		"@framework_jdk_core//:framework_jdk_core",
 		"@ext_jars//:eclipse_osgi_services",
-		"@framework_core_model//:framework_core_model",
-        	"@logger//:logger",
-		"@jdbc//:jdbc",
-		"@orcs//:orcs",
-		"@console_admin//:console_admin",
-		"@cache_admin//:cache_admin"
 		],
 )
-package(default_visibility = ["//visibility:public"])

@@ -1,10 +1,9 @@
 java_library(
 	name = "framework_logging",
-	srcs =	
-	        glob(["**/*.java"]),	
-		deps = ["java_deps"],
-		visibility = ["//visibility:public"]
-	      )
+	srcs = glob(["**/*.java"]),	
+	deps = ["java_deps","//org.eclipse.osee.framework.jdk.core:framework_jdk_core"],
+	visibility = ["//visibility:public"]
+	)
 
 java_library(
         name = "java_deps",
@@ -18,7 +17,6 @@ java_library(
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
 		"@maven//:org_slf4j_slf4j_api",
-		"@framework_jdk_core//:framework_jdk_core"
                 ],
 )
 

@@ -1,11 +1,10 @@
 java_library(
         name = "authentication_ldap",
         resources = ["x_files"],
-        srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.authentication.admin:authentication_admin"],
+        visibility = ["//visibility:public"]
+)
 
 filegroup(
     name = "x_files",
@@ -29,10 +28,6 @@ java_library(
                 "@maven//:javax_ws_rs_javax_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
-                "@framework_jdk_core//:framework_jdk_core",
-                "@logger//:logger",
-                "@authentication_admin//:authentication_admin",
                 ],
 )
 
-package(default_visibility = ["//visibility:public"])

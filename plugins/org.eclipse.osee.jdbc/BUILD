@@ -1,10 +1,11 @@
+
 java_library(
         name = "jdbc",
         resources = ["x_files"],
-        srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages"],
+        visibility = ["//visibility:public"]
+
 )
 
 
@@ -16,7 +17,6 @@ filegroup(
 	    "OSGI-INF/org.eclipse.osee.jdbc.internal.osgi.JdbcServiceImpl.xml",
 	   ]   
   , 
-    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -35,12 +35,7 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
-                "@framework_core//:framework_core",
-                "@framework_logging//:framework_logging",
-		"@framework_jdk_core//:framework_jdk_core",
-		"@logger//:logger",
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:apache_commons_lang",
 		],
 )
-package(default_visibility = ["//visibility:public"])

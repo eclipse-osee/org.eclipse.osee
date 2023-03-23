@@ -1,10 +1,11 @@
+
 java_library(
         name = "disposition_rest_model",
-        srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages"],
+        visibility = ["//org.eclipse.osee.disposition.rest:__pkg__"]
+
+)
 
 java_library(
         name = "java_deps",
@@ -21,10 +22,5 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-                "@logger//:logger",
-                "@framework_logging//:framework_logging"
                 ],
 )
-package(default_visibility = ["//visibility:public"])

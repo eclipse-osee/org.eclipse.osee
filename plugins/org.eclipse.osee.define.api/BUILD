@@ -1,10 +1,14 @@
+
 java_library(
         name = "define_api",
-        srcs =                
-		glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages","//:jdbc",
+                "//:orcs", "//:framework_core_model",
+                "//:console_admin","//:cache_admin",
+                "//:activity_api"],
+        visibility = ["//visibility:public"]
+
+)
 
 java_library(
         name = "java_deps",
@@ -28,17 +32,6 @@ java_library(
 		"@maven//:io_swagger_core_v3_swagger_core",
 		"@maven//:io_swagger_core_v3_swagger_jaxrs2",
                 "@maven//:io_swagger_core_v3_swagger_models",
-		"@framework_core//:framework_core",
-                "@framework_logging//:framework_logging",
-		"@framework_jdk_core//:framework_jdk_core",
 		"@ext_jars//:eclipse_osgi_services",
-		"@framework_core_model//:framework_core_model",
-        	"@logger//:logger",
-		"@jdbc//:jdbc",
-		"@orcs//:orcs",
-		"@console_admin//:console_admin",
-		"@cache_admin//:cache_admin",
-		"@activity_api//:activity_api"
 		],
 )
-package(default_visibility = ["//visibility:public"])

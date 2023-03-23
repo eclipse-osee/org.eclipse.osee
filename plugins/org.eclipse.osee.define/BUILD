@@ -1,11 +1,16 @@
+
 java_library(
         name = "define",
 	resources = ["xml_files","html_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-              )
+	srcs = glob(["**/*.java"]),
+	deps = ["java_deps","//framework_core_packages","//:jdbc","//:orcs",
+                "//:jaxrs","//:orcs_core",
+                "//:orcs_rest_model","//:template_engine",
+                "//:framework_core_server","//:define_api",
+	        "//:ats_api","//:activity_api","//:app"],
+        visibility = ["//visibility:public"]
+
+)
 
 filegroup(
     name = "xml_files",
@@ -28,7 +33,6 @@ filegroup(
 	    "src/ApplicabilityGrammar.tokens"
 	  ]
   ,
-    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -50,24 +54,6 @@ java_library(
 		"@maven//:org_jsoup_jsoup",
 		"@maven//:com_jcraft_jsch",
 		"@maven//:org_eclipse_jgit_org_eclipse_jgit",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-		"@framework_core_model//:framework_core_model",
-                "@activity_api//:activity_api",
-		"@framework_resource_management//:framework_resource_management",
-		"@jdbc//:jdbc",
-		"@jaxrs//:jaxrs",
-		"@orcs//:orcs",
-		"@orcs_core//:orcs_core",
-		"@orcs_rest_model//:orcs_rest_model",
-		"@console_admin//:console_admin",
-		"@framework_logging//:framework_logging",
-		"@logger//:logger",
-		"@define_api//:define_api",
-		"@ats_api//:ats_api",
-		"@app//:app",
-		"@framework_core_server//:framework_core_server",
-	        "@template_engine//:template_engine",	
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
@@ -76,4 +62,3 @@ java_library(
 		"@ext_jars//:jgit"
                 ],
 )
-package(default_visibility = ["//visibility:public"])

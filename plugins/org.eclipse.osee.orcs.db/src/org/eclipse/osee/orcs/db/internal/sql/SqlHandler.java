@@ -35,11 +35,7 @@ public abstract class SqlHandler<T extends Criteria> {
    public void setData(T criteria) {
       // do nothing
    }
-
-   public T getData() {
-      return this.getData();
-   }
-
+   
    public void addTables(AbstractSqlWriter writer) {
       // do nothing
    }

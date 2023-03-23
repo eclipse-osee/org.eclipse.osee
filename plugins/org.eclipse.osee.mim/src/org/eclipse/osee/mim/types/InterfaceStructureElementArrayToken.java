@@ -277,7 +277,7 @@ public class InterfaceStructureElementArrayToken extends PLGenericDBObject {
     * @param InterfaceDefaultValue the InterfaceDefaultValue to set
     */
    public void setInterfaceDefaultValue(String InterfaceDefaultValue) {
-      InterfaceDefaultValue = InterfaceDefaultValue;
+      this.InterfaceDefaultValue = InterfaceDefaultValue;
    }
 
    /**

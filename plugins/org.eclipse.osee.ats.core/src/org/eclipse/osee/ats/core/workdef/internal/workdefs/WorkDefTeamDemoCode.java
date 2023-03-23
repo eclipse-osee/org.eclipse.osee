@@ -101,9 +101,9 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(DemoArtifactTypes.LocAffected, "XIntegerDam", WidgetOption.EDITABLE), //
-               new WidgetDefinition(DemoArtifactTypes.LocReviewed, "XIntegerDam", WidgetOption.EDITABLE), //
-               new WidgetDefinition(DemoArtifactTypes.LocRemaining, "XComputedCharacteristicWidget",
-                  WidgetOption.NOT_EDITABLE, WidgetOption.NO_SELECT) //
+               new WidgetDefinition(DemoArtifactTypes.LocReviewed, "XIntegerDam", WidgetOption.EDITABLE) //
+              // new WidgetDefinition(DemoArtifactTypes.LocRemaining, "XComputedCharacteristicWidget",
+          //        WidgetOption.NOT_EDITABLE, WidgetOption.NO_SELECT) //
             ));
 
       bld.andState(5, "Completed", StateType.Completed) //

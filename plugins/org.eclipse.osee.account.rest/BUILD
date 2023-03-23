@@ -1,11 +1,19 @@
+
 java_library(
         name = "account_rest",
         resources = ["x_files", "html_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
-                        )
+	    srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.orcs:orcs",
+		        "//org.eclipse.osee.jaxrs:jaxrs", "//org.eclipse.osee.jaxrs.server:jaxrs_server",
+				"//org.eclipse.osee.jdbc:jdbc",
+				"//org.eclipse.osee.account.rest.model:account_rest_model",
+				"//org.eclipse.osee.account.admin:account_admin",
+				"//org.eclipse.osee.authorization.admin:authorization_admin",
+				"//org.eclipse.osee.authentication.admin:authentication_admin",
+				"//org.eclipse.osee.framework.resource.management:framework_resource_management"],
+        visibility = ["//visibility:public"]
+
+)
 
 filegroup(
     name = "x_files",
@@ -15,7 +23,6 @@ filegroup(
 		"OSGI-INF/jaxrs.authenticator.xml"
 	  ]   
   , 
-    visibility = ["//visibility:public"]
 )
 
 filegroup(
@@ -27,7 +34,6 @@ filegroup(
 		"OSEE-INF/templates/unsubscribe.html"
 	],
 	    
-    visibility = ["//visibility:public"]
 )
 
 java_library(
@@ -57,33 +63,16 @@ java_library(
 			"@maven//:org_osgi_org_osgi_service_component",
 			"@maven//:org_osgi_org_osgi_framework",
 			"@maven//:org_eclipse_core_runtime",
-			"@maven//:org_eclipse_osgi",
 			"@maven//:org_eclipse_core_org_eclipse_core_resources",
 			"@maven//:javax_mail_mail",
 			"@maven//:org_antlr_antlr_runtime",
 			"@maven//:com_google_guava_guava",
 			"@maven//:org_apache_poi_poi",
-        	        "@maven//:org_apache_poi_poi_ooxml",
+        	"@maven//:org_apache_poi_poi_ooxml",
 			"@maven//:javax_servlet_javax_servlet_api",
 			"@maven//:org_hsqldb_hsqldb",
-			"@account_admin//:account_admin",
-			"@account_rest_model//:account_rest_model",
-			"@authentication_admin//:authentication_admin",
-			"@authorization_admin//:authorization_admin",
-			"@framework_core//:framework_core",
-			"@framework_core_model//:framework_core_model",
-			"@framework_jdk_core//:framework_jdk_core",
-			"@framework_logging//:framework_logging",
-			"@jaxrs_server//:jaxrs_server",
-			"@template_engine//:template_engine",
-			"@logger//:logger",
-			"@jaxrs//:jaxrs",
-			"@activity_api//:activity_api",
-			"@orcs//:orcs",
-			"@framework_resource_management//:framework_resource_management",
-			"@jdbc//:jdbc",
-			"@ext_jars//:javax.annotation"
+			"@ext_jars//:javax.annotation",
+			"@ext_jars//:eclipse_osgi_services"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
 

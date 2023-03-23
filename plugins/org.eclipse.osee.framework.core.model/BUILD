@@ -1,9 +1,10 @@
+
 java_library(
         name = "framework_core_model",
-        srcs =
-               glob(["**/*.java"]),
-               deps = ["java_deps",],
-               visibility = ["//visibility:public"]
+        srcs = glob(["**/*.java"]),
+        deps = ["java_deps", "//framework_core_packages"],
+        visibility = ["//visibility:public"]
+
 )
 
 java_library(
@@ -21,14 +22,10 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-                "@logger//:logger",
-                "@framework_logging//:framework_logging",
 		"@ext_jars//:eclipse_core",
 		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:eclipse_osgi_services"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
+
 
