@@ -1,22 +1,14 @@
 java_test(
         name = "AllMessagingIntegrationTestSuite",
         resources = ["test_messages"],
-	srcs =
-                        glob(["**/*.java"]),
-                        deps = ["java_deps",
-			],
-                        visibility = ["//visibility:public"]
-                        )
-
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//:framework_messaging","//framework_core_packages"],
+)
 
 filegroup(
     name = "test_messages",
-    srcs = 
-	  [
-	    "jaxb/testMessages.xsd",
-	   ]   
-  , 
-    visibility = ["//visibility:public"]
+    srcs = ["jaxb/testMessages.xsd",]   
+  
 )
 
 java_library(
@@ -37,12 +29,7 @@ java_library(
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
-                "@framework_core//:framework_core",
-		#"@framework_messaging//:jms",
-                "@framework_logging//:framework_logging",
-		"@framework_jdk_core//:framework_jdk_core",
-		"@framework_messaging//:framework_messaging"
+		"@maven//:org_glassfish_jaxb_jaxb_runtime"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
 

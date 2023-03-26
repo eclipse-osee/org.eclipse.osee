@@ -5,7 +5,7 @@ java_library(
 	srcs = glob(["**/*.java"]),
         deps = ["java_deps", "//framework_core_packages","//org.eclipse.osee.disposition.rest.model:disposition_rest_model",
                 "//org.eclipse.osee.vcast:vcast","//:jdbc","//:orcs", "//:ats_api"],
-        visibility = ["//visibility:public"]
+        visibility = ["//org.eclipse.osee.disposition.rest.test:__pkg__"]
 )
 
 filegroup(

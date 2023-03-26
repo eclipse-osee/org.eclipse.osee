@@ -136,7 +136,13 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    private synchronized void sendInternal(MessageID messageId, Object message, Properties properties) throws JMSException {
-      ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+      ConsoleDebugSupport support = null;
+      try {
+         support = ServiceUtility.getConsoleDebugSupport();
+      } catch (NullPointerException e) {
+         System.out.print("getBundle() is null");
+      }
+
       if (support != null) {
          if (support.getPrintSends()) {
             System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++");

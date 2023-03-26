@@ -1,11 +1,11 @@
 java_library(
 	name = "framework_jdk_core",
 	resources = ["txt_files"],
-	srcs =	
-	        glob(["**/*.java"]),	
-			deps = ["java_deps"],
-visibility = ["//visibility:public"]
-			)
+	srcs = glob(["**/*.java"]),	
+	deps = ["java_deps"],
+    visibility = ["//visibility:public"]
+
+)
         
 
 filegroup(
@@ -13,7 +13,6 @@ filegroup(
     srcs =
         ["src/org/eclipse/osee/framework/jdk/core/util/ReservedCharacters.txt"]
     ,
-    visibility = ["//visibility:public"]
 )
 
 java_library(

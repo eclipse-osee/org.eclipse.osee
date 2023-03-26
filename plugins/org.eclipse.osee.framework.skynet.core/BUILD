@@ -23,7 +23,12 @@ filegroup(
     name = "exsd_files",
     srcs = 
 	    glob(["OSEE-INF/extensionPts/*.exsd"]),
-   
+        visibility = ["//visibility:public"]
+)
+
+filegroup(
+    name = "exsd_files",
+    srcs = glob(["OSEE-INF/extensionPts/*.exsd"]),
 )
 
 filegroup(

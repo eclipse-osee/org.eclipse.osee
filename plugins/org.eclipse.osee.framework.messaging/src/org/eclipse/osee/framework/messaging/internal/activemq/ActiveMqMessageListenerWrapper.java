@@ -56,8 +56,14 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
 
    @Override
    public void onMessage(javax.jms.Message jmsMessage) {
+      ConsoleDebugSupport support = null;
       try {
-         ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+         support = ServiceUtility.getConsoleDebugSupport();
+
+      } catch (NullPointerException e) {
+         System.out.println("Get Bundle is null");
+      }
+      try {
          if (support != null) {
             if (support.getPrintReceives()) {
                System.out.println(new Date() + " : " + jmsMessage.getJMSMessageID());

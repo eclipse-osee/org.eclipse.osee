@@ -1,3 +1,4 @@
+
 java_library(
         name = "framework_messaging_event_res",
         resources = ["xsd_files"],
@@ -7,7 +8,7 @@ java_library(
 		"//:framework_messaging"
 	],
 	visibility = ["//visibility:public"]
-              )
+)
 
 filegroup(
     name = "xsd_files",
@@ -15,7 +16,7 @@ filegroup(
         [
         "jaxb/resMessages.xsd",
         "OSGI-INF/osee.core.model.event.service.xml"
-        ]
+        ],
 )
 
 java_library(

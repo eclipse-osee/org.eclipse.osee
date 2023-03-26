@@ -1,11 +1,7 @@
-
-java_library(
-        name = "disposition_rest_model",
-        srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages"],
-        visibility = ["//org.eclipse.osee.disposition.rest:__pkg__",
-	              "//org.eclipse.osee.disposition.rest.test:__pkg__"]
-
+java_test(
+        name = "AllAtsCoreTestSuite",
+	    srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//:ats_api","//:ats_core","//framework_core_packages"],
 )
 
 java_library(
@@ -23,5 +19,10 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
+		        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		        "@maven//:org_mockito_mockito_core",
+		        "@ext_jars//:nebula",
+		        "@ext_jars//:apache_commons_lang",
+		        "@ext_jars//:junit"
                 ],
 )
