@@ -5,6 +5,17 @@ alias(
    actual = "//org.eclipse.osee.account.rest.client:account_rest_client"
 )
 
+
+alias(
+   name = "account_admin",
+   actual = "//org.eclipse.osee.account.admin:account_admin"
+)
+
+alias(
+   name = "account_rest",
+   actual = "//org.eclipse.osee.account.rest:account_rest"
+)
+
 alias(
    name = "account_rest_model",
    actual = "//org.eclipse.osee.account.rest.model:account_rest_model"
@@ -38,6 +49,11 @@ alias(
 alias(
    name = "ats_rest",
    actual = "//org.eclipse.osee.ats.rest:ats_rest"
+)
+
+alias(
+   name = "authentication_admin", 
+   actual = "//org.eclipse.osee.authentication.admin:authentication_admin"
 )
 
 alias(
@@ -188,5 +204,4 @@ alias(
 alias(
     name = "template_engine",
     actual = "//org.eclipse.osee.template.engine:template_engine"
-
 )

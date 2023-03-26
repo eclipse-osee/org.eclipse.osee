@@ -17,6 +17,9 @@ local_repository(
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
 
+load("@rules_jvm_external//private/rules:jvm_import.bzl", "jvm_import")
+
+
 rules_jvm_external_deps()
 
 load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
@@ -24,6 +27,8 @@ load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
 rules_jvm_external_setup()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+
 
 maven_install(
     artifacts = [
@@ -74,12 +79,14 @@ maven_install(
         "com.jcraft:jsch:0.1.55",
         "com.google.guava:guava:27.1-jre",
         "org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1",
-        "org.apache.activemq:activemq-all:5.14.0"
-        
+        "org.apache.activemq:activemq-all:5.14.0",
+	"org.glassfish.jaxb:jaxb-runtime:3.0.1"
         ],
     repositories = [
         # Private repositories are supported through HTTP Basic auth
         "https://repo1.maven.org/maven2",
+        
         "https://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/",
+        "https://download.eclipse.org/releases/2020-06/202006171000/"
     ],
 )

@@ -1,11 +1,10 @@
-
-java_library(
-        name = "disposition_rest_model",
-        srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages"],
-        visibility = ["//org.eclipse.osee.disposition.rest:__pkg__",
-	              "//org.eclipse.osee.disposition.rest.test:__pkg__"]
-
+java_test(
+        name = "AccountAdmin_JUnit_TestSuite",
+	srcs = glob(["**/*.java"]),
+        deps = ["java_deps","//framework_core_packages",
+                "//:account_rest_model",
+                "//org.eclipse.osee.authentication.admin:authentication_admin","//:account_admin",
+                "//:account_rest_model"],
 )
 
 java_library(
@@ -19,9 +18,7 @@ java_library(
                 "@maven//:javax_ws_rs_javax_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
-                "@maven//:org_slf4j_slf4j_api",
-                "@maven//:javax_mail_mail",
-                "@maven//:org_antlr_antlr_runtime",
-                "@maven//:com_google_guava_guava",
+                "@maven//:org_mockito_mockito_core",
                 ],
 )
+
