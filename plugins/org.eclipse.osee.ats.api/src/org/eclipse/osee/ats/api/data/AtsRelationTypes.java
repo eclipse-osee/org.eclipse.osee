@@ -132,6 +132,15 @@ public interface AtsRelationTypes {
     RelationTypeSide AgileBacklog_AgileBacklog = Goal_Goal;
     RelationTypeSide AgileBacklog_Item = AgileBacklog_AgileBacklog.getOpposite();
 
+
+    RelationTypeToken NewGoal = ats.addNewRelationType(4408190126402163773L, "NewGoal", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, AtsArtifactTypes.Goal, "Goal", AtsArtifact, "Member");
+    RelationTypeSide NewGoal_Goal = RelationTypeSide.create(NewGoal, SIDE_A);
+    RelationTypeSide NewGoal_Member = RelationTypeSide.create(NewGoal, SIDE_B);
+
+ // Backlogs use same relation as Goal; This is here for readability and to document this in code
+    RelationTypeSide NewAgileBacklog_AgileBacklog = NewGoal_Goal;
+    RelationTypeSide NewAgileBacklog_Item = NewAgileBacklog_AgileBacklog.getOpposite();
+
    RelationTypeToken InsertionActivityToWorkPackage = ats.add(8892387571282380815L, "Insertion Activity To Work Package", ONE_TO_MANY, UNORDERED, InsertionActivity, "Insertion Activity", AtsArtifactTypes.WorkPackage, "Work Package");
    RelationTypeSide InsertionActivityToWorkPackage_InsertionActivity = RelationTypeSide.create(InsertionActivityToWorkPackage, SIDE_A);
    RelationTypeSide InsertionActivityToWorkPackage_WorkPackage = RelationTypeSide.create(InsertionActivityToWorkPackage, SIDE_B);
