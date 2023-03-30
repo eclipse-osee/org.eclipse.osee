@@ -14,9 +14,7 @@ import { RouterLink } from '@angular/router';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import navigationStructure, {
-	navigationElement,
-} from './top-level-navigation-structure';
+import navigationStructure from './top-level-navigation-structure';
 import { from, iif, of, reduce, switchMap } from 'rxjs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -26,6 +24,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { SideNavService } from 'src/app/shared-services/ui/side-nav.service';
 import { UserDataAccountService } from '@osee/auth';
+import { navigationElement } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-top-level-navigation',

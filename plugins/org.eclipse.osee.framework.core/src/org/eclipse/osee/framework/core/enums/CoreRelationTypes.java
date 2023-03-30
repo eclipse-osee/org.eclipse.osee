@@ -27,6 +27,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Feature;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GroupArtifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HelpPage;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceConnection;
@@ -186,6 +187,10 @@ public interface CoreRelationTypes {
    RelationTypeToken RequirementsToInterface = osee.addNewRelationType(9109538440842134345L, "Requirements to Interface", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, Artifact, "Requirement Artifact", InterfaceArtifact, "Artifact");
    RelationTypeSide RequirementsToInterface_Artifact = RelationTypeSide.create(RequirementsToInterface, SIDE_A);
    RelationTypeSide RequirementsToInterface_InterfaceArtifact = RelationTypeSide.create(RequirementsToInterface, SIDE_B);
+
+   RelationTypeToken HelpToHelp = osee.addNewRelationType(8012520859985251534L, "Help Page to Help Page Child", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, HelpPage, "Help Page", HelpPage, "Help Page Child");
+   RelationTypeSide HelpToHelp_Help = RelationTypeSide.create(HelpToHelp, SIDE_A);
+   RelationTypeSide HelpToHelp_Child = RelationTypeSide.create(HelpToHelp, SIDE_B);
 
    RelationTypeToken PlConfigurationGroup = osee.add(674505523757332017L, "Product Line Configuration Group", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, GroupArtifact, "Group", BranchView, "BranchView");
    RelationTypeSide PlConfigurationGroup_Group = RelationTypeSide.create(PlConfigurationGroup, SIDE_A);

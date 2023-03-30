@@ -10,22 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="landing-page-container">
-	<div class="mat-headline-1">OSEE Messaging Help</div>
-	<div class="landing-page-links-container">
-		<a
-			mat-raised-button
-			color="primary"
-			routerLink="overview"
-			class="landing-page-link-button">
-			Overview
-		</a>
-		<a
-			mat-raised-button
-			color="primary"
-			routerLink="columnDescriptions"
-			class="landing-page-link-button">
-			Column Descriptions
-		</a>
-	</div>
-</div>
+<mat-sidenav-container class="tw-h-full">
+	<mat-sidenav
+		mode="side"
+		opened
+		class="tw-h-full">
+		<osee-messaging-help-navigation></osee-messaging-help-navigation>
+	</mat-sidenav>
+	<mat-sidenav-content class="tw-px-8 tw-py-4">
+		<osee-messaging-help-content></osee-messaging-help-content>
+	</mat-sidenav-content>
+</mat-sidenav-container>

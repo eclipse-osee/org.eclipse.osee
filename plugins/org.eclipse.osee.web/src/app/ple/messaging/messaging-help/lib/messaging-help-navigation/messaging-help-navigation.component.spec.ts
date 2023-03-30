@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,24 +11,27 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { OverviewComponent } from './overview.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { UserDataAccountService, userDataAccountServiceMock } from '@osee/auth';
 
-describe('OverviewComponent', () => {
-	let component: OverviewComponent;
-	let fixture: ComponentFixture<OverviewComponent>;
+import { MessagingHelpNavigationComponent } from './messaging-help-navigation.component';
+
+describe('MessagingHelpNavigationComponent', () => {
+	let component: MessagingHelpNavigationComponent;
+	let fixture: ComponentFixture<MessagingHelpNavigationComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				MatGridListModule,
-				NoopAnimationsModule,
-				OverviewComponent,
+			imports: [MessagingHelpNavigationComponent, RouterTestingModule],
+			providers: [
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
+				},
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(OverviewComponent);
+		fixture = TestBed.createComponent(MessagingHelpNavigationComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

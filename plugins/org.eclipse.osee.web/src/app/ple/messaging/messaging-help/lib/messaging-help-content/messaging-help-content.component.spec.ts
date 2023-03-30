@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,29 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatListModule } from '@angular/material/list';
-import { MatTableModule } from '@angular/material/table';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { ColumnDescriptionsMessageHelpComponent } from './column-descriptions-message-help.component';
+import { MessagingHelpContentComponent } from './messaging-help-content.component';
 
-describe('ColumnDescriptionsMessageHelpComponent', () => {
-	let component: ColumnDescriptionsMessageHelpComponent;
-	let fixture: ComponentFixture<ColumnDescriptionsMessageHelpComponent>;
+describe('MessagingHelpContentComponent', () => {
+	let component: MessagingHelpContentComponent;
+	let fixture: ComponentFixture<MessagingHelpContentComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				MatTableModule,
-				MatListModule,
-				ColumnDescriptionsMessageHelpComponent,
-			],
+			imports: [MessagingHelpContentComponent, RouterTestingModule],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(
-			ColumnDescriptionsMessageHelpComponent
-		);
+		fixture = TestBed.createComponent(MessagingHelpContentComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

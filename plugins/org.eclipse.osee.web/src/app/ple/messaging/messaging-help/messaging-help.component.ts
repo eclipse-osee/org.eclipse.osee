@@ -11,15 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import MessagingHelpContentComponent from 'src/app/ple/messaging/messaging-help/lib/messaging-help-content/messaging-help-content.component';
+import { MessagingHelpNavigationComponent } from 'src/app/ple/messaging/messaging-help/lib/messaging-help-navigation/messaging-help-navigation.component';
 
 @Component({
 	selector: 'osee-messaging-help',
 	templateUrl: './messaging-help.component.html',
 	styleUrls: ['./messaging-help.component.sass'],
 	standalone: true,
-	imports: [MatButtonModule, RouterLink],
+	imports: [
+		MatSidenavModule,
+		MessagingHelpNavigationComponent,
+		MessagingHelpContentComponent,
+	],
 })
 export class MessagingHelpComponent {
 	constructor() {}

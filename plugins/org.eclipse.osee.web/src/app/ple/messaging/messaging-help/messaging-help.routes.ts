@@ -13,10 +13,10 @@
 import { Routes } from '@angular/router';
 import navigationStructure from '../../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
 
-const columnDescriptions = navigationStructure[0].children
+const help = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Help')
-	?.children.find((page) => page.label === 'Column Descriptions');
+	.children.find((page) => page.label === 'Help');
+
 const routes: Routes = [
 	{
 		path: '',
@@ -24,18 +24,15 @@ const routes: Routes = [
 			import('../../../layout/lib/toolbar/toolbar.routes'),
 		outlet: 'toolbar',
 	},
-	{ path: '', loadComponent: () => import('./messaging-help.component') },
 	{
-		path: 'columnDescriptions',
-		title: columnDescriptions?.pageTitle || 'OSEE - MIM - Help',
-		loadChildren: () =>
-			import(
-				'./lib/column-descriptions-message-help/column-descriptions-message-help.routes'
-			),
+		path: '',
+		pathMatch: 'full',
+		redirectTo: 'overview',
 	},
 	{
-		path: 'overview',
-		loadChildren: () => import('./lib/overview/overview.routes'),
+		path: ':helpPage',
+		loadComponent: () => import('./messaging-help.component'),
+		title: help?.pageTitle,
 	},
 ];
 

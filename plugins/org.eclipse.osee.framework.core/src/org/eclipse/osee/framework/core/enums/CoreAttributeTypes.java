@@ -71,6 +71,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
    AttributeTypeString Acronym = osee.createString(4723834159825897915L, "Acronym", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean Active = osee.createBoolean(1152921504606847065L, "Active", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ApplicationName = osee.createString(2728059764602429474L, "Application Name", MediaType.TEXT_PLAIN, "Name of the application the artifact belongs to");
    AttributeTypeString Annotation = osee.createString(1152921504606847094L, "Annotation", MediaType.TEXT_PLAIN, "");
    AttributeTypeString AtsActionSearch = osee.createString(72063457009467643L, "ATS Action Search", MediaType.TEXT_PLAIN, "Saved ATS Quick Searches.");
    AttributeTypeString AtsUserConfig = osee.createString(2348752981434455L, "ATS User Config", MediaType.TEXT_PLAIN, "Saved ATS Configures");
@@ -187,6 +188,8 @@ public interface CoreAttributeTypes {
    AttributeTypeString MessageGenerationType = osee.createString(7121809480940961886L, "Message Generation Type", MediaType.TEXT_PLAIN, "Type of message information generation to use for MIM artifacts if Message Generation is true. Examples include Relational, Dynamic.");
    AttributeTypeString MessageGenerationPosition = osee.createString(7004358807289801815L, "Message Generation Position", MediaType.TEXT_PLAIN, "Location within a list for generation to use for MIM Artifacts if Message Generation is true. This is an array mapped to the related artifacts(NOTE: must be of the same artifact type). Position '0' is the first element in a list of elements. Position 'LAST' is the last element in a list of elements.");
    AttributeTypeInputStream ImageContent = osee.createInputStreamNoTag(1152921504606847868L, "Image Content", AttributeTypeToken.IMAGE, "Binary Image content");
+   AttributeTypeBoolean IsHelpPageHeader = osee.createBoolean(2037089520306879816L, "Is Help Page Header", MediaType.TEXT_PLAIN, "Determines if this help page is to be used as a navigation header");
+   AttributeTypeBoolean IsTrainingPage = osee.createBoolean(1943912856510115199L, "Is Training Page", MediaType.TEXT_PLAIN, "Determines if this help page is used to track training completion");
    AttributeTypeBoolean IsValidated = osee.createBoolean(729356860089871L, "Is Validated", MediaType.TEXT_PLAIN, "");
    AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java");
    LegacyDalAttributeType LegacyDal = osee.createEnum(new LegacyDalAttributeType());

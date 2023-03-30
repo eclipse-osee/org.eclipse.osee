@@ -12,14 +12,13 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { UserDataAccountService } from 'src/app/auth/user-data-account.service';
-import navigationStructure, {
-	navigationElement,
-} from '../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
+import navigationStructure from '../../layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
 import { concatMap, from, iif, of, reduce, skip, switchMap } from 'rxjs';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { navigationElement } from '@osee/shared/types';
 
 const _navItems = navigationStructure[0].children.filter(
 	(c) => c.label === 'Messaging Configuration'
