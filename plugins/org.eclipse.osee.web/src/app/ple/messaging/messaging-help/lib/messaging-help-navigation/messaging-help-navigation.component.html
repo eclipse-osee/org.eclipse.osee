@@ -1,0 +1,81 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+-->
+<mat-nav-list class="tw-min-w-[250px]">
+	<mat-nav-list
+		*ngTemplateOutlet="
+			recursiveMenu;
+			context: {
+				$implicit: (getElementsWithPermission(navElements) | async)
+			}
+		"></mat-nav-list>
+	<ng-template
+		#recursiveMenu
+		let-elements>
+		<ng-container *ngFor="let element of elements">
+			<!-- If dropdown -->
+			<a
+				mat-list-item
+				*ngIf="element.isDropdown"
+				(click)="element.isDropdownOpen = !element.isDropdownOpen"
+				class="top-navigation"
+				[class.onpage]="currentPath === element.routerLink"
+				[class.highlight]="element.isDropdownOpen">
+				<mat-icon
+					matListItemIcon
+					*ngIf="element.icon !== ''"
+					class="tw-mr-2"
+					>{{ element.icon }}</mat-icon
+				>
+				{{ element.label }}
+				<div matListItemMeta>
+					<mat-icon *ngIf="!element.isDropdownOpen"
+						>chevron_right</mat-icon
+					>
+					<mat-icon *ngIf="element.isDropdownOpen"
+						>expand_more</mat-icon
+					>
+				</div>
+			</a>
+			<!-- If not a dropdown -->
+			<a
+				mat-list-item
+				*ngIf="!element.isDropdown"
+				[routerLink]="routePrefix + element.routerLink"
+				class="top-navigation"
+				[class.onpage]="currentPath === element.routerLink">
+				<mat-icon
+					matListItemIcon
+					*ngIf="element.icon !== ''"
+					class="tw-mr-2"
+					>{{ element.icon }}</mat-icon
+				>
+				{{ element.label }}
+			</a>
+			<!-- If the element has children and dropdown is open -->
+			<mat-nav-list
+				class="tw-pb-2"
+				*ngIf="element.children && element.isDropdownOpen">
+				<mat-divider></mat-divider>
+				<ng-container
+					*ngTemplateOutlet="
+						recursiveMenu;
+						context: {
+							$implicit:
+								(getElementsWithPermission(element.children)
+								| async)
+						}
+					"></ng-container>
+			</mat-nav-list>
+		</ng-container>
+	</ng-template>
+</mat-nav-list>

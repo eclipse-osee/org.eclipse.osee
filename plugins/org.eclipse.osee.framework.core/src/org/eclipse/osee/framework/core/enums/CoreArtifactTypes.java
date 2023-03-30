@@ -359,7 +359,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(CrossReferenceValue)
       .zeroOrOne(CrossReferenceArrayValues)
       .zeroOrOne(CrossReferenceAdditionalContent));
-   
+
    ArtifactTypeToken TransportType = osee.add(osee.artifactType(6663383168705248989L, "Transport Type", false, Artifact)
       .exactlyOne(ByteAlignValidation)
       .zeroOrOne(ByteAlignValidationSize)
@@ -371,7 +371,11 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceRequirementMsWord = osee.add(osee.artifactType(32L, "Interface Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement)
       .exactlyOne(CoreAttributeTypes.Component, CoreAttributeTypes.Component.Unspecified));
-
+   ArtifactTypeToken HelpPage = osee.add(osee.artifactType(5728426866732962911L, "Help Page", false, Artifact)
+      .exactlyOne(CoreAttributeTypes.MarkdownContent)
+      .exactlyOne(CoreAttributeTypes.ApplicationName)
+      .exactlyOne(CoreAttributeTypes.IsHelpPageHeader)
+      .exactlyOne(CoreAttributeTypes.IsTrainingPage));
    ArtifactTypeToken OseeReport = osee.add(osee.artifactType(3379299200905896452L, "OSEE Report", false, Artifact)
       .exactlyOne(CoreAttributeTypes.HttpMethod)
       .exactlyOne(CoreAttributeTypes.FileExtension)

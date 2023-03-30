@@ -1,5 +1,7 @@
+import { UserRoles } from '@osee/shared/types/auth';
+
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,20 +12,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use 'host-utils'
-@include host-utils.main-route-host()
-body
-   height: 100%
-   width: 100%
-.mat-title
-   margin-left: 50px
-   margin-right: 50px
-.mat-grid-tile div
-   width: 100%
-   text-align: left
-.mat-body-2
-   margin-left: 50px
-   margin-right: 50px
-.mat-grid-list
-   margin-left: 50px
-   margin-right: 50px
+export interface navigationElement {
+	label: string;
+	cypressLabel: string;
+	pageTitle: string;
+	isDropdown: boolean;
+	isDropdownOpen: boolean;
+	requiredRoles: UserRoles[];
+	routerLink: string;
+	icon: string;
+	children: navigationElement[];
+}
