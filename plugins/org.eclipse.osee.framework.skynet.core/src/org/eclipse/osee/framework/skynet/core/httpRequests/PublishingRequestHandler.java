@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 import java.io.InputStream;
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
@@ -68,7 +69,7 @@ public class PublishingRequestHandler {
     * @throws OseeWebApplicationException when the REST API call fails.
     */
 
-   public static InputStream msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
+   public static Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
       try {
          return PublishingRequestHandler.instance.publishingEndpoint.msWordPreview(msWordPreviewRequestData);
       } catch (Exception e) {

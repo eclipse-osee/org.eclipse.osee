@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.define.api.publishing;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
@@ -26,6 +25,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
 import org.eclipse.osee.define.api.WordTemplateContentData;
@@ -62,7 +62,7 @@ public interface PublishingEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
    //@formatter:off
-   InputStream
+   Attachment
       msWordTemplatePublish
          (
             @PathParam("branch")   BranchId branch,
@@ -77,7 +77,7 @@ public interface PublishingEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
    //@formatter:off
-   InputStream
+   Attachment
       msWordPreview
          (
             @PathParam("branch")   BranchId   branch,
@@ -92,7 +92,7 @@ public interface PublishingEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
    //@formatter:off
-   InputStream
+   Attachment
       msWordPreview
          (
             @PathParam("branch")     BranchId         branch,
@@ -107,7 +107,7 @@ public interface PublishingEndpoint {
    @Path("msWordPreview")
    @Consumes({MediaType.MULTIPART_FORM_DATA})
    @Produces({MediaType.APPLICATION_XML})
-   InputStream
+   Attachment
       msWordPreview
          (
             @Multipart ( value = "msWordPreviewRequestData", type = MediaType.APPLICATION_JSON ) MsWordPreviewRequestData msWordPreviewRequestData

@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.define.api.publishing;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.BadRequestException;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
@@ -51,13 +51,13 @@ public interface PublishingOperations {
 
    public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue);
 
-   public InputStream msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
+   public Attachment msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
-   public InputStream msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view);
+   public Attachment msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view);
 
-   public InputStream msWordPreview(MsWordPreviewRequestData msWordPreviewRequest);
+   public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequest);
 
-   public InputStream msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
+   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
    public String renderPlainText(BranchId branchId, String data);
 

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -55,8 +56,15 @@ public class GenericDiffHandler extends CommandHandler {
          }
          Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
 
-         String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-         RendererManager.diffInJob(artifactDeltas, pathPrefix);
+         //@formatter:off
+         RenderingUtil
+            .getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName( localChanges )
+            .ifPresentOrElse
+               (
+                  ( pathPrefix ) -> RendererManager.diffInJob( artifactDeltas, pathPrefix           ),
+                  ( )            -> RendererManager.diffInJob( artifactDeltas, Strings.emptyString() )
+               );
+         //@formatter:on
       }
       return null;
    }

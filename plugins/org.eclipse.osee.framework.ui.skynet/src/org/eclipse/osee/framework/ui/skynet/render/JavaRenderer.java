@@ -61,6 +61,31 @@ import org.eclipse.ui.ide.IDE;
  */
 public class JavaRenderer extends FileSystemRenderer {
 
+   /**
+    * The likely file system extension for files that hold the same type of data as is stored in main content
+    * {@link Attribute} of the most common {@link Artifact} type processed by this renderer.
+    */
+
+   private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "java";
+
+   /**
+    * A short description of the type of documents processed by the renderer.
+    */
+
+   private static final String RENDERER_DOCUMENT_TYPE_DESCRIPTION = "Java";
+
+   /**
+    * The renderer identifier used for publishing template selection.
+    */
+
+   private static final String RENDERER_IDENTIFIER = JavaRenderer.class.getCanonicalName();
+
+   /**
+    * The {@link IRenderer} implementation's name.
+    */
+
+   private static final String RENDERER_NAME = "Java Editor";
+
    public JavaRenderer(Map<RendererOption, Object> rendererOptions) {
       super(rendererOptions);
    }
@@ -69,9 +94,31 @@ public class JavaRenderer extends FileSystemRenderer {
       this(new HashMap<RendererOption, Object>());
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDocumentTypeDescription() {
+      return JavaRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getIdentifier() {
+      return JavaRenderer.RENDERER_IDENTIFIER;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public String getName() {
-      return "Java Editor";
+      return JavaRenderer.RENDERER_NAME;
    }
 
    @Override
@@ -160,9 +207,13 @@ public class JavaRenderer extends FileSystemRenderer {
       });
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
-   public String getAssociatedExtension(Artifact artifact) {
-      return "java";
+   public String getDefaultAssociatedExtension() {
+      return JavaRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
    }
 
    @Override
@@ -213,7 +264,7 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-      commands.add(
-         new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Java Editor", FrameworkImage.JAVA_COMPILATION_UNIT));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, JavaRenderer.RENDERER_NAME,
+         FrameworkImage.JAVA_COMPILATION_UNIT));
    }
 }

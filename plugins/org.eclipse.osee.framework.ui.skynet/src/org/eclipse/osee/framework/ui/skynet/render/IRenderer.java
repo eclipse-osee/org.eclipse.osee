@@ -100,6 +100,12 @@ public interface IRenderer {
    IComparator getComparator();
 
    /**
+    * Gets a title description for the type of document processed by the {@link IRenderer} implementation.
+    */
+
+   String getDocumentTypeDescription();
+
+   /**
     * Gets the renderer's identifier used for publishing template selection.
     *
     * @return the renderer's unique identifier.
@@ -148,7 +154,9 @@ public interface IRenderer {
    public int minimumRanking();
 
    /**
-    * Creates a new instance of the {@link IRenderer} interface.
+    * The {@link RendererManager} loads an instance of each {@link IRenderer} implementation via their registered
+    * extension points. When an {@link IRenderer} implementation is needed to process a GUI menu command, this method is
+    * used as a factory method to provide an {@link IRenderer} implementation to complete the action.
     *
     * @return a new instance of the {@link IRenderer} interface.
     */
@@ -156,7 +164,9 @@ public interface IRenderer {
    IRenderer newInstance();
 
    /**
-    * Creates a new instance of the {@link IRenderer} interface with the specified renderer options.
+    * The {@link RendererManager} loads an instance of each {@link IRenderer} implementation via their registered
+    * extension points. When an {@link IRenderer} implementation is needed to process a GUI menu command, this method is
+    * used as a factory method to provide an {@link IRenderer} implementation to complete the action.
     *
     * @param rendererOptions a map of renderer options.
     * @return a new instance of the {@link IRenderer} interface.

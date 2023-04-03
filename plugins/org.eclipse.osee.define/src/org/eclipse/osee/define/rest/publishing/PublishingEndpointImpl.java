@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.define.rest.publishing;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -22,6 +21,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.api.DefineOperations;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
 import org.eclipse.osee.define.api.WordTemplateContentData;
@@ -101,7 +101,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public InputStream msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
 
       try {
          PublishingPermissions.verifyNonGroup();
@@ -125,7 +125,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public InputStream msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view) {
 
       try {
          PublishingPermissions.verifyNonGroup();
@@ -149,7 +149,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public InputStream msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
+   public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
 
       try {
          PublishingPermissions.verifyNonGroup();
@@ -173,7 +173,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public InputStream msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
 
       try {
          PublishingPermissions.verifyNonGroup();

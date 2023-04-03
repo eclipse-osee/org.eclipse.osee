@@ -52,6 +52,31 @@ import org.eclipse.swt.program.Program;
  */
 public class NativeRenderer extends FileSystemRenderer {
 
+   /**
+    * The likely file system extension for files that hold the same type of data as is stored in main content
+    * {@link Attribute} of the most common {@link Artifact} type processed by this renderer.
+    */
+
+   private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "xml";
+
+   /**
+    * A short description of the type of documents processed by the renderer.
+    */
+
+   private static final String RENDERER_DOCUMENT_TYPE_DESCRIPTION = "XML";
+
+   /**
+    * The renderer identifier used for publishing template selection.
+    */
+
+   private static final String RENDERER_IDENTIFIER = NativeRenderer.class.getCanonicalName();
+
+   /**
+    * The {@link IRenderer} implementation's name.
+    */
+
+   private static final String RENDERER_NAME = "Native Editor";
+
    private final IComparator comparator;
 
    public NativeRenderer(Map<RendererOption, Object> rendererOptions) {
@@ -77,11 +102,6 @@ public class NativeRenderer extends FileSystemRenderer {
       commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Native Editor", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.EDIT, "org.eclipse.osee.framework.ui.skynet.othereditor.command",
          imageDescriptor));
-   }
-
-   @Override
-   public String getName() {
-      return "Native Editor";
    }
 
    @Override
@@ -114,13 +134,40 @@ public class NativeRenderer extends FileSystemRenderer {
       return comparator;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
-   public String getAssociatedExtension(Artifact artifact) {
-      return getAssociatedExtension(artifact, "xml");
+   public String getDocumentTypeDescription() {
+      return NativeRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
    }
 
-   private String getAssociatedExtension(Artifact artifact, String defaultValue) {
-      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, defaultValue);
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getIdentifier() {
+      return NativeRenderer.RENDERER_IDENTIFIER;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getName() {
+      return NativeRenderer.RENDERER_NAME;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDefaultAssociatedExtension() {
+      return NativeRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
    }
 
    @Override

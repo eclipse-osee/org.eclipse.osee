@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,6 +56,31 @@ public class HTMLRenderer extends FileSystemRenderer {
 
    private final IComparator comparator;
 
+   /**
+    * The likely file system extension for files that hold the same type of data as is stored in main content
+    * {@link Attribute} of the most common {@link Artifact} type processed by this renderer.
+    */
+
+   private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "htm";
+
+   /**
+    * A short description of the type of documents processed by the renderer.
+    */
+
+   private static final String RENDERER_DOCUMENT_TYPE_DESCRIPTION = "Web HTML";
+
+   /**
+    * The renderer identifier used for publishing template selection.
+    */
+
+   private static final String RENDERER_IDENTIFIER = HTMLRenderer.class.getCanonicalName();
+
+   /**
+    * The {@link IRenderer} implementation's name.
+    */
+
+   private static final String RENDERER_NAME = "HTML Renderer";
+
    public HTMLRenderer(Map<RendererOption, Object> rendererOptions) {
       super(rendererOptions);
       this.comparator = new HTMLDiffRenderer();
@@ -72,20 +98,15 @@ public class HTMLRenderer extends FileSystemRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
-      return getRenderInputStream(presentationType, null, artifacts);
-   }
-
-   @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, BranchToken branch, List<Artifact> artifacts) {
       InputStream stream = null;
       StringBuilder content = new StringBuilder("");
       try {
          if (artifacts.size() == 1) {
             Artifact artifact = artifacts.iterator().next();
-            renderHtmlArtifact(content, branch, artifact);
+            renderHtmlArtifact(content, artifact);
          } else {
             for (Artifact artifact : artifacts) {
-               renderHtmlArtifact(content, branch, artifact);
+               renderHtmlArtifact(content, artifact);
                content.append("<br /><br /><br />");
             }
          }
@@ -117,19 +138,18 @@ public class HTMLRenderer extends FileSystemRenderer {
       return toReturn;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
-   public String getAssociatedExtension(Artifact artifact) {
-      return "htm";
+   public String getDefaultAssociatedExtension() {
+      return HTMLRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
    }
 
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
-   }
-
-   @Override
-   public String getName() {
-      return "HTML Renderer";
    }
 
    @Override
@@ -147,25 +167,81 @@ public class HTMLRenderer extends FileSystemRenderer {
       return comparator;
    }
 
-   private void renderHtmlArtifact(StringBuilder output, BranchToken branch, Artifact artifact) throws Exception {
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDocumentTypeDescription() {
+      return HTMLRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getIdentifier() {
+      return HTMLRenderer.RENDERER_IDENTIFIER;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getName() {
+      return HTMLRenderer.RENDERER_NAME;
+   }
+
+   private void renderHtmlArtifact(StringBuilder output, Artifact artifact) throws Exception {
       Map<String, String> fileNameReplace = new HashMap<>();
       String htmlContent = "";
       String blankLine = "<br /><br />";
       String underline = "<span style=\"text-decoration: underline;\">";
       String underlineEnd = "</span>";
       Collection<AttributeTypeToken> types = artifact.getAttributeTypesUsed();
+      BranchToken branchToken = artifact.getBranchToken();
+      String branchName = branchToken.getShortName();
       for (AttributeTypeToken type : types) {
          if (type.equals(CoreAttributeTypes.HtmlContent)) {
             htmlContent = artifact.getAttributesToString(type);
          } else if (type.equals(CoreAttributeTypes.ImageContent)) {
             List<Attribute<Object>> attrs = artifact.getAttributes((AttributeTypeId) type);
             for (Object a : attrs) {
+
                if (a instanceof CompressedContentAttribute) {
+
                   CompressedContentAttribute c = (CompressedContentAttribute) a;
                   InputStream stream = c.getValue();
                   String attrId = c.getIdString();
+                  //@formatter:off
                   String workingFileString =
-                     RenderingUtil.getRenderPath(this, branch, PresentationType.PREVIEW, "", "", "") + "-" + attrId;
+                     RenderingUtil
+                        .getRenderFile
+                           (
+                              this,
+                              PresentationType.PREVIEW,
+                              null,
+                              attrId,
+                              branchName
+                           )
+                        .flatMap( RenderingUtil::getOsString )
+                        .orElseThrow
+                           (
+                              () -> new OseeCoreException
+                                           (
+                                              new Message()
+                                                     .title( "HTMLRenderer::renderHtmlArtifact, Failed to locate renderer file." )
+                                                     .indentInc()
+                                                     .segment( "Renderer",             this.getName()            )
+                                                     .segment( "Presentation Type",    PresentationType.PREVIEW  )
+                                                     .segment( "Branch Identifier",    branchToken.getIdString() )
+                                                     .segment( "Attribute Identifier", attrId                    )
+                                                     .toString()
+                                           )
+                           );
+                  //@formatter:on
                   fileNameReplace.put(attrId, workingFileString);
                   File test = new File(workingFileString);
                   Lib.inputStreamToFile(stream, test);
@@ -202,4 +278,5 @@ public class HTMLRenderer extends FileSystemRenderer {
       }
       output.append(htmlContent);
    }
+
 }

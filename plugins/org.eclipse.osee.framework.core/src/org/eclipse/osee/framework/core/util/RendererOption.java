@@ -18,29 +18,45 @@ import java.util.Map;
 /**
  * @author Morgan E. Cook
  */
+
 public enum RendererOption {
-   // Boolean
-   PUBLISH_DIFF("Publish Diff", OptionType.Boolean),
-   ORIG_PUBLISH_AS_DIFF("Orig Publish As Diff", OptionType.Boolean),
+
+   /*
+    * Boolean
+    */
+
    ADD_MERGE_TAG("Add Merge Tag", OptionType.Boolean),
-   INCLUDE_UUIDS("Include Uuids", OptionType.Boolean),
-   UPDATE_PARAGRAPH_NUMBERS("Update Paragraph Numbers", OptionType.Boolean),
-   USE_PARAGRAPH_NUMBERS("Use Paragraph Numbers", OptionType.Boolean),
-   SKIP_ERRORS("Skip Errors", OptionType.Boolean),
-   EXCLUDE_FOLDERS("Exclude Folders", OptionType.Boolean),
-   USE_TEMPLATE_ONCE("Use Template Once", OptionType.Boolean),
-   RECURSE("Recurse", OptionType.Boolean),
-   RECURSE_ON_LOAD("Recurse On Load", OptionType.Boolean),
-   USE_ARTIFACT_NAMES("Use Artifact Names", OptionType.Boolean),
    ALL_ATTRIBUTES("All Attributes", OptionType.Boolean),
+
+   /*
+    * Renderers can do the rendering in the client or on server. Server side renderers will return an input stream from
+    * the web server. As the data arrives the FileSystemRenderer base code can write the data to the content file in the
+    * workspace. Client side renderes can write either write all of there data into a buffer and create an input stream
+    * that reads from that buffer after the render is complete; or they can write there data to a piped output stream
+    * that was provided to it.
+    */
+
+   CLIENT_RENDERER_CAN_STREAM("Client Renderer Can Stream", OptionType.Boolean),
+
+   EXCLUDE_FOLDERS("Exclude Folders", OptionType.Boolean),
+   FIRST_TIME("First Time", OptionType.Boolean),
+   IN_PUBLISH_MODE("In Publish Mode", OptionType.Boolean),
+   INCLUDE_UUIDS("Include Uuids", OptionType.Boolean),
    MAINTAIN_ORDER("Maintain Order", OptionType.Boolean),
    NO_DISPLAY("No Display", OptionType.Boolean),
-   SKIP_DIALOGS("Skip Dialogs", OptionType.Boolean),
-   FIRST_TIME("First Time", OptionType.Boolean),
-   SECOND_TIME("SecondTime", OptionType.Boolean),
-   TEMPLATE_ONLY("Template Only", OptionType.Boolean),
-   IN_PUBLISH_MODE("In Publish Mode", OptionType.Boolean),
+   ORIG_PUBLISH_AS_DIFF("Orig Publish As Diff", OptionType.Boolean),
+   PUBLISH_DIFF("Publish Diff", OptionType.Boolean),
    PUBLISH_EMPTY_HEADERS("Push Empty Headers", OptionType.Boolean),
+   RECURSE("Recurse", OptionType.Boolean),
+   RECURSE_ON_LOAD("Recurse On Load", OptionType.Boolean),
+   SECOND_TIME("SecondTime", OptionType.Boolean),
+   SKIP_DIALOGS("Skip Dialogs", OptionType.Boolean),
+   SKIP_ERRORS("Skip Errors", OptionType.Boolean),
+   TEMPLATE_ONLY("Template Only", OptionType.Boolean),
+   UPDATE_PARAGRAPH_NUMBERS("Update Paragraph Numbers", OptionType.Boolean),
+   USE_PARAGRAPH_NUMBERS("Use Paragraph Numbers", OptionType.Boolean),
+   USE_TEMPLATE_ONCE("Use Template Once", OptionType.Boolean),
+   USE_ARTIFACT_NAMES("Use Artifact Names", OptionType.Boolean),
 
    // BranchId
    BRANCH("Branch", OptionType.BranchId),
@@ -72,6 +88,12 @@ public enum RendererOption {
    OUTLINE_TYPE("Outline Type", OptionType.String),
    RESULT_PATH_RETURN("resultPath", OptionType.String),
    EXECUTE_VB_SCRIPT("execute.vb.script", OptionType.String),
+
+   /*
+    * For client side streaming renderers, this option is set with the output stream for the render to use.
+    */
+
+   OUTPUT_STREAM("Output Stream", OptionType.OutputStream),
 
    /*
     * Open Option and Values

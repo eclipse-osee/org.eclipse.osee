@@ -133,19 +133,56 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
       String rendererId = renderer.getIdentifier();
 
+      //@formatter:off
       if (artifact != null && option != null) {
-         list.add(
-            rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option + (isNoTags ? " " + "NO TAGS" : ""));
+
+         list.add
+            (
+                 rendererId
+               + " "
+               + artifact.getArtifactTypeName()
+               + " "
+               + presentationType.name()
+               + " "
+               + option
+               + (isNoTags ? " " + "NO TAGS" : "")
+            );
       }
       if (artifact != null) {
-         list.add(
-            rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + (isNoTags ? " " + "NO TAGS" : ""));
-      }
-      if (option != null) {
-         list.add(rendererId + " " + presentationType + " " + option + (isNoTags ? " " + "NO TAGS" : ""));
+
+         list.add
+            (
+                rendererId
+              + " "
+              + artifact.getArtifactTypeName()
+              + " "
+              + presentationType.name()
+              + (isNoTags ? " " + "NO TAGS" : "")
+            );
       }
 
-      list.add(rendererId + " " + presentationType + (isNoTags ? " " + "NO TAGS" : ""));
+      if (option != null) {
+
+         list.add
+            (
+                 rendererId
+               + " "
+               + presentationType.name()
+               + " "
+               + option
+               + (isNoTags ? " " + "NO TAGS" : "")
+            );
+      }
+
+      list.add
+         (
+              rendererId
+            + " "
+            + presentationType.name()
+            + (isNoTags ? " " + "NO TAGS" : "")
+         );
+
+      //@formatter:on
       return list;
    }
 

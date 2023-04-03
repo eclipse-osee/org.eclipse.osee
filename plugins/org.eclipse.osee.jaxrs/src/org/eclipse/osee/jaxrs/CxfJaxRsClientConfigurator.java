@@ -78,6 +78,7 @@ public final class CxfJaxRsClientConfigurator {
       providers.add(new JacksonJaxbJsonProvider(mapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
       providers.add(JsonParseExceptionMapper.class);
       providers.add(JsonMappingExceptionMapper.class);
+      providers.add(AttachmentMessageBodyReader.class);
       providers.addAll(OAuth2Util.getOAuthProviders());
       providers.add(new OrcsParamConverterProvider(tokenService));
       if (userService != null) {

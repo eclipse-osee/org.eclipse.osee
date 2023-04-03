@@ -17,18 +17,27 @@ import java.io.File;
 import java.io.IOException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.TestName;
 
 public class VbaWordDiffGeneratorTest {
 
    private static final String TEST_WORD_EDIT_FILE_NAME = "VbaWordDiffWithTrackedChanges.xml";
    private static final String EXPECTED_WORD_DIFF_FILE_NAME = "VbaWordDiffExpected.xml";
    private static final String EXPECTED_VBS_SCRIPT = "VbaWordDiffScript.vbs";
+
+   /**
+    * A rule to get the method name of the currently running test.
+    */
+
+   @Rule
+   public TestName testName = new TestName();
 
    @Rule
    public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -46,7 +55,10 @@ public class VbaWordDiffGeneratorTest {
       content = content.replace("methods", "functions");
       Lib.writeStringToFile(content, tmpFile2);
 
-      CompareData compareData = new CompareData(diffFile.getAbsolutePath(), scriptFile.getAbsolutePath());
+      var testFolder = this.testName.getMethodName();
+
+      CompareData compareData =
+         new CompareData(PresentationType.DIFF, testFolder, diffFile.getAbsolutePath(), scriptFile.getAbsolutePath());
       compareData.add(tmpFile1.getAbsolutePath(), tmpFile2.getAbsolutePath());
 
       // Can only execute VBS file on windows

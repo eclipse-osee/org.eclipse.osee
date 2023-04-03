@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.DefineOperations;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
@@ -60,16 +61,105 @@ import org.osgi.service.event.EventAdmin;
 
 public class PublishingOperationsImpl implements PublishingOperations {
 
-   @SuppressWarnings("unused")
-   private static boolean excludeFolders = false;
+   /**
+    * Enumeration with configuration data for the publishable document types.
+    */
 
-   private static boolean includeFolders = true;
+   //@formatter:off
+   private enum DocumentType {
+
+      PREVIEW_WITH_FOLDERS
+         (
+            "Publish Preview With Folders",                     /* Thread Name */
+            new PublishingOptions                               /* Publishing Options */
+                   (
+                      PublishingOperationsImpl.includeFolders,  /* excludeFolders */
+                      LinkType.INTERNAL_DOC_REFERENCE_USE_NAME, /* linkType */
+                      9                                         /* msWordHeadingDepth */
+                   )
+         ),
+
+         PREVIEW_WITHOUT_FOLDERS
+         (
+            "Publish Preview Without Folders",                  /* Thread Name        */
+            new PublishingOptions                               /* Publishing Options */
+                   (
+                      PublishingOperationsImpl.excludeFolders,  /* excludeFolders     */
+                      LinkType.INTERNAL_DOC_REFERENCE_USE_NAME, /* linkType           */
+                      9                                         /* msWordHeadingDepth */
+                   )
+         );
+      //@formatter:on
+
+      /**
+       * Saves the {@link PublishingOptions} for the {@link DocumentType}.
+       */
+
+      private PublishingOptions publishingOptions;
+
+      /**
+       * Saves the basename for the thread used to publish a document of the {@link DocumentType}.
+       */
+
+      private String threadName;
+
+      /**
+       * Creates a {@link DocumentType} member and saves the configuration data for the document type.
+       *
+       * @param threadName the basename for publishing documents of the {@link DocumentType}.
+       * @param publishingOptions the {@link PublishingOptions} for publishing document of the {@link DocumentType}.
+       */
+
+      DocumentType(String threadName, PublishingOptions publishingOptions) {
+
+         this.threadName = threadName;
+         this.publishingOptions = publishingOptions;
+
+      }
+
+      /**
+       * Gets the {@link PublishingOptions} for the {@link DocumentType}.
+       *
+       * @return the {@link PublishingOptions} for the {@link DocumentType}.
+       */
+
+      PublishingOptions getPublishingOptions() {
+         return this.publishingOptions;
+      }
+
+      /**
+       * Gets the base thread name for publishing document of the {@link DocumentType}.
+       *
+       * @return the base thread name for the {@link DocumentType}.
+       */
+
+      String getThreadName() {
+         return this.threadName;
+      }
+   }
+
+   private static final boolean excludeFolders = true;
+   private static final boolean includeFolders = false;
 
    /**
     * Saves the single instance of the {@link PublishingOperationsImpl}.
     */
 
    private static PublishingOperationsImpl publishingOperationsImpl = null;
+
+   /**
+    * Saves a {@link PublishingOptionsFactory} that is used to create new {@link PublishingOptions} objects preset with
+    * defaults for the {@link DocumentType}.
+    */
+
+   //@formatter:off
+   private static final PublishingOptionsFactory<PublishingOperationsImpl.DocumentType> publishingOptionsFactory =
+      PublishingOptionsFactory.ofEntries
+         (
+            PublishingOperationsImpl.DocumentType.class,
+            PublishingOperationsImpl.DocumentType::getPublishingOptions
+         );
+   //@formatter:on
 
    /**
     * Gets or creates the single instance of the {@link PublishingOperationsImpl} class.
@@ -97,6 +187,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
    private final EventAdmin eventAdmin;
    private final Log logger;
    private final OrcsApi orcsApi;
+   private final AttachmentFactory attachmentFactory;
 
    private PublishingOperationsImpl(DefineOperations defineOperations, OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
       this.defineOperations = defineOperations;
@@ -104,6 +195,16 @@ public class PublishingOperationsImpl implements PublishingOperations {
       this.atsApi = atsApi;
       this.logger = logger;
       this.eventAdmin = eventAdmin;
+
+      //@formatter:off
+      this.attachmentFactory =
+         new AttachmentFactory
+                (
+                   "MsWordPreview",
+                   "xml",
+                   this.orcsApi
+                );
+      //@formatter:on
    }
 
    /**
@@ -212,7 +313,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public InputStream msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
 
       Message message = null;
 
@@ -237,7 +338,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
       //@formatter:on
 
       //@formatter:off
-      return
+      var attachment =
          this.msWordPreviewInternal
             (
                new MsWordPreviewRequestData
@@ -248,6 +349,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
                       ),
                PublishingOperationsImpl.includeFolders
             );
+
+      return attachment;
       //@formatter:on
    }
 
@@ -268,7 +371,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public InputStream msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts, ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts, ArtifactId view) {
 
       Message message = null;
 
@@ -302,7 +405,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
       //@formatter:on
 
       //@formatter:off
-      return
+      var attachment =
          this.msWordPreviewInternal
             (
                new MsWordPreviewRequestData
@@ -313,6 +416,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
                       ),
                PublishingOperationsImpl.includeFolders
             );
+
+      return attachment;
       //@formatter:on
    }
 
@@ -327,7 +432,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public InputStream msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
+   public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
 
       Message message = null;
 
@@ -346,38 +451,49 @@ public class PublishingOperationsImpl implements PublishingOperations {
                          )
                    );
       }
-      //@formatter:on
 
-      return this.msWordPreviewInternal(msWordPreviewRequestData, PublishingOperationsImpl.includeFolders);
+      return this.msWordPreviewInternal
+                (
+                   msWordPreviewRequestData,
+                   PublishingOperationsImpl.includeFolders
+                );
+      //@formatter:on
    }
 
-   private InputStream msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData, boolean folderInclusion) {
+   private Attachment msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData, boolean folderInclusion) {
 
-      var publishingTemplate = this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(
-         msWordPreviewRequestData.getPublishingTemplateRequest());
+      //@formatter:off
+      var branchId = msWordPreviewRequestData.getBranchId();
+      var viewId = branchId.getViewId();
+      var firstArtifactId = msWordPreviewRequestData.getArtifactIds().get(0);
 
-      if (publishingTemplate.isSentinel()) {
+      var publishingTemplate =
+         this.defineOperations
+            .getTemplateManagerOperations()
+            .getPublishingTemplate( msWordPreviewRequestData.getPublishingTemplateRequest() );
 
-         //@formatter:off
+      if( publishingTemplate.isSentinel() ) {
+
          var message =
             new Message()
-                   .title( "Failed to find a publishing template." )
+                   .title( "PublishingOperationsImpl::msWordPreviewInternal: Failed to find a publishing template." )
+                   .indentInc()
                    .toMessage( msWordPreviewRequestData )
                    .toString()
                    ;
-         //@formatter:on
 
-         this.logger.error(message);
+         this.logger.error( message );
 
-         throw new OseeCoreException(message);
+         throw new OseeCoreException( message );
       }
 
-      var publishingOptions = new PublishingOptions();
-
-      publishingOptions.branch = msWordPreviewRequestData.getBranchId();
-      publishingOptions.view = msWordPreviewRequestData.getBranchId().getViewId();
-      publishingOptions.linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
-      publishingOptions.excludeFolders = !folderInclusion;
+      var publishingOptions =
+         PublishingOperationsImpl.publishingOptionsFactory.create
+            (
+               PublishingOperationsImpl.DocumentType.PREVIEW_WITH_FOLDERS,
+               branchId,
+               viewId
+            );
 
       var publishArtifacts = msWordPreviewRequestData.getArtifactIds();
 
@@ -387,25 +503,53 @@ public class PublishingOperationsImpl implements PublishingOperations {
          }
       };
 
-      try (var writer = new OutputStreamWriter(outputStream);) {
-         var publisher = new MSWordPreviewPublisher(publishingOptions, publishingTemplate, writer, orcsApi, atsApi);
+      try ( var writer = new OutputStreamWriter(outputStream) ) {
 
-         publisher.publish(publishArtifacts);
+         var publisher =
+            new MSWordPreviewPublisher
+                   (
+                      publishingOptions,
+                      publishingTemplate,
+                      writer,
+                      orcsApi,
+                      atsApi
+                   );
+
+         publisher.publish( publishArtifacts );
+
       } catch (Exception e) {
-         //@formatter:off
+
          throw
             new OseeCoreException
                    (
-                      new StringBuilder(1024)
-                             .append( "MsWord Renderer for \"msWordPreview\" failed.").append("\n")
-                             .append("   Publishing Branch Id: ").append( publishingOptions.branch).append("\n")
-                             .append("   Publishing View Id:   ").append( publishingOptions.view).append("\n")
-                             .append("   Publish Artifacts:    ").append( Objects.nonNull(publishArtifacts) ? (publishArtifacts.size() > 0) ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining(", ", "[ ", " ]")) : "(no artifacts to publish specified)" : "(no artifacts to publish specified)").append( "\n")
-                             .toString()
+                      new Message()
+                             .title( "PublishingOperationsImpl::msWordPreviewIntenal, Failed to publish document." )
+                             .indentInc()
+                             .segment( "Publishing Branch Id", publishingOptions.branch.getIdString() )
+                             .segment( "Publishing View Id",   publishingOptions.view.getIdString()   )
+                             .segment( "Publish Artifacts",    Objects.nonNull(publishArtifacts)
+                                                                  ? (publishArtifacts.size() > 0)
+                                                                       ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining(", ", "[ ", " ]"))
+                                                                       : "(no artifacts to publish specified)"
+                                                                  : "(no artifacts to publish specified)" )
+                             .reasonFollows( e )
+                             .toString(),
+                             e
                    );
       }
 
-      return new ByteArrayInputStream(outputStream.getBuffer(), 0, outputStream.size());
+      var inputStream = new ByteArrayInputStream( outputStream.getBuffer(), 0, outputStream.size() );
+
+      var attachment =
+         this.attachmentFactory.create
+            (
+               inputStream,
+               PublishingOperationsImpl.DocumentType.PREVIEW_WITH_FOLDERS.name(),
+               branchId,
+               firstArtifactId
+            );
+
+      return attachment;
    }
    //@formatter:on
 
@@ -426,7 +570,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public InputStream msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
 
       Message message = null;
 
@@ -448,27 +592,19 @@ public class PublishingOperationsImpl implements PublishingOperations {
                          )
                    );
       }
-      //@formatter:on
-
-      //Generate filename with the headArtifact name and current time
-      //String name = orcsApi.getQueryFactory().fromBranch(branch).andId(headArtifact).asArtifactToken().getName();
-      //SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
-      //Date date = new Date(System.currentTimeMillis());
-      //String time = format.format(date);
-      //String fileName = name + "_" + time + ".xml";
 
       var publishingTemplateRequest = new PublishingTemplateRequest("AT-" + templateArtifactId.getIdString());
-      var publishingTemplate =
-         this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(publishingTemplateRequest);
+      var publishingTemplate = this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(publishingTemplateRequest);
 
-      var publishingOptions = new PublishingOptions();
+      var publishingOptions =
+         PublishingOperationsImpl.publishingOptionsFactory.create
+            (
+               PublishingOperationsImpl.DocumentType.PREVIEW_WITHOUT_FOLDERS,
+               branch,
+               view
+            );
 
-      publishingOptions.branch = branch;
-      publishingOptions.view = view;
-      publishingOptions.linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
-      publishingOptions.excludeFolders = true;
-
-      var publishArtifacts = List.of(headArtifact);
+      var publishArtifacts = List.of( headArtifact );
 
       var outputStream = new ByteArrayOutputStream() {
          byte[] getBuffer() {
@@ -476,33 +612,53 @@ public class PublishingOperationsImpl implements PublishingOperations {
          }
       };
 
-      try (var writer = new OutputStreamWriter(outputStream)) {
-         var publisher = new MSWordTemplatePublisher(publishingOptions, publishingTemplate, writer, orcsApi, atsApi);
+      try ( var writer = new OutputStreamWriter( outputStream ) ) {
 
-         publisher.publish(publishArtifacts);
+         var publisher =
+            new MSWordTemplatePublisher
+                   (
+                      publishingOptions,
+                      publishingTemplate,
+                      writer,
+                      orcsApi,
+                      atsApi
+                   );
+
+         publisher.publish( publishArtifacts );
+
       } catch (Exception e) {
-         //@formatter:off
          throw
             new OseeCoreException
                    (
-                     new StringBuilder(1024)
-                            .append( "MsWord Renderer for \"msWordTemplatePublish\" failed." ).append( "\n" )
-                            .append( "   Publishing Branch Id: " ).append( publishingOptions.branch ).append( "\n" )
-                            .append( "   Publishing View Id:   " ).append( publishingOptions.view   ).append( "\n" )
-                            .append( "   Publish Artifacts:    " ).append
-                                                                      (
-                                                                         Objects.nonNull( publishArtifacts )
-                                                                            ? (publishArtifacts.size() > 0)
-                                                                               ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining( ", ", "[ ", " ]" ) )
-                                                                               : "(no artifacts to publish specified)"
-                                                                            : "(no artifacts to publish specified)"
-                                                                      ).append( "\n" )
-                            .toString()
+                     new Message()
+                            .title( "PublishingOperationsImpl::msWordTemplatePublish, Failed to publish document." )
+                            .indentInc()
+                            .segment( "Publishing Branch Id", publishingOptions.branch.getIdString() )
+                            .segment( "Publishing View Id",   publishingOptions.view.getIdString()   )
+                            .segment( "Publish Artifacts",    Objects.nonNull( publishArtifacts )
+                                                                 ? (publishArtifacts.size() > 0)
+                                                                      ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining( ", ", "[ ", " ]" ) )
+                                                                      : "(no artifacts to publish specified)"
+                                                                 : "(no artifacts to publish specified)" )
+                            .reasonFollows( e )
+                            .toString(),
+                            e
                    );
-         //@formatter:on
       }
 
-      return new ByteArrayInputStream(outputStream.getBuffer(), 0, outputStream.size());
+      var inputStream = new ByteArrayInputStream( outputStream.getBuffer(), 0, outputStream.size() );
+
+      var attachment =
+         this.attachmentFactory.create
+            (
+               inputStream,
+               PublishingOperationsImpl.DocumentType.PREVIEW_WITHOUT_FOLDERS.name(),
+               branch,
+               headArtifact
+            );
+
+      return attachment;
+      //@formatter:on
    }
 
    @Override
@@ -619,3 +775,5 @@ public class PublishingOperationsImpl implements PublishingOperations {
    }
 
 }
+
+/* EOF */

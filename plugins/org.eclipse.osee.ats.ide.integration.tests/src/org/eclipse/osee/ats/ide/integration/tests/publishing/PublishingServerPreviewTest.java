@@ -55,6 +55,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
+import org.w3c.dom.Document;
 
 /**
  * Tests for publishing preview functions.
@@ -720,19 +721,32 @@ public class PublishingServerPreviewTest {
       String documentString = null;
 
       //@formatter:off
-      var inputStream = PublishingServerPreviewTest.publishingEndpoint.msWordPreview(msWordPreviewRequestData);
+      var attachment = PublishingServerPreviewTest.publishingEndpoint.msWordPreview(msWordPreviewRequestData);
 
-      var document =
-         PublishingServerPreviewTest.publishingXmlUtils.parse( inputStream )
-            .orElseThrow
+      Document document;
+
+      try( var inputStream = attachment.getDataHandler().getInputStream() ) {
+
+        document = PublishingServerPreviewTest.publishingXmlUtils.parse( inputStream )
+                .orElseThrow
+                   (
+                     () -> PublishingServerPreviewTest.buildAssertionError
+                              (
+                                 PublishingServerPreviewTest.publishingXmlUtils,
+                                 "Failed to parse preview XML.",
+                                 null
+                              )
+                   );
+      } catch( Exception e )
+      {
+         throw
+            PublishingServerPreviewTest.buildAssertionError
                (
-                  () -> PublishingServerPreviewTest.buildAssertionError
-                           (
-                              PublishingServerPreviewTest.publishingXmlUtils,
-                              "Failed to parse preview XML.",
-                              null
-                           )
+                  PublishingServerPreviewTest.publishingXmlUtils,
+                  e.getMessage(),
+                  null
                );
+      }
 
       this.documentString =
          PublishingServerPreviewTest.publishingXmlUtils.prettyPrint( document )

@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -676,7 +679,8 @@ public class Message {
     *
     * <pre>
     *    &lt;indent(n)&gt;   &lt;title&gt;
-    *    &lt;indent(n+1)&gt; &lt;block&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-class&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-message&gt;
     * </pre>
     *
     * Where:
@@ -685,7 +689,9 @@ public class Message {
     * <dd>is an indent string the message's current indent level n.</dd>
     * <dt>title:</dt>
     * <dd>is the string from parameter <code>title</code>.</dd>
-    * <dt>block</dt>
+    * <dt>exception-class</dt>
+    * <dd>it the class name of the {@link Throwable}.</dd>
+    * <dt>exception-message</dt>
     * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
     * </dl>
     *
@@ -696,13 +702,67 @@ public class Message {
 
    public Message reasonFollows(String title, Throwable throwable) {
       Objects.requireNonNull(throwable, "Message::reasonFollows, parameter \"throwable\" cannot be null.");
+      var exceptionClass = throwable.getClass().getName();
       var block = throwable.getMessage();
       if (Objects.isNull(block)) {
-         block = "(null)";
+         block = "(null message)";
       }
       this.title(title);
       this.indentInc();
+      this.title(exceptionClass);
       this.title(block);
+      this.indentDec();
+      return this;
+   }
+
+   /**
+    * Adds a title line with a block containing the message from the throwable. The lines will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;indent(n)&gt;   &lt;title&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-class&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-message&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-trace&gt;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>indent:</dt>
+    * <dd>is an indent string the message's current indent level n.</dd>
+    * <dt>title:</dt>
+    * <dd>is the string from parameter <code>title</code>.</dd>
+    * <dt>exception-class</dt>
+    * <dd>it the class name of the {@link Throwable}.</dd>
+    * <dt>exception-message</dt>
+    * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
+    * <dt>exception-trace</dt>
+    * <dd>the printed trace from the {@link Throwable}.</dd>
+    * </dl>
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>throwable</code> is <code>null</code>.
+    */
+
+   public Message reasonFollowsWithTrace(String title, Throwable throwable) {
+      Objects.requireNonNull(throwable, "Message::reasonFollows, parameter \"throwable\" cannot be null.");
+      var exceptionClass = throwable.getClass().getName();
+      var block = throwable.getMessage();
+      if (Objects.isNull(block)) {
+         block = "(null message)";
+      }
+      var stringWriter = new StringWriter();
+      var printWriter = new PrintWriter(stringWriter);
+      throwable.printStackTrace(printWriter);
+      var trace = stringWriter.toString();
+      if (Objects.isNull(trace)) {
+         trace = "(null trace)";
+      }
+      this.title(title);
+      this.indentInc();
+      this.title(exceptionClass);
+      this.title(block);
+      this.title(trace);
       this.indentDec();
       return this;
    }
@@ -732,6 +792,39 @@ public class Message {
 
    public Message reasonFollows(Throwable throwable) {
       return this.reasonFollows("Reason Follows", throwable);
+   }
+
+   /**
+    * Adds a title line with a block containing the message from the throwable. The lines will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;indent(n)&gt;   &lt;title&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-class&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-message&gt;
+    *    &lt;indent(n+1)&gt; &lt;exception-trace&gt;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>indent:</dt>
+    * <dd>is an indent string the message's current indent level n.</dd>
+    * <dt>title:</dt>
+    * <dd>is the string "Reason Follows".</dd>
+    * <dt>exception-class</dt>
+    * <dd>it the class name of the {@link Throwable}.</dd>
+    * <dt>exception-message</dt>
+    * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
+    * <dt>exception-trace</dt>
+    * <dd>the printed trace from the {@link Throwable}.</dd>
+    * </dl>
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>throwable</code> is <code>null</code>.
+    */
+
+   public Message reasonFollowsWithTrace(Throwable throwable) {
+      return this.reasonFollowsWithTrace("Reason Follows", throwable);
    }
 
    /**
@@ -1057,10 +1150,12 @@ public class Message {
     * @param title the title {@link CharSequence} for the line.
     * @param valueList a @{link List} of values to generate the value string from.
     * @param valueExtractor a {@link Function} used to extract the value for the message from each list element.
+    * @param limit the maximum number of list values to be included in the message. A value of zero or less disables the
+    * limit check.
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor) {
+   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor, int limit) {
 
       this.cachedResult = null;
 
@@ -1076,6 +1171,7 @@ public class Message {
 
       this.lines.add(new Line(this.indent++, title));
 
+      int safety = 0;
       int i = 0;
       var listElementTitle = new StringBuilder();
       for (var value : valueList) {
@@ -1089,11 +1185,19 @@ public class Message {
          } else {
             this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
          }
+
+         if ((limit > 0) && (++safety >= limit)) {
+            break;
+         }
       }
 
       this.indent--;
 
       return this;
+   }
+
+   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor) {
+      return this.segmentIndexedList(title, valueList, valueExtractor, -1);
    }
 
    /**
@@ -1177,6 +1281,100 @@ public class Message {
          var displayValue = valueExtractor.apply(entry.getValue());
          listElementTitle.setLength(0);
          listElementTitle.append("[").append(Message.objectToString(entry.getKey())).append("]");
+         if (displayValue instanceof ToMessage) {
+            this.lines.add(new Line(this.indent, listElementTitle));
+            ((ToMessage) displayValue).toMessage(this.indent + 1, this);
+            this.indent--;
+         } else {
+            this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
+         }
+      }
+
+      this.indent--;
+
+      return this;
+   }
+
+   /**
+    * Adds a new segment line with the value string generated from a {@link Set}. This method behaves as though the
+    * following method were called:
+    *
+    * <pre>
+    * message.segmentSet(&quot;title&quot;, theSet, Function.identity());
+    * </pre>
+    *
+    * @param <V> the type of values in the {@link Set}.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueSet a @{link Set} values to generate the value string from.
+    * @return this {@link Message}.
+    */
+
+   public <V> Message segmentSet(CharSequence title, Set<V> valueSet) {
+      return this.segmentSet(title, valueSet, (v) -> v);
+   }
+
+   /**
+    * Adds a new segment line with a title and a value string generated from a {@link Set}. The invocation of this
+    * method generates the value string from the {@link Set}. Changes to the {@link Set} after this method completes
+    * will not be reflected in the {@link Message}. The segment line will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;title&gt; ": " { &lt;null-or-empty&gt; } "\n"
+    *    { &lt;indent+2&gt; "[" &lt;integer-count&gt; "]:\n" &lt;indent+3&gt; &lt;member-element-value&gt; }
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>title:</dt>
+    * <dd>Is the member name as specified by the parameter <code>title</code>.</dd>
+    * <dt>null-or-empty:</dt>
+    * <dd>This string is determined by the parameter <code>valueSet</code> as follows:
+    * <dl>
+    * <dt><code>null</code>:</dt>
+    * <dd>the string "(null)".</dd>
+    * <dt><code>size</code> == 0:</dt>
+    * <dd>the string "(empty)".</dd>
+    * <dt>not <code>null</code> and <code>size</code> != 0:</dt>
+    * <dd>the empty string.</dd>
+    * </dl>
+    * <dt>integer-count:</dt>
+    * <dd>Is incremented for each value drawn from the unordered {@link Set} element.</dd>
+    * <dt>member-element-value:</dt>
+    * <dd>Is a string representation of the set value. When the member {@link Set} element implements the
+    * {@link ToMessage} interface the member value message is generated with the {@link ToMessage#toMessage} method.
+    * Otherwise the method {@link ToMessage#toString} is used to generate the member value message.</dd>
+    * </dl>
+    *
+    * @param <V> the type of values in the {@link Set}.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueSet a @{link Set} of values to generate the value string from.
+    * @param valueExtractor a {@link Function} used to extract the value for the message from each set value.
+    * @return this {@link Message}.
+    */
+
+   public <V> Message segmentSet(CharSequence title, Set<V> valueSet, Function<V, Object> valueExtractor) {
+
+      this.cachedResult = null;
+
+      if (Objects.isNull(valueSet)) {
+         this.lines.add(new Line(this.indent, title, "(null)"));
+         return this;
+      }
+
+      if (valueSet.isEmpty()) {
+         this.lines.add(new Line(this.indent, title, "(empty)"));
+         return this;
+      }
+
+      this.lines.add(new Line(this.indent++, title));
+
+      var listElementTitle = new StringBuilder();
+      int count = 0;
+
+      for (var entry : valueSet) {
+         var displayValue = valueExtractor.apply(entry);
+         listElementTitle.setLength(0);
+         listElementTitle.append("[").append(count++).append("]");
          if (displayValue instanceof ToMessage) {
             this.lines.add(new Line(this.indent, listElementTitle));
             ((ToMessage) displayValue).toMessage(this.indent + 1, this);

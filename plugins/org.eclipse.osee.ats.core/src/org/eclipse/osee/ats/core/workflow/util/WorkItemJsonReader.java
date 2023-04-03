@@ -34,6 +34,22 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 @Provider
 public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
 
+   /**
+    * OSGI activation method.
+    */
+
+   public void start() {
+      //no action
+   }
+
+   /**
+    * OSGI deactivation method.
+    */
+
+   public void stop() {
+      //no action
+   }
+
    @Override
    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
       return type == IAtsWorkItem.class;

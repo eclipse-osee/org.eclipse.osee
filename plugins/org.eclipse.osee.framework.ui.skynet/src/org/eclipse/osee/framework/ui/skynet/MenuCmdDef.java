@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -122,7 +123,7 @@ public class MenuCmdDef {
             : new HashSet<Map.Entry<String,String>>();
 
       if (Objects.nonNull(presentationType )) {
-         entrySet.add( new AbstractMap.SimpleImmutableEntry<String,String>(PresentationType.class.getSimpleName(), presentationType.toString()) );
+         entrySet.add( new AbstractMap.SimpleImmutableEntry<String,String>(PresentationType.class.getSimpleName(), presentationType.name()) );
       }
 
       if (Objects.nonNull(optionKey) && Objects.nonNull(optionValue)) {
@@ -135,6 +136,14 @@ public class MenuCmdDef {
       this.commandParamMap = Map.ofEntries( entryArray);
    }
    //@formatter:on
+
+   private MenuCmdDef(CommandGroup commandGroup, String commandId, Map<String, String> commandParamMap, ImageDescriptor icon, String label) {
+      this.commandGroup = commandGroup;
+      this.commandId = commandId;
+      this.commandParamMap = new HashMap<>(commandParamMap);
+      this.icon = icon;
+      this.label = label;
+   }
 
    public CommandGroup getcommandGroup() {
       return this.commandGroup;
@@ -159,5 +168,18 @@ public class MenuCmdDef {
    @Override
    public String toString() {
       return this.label;
+   }
+
+   public MenuCmdDef newInstance(ImageDescriptor icon) {
+      //@formatter:off
+      return
+         new MenuCmdDef
+                (
+                   this.commandGroup,
+                   this.commandId,
+                   this.commandParamMap,
+                   Objects.nonNull( icon ) ? icon : this.icon,
+                   this.label
+                );
    }
 }

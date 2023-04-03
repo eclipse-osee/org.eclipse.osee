@@ -18,10 +18,13 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -51,8 +54,11 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 /**
  * @author Paul K. Waldfogel
@@ -60,11 +66,42 @@ import org.junit.Test;
  */
 public abstract class AbstractEditTest {
 
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd></dt>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
+         ;
+   //@formatter:on
+
+   /**
+    * Wrap the test methods with a check to prevent execution on a production database.
+    */
+
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   /**
+    * A rule to get the method name of the currently running test.
+    */
 
    @Rule
    public TestInfo method = new TestInfo();
@@ -106,6 +143,10 @@ public abstract class AbstractEditTest {
       return artifact;
    }
 
+   private List<Artifact> toList(Artifact artifact) {
+      return Objects.nonNull(artifact) ? Collections.singletonList(artifact) : Collections.emptyList();
+   }
+
    protected Artifact getArtifact() {
       return artifact;
    }
@@ -126,7 +167,8 @@ public abstract class AbstractEditTest {
    }
 
    private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) {
-      IFile editFile = renderer.renderToFile(artifact, artifact.getBranchToken(), PresentationType.SPECIALIZED_EDIT);
+      IFile editFile =
+         renderer.renderToFile(this.toList(artifact), PresentationType.SPECIALIZED_EDIT, this.method.getTestName());
       Assert.assertNotNull(editFile);
       return editFile;
    }
@@ -162,7 +204,7 @@ public abstract class AbstractEditTest {
       Assert.assertNotNull(artifact);
 
       IFile renderedFileFromModifiedStorage =
-         renderer.renderToFile(artifact, artifact.getBranchToken(), PresentationType.SPECIALIZED_EDIT);
+         renderer.renderToFile(this.toList(artifact), PresentationType.SPECIALIZED_EDIT, this.method.getTestName());
       Assert.assertNotNull(renderedFileFromModifiedStorage);
       InputStream inputStream = null;
       try {

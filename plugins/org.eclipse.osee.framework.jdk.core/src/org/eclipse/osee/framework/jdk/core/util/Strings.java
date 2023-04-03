@@ -16,8 +16,10 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * {@link StringsTest}
@@ -25,6 +27,7 @@ import java.util.regex.Pattern;
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  * @author Karol M. Wilk
+ * @author Loren K. Ashley
  */
 public class Strings {
 
@@ -44,33 +47,137 @@ public class Strings {
    }
 
    /**
-    * Predicate determines if a {@link String} is non-<code>null</code> and not empty.
+    * Predicate to determine if a {@link String} is non-<code>null</code> and not empty.
     *
     * @param value the {@link String} to test.
     * @return <code>true</code>, when the {@link String} is non-<code>null</code> and not empty; otherwise,
     * <code>false</code>.
-    * @implNote OTE pre-compile dependency. Left for binary compatibility for 0.9.8
     */
 
    public static boolean isValid(String value) {
-      return value != null && !value.isEmpty();
+      return (value != null) && !value.isEmpty();
    }
 
-   public static String intern(String str) {
-      return str == null ? null : str.intern();
+   /**
+    * Predicate to determine if a {@link String} is non-<code>null</code> and not blank.
+    *
+    * @param value the {@link String} to test.
+    * @return <code>true</code>, when the {@link String} is non-<code>null</code> and not blank; otherwise,
+    * <code>false</code>.
+    */
+
+   public static boolean isValidAndNonBlank(String value) {
+      return (value != null) && !value.isBlank();
    }
+
+   /**
+    * Predicate to determine if an array of {@link CharSequece} objects are all non-<code>null</code> and not empty.
+    *
+    * @param values the array of {@link CharSequence} implementations to test.
+    * @return <code>true</code>, when the array is non-<code>null</code>, has a length greater than or equal to 1, all
+    * array elements are non-<code>null</code>, and all the {@link CharSequence} implementations have a length greater
+    * than or equal to one; otherwise <code>false</code>.
+    */
 
    public static boolean isValid(CharSequence... values) {
+
+      if ((values == null) || (values.length == 0)) {
+         return false;
+      }
+
       for (CharSequence value : values) {
          if (value == null || value.length() == 0) {
             return false;
          }
       }
+
       return true;
+   }
+
+   /**
+    * Predicate to determine if a {@link String} is <code>null</code> or empty.
+    *
+    * @param value the {@link String} to test.
+    * @return <code>true</code>, when the {@link String} is <code>null</code> or empty; otherwise, <code>false</code>.
+    */
+
+   public static boolean isInvalid(String value) {
+      return (value == null) || value.isEmpty();
+   }
+
+   /**
+    * Predicate to determine if a {@link String} is <code>null</code> or blank.
+    *
+    * @param value the {@link String} to test.
+    * @return <code>true</code>, when the {@link String} is <code>null</code> or blank; otherwise, <code>false</code>.
+    */
+
+   public static boolean isInvalidOrBlank(String value) {
+      return (value == null) || value.isBlank();
+   }
+
+   /**
+    * Predicate to determine if any array elements are <code>null</code> or contain an {@link CharSequence}
+    * implementation that is empty.
+    *
+    * @param values the array of {@link CharSequence} implementations to test.
+    * @return <code>false</code>, when the array is non-<code>null</code>, has a length greater than or equal to 1, all
+    * array elements are non-<code>null</code>, and all the {@link CharSequence} implementations have a length greater
+    * than or equal to one; otherwise <code>true</code>.
+    */
+
+   public static boolean isInvalid(CharSequence... values) {
+
+      if ((values == null) || (values.length == 0)) {
+         return true;
+      }
+
+      for (CharSequence value : values) {
+         if ((value == null) || (value.length() == 0)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   public static String intern(String str) {
+      return (str == null) ? null : str.intern();
    }
 
    public static String emptyString() {
       return EMPTY_STRING;
+   }
+
+   public static boolean notEquals(String tested, String... tests) {
+
+      if ((tested == null) && (((tests == null) || (tests.length == 0)))) {
+         //both are empty
+         return false;
+      }
+
+      if (tested == null) {
+         //only tested is empty
+         return true;
+      }
+
+      if ((tests == null) || (tests.length == 0)) {
+         //only tests are empty
+         return true;
+      }
+
+      for (int i = 0; i < tests.length; i++) {
+         var toTest = tests[i];
+         if (toTest == null) {
+            //only toTest string is null
+            return true;
+         }
+
+         if (tested.compareTo(toTest) != 0) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
@@ -93,13 +200,55 @@ public class Strings {
    }
 
    /**
-    * <b>NOTE</b> isValid() check is only applied to <code>inputStr</code>.
+    * Gets the length of the {@link CharSequence} when non-<code>null</code>; otherwise, zero.
     *
-    * @param inputStr string to be evaluated
-    * @return modified, new version of <code>inputStr</code> or <code>inputStr</code> if it is not valid.
+    * @param input the {@link CharSequnce} to get the length of.
+    * @return when <code>input</code> is non-<code>null</code>, the {@link CharSequence} length; otherwise, zero.
     */
+
+   public static int saferLength(CharSequence input) {
+      return Strings.isValid(input) ? input.length() : 0;
+   }
+
+   /**
+    * Replaces every subsequence of the <code>inputStr</code> that matches the <code>target</code> regular expression
+    * with the <code>replacement</code>. If the <code>inputStr</code> is <code>null</code> or empty; the
+    * <code>inputStr</code> is returned with out processing.
+    *
+    * @param inputStr the {@link String} to be processed.
+    * @param target the regular express for the sub-sequence to search for.
+    * @param replacement the replacement {@link String} for matches of <code>target</code>.
+    * @return modified, new version of <code>inputStr</code> or <code>inputStr</code> if it is not valid.
+    * @throws PatternSyntaxException when <code>target</code> is not a valid regular expression.
+    * @throws NullPointerException when <code>target</code> or <code>replacement</code> are <code>null</code>.
+    */
+
    public static String saferReplace(String inputStr, String target, String replacement) {
       return isValid(inputStr) ? inputStr.replaceAll(target, replacement) : inputStr;
+   }
+
+   /**
+    * Replaces every subsequence of the <code>input</code> sequence that matches the <code>pattern</code> with the
+    * <code>replacement</code>. If the <code>input</code> is <code>null</code> or empty; and the <code>pattern</code> is
+    * <code>null</code>, the <code>input</code> as a string is returned when <code>input</code> is
+    * non-<code>null</code>; otherwise <code>null</code> is returned. If the <code>pattern</code> is <code>null</code>,
+    * the replacement is made with the empty string.
+    *
+    * @param input the {@link CharSequence} to be processed.
+    * @param pattern the search {@link Pattern}.
+    * @param replacement the replacement {@link String}.
+    * @return when all parameters are valid, a {@link String} with the subsequence matched by the <code>pattern</code>
+    * in the <code>input</code> {@link CharSequence} replaced with the <code>replacement</code> {@link String};
+    * otherwise, the <code>input</code> parameter is returned unmodified.
+    */
+
+   public static String totallySaferReplace(CharSequence input, Pattern pattern, String replacement) {
+      //@formatter:off
+      return
+         ( Strings.isInvalid( input ) || Objects.isNull( pattern ) )
+            ? Objects.isNull( input ) ? null : input.toString()
+            : pattern.matcher(input).replaceAll( Objects.nonNull( replacement ) ? replacement : "" );
+       //@formatter:on
    }
 
    /**

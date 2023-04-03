@@ -25,9 +25,11 @@ import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,14 +67,48 @@ public class WordTemplateCompare extends AbstractWordCompare {
 
       IVbaDiffGenerator diffGenerator = createGenerator(artifacts, branch, presentationType);
 
-      String resultPath =
-         getDiffPath(artifactDelta1.getStartArtifact(), artifactDelta1.getEndArtifact(), presentationType, pathPrefix);
-      String vbsPath =
-         RenderingUtil.getRenderPath(getRenderer(), branch, presentationType, null, "compareDocs", ".vbs");
+      //@formatter:off
+      var resultPath =
+         getDiffPath
+            (
+               artifactDelta1.getStartArtifact(),
+               artifactDelta1.getEndArtifact(),
+               presentationType,
+               pathPrefix
+            );
 
-      CompareData data = new CompareData(resultPath, vbsPath);
+      var vbsPath =
+         RenderingUtil
+            .getRenderFile
+               (
+                  getRenderer(),
+                  presentationType,
+                  RendererUtil.makeRenderPath(pathPrefix),
+                  "vbs",
+                  branch.getShortName(),
+                  "compareDocs"
+               )
+            .flatMap( RenderingUtil::getOsString )
+            .orElseThrow
+               (
+                  () -> new OseeCoreException
+                               (
+                                  new Message()
+                                         .title( "WordTemplateCompare::compareArtifacts, Failed to locate renderer file." )
+                                         .indentInc()
+                                         .segment( "Renderer",          renderer.getName()      )
+                                         .segment( "Presentation Type", presentationType.name() )
+                                         .segment( "Branch Identifier", branch.getIdString()    )
+                                         .segment( "Path Prefix",       pathPrefix              )
+                                         .toString()
+                               )
+               );
 
-      addArtifactDeltas(monitor, artifactDeltas, data, presentationType);
+      var data = new CompareData( presentationType, pathPrefix, resultPath, vbsPath );
+      //@formatter:on
+
+      addArtifactDeltas(monitor, artifactDeltas, data);
+
       try {
          diffGenerator.generate(monitor, data);
       } catch (OperationTimedoutException ex) {
@@ -86,7 +122,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
       collector.onCompare(data);
    }
 
-   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data, PresentationType presentationType) {
+   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data) {
       double workAmount = 0.70 / artifactDeltas.size();
 
       for (ArtifactDelta artifactDelta : artifactDeltas) {
@@ -95,7 +131,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
          }
 
          try {
-            addToCompare(monitor, data, presentationType, artifactDelta);
+            addToCompare(monitor, data, artifactDelta);
          } catch (OseeCoreException ex) {
             notifyArtifactDeltaError(ex, artifactDelta);
          } catch (Exception ex) {

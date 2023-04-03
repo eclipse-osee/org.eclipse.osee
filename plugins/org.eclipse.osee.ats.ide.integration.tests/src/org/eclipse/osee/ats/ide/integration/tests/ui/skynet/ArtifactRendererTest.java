@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
+import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -32,13 +33,36 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 /**
  * @author Megumi Telles
  */
 public class ArtifactRendererTest {
+
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * {@Link UserToken} cache has been flushed.</dd></dt>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         ;
+   //@formatter:on
 
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
@@ -51,7 +75,7 @@ public class ArtifactRendererTest {
 
    private static final String NAME1 = "Name with \"quote\"";
    private static final String NAME2 = "Name with 'quote'";
-   private static final String EXPECTED_NAME = "Name+with+_quot";
+   private static final String EXPECTED_NAME = "Name-with-quote";
    private static Artifact artifact1;
    private static Artifact artifact2;
    private static TransactionToken otherBranchTx;
@@ -83,18 +107,35 @@ public class ArtifactRendererTest {
       Change change = new ArtifactChange(COMMON, artifact1.getGammaId(), artifact1, deltaTx, ModificationType.MODIFIED,
          "", "", false, artifact1, delta);
 
-      String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
-      Assert.assertEquals(EXPECTED_NAME, name);
+      //@formatter:off
+      RenderingUtil
+         .getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName( Arrays.asList( change ) )
+         .ifPresentOrElse
+            (
+               ( name ) -> Assert.assertEquals( EXPECTED_NAME, name ),
+               () -> Assert.assertEquals( "Failed to generate file name.", EXPECTED_NAME, "" )
+            );
+      //@formatter:on
    }
 
    @Test
    public void testAssociatedArtifact_notAllowedSingleQuotes() throws Exception {
+
       TransactionDelta deltaTx = new TransactionDelta(startTx2, otherBranchTx);
+
       ArtifactDelta delta = new ArtifactDelta(null, artifact1, artifact2);
+
       Change change = new ArtifactChange(COMMON, artifact2.getGammaId(), artifact2, deltaTx, ModificationType.MODIFIED,
          "", "", false, artifact2, delta);
 
-      String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
-      Assert.assertEquals(EXPECTED_NAME, name);
+      //@formatter:off
+      RenderingUtil
+         .getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName( Arrays.asList( change ) )
+         .ifPresentOrElse
+            (
+               ( name ) -> Assert.assertEquals( EXPECTED_NAME, name ),
+               () -> Assert.assertEquals( "Failed to generate file name.", EXPECTED_NAME, "" )
+            );
+      //@formatter:on
    }
 }

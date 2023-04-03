@@ -21,6 +21,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -51,7 +52,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
+      String pathPrefix = RenderingUtil.getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName(changes).orElse(Strings.emptyString());
       Map<RendererOption, Object> rendererOptions = new HashMap<>();
       rendererOptions.put(RendererOption.VIEW, Handlers.getViewId());
 

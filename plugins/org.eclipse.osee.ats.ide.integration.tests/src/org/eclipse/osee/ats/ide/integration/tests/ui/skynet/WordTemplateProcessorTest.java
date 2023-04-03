@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
+import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -64,6 +65,9 @@ public class WordTemplateProcessorTest {
     * <dd>This rule is used to prevent modification of a production database.</dd>
     * <dt>ExitDatabaseInitializationRule</dt>
     * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd></dt>
     * </dl>
     */
 
@@ -73,14 +77,23 @@ public class WordTemplateProcessorTest {
       RuleChain
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
          ;
    //@formatter:on
+
+   /**
+    * Wrap the test methods with a check to prevent execution on a production database.
+    */
 
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   /**
+    * A rule to get the method name of the currently running test.
+    */
 
    @Rule
    public TestInfo method = new TestInfo();

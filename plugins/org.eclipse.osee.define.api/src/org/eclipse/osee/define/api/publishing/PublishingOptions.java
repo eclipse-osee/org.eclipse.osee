@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -88,6 +87,24 @@ public class PublishingOptions implements ToMessage {
    //Int
    public int msWordHeadingDepth = 9;
 
+   public PublishingOptions() {
+   }
+
+   public PublishingOptions(boolean excludeFolders, LinkType linkType, int msWordHeadingDepth) {
+      this.excludeFolders = excludeFolders;
+      this.linkType = linkType;
+      this.msWordHeadingDepth = msWordHeadingDepth;
+   }
+
+   @Override
+   public Object clone() {
+      try {
+         return super.clone();
+      } catch (Exception e) {
+         return new PublishingOptions();
+      }
+   }
+
    public void setAllAttributes(boolean allAttributes) {
       this.allAttributes = allAttributes;
    }
@@ -100,8 +117,6 @@ public class PublishingOptions implements ToMessage {
    public Message toMessage(int indent, Message message) {
 
       var outMessage = Objects.nonNull(message) ? message : new Message();
-      var indent0 = IndentedString.indentString(indent + 0);
-      var indent1 = IndentedString.indentString(indent + 1);
 
       //@formatter:off
       outMessage

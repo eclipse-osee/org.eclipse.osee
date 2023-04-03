@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -30,9 +31,11 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -119,13 +122,48 @@ public abstract class AbstractWordCompare implements IComparator {
          IVbaDiffGenerator diffGenerator =
             createGenerator(Collections.singletonList(artifact), branch, presentationType);
 
-         String resultPath =
-            getDiffPath(artifactDelta.getStartArtifact(), artifactDelta.getEndArtifact(), presentationType, pathPrefix);
-         String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
+         //@formatter:off
+         var resultPath =
+            getDiffPath
+               (
+                  artifactDelta.getStartArtifact(),
+                  artifactDelta.getEndArtifact(),
+                  presentationType,
+                  pathPrefix
+               );
 
-         CompareData data = new CompareData(resultPath, vbsPath);
+         var vbsPath =
+            RenderingUtil
+               .getRenderFile
+                  (
+                     renderer,
+                     presentationType,
+                     RendererUtil.makeRenderPath(pathPrefix),
+                     "vbs",
+                     branch.getShortName(),
+                     "compareDocs"
+                  )
+               .flatMap( RenderingUtil::getOsString )
+               .orElseThrow
+                  (
+                     () -> new OseeCoreException
+                                  (
+                                     new Message()
+                                            .title( "AbstractWordCompare::compare, Failed to locate renderer file." )
+                                            .indentInc()
+                                            .segment( "Renderer",          renderer.getName()      )
+                                            .segment( "Presentation Type", presentationType.name() )
+                                            .segment( "Branch Identifier", branch.getIdString()    )
+                                            .segment( "Path Prefix",       pathPrefix              )
+                                            .toString()
+                                  )
+                  );
 
-         addToCompare(monitor, data, presentationType, artifactDelta);
+         var data = new CompareData( presentationType, pathPrefix, resultPath, vbsPath );
+         //@formatter:on
+
+         addToCompare(monitor, data, artifactDelta);
+
          try {
             diffGenerator.generate(monitor, data);
          } catch (OperationTimedoutException ex) {
@@ -142,11 +180,51 @@ public abstract class AbstractWordCompare implements IComparator {
 
    @Override
    public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) {
-      BranchToken branch = (baseVersion != null ? baseVersion : newerVersion).getBranchToken();
+      //@formatter:off
+      var branch =
+         ( Objects.nonNull( baseVersion )
+            ? baseVersion
+            : newerVersion).getBranchToken();
 
-      String resultPath = getDiffPath(baseVersion, newerVersion, presentationType, pathPrefix);
-      String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
-      CompareData data = new CompareData(resultPath, vbsPath);
+
+      var resultPath =
+         getDiffPath
+            (
+               baseVersion,
+               newerVersion,
+               presentationType,
+               pathPrefix
+            );
+
+      var vbsPath =
+         RenderingUtil
+            .getRenderFile
+               (
+                  renderer,
+                  presentationType,
+                  RendererUtil.makeRenderPath(pathPrefix),
+                  "vbs",
+                  branch.getShortName(),
+                  "compareDocs"
+               )
+            .flatMap( RenderingUtil::getOsString )
+            .orElseThrow
+               (
+                  () -> new OseeCoreException
+                               (
+                                  new Message()
+                                         .title( "AbstractWordCompare::compare, Failed to locate renderer file." )
+                                         .indentInc()
+                                         .segment( "Renderer",          renderer.getName()      )
+                                         .segment( "Presentation Type", presentationType.name() )
+                                         .segment( "Branch Identifier", branch.getIdString()    )
+                                         .segment( "Path Prefix",       pathPrefix              )
+                                         .toString()
+                               )
+               );
+
+      var data = new CompareData( presentationType, pathPrefix, resultPath, vbsPath);
+      //@formatter:on
 
       data.add(baseFile.getLocation().toOSString(), newerFile.getLocation().toOSString());
 
@@ -166,17 +244,49 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    protected String getDiffPath(Artifact baseVersion, Artifact newerVersion, PresentationType presentationType, String prefix) {
-      Artifact artifact = baseVersion != null ? baseVersion : newerVersion;
-      List<Artifact> artifacts = Collections.singletonList(artifact);
-      String diffPath =
-         RenderingUtil.getRenderPath(renderer, artifacts, artifact.getBranchToken(), presentationType, prefix, ".xml");
+      //@formatter:off
+      var artifact =
+         Objects.nonNull( baseVersion )
+            ? baseVersion
+            : newerVersion;
+
+      var branchToken = artifact.getBranchToken();
+
+      var artifacts = Collections.singletonList( artifact );
+
+      var diffPath =
+         RenderingUtil
+            .getRenderFile
+               (
+                  renderer,
+                  presentationType,
+                  RendererUtil.makeRenderPath(prefix),
+                  "xml",
+                  RenderingUtil.getFileNameSegmentsFromArtifacts( presentationType, branchToken.getShortName(), artifacts )
+               )
+            .flatMap( RenderingUtil::getOsString )
+            .orElseThrow
+               (
+                  () -> new OseeCoreException
+                               (
+                                  new Message()
+                                         .title( "AbstractWordCompare::getDiffPath, Failed to locate renderer file." )
+                                         .indentInc()
+                                         .segment( "Renderer",          renderer.getName()        )
+                                         .segment( "Presentation Type", presentationType.name()   )
+                                         .segment( "Branch Identifier", branchToken.getIdString() )
+                                         .segment( "Prefix",            prefix                    )
+                                         .toString()
+                               )
+               );
+
       return diffPath;
    }
 
-   protected void addToCompare(IProgressMonitor monitor, CompareData data, PresentationType presentationType, ArtifactDelta artifactDelta) {
+   protected void addToCompare(IProgressMonitor monitor, CompareData data, ArtifactDelta artifactDelta) {
       Pair<IFile, IFile> compareFiles;
       if (artifactDelta instanceof UnmodifiedArtifactDelta) {
-         compareFiles = converter.convertToFileAndCopy(presentationType, artifactDelta);
+         compareFiles = converter.convertToFileAndCopy(data.getPresentationType(), artifactDelta);
       } else {
          Pair<String, Boolean> originalValue = null;
 
@@ -193,14 +303,20 @@ public abstract class AbstractWordCompare implements IComparator {
             "Preparing comparison for: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
 
          if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
-            compareFiles = converter.convertToFile(presentationType, artifactDelta);
+            compareFiles = converter.convertToFile(data.getPresentationType(), data.getPathPrefix(), artifactDelta);
          } else {
             // The artifactDelta is a 3 Way Merge
             compareFiles = handle3WayMerge(data, artifactDelta);
          }
          WordImageChecker.restoreOriginalValue(baseContent, originalValue);
       }
-      data.add(compareFiles.getFirst().getLocation().toOSString(), compareFiles.getSecond().getLocation().toOSString());
+      //@formatter:off
+      data.add
+         (
+            RenderingUtil.getOsString( compareFiles.getFirst()  ).orElse(null),
+            RenderingUtil.getOsString( compareFiles.getSecond() ).orElse(null)
+         );
+      //@formatter:on
    }
 
    private Pair<IFile, IFile> handle3WayMerge(CompareData data, ArtifactDelta artifactDelta) {

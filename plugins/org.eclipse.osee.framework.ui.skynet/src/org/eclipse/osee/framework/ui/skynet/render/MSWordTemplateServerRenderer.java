@@ -17,15 +17,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import javax.ws.rs.WebApplicationException;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
@@ -33,39 +30,30 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 
 /**
- * This WordRenderer is used for the purpose of making a REST Call to the PublishingEndpoint for previewing artifacts.
+ * This Word Renderer is used for the purpose of making a REST Call to the PublishingEndpoint for previewing artifacts.
  *
  * @author Branden W. Phillips
  * @author Loren K. Ashley
  */
 
-public class MSWordTemplateServerRenderer implements IRenderer {
+public class MSWordTemplateServerRenderer extends FileSystemRenderer {
 
    /**
     * The context menu command title for the Preview command.
@@ -93,10 +81,11 @@ public class MSWordTemplateServerRenderer implements IRenderer {
       "MS Word Preview With Children No Attributes (Server)";
 
    /**
-    * The default {@link IComparator} implementation for {@link Artifacts}.
+    * The likely file system extension for files that hold the same type of data as is stored in main content
+    * {@link Attribute} of the most common {@link Artifact} type processed by this renderer.
     */
 
-   private static final IComparator DEFAULT_ARTIFACT_COMPARATOR = new DefaultArtifactCompare();
+   private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "xml";
 
    /**
     * The {@link ImageDescriptor} used to draw the icon for this renderer's command icon.
@@ -111,18 +100,16 @@ public class MSWordTemplateServerRenderer implements IRenderer {
    private static List<MenuCmdDef> menuCommandDefinitions;
 
    /**
-    * Monitors temporary word files.
-    *
-    * @implNote TODO: Temporary files are added to the watcher but never removed.
-    */
-
-   private static final ArtifactFileMonitor monitor = new ArtifactFileMonitor();
-
-   /**
     * The program extension for MS Word documents.
     */
 
    private static final String PROGRAM_EXTENSION_WORD = "doc";
+
+   /**
+    * A short description of the type of documents processed by the renderer.
+    */
+
+   private static final String RENDERER_DOCUMENT_TYPE_DESCRIPTION = "MS Word";
 
    /**
     * The renderer identifier used for publishing template selection.
@@ -209,11 +196,7 @@ public class MSWordTemplateServerRenderer implements IRenderer {
       //@formatter:on
    }
 
-   /**
-    * Map of rendering options. This contents of the map may be modified after the renderer has been created.
-    */
-
-   private final Map<RendererOption, Object> rendererOptions;
+   private IComparator comparator;
 
    /**
     * Creates a new {@link MSWordTemplateServerRenderer} without any options. This constructor is used by the
@@ -221,7 +204,8 @@ public class MSWordTemplateServerRenderer implements IRenderer {
     */
 
    public MSWordTemplateServerRenderer() {
-      this.rendererOptions = new EnumMap<>(RendererOption.class);
+      this(new HashMap<RendererOption, Object>());
+      this.comparator = new WordTemplateCompare(this);
    }
 
    /**
@@ -231,12 +215,7 @@ public class MSWordTemplateServerRenderer implements IRenderer {
     */
 
    public MSWordTemplateServerRenderer(Map<RendererOption, Object> options) {
-      //@formatter:off
-      this.rendererOptions =
-         Objects.nonNull( options ) && !options.isEmpty()
-            ? new EnumMap<>( options )
-            : new EnumMap<>(RendererOption.class);
-      //@formatter:on
+      super(options);
    }
 
    /**
@@ -286,6 +265,15 @@ public class MSWordTemplateServerRenderer implements IRenderer {
    }
 
    /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Program getAssociatedProgram(Artifact artifact) {
+      return MSWordTemplateServerRenderer.wordApplication;
+   }
+
+   /**
     * Gets the {@link IComparator} implementation used to compare {@link Artifact}s.
     *
     * @return {@link IComparator} implementation for {@link Artifact}s.
@@ -293,7 +281,25 @@ public class MSWordTemplateServerRenderer implements IRenderer {
 
    @Override
    public IComparator getComparator() {
-      return MSWordTemplateServerRenderer.DEFAULT_ARTIFACT_COMPARATOR;
+      return this.comparator;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDefaultAssociatedExtension() {
+      return MSWordTemplateServerRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDocumentTypeDescription() {
+      return MSWordTemplateServerRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
    }
 
    /**
@@ -326,53 +332,13 @@ public class MSWordTemplateServerRenderer implements IRenderer {
    }
 
    /**
-    * Gets the specified {@link RendererOption} value. The following default values are provided renderer option values
-    * of the following types:
-    * <dl>
-    * <dt>Boolean</dt>
-    * <dd>false</dd>
-    * <dt>ArtifactId</dt>
-    * <dd>ArtifactId.SENTINEL</dt>
-    * <dt>BranchId</dt>
-    * <dd>BranchId.SENTINEL</dt>
-    * </dl>
-    * Unspecified renderer option values of other types are returned as <code>null</code>.
-    *
-    * @param key the {@link RendererOption} to get.
-    * @return the value of the specified {@link RendererOption}.
-    */
-
-   public Object getRendererOptionValue(RendererOption key) {
-
-      var value = this.rendererOptions.get(key);
-
-      if (Objects.nonNull(value)) {
-         return value;
-      }
-
-      switch (key.getType()) {
-         case Boolean:
-            return false;
-
-         case ArtifactId:
-            return ArtifactId.SENTINEL;
-
-         case BranchId:
-            return BranchId.SENTINEL;
-
-         default:
-            return null;
-      }
-   }
-
-   /**
     * Sends a MsWord document publishing request to the OSEE server and returns the response content as an
-    * {@link InputStream}.
+    * {@link Attachment}.
     *
     * @param presentationType enumeration describing how the results will be presented to the user and used for the
     * publishing template selection.
     * @param publishArtifacts a list of the {@link Artifact} objects to be published.
-    * @return an {@link InputStream} containing the MsWord content of the published artifacts.
+    * @return an {@link Attachment} containing the MsWord content of the published artifacts.
     * @throws OseeCoreException when:
     * <ul>
     * <li>inputs are invalid,</li>
@@ -383,6 +349,7 @@ public class MSWordTemplateServerRenderer implements IRenderer {
     * </ul>
     */
 
+   @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> publishArtifacts) {
 
       /*
@@ -394,30 +361,18 @@ public class MSWordTemplateServerRenderer implements IRenderer {
           || Objects.isNull(publishArtifacts)
           || (publishArtifacts.size() == 0) ) {
 
-         throw new OseeCoreException
-                      (
-                        new StringBuilder( 1024 )
-                           .append( "MsWord Renderer invalid inputs." ).append( "\n" )
-                           .append( "   PresentationType:  " )
-                              .append
-                                 (
-                                   Objects.nonNull( presentationType )
-                                      ? presentationType
-                                      : "(no presentation type specified)"
-                                 )
-                           .append( "\n" )
-                              .append( "   Publish Artifacts: " )
-                              .append
-                                 (
-                                   Objects.nonNull( publishArtifacts )
-                                      ? ( publishArtifacts.size() > 0 )
-                                         ? publishArtifacts.stream().map( ArtifactId::toString ).collect( Collectors.joining( ", ", "[ ", " ]" ) )
-                                         : "(no artifacts to publish specified)"
-                                      : "(no artifacts to publish specified)"
-                                 )
-                           .append( "\n" )
-                           .toString()
-                      );
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                             .title( "MsWord Renderer invalid inputs." )
+                             .indentInc()
+                             .segment( "PresentationType", Objects.nonNull( presentationType )
+                                                              ? presentationType
+                                                              : "(no presentation type specified)"  )
+                             .segment( "Publish Artifacts ", publishArtifacts, Artifact::getIdString )
+                             .toString()
+                   );
       }
 
       /*
@@ -455,13 +410,17 @@ public class MSWordTemplateServerRenderer implements IRenderer {
        * Make the server call for the publish
        */
 
-      return PublishingRequestHandler.msWordPreview(msWordPreviewRequestData);
+      var attachment = PublishingRequestHandler.msWordPreview(msWordPreviewRequestData);
+
+      try {
+         return attachment.getDataHandler().getInputStream();
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
    }
 
-   /**
-    * This method is forced to be implemented but currently should never be used.
-    */
-
+   @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       return new UpdateArtifactOperation(file, artifacts, branch, false);
    }
@@ -500,146 +459,6 @@ public class MSWordTemplateServerRenderer implements IRenderer {
    }
 
    /**
-    * Opens the artifact preview in MS Word or an alternate editor if MS Word is not installed on the client. This
-    * method does not wait for the MS Word or alternate application to be closed.
-    *
-    * @param artifacts a {@link List} of the {@link Artifact}s to be previewed.
-    * @param presentationType how the artifacts are to be displayed.
-    * @throws OseeArgumentException when an application to open the preview is not found.
-    */
-
-   @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) {
-
-      if (Objects.isNull(artifacts) || artifacts.isEmpty()) {
-         return;
-      }
-
-      if (PresentationType.DEFAULT_OPEN.equals(presentationType)) {
-         presentationType = PresentationType.PREVIEW_SERVER;
-      }
-
-      var branchToken = artifacts.get(0).getBranchToken();
-
-      if (!MSWordTemplateRendererUtils.artifactsOnSameBranch(artifacts)) {
-         this.displayErrorDocument(branchToken, artifacts, presentationType,
-            "All of the artifacts must be on the same branch to be mass edited");
-         return;
-      }
-
-      InputStream inputStream = null;
-
-      try {
-         inputStream = this.getRenderInputStream(presentationType, artifacts);
-      } catch (WebApplicationException wae) {
-         this.displayErrorDocument(branchToken, artifacts, presentationType, wae.getCause().getMessage());
-         return;
-      } catch (Exception e) {
-         this.displayErrorDocument(branchToken, artifacts, presentationType, e.getMessage());
-         return;
-      }
-
-      this.displayWordDocument(branchToken, artifacts, presentationType, inputStream);
-   }
-
-   private void displayWordDocument(BranchToken branchToken, List<Artifact> artifacts, PresentationType presentationType, InputStream inputStream) {
-
-      //@formatter:off
-      IFile workingFile =
-         RenderingUtil.getRenderFile
-            (
-               this,                                         /* IRenderer renderer */
-               RenderingUtil.toFileName(branchToken).trim(), /* String subFolder */
-               RenderingUtil.constructFilename               /* String filename */
-                  (
-                     RenderingUtil.getNameFromArtifacts
-                        (
-                           artifacts,
-                           presentationType
-                        ),
-                     null,
-                     ".xml"
-                  ),
-               presentationType                              /* PresentationType presentationType */
-            );
-
-      AIFile.writeToFile(workingFile, inputStream);
-
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-         File file = workingFile.getLocation().toFile();
-         monitor.addFile(file, this.getUpdateOperation(file, artifacts, branchToken, presentationType));
-      } else if (presentationType == PresentationType.PREVIEW_SERVER) {
-         monitor.markAsReadOnly(workingFile);
-      }
-
-      try {
-         if (RenderingUtil.arePopupsAllowed()) {
-
-            RenderingUtil.ensureFilenameLimit(workingFile);
-
-            MSWordTemplateServerRenderer.wordApplication.execute(workingFile.getLocation().toFile().getAbsolutePath());
-
-         } else {
-
-            OseeLog.logf(Activator.class, Level.INFO,
-               "Test - Opening File - [%s]" + workingFile.getLocation().toFile().getAbsolutePath());
-
-         }
-      } catch (Exception ex) {
-
-         var workbench = PlatformUI.getWorkbench();
-         var editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(workingFile.getName());
-
-         if (editorDescriptor != null) {
-            try {
-
-               var page = workbench.getActiveWorkbenchWindow().getActivePage();
-               page.openEditor(new FileEditorInput(workingFile), editorDescriptor.getId());
-
-            } catch (PartInitException | NullPointerException ex1) {
-
-               throw new OseeArgumentException(
-                  "No program associated with the extension [%s] found on your local machine.",
-                  workingFile.getFileExtension());
-
-            }
-         }
-      }
-
-   }
-
-   private void displayErrorDocument(BranchToken branchToken, List<Artifact> artifacts, PresentationType presentationType, String errorMessage) {
-
-      //@formatter:off
-      var message =
-         new Message()
-                .title( "Failed to Publish MS Word document." )
-                .indentInc()
-                .segment( "Artifacts", artifacts,   Artifact::getIdString    )
-                .segment( "Branch",    branchToken, BranchToken::getIdString )
-                .blank()
-                .indentDec()
-                .title( "Reason Follows:" )
-                .blank()
-                .block( errorMessage )
-                .toString();
-      //@formatter:on
-
-      OseeLog.log(this.getClass(), Level.WARNING, message);
-
-      if (RenderingUtil.arePopupsAllowed()) {
-
-         Displays.pendInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               MessageDialog.openError(Displays.getActiveShell(), "Publishing Error", message);
-            }
-         });
-      }
-
-   }
-
-   /**
     * Rendering the attributes of an artifact are not supported by this renderer.
     *
     * @throws UnsupportedOperationException
@@ -661,39 +480,6 @@ public class MSWordTemplateServerRenderer implements IRenderer {
       throw new UnsupportedOperationException();
    }
 
-   private IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType) {
-
-      var branchToken = Objects.nonNull(artifacts) && (artifacts.size() > 1) ? artifacts.get(0).getBranchToken() : null;
-
-      var renderInputStream = this.getRenderInputStream(presentationType, artifacts);
-
-      //@formatter:off
-      IFile workingFile =
-         RenderingUtil.getRenderFile
-            (
-               this,                                                                   /* IRenderer renderer  */
-               RenderingUtil.toFileName(branchToken).trim(),                           /* String    subFolder */
-               RenderingUtil.constructFilename                                         /* String    filename  */
-                  (
-                     RenderingUtil.getNameFromArtifacts(artifacts, presentationType),
-                     null,
-                     ".xml"
-                  ),
-               presentationType                                                       /* PresentationType presentationType */
-            );
-      //@formatter:on
-
-      AIFile.writeToFile(workingFile, renderInputStream);
-
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-         File file = workingFile.getLocation().toFile();
-         monitor.addFile(file, this.getUpdateOperation(file, artifacts, branchToken, presentationType));
-      } else if (presentationType == PresentationType.PREVIEW_SERVER) {
-         monitor.markAsReadOnly(workingFile);
-      }
-      return workingFile;
-   }
-
    /**
     * This {@link IRenderer} implementation uses the default {@link IComparator} implementation for {@link Artifacts}.
     *
@@ -703,23 +489,6 @@ public class MSWordTemplateServerRenderer implements IRenderer {
    @Override
    public boolean supportsCompare() {
       return true;
-   }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws NullPointerException {@inheritDoc}
-    */
-
-   @Override
-   public void updateOption(RendererOption key, Object value) {
-      //@formatter:off
-      this.rendererOptions.put
-         (
-            Objects.requireNonNull( key,   "MSWordTemplateServerRenderer::updateOption, parameter \"key\" cannot be null." ),
-            Objects.requireNonNull( value, "MSWordTemplateServerRenderer::updateOption, parameter \"value\" cannot be null." )
-         );
-      //@formatter:on
    }
 
 }
