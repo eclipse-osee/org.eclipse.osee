@@ -1,10 +1,33 @@
 java_library(
     name = "framework_ui_plugin",
 	resources = ["xml_files", "exsd_files", "img"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
+	srcs = 
+	glob(["**/*.java"]),
+	deps = ["java_deps",
+		"//framework_core_packages",
+	 	"//:framework_core_client",
+	 	"//:framework_plugin_core",
+	 	"//:framework_ui_swt",
+	 	"//:activity_api",
+	 	"//:framework_messaging_event_res",
+	 	"//:framework_server_ide_api",
+	 	"//:framework_core_server",
+	 	"//:framework_messaging",
+	 	"//:cache_admin",
+	 	"//:framework_core_model",
+	 	"//:jaxrs",
+	 	"//:orcs",
+	 	"//:orcs_rest_model",
+	 	"//:jdbc",
+	 	"//:framework_server_ide",
+	 	"//:console_admin",
+	 	"//:orcs_core",
+	 	"//:orcs_rest",
+	 	"//:activity",
+	 	"//:define_api",
+	 	"//:framework_resource_management"
+		],
+	visibility = ["//visibility:public"]
               )
 
 filegroup(
@@ -12,9 +35,7 @@ filegroup(
     srcs =
           [
 	    "plugin.xml"
-           ]
-  ,
-    visibility = ["//visibility:public"]
+           ],
 )
 
 filegroup(
@@ -24,9 +45,7 @@ filegroup(
             "OSEE-INF/extensionPts/PropertyStoreControl.exsd",
             "OSEE-INF/extensionPts/WorkbenchTargetProvider.exsd",
 	    "OSEE-INF/extensionPts/XNavigateItemProvider.exsd"
-           ]
-  ,
-    visibility = ["//visibility:public"]
+           ],
 )
 
 filegroup(
@@ -59,9 +78,7 @@ filegroup(
 		"OSEE-INF/images/train.gif",
 		"OSEE-INF/images/viewMenu.gif",
 		"OSEE-INF/images/www.gif"
-	  ]
-  ,
-    visibility = ["//visibility:public"]
+	  ],
 )
 
 java_library(
@@ -86,31 +103,6 @@ java_library(
 		"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
 		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-		"@framework_core_client//:framework_core_client",
-		"@framework_plugin_core//:framework_plugin_core",
-		"@framework_ui_swt//:framework_ui_swt",
-		"@framework_logging//:framework_logging",
-		"@logger//:logger",
-		"@activity_api//:activity_api",
-		"@framework_messaging_event_res//:framework_messaging_event_res",
-		"@framework_server_ide_api//:framework_server_ide_api",
-		"@framework_core_server//:framework_core_server",
-		"@framework_messaging//:framework_messaging",
-		"@cache_admin//:cache_admin",
-		"@framework_core_model//:framework_core_model",
-		"@jaxrs//:jaxrs",
-		"@orcs//:orcs",
-		"@orcs_rest_model//:orcs_rest_model",
-		"@jdbc//:jdbc",
-		"@framework_server_ide//:framework_server_ide",
-		"@console_admin//:console_admin",
-		"@orcs_core//:orcs_core",
-		"@orcs_rest//:orcs_rest",
-		"@activity//:activity",
-		"@define_api//:define_api",
-		"@framework_resource_management//:framework_resource_management",
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
@@ -119,8 +111,5 @@ java_library(
 		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:help",
 		"@ext_jars//:junit"
-                ],
+	],
 )
-package(default_visibility = ["//visibility:public"])
-
-

@@ -1,10 +1,12 @@
 java_library(
         name = "framework_messaging_event_res",
         resources = ["xsd_files"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
+	srcs = glob(["**/*.java"]),
+	deps = ["java_deps",
+		"//framework_core_packages",
+		"//:framework_messaging"
+	],
+	visibility = ["//visibility:public"]
               )
 
 filegroup(
@@ -13,8 +15,7 @@ filegroup(
         [
         "jaxb/resMessages.xsd",
         "OSGI-INF/osee.core.model.event.service.xml"
-        ],
-    visibility = ["//visibility:public"]
+        ]
 )
 
 java_library(
@@ -32,10 +33,5 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-                "@framework_core//:framework_core",
-                "@framework_logging//:framework_logging",
-		"@framework_jdk_core//:framework_jdk_core",
-		"@framework_messaging//:framework_messaging"
                 ],
 )
-package(default_visibility = ["//visibility:public"])

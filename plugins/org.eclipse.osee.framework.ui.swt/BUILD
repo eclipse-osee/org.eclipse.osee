@@ -2,7 +2,9 @@
 java_library(
         name = "framework_ui_swt",
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "framework_core_packages"],
+        deps = ["java_deps",
+		"//framework_core_packages"
+	],
         visibility = ["//visibility:public"]
 
 )
