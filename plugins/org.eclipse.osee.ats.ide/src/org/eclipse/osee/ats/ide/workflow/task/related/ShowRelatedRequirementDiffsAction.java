@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -92,9 +93,18 @@ public class ShowRelatedRequirementDiffsAction extends AbstractShowRelatedAction
 
       @Override
       public void showDifferences(Collection<ArtifactDelta> artifactDeltas) {
+
          Conditions.checkNotNullOrEmpty(artifactDeltas, "selected artifact change from change report");
-         String pathPrefix = RenderingUtil.getAssociatedArtifactName(artifactDeltas);
-         RendererManager.diffInJob(artifactDeltas, pathPrefix);
+
+         //@formatter:off
+         RenderingUtil
+            .getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName( artifactDeltas )
+            .ifPresentOrElse
+               (
+                  ( pathPrefix ) -> RendererManager.diffInJob( artifactDeltas, pathPrefix           ),
+                  ( )            -> RendererManager.diffInJob( artifactDeltas, Strings.emptyString() )
+               );
+         //@formatter:on
       }
 
    }

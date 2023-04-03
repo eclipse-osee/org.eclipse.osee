@@ -14,10 +14,12 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.CompareData;
@@ -40,16 +42,15 @@ public class ArtifactDeltaToFileConverter {
       return renderer;
    }
 
-   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, ArtifactDelta artifactDelta) {
+   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, String pathPrefix, ArtifactDelta artifactDelta) {
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
       if (newerArtifact.getModType().isDeleted()) {
          newerArtifact = null;
       }
-      BranchToken branch = artifactDelta.getBranch();
 
-      IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
-      IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
+      IFile baseFile = renderer.renderToFile(this.toList(baseArtifact), presentationType, pathPrefix);
+      IFile newerFile = renderer.renderToFile(this.toList(newerArtifact), presentationType, pathPrefix);
       return new Pair<>(baseFile, newerFile);
    }
 
@@ -59,10 +60,9 @@ public class ArtifactDeltaToFileConverter {
       if (newerArtifact.getModType().isDeleted()) {
          newerArtifact = null;
       }
-      BranchToken branch = artifactDelta.getBranch();
 
-      IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
-      IFile copiedFile = renderer.copyToNewFile(newerArtifact, branch, presentationType, baseFile);
+      IFile baseFile = renderer.renderToFile(this.toList(baseArtifact), presentationType, null);
+      IFile copiedFile = renderer.copyToNewFile(newerArtifact, presentationType, baseFile);
 
       return new Pair<>(baseFile, copiedFile);
    }
@@ -83,5 +83,9 @@ public class ArtifactDeltaToFileConverter {
       // Set ADD MERGE TAG as an option so resulting document will indicate a merge section
 
       RendererManager.diff(colletor, artifactDelta, "", rendererOptions);
+   }
+
+   private List<Artifact> toList(Artifact artifact) {
+      return Objects.nonNull(artifact) ? Collections.singletonList(artifact) : Collections.emptyList();
    }
 }

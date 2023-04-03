@@ -30,7 +30,8 @@ public enum OptionType {
    LinkType,
    ProgressMonitor,
    String,
-   Transaction;
+   Transaction,
+   OutputStream;
 
    /**
     * Saves the default value for the {@link OptionType}.

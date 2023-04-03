@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.define;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
@@ -318,7 +319,7 @@ public class RendererEndpointTest {
                                     template,
                                     RendererEndpointTest.rootArtifactId,
                                     ArtifactId.SENTINEL
-                                 )
+                                 ).getDataHandler().getInputStream()
          )
       {
 

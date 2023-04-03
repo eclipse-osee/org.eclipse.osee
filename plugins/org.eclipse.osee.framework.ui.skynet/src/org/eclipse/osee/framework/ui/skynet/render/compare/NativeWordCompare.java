@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -58,13 +59,48 @@ public class NativeWordCompare extends AbstractWordCompare {
 
       IVbaDiffGenerator diffGenerator = createGenerator(Collections.singletonList(artifact), branch, presentationType);
 
-      String resultPath =
-         getDiffPath(artifactDelta.getStartArtifact(), artifactDelta.getEndArtifact(), presentationType, pathPrefix);
-      String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
+      //@formatter:off
+      var resultPath =
+         getDiffPath
+            (
+               artifactDelta.getStartArtifact(),
+               artifactDelta.getEndArtifact(),
+               presentationType,
+               pathPrefix
+            );
 
-      CompareData data = new CompareData(resultPath, vbsPath);
+      var vbsPath =
+         RenderingUtil
+            .getRenderFile
+               (
+                  renderer,
+                  presentationType,
+                  null,
+                  "vbs",
+                  branch.getShortName(),
+                  "compareDocs"
+               )
+            .flatMap( RenderingUtil::getOsString )
+            .orElseThrow
+               (
+                  () -> new OseeCoreException
+                               (
+                                  new Message()
+                                         .title( "NativeWordCompare::compare, Failed to locate renderer file." )
+                                         .indentInc()
+                                         .segment( "Renderer",          renderer.getName()      )
+                                         .segment( "Presentation Type", presentationType.name() )
+                                         .segment( "Branch Identifier", branch.getIdString()    )
+                                         .segment( "Path Prefix",       pathPrefix              )
+                                         .toString()
+                               )
+               );
 
-      addToCompare(monitor, data, presentationType, artifactDelta);
+      var data = new CompareData( presentationType, pathPrefix, resultPath, vbsPath );
+      //@formatter:on
+
+      addToCompare(monitor, data, artifactDelta);
+
       try {
          diffGenerator.generate(monitor, data);
       } catch (OperationTimedoutException ex) {
@@ -77,7 +113,7 @@ public class NativeWordCompare extends AbstractWordCompare {
    }
 
    @Override
-   protected void addToCompare(IProgressMonitor monitor, CompareData data, PresentationType presentationType, ArtifactDelta artifactDelta) {
+   protected void addToCompare(IProgressMonitor monitor, CompareData data, ArtifactDelta artifactDelta) {
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
 
@@ -86,7 +122,7 @@ public class NativeWordCompare extends AbstractWordCompare {
 
       Pair<IFile, IFile> compareFiles;
       if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
-         compareFiles = converter.convertToFile(presentationType, artifactDelta);
+         compareFiles = converter.convertToFile(data.getPresentationType(), data.getPathPrefix(), artifactDelta);
       } else {
          // The artifactDelta is a 3 Way Merge
          List<IFile> outputFiles = new ArrayList<>();

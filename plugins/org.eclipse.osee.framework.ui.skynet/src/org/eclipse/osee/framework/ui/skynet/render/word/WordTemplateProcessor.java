@@ -18,11 +18,13 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SeverityC
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,11 +61,11 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
@@ -239,16 +241,66 @@ public class WordTemplateProcessor {
 
       getExcludeArtifactTypes();
 
-      IFile file = RendererUtil.getRenderFile(COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
-      renderer.updateOption(RendererOption.RESULT_PATH_RETURN, file.getLocation().toOSString());
+      var theMasterTemplateStyles = masterTemplateStyles;
 
-      AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, masterTemplateOptions, masterTemplateStyles,
-         file.getParent(), outlineNumber, null, PREVIEW));
+      //@formatter:off
+      RenderingUtil
+         .getRenderFile
+            (
+               renderer,
+               PresentationType.PREVIEW,
+               null,
+               "xml",
+               COMMON.getShortName(),
+               masterTemplateArtifact.getSafeName()
+            )
+         .map
+            (
+               ( iFile ) ->
+               {
+                  var inputStream =
+                     this.applyTemplate
+                        (
+                          artifacts,
+                          masterTemplate,
+                          masterTemplateOptions,
+                          theMasterTemplateStyles,
+                          iFile.getParent(),
+                          outlineNumber,
+                          null,
+                          PresentationType.PREVIEW,
+                          null
+                        );
 
-      if (!((boolean) renderer.getRendererOptionValue(RendererOption.NO_DISPLAY)) && !isDiff) {
-         RenderingUtil.ensureFilenameLimit(file);
-         wordApp.execute(file.getLocation().toFile().getAbsolutePath());
-      }
+                  AIFile.writeToFile( iFile, inputStream );
+
+                  return iFile.getLocation();
+               }
+            )
+         .flatMap( RenderingUtil::getOsString )
+         .ifPresentOrElse
+            (
+               ( renderingFileAbsoultePath ) ->
+               {
+                  if( !( (boolean) renderer.getRendererOptionValue( RendererOption.NO_DISPLAY ) ) && !isDiff ) {
+
+                     RenderingUtil.ensureFilenameLimit( renderingFileAbsoultePath );
+
+                     wordApp.execute( renderingFileAbsoultePath );
+                  }
+               },
+               () -> new OseeCoreException
+                            (
+                               new Message()
+                                      .title( "WordTemplateProcessor::publishWithNestedTemplates, failed to write content file.")
+                                      .indentInc()
+                                      .segment( "Template", masterTemplateArtifact.getSafeName() )
+                                      .toString()
+                            )
+            );
+         ;
+      //@formatter:on
+
    }
 
    /**
@@ -312,11 +364,20 @@ public class WordTemplateProcessor {
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts. Only used by Publish SRS
     *
-    * @param artifacts = null if the template defines the artifacts to be used in the publishing
-    * @param folder = null when not using an extension template
+    * @param artifacts null if the template defines the artifacts to be used in the publishing
+    * @param templateContent the publishing template Word Ml
+    * @param templateOptions the publishing template JSON rendering options
+    * @param templateStyles when non-<code>null</code> the publishing template styles will be replaced
+    * @param folder null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
+    * @param presentationType
+    * @param outputStream when non-<code>null</code> generated WordMl is appended to this {@link OutputStream}. When
+    * null the Word ML is written to a buffer.
+    * @return when <code>outputStream</code> is non-<code>null</code>, <code>null</code>; otherwise, an
+    * {@link InputStream} that reads from the buffer the WordML was written to.
     */
-   public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) {
+
+   public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType, OutputStream outputStream) {
 
       String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
       overrideClassification = "invalid";
@@ -346,12 +407,33 @@ public class WordTemplateProcessor {
       ArtifactId view = (ArtifactId) renderer.getRendererOptionValue(RendererOption.VIEW);
       artifactsToExclude = getNonApplicableArtifacts(artifacts, view == null ? ArtifactId.SENTINEL : view);
 
-      //WordMLProducer wordMl = null;
-      CharBackedInputStream charBak = null;
+      WordMLProducer wordMlUnfinal = null;
+      InputStream inputStream = null;
+      BufferedWriter bufferedWriter = null;
+
+      if (Objects.nonNull(outputStream)) {
+         /*
+          * An output stream was provided, write data to it.
+          */
+         var outputStreamWriter = new OutputStreamWriter(outputStream);
+         bufferedWriter = new BufferedWriter(outputStreamWriter);
+         wordMlUnfinal = new WordMLProducer(bufferedWriter);
+      } else {
+         /*
+          * An output stream was not provided, write data to a buffer.
+          */
+         try {
+            var charBak = new CharBackedInputStream();
+            wordMlUnfinal = new WordMLProducer(charBak);
+            inputStream = charBak;
+         } catch (CharacterCodingException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+      }
+
+      var wordMl = wordMlUnfinal;
 
       try {
-         charBak = new CharBackedInputStream();
-         var wordMl = new WordMLProducer(charBak);
 
          //TODO: change templateContent from Sting to CharSequence
          templateContent = WordCoreUtil.cleanupPageNumberTypeStart1(templateContent).toString();
@@ -421,7 +503,13 @@ public class WordTemplateProcessor {
 
                         wordMl.addWordMl( segment );
 
-                        WordTemplateProcessor.this.parseNestedTemplateOptions(templateOptions, folder, wordMl, presentationType);
+                        WordTemplateProcessor.this.parseNestedTemplateOptions
+                           (
+                              templateOptions,
+                              folder,
+                              wordMl,
+                              presentationType
+                           );
 
                      }
                   };
@@ -449,13 +537,21 @@ public class WordTemplateProcessor {
          displayNonTemplateArtifacts(nonTemplateArtifacts,
             "Only artifacts of type Word Template Content are supported in this case.");
 
-      } catch (CharacterCodingException ex) {
-         OseeCoreException.wrapAndThrow(ex);
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
+      } finally {
+         if (Objects.nonNull(outputStream) && Objects.nonNull(bufferedWriter)) {
+
+            try {
+               bufferedWriter.close();
+               outputStream.close();
+            } catch (IOException ex) {
+               throw new RuntimeException(ex);
+            }
+         }
       }
 
-      return charBak;
+      return inputStream;
    }
 
    private void parseNestedTemplateOptions(String templateOptions, IContainer folder, WordMLProducer wordMl, PresentationType presentationType) {
@@ -503,9 +599,26 @@ public class WordTemplateProcessor {
                      outlineType, recurseChildren);
                }
             } else {
-               IFile file = folder.getFile(new Path(subDocFileName));
-               AIFile.writeToFile(file, applyTemplate(artifacts, slaveTemplate, slaveTemplateOptions,
-                  slaveTemplateStyles, folder, sectionNumber, outlineType, presentationType));
+               //@formatter:off
+               var inputStream =
+                  applyTemplate
+                     (
+                       artifacts,
+                       slaveTemplate,
+                       slaveTemplateOptions,
+                       slaveTemplateStyles,
+                       folder,
+                       sectionNumber,
+                       outlineType,
+                       presentationType,
+                       null
+                     );
+
+
+               IFile file = folder.getFile( new Path( subDocFileName ) );
+
+               AIFile.writeToFile( file, inputStream );
+               //@formatter:on
             }
             wordMl.createHyperLinkDoc(subDocFileName);
          }

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,6 +55,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 /**
@@ -83,8 +84,19 @@ public final class ViewWordChangeAndDiffTest {
          ;
    //@formatter:on
 
+   /**
+    * Wrap the test methods with a check to prevent execution on a production database.
+    */
+
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
+
+   /**
+    * A rule to get the method name of the currently running test.
+    */
+
+   @Rule
+   public TestName testName = new TestName();
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
@@ -95,7 +107,7 @@ public final class ViewWordChangeAndDiffTest {
 
    @Before
    public void setUp() throws Exception {
-      renderFolder = RenderingUtil.ensureRenderFolderExists(PresentationType.DIFF);
+      renderFolder = RendererUtil.ensureRenderFolderExists(PresentationType.DIFF).orElseThrow();
       branch = SAW_Bld_2;
       rendererOptions = new HashMap<>();
       rendererOptions.put(RendererOption.NO_DISPLAY, true);
@@ -121,9 +133,19 @@ public final class ViewWordChangeAndDiffTest {
          }
       };
 
-      RendererManager.diff(collector, new ArtifactDelta(txDelta, baseArtifact, newerArtifact), "", rendererOptions);
+      var testFolder = this.testName.getMethodName();
 
-      sleep(2000);
+      //@formatter:off
+      RendererManager.diff
+         (
+            collector,
+            new ArtifactDelta( txDelta, baseArtifact, newerArtifact ),
+            testFolder,
+            rendererOptions
+         );
+      //@formatter:on
+
+      sleep(8000);
 
       Assert.assertEquals(1, testDatas.size());
       CompareData testData = testDatas.iterator().next();
@@ -151,7 +173,18 @@ public final class ViewWordChangeAndDiffTest {
       checkPermissions(asArtifacts(changes));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diff(artifactDeltas, "testDiff", rendererOptions);
+
+      var testFolder = this.testName.getMethodName();
+
+      //@formatter:off
+      RendererManager.diff
+         (
+            artifactDeltas,
+            testFolder,
+            rendererOptions
+         );
+      //@formatter:on
+
       verifyRenderFolderExists();
    }
 
@@ -163,7 +196,17 @@ public final class ViewWordChangeAndDiffTest {
       checkPermissions(Collections.singletonList(artifact));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diff(artifactDeltas, "", rendererOptions);
+
+      var testFolder = this.testName.getMethodName();
+
+      //@formatter:off
+      RendererManager.diff
+         (
+            artifactDeltas,
+            testFolder,
+            rendererOptions
+         );
+      //@formatter:on
 
       verifyRenderFolderExists();
 

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.model.TransactionDeltaSupplier;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class Change implements IAdaptable, Comparable<Change>, HasBranchId {
+public abstract class Change implements IAdaptable, Comparable<Change>, HasBranchId, TransactionDeltaSupplier {
    private final GammaId sourceGamma;
    private final ArtifactId artId;
    private final TransactionDelta txDelta;
@@ -142,6 +143,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       return artId;
    }
 
+   @Override
    public TransactionDelta getTxDelta() {
       return txDelta;
    }

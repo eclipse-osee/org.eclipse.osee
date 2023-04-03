@@ -34,7 +34,7 @@ public final class OpenUsingRenderer extends AbstractOperation {
    private String resutPath;
 
    public OpenUsingRenderer(Collection<Artifact> artifacts, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) {
-      super(String.format("Open for %s using renderer", presentationType), Activator.PLUGIN_ID);
+      super(String.format("Open for %s using renderer", presentationType.name()), Activator.PLUGIN_ID);
       this.artifacts = artifacts;
       this.rendererOptions = rendererOptions;
       this.presentationType = presentationType;

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -179,16 +178,6 @@ public class MSWordTemplateRendererUtils {
       //@formatter:on
    }
 
-   /**
-    * Predicate to determine if all the {@link Artifact} objects on the {@link List} reside on the same OSEE branch.
-    *
-    * @param artifacts the {@link List} of {@link Artifact} objects to check.
-    * @return <code>true</code> when all the artifacts are on the same branch; otherwise, <code>false</code>.
-    */
-
-   public static boolean artifactsOnSameBranch(List<Artifact> artifacts) {
-      return artifacts.stream().map(Artifact::getBranchToken).distinct().count() == 1;
-   }
 }
 
 /* EOF */

@@ -20,8 +20,10 @@ import java.util.Optional;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -125,85 +127,6 @@ public class PublishingUtils {
    }
 
    /**
-    * Finds an artifact possibly deleted on a branch by artifact identifier and transaction identifier with delete
-    * attributes.
-    *
-    * @param branchId the branch identifier.
-    * @param artifactId the identifier of the artifact to get.
-    * @param transactionId the transaction identifier to get the artifact from.
-    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
-    * artifact; otherwise, and empty {@link Optional}.
-    */
-
-   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes(BranchId branchId, ArtifactId artifactId, TransactionId transactionId) {
-      this.startOperation();
-      try {
-         //@formatter:off
-         return
-            Optional.of
-               (
-                 this.queryFactory
-                    .fromBranch( branchId )
-                    .fromTransaction( transactionId )
-                    .andId( artifactId )
-                    .includeDeletedArtifacts()
-                    .includeDeletedAttributes()
-                    .getArtifact()
-               );
-         //@formatter:on
-      } catch (MultipleItemsExist e) {
-         this.lastCause.set(Cause.MORE_THAN_ONE);
-         this.lastError.set(e);
-      } catch (ItemDoesNotExist e) {
-         this.lastCause.set(Cause.NOT_FOUND);
-         this.lastError.set(e);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-      }
-
-      return Optional.empty();
-   }
-
-   /**
-    * Finds an artifact possibly deleted on a branch by artifact identifier with deleted attributes.
-    *
-    * @param branchId the branch identifier.
-    * @param artifactId the identifier of the artifact to get.
-    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
-    * artifact; otherwise, and empty {@link Optional}.
-    */
-
-   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes(BranchId branchId, ArtifactId artifactId) {
-      this.startOperation();
-      try {
-        //@formatter:off
-        return
-           Optional.of
-              (
-                this.queryFactory
-                   .fromBranch( branchId )
-                   .andId( artifactId )
-                   .includeDeletedArtifacts()
-                   .includeDeletedAttributes()
-                   .getArtifact()
-              );
-        //@formatter:on
-      } catch (MultipleItemsExist e) {
-         this.lastCause.set(Cause.MORE_THAN_ONE);
-         this.lastError.set(e);
-      } catch (ItemDoesNotExist e) {
-         this.lastCause.set(Cause.NOT_FOUND);
-         this.lastError.set(e);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-      }
-
-      return Optional.empty();
-   }
-
-   /**
     * Finds an artifact by its artifact identifier.
     *
     * @param branchId the branch identifier.
@@ -223,6 +146,33 @@ public class PublishingUtils {
                  this.queryFactory
                     .fromBranch( branchId, viewId )
                     .andId( artifactId )
+                    .getArtifact()
+               );
+         //@formatter:on
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+   }
+
+   public Optional<ArtifactReadable> getArtifactReadableByName(BranchId branchId, ArtifactId viewId, String artifactName) {
+      this.startOperation();
+      try {
+         //@formatter:off
+         return
+            Optional.of
+               (
+                 this.queryFactory
+                    .fromBranch(branchId, viewId)
+                    .andNameEquals(artifactName)
                     .getArtifact()
                );
          //@formatter:on
@@ -306,6 +256,122 @@ public class PublishingUtils {
    }
 
    /**
+    * Finds an artifact possibly deleted on a branch by artifact identifier and transaction identifier with delete
+    * attributes.
+    *
+    * @param branchId the branch identifier.
+    * @param artifactId the identifier of the artifact to get.
+    * @param transactionId the transaction identifier to get the artifact from.
+    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
+    * artifact; otherwise, and empty {@link Optional}.
+    */
+
+   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes(BranchId branchId, ArtifactId artifactId, TransactionId transactionId) {
+      this.startOperation();
+      try {
+         //@formatter:off
+         return
+            Optional.of
+               (
+                 this.queryFactory
+                    .fromBranch( branchId )
+                    .fromTransaction( transactionId )
+                    .andId( artifactId )
+                    .includeDeletedArtifacts()
+                    .includeDeletedAttributes()
+                    .getArtifact()
+               );
+         //@formatter:on
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+   }
+
+   /**
+    * Finds an artifact possibly deleted on a branch by artifact identifier with deleted attributes.
+    *
+    * @param branchId the branch identifier.
+    * @param artifactId the identifier of the artifact to get.
+    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
+    * artifact; otherwise, and empty {@link Optional}.
+    */
+
+   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes(BranchId branchId, ArtifactId artifactId) {
+      this.startOperation();
+      try {
+        //@formatter:off
+        return
+           Optional.of
+              (
+                this.queryFactory
+                   .fromBranch( branchId )
+                   .andId( artifactId )
+                   .includeDeletedArtifacts()
+                   .includeDeletedAttributes()
+                   .getArtifact()
+              );
+        //@formatter:on
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+   }
+
+   /**
+    * Finds an artifact token by its artifact identifier.
+    *
+    * @param branchId the branch identifier.
+    * @param viewId the branch view identifier.
+    * @param artifactId the identifier of the artifact to get.
+    * @return when the artifact is found, an {@link Optional} containing the {@link ArtifactReadable} for the specified
+    * artifact; otherwise, an empty {@link Optional}.
+    */
+
+   public Optional<ArtifactToken> getArtifactTokenByIdentifier(BranchId branchId, ArtifactId viewId, ArtifactId artifactId) {
+      this.startOperation();
+      try {
+         //@formatter:off
+         return
+            Optional.of
+               (
+                 this.queryFactory
+                    .fromBranch( branchId, viewId )
+                    .andId( artifactId )
+                    .asArtifactToken()
+               );
+         //@formatter:on
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+   }
+
+   /**
     * Gets an {@link ArtifactTypeToken} by the artifact type name.
     *
     * @param artifactTypeName the name of the artifact type to get.
@@ -315,8 +381,8 @@ public class PublishingUtils {
 
    public Optional<ArtifactTypeToken> getArtifactTypeTokenByName(String artifactTypeName) {
       this.startOperation();
+      //@formatter:off
       try {
-         //@formatter:off
          return
             Optional.of
                (
@@ -327,6 +393,39 @@ public class PublishingUtils {
          this.lastError.set(e);
       }
       catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+      }
+
+      return Optional.empty();
+      //@formatter:on
+   }
+
+   /**
+    * @param branchId
+    * @return
+    */
+
+   public Optional<Branch> getBranchByIdentifier(BranchId branchId) {
+      this.startOperation();
+      //@formatter:off
+      try {
+         return
+            Optional.of
+               (
+                 this.queryFactory
+                    .branchQuery()
+                    .andId(branchId)
+                    .getResults()
+                    .getExactlyOne()
+               );
+      } catch (MultipleItemsExist e) {
+         this.lastCause.set(Cause.MORE_THAN_ONE);
+         this.lastError.set(e);
+      } catch (ItemDoesNotExist e) {
+         this.lastCause.set(Cause.NOT_FOUND);
+         this.lastError.set(e);
+      } catch (Exception e) {
          this.lastCause.set(Cause.ERROR);
          this.lastError.set(e);
       }

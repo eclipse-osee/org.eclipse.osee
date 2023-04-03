@@ -16,13 +16,12 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.xml.stream.XMLOutputFactory;
@@ -61,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.program.Program;
 import org.w3c.dom.Element;
 
 /**
@@ -70,7 +70,16 @@ import org.w3c.dom.Element;
  * @author Loren K. Ashley
  */
 
-public class MSWordTemplateClientRenderer extends WordRenderer {
+public class MSWordTemplateClientRenderer extends FileSystemRenderer {
+
+   /**
+    * When set to <code>true</code> the renderer will write to the output stream provided to it via the renderer options
+    * from the {@link FileSystemRender} base class. When set to <code>false</code> the renderer will render to a local
+    * buffer, when complete create an input stream that reads from that buffer, and provide that input stream back to
+    * the {@link FileSystemRender} base class.
+    */
+
+   private static final boolean CAN_STREAM = false;
 
    /**
     * The context menu command title for the Edit command.
@@ -103,6 +112,13 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
    private static final String COMMAND_TITLE_PREVIEW_WITH_CHILDREN_NO_ATTRIBUTES =
       "MS Word Preview With Children No Attributes (Client)";
 
+   /**
+    * The likely file system extension for files that hold the same type of data as is stored in main content
+    * {@link Attribute} of the most common {@link Artifact} type processed by this renderer.
+    */
+
+   private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "xml";
+
    private static final String EMBEDDED_OBJECT_NO = "w:embeddedObjPresent=\"no\"";
 
    private static final String EMBEDDED_OBJECT_YES = "w:embeddedObjPresent=\"yes\"";
@@ -129,6 +145,12 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
    private static final String PROGRAM_EXTENSION_WORD = "doc";
 
    /**
+    * A short description of the type of documents processed by the renderer.
+    */
+
+   private static final String RENDERER_DOCUMENT_TYPE_DESCRIPTION = "MS Word";
+
+   /**
     * The renderer identifier used for publishing template selection.
     */
 
@@ -144,6 +166,12 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
 
    private static final String STYLES_END = "</w:styles>";
 
+   /**
+    * The {@link Program} used to invoke MS Word.
+    */
+
+   private static Program wordApplication;
+
    /*
     * Build menu commands
     */
@@ -152,6 +180,9 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
 
       MSWordTemplateClientRenderer.imageDescriptor =
          ImageManager.getProgramImageDescriptor(MSWordTemplateClientRenderer.PROGRAM_EXTENSION_WORD);
+
+      MSWordTemplateClientRenderer.wordApplication =
+         Program.findProgram(MSWordTemplateClientRenderer.PROGRAM_EXTENSION_WORD);
 
       //@formatter:off
       MSWordTemplateClientRenderer.menuCommandDefinitions =
@@ -247,25 +278,8 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
       super(options);
       this.comparator = new WordTemplateCompare(this);
       this.templateProcessor = new WordTemplateProcessor(this);
-   }
-
-   /**
-    * Adds the context menu command entries for this renderer to the specified list of {@link MenuCmdDef} objects for
-    * the specified artifact.
-    *
-    * @param commands the {@link List} of {@link MenuCmdDef} objects to be appended to. This parameter maybe an empty
-    * list but should not be <code>null</code>.
-    * @param the {@link Artifact} context menu commands are to be offered for. This parameter is not used.
-    * @throws NullPointerException when the parameter <code>commands</code> is <code>null</code>.
-    */
-
-   @Override
-   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-
-      Objects.requireNonNull(commands,
-         "MSWordTemplateClientRenderer::addMenuCommandDefinitions, the parameter \"commands\" is null.");
-
-      MSWordTemplateClientRenderer.menuCommandDefinitions.forEach(commands::add);
+      this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
+      this.updateOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
    }
 
    /**
@@ -289,9 +303,36 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
       return MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Program getAssociatedProgram(Artifact artifact) {
+      return MSWordTemplateClientRenderer.wordApplication;
+   }
+
    @Override
    public IComparator getComparator() {
-      return comparator;
+      return this.comparator;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDefaultAssociatedExtension() {
+      return MSWordTemplateClientRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDocumentTypeDescription() {
+      return MSWordTemplateClientRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
    }
 
    /**
@@ -314,6 +355,7 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
+
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<>();
       Artifact template;
       String templateContent = "";
@@ -386,8 +428,24 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
 
       templateContent = WordCoreUtilClient.removeGUIDFromTemplate(templateContent);
 
-      return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, templateStyles, null, null,
-         (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE), presentationType);
+      //@formatter:off
+      var outputStream = ( (Boolean) this.getRendererOptionValue(RendererOption.CLIENT_RENDERER_CAN_STREAM) )
+                            ? (OutputStream) this.getRendererOptionValue(RendererOption.OUTPUT_STREAM)
+                            : (OutputStream) null;
+
+      return
+         this.templateProcessor.applyTemplate
+            (
+               artifacts,                                                      /* Artifacts          */
+               templateContent,                                                /* Template Content   */
+               templateOptions,                                                /* Template Options   */
+               templateStyles,                                                 /* Template Styles    */
+               null,                                                           /* Folder, IContainer */
+               null,                                                           /* Outline Number     */
+               (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE),   /* Outline Type       */
+               presentationType,                                               /* Presentation Type  */
+               outputStream                                                    /* Output Stream      */
+            );
    }
 
    protected Artifact getTemplate(Artifact artifact, PresentationType presentationType) {
@@ -443,8 +501,9 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
       return new MSWordTemplateClientRenderer(rendererOptions);
    }
 
+
    public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) {
-      templateProcessor.publishWithNestedTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
+      this.templateProcessor.publishWithNestedTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
    }
 
    @Override
@@ -512,6 +571,17 @@ public class MSWordTemplateClientRenderer extends WordRenderer {
          super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, format, label,
             footer);
       }
+   }
+
+   /**
+    * This {@link IRenderer} implementation uses the default {@link IComparator} implementation for {@link Artifact}.
+    *
+    * @return <code>true</code>.
+    */
+
+   @Override
+   public boolean supportsCompare() {
+      return true;
    }
 
 }

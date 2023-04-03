@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocument
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
+import org.eclipse.osee.client.test.framework.NoPopUpsRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -39,7 +40,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
@@ -92,6 +93,9 @@ public class PreviewAndMultiPreviewTest {
     * <dt>In Publishing Group Test Rule</dt>
     * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
     * {@Link UserToken} cache has been flushed.</dd>
+    * <dt>No Pop Ups Rule</dt>
+    * <dd>This rule prevents the code under test from displaying pop up dialog boxes that must acknowledged before the
+    * test can resume.</dd>
     * </dl>
     */
 
@@ -102,6 +106,7 @@ public class PreviewAndMultiPreviewTest {
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )
          .around( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NoPopUpsRule() )
          ;
    //@formatter:on
 
@@ -586,7 +591,7 @@ public class PreviewAndMultiPreviewTest {
             renderer.updateOption(RendererOption.TEMPLATE_OPTION, templateOption);
          }
 
-         var iFile = renderer.renderToFile(rootArtifacts, PresentationType.PREVIEW);
+         var iFile = renderer.renderToFile(rootArtifacts, PresentationType.PREVIEW, testName.getMethodName());
 
          var filePath = iFile.getLocation();
 
@@ -793,7 +798,7 @@ public class PreviewAndMultiPreviewTest {
          Assert.assertTrue("Exception is expected.", false);
       } catch (Exception exception) {
 
-         Asserts.assertException("Exception type or message is not as expected.", OseeArgumentException.class,
+         Asserts.assertException("Exception type or message is not as expected.", OseeCoreException.class,
             "Unable to find a valid template match.", exception);
          //@formatter:on
       }

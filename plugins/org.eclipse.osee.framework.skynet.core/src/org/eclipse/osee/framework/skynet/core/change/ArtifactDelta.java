@@ -15,13 +15,14 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.model.TransactionDeltaSupplier;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactDelta {
+public class ArtifactDelta implements TransactionDeltaSupplier {
 
    private final Artifact startArt;
    private final Artifact endArt;
@@ -52,6 +53,7 @@ public class ArtifactDelta {
       this(null, startArt, endArt);
    }
 
+   @Override
    public TransactionDelta getTxDelta() {
       return txDelta;
    }

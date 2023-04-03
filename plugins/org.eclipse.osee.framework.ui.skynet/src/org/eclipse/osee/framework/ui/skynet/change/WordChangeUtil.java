@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,11 +75,25 @@ public final class WordChangeUtil {
                artifactDeltas = updateDeltas(artifactDeltas);
             }
             if (ArtifactGuis.checkDeletedOnParent(artifacts)) {
-               String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
-               MSWordTemplateClientRenderer preferredRenderer = new MSWordTemplateClientRenderer();
-               preferredRenderer.updateOption(RendererOption.VIEW, Handlers.getViewId());
-               RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer,
-                  presentationType);
+               //@formatter:off
+               var pathPrefix = RenderingUtil.getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName(changes).orElse( Strings.emptyString() );
+
+               var msWordTemplateClientRenderer = new MSWordTemplateClientRenderer();
+
+               msWordTemplateClientRenderer.updateOption
+                  (
+                     RendererOption.VIEW,
+                     Handlers.getViewId()
+                  );
+
+               RendererManager.diffInJobWithPreferedRenderer
+                  (
+                     artifactDeltas,
+                     pathPrefix,
+                     msWordTemplateClientRenderer,
+                     presentationType
+                  );
+               //@formatter:off
             }
          } else {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No changes have been found for this request");
