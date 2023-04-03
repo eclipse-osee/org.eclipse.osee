@@ -3,10 +3,20 @@ java_library(
         name = "framework_server_ide",
         resources = ["xml_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//:framework_core_server","//:framework_core_model",
-                "//:framework_resource_management", "//:jdbc","//:jaxrs","//:orcs","//:orcs_core",
-	        "//:console_admin","//:activity_api","//:framework_server_ide_api"],
-
+        deps = ["java_deps",
+		"//framework_core_packages",
+		"//:framework_core_server",
+		"//:framework_core_model",
+                "//:framework_resource_management",
+		"//:jdbc",
+		"//:jaxrs",
+		"//:orcs",
+		"//:orcs_core",
+	        "//:console_admin",
+		"//:activity_api",
+		"//:framework_server_ide_api"
+	],
+	visibility = ["//visibility:public"]
 )
 
 filegroup(

@@ -1,10 +1,12 @@
 java_library(
         name = "framework_help_ui",
 	resources = ["common_deps"],
-        srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps", "mylyn"],
-                visibility = ["//visibility:public"]
+        srcs = glob(["**/*.java"]),
+	deps = ["java_deps",
+		"mylyn",
+		"//framework_core_packages"
+	],
+	visibility = ["//visibility:public"]
               )
                         
 filegroup(
@@ -18,8 +20,6 @@ filegroup(
 	       "**/*.css",
 	       "**/*.jpg"
 	 ])
-   ,
-    visibility = ["//visibility:public"],
 )
 
 java_library(
@@ -39,10 +39,7 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-                "@logger//:logger",
-		"@ext_jars//:eclipse_equinox_common", 
+		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:eclipse_osgi_services"
                 ],
 )
@@ -60,5 +57,3 @@ java_import(
 	
        ]
 )
-
-

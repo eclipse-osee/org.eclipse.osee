@@ -1,10 +1,41 @@
 java_library(
     name = "ote_ui_define",
 	resources = ["xml_files", "exsd_files", "images"],
-	srcs =
-                glob(["**/*.java"]),
-                deps = ["java_deps"],
-                visibility = ["//visibility:public"]
+	srcs = glob(["**/*.java"]),
+	deps = ["java_deps",
+		"//framework_core_packages",
+		"//:framework_core_client",
+	 	"//:framework_plugin_core",
+	 	"//:framework_ui_swt",
+	 	"//:activity_api",
+	 	"//:framework_messaging_event_res",
+	 	"//:framework_server_ide_api",
+	 	"//:framework_core_server",
+	 	"//:framework_messaging",
+	 	"//:cache_admin",
+	 	"//:framework_core_model",
+	 	"//:jaxrs",
+	 	"//:orcs",
+	 	"//:orcs_rest_model",
+	 	"//:jdbc",
+	 	"//:framework_server_ide",
+	 	"//:console_admin",
+	 	"//:orcs_core",
+	 	"//:orcs_rest",
+	 	"//:activity",
+	 	"//:define_api",
+	 	"//:framework_resource_management",
+	 	"//:account_rest_client",
+	 	"//:account_rest_model",
+	 	"//:framework_help_ui",
+	 	"//:framework_skynet_core",
+	 	"//:framework_ui_plugin",
+	 	"//:ats_api",
+	 	"//:framework_ui_ws",
+	 	"//:ote_define",
+	 	"//:framework_ui_skynet"
+	],
+	visibility = ["//visibility:public"]
               )
 
 filegroup(
@@ -13,8 +44,6 @@ filegroup(
           [
 	    "plugin.xml"
            ]
-  ,
-    visibility = ["//visibility:public"]
 )
 
 filegroup(
@@ -24,14 +53,12 @@ filegroup(
             "OSEE-INF/extensionPts/ITestRunReport.exsd",
 	    "OSEE-INF/templates/HtmlActiveTableTemplate"
            ]
-  ,
-    visibility = ["//visibility:public"]
 )
 
 filegroup(
     name = "images",
     srcs = glob(["OSEE-INF/images/*"]),
-    visibility = ["//visibility:public"]
+
 )
 
 java_library(
@@ -59,54 +86,14 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-                "@framework_jdk_core//:framework_jdk_core",
-		"@framework_core//:framework_core",
-		"@framework_core_client//:framework_core_client",
-		"@framework_plugin_core//:framework_plugin_core",
-		"@framework_ui_swt//:framework_ui_swt",
-		"@framework_logging//:framework_logging",
-		"@logger//:logger",
-		"@activity_api//:activity_api",
-		"@framework_messaging_event_res//:framework_messaging_event_res",
-		"@framework_server_ide_api//:framework_server_ide_api",
-		"@framework_core_server//:framework_core_server",
-		"@framework_messaging//:framework_messaging",
-		"@cache_admin//:cache_admin",
-		"@framework_core_model//:framework_core_model",
-		"@jaxrs//:jaxrs",
-		"@orcs//:orcs",
-		"@orcs_rest_model//:orcs_rest_model",
-		"@jdbc//:jdbc",
-		"@framework_server_ide//:framework_server_ide",
-		"@console_admin//:console_admin",
-		"@orcs_core//:orcs_core",
-		"@orcs_rest//:orcs_rest",
-		"@activity//:activity",
-		"@define_api//:define_api",
-		"@framework_resource_management//:framework_resource_management",
-		"@account_rest_client//:account_rest_client",
-		"@account_rest_model//:account_rest_model",
-		"@framework_help_ui//:framework_help_ui",
-		"@framework_skynet_core//:framework_skynet_core",
-		"@framework_ui_plugin//:framework_ui_plugin",
-		"@ats_api//:ats_api",
-		"@framework_ui_ws//:framework_ui_ws",
-		"@ote_define//:ote_define",
-		"@framework_ui_skynet//:framework_ui_skynet",
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
 		"@ext_jars//:eclipse_core",
 		"@ext_jars//:eclipse_equinox_common",
-		"@ext_jars//:javax",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_jdt",
 		"@ext_jars//:nebula"
                 ],
 )
-package(default_visibility = ["//visibility:public"])
-
-
-
-
