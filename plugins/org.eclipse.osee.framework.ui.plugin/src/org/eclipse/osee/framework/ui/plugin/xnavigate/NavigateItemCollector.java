@@ -73,6 +73,10 @@ public class NavigateItemCollector {
       // All Category and Sub Category items should be removed
       for (XNavigateItem item : items) {
          for (XNavItemCat itemCat : item.getCategories()) {
+            if (itemCat == null) {
+               rd.errorf("XNavItemCat can not be null\n", itemCat);
+               continue;
+            }
 
             // OSEE_ADMIN is not a category group
             if (itemCat.equals(XNavItemCat.OSEE_ADMIN)) {
@@ -119,7 +123,7 @@ public class NavigateItemCollector {
             if (categories.contains(topCat)) {
                rd.logf("Adding Category [%s]\n", item.getName());
                // prevent duplicates
-               if(!catStrToItem.containsKey(item.getName())) {
+               if (!catStrToItem.containsKey(item.getName())) {
                   catStrToItem.put(item.getName(), item);
                   compNavItems.add(item);
                }
@@ -181,5 +185,9 @@ public class NavigateItemCollector {
          sb.append(names[x]);
       }
       return sb.toString();
+   }
+
+   public List<XNavigateItem> getItems() {
+      return items;
    }
 }

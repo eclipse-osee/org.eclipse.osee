@@ -29,6 +29,7 @@ public class XNavigateItemProviders {
    private static Set<XNavigateItemProvider> items;
    public static boolean debug = false;
 
+   @SuppressWarnings("deprecation")
    public static synchronized Set<XNavigateItemProvider> getProviders() {
       if (items != null) {
          return items;
