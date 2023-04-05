@@ -91,7 +91,6 @@ public class ContinuousIntegrationResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response createDispoAnnotation(CiItemData data, @QueryParam("userName") String userName) {
       try (Response response = Response.status(Response.Status.OK).build();) {
-
          if (data != null) {
             BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
             String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
@@ -158,27 +157,19 @@ public class ContinuousIntegrationResource {
          DispoAnnotationData temp = new DispoAnnotationData();
          String createdAnnotationId = dispoApi.createDispoAnnotation(branchId, itemId, temp, userName, true);
          if (!createdAnnotationId.isEmpty()) {
-            try (Response createAnnId = Response.status(Response.Status.OK).build()) {
-               response = createAnnId;
-            }
+            response = Response.status(Response.Status.OK).build();
             initTempAnnotationData(annotation, temp);
             boolean wasEdited =
                dispoApi.editDispoAnnotation(branchId, itemId, createdAnnotationId, temp, userName, true);
             if (wasEdited) {
-               try (Response edited = Response.status(Response.Status.OK).build()) {
-                  response = edited;
-               }
+               response = Response.status(Response.Status.OK).build();
             } else {
-               try (Response notModified = Response.status(Response.Status.NOT_MODIFIED).build()) {
-                  response = notModified;
-                  break;
-               }
-            }
-         } else {
-            try (Response notAcceptable = Response.status(Response.Status.NOT_ACCEPTABLE).build()) {
-               response = notAcceptable;
+               response = Response.status(Response.Status.NOT_MODIFIED).build();
                break;
             }
+         } else {
+            response = Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            break;
          }
       }
       return response;
