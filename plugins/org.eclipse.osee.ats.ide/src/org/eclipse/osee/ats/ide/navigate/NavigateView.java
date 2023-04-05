@@ -91,7 +91,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    private Composite parent;
    private LoadingComposite loadingComposite;
    private NavigateItemCollector itemCollector;
-   private XResultData rd;
+   private static XResultData rd;
 
    @Override
    public void createPartControl(Composite parent) {
@@ -145,7 +145,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                         xNavComp = new AtsNavigateComposite(itemCollector, parent, SWT.NONE, savedFilterStr);
 
                         if (rd.isErrors()) {
-                           XResultDataUI.report(rd, "OSEE Navigator", Manipulations.ERROR_WARNING_HEADER,
+                           XResultDataUI.report(rd, "OSEE Navigator Results/Errors", Manipulations.ERROR_WARNING_HEADER,
                               Manipulations.CONVERT_NEWLINES, Manipulations.ERROR_RED);
                         }
 
@@ -395,6 +395,10 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    public AtsNavigateComposite getxNavComp() {
       return xNavComp;
+   }
+
+   public static XResultData getRd() {
+      return rd;
    }
 
 }

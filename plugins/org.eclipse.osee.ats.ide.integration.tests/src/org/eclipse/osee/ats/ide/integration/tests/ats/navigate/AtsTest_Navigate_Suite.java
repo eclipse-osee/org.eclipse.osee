@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SubscribeUtilityTest.class})
+@Suite.SuiteClasses({SubscribeUtilityTest.class, NavigateViewLoadingTest.class})
 public class AtsTest_Navigate_Suite {
    // do nothing
 }
