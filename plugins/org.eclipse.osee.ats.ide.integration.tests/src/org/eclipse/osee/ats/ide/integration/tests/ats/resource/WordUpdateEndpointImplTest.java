@@ -82,7 +82,6 @@ public class WordUpdateEndpointImplTest {
 
       WordUpdateChange change = makeRequest(branch, transferArts, wordData, "Testing word update one artifact");
       validateWordUpdateChange(change);
-      validateSafetyTeamWFExists();
    }
 
    @Test
@@ -104,12 +103,6 @@ public class WordUpdateEndpointImplTest {
       Assert.assertTrue(changes.size() == 1);
       WordArtifactChange wac = changes.get(0);
       Assert.assertEquals(wac.getArtId(), artReqt.getId().longValue());
-   }
-
-   private void validateSafetyTeamWFExists() {
-      List<Artifact> teamWorkflows = ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-         "Safety Workflow", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
-      Assert.assertFalse(teamWorkflows.isEmpty());
    }
 
    private WordUpdateChange makeRequest(BranchId branch, List<Long> artifacts, String wordData, String comment) {

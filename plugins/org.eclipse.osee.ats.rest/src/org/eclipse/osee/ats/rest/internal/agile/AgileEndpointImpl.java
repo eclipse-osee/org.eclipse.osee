@@ -114,8 +114,6 @@ import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
@@ -974,7 +972,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public List<AgileItem> getBacklogItems(long teamId) {
-      ElapsedTime time = new ElapsedTime("getBacklogItems");
       List<AgileItem> items = new LinkedList<>();
       IAgileTeam team = atsApi.getAgileService().getAgileTeam(teamId);
       IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(team);
@@ -994,7 +991,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             items.add(item);
          }
       }
-      time.end(Units.SEC);
       return items;
    }
 
