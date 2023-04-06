@@ -20,9 +20,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
  */
 public abstract class AbstractOmeData {
 
+   protected Boolean editable = null;
+
    public String mdContent;
 
    public String htmlContent;
+
+   public abstract boolean isEditable();
 
    public abstract String getEditorName();
 
@@ -38,7 +42,7 @@ public abstract class AbstractOmeData {
 
    public abstract void load();
 
-   public abstract XText createXText();
+   public abstract XText createXText(boolean enabled);
 
    public abstract void uponCreate(XText editText);
 

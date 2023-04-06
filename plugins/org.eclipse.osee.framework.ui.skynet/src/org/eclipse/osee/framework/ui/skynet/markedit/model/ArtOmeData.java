@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.markedit.OseeMarkdownEditorInput;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -114,8 +115,8 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    }
 
    @Override
-   public XText createXText() {
-      editXText = new XTextDam("Enter Markdown");
+   public XText createXText(boolean enabled) {
+      editXText = new XTextDam(enabled ? "Enter Markdown" : "Markdown (Read-Only)");
       return editXText;
    }
 
@@ -156,6 +157,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
          }
       });
       OseeEventManager.addListener(fOmeData);
+   }
+
+   @Override
+   public boolean isEditable() {
+      if (editable == null) {
+         editable = !ServiceUtil.accessControlService().isReadOnly(getArtifact());
+      }
+      return editable;
    }
 
 }

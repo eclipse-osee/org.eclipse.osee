@@ -85,10 +85,10 @@ public class ArtEdDetailsTab extends FormPage {
       opsLabel.setText("Operations");
       opsLabel.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
 
-      XButtonViaAction button = new XButtonViaAction(new AccessControlDetails(artifact));
-      button.setToolkit(managedForm.getToolkit());
-      button.createWidgets(composite, 1);
-      button.getLabelWidget().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+      XButtonViaAction accessButton = new XButtonViaAction(new AccessControlDetails(artifact));
+      accessButton.setToolkit(managedForm.getToolkit());
+      accessButton.createWidgets(composite, 1);
+      accessButton.getLabelWidget().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
 
    }
 
@@ -96,15 +96,22 @@ public class ArtEdDetailsTab extends FormPage {
       if (Widgets.isAccessible(browser)) {
 
          try {
-            Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(artifact);
             FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
-            String html = Artifacts.getDetailsFormText(smaDetails, systemFont.getName(), systemFont.getHeight());
+            String html = getArtifactDetailsHtml(artifact, systemFont);
             browser.setText(html);
          } catch (Exception ex) {
             browser.setText(Lib.exceptionToString(ex));
          }
+         browser.refresh();
+         bodyComp.layout(true);
          managedForm.reflow(true);
       }
+   }
+
+   public static String getArtifactDetailsHtml(Artifact artifact, FontData systemFont) {
+      Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(artifact);
+      String html = Artifacts.getDetailsFormText(smaDetails, systemFont.getName(), systemFont.getHeight());
+      return html;
    }
 
 }

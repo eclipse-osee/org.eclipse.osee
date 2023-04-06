@@ -96,6 +96,10 @@ public final class Artifacts {
          details.put("Branch", String.valueOf(htmlEscaper.escape(artifact.getBranchToken().getName())));
          details.put("Branch Uuid", artifact.getBranch().getIdString());
          details.put("Artifact Type Name", String.valueOf(htmlEscaper.escape(artifact.getArtifactTypeName())));
+         int x = 1;
+         for (ArtifactTypeToken artType : artifact.getArtifactType().getSuperTypes()) {
+            details.put("Artifact Type Super Type Name " + x++, String.valueOf(htmlEscaper.escape(artType.getName())));
+         }
          details.put("Artifact Type Id", artifact.getArtifactType().getIdString());
          details.put("Gamma Id", String.valueOf(artifact.getGammaId()));
          details.put("Historical", String.valueOf(artifact.isHistorical()));
