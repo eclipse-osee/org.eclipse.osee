@@ -43,7 +43,6 @@ public class StateDefBuilder {
    private final List<StateToken> toStateTokens = new ArrayList<>();
    private final List<DecisionReviewDefinitionBuilder> decRevBldrs = new LinkedList<>();
    private final List<PeerReviewDefinitionBuilder> peerRevBldrs = new LinkedList<>();
-   private StateToken getLayoutFromState;
    private final XResultData rd;
    private final List<WorkDefBuilderOption> builderOptions;
 
@@ -54,7 +53,6 @@ public class StateDefBuilder {
       state.setOrdinal(ordinal);
       state.setWorkDefinition(workDef);
       workDef.addState(state);
-      this.getLayoutFromState = null;
       this.rd = workDef.getResults();
       this.builderOptions = new ArrayList<>();
       for (WorkDefBuilderOption opt : builderOptions) {
@@ -125,10 +123,6 @@ public class StateDefBuilder {
    }
 
    public StateDefBuilder andLayout(LayoutItem... items) {
-      if (this.getAndLayoutFromState() != null) {
-         rd.errorf("Cannot add layout items when state already gets layout from other state for Work Def %s\n",
-            workDef.getName());
-      }
       for (LayoutItem item : items) {
          state.getLayoutItems().add(item);
       }
@@ -202,12 +196,14 @@ public class StateDefBuilder {
             "State [%s] cannot import layout from other state if current state has already defined layout items for Work Def %s\n",
             state.getName(), workDef.getName());
       }
-      this.getLayoutFromState = fromState;
+      StateDefinition fromStateDef = workDef.getStateByName(fromState.getName());
+      if (fromStateDef.getLayoutItems().isEmpty()) {
+         rd.errorf(
+            "State [%s] cannot import layout from other state if from state [%s] has no layout items defined for Work Def %s\n",
+            state.getName(), fromState.getName(), workDef.getName());
+      }
+      this.andLayout(fromStateDef.getLayoutItems());
       return this;
-   }
-
-   public StateToken getAndLayoutFromState() {
-      return this.getLayoutFromState;
    }
 
    public StateDefBuilder addToState(StateDefinition toState) {
