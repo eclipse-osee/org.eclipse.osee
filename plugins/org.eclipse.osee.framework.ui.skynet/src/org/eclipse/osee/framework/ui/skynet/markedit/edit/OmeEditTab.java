@@ -134,10 +134,11 @@ public class OmeEditTab extends OmeAbstractTab {
    }
 
    protected void createBody() {
-      OmeEditSubToolbar subToolbar = new OmeEditSubToolbar(bodyComp, this);
-      subToolbar.create();
-      getManagedForm().getToolkit().adapt(subToolbar);
-
+      if (omeData.isEditable()) {
+         OmeEditSubToolbar subToolbar = new OmeEditSubToolbar(bodyComp, this);
+         subToolbar.create();
+         getManagedForm().getToolkit().adapt(subToolbar);
+      }
       createBodyFull();
    }
 

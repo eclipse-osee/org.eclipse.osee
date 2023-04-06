@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.markedit.edit;
 
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -19,12 +20,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +42,7 @@ public class OmeEditComposite extends Composite {
       super(parent, style);
       this.omeData = omeData;
 
-      setLayout(new GridLayout(1, false));
+      setLayout(new GridLayout(omeData.isEditable() ? 1 : 2, false));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
       GridLayout layout = new GridLayout();
@@ -51,11 +54,19 @@ public class OmeEditComposite extends Composite {
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       try {
-         textWidget = omeData.createXText();
+         boolean enabled = omeData.isEditable();
+
+         if (!enabled) {
+            Label lockLabel = new Label(this, SWT.PUSH);
+            lockLabel.setImage(ImageManager.getImage(FrameworkImage.LOCK_LOCKED));
+         }
+
+         textWidget = omeData.createXText(enabled);
          textWidget.setVerticalLabel(true);
          textWidget.setFillHorizontally(true);
          textWidget.setFillVertically(true);
          textWidget.createWidgets(this, 1);
+         textWidget.setEditable(enabled);
          omeData.uponCreate(textWidget);
          omeData.load();
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);

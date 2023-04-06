@@ -83,14 +83,23 @@ public class FileOmeData extends AbstractOmeData {
    }
 
    @Override
-   public XText createXText() {
-      editText = new XText("Enter Markdown");
+   public XText createXText(boolean enabled) {
+      editText = new XText(enabled ? "Enter Markdown" : "Markdown (Read-Only)");
       return editText;
    }
 
    @Override
    public void uponCreate(XText editText) {
       // do nothing
+   }
+
+   @Override
+   public boolean isEditable() {
+      if (editable == null) {
+         File file = AWorkspace.iFileToFile(editorInput.getFile());
+         editable = file.canWrite();
+      }
+      return editable;
    }
 
 }
