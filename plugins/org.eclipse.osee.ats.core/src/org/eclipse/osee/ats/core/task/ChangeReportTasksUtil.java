@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
  */
 public class ChangeReportTasksUtil {
 
+   public static final String NO_CHANGE_ITEMS_FOUND = "No Change Items (Working Branch or Commit) Found";
    public static final String TASKS_MUST_BE_AUTOGEN_TASKS = "Tasks must be Auto Generated Tasks";
    public static final String TASKS_MUST_BE_AUTOGEN_CHANGE_REPORT_RELATED_TASKS =
       "Tasks must be Auto Generated Change Report Related Tasks";
@@ -80,7 +81,7 @@ public class ChangeReportTasksUtil {
          crtd.setWorkOrParentBranch(workOrParentBranch.getIdString());
       }
       if (changeItems == null || changeItems.isEmpty()) {
-         crtd.getResults().error("No Change Items (Working Branch or Commit) Found");
+         crtd.getResults().warning(NO_CHANGE_ITEMS_FOUND);
          return;
       } else {
          crtd.setChangeItems(changeItems);
