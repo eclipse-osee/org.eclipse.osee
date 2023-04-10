@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
    HashCollectionTest.class,
    HexUtilTest.class,
    LibTest.class,
+   ListMapTest.class,
    ProcessesTest.class,
    ReservedCharactersTest.class,
    RegexTestSuite.class,
