@@ -25,7 +25,8 @@ import org.junit.runners.Suite;
    GitEndpointTest.class,
    FixAttributeOperationTest.class,
    ImportTraceUnitsOperationTest.class,
-   TestPlanComplianceReportTest.class})
+   TestPlanComplianceReportTest.class,
+   TogglesEndpointTest.class})
 /**
  * @author Ryan D. Brooks
  */
