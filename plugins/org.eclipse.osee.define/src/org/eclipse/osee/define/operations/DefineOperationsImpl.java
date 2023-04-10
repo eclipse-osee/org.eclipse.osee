@@ -23,11 +23,13 @@ import org.eclipse.osee.define.api.publishing.PublishingOperations;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.api.synchronization.SynchronizationOperations;
+import org.eclipse.osee.define.api.toggles.TogglesOperations;
 import org.eclipse.osee.define.operations.publishing.PublishingOperationsImpl;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.publishing.datarights.DataRightsOperationsImpl;
 import org.eclipse.osee.define.operations.publishing.templatemanager.TemplateManagerOperationsImpl;
 import org.eclipse.osee.define.operations.synchronization.SynchronizationOperationsImpl;
+import org.eclipse.osee.define.operations.toggles.TogglesOperationsImpl;
 import org.eclipse.osee.define.rest.GitOperationsImpl;
 import org.eclipse.osee.define.rest.ImportOperationsImpl;
 import org.eclipse.osee.define.rest.TraceabilityOperationsImpl;
@@ -52,6 +54,7 @@ public class DefineOperationsImpl implements DefineOperations {
    private PublishingOperations publishingOperations;
    private SynchronizationOperations synchronizationOperations;
    private TemplateManagerOperations templateManagerOperations;
+   private TogglesOperations togglesOperations;
    private TraceabilityOperations traceabilityOperations;
 
    public void setActivityLog(ActivityLog activityLog) {
@@ -77,15 +80,18 @@ public class DefineOperationsImpl implements DefineOperations {
    public void start() {
 
       PublishingPermissions.create(this.orcsApi);
+      var jdbcService = this.orcsApi.getJdbcService();
+      var systemProperties = this.orcsApi.getSystemProperties();
 
       //@formatter:off
       this.dataRightsOperations      = DataRightsOperationsImpl.create(this.orcsApi);
-      this.gitOperations             = new GitOperationsImpl(this.orcsApi, this.orcsApi.getSystemProperties());
-      this.traceabilityOperations    = new TraceabilityOperationsImpl(this.orcsApi, this.gitOperations);
+      this.gitOperations             = new GitOperationsImpl(this.orcsApi, systemProperties);
       this.importOperations          = new ImportOperationsImpl(this.orcsApi, this.activityLog);
       this.publishingOperations      = PublishingOperationsImpl.create(this,this.orcsApi, this.atsApi, this.logger, this.eventAdmin);
       this.synchronizationOperations = SynchronizationOperationsImpl.create(this.orcsApi);
-      this.templateManagerOperations = TemplateManagerOperationsImpl.create(this.orcsApi.getJdbcService(), this.logger, this.orcsApi);
+      this.templateManagerOperations = TemplateManagerOperationsImpl.create(jdbcService, this.logger, this.orcsApi);
+      this.togglesOperations         = TogglesOperationsImpl.create(jdbcService);
+      this.traceabilityOperations    = new TraceabilityOperationsImpl(this.orcsApi, this.gitOperations);
       //@formatter:on
    }
 
@@ -117,6 +123,11 @@ public class DefineOperationsImpl implements DefineOperations {
    @Override
    public TemplateManagerOperations getTemplateManagerOperations() {
       return this.templateManagerOperations;
+   }
+
+   @Override
+   public TogglesOperations getTogglesOperations() {
+      return this.togglesOperations;
    }
 
    @Override

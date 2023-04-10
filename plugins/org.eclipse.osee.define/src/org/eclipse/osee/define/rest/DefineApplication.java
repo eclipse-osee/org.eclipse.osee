@@ -28,6 +28,7 @@ import org.eclipse.osee.define.rest.publishing.PublishingEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.datarights.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.templatemanager.TemplateManagerEndpointImpl;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationEndpointImpl;
+import org.eclipse.osee.define.rest.toggles.TogglesEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -91,7 +92,8 @@ public final class DefineApplication extends Application {
               new ImportEndpointImpl(this.defineOperations),
               new PublishingEndpointImpl(this.defineOperations),
               new SynchronizationEndpointImpl(this.defineOperations),
-              new TemplateManagerEndpointImpl(this.defineOperations)
+              new TemplateManagerEndpointImpl(this.defineOperations),
+              new TogglesEndpointImpl(this.defineOperations)
             );
       //@formatter:on
 

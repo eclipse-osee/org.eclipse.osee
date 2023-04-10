@@ -18,6 +18,7 @@ import org.eclipse.osee.define.api.publishing.PublishingOperations;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.api.synchronization.SynchronizationOperations;
+import org.eclipse.osee.define.api.toggles.TogglesOperations;
 
 /**
  * @author Angel Avila
@@ -36,6 +37,8 @@ public interface DefineOperations {
    SynchronizationOperations getSynchronizationOperations();
 
    TemplateManagerOperations getTemplateManagerOperations();
+
+   TogglesOperations getTogglesOperations();
 
    TraceabilityOperations getTraceabilityOperations();
 

@@ -28,6 +28,7 @@ import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
@@ -298,6 +299,15 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public TemplateManagerEndpoint getTemplateManagerEndpoint() {
       return this.getDefineEndpoint(TemplateManagerEndpoint.class);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public TogglesEndpoint getTogglesEndpoint() {
+      return this.getDefineEndpoint(TogglesEndpoint.class);
    }
 
    @Override

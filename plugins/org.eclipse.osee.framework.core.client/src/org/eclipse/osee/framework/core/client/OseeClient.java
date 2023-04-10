@@ -22,6 +22,7 @@ import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -132,6 +133,14 @@ public interface OseeClient extends OseeApi {
     */
 
    TemplateManagerEndpoint getTemplateManagerEndpoint();
+
+   /**
+    * Obtains an object that implements the {@link TogglesEndpoint} to process REST API requests for toggle values.
+    *
+    * @return an implementation of the {@link TogglesEndpoint} interface.
+    */
+
+   TogglesEndpoint getTogglesEndpoint();
 
    @Deprecated
    String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact);
