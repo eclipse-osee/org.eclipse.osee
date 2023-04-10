@@ -54,7 +54,6 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
       return attributeType.matches(CoreAttributeTypes.WordTemplateContent) || //
-         attributeType.matches(CoreAttributeTypes.WholeWordContent) || //
          attributeType.matches(CoreAttributeTypes.PlainTextContent);
    }
 
