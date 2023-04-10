@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -67,6 +69,16 @@ public interface DatastoreEndpoint {
    @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
    UserToken getUserInfo(@Context HttpHeaders headers, @HeaderParam("osee.user.id") String userId, @HeaderParam(HttpHeaders.AUTHORIZATION) String authHeader);
+
+   @GET
+   @Path("gamma/unused/{ids}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<String> getUnusedGammaById(@PathParam("ids") String ids);
+
+   @GET
+   @Path("gamma/unused")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<String> getUnusedGammas(@PathParam("ids") String ids);
 
    /**
     * Clears the OSEE server's {@link UserToken} cache.
