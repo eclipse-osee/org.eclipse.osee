@@ -73,7 +73,7 @@ public class OrcsApplication extends Application {
 
       singletons.add(new IndexerEndpointImpl(orcsApi));
       singletons.add(new ResourcesEndpointImpl(resourceManager));
-      singletons.add(new DatastoreEndpointImpl(orcsApi, activityLog));
+      singletons.add(new DatastoreEndpointImpl(orcsApi, activityLog, jdbcService));
       singletons.add(new KeyValueResource(orcsApi));
 
       singletons.add(new LinkUpdateResource(orcsApi));
