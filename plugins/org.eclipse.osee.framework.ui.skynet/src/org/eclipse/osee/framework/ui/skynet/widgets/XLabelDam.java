@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class XLabelDam extends GenericXWidget implements AttributeWidget {
 
+   public static final String WIDGET_ID = XLabelDam.class.getSimpleName();
+
    protected Artifact artifact;
    protected AttributeTypeToken attributeType;
    protected Text valueTextWidget;

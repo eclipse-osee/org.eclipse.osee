@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -230,6 +231,16 @@ public class AttributeFormPart extends AbstractFormPart {
             AttributeXWidgetManager.getAttributeXWidgetProvider(artifact.getArtifactType(), attributeType);
          List<XWidgetRendererItem> concreteWidgets =
             xWidgetProvider.getDynamicXWidgetLayoutData(artifact.getArtifactType(), attributeType);
+
+         //Set widget to label since non renderable attribute type should not be edited in artifact edtor
+         if (attributeType.notRenderable()) {
+            String widgetName = XLabelDam.WIDGET_ID;
+            String attributeEditStatus = " (not editable here)";
+            for (int i = 0; i < concreteWidgets.size(); i++) {
+               concreteWidgets.get(i).setName(attributeType.getUnqualifiedName().concat(attributeEditStatus));
+               concreteWidgets.get(i).setXWidgetName(widgetName);
+            }
+         }
          if (isExpandable) {
             for (XWidgetRendererItem data : concreteWidgets) {
                data.getXOptionHandler().add(XOption.NO_LABEL);
