@@ -530,6 +530,63 @@ export abstract class CurrentStructureService {
 		);
 	}
 
+	changeElementRelationOrder(
+		structureId: string,
+		elementId: string,
+		afterArtifactId: string
+	) {
+		return this.ui.BranchId.pipe(
+			take(1),
+			switchMap((branchId) =>
+				this.elements
+					.createStructureRelation(structureId, elementId)
+					.pipe(
+						switchMap((relation) =>
+							this.elements
+								.deleteRelation(branchId, relation)
+								.pipe(
+									switchMap((transaction) =>
+										this.elements
+											.createStructureRelation(
+												structureId,
+												elementId,
+												afterArtifactId
+											)
+											.pipe(
+												switchMap((createRelation) =>
+													this.elements
+														.addRelation(
+															branchId,
+															createRelation,
+															transaction
+														)
+														.pipe(
+															switchMap(
+																(transaction) =>
+																	this.elements
+																		.performMutation(
+																			transaction
+																		)
+																		.pipe(
+																			tap(
+																				() => {
+																					this.ui.updateMessages =
+																						true;
+																				}
+																			)
+																		)
+															)
+														)
+												)
+											)
+									)
+								)
+						)
+					)
+			)
+		);
+	}
+
 	changeElementPlatformType(
 		structureId: string,
 		elementId: string,

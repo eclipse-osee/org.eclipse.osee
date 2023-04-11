@@ -78,4 +78,5 @@ export interface modifyRelation {
 	aArtId?: string;
 	bArtId?: string;
 	rationale?: string;
+	afterArtifact?: string;
 }

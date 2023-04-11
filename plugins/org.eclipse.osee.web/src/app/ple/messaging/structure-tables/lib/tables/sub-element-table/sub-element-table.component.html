@@ -13,6 +13,9 @@
 <table
 	mat-table
 	[dataSource]="dataSource"
+	cdkDropList
+	[cdkDropListDisabled]="!editMode"
+	(cdkDropListDropped)="handleDragDrop($event)"
 	class="message-element-interface-table-view-element mat-elevation-z8 message-element-interface-table-view-width-100"
 	data-cy="sub-element-table">
 	<ng-container
@@ -75,6 +78,7 @@
 		*matRowDef="let row2; columns: subMessageHeaders; let k = index"
 		[id]="'a' + row2.id"
 		[attr.data-cy]="'element-table-row-' + row2.name"
+		class="sub-element-drag-row"
 		[ngClass]="
 			k % 2 === 0
 				? row2.added

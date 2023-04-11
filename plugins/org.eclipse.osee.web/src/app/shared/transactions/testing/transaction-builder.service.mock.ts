@@ -51,6 +51,7 @@ export const transactionBuilderMock: Partial<TransactionBuilderService> = {
 		typeId?: string,
 		firstId?: string,
 		secondId?: string,
+		afterArtifactId?: string,
 		rationale?: string,
 		transaction?: transaction,
 		branchId?: string,

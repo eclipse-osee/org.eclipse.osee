@@ -25,6 +25,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { LayoutNotifierService } from '../../../../../../layout/lib/notification/layout-notifier.service';
@@ -70,6 +71,7 @@ import type {
 		NgClass,
 		AsyncPipe,
 		RouterLink,
+		CdkDropList,
 		MatTableModule,
 		MatIconModule,
 		MatMenuModule,
@@ -162,6 +164,28 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
 	valueTracker(index: any, item: any) {
 		return index;
+	}
+
+	handleDragDrop(event: CdkDragDrop<unknown[]>) {
+		if (event.currentIndex === event.previousIndex) {
+			return;
+		}
+
+		// Rows not marked as draggable are not included in the index count,
+		// so remove them from the list before checking index.
+		const tableData = this.dataSource.data.filter((e) => e.id !== '-1');
+		const elementId = tableData[event.previousIndex].id;
+		tableData.splice(event.previousIndex, 1);
+		const newIndex = event.currentIndex - 1;
+		const afterArtifactId = newIndex < 1 ? 'start' : tableData[newIndex].id;
+
+		this.structureService
+			.changeElementRelationOrder(
+				this.structure.id,
+				elementId,
+				afterArtifactId
+			)
+			.subscribe();
 	}
 
 	openGeneralMenu(
