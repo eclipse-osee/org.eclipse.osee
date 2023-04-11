@@ -10,117 +10,128 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field
-	cdkMonitorSubtreeFocus
-	(cdkFocusChange)="focusChanged($event)"
-	subscriptSizing="dynamic"
-	class="wide-form">
-	<input
-		matInput
-		[(ngModel)]="value"
-		(ngModelChange)="updateElement(header, value)"
-		*ngIf="
-			header !== 'platformTypeName2' &&
-			header !== 'applicability' &&
-			header !== 'units'
-		"
-		[disabled]="
-			editingDisabled ||
-			((header === 'interfaceElementIndexStart' ||
-				header === 'interfaceElementIndexEnd') &&
-				elementEnd === 0 &&
-				elementStart === 0)
-		" />
+<div class="tw-flex tw-items-center tw-gap-2">
 	<ng-container *ngIf="header === 'name'">
-		<ng-container *ngIf="elementEnd - elementStart > 0">
-			<p matSuffix>
-				{{ '[' + elementStart + '...' + elementEnd + ']' }}
-			</p>
-		</ng-container>
+		<mat-icon
+			cdkDrag
+			cdkDragHandle
+			cdkDragLockAxis="y"
+			cdkDragRootElement=".sub-element-drag-row"
+			>reorder</mat-icon
+		>
 	</ng-container>
-	<ng-container
-		*ngIf="
-			header === 'platformTypeName2' ||
-			header === 'applicability' ||
-			header === 'units'
-		">
-		<ng-container *ngIf="header === 'applicability'">
-			<mat-select
-				[(ngModel)]="value"
-				(ngModelChange)="updateImmediately(header, value)"
-				[compareWith]="compareApplics"
-				[disabled]="editingDisabled">
-				<mat-option
-					*ngFor="let option of applics | async"
-					[value]="option"
-					[id]="option.id">
-					{{ option.name }}
-				</mat-option>
-			</mat-select>
+	<mat-form-field
+		cdkMonitorSubtreeFocus
+		(cdkFocusChange)="focusChanged($event)"
+		subscriptSizing="dynamic"
+		class="wide-form">
+		<input
+			matInput
+			[(ngModel)]="value"
+			(ngModelChange)="updateElement(header, value)"
+			*ngIf="
+				header !== 'platformTypeName2' &&
+				header !== 'applicability' &&
+				header !== 'units'
+			"
+			[disabled]="
+				editingDisabled ||
+				((header === 'interfaceElementIndexStart' ||
+					header === 'interfaceElementIndexEnd') &&
+					elementEnd === 0 &&
+					elementStart === 0)
+			" />
+		<ng-container *ngIf="header === 'name'">
+			<ng-container *ngIf="elementEnd - elementStart > 0">
+				<p matSuffix>
+					{{ '[' + elementStart + '...' + elementEnd + ']' }}
+				</p>
+			</ng-container>
 		</ng-container>
-		<ng-container *ngIf="header === 'platformTypeName2'">
-			<div style="display: flex; flex-direction: row">
-				<input
-					matInput
-					type="search"
+		<ng-container
+			*ngIf="
+				header === 'platformTypeName2' ||
+				header === 'applicability' ||
+				header === 'units'
+			">
+			<ng-container *ngIf="header === 'applicability'">
+				<mat-select
 					[(ngModel)]="value"
-					[matAutocomplete]="auto"
-					(ngModelChange)="updateTypeAhead(value)"
-					[disabled]="editingDisabled" />
-				<ng-container *ngIf="_location | async as location">
-					<a
-						mat-icon-button
-						matSuffix
-						[routerLink]="
-							'/ple/messaging/' +
-							location.type +
-							'/' +
-							location.id +
-							'/type/' +
-							platformTypeId
-						"
-						(contextmenu)="openMenu($event, value)"
-						><mat-icon>arrow_forward</mat-icon></a
-					>
-				</ng-container>
-			</div>
-			<mat-autocomplete
-				autoActiveFirstOption
-				#auto="matAutocomplete"
-				(optionSelected)="updateType($event.option.value)"
-				(opened)="autoCompleteOpened()">
-				<osee-mat-option-loading
-					[data]="filteredTypes"
-					objectName="Types"
-					[paginationSize]="3"
-					paginationMode="AUTO">
-					<ng-template let-option>
-						<mat-option
-							[value]="option"
-							[id]="option.id">
-							{{ option.name }}
-						</mat-option>
-					</ng-template>
-				</osee-mat-option-loading>
-			</mat-autocomplete>
+					(ngModelChange)="updateImmediately(header, value)"
+					[compareWith]="compareApplics"
+					[disabled]="editingDisabled">
+					<mat-option
+						*ngFor="let option of applics | async"
+						[value]="option"
+						[id]="option.id">
+						{{ option.name }}
+					</mat-option>
+				</mat-select>
+			</ng-container>
+			<ng-container *ngIf="header === 'platformTypeName2'">
+				<div style="display: flex; flex-direction: row">
+					<input
+						matInput
+						type="search"
+						[(ngModel)]="value"
+						[matAutocomplete]="auto"
+						(ngModelChange)="updateTypeAhead(value)"
+						[disabled]="editingDisabled" />
+					<ng-container *ngIf="_location | async as location">
+						<a
+							mat-icon-button
+							matSuffix
+							[routerLink]="
+								'/ple/messaging/' +
+								location.type +
+								'/' +
+								location.id +
+								'/type/' +
+								platformTypeId
+							"
+							(contextmenu)="openMenu($event, value)"
+							><mat-icon>arrow_forward</mat-icon></a
+						>
+					</ng-container>
+				</div>
+				<mat-autocomplete
+					autoActiveFirstOption
+					#auto="matAutocomplete"
+					(optionSelected)="updateType($event.option.value)"
+					(opened)="autoCompleteOpened()">
+					<osee-mat-option-loading
+						[data]="filteredTypes"
+						objectName="Types"
+						[paginationSize]="3"
+						paginationMode="AUTO">
+						<ng-template let-option>
+							<mat-option
+								[value]="option"
+								[id]="option.id">
+								{{ option.name }}
+							</mat-option>
+						</ng-template>
+					</osee-mat-option-loading>
+				</mat-autocomplete>
+			</ng-container>
+			<ng-container *ngIf="header === 'units'">
+				<mat-select
+					[(ngModel)]="value"
+					(ngModelChange)="updateUnits($event)"
+					typeaheadDebounceInterval="1000"
+					[disabled]="editingDisabled"
+					class="unit-selector">
+					<osee-mat-option-loading
+						[data]="units"
+						objectName="Units">
+						<ng-template let-option>
+							<mat-option [value]="option">
+								{{ option }}
+							</mat-option>
+						</ng-template>
+					</osee-mat-option-loading>
+				</mat-select>
+			</ng-container>
 		</ng-container>
-		<ng-container *ngIf="header === 'units'">
-			<mat-select
-				[(ngModel)]="value"
-				(ngModelChange)="updateUnits($event)"
-				typeaheadDebounceInterval="1000"
-				[disabled]="editingDisabled"
-				class="unit-selector">
-				<osee-mat-option-loading
-					[data]="units"
-					objectName="Units">
-					<ng-template let-option>
-						<mat-option [value]="option">
-							{{ option }}
-						</mat-option>
-					</ng-template>
-				</osee-mat-option-loading>
-			</mat-select>
-		</ng-container>
-	</ng-container>
-</mat-form-field>
+	</mat-form-field>
+</div>

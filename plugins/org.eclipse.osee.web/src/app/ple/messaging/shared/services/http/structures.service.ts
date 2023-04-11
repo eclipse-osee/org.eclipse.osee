@@ -179,6 +179,7 @@ export class StructuresService {
 				undefined,
 				relation.sideA as string,
 				relation.sideB as string,
+				relation.afterArtifact,
 				undefined,
 				transaction,
 				branchId,

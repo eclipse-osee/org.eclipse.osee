@@ -79,6 +79,7 @@ export class CreateParameterAndRelationsService {
 				Array.isArray(relation.sideB)
 					? relation.sideB.join(',')
 					: relation.sideB,
+				relation.afterArtifact,
 				undefined,
 				transaction,
 				branchId,

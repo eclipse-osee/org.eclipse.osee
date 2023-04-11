@@ -54,6 +54,7 @@ import {
 	iif,
 	ReplaySubject,
 } from 'rxjs';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',
@@ -65,6 +66,9 @@ import {
 		FormsModule,
 		NgIf,
 		NgFor,
+		CdkDrag,
+		CdkDragHandle,
+		MatIconModule,
 		MatSelectModule,
 		MatOptionModule,
 		MatInputModule,

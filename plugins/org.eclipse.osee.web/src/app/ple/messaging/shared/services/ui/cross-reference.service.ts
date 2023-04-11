@@ -220,6 +220,7 @@ export class CrossReferenceService {
 				undefined,
 				relation.sideA as string,
 				relation.sideB as string,
+				relation.afterArtifact,
 				undefined,
 				tx,
 				branchId,

@@ -209,6 +209,7 @@ export class TransactionBuilderService {
 		typeId?: string,
 		firstId?: string,
 		secondId?: string,
+		afterArtifactId?: string,
 		rationale?: string,
 		transaction?: transaction,
 		branchId?: string,
@@ -227,6 +228,7 @@ export class TransactionBuilderService {
 			typeId: typeId,
 			aArtId: firstId,
 			bArtId: secondId,
+			afterArtifact: afterArtifactId,
 			rationale: rationale,
 		});
 		return currentTransaction;
