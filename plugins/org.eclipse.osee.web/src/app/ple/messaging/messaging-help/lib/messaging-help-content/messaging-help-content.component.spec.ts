@@ -12,8 +12,11 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MarkdownModule } from 'ngx-markdown';
+import { HelpHttpService } from '@osee/shared/services/help';
 
 import { MessagingHelpContentComponent } from './messaging-help-content.component';
+import { helpHttpServiceMock } from '@osee/shared/testing';
 
 describe('MessagingHelpContentComponent', () => {
 	let component: MessagingHelpContentComponent;
@@ -21,7 +24,14 @@ describe('MessagingHelpContentComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MessagingHelpContentComponent, RouterTestingModule],
+			imports: [
+				MessagingHelpContentComponent,
+				RouterTestingModule,
+				MarkdownModule.forRoot(),
+			],
+			providers: [
+				{ provide: HelpHttpService, useValue: helpHttpServiceMock },
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(MessagingHelpContentComponent);

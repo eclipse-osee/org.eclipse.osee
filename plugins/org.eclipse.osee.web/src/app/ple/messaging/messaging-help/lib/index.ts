@@ -1,4 +1,4 @@
-<!--
+/*********************************************************************
  * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
@@ -9,8 +9,5 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
--->
-<div
-	markdown
-	[data]="markdown | async"
-	[disableSanitizer]="true"></div>
+ **********************************************************************/
+export * from './public-api';

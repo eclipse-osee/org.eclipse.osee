@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -48,6 +50,16 @@ public final class HelpEndpointImpl implements HelpEndpoint {
       // Filter out any child pages from the top level so they are not duplicated.
       List<HelpPageDto> children = getAllChildren(appHelpPages);
       return appHelpPages.stream().filter(p -> !children.contains(p)).collect(Collectors.toList());
+   }
+
+   @Override
+   public HelpPageDto getHelpPage(String id) {
+      if (id != null) {
+         ArtifactReadable art =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(ArtifactId.valueOf(id)).asArtifact();
+         return new HelpPageDto(art);
+      }
+      return new HelpPageDto();
    }
 
    private List<HelpPageDto> getAllChildren(List<HelpPageDto> helpPages) {

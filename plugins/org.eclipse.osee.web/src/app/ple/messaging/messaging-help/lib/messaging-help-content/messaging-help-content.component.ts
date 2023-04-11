@@ -10,10 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, filter, of, switchMap } from 'rxjs';
+import { HelpService } from '@osee/shared/services/help';
 
 @Component({
 	selector: 'osee-messaging-help-content',
@@ -22,19 +24,26 @@ import { ActivatedRoute } from '@angular/router';
 	templateUrl: './messaging-help-content.component.html',
 	styleUrls: ['./messaging-help-content.component.scss'],
 })
-export class MessagingHelpContentComponent implements OnInit {
-	constructor(private route: ActivatedRoute) {}
-
-	markdown: string | null = null;
-
-	ngOnInit(): void {
+export class MessagingHelpContentComponent {
+	constructor(
+		private route: ActivatedRoute,
+		private helpService: HelpService
+	) {
 		this.route.paramMap.subscribe((params) => {
-			let name = params.get('helpPage');
-			if (name) {
-				this.markdown = 'assets/help/mim/' + name + '.md';
-			}
+			this.id.next(params.get('id') || '');
 		});
 	}
+
+	id = new BehaviorSubject<string>('');
+
+	markdown = this.id.pipe(
+		filter((id) => id !== '' && id !== '-1'),
+		switchMap((id) =>
+			this.helpService
+				.getHelpPage(id)
+				.pipe(switchMap((page) => of(page.markdownContent)))
+		)
+	);
 }
 
 export default MessagingHelpContentComponent;

@@ -47,11 +47,8 @@
 			"@osee/messaging/cross-reference": [
 				"src/app/ple/messaging/cross-reference/lib"
 			],
-			"@osee/messaging/help/overview": [
-				"src/app/ple/messaging/messaging-help/lib/overview"
-			],
-			"@osee/messaging/help/column-descriptions": [
-				"src/app/ple/messaging/messaging-help/lib/column-descriptions-message-help"
+			"@osee/messaging/help": [
+				"src/app/ple/messaging/messaging-help/lib"
 			],
 			"@osee/messaging/import": ["src/app/ple/messaging/import/lib"],
 			"@osee/messaging/message-tables": [
@@ -95,6 +92,7 @@
 			"@osee/shared/components": ["src/app/shared/components"],
 			"@osee/shared/matchers": ["src/app/shared/matchers"],
 			"@osee/shared/services": ["src/app/shared/services"],
+			"@osee/shared/services/help": ["src/app/shared/services/help"],
 			"@osee/shared/services/layout": ["src/app/shared/services/layout"],
 			"@osee/shared/services/network": [
 				"src/app/shared/services/network"

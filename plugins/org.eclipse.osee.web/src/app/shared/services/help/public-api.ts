@@ -10,4 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export { default } from './public-api';
+export * from './help-http.service';
+export * from './help.service';

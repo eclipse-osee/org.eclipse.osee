@@ -12,30 +12,19 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserDataAccountService } from '@osee/auth';
-import { userDataAccountServiceMock } from '@osee/auth/testing';
-import { HelpHttpService } from '@osee/shared/services/help';
-import { helpHttpServiceMock } from '@osee/shared/testing';
 
-import { MessagingHelpNavigationComponent } from './messaging-help-navigation.component';
+import { MessagingHelpStaticContentComponent } from './messaging-help-static-content.component';
 
-describe('MessagingHelpNavigationComponent', () => {
-	let component: MessagingHelpNavigationComponent;
-	let fixture: ComponentFixture<MessagingHelpNavigationComponent>;
+describe('MessagingHelpStaticContentComponent', () => {
+	let component: MessagingHelpStaticContentComponent;
+	let fixture: ComponentFixture<MessagingHelpStaticContentComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MessagingHelpNavigationComponent, RouterTestingModule],
-			providers: [
-				{
-					provide: UserDataAccountService,
-					useValue: userDataAccountServiceMock,
-				},
-				{ provide: HelpHttpService, useValue: helpHttpServiceMock },
-			],
+			imports: [MessagingHelpStaticContentComponent, RouterTestingModule],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(MessagingHelpNavigationComponent);
+		fixture = TestBed.createComponent(MessagingHelpStaticContentComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

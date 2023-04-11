@@ -1,4 +1,4 @@
-/*********************************************************************
+<!--
  * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
@@ -9,5 +9,11 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
- **********************************************************************/
-export { default } from './column-descriptions-message-help.routes';
+ -->
+<ng-container *ngIf="markdown">
+	<div
+		markdown
+		[src]="markdown"
+		[srcRelativeLink]="true"
+		[disableSanitizer]="true"></div>
+</ng-container>
