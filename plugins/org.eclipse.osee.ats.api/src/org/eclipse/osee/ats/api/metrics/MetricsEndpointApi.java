@@ -25,12 +25,16 @@ public interface MetricsEndpointApi {
    @Path("DevProgress/{targetVersion}")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response devProgressReport(@PathParam("targetVersion") String targetVersion, @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate, @QueryParam("allTime") boolean allTime);
+   public Response devProgressReport(@PathParam("targetVersion") String targetVersion,
+      @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate,
+      @QueryParam("allTime") boolean allTime);
 
    @Path("SoftwareReqVolatility/{targetVersion}")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response softwareReqVolatility(@PathParam("targetVersion") String targetVersion, @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate, @QueryParam("allTime") boolean allTime, @QueryParam("implDetails") boolean implDetails);
+   public Response softwareReqVolatility(@PathParam("targetVersion") String targetVersion,
+      @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate,
+      @QueryParam("allTime") boolean allTime);
 
    @Path("BranchDiffData/{atsId}")
    @POST

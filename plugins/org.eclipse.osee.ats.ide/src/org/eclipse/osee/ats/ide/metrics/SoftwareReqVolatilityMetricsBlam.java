@@ -56,7 +56,6 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    private static final String START_DATE = "Start Date";
    private static final String END_DATE = "End Date";
    private static final String ALL_TIME = "All Time";
-   private static final String IMPL_DETAILS = "Include Implementation Details";
 
    private XHyperlabelTeamDefinitionSelection programWidget;
    private XHyperlabelVersionSelection versionWidget;
@@ -65,7 +64,6 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    private Date startDate;
    private Date endDate;
    private boolean allTime;
-   private boolean implDetails;
 
    private Collection<IAtsVersion> versions;
 
@@ -76,11 +74,12 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date.";
+      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date. Software Requirements are always included by default.";
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       if (xWidget.getLabel().equalsIgnoreCase(VERSION)) {
          versions = new ArrayList<>();
          versionWidget = (XHyperlabelVersionSelection) xWidget;
@@ -120,10 +119,9 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                startDate = (Date) variableMap.getValue(START_DATE);
                endDate = (Date) variableMap.getValue(END_DATE);
                allTime = variableMap.getBoolean(ALL_TIME);
-               implDetails = variableMap.getBoolean(IMPL_DETAILS);
 
                Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
-                  selectedVersion.getName(), startDate, endDate, allTime, implDetails);
+                  selectedVersion.getName(), startDate, endDate, allTime);
 
                if (res == null) {
                   return;
@@ -162,7 +160,6 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       wb.andWidget(START_DATE, "XDateDam").endWidget();
       wb.andWidget(END_DATE, "XDateDam").endWidget();
       wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
-      wb.andWidget(IMPL_DETAILS, "XCheckBox").endWidget();
       return wb.getItems();
    }
 

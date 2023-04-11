@@ -47,9 +47,9 @@ public class MetricsReportOperations {
       return builder.build();
    }
 
-   public Response generateSoftwareReqVolatility(String targetVersion, Date startDate, Date endDate, boolean allTime, boolean implDetails) {
+   public Response generateSoftwareReqVolatility(String targetVersion, Date startDate, Date endDate, boolean allTime) {
       StreamingOutput streamingOutput =
-         new SoftwareReqVolatilityMetrics(orcsApi, atsApi, targetVersion, startDate, endDate, allTime, implDetails);
+         new SoftwareReqVolatilityMetrics(orcsApi, atsApi, targetVersion, startDate, endDate, allTime);
       String fileName =
          String.format("SoftwareRequirementsVolatilityMetrics_%s_%s.xml", targetVersion, Lib.getDateTimeString());
 

@@ -29,12 +29,14 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -57,13 +59,12 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    private final Date startDate;
    private final Date endDate;
    private final boolean allTime;
-   private final boolean implDetails;
    Collection<IAtsTask> tasksMissingChangeType = new ArrayList<>();
+   Map<IAtsTeamWorkflow, List<ChangeItem>> wfToJsonMap = new HashMap<IAtsTeamWorkflow, List<ChangeItem>>();
 
    private ExcelXmlWriter writer;
 
    Pattern UI_NAME = Pattern.compile("\\{.*\\}");
-   Pattern UI_IMPL = Pattern.compile("\\(Impl Details\\)");
 
    private final SoftwareReqVolatilityId[] reportColumns = {
       SoftwareReqVolatilityId.ACT,
@@ -76,11 +77,14 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       SoftwareReqVolatilityId.AddedReq,
       SoftwareReqVolatilityId.ModifiedReq,
       SoftwareReqVolatilityId.DeletedReq,
-      SoftwareReqVolatilityId.AddedImpl,
-      SoftwareReqVolatilityId.ModifiedImpl,
-      SoftwareReqVolatilityId.DeletedImpl};
+      SoftwareReqVolatilityId.AddedSub,
+      SoftwareReqVolatilityId.ModifiedSub,
+      SoftwareReqVolatilityId.DeletedSub,
+      SoftwareReqVolatilityId.AddedHeading,
+      SoftwareReqVolatilityId.ModifiedHeading,
+      SoftwareReqVolatilityId.DeletedHeading};
 
-   public SoftwareReqVolatilityMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime, boolean implDetails) {
+   public SoftwareReqVolatilityMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
       this.programVersion = null;
@@ -88,7 +92,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       this.startDate = startDate;
       this.endDate = endDate;
       this.allTime = allTime;
-      this.implDetails = implDetails;
    }
 
    @Override
@@ -98,11 +101,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          writeReport();
          writer.endWorkbook();
       } catch (Exception ex) {
-         try {
-            writer.endWorkbook();
-         } catch (IOException ex1) {
-            throw new WebApplicationException(ex1);
-         }
          throw new WebApplicationException(ex);
       }
    }
@@ -117,40 +115,65 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    }
 
    private Collection<IAtsTeamWorkflow> getDatedWorkflows() {
-
       ArtifactToken versionId = atsApi.getQueryService().getArtifactFromTypeAndAttribute(AtsArtifactTypes.Version,
          CoreAttributeTypes.Name, targetVersion, atsApi.getAtsBranch());
       IAtsVersion version = atsApi.getVersionService().getVersionById(versionId);
       Collection<IAtsTeamWorkflow> workflowArts = atsApi.getVersionService().getTargetedForTeamWorkflows(version);
 
       Collection<IAtsTeamWorkflow> reqWorkflows = new ArrayList<IAtsTeamWorkflow>();
-
       for (IAtsTeamWorkflow workflow : workflowArts) {
-         if ((workflow.isWorkType(WorkType.Requirements) && workflow.isCompleted())) {
-            if (allTime || (workflow.getCompletedDate().after(startDate) && workflow.getCompletedDate().before(
-               endDate))) {
-               reqWorkflows.add(workflow);
+         try {
+            boolean isReqWf = false;
+            isReqWf = workflow.isWorkType(WorkType.Requirements);
+            WorkDefinition workDef = workflow.getWorkDefinition();
+            if (!isReqWf && workDef != null) {
+               isReqWf = workDef.getName().contains("Requirements");
             }
+            if (isReqWf && workflow.isCompleted()) {
+               if (allTime || (workflow.getCompletedDate().after(startDate) && workflow.getCompletedDate().before(
+                  endDate))) {
+                  reqWorkflows.add(workflow);
+               }
+            }
+         } catch (Exception ex) {
+            continue;
          }
       }
-
       programVersion = atsApi.getRelationResolver().getRelatedOrSentinel(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).getName();
+      for (IAtsTeamWorkflow teamWf : reqWorkflows) {
+         BranchToken branch = atsApi.getBranchService().getBranch(teamWf);
+         if (branch == null || branch.isInvalid()) {
+            continue;
+         }
+         String changeReportData =
+            atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData, "");
+         List<ChangeItem> changeItems = new ArrayList<>();
+         if (!changeReportData.isEmpty()) {
+            changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
+         } else {
+            try {
+               changeItems = orcsApi.getBranchOps().compareBranch(branch);
+            } catch (Exception ex) {
+               continue;
+            }
+         }
+         wfToJsonMap.put(teamWf, changeItems);
+      }
       return reqWorkflows;
    }
 
    private void fillActionableData(Collection<IAtsTeamWorkflow> reqWorkflows) throws IOException {
       int numColumns = reportColumns.length;
-      if (!implDetails) {
-         numColumns -= 3;
-      }
       Object[] buffer = new Object[numColumns];
       for (int i = 0; i < numColumns; ++i) {
          buffer[i] = reportColumns[i].getDisplayName();
       }
       writer.writeRow(buffer);
+      for (Map.Entry<IAtsTeamWorkflow, List<ChangeItem>> entry : wfToJsonMap.entrySet()) {
+         IAtsTeamWorkflow reqWorkflow = entry.getKey();
+         List<ChangeItem> changeItems = entry.getValue();
 
-      for (IAtsTeamWorkflow reqWorkflow : reqWorkflows) {
          Date completedDate = new Date();
          try {
             completedDate = reqWorkflow.getCompletedDate();
@@ -163,17 +186,21 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             buffer[6] = "Missing or Multiple Values";
          }
 
-         String changeReportData =
-            atsApi.getAttributeResolver().getSoleAttributeValue(reqWorkflow, CoreAttributeTypes.BranchDiffData, "");
-         if (changeReportData.isEmpty()) {
-            continue;
+         try {
+            buffer[0] = reqWorkflow.getParentAction().getAtsId();
+         } catch (Exception ex) {
+            buffer[0] = "";
          }
-
-         List<ChangeItem> changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
-
-         buffer[0] = reqWorkflow.getParentAction().getAtsId();
-         buffer[1] = reqWorkflow.getAtsId();
-         buffer[2] = reqWorkflow.getName();
+         try {
+            buffer[1] = reqWorkflow.getAtsId();
+         } catch (Exception ex) {
+            buffer[1] = "";
+         }
+         try {
+            buffer[2] = reqWorkflow.getName();
+         } catch (Exception ex) {
+            buffer[2] = "";
+         }
          buffer[3] = programVersion;
          buffer[4] = targetVersion;
 
@@ -204,9 +231,12 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          int swAdded = 0;
          int swModified = 0;
          int swDeleted = 0;
-         int implAdded = 0;
-         int implModified = 0;
-         int implDeleted = 0;
+         int subAdded = 0;
+         int subModified = 0;
+         int subDeleted = 0;
+         int headAdded = 0;
+         int headModified = 0;
+         int headDeleted = 0;
 
          for (ChangeItem changeItem : attrChangeItems) {
             BranchId workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
@@ -227,17 +257,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                   }
                }
             }
-            if (artType.inheritsFrom(CoreArtifactTypes.AbstractImplementationDetails)) {
-               ModificationType modType = changeItem.getNetChange().getModType();
-               if (modType.equals(ModificationType.NEW)) {
-                  implAdded++;
-               } else if (modType.equals(ModificationType.MODIFIED) || modType.equals(ModificationType.MERGED)) {
-                  implModified++;
-               } else if (modType.equals(ModificationType.DELETED) || modType.equals(
-                  ModificationType.ARTIFACT_DELETED)) {
-                  implDeleted++;
-               }
-            } else if (artType.inheritsFrom(CoreArtifactTypes.AbstractSoftwareRequirement)) {
+            if (artType.inheritsFrom(CoreArtifactTypes.AbstractSoftwareRequirement)) {
                ModificationType modType = changeItem.getNetChange().getModType();
                if (modType.equals(ModificationType.NEW)) {
                   swAdded++;
@@ -247,18 +267,53 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                   ModificationType.ARTIFACT_DELETED)) {
                   swDeleted++;
                }
+            } else if (artType.inheritsFrom(CoreArtifactTypes.AbstractSubsystemRequirement)) {
+               ModificationType modType = changeItem.getNetChange().getModType();
+               if (modType.equals(ModificationType.NEW)) {
+                  subAdded++;
+               } else if (modType.equals(ModificationType.MODIFIED) || modType.equals(ModificationType.MERGED)) {
+                  subModified++;
+               } else if (modType.equals(ModificationType.DELETED) || modType.equals(
+                  ModificationType.ARTIFACT_DELETED)) {
+                  subDeleted++;
+               }
+            } else if (artType.inheritsFrom(CoreArtifactTypes.AbstractHeading)) {
+               ModificationType modType = changeItem.getNetChange().getModType();
+               if (modType.equals(ModificationType.NEW)) {
+                  headAdded++;
+               } else if (modType.equals(ModificationType.MODIFIED) || modType.equals(ModificationType.MERGED)) {
+                  headModified++;
+               } else if (modType.equals(ModificationType.DELETED) || modType.equals(
+                  ModificationType.ARTIFACT_DELETED)) {
+                  headDeleted++;
+               }
             } else {
                continue;
             }
          }
-         buffer[7] = swAdded;
-         buffer[8] = swModified;
-         buffer[9] = swDeleted;
-         if (implDetails) {
-            buffer[10] = implAdded;
-            buffer[11] = implModified;
-            buffer[12] = implDeleted;
+
+         if (!attrChangeItems.isEmpty()) {
+            buffer[7] = swAdded;
+            buffer[8] = swModified;
+            buffer[9] = swDeleted;
+            buffer[10] = subAdded;
+            buffer[11] = subModified;
+            buffer[12] = subDeleted;
+            buffer[13] = headAdded;
+            buffer[14] = headModified;
+            buffer[15] = headDeleted;
+         } else {
+            buffer[7] = "";
+            buffer[8] = "";
+            buffer[9] = "";
+            buffer[10] = "";
+            buffer[11] = "";
+            buffer[12] = "";
+            buffer[13] = "";
+            buffer[14] = "";
+            buffer[15] = "";
          }
+
          try {
             writer.writeRow(buffer);
          } catch (IOException ex) {

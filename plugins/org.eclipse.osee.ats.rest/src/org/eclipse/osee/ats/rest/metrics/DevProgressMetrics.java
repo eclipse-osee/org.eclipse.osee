@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.WebApplicationException;
@@ -37,12 +35,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Stephen J. Molaro
@@ -57,10 +54,9 @@ public final class DevProgressMetrics implements StreamingOutput {
    private final boolean allTime;
 
    private ExcelXmlWriter writer;
-   private final QueryBuilder query;
 
    Pattern UI_NAME = Pattern.compile("\\{.*\\}");
-   Pattern UI_DELETED = Pattern.compile("^\\(Deleted\\)$");
+   Pattern UI_DELETED = Pattern.compile("^.*\\(Deleted\\)$");
 
    private final DevProgressItemId[] actionColumns = {
       DevProgressItemId.ACT,
@@ -95,7 +91,6 @@ public final class DevProgressMetrics implements StreamingOutput {
       this.startDate = startDate;
       this.endDate = endDate;
       this.allTime = allTime;
-      this.query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());
    }
 
    @Override
@@ -115,38 +110,37 @@ public final class DevProgressMetrics implements StreamingOutput {
    }
 
    private void writeReport() throws IOException {
-      Collection<IAtsTeamWorkflow> workflows = getDatedWorkflows();
-      if (!workflows.isEmpty()) {
-         Set<IAtsAction> actionableItems = getDatedActions(workflows);
+      List<IAtsAction> actionableItems = getDatedWorkflows();
+      if (!actionableItems.isEmpty()) {
          writer.startSheet("Non-Periodic Data", actionColumns.length);
          fillActionableData(actionableItems, actionColumns.length);
       }
    }
 
-   private Collection<IAtsTeamWorkflow> getDatedWorkflows() {
-      ArtifactReadable versionId = query.andIsOfType(AtsArtifactTypes.Version).andAttributeIs(CoreAttributeTypes.Name,
-         targetVersion).asArtifact();
+   private List<IAtsAction> getDatedWorkflows() {
+      ArtifactToken versionId = atsApi.getQueryService().getArtifactFromTypeAndAttribute(AtsArtifactTypes.Version,
+         CoreAttributeTypes.Name, targetVersion, atsApi.getAtsBranch());
       IAtsVersion version = atsApi.getVersionService().getVersionById(versionId);
       Collection<IAtsTeamWorkflow> workflowArts = atsApi.getVersionService().getTargetedForTeamWorkflows(version);
+      List<IAtsAction> actionableItems = new ArrayList<>();
 
-      Collection<IAtsTeamWorkflow> datedWorkflowArts = new ArrayList<IAtsTeamWorkflow>();
       for (IAtsTeamWorkflow workflow : workflowArts) {
          try {
+            if (actionableItems.contains(workflow.getParentAction())) {
+               continue;
+            }
             if ((workflow.isWorkType(WorkType.Requirements) || workflow.isWorkType(
                WorkType.Code)) || workflow.isWorkType(WorkType.Test)) {
                if (allTime) {
-                  datedWorkflowArts.add(workflow);
+                  actionableItems.add(workflow.getParentAction());
                } else if ((workflow.getCreatedDate().before(endDate))) {
-                  if (allTime) {
-                     if ((workflow.isCompleted() && workflow.getCompletedDate() != null && workflow.getCompletedDate().before(
-                        startDate)) || (workflow.isCancelled() && workflow.getCancelledDate() != null && workflow.getCancelledDate().before(
-                           startDate))) {
-                        continue;
-                     }
+                  if ((workflow.isCompleted() && workflow.getCompletedDate() != null && workflow.getCompletedDate().before(
+                     startDate)) || (workflow.isCancelled() && workflow.getCancelledDate() != null && workflow.getCancelledDate().before(
+                        startDate))) {
+                     continue;
                   }
-                  datedWorkflowArts.add(workflow);
+                  actionableItems.add(workflow.getParentAction());
                }
-
             }
          } catch (Exception ex) {
             continue;
@@ -155,18 +149,10 @@ public final class DevProgressMetrics implements StreamingOutput {
       }
       programVersion = atsApi.getRelationResolver().getRelatedOrSentinel(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).getName();
-      return datedWorkflowArts;
-   }
-
-   private Set<IAtsAction> getDatedActions(Collection<IAtsTeamWorkflow> workflows) {
-      Set<IAtsAction> actionableItems = new HashSet<>();
-      for (IAtsTeamWorkflow workflow : workflows) {
-         actionableItems.add(workflow.getParentAction());
-      }
       return actionableItems;
    }
 
-   private void fillActionableData(Set<IAtsAction> actionableItems, int numColumns) throws IOException {
+   private void fillActionableData(List<IAtsAction> actionableItems, int numColumns) throws IOException {
       Object[] buffer = new Object[numColumns];
       for (int i = 0; i < numColumns; ++i) {
          buffer[i] = actionColumns[i].getDisplayName();
@@ -178,6 +164,7 @@ public final class DevProgressMetrics implements StreamingOutput {
          buffer[1] = actionItem.getName();
          buffer[2] = programVersion;
          buffer[3] = targetVersion;
+         buffer[4] = endDate;
          Date createdDate = new Date();
          for (IAtsTeamWorkflow teamWorkflow : actionItem.getTeamWorkflows()) {
             if (teamWorkflow.getCreatedDate().before(createdDate)) {
@@ -191,11 +178,10 @@ public final class DevProgressMetrics implements StreamingOutput {
    }
 
    private void fillTeamWfData(Object[] buffer, Date rowDate, IAtsAction actionItem) {
-      buffer[4] = rowDate;
+      double scale = Math.pow(10, 2);
       IAtsTeamWorkflow requirementsWorkflow = IAtsTeamWorkflow.SENTINEL;
       IAtsTeamWorkflow codeWorkflow = IAtsTeamWorkflow.SENTINEL;
       IAtsTeamWorkflow testWorkflow = IAtsTeamWorkflow.SENTINEL;
-
       for (IAtsTeamWorkflow teamWorkflow : actionItem.getTeamWorkflows()) {
          if (teamWorkflow.isWorkType(WorkType.Requirements)) {
             if (requirementsWorkflow.equals(IAtsTeamWorkflow.SENTINEL)) {
@@ -218,70 +204,68 @@ public final class DevProgressMetrics implements StreamingOutput {
          }
       }
       int reqTasks = 0;
-      float reqAddModTasks = 0;
-      float reqDeletedTasks = 0;
+      double reqAddModTasks = 0;
+      double reqDeletedTasks = 0;
 
       //Code Workflow Parsing
       if (!codeWorkflow.equals(IAtsTeamWorkflow.SENTINEL) && !getStateAtDate(codeWorkflow, rowDate).isEmpty()) {
          Collection<IAtsTask> tasks = getTaskList(codeWorkflow, rowDate);
-         float[] deletedCounts = getDeletedTaskCount(codeWorkflow, rowDate);
+         double[] deletedCounts = getDeletedTaskCount(codeWorkflow, rowDate, tasks);
          String stateAtDate = getStateAtDate(codeWorkflow, rowDate);
          buffer[6] = "Code";
          buffer[7] = codeWorkflow.getAtsId();
          buffer[8] = stateAtDate;
-         if (stateAtDate.equals("None")) {
-            buffer[9] = null;
-            buffer[10] = null;
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Analyze")) {
-            buffer[9] = getStateStartDate(codeWorkflow, rowDate, "Analyze");
-            buffer[10] = null;
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Authorize")) {
-            buffer[9] = getStateStartDate(codeWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(codeWorkflow, rowDate, "Authorize");
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Implement") || stateAtDate.equals("Test")) {
-            buffer[9] = getStateStartDate(codeWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(codeWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(codeWorkflow, rowDate, "Implement");
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Completed")) {
-            buffer[9] = getStateStartDate(codeWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(codeWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(codeWorkflow, rowDate, "Implement");
-            buffer[12] = getStateStartDate(codeWorkflow, rowDate, "Completed");
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Cancelled")) {
-            buffer[9] = getStateStartDate(codeWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(codeWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(codeWorkflow, rowDate, "Implement");
-            buffer[12] = null;
-            buffer[13] = getStateStartDate(codeWorkflow, rowDate, "Cancelled");
+         buffer[9] = null;
+         buffer[10] = null;
+         buffer[11] = null;
+         buffer[12] = null;
+         buffer[13] = null;
+         switch (stateAtDate) {
+            case "Analyze":
+               buffer[9] = getStateStartedDate(codeWorkflow, rowDate, stateAtDate);
+               break;
+            case "Authorize":
+               buffer[10] = getStateStartedDate(codeWorkflow, rowDate, stateAtDate);
+               buffer[9] = getStateStartedDate(codeWorkflow, rowDate, "Analyze");
+               break;
+            case "Test":
+            case "In_Work":
+            case "Implement":
+               buffer[11] = getStateStartedDate(codeWorkflow, rowDate, stateAtDate);
+               buffer[10] = getStateStartedDate(codeWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(codeWorkflow, rowDate, "Analyze");
+               break;
+            case "Complete":
+            case "Completed":
+               buffer[12] = getStateStartedDate(codeWorkflow, rowDate, stateAtDate);
+               buffer[11] = getStateStartedDate(codeWorkflow, rowDate, codeWorkflow.getCompletedFromState());
+               buffer[10] = getStateStartedDate(codeWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(codeWorkflow, rowDate, "Analyze");
+               break;
+            case "Close":
+            case "Closed with Problem":
+            case "Cancelled":
+               buffer[13] = getStateStartedDate(codeWorkflow, rowDate, stateAtDate);
+               buffer[11] = getStateStartedDate(codeWorkflow, rowDate, codeWorkflow.getCancelledFromState());
+               buffer[10] = getStateStartedDate(codeWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(codeWorkflow, rowDate, "Analyze");
+            case "None":
+               break;
          }
-
-         float tasksCompleted = getTaskCompleted(codeWorkflow, rowDate, tasks);
+         double tasksCompleted = getTaskCompleted(codeWorkflow, rowDate, tasks);
          int tasksCancelled = getTaskCancelled(codeWorkflow, rowDate, tasks);
-
+         double addModStat = tasks.size() - deletedCounts[0];
+         double addModComp = tasksCompleted - deletedCounts[1];
+         double addModCanc = tasksCancelled - deletedCounts[2];
          buffer[14] = tasks.size();
-         buffer[15] = tasksCompleted;
+         buffer[15] = Math.round(tasksCompleted * scale) / scale;
          buffer[16] = tasksCancelled;
-
-         buffer[17] = tasks.size() - deletedCounts[0];
-         buffer[18] = tasksCompleted - deletedCounts[1];
-         buffer[19] = tasksCancelled - deletedCounts[2];
-
+         buffer[17] = Math.round(addModStat * scale) / scale;
+         buffer[18] = Math.round(addModComp * scale) / scale;
+         buffer[19] = Math.round(addModCanc * scale) / scale;
          buffer[20] = deletedCounts[0];
          buffer[21] = deletedCounts[1];
          buffer[22] = deletedCounts[2];
-
          try {
             writer.writeRow(buffer);
          } catch (IOException ex) {
@@ -292,68 +276,65 @@ public final class DevProgressMetrics implements StreamingOutput {
       //Test Workflow Parsing
       if (!testWorkflow.equals(IAtsTeamWorkflow.SENTINEL) && !getStateAtDate(testWorkflow, rowDate).isEmpty()) {
          Collection<IAtsTask> tasks = getTaskList(testWorkflow, rowDate);
-         float[] deletedCounts = getDeletedTaskCount(testWorkflow, rowDate);
+         double[] deletedCounts = getDeletedTaskCount(testWorkflow, rowDate, tasks);
          String stateAtDate = getStateAtDate(testWorkflow, rowDate);
          buffer[6] = "Test";
          buffer[7] = testWorkflow.getAtsId();
          buffer[8] = stateAtDate;
-         if (stateAtDate.equals("None")) {
-            buffer[9] = null;
-            buffer[10] = null;
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Analyze")) {
-            buffer[9] = getStateStartDate(testWorkflow, rowDate, "Analyze");
-            buffer[10] = null;
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Authorize")) {
-            buffer[9] = getStateStartDate(testWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(testWorkflow, rowDate, "Authorize");
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Implement") || stateAtDate.equals("Test")) {
-            buffer[9] = getStateStartDate(testWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(testWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(testWorkflow, rowDate, "Implement");
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Completed")) {
-            buffer[9] = getStateStartDate(testWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(testWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(testWorkflow, rowDate, "Implement");
-            buffer[12] = getStateStartDate(testWorkflow, rowDate, "Completed");
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Cancelled")) {
-            buffer[9] = getStateStartDate(testWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(testWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(testWorkflow, rowDate, "Implement");
-            buffer[12] = null;
-            buffer[13] = getStateStartDate(testWorkflow, rowDate, "Cancelled");
+         buffer[9] = null;
+         buffer[10] = null;
+         buffer[11] = null;
+         buffer[12] = null;
+         buffer[13] = null;
+         switch (stateAtDate) {
+            case "Analyze":
+               buffer[9] = getStateStartedDate(testWorkflow, rowDate, stateAtDate);
+               break;
+            case "Authorize":
+               buffer[10] = getStateStartedDate(testWorkflow, rowDate, stateAtDate);
+               buffer[9] = getStateStartedDate(testWorkflow, rowDate, "Analyze");
+               break;
+            case "Test":
+            case "In_Work":
+            case "Implement":
+               buffer[11] = getStateStartedDate(testWorkflow, rowDate, stateAtDate);
+               buffer[10] = getStateStartedDate(testWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(testWorkflow, rowDate, "Analyze");
+               break;
+            case "Complete":
+            case "Completed":
+               buffer[12] = getStateStartedDate(testWorkflow, rowDate, stateAtDate);
+               buffer[11] = getStateStartedDate(testWorkflow, rowDate, testWorkflow.getCompletedFromState());
+               buffer[10] = getStateStartedDate(testWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(testWorkflow, rowDate, "Analyze");
+               break;
+            case "Close":
+            case "Closed with Problem":
+            case "Cancelled":
+               buffer[13] = getStateStartedDate(testWorkflow, rowDate, stateAtDate);
+               buffer[11] = getStateStartedDate(testWorkflow, rowDate, testWorkflow.getCancelledFromState());
+               buffer[10] = getStateStartedDate(testWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(testWorkflow, rowDate, "Analyze");
+            case "None":
+               break;
          }
-
          reqTasks = tasks.size();
          reqAddModTasks = tasks.size() - deletedCounts[0];
          reqDeletedTasks = deletedCounts[0];
-
-         float tasksCompleted = getTaskCompleted(testWorkflow, rowDate, tasks);
+         double tasksCompleted = getTaskCompleted(testWorkflow, rowDate, tasks);
          int tasksCancelled = getTaskCancelled(testWorkflow, rowDate, tasks);
-
+         double addModStat = tasks.size() - deletedCounts[0];
+         double addModComp = tasksCompleted - deletedCounts[1];
+         double addModCanc = tasksCancelled - deletedCounts[2];
          buffer[14] = tasks.size();
          buffer[15] = tasksCompleted;
          buffer[16] = tasksCancelled;
-
-         buffer[17] = tasks.size() - deletedCounts[0];
-         buffer[18] = tasksCompleted - deletedCounts[1];
-         buffer[19] = tasksCancelled - deletedCounts[2];
-
+         buffer[17] = Math.round(addModStat * scale) / scale;
+         buffer[18] = Math.round(addModComp * scale) / scale;
+         buffer[19] = Math.round(addModCanc * scale) / scale;
          buffer[20] = deletedCounts[0];
          buffer[21] = deletedCounts[1];
          buffer[22] = deletedCounts[2];
-
          try {
             writer.writeRow(buffer);
          } catch (IOException ex) {
@@ -369,45 +350,45 @@ public final class DevProgressMetrics implements StreamingOutput {
          buffer[6] = "Requirements";
          buffer[7] = requirementsWorkflow.getAtsId();
          buffer[8] = stateAtDate;
-
-         if (stateAtDate.equals("None")) {
-            buffer[9] = null;
-            buffer[10] = null;
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Analyze")) {
-            buffer[9] = getStateStartDate(requirementsWorkflow, rowDate, "Analyze");
-            buffer[10] = null;
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Authorize")) {
-            buffer[9] = getStateStartDate(requirementsWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(requirementsWorkflow, rowDate, "Authorize");
-            buffer[11] = null;
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Implement") || stateAtDate.equals("Test")) {
-            buffer[9] = getStateStartDate(requirementsWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(requirementsWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(requirementsWorkflow, rowDate, "Implement");
-            buffer[12] = null;
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Completed")) {
-            buffer[9] = getStateStartDate(requirementsWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(requirementsWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(requirementsWorkflow, rowDate, "Implement");
-            buffer[12] = getStateStartDate(requirementsWorkflow, rowDate, "Completed");
-            buffer[13] = null;
-         } else if (stateAtDate.equals("Cancelled")) {
-            buffer[9] = getStateStartDate(requirementsWorkflow, rowDate, "Analyze");
-            buffer[10] = getStateStartDate(requirementsWorkflow, rowDate, "Authorize");
-            buffer[11] = getStateStartDate(requirementsWorkflow, rowDate, "Implement");
-            buffer[12] = null;
-            buffer[13] = getStateStartDate(requirementsWorkflow, rowDate, "Cancelled");
+         buffer[9] = null;
+         buffer[10] = null;
+         buffer[11] = null;
+         buffer[12] = null;
+         buffer[13] = null;
+         switch (stateAtDate) {
+            case "Analyze":
+               buffer[9] = getStateStartedDate(requirementsWorkflow, rowDate, stateAtDate);
+               break;
+            case "Authorize":
+               buffer[10] = getStateStartedDate(requirementsWorkflow, rowDate, stateAtDate);
+               buffer[9] = getStateStartedDate(requirementsWorkflow, rowDate, "Analyze");
+               break;
+            case "Test":
+            case "In_Work":
+            case "Implement":
+               buffer[11] = getStateStartedDate(requirementsWorkflow, rowDate, stateAtDate);
+               buffer[10] = getStateStartedDate(requirementsWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(requirementsWorkflow, rowDate, "Analyze");
+               break;
+            case "Complete":
+            case "Completed":
+               buffer[12] = getStateStartedDate(requirementsWorkflow, rowDate, stateAtDate);
+               buffer[11] =
+                  getStateStartedDate(requirementsWorkflow, rowDate, requirementsWorkflow.getCompletedFromState());
+               buffer[10] = getStateStartedDate(requirementsWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(requirementsWorkflow, rowDate, "Analyze");
+               break;
+            case "Close":
+            case "Closed with Problem":
+            case "Cancelled":
+               buffer[13] = getStateStartedDate(requirementsWorkflow, rowDate, stateAtDate);
+               buffer[11] =
+                  getStateStartedDate(requirementsWorkflow, rowDate, requirementsWorkflow.getCancelledFromState());
+               buffer[10] = getStateStartedDate(requirementsWorkflow, rowDate, "Authorize");
+               buffer[9] = getStateStartedDate(requirementsWorkflow, rowDate, "Analyze");
+            case "None":
+               break;
          }
-
          buffer[14] = reqTasks;
          buffer[17] = reqAddModTasks;
          buffer[20] = reqDeletedTasks;
@@ -433,33 +414,25 @@ public final class DevProgressMetrics implements StreamingOutput {
             buffer[21] = 0;
             buffer[22] = 0;
          }
-
          try {
             writer.writeRow(buffer);
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
       }
-
    }
 
    private String getStateAtDate(IAtsWorkItem teamWorkflow, Date iterationDate) {
-      List<String> stateList = new ArrayList<String>();
-      try {
-         for (StateDefinition state : teamWorkflow.getWorkDefinition().getStates()) {
-            stateList.add(state.getName());
-         }
-      } catch (Exception ex) {
-         //DO NOTHING
+      if (allTime) {
+         return teamWorkflow.getCurrentStateName();
       }
-
-      String stateName = "";
+      String stateName = teamWorkflow.getStateMgr().getCurrentStateNameFast();
       Date stateStartDate = new GregorianCalendar(1916, 7, 15).getTime();
-
       try {
-         for (String visitedState : teamWorkflow.getStateMgr().getVisitedStateNames()) {
-            if (stateList.contains(visitedState)) {
-               Date newStateStartDate = teamWorkflow.getStateMgr().getStateStartedData(visitedState).getDate();
+         Date newStateStartDate = teamWorkflow.getStateMgr().getStateStartedData(stateName).getDate();
+         if (newStateStartDate.after(iterationDate)) {
+            for (String visitedState : teamWorkflow.getStateMgr().getVisitedStateNames()) {
+               newStateStartDate = teamWorkflow.getStateMgr().getStateStartedData(visitedState).getDate();
                if (newStateStartDate.before(iterationDate) && newStateStartDate.after(stateStartDate)) {
                   stateName = visitedState;
                   stateStartDate = newStateStartDate;
@@ -472,14 +445,14 @@ public final class DevProgressMetrics implements StreamingOutput {
       return stateName;
    }
 
-   private Date getStateStartDate(IAtsWorkItem teamWorkflow, Date iterationDate, String stateName) {
+   private Date getStateStartedDate(IAtsWorkItem teamWorkflow, Date iterationDate, String stateName) {
       try {
          IAtsLogItem stateStartedData = teamWorkflow.getStateMgr().getStateStartedData(stateName);
          if (stateStartedData.getDate().before(iterationDate)) {
             return stateStartedData.getDate();
          }
       } catch (Exception ex) {
-         //Do Nothing
+         //DO NOTHING
       }
       return null;
    }
@@ -500,27 +473,28 @@ public final class DevProgressMetrics implements StreamingOutput {
       return tasks;
    }
 
-   private float[] getDeletedTaskCount(IAtsTeamWorkflow teamWorkflow, Date iterationDate) {
-      float[] deletedCounts = new float[3];
-      float deletedCount = 0;
-      float deletedCompleteCount = 0;
-      float deletedCancelledCount = 0;
-      for (IAtsTask task : atsApi.getTaskService().getTasks(teamWorkflow)) {
+   private double[] getDeletedTaskCount(IAtsTeamWorkflow teamWorkflow, Date iterationDate, Collection<IAtsTask> tasks) {
+      double[] deletedCounts = new double[3];
+      double deletedCount = 0;
+      double deletedCompleteCount = 0;
+      double deletedCancelledCount = 0;
+      for (IAtsTask task : tasks) {
+         if (task.getCreatedDate().after(iterationDate)) {
+            continue;
+         }
          Matcher m = UI_DELETED.matcher(task.getName());
          if (m.find()) {
             try {
+               deletedCount++;
                StateDefinition state = stateNameToDefinition(task, iterationDate);
-
-               if (task.getCreatedDate().before(iterationDate)) {
-                  deletedCount++;
-                  if (task.isCompleted() && task.getCompletedDate().before(iterationDate)) {
-                     deletedCompleteCount++;
-                  } else if (task.isCancelled() && task.getCancelledDate().before(iterationDate)) {
-                     deletedCancelledCount++;
-                  } else if (state.getRecommendedPercentComplete() != null && state.getRecommendedPercentComplete() > 0) {
-                     deletedCompleteCount += (state.getRecommendedPercentComplete() / 100);
-                  }
+               if (task.isCompleted() && (allTime || task.getCompletedDate().before(iterationDate))) {
+                  deletedCompleteCount++;
+               } else if (task.isCancelled() && (allTime || task.getCancelledDate().before(iterationDate))) {
+                  deletedCancelledCount++;
+               } else if (state.getRecommendedPercentComplete() != null && state.getRecommendedPercentComplete() > 0) {
+                  deletedCompleteCount += (state.getRecommendedPercentComplete() / 100);
                }
+
             } catch (Exception Ex) {
                //Do Nothing
             }
@@ -532,8 +506,8 @@ public final class DevProgressMetrics implements StreamingOutput {
       return deletedCounts;
    }
 
-   private float getTaskCompleted(IAtsTeamWorkflow teamWorkflow, Date iterationDate, Collection<IAtsTask> tasks) {
-      float completedTasks = 0;
+   private double getTaskCompleted(IAtsTeamWorkflow teamWorkflow, Date iterationDate, Collection<IAtsTask> tasks) {
+      double completedTasks = 0;
       for (IAtsTask task : tasks) {
          try {
             StateDefinition state = stateNameToDefinition(task, iterationDate);
@@ -552,8 +526,15 @@ public final class DevProgressMetrics implements StreamingOutput {
    }
 
    private StateDefinition stateNameToDefinition(IAtsWorkItem item, Date iterationDate) {
+      if (allTime) {
+         return item.getStateDefinition();
+      }
+      String stateAtDate = getStateAtDate(item, iterationDate);
+      if (stateAtDate.equals(item.getCurrentStateName())) {
+         return item.getStateDefinition();
+      }
       for (StateDefinition state : item.getWorkDefinition().getStates()) {
-         if (state.getName().equals(getStateAtDate(item, iterationDate))) {
+         if (state.getName().equals(stateAtDate)) {
             return state;
          }
       }

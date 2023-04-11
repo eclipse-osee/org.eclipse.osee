@@ -20,7 +20,7 @@ public enum DevProgressItemId {
    ActionName("Action Name"),
    Program("Program"),
    Build("Build"),
-   Date("Date"),
+   Date("End Date"),
    Created("Created"),
    Requirements("Requirements Workflow"),
    WorkType("Workflow Type"),
