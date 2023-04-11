@@ -107,6 +107,10 @@ public interface IAtsStateManager {
 
    IAtsLogItem getStateStartedData(String stateName);
 
+   IAtsLogItem getStateCompletedData(IStateToken state);
+
+   IAtsLogItem getStateCompletedData(String stateName);
+
    Collection<? extends AtsUser> getAssigneesAdded();
 
    WorkState getState(String string);

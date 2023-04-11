@@ -26,9 +26,12 @@ public enum SoftwareReqVolatilityId {
    AddedReq("Added (Software Reqs)"),
    ModifiedReq("Modified (Software Reqs)"),
    DeletedReq("Deleted (Software Reqs)"),
-   AddedImpl("Added (Impl Details)"),
-   ModifiedImpl("Modified (Impl Details)"),
-   DeletedImpl("Deleted (Impl Details)"),
+   AddedSub("Added (Subsystem Details)"),
+   ModifiedSub("Modified (Subsystem Details)"),
+   DeletedSub("Deleted (Subsystem Details)"),
+   AddedHeading("Added (Heading Details)"),
+   ModifiedHeading("Modified (Heading Details)"),
+   DeletedHeading("Deleted (Heading Details)"),
    Week("Week"),
    Month("Month");
 

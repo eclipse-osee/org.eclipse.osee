@@ -208,6 +208,16 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
+   public IAtsLogItem getStateCompletedData(IStateToken state) {
+      return getStateCompletedData(state.getName());
+   }
+
+   @Override
+   public IAtsLogItem getStateCompletedData(String stateName) {
+      return workItem.getLog().getStateEvent(LogType.StateComplete, stateName);
+   }
+
+   @Override
    public void addAssignee(String stateName, AtsUser assignee) {
       addAssignees(stateName, Arrays.asList(assignee));
    }
