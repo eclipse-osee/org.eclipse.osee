@@ -400,21 +400,6 @@ public class OseeDb {
       OSEE_JOIN_TRANSACTION_TABLE.setTableExtras("TABLESPACE osee_join");
    }
 
-   public static final SqlTable OSEE_BRANCH_GROUP_TABLE = new SqlTable("osee_branch_group", "br_grp", 2);
-   public static final SqlColumn OSEE_BRANCH_GROUP_GROUP_TYPE =
-      OSEE_BRANCH_GROUP_TABLE.addColumn("GROUP_TYPE", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_BRANCH_GROUP_GROUP_ID =
-      OSEE_BRANCH_GROUP_TABLE.addColumn("GROUP_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_BRANCH_GROUP_BRANCH_ID =
-      OSEE_BRANCH_GROUP_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
-   public static final SqlColumn OSEE_BRANCH_GROUP_GAMMA_ID =
-      OSEE_BRANCH_GROUP_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
-   static {
-      OSEE_BRANCH_GROUP_TABLE.setPrimaryKeyConstraint(OSEE_BRANCH_GROUP_GROUP_TYPE, OSEE_BRANCH_GROUP_GROUP_ID,
-         OSEE_BRANCH_GROUP_BRANCH_ID);
-      OSEE_BRANCH_GROUP_TABLE.createIndex("OSEE_BRANCH_GROUP__G_IDX", false, OSEE_BRANCH_GROUP_GAMMA_ID);
-   }
-
    public static final SqlTable LDAP_DETAILS_TABLE = new SqlTable("ldap_details", "ldap_det");
    public static final SqlColumn LDAP_DETAILS_USER_NAME = LDAP_DETAILS_TABLE.addVarCharColumn("USER_NAME", 1000, false);
    public static final SqlColumn LDAP_DETAILS_PASSWORD = LDAP_DETAILS_TABLE.addVarCharColumn("PASSWORD", 1000, false);

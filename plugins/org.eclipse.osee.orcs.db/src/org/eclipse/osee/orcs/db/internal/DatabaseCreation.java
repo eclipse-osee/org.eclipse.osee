@@ -24,7 +24,6 @@ import static org.eclipse.osee.orcs.OseeDb.OSEE_ACTIVITY_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_ACTIVITY_TYPE_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_ARTIFACT_ACL_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_BRANCH_ACL_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_BRANCH_GROUP_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_CONFLICT_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_IMPORT_INDEX_MAP_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_IMPORT_MAP_TABLE;
@@ -110,7 +109,6 @@ public final class DatabaseCreation {
       jdbcClient.createTable(OSEE_JOIN_CLEANUP_TABLE);
       jdbcClient.createTable(OSEE_JOIN_CHAR_ID_TABLE);
       jdbcClient.createTable(OSEE_JOIN_TRANSACTION_TABLE);
-      jdbcClient.createTable(OSEE_BRANCH_GROUP_TABLE);
       jdbcClient.createTable(LDAP_DETAILS_TABLE);
       jdbcClient.createTable(TUPLE2);
       jdbcClient.createTable(TUPLE3);
@@ -170,7 +168,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(OSEE_JOIN_CLEANUP_TABLE);
       jdbcClient.dropTable(OSEE_JOIN_CHAR_ID_TABLE);
       jdbcClient.dropTable(OSEE_JOIN_TRANSACTION_TABLE);
-      jdbcClient.dropTable(OSEE_BRANCH_GROUP_TABLE);
       jdbcClient.dropTable(LDAP_DETAILS_TABLE);
       jdbcClient.dropTable(TUPLE2);
       jdbcClient.dropTable(TUPLE3);
