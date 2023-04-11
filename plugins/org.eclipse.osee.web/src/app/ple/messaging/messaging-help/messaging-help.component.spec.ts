@@ -17,12 +17,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { HelpHttpService } from '@osee/shared/services/help';
+import { helpHttpServiceMock } from '@osee/shared/testing';
 import { MessagingHelpComponent } from './messaging-help.component';
 
 describe('MessagingHelpComponent', () => {
 	let component: MessagingHelpComponent;
 	let fixture: ComponentFixture<MessagingHelpComponent>;
-	let loader: HarnessLoader;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -36,6 +37,7 @@ describe('MessagingHelpComponent', () => {
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
 				},
+				{ provide: HelpHttpService, useValue: helpHttpServiceMock },
 			],
 		}).compileComponents();
 	});
@@ -44,7 +46,6 @@ describe('MessagingHelpComponent', () => {
 		fixture = TestBed.createComponent(MessagingHelpComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', () => {

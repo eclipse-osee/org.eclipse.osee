@@ -32,6 +32,31 @@ const routes: Routes = [
 		path: ':helpPage',
 		loadComponent: () => import('./messaging-help.component'),
 		title: help?.pageTitle,
+		children: [
+			{
+				path: '',
+				loadComponent: () =>
+					import(
+						'./lib/messaging-help-static-content/messaging-help-static-content.component'
+					),
+				outlet: 'help-content',
+			},
+		],
+	},
+	{
+		path: 'page/:id',
+		loadComponent: () => import('./messaging-help.component'),
+		title: help?.pageTitle,
+		children: [
+			{
+				path: '',
+				loadComponent: () =>
+					import(
+						'./lib/messaging-help-content/messaging-help-content.component'
+					),
+				outlet: 'help-content',
+			},
+		],
 	},
 ];
 

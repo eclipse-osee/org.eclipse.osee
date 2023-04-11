@@ -12,8 +12,11 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import MessagingHelpContentComponent from 'src/app/ple/messaging/messaging-help/lib/messaging-help-content/messaging-help-content.component';
-import { MessagingHelpNavigationComponent } from 'src/app/ple/messaging/messaging-help/lib/messaging-help-navigation/messaging-help-navigation.component';
+import { RouterOutlet } from '@angular/router';
+import {
+	MessagingHelpContentComponent,
+	MessagingHelpNavigationComponent,
+} from '@osee/messaging/help';
 
 @Component({
 	selector: 'osee-messaging-help',
@@ -21,6 +24,7 @@ import { MessagingHelpNavigationComponent } from 'src/app/ple/messaging/messagin
 	styleUrls: ['./messaging-help.component.sass'],
 	standalone: true,
 	imports: [
+		RouterOutlet,
 		MatSidenavModule,
 		MessagingHelpNavigationComponent,
 		MessagingHelpContentComponent,

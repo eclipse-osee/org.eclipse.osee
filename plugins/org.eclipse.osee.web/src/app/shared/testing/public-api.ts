@@ -22,3 +22,5 @@ export * from './difference-report.service.mock';
 export * from './new-action.response.mock';
 export * from './single-diff.component.mock';
 export * from './user.response.mock';
+export * from './help-http.service.mock';
+export * from './help-pages.response.mock';

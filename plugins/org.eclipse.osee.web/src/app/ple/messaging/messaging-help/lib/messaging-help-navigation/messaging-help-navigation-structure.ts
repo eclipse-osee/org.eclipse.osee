@@ -15,7 +15,7 @@ import { navigationElement } from '@osee/shared/types';
 // if isDropdown, it has children
 // if !isDropdown, it has no children
 
-const helpNavigationStructure: navigationElement[] = [
+export const helpNavigationStructure: navigationElement[] = [
 	// Level-1
 	{
 		label: 'Help Overview',

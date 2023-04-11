@@ -10,4 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export { default } from './overview.routes';
+export * from './messaging-help-content/messaging-help-content.component';
+export * from './messaging-help-navigation/messaging-help-navigation-structure';
+export * from './messaging-help-navigation/messaging-help-navigation.component';
+export * from './messaging-help-static-content/messaging-help-static-content.component';

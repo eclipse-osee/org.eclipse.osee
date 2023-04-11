@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { from, iif, of, reduce, switchMap } from 'rxjs';
+import { from, iif, of, reduce, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,7 @@ import helpNavigationStructure from 'src/app/ple/messaging/messaging-help/lib/me
 import { navigationElement } from '@osee/shared/types';
 import { UserDataAccountService } from '@osee/auth';
 import { MatDividerModule } from '@angular/material/divider';
+import { HelpService } from '@osee/shared/services/help';
 
 @Component({
 	selector: 'osee-messaging-help-navigation',
@@ -37,20 +38,36 @@ import { MatDividerModule } from '@angular/material/divider';
 export class MessagingHelpNavigationComponent {
 	constructor(
 		private route: ActivatedRoute,
-		private userService: UserDataAccountService
+		private userService: UserDataAccountService,
+		private helpService: HelpService
 	) {
 		this.route.url.subscribe((url) => {
 			if (url.length > 0) {
-				this.currentPath = url[0].path;
+				this.currentPath = url.map((u) => u.path).join('/');
 			}
 		});
 	}
 
 	currentPath = '';
-
-	navElements = helpNavigationStructure;
-
+	staticNavElements = helpNavigationStructure;
+	loadedNavElements = this.helpService
+		.getHelpNavElements('MIM')
+		.pipe(tap((navElements) => this.openDropdowns(navElements)));
 	routePrefix = '/ple/messaging/help/';
+
+	private openDropdowns(navElements: navigationElement[]) {
+		navElements.forEach((e) => {
+			if (
+				e.isDropdown &&
+				e.children.find((c) => c.routerLink === this.currentPath)
+			) {
+				e.isDropdownOpen = true;
+			}
+			if (e.children.length > 0) {
+				this.openDropdowns(e.children);
+			}
+		});
+	}
 
 	getElementsWithPermission(elements: navigationElement[]) {
 		return from(elements).pipe(

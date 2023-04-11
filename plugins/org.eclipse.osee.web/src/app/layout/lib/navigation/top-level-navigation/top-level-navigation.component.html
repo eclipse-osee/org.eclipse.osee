@@ -13,72 +13,77 @@
 <mat-toolbar>OSEE Navigator</mat-toolbar>
 
 <mat-nav-list>
-	<mat-nav-list
+	<ng-template
 		*ngTemplateOutlet="
 			recursiveMenu;
 			context: {
 				$implicit: (getElementsWithPermission(navElements) | async)
 			}
-		"></mat-nav-list>
-	<ng-template
-		#recursiveMenu
-		let-elements>
-		<ng-container *ngFor="let element of elements">
-			<!-- If dropdown -->
-			<a
-				mat-list-item
-				*ngIf="element.isDropdown"
-				(click)="element.isDropdownOpen = !element.isDropdownOpen"
-				class="top-navigation top-navigation-dropdown"
-				[class.onpage]="router.url.includes(element.routerLink)"
-				[class.highlight]="element.isDropdownOpen">
-				<mat-icon
-					matListItemIcon
-					*ngIf="element.icon !== ''"
-					class="nav-icon"
-					>{{ element.icon }}</mat-icon
-				>
-				{{ element.label }}
-				<div matListItemMeta>
-					<mat-icon *ngIf="!element.isDropdownOpen"
-						>chevron_right</mat-icon
-					>
-					<mat-icon *ngIf="element.isDropdownOpen"
-						>expand_more</mat-icon
-					>
-				</div>
-			</a>
-			<!-- If not a dropdown -->
-			<a
-				mat-list-item
-				*ngIf="!element.isDropdown"
-				(click)="closeTopLevelNav()"
-				routerLink="{{ element.routerLink }}"
-				class="top-navigation top-navigation-link"
-				[class.onpage]="router.url === element.routerLink">
-				<mat-icon
-					matListItemIcon
-					*ngIf="element.icon !== ''"
-					class="nav-icon"
-					>{{ element.icon }}</mat-icon
-				>
-				{{ element.label }}
-			</a>
-			<!-- If the element has children and dropdown is open -->
-			<mat-nav-list
-				class="expanded-list"
-				*ngIf="element.children && element.isDropdownOpen">
-				<mat-divider></mat-divider>
-				<ng-container
-					*ngTemplateOutlet="
-						recursiveMenu;
-						context: {
-							$implicit:
-								(getElementsWithPermission(element.children)
-								| async)
-						}
-					"></ng-container>
-			</mat-nav-list>
-		</ng-container>
-	</ng-template>
+		"></ng-template>
 </mat-nav-list>
+
+<ng-template
+	#recursiveMenu
+	let-elements>
+	<div class="tw-px-2">
+		<mat-nav-list>
+			<ng-container *ngFor="let element of elements">
+				<!-- If dropdown -->
+				<a
+					mat-list-item
+					*ngIf="element.isDropdown"
+					(click)="element.isDropdownOpen = !element.isDropdownOpen"
+					class="top-navigation top-navigation-dropdown"
+					[class.onpage]="router.url.includes(element.routerLink)"
+					[class.highlight]="element.isDropdownOpen">
+					<mat-icon
+						matListItemIcon
+						*ngIf="element.icon !== ''"
+						class="nav-icon"
+						>{{ element.icon }}</mat-icon
+					>
+					{{ element.label }}
+					<div matListItemMeta>
+						<mat-icon *ngIf="!element.isDropdownOpen"
+							>chevron_right</mat-icon
+						>
+						<mat-icon *ngIf="element.isDropdownOpen"
+							>expand_more</mat-icon
+						>
+					</div>
+				</a>
+				<!-- If not a dropdown -->
+				<a
+					mat-list-item
+					*ngIf="!element.isDropdown"
+					(click)="closeTopLevelNav()"
+					routerLink="{{ element.routerLink }}"
+					class="top-navigation top-navigation-link"
+					[class.onpage]="router.url === element.routerLink">
+					<mat-icon
+						matListItemIcon
+						*ngIf="element.icon !== ''"
+						class="nav-icon"
+						>{{ element.icon }}</mat-icon
+					>
+					{{ element.label }}
+				</a>
+				<!-- If the element has children and dropdown is open -->
+				<mat-nav-list
+					class="expanded-list"
+					*ngIf="element.children && element.isDropdownOpen">
+					<mat-divider></mat-divider>
+					<ng-container
+						*ngTemplateOutlet="
+							recursiveMenu;
+							context: {
+								$implicit:
+									(getElementsWithPermission(element.children)
+									| async)
+							}
+						"></ng-container>
+				</mat-nav-list>
+			</ng-container>
+		</mat-nav-list>
+	</div>
+</ng-template>

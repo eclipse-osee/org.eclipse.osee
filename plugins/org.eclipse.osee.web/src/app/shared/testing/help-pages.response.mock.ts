@@ -10,4 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export { default } from './public-api';
+import { HelpPage } from '@osee/shared/types';
+export const helpPagesResponseMock: HelpPage[] = [
+	{
+		id: '1',
+		name: 'Help Header',
+		appName: 'APP',
+		header: true,
+		training: false,
+		markdownContent: '',
+		children: [
+			{
+				id: '11',
+				name: 'Help Page 1',
+				appName: 'APP',
+				header: false,
+				training: false,
+				markdownContent: '# Help Page 1',
+				children: [],
+			},
+		],
+	},
+];
