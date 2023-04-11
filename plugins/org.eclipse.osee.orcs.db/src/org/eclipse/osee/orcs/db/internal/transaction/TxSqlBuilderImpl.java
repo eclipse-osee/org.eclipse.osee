@@ -271,7 +271,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          boolean reuseGamma = reuseGamma(data);
 
          if (!reuseGamma && data.getType().isNewRelationTable()) {
-            if (data.getVersion().getGammaId().isValid()) {
+            if (data.getVersion().getGammaId().isValid() && !data.isDirty()) {
                reuseGamma = true;
             } else {
                GammaId gId = GammaId.valueOf(
