@@ -177,7 +177,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		const elementId = tableData[event.previousIndex].id;
 		tableData.splice(event.previousIndex, 1);
 		const newIndex = event.currentIndex - 1;
-		const afterArtifactId = newIndex < 1 ? 'start' : tableData[newIndex].id;
+		const afterArtifactId = newIndex < 0 ? 'start' : tableData[newIndex].id;
 
 		this.structureService
 			.changeElementRelationOrder(
