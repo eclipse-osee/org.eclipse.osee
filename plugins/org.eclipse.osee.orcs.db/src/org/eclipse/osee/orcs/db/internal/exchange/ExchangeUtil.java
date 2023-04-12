@@ -48,8 +48,15 @@ public class ExchangeUtil {
    public static Writer createXmlWriter(File tempFolder, String name, int bufferSize) throws IOException {
       File indexFile = new File(tempFolder, name);
       Writer writer = new BufferedWriter(
-         new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING), bufferSize);
-      writer.write(ExportImportXml.XML_HEADER);
+         new OutputStreamWriter(new FileOutputStream(indexFile), ExportTableConstants.ENCODING), bufferSize);
+      writer.write(ExportTableConstants.XML_HEADER);
+      return writer;
+   }
+
+   public static Writer createSqlWriter(File tempFolder, String name, int bufferSize) throws IOException {
+      File indexFile = new File(tempFolder, name);
+      Writer writer = new BufferedWriter(
+         new OutputStreamWriter(new FileOutputStream(indexFile), ExportTableConstants.ENCODING), bufferSize);
       return writer;
    }
 

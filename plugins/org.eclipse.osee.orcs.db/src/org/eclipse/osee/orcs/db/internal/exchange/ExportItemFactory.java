@@ -26,7 +26,8 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
-import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
+import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableSqlExportItem;
+import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableXmlExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.MetadataExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -94,30 +95,37 @@ public class ExportItemFactory {
       List<AbstractExportItem> items = new ArrayList<>();
 
       processTxOptions(options);
+      // perform sql export for now
+      options.put("sql_export", true);
 
       int gammaJoinId = createGammaJoin(getDbService(), branchJoinId, options);
 
       items.add(new ManifestExportItem(logger, preferences, items, options));
       items.add(new MetadataExportItem(logger, items, getDbService()));
 
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY);
-      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY);
+      if(options.getBoolean("sql_export")) {
+         addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
+         addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);
+         addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY);
+         addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY);
+         addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY);
+         addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_RELATION_LINK_DATA,
+            RELATION_LINK_TABLE_QUERY);
+      }
       return items;
    }
 
    private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
-      items.add(new DbTableExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
+      items.add(new DbTableXmlExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
+         modifiedQuery.toString(), bindData));
+   }
+
+   private void addSqlItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) {
+      StringBuilder modifiedQuery = new StringBuilder(query);
+      Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
+      items.add(new DbTableSqlExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
          modifiedQuery.toString(), bindData));
    }
 

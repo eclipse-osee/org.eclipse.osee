@@ -17,6 +17,7 @@ import java.io.Writer;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
@@ -35,12 +36,12 @@ public abstract class AbstractXmlExportItem extends AbstractExportItem {
       try {
          writer = ExchangeUtil.createXmlWriter(getWriteLocation(), getFileName(), getBufferSize());
          if (writer != null) {
-            ExportImportXml.openXmlNode(writer, ExportImportXml.DATA);
+            ExportImportXml.openXmlNode(writer, ExportTableConstants.DATA);
             try {
                checkForCancelled();
                doWork(writer);
             } finally {
-               ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);
+               ExportImportXml.closeXmlNode(writer, ExportTableConstants.DATA);
                writer.close();
             }
             writer.close();

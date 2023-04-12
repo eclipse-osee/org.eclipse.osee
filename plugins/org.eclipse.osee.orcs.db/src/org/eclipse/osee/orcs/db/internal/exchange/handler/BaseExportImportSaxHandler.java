@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
-import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -39,28 +39,28 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
    //SAXException is thrown by inheriting class
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {
+      if (localName.equalsIgnoreCase(ExportTableConstants.DATA)) {
          handleData(attributes);
-      } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.ENTRY)) {
          handleEntry(attributes);
-      } else if (localName.equalsIgnoreCase(ExportImportXml.BINARY_CONTENT)) {
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.BINARY_CONTENT)) {
          handleBinaryContent(attributes);
       }
    }
 
    @Override
    public void endElementFound(String uri, String localName, String name) throws Exception {
-      if (localName.equalsIgnoreCase(ExportImportXml.STRING_CONTENT)) {
-         finishStringContent(ExportImportXml.STRING_CONTENT);
-      } else if (localName.equalsIgnoreCase(ExportImportXml.OSEE_COMMENT)) {
-         finishStringContent(ExportImportXml.OSEE_COMMENT);
-      } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_NAME)) {
-         finishStringContent(ExportImportXml.BRANCH_NAME);
-      } else if (localName.equalsIgnoreCase(ExportImportXml.RATIONALE)) {
-         finishStringContent(ExportImportXml.RATIONALE);
-      } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
+      if (localName.equalsIgnoreCase(ExportTableConstants.STRING_CONTENT)) {
+         finishStringContent(ExportTableConstants.STRING_CONTENT);
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.OSEE_COMMENT)) {
+         finishStringContent(ExportTableConstants.OSEE_COMMENT);
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.BRANCH_NAME)) {
+         finishStringContent(ExportTableConstants.BRANCH_NAME);
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.RATIONALE)) {
+         finishStringContent(ExportTableConstants.RATIONALE);
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.ENTRY)) {
          finishEntry();
-      } else if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.DATA)) {
          finishData();
       }
    }

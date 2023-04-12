@@ -34,12 +34,13 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DbTableExportItem extends AbstractXmlExportItem {
+public class DbTableXmlExportItem extends AbstractXmlExportItem {
 
    private final StringBuilder binaryContentBuffer = new StringBuilder();
    private final StringBuilder stringContentBuffer = new StringBuilder();
@@ -52,7 +53,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
 
-   public DbTableExportItem(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
+   public DbTableXmlExportItem(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
       super(logger, id);
       this.jdbcClient = jdbcClient;
       this.resourceManager = resourceManager;
@@ -65,7 +66,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws IOException {
-      tempFolder = new File(tempFolder + File.separator + ExportImportXml.RESOURCE_FOLDER_NAME);
+      tempFolder = new File(tempFolder + File.separator + ExportTableConstants.RESOURCE_FOLDER_NAME);
       if (tempFolder.exists() != true) {
          tempFolder.mkdirs();
       }
@@ -100,7 +101,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
 
    private void processData(Appendable appendable, JdbcStatement chStmt) {
       try {
-         ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
+         ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.ENTRY);
 
          try {
             int numberOfColumns = chStmt.getColumnCount();
@@ -111,18 +112,18 @@ public class DbTableExportItem extends AbstractXmlExportItem {
                if (columnName.equals("uri")) {
                   handleBinaryContent(binaryContentBuffer, value);
                } else if (columnName.equals("value")) {
-                  handleStringContent(stringContentBuffer, value, ExportImportXml.STRING_CONTENT);
-               } else if (columnName.equals(ExportImportXml.OSEE_COMMENT)) {
+                  handleStringContent(stringContentBuffer, value, ExportTableConstants.STRING_CONTENT);
+               } else if (columnName.equals(ExportTableConstants.OSEE_COMMENT)) {
                   handleStringContent(oseeCommentBuffer, value, columnName);
-               } else if (columnName.equals(ExportImportXml.BRANCH_NAME)) {
+               } else if (columnName.equals(ExportTableConstants.BRANCH_NAME)) {
                   handleStringContent(branchNameBuffer, value, columnName);
-               } else if (columnName.equals(ExportImportXml.RATIONALE)) {
+               } else if (columnName.equals(ExportTableConstants.RATIONALE)) {
                   handleStringContent(rationaleBuffer, value, columnName);
-               } else if (columnName.equals(ExportImportXml.ART_TYPE_ID)) {
+               } else if (columnName.equals(ExportTableConstants.ART_TYPE_ID)) {
                   handleTypeId(appendable, value);
-               } else if (columnName.equals(ExportImportXml.ATTR_TYPE_ID)) {
+               } else if (columnName.equals(ExportTableConstants.ATTR_TYPE_ID)) {
                   handleTypeId(appendable, value);
-               } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
+               } else if (columnName.equals(ExportTableConstants.REL_TYPE_ID)) {
                   handleTypeId(appendable, value);
                } else {
                   Timestamp timestamp = asTimestamp(value);
@@ -161,7 +162,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
                   appendable.append(rationaleBuffer);
                   rationaleBuffer.delete(0, rationaleBuffer.length());
                }
-               ExportImportXml.closeXmlNode(appendable, ExportImportXml.ENTRY);
+               ExportImportXml.closeXmlNode(appendable, ExportTableConstants.ENTRY);
             } else {
                ExportImportXml.closePartialXmlNode(appendable);
             }
@@ -197,7 +198,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       String uriData = (String) value;
       if (Strings.isValid(uriData)) {
          uriData = exportBinaryDataTo(getWriteLocation(), uriData);
-         ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.BINARY_CONTENT);
+         ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.BINARY_CONTENT);
          ExportImportXml.addXmlAttribute(appendable, "location", uriData);
          ExportImportXml.closePartialXmlNode(appendable);
       }
@@ -220,7 +221,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }
       String uuidString = String.valueOf(typeId);
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuidString);
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.TYPE_GUID, uuidString);
    }
 
    private void handleStringContent(Appendable appendable, Object value, String tag) throws IOException {

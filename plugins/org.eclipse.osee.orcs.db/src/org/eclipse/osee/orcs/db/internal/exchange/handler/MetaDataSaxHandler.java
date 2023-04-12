@@ -27,7 +27,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.SQL3DataType;
-import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.xml.sax.Attributes;
 
 /**
@@ -52,19 +52,19 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) {
-      if (localName.equalsIgnoreCase(ExportImportXml.METADATA)) {
+      if (localName.equalsIgnoreCase(ExportTableConstants.METADATA)) {
          this.importMetadataMap.clear();
-      } else if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {
-         String tableName = attributes.getValue(ExportImportXml.TABLE_NAME);
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.TABLE)) {
+         String tableName = attributes.getValue(ExportTableConstants.TABLE_NAME);
          if (Strings.isValid(tableName)) {
             this.currentMetadata = new MetaData(tableName);
             this.importMetadataMap.put(tableName, currentMetadata);
          } else {
             this.currentMetadata = null;
          }
-      } else if (localName.equalsIgnoreCase(ExportImportXml.COLUMN)) {
-         String columnName = attributes.getValue(ExportImportXml.ID);
-         String typeName = attributes.getValue(ExportImportXml.TYPE);
+      } else if (localName.equalsIgnoreCase(ExportTableConstants.COLUMN)) {
+         String columnName = attributes.getValue(ExportTableConstants.ID);
+         String typeName = attributes.getValue(ExportTableConstants.TYPE);
          SQL3DataType sql3DataType = SQL3DataType.valueOf(typeName);
          this.currentMetadata.addColumn(columnName, sql3DataType);
       }
@@ -72,7 +72,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    @Override
    public void endElementFound(String uri, String localName, String name) throws Exception {
-      if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {
+      if (localName.equalsIgnoreCase(ExportTableConstants.TABLE)) {
          this.currentMetadata = null;
       }
    }

@@ -45,7 +45,7 @@ public enum ExportItem implements IExportItem {
 
    @Override
    public String getFileName() {
-      String extension = this != EXPORT_TYPE_MODEL ? ".xml" : ".osee";
+      String extension = this != EXPORT_TYPE_MODEL ? ".sql" : ".osee";
       return this + extension;
    }
 
