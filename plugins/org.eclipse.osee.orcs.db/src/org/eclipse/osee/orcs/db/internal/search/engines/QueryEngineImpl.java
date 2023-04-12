@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -267,8 +268,17 @@ public class QueryEngineImpl implements QueryEngine {
                otherArtifact = createArtifact(stmt, otherArtId, otherArtType, queryData, queryFactory);
                artifactMap.put(otherArtifact, otherArtifact);
             }
+            /*
+             * If using followSearch, multi rows of a relation may return in some conditions e.g. followSearch Ideally
+             * should try and updates handlers so that select * isn't used, instead explicity calling out columns so
+             * that some can be excluded in final select
+             */
 
-            artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
+            RelationTypeSide relTypeSide = new RelationTypeSide(tokenService.getRelationTypeOrCreate(typeId), side);
+            if (!artifact.areRelated(relTypeSide, otherArtifact)) {
+               artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
+            }
+
          }
       };
 
