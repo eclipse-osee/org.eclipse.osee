@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
@@ -176,11 +175,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    @Override
-   public void refreshRelations() {
-      Jobs.startJob(new RefreshRelations());
-   }
-
-   @Override
    protected void addPages() {
       OseeStatusContributionItemFactory.addTo(this, true);
       setPartName(getEditorInput().getName());
@@ -256,13 +250,11 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    private void createRelationsTab() {
-      if (ServiceUtil.accessControlService().isOseeAdmin()) {
-         relTab = new ArtEdRelationsTab(this, getArtifactFromEditorInput());
-         try {
-            addPage(relTab);
-         } catch (PartInitException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+      relTab = new ArtEdRelationsTab(this, getArtifactFromEditorInput());
+      try {
+         addPage(relTab);
+      } catch (PartInitException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -286,8 +278,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          ArtifactEditorOutlinePage page = getOutlinePage();
          page.setInput(this);
          return (T) page;
-      } else if (type == RelationsComposite.class) {
-         return (T) getFormPage().getRelationsComposite();
       }
       return super.getAdapter(type);
    }
@@ -297,27 +287,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          outlinePage = new ArtifactEditorOutlinePage();
       }
       return outlinePage;
-   }
-
-   private final class RefreshRelations extends UIJob {
-      public RefreshRelations() {
-         super("Refresh Relations");
-      }
-
-      @Override
-      public IStatus runInUIThread(IProgressMonitor monitor) {
-         ArtifactFormPage page = getFormPage();
-         if (page != null) {
-            page.showBusy(true);
-            RelationsComposite relationsComposite = page.getRelationsComposite();
-            if (relationsComposite != null && !relationsComposite.isDisposed()) {
-               relationsComposite.refresh();
-               onDirtied();
-            }
-            page.showBusy(false);
-         }
-         return Status.OK_STATUS;
-      }
    }
 
    private final class RefreshDirtyArtifactJob extends UIJob {

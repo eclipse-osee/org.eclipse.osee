@@ -42,13 +42,11 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IArtifactEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -230,10 +228,6 @@ public class ArtifactFormPage extends FormPage {
       attrFormSection =
          new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED);
       sectionParts.put(SectionEnum.Attributes, attrFormSection);
-      if (!ServiceUtil.accessControlService().isOseeAdmin()) {
-         sectionParts.put(SectionEnum.Relations, new RelationsFormSection(getEditor(), form.getBody(), toolkit,
-            sectionStyle | ExpandableComposite.EXPANDED, true));
-      }
 
       for (SectionPart part : sectionParts.values()) {
          managedForm.addPart(part);
@@ -335,14 +329,6 @@ public class ArtifactFormPage extends FormPage {
          part.dispose();
       }
       super.dispose();
-   }
-
-   public RelationsComposite getRelationsComposite() {
-      SectionPart section = sectionParts.get(SectionEnum.Relations);
-      if (section instanceof RelationsFormSection) {
-         return ((RelationsFormSection) section).getRelationComposite();
-      }
-      return null;
    }
 
    public void refresh() {
