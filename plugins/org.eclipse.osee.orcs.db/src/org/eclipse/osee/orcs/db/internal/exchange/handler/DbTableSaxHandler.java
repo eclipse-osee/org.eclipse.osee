@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
-import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
 import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
 
@@ -72,7 +72,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
 
    private String importBinaryContent(String uriValue, String gammaId) {
       String relativePath = Lib.isWindows() ? uriValue : uriValue.replaceAll("\\\\", File.separator);
-      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;
+      String entrySearch = ExportTableConstants.RESOURCE_FOLDER_NAME + File.separator + relativePath;
       if (exportDataProvider.getExportedDataRoot() != null) {
          File entry = new File(exportDataProvider.getExportedDataRoot(), entrySearch);
          if (entry.exists()) {
@@ -109,7 +109,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       boolean process = true;
       try {
          if (!branchesToImport.isEmpty()) {
-            String branchUuidString = fieldMap.get(ExportImportXml.PART_OF_BRANCH);
+            String branchUuidString = fieldMap.get(ExportTableConstants.PART_OF_BRANCH);
             if (Strings.isValid(branchUuidString)) {
                if (!branchesToImport.contains(Integer.valueOf(branchUuidString))) {
                   process = false;

@@ -472,7 +472,11 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
                   RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(),
                      wrapper.getArtifactB());
                   Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(wrapper);
-                  refreshParent(parent);
+                  try {
+                     refreshParent(parent);
+                  } catch (org.eclipse.swt.SWTException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -504,12 +508,17 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    }
 
    public void refreshParent(Object parent) {
-      if (parent != null) {
-         treeViewer.update(parent, null);
-         treeViewer.refresh(parent);
-      } else {
-         treeViewer.refresh();
-      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (parent != null) {
+               treeViewer.update(parent, null);
+               treeViewer.refresh(parent);
+            } else {
+               treeViewer.refresh();
+            }
+         }
+      });
    }
 
    private final class KeySelectedListener implements KeyListener {

@@ -27,6 +27,7 @@ import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
@@ -44,7 +45,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      ExportImportXml.openXmlNode(appendable, ExportImportXml.METADATA);
+      ExportImportXml.openXmlNode(appendable, ExportTableConstants.METADATA);
       try (JdbcConnection connection = jdbcClient.getConnection()) {
          DatabaseMetaData metaData = connection.getMetaData();
          String[] tableTypes = getTypes(metaData);
@@ -55,7 +56,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
             }
          }
       } finally {
-         ExportImportXml.closeXmlNode(appendable, ExportImportXml.METADATA);
+         ExportImportXml.closeXmlNode(appendable, ExportTableConstants.METADATA);
       }
    }
 
@@ -122,13 +123,13 @@ public class MetadataExportItem extends AbstractXmlExportItem {
                String tableName = resultSet.getString("TABLE_NAME");
                String schemaName = resultSet.getString("TABLE_SCHEM");
                if (targetTable.equalsIgnoreCase(tableName)) {
-                  ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.TABLE);
-                  ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TABLE_NAME, tableName.toLowerCase());
+                  ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.TABLE);
+                  ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.TABLE_NAME, tableName.toLowerCase());
                   ExportImportXml.endOpenedPartialXmlNode(appendable);
 
                   processColumnMetaData(appendable, metaData, schemaName, tableName);
 
-                  ExportImportXml.closeXmlNode(appendable, ExportImportXml.TABLE);
+                  ExportImportXml.closeXmlNode(appendable, ExportTableConstants.TABLE);
                   break;
                }
             }
@@ -150,10 +151,10 @@ public class MetadataExportItem extends AbstractXmlExportItem {
          }
          if (resultSet != null) {
             while (resultSet.next()) {
-               ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.COLUMN);
+               ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.COLUMN);
                try {
                   String columnId = resultSet.getString("COLUMN_NAME").toLowerCase();
-                  ExportImportXml.addXmlAttribute(appendable, ExportImportXml.ID, columnId);
+                  ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.ID, columnId);
 
                   int dataType = resultSet.getInt("DATA_TYPE");
                   if (JdbcDbType.getDbType(metaData).equals(JdbcDbType.foxpro)) {
@@ -162,7 +163,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
                      }
                   }
                   String dataTypeName = SQL3DataType.get(dataType).name();
-                  ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE, dataTypeName);
+                  ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.TYPE, dataTypeName);
                } finally {
                   ExportImportXml.closePartialXmlNode(appendable);
                }

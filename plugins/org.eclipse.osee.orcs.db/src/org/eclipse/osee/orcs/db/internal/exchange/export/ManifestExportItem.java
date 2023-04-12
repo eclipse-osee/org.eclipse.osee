@@ -22,6 +22,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
@@ -41,20 +42,21 @@ public class ManifestExportItem extends AbstractXmlExportItem {
    }
 
    private void addEntry(Appendable appendable, String fileName, int priority, String source) throws IOException {
-      ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.ID, fileName);
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.PRIORITY, priority);
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.SOURCE, source);
+      ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.ENTRY);
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.ID, fileName);
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.PRIORITY, priority);
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.SOURCE, source);
       ExportImportXml.closePartialXmlNode(appendable);
    }
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.EXPORT_ENTRY);
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.DATABASE_ID, preferences.getSystemUuid());
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_VERSION, OseeCodeVersion.getBundleVersion());
+      ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.EXPORT_ENTRY);
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.DATABASE_ID, preferences.getSystemUuid());
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.EXPORT_VERSION,
+         OseeCodeVersion.getBundleVersion());
 
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_DATE,
+      ExportImportXml.addXmlAttribute(appendable, ExportTableConstants.EXPORT_DATE,
          Long.valueOf(new Date().getTime()).toString());
       ExportImportXml.closePartialXmlNode(appendable);
 
@@ -64,7 +66,7 @@ public class ManifestExportItem extends AbstractXmlExportItem {
                relationalItem.getSource());
          }
       }
-      ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.OPTIONS);
+      ExportImportXml.openPartialXmlNode(appendable, ExportTableConstants.OPTIONS);
       for (ExportOptions exportOption : ExportOptions.values()) {
          String value = options.get(exportOption.name());
          ExportImportXml.addXmlAttribute(appendable, exportOption.name(), value);

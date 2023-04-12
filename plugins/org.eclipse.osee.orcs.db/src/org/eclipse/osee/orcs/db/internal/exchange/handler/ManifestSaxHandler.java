@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
+import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -49,24 +49,24 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      if (localName.equalsIgnoreCase(ExportImportXml.EXPORT_ENTRY)) {
-         sourceDatabaseId = attributes.getValue(ExportImportXml.DATABASE_ID);
-         sourceExportDate = new Date(Long.parseLong(attributes.getValue(ExportImportXml.EXPORT_DATE)));
-         exportVersion = attributes.getValue(ExportImportXml.EXPORT_VERSION);
+      if (localName.equalsIgnoreCase(ExportTableConstants.EXPORT_ENTRY)) {
+         sourceDatabaseId = attributes.getValue(ExportTableConstants.DATABASE_ID);
+         sourceExportDate = new Date(Long.parseLong(attributes.getValue(ExportTableConstants.EXPORT_DATE)));
+         exportVersion = attributes.getValue(ExportTableConstants.EXPORT_VERSION);
       }
       super.startElementFound(uri, localName, name, attributes);
    }
 
    @Override
    protected void processData(Map<String, String> fieldMap) {
-      String fileName = fieldMap.get(ExportImportXml.ID);
-      Integer priority = Integer.valueOf(fieldMap.get(ExportImportXml.PRIORITY));
-      String source = fieldMap.get(ExportImportXml.SOURCE);
+      String fileName = fieldMap.get(ExportTableConstants.ID);
+      Integer priority = Integer.valueOf(fieldMap.get(ExportTableConstants.PRIORITY));
+      String source = fieldMap.get(ExportTableConstants.SOURCE);
 
       if (Strings.isValid(fileName) && Strings.isValid(source)) {
-         if (source.equals(ExportImportXml.TYPE_MODEL)) {
+         if (source.equals(ExportTableConstants.TYPE_MODEL)) {
             typeModelFile = fileName;
-         } else if (source.equals(ExportImportXml.DB_SCHEMA)) {
+         } else if (source.equals(ExportTableConstants.DB_SCHEMA)) {
             this.metadataFile = fileName;
          } else {
             ImportFile importFile = new ImportFile(fileName, source, priority);
