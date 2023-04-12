@@ -29,8 +29,6 @@ public interface IArtifactEditorEventHandler {
 
    public void closeEditor();
 
-   public void refreshRelations();
-
    public Artifact getArtifactFromEditorInput();
 
    public void setMainImage(Image titleImage);

@@ -120,13 +120,6 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IArti
                               handler.refreshDirtyArtifact();
                            }
                         }
-
-                        boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
-                        boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
-                        if (relModified || reorderArt) {
-                           handler.refreshRelations();
-                           handler.getEditor().onDirtied();
-                        }
                      }
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, Level.SEVERE,
@@ -179,13 +172,6 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IArti
                            if (art.isOfType(CoreArtifactTypes.AccessControlModel)) {
                               handler.refreshDirtyArtifact();
                            }
-                        }
-
-                        boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
-                        boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
-                        if (relModified || reorderArt) {
-                           handler.refreshRelations();
-                           handler.getEditor().onDirtied();
                         }
                      }
                   } catch (Exception ex) {

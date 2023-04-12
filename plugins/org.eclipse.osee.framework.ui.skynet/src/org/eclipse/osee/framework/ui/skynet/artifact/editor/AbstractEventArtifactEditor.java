@@ -51,9 +51,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
    }
 
    @Override
-   public abstract void refreshRelations();
-
-   @Override
    public void setMainImage(Image titleImage) {
       super.setTitleImage(titleImage);
    }
