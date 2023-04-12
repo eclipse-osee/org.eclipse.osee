@@ -162,16 +162,19 @@ public class ReviewDefectItem {
    }
 
    public String toXml(boolean andGuid) {
-      StringBuilder sb =
-         new StringBuilder("<severity>" + severity.name() + "</severity><disposition>" + disposition.name() +
-         //
-            "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() +
-            //
-            "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
-            //
-            "</location><resolution>" + resolution + "</resolution>" + "<closed>" + closed + "</closed>" + "<notes>" + notes +
-            //
-            "</notes><id>" + id + "</id> + \"<closeduserid>\" + closedUserId + \"</closeduserid>\"");
+      StringBuilder sb = new StringBuilder( //
+         "<severity>" + severity.name() + "</severity>" + //
+            "<disposition>" + disposition.name() + "</disposition>" + //
+            "<injectionActivity>" + injectionActivity.name() + "</injectionActivity>" + //
+            "<date>" + date.getTime() + "</date>" + //
+            "<user>" + userId + "</user>" + //
+            "<description>" + description + "</description>" + //
+            "<location>" + location + "</location>" + //
+            "<resolution>" + resolution + "</resolution>" + //
+            "<closed>" + closed + "</closed>" + //
+            "<notes>" + notes + "</notes>" + //
+            "<id>" + id + "</id> " + //
+            "<closeduserid>" + closedUserId + "</closeduserid>");
       if (andGuid) {
          sb.append("<guid>" + guid + "</guid>");
       }

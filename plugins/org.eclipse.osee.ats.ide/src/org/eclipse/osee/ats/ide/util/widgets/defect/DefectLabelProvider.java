@@ -67,8 +67,10 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          }
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Closed_By_Col)) {
          try {
-            User user = UserManager.getUserByUserId(defectItem.getClosedUserId());
-            return ArtifactImageManager.getImage(user);
+            if (Strings.isValid(defectItem.getClosedUserId())) {
+               User user = UserManager.getUserByUserId(defectItem.getClosedUserId());
+               return ArtifactImageManager.getImage(user);
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
