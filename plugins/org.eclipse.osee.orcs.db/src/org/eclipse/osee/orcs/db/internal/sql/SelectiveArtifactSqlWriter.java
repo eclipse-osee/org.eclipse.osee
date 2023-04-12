@@ -224,7 +224,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
          write(
             " where exists (select 'x' from " + attrSearchAlias + " where " + getJdbcClient().getDbType().getInStringSql(
-               attrSearchAlias + ".art_path", "','||" + fieldAlias + ".art_id||','") + "> 0 )");
+               fieldAlias + ".art_path",
+               "','||" + attrSearchAlias + ".art_id||','") + " > 0 or " + getJdbcClient().getDbType().getInStringSql(
+                  attrSearchAlias + ".art_path",
+                  "','||" + fieldAlias + ".art_id||','") + " > 0 or " + getJdbcClient().getDbType().getInStringSql(
+                     attrSearchAlias + ".art_path", "','||" + fieldAlias + ".other_art_id||','") + " > 0 )");
+
       }
       if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
          write(" ORDER BY art_id");
