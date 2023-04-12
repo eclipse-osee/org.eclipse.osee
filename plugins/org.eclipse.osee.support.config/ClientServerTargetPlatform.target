@@ -17,14 +17,11 @@
 <plugin id="com.ctc.wstx"/>
 <plugin id="org.apache.commons.collections4"/>
 <plugin id="org.apache.commons.math3"/>
-<plugin id="com.ctc.wstx.source"/>
 <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
 <plugin id="com.fasterxml.jackson.core.jackson-core"/>
 <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
-<plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base.source"/>
 <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
-<plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider.source"/>
 <plugin id="com.google.eclipse.mechanic"/>
 <plugin id="com.google.gerrit.common"/>
 <plugin id="com.google.gerrit.prettify"/>
@@ -34,8 +31,6 @@
 <plugin id="com.google.gwt.servlet"/>
 <plugin id="com.google.gwtjsonrpc"/>
 <plugin id="com.google.gwtorm"/>
-<plugin id="com.google.inject"/>
-<plugin id="com.google.inject.source"/>
 <plugin id="com.ibm.icu"/>
 <plugin id="com.ibm.icu.source"/>
 <plugin id="com.jcraft.jsch"/>
@@ -43,7 +38,6 @@
 <plugin id="com.sun.el"/>
 <plugin id="com.sun.el.source"/>
 <plugin id="com.sun.xml.fastinfoset"/>
-<plugin id="com.sun.xml.fastinfoset.source"/>
 <plugin id="javaewah"/>
 <plugin id="javax.activation"/>
 <plugin id="javax.annotation" version="1.3.5.v20200909-1856"/>
@@ -53,7 +47,6 @@
 <plugin id="javax.inject"/>
 <plugin id="javax.inject.source"/>
 <plugin id="javax.mail.glassfish"/>
-<plugin id="javax.mail.glassfish.source"/>
 <plugin id="javax.servlet" version="3.1.0.v201410161800"/>
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
@@ -74,8 +67,6 @@
 <plugin id="org.apache.ant.source"/>
 <plugin id="org.apache.aries.blueprint"/>
 <plugin id="org.apache.aries.blueprint.annotation"/>
-<plugin id="org.apache.aries.blueprint.annotation.source"/>
-<plugin id="org.apache.aries.blueprint.source"/>
 <plugin id="org.apache.aries.proxy"/>
 <plugin id="org.apache.aries.util"/>
 <plugin id="org.apache.batik.constants"/>
@@ -86,25 +77,18 @@
 <plugin id="org.apache.batik.i18n.source"/>
 <plugin id="org.apache.batik.util"/>
 <plugin id="org.apache.batik.util.source"/>
-<plugin id="org.apache.commons.codec" version="1.14.0.v20200818-1422"/>
 <plugin id="org.apache.commons.compress" version="1.19.0.v20200106-2343"/>
 <plugin id="org.apache.commons.dbcp"/>
-<plugin id="org.apache.commons.dbcp.source"/>
 <plugin id="org.apache.commons.httpclient"/>
-<plugin id="org.apache.commons.httpclient.source"/>
 <plugin id="org.apache.commons.io"/>
 <plugin id="org.apache.commons.jxpath"/>
 <plugin id="org.apache.commons.jxpath.source"/>
 <plugin id="org.apache.commons.lang"/>
-<plugin id="org.apache.commons.lang.source"/>
 <plugin id="org.apache.commons.lang3"/>
-<plugin id="org.apache.commons.lang3.source"/>
 <plugin id="org.apache.commons.logging" version="1.2.0.v20180409-1502"/>
 <plugin id="org.apache.commons.logging.source"/>
 <plugin id="org.apache.commons.net"/>
-<plugin id="org.apache.commons.net.source"/>
 <plugin id="org.apache.commons.pool"/>
-<plugin id="org.apache.commons.pool.source"/>
 <plugin id="org.apache.cxf.cxf-core"/>
 <plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs"/>
 <plugin id="org.apache.cxf.cxf-rt-rs-client"/>
@@ -127,11 +111,8 @@
 <plugin id="org.apache.httpcomponents.httpcore"/>
 <plugin id="org.apache.jasper.glassfish"/>
 <plugin id="org.apache.jasper.glassfish.source"/>
-<plugin id="org.apache.lucene.analyzers-common" version="8.4.1.v20200122-1459"/>
 <plugin id="org.apache.lucene.analyzers-smartcn"/>
-<plugin id="org.apache.lucene.core" version="8.4.1.v20200122-1459"/>
 <plugin id="org.apache.oro"/>
-<plugin id="org.apache.oro.source"/>
 <plugin id="org.apache.poi"/>
 <plugin id="org.apache.poi.ooxml"/>
 <plugin id="org.apache.poi.ooxml.schemas"/>
@@ -146,7 +127,6 @@
 <plugin id="org.apache.xmlgraphics"/>
 <plugin id="org.apache.xmlgraphics.source"/>
 <plugin id="org.codehaus.stax2"/>
-<plugin id="org.codehaus.stax2.source"/>
 <plugin id="org.eclipse.ant.core"/>
 <plugin id="org.eclipse.ant.core.source"/>
 <plugin id="org.eclipse.ant.launching"/>
@@ -277,7 +257,6 @@
 <plugin id="org.eclipse.equinox.bidi"/>
 <plugin id="org.eclipse.equinox.bidi.source"/>
 <plugin id="org.eclipse.equinox.cm"/>
-<plugin id="org.eclipse.equinox.cm.source"/>
 <plugin id="org.eclipse.equinox.common"/>
 <plugin id="org.eclipse.equinox.common.source"/>
 <plugin id="org.eclipse.equinox.concurrent"/>
@@ -303,7 +282,6 @@
 <plugin id="org.eclipse.equinox.launcher.source"/>
 <plugin id="org.eclipse.equinox.launcher.win32.win32.x86_64"/>
 <plugin id="org.eclipse.equinox.metatype"/>
-<plugin id="org.eclipse.equinox.metatype.source"/>
 <plugin id="org.eclipse.equinox.p2.artifact.repository"/>
 <plugin id="org.eclipse.equinox.p2.artifact.repository.source"/>
 <plugin id="org.eclipse.equinox.p2.console"/>
@@ -422,14 +400,14 @@
 <plugin id="org.eclipse.jdt.launching"/>
 <plugin id="org.eclipse.jdt.launching.source"/>
 <plugin id="org.eclipse.jdt.ui"/>
-<plugin id="org.eclipse.jetty.http" version="9.4.44.v20210927"/>
-<plugin id="org.eclipse.jetty.io" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.http" version="9.4.48.v20220622"/>
+<plugin id="org.eclipse.jetty.io" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.io.source"/>
 <plugin id="org.eclipse.jetty.security" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.security.source"/>
-<plugin id="org.eclipse.jetty.server" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.server" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.server.source"/>
-<plugin id="org.eclipse.jetty.servlet" version="9.4.44.v20210927"/>
+<plugin id="org.eclipse.jetty.servlet" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.servlet.source"/>
 <plugin id="org.eclipse.jetty.util" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.util.ajax"/>
@@ -615,17 +593,13 @@
 <plugin id="org.objectweb.asm.tree" version="8.0.1.v20200420-1007"/>
 <plugin id="org.objectweb.asm.tree.source"/>
 <plugin id="org.objenesis"/>
-<plugin id="org.objenesis.source"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
-<plugin id="org.osgi.service.blueprint.source"/>
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
 <plugin id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
-<plugin id="org.slf4j.api.source"/>
 <plugin id="org.slf4j.jcl"/>
-<plugin id="org.slf4j.jcl.source"/>
 <plugin id="org.tukaani.xz"/>
 <plugin id="org.tukaani.xz.source"/>
 <plugin id="org.w3c.css.sac"/>
@@ -641,7 +615,6 @@
 <plugin id="javax.xml.ws"/>
 <plugin id="javax.xml.soap"/>
 <plugin id="javassist"/>
-<plugin id="com.sun.activation.jakarta.activation"/>
 <plugin id="com.sun.xml.bind"/>
 <plugin id="jakarta.xml.bind-api"/>
 <plugin id="jakarta.activation-api"/>
@@ -683,18 +656,15 @@
 	<plugin id="org.eclipse.rmf.reqif10"/>
 	<plugin id="org.eclipse.sphinx.emf.serialization"/>
 	<plugin id="org.hsqldb"/>
-	<plugin id="org.eclipse.jetty.util" version="9.4.44.v20210927"/>
-	<plugin id="org.eclipse.jetty.servlet" version="9.4.48.v20220622"/>
-	<plugin id="org.eclipse.jetty.server" version="9.4.48.v20220622"/>
-	<plugin id="org.eclipse.jetty.security" version="9.4.44.v20210927"/>
-	<plugin id="org.eclipse.jetty.io" version="9.4.48.v20220622"/>
-	<plugin id="org.eclipse.jetty.http" version="9.4.48.v20220622"/>
 <plugin id="swagger-annotations"/>
 <plugin id="swagger-jaxrs2"/>
 <plugin id="swagger-models"/>
 <plugin id="swagger-integration"/>
 <plugin id="swagger-core"/>
-	<plugin id="jakarta.validation-api"/>
+	<plugin id="org.apache.lucene.analyzers-common" version="8.4.1.v20200122-1459"/>
+	<plugin id="org.apache.lucene.core" version="8.4.1.v20200122-1459"/>
+	<plugin id="org.apache.lucene.core" version="6.1.0.v20170814-1820"/>
+	<plugin id="org.apache.commons.codec" version="1.13.0.v20200108-0001"/>
 </includeBundles>
 <environment>
 <os>win32</os>
