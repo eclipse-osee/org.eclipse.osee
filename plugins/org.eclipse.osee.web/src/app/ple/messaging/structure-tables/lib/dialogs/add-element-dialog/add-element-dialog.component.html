@@ -116,7 +116,9 @@
 					<mat-hint>Enum Literals</mat-hint>
 				</mat-form-field>
 				<br />
-				<mat-form-field class="width-100">
+				<mat-form-field
+					class="width-100"
+					subscriptSizing="dynamic">
 					<mat-label>Start Index</mat-label>
 					<input
 						type="number"
@@ -130,7 +132,9 @@
 					>
 				</mat-form-field>
 				<br />
-				<mat-form-field class="width-100">
+				<mat-form-field
+					class="width-100"
+					subscriptSizing="dynamic">
 					<mat-label>End Index</mat-label>
 					<input
 						type="number"
@@ -158,7 +162,9 @@
 					availableTypes | async as _availableTypes;
 					else loading_types
 				">
-				<mat-form-field class="width-100">
+				<mat-form-field
+					class="width-100"
+					subscriptSizing="dynamic">
 					<mat-label>Platform Type</mat-label>
 					<mat-select
 						[(ngModel)]="data.type"

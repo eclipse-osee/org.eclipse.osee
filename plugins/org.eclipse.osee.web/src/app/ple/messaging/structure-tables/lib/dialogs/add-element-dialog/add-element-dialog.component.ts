@@ -273,9 +273,6 @@ export class AddElementDialogComponent implements OnInit {
 			enums: enumeration[];
 		}
 	) {
-		results.name =
-			(results?.name?.charAt(0)?.toLowerCase() || '') +
-			results?.name?.slice(1);
 		return this.typeDialogService.createType(
 			results,
 			enumData.enumSetId !== '1' && enumData.enumSetId !== '',
