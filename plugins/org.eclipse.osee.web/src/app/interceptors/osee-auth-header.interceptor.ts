@@ -13,7 +13,7 @@
 import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
-import { map, of, switchMap, take } from 'rxjs';
+import { filter, iif, map, switchMap, take } from 'rxjs';
 import { apiURL, OSEEAuthURL } from '@osee/environments';
 
 export const OseeAuthInterceptor = (
@@ -21,26 +21,20 @@ export const OseeAuthInterceptor = (
 	next: HttpHandlerFn
 ) => {
 	const user = inject(UserDataAccountService).user;
-	return user.pipe(
-		take(1),
-		switchMap((user) =>
-			of(req).pipe(
-				map((currentRequest) => {
-					if (
-						currentRequest.url.includes(apiURL) &&
-						user !== undefined &&
-						currentRequest.url !== OSEEAuthURL
-					) {
-						currentRequest = currentRequest.clone({
-							headers: currentRequest.headers
-								.set('osee.account.id', user?.id || '')
-								.set('Authorization', user?.id || ''),
-						});
-					}
-					return currentRequest;
-				})
-			)
+	return iif(
+		() => req.url.includes(apiURL) && req.url !== OSEEAuthURL,
+		user.pipe(
+			filter((user) => user !== undefined),
+			take(1),
+			map((user) => {
+				return req.clone({
+					headers: req.headers
+						.set('osee.account.id', user?.id || '')
+						.set('Authorization', user?.id || ''),
+				});
+			}),
+			switchMap((authorizedReq) => next(authorizedReq))
 		),
-		switchMap((authorizedRequest) => next(authorizedRequest))
+		next(req)
 	);
 };
