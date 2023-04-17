@@ -35,6 +35,8 @@ public interface IRelationResolver extends IParentProvider {
 
    Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeToken artifactType);
 
+   Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationType, ArtifactTypeToken artifactType);
+
    <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz);
 
    <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz);

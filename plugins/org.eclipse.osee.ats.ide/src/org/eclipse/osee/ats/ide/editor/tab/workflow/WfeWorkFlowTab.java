@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -348,7 +347,9 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    public void saveXWidgetToArtifact() {
       List<ArtifactStoredWidget> artWidgets = new ArrayList<>();
-      headerComp.getDirtyIArtifactWidgets(artWidgets);
+      if (Widgets.isAccessible(headerComp)) {
+         headerComp.getDirtyIArtifactWidgets(artWidgets);
+      }
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
       for (WfeWorkflowSection section : stateSections) {
          section.getDirtyIArtifactWidgets(artWidgets);
@@ -472,7 +473,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
       // no columns in WorkflowTab
    }
-   
+
    @Override
    public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer) {
       // no columns in WorkflowTab
