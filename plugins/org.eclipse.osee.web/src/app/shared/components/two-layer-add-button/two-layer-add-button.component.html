@@ -25,23 +25,9 @@
 			}"
 			(click)="nestedClick.emit(element)"
 			(mouseleave)="removeHover(element)"
-			class="nested-add-button-container"
+			class="nested-add-button-container tw-flex tw-justify-start"
 			data-cy="nested-add-button">
-			<div class="flex-container">
-				<button
-					[@addHoverButton]="{
-						value: hoveredElements.includes(element.id)
-							? 'closed'
-							: 'open',
-						params: { time: '225', delay: '25' }
-					}"
-					class="mat-elevation-z9 elevation-999"
-					mat-raised-button
-					(mouseenter)="hoveredElements.push(element.id)"
-					class="nested-expanded-add-button">
-					{{ nestedLevelPrefix }}{{ element.name }}
-					<mat-icon>{{ nestedIcon }}</mat-icon>
-				</button>
+			<div class="tw-flex">
 				<button
 					[@addHoverButton]="{
 						value: !hoveredElements.includes(element.id)
@@ -51,9 +37,22 @@
 					}"
 					mat-mini-fab
 					color="primary"
-					class="mat-elevation-z9 elevation-999"
+					class="mat-elevation-z9 tw-z-[999]"
 					(mouseenter)="hoveredElements.push(element.id)"
 					class="nested-add-icon-button">
+					<mat-icon>{{ nestedIcon }}</mat-icon>
+				</button>
+				<button
+					[@addHoverButton]="{
+						value: hoveredElements.includes(element.id)
+							? 'closed'
+							: 'open',
+						params: { time: '225', delay: '25' }
+					}"
+					class="mat-elevation-z9 tw-z-[999]"
+					mat-raised-button
+					(mouseenter)="hoveredElements.push(element.id)">
+					{{ nestedLevelPrefix }}{{ element.name }}
 					<mat-icon>{{ nestedIcon }}</mat-icon>
 				</button>
 			</div>
@@ -74,19 +73,7 @@
 		class="base-add-button-container"
 		(click)="normalClick.emit(baseLevel)"
 		data-cy="base-add-button">
-		<div class="flex-container">
-			<button
-				[@addHoverButton]="{
-					value: hoveredElements.includes(defaultValue.id)
-						? 'closed'
-						: 'open',
-					params: { time: '225', delay: '25' }
-				}"
-				class="mat-elevation-z9 elevation-999"
-				mat-raised-button
-				(mouseenter)="hoveredElements.push(defaultValue.id)">
-				{{ baseLevel }}<mat-icon>{{ baseIcon }}</mat-icon>
-			</button>
+		<div class="tw-flex">
 			<button
 				[@addHoverButton]="{
 					value: !hoveredElements.includes(defaultValue.id)
@@ -96,14 +83,26 @@
 				}"
 				mat-mini-fab
 				color="primary"
-				class="mat-elevation-z9 elevation-999"
+				class="mat-elevation-z9 tw-z-[999]"
 				(mouseenter)="hoveredElements.push(defaultValue.id)">
 				<mat-icon>{{ baseIcon }}</mat-icon>
+			</button>
+			<button
+				[@addHoverButton]="{
+					value: hoveredElements.includes(defaultValue.id)
+						? 'closed'
+						: 'open',
+					params: { time: '225', delay: '25' }
+				}"
+				class="mat-elevation-z9 tw-z-[999]"
+				mat-raised-button
+				(mouseenter)="hoveredElements.push(defaultValue.id)">
+				{{ baseLevel }}<mat-icon>{{ baseIcon }}</mat-icon>
 			</button>
 		</div>
 	</div>
 </div>
-<div class="flex-container">
+<div class="tw-flex">
 	<button
 		mat-fab
 		color="primary"

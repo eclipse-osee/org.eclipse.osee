@@ -67,7 +67,7 @@
 				mat-header-cell
 				*matHeaderCellDef
 				[attr.colspan]="((headers | async) || [])[i]"
-				class="message-interface-table-view-message-header"
+				class="tw-px-0.5 tw-font-bold tw-text-primary-600"
 				[matTooltip]="
 					(getHeaderByName(header) | async)?.description || ''
 				">
@@ -219,7 +219,7 @@
 				[attr.colspan]="(headers | async)?.length || 0"
 				class="no-pad">
 				<div
-					class="sub-message-table-message-table-detail message-element-interface-table-view-width-100"
+					class="tw-flex tw-flex-col tw-overflow-auto"
 					[@detailExpand]="
 						(rowIsExpanded(element.id) | async) || false
 							? 'expanded'

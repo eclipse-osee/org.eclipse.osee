@@ -45,7 +45,6 @@ Angular Tests:
     - npx prettier --check .
     - npx stylelint '**/*.scss'
     - npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false
-    - npx -p @angular/cli ng build -c production
   cache:
     key:
       files:
