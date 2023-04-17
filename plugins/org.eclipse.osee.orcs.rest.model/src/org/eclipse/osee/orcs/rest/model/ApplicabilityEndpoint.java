@@ -436,4 +436,29 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<String> getApplicabilityConstraintConflicts(@QueryParam("childApplicability") ApplicabilityId childApplic,
       @QueryParam("parentApplicability") ApplicabilityId parentApplic);
+
+   @GET
+   @Path("bazel")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response getBazelZip();
+
+   @GET
+   @Path("bazel/features")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   String getBazelFeatures();
+
+   @GET
+   @Path("bazel/platforms/configurations")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   String getBazelPlatformConfigurations();
+
+   @GET
+   @Path("bazel/platforms/configuration-groups")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   String getBazelPlatformConfigurationGroups();
+
+   @GET
+   @Path("bazel/configurations")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   String getBazelConfigurations();
 }

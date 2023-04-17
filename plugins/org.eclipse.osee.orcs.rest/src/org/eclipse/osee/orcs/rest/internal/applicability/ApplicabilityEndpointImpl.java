@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.internal.applicability;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -593,6 +596,73 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public List<String> getApplicabilityConstraintConflicts(ApplicabilityId childApplic, ApplicabilityId parentApplic) {
       return ops.getApplicabilityConstraintConflicts(childApplic, parentApplic, branch);
+   }
+
+   @Override
+   public String getBazelFeatures() {
+      return ops.getFeatureBazelFile(branch);
+   }
+
+   @Override
+   public String getBazelPlatformConfigurations() {
+      return ops.getConfigurationPlatformBazelFile(branch);
+   }
+
+   @Override
+   public String getBazelPlatformConfigurationGroups() {
+      return ops.getConfigurationGroupBazelFile(branch);
+   }
+
+   @Override
+   public String getBazelConfigurations() {
+      return ops.getConfigurationBazelFile(branch);
+   }
+
+   @Override
+   public Response getBazelZip() {
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+      try {
+         ZipEntry configurationFile = new ZipEntry("configurations/BUILD.bazel");
+         configurationFile.setTime(0);
+         zipOutputStream.putNextEntry(configurationFile);
+         zipOutputStream.write(this.getBazelConfigurations().getBytes());
+         zipOutputStream.closeEntry();
+         ZipEntry configurationPlatformFile = new ZipEntry("platforms/configurations/BUILD.bazel");
+         configurationPlatformFile.setTime(0);
+         zipOutputStream.putNextEntry(configurationPlatformFile);
+         zipOutputStream.write(this.getBazelPlatformConfigurations().getBytes());
+         zipOutputStream.closeEntry();
+         ZipEntry configurationGroupPlatformFile = new ZipEntry("platforms/configuration-groups/BUILD.bazel");
+         configurationGroupPlatformFile.setTime(0);
+         zipOutputStream.putNextEntry(configurationGroupPlatformFile);
+         zipOutputStream.write(this.getBazelPlatformConfigurationGroups().getBytes());
+         zipOutputStream.closeEntry();
+         ZipEntry buildFile = new ZipEntry("BUILD.bazel");
+         buildFile.setTime(0);
+         zipOutputStream.putNextEntry(buildFile);
+         zipOutputStream.write(ops.getBazelBuildFile().getBytes());
+         zipOutputStream.closeEntry();
+         ZipEntry workspaceFile = new ZipEntry("WORKSPACE");
+         workspaceFile.setTime(0);
+         zipOutputStream.putNextEntry(workspaceFile);
+         zipOutputStream.write(ops.getBazelWorkspaceFile().getBytes());
+         zipOutputStream.closeEntry();
+         ZipEntry featureFile = new ZipEntry("features/BUILD.bazel");
+         featureFile.setTime(0);
+         zipOutputStream.putNextEntry(featureFile);
+         zipOutputStream.write(this.getBazelFeatures().getBytes());
+         zipOutputStream.closeEntry();
+      } catch (IOException e) {
+         e.printStackTrace();
+      } finally {
+         try {
+            zipOutputStream.close();
+         } catch (IOException e) {
+         }
+      }
+      return Response.ok(byteArrayOutputStream.toByteArray()).type("application/zip").header("Content-Disposition",
+         "attachment; filename=\"bazel.zip\"").build();
    }
 
 }

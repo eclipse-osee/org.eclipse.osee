@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -3093,5 +3094,184 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             }
          }
       }
+   }
+
+   private String getConstraint(String name, String constraint_setting) {
+      return "constraint_value(\r\n" + "    name = \"" + name + "\",\r\n" + "    constraint_setting = \":" + constraint_setting + "\",\r\n" + ")\r\n\r\n";
+   }
+
+   private String getFeatureConfigSettingGroup(String featureName, int size) {
+      String content =
+         "selects.config_setting_group(\r\n" + "    name = \"feature_" + featureName + "\",\r\n" + "    match_any = [\r\n";
+      for (int i = 0; i < size; i++) {
+         content = content + "        \":feature" + i + "_" + featureName + "\",\r\n";
+      }
+      content = content + "    ],\r\n" + ")\r\n\r\n";
+      return content;
+   }
+
+   @Override
+   public String getFeatureBazelFile(BranchId branchId) {
+      String prefix =
+         "package(default_visibility = [\"//visibility:public\"])\r\n\r\n" + "load(\"@bazel_skylib//lib:selects.bzl\", \"selects\")\r\n\r\n";
+      String content = "";
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(
+         CoreArtifactTypes.Feature).asArtifacts()) {
+
+         //create the constraint setting based on the name of the feature
+
+         //create the constraint values based on the values of the feature
+         List<String> values = art.fetchAttributesAsStringList(CoreAttributeTypes.Value);
+         if (art.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued).equals(true)) {
+            //write out multi-value features so they can be used in an OR'd fashion since bazel can't have multiple constraints per platform see #8763 on bazel's github
+            for (int i = 0; i < values.size(); i++) {
+
+               content = content + "constraint_setting(name = \"feature" + i + "_" + art.getName() + "\")\r\n\r\n";
+               for (String value : values) {
+                  content = content + getConstraint("feature" + i + "_" + art.getName() + "_" + value,
+                     "feature" + i + "_" + art.getName());
+               }
+            }
+            content = content + values.stream().map(
+               value -> getFeatureConfigSettingGroup(art.getName() + "_" + value, values.size())).collect(
+                  Collectors.joining(""));
+
+         } else {
+            content = content + "constraint_setting(name = \"feature_" + art.getName() + "\")\r\n\r\n";
+            for (String value : values) {
+               content = content + getConstraint("feature_" + art.getName() + "_" + value, "feature_" + art.getName());
+            }
+
+         }
+      }
+
+      return prefix + content;
+   }
+
+   @Override
+   public String getConfigurationPlatformBazelFile(BranchId branchId) {
+      String prefix = "package(default_visibility = [\"//visibility:public\"])\r\n\r\n";
+      String content = "";
+      // Load all configurations (stored as branch views)
+      List<ArtifactReadable> branchViews =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
+      List<ArtifactToken> groups =
+         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
+      List<ArtifactReadable> features =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
+      for (ArtifactReadable branchView : branchViews) {
+         content = content + "platform(\r\n" + "\tname = \"" + branchView.getName().replace(" ", "_") + "\",\r\n";
+         Map<String, List<String>> namedViewApplicabilityMap =
+            orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, branchView);
+         //check if the view belongs to a group, and write a parents array(limited to one parent due to bazel limitations) if it does
+         List<String> matchingGroups =
+            namedViewApplicabilityMap.entrySet().stream().filter(map -> map.getKey().equals("ConfigurationGroup")).map(
+               entry -> entry.getValue().get(0)).collect(Collectors.toList());
+         if (matchingGroups.size() > 0) {
+            content = content + "\tparents = [\"//platforms/configuration-groups:" + matchingGroups.get(0) + "\"],\r\n";
+         }
+         content = content + "\tconstraint_values = [\r\n";
+         //configuration's view applicabilities should only be written if different from configuration group barring the configuration which should always be different
+         Optional<List<Entry<String, List<String>>>> groupValues =
+            groups.stream().filter(group -> matchingGroups.contains(group.getName())).findFirst().map(
+               group -> orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId,
+                  group).entrySet().stream().collect(Collectors.toList()));
+         List<Entry<String, List<String>>> filteredContent =
+            namedViewApplicabilityMap.entrySet().stream().filter(map -> !map.getKey().equals(
+               "Config") && !map.getKey().equals("Configuration") && !map.getKey().equals("ConfigurationGroup")).filter(
+                  value -> groupValues.isPresent() && !groupValues.get().contains(
+                     value) || !groupValues.isPresent()).collect(Collectors.toList());
+         for (Entry<String, List<String>> entry : filteredContent) {
+            Optional<Object> isMultiValued =
+               features.stream().filter(value -> value.getName().equals(entry.getKey())).map(
+                  value -> value.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued)).filter(
+                     value -> value.equals(true)).findFirst();
+            if (isMultiValued.isEmpty()) {
+               content = content + "\t\t\"//features:feature" + "_" + entry.getKey() + "_" + entry.getValue().get(
+                  0) + "\",\r\n";
+            } else {
+               for (int i = 0; i < entry.getValue().size(); i++) {
+                  content =
+                     content + "\t\t\"//features:feature" + i + "_" + entry.getKey() + "_" + entry.getValue().get(
+                        i) + "\",\r\n";
+               }
+
+            }
+         }
+         content = content + "\t\t\"//configurations:config_" + branchView.getName().replace(" ", "_") + "\"\r\n";
+         content = content + "\t]\r\n)\r\n";
+      }
+      return prefix + content;
+   }
+
+   @Override
+   public String getConfigurationGroupBazelFile(BranchId branchId) {
+      String prefix = "package(default_visibility = [\"//visibility:public\"])\r\n\r\n";
+      String content = "";
+      List<ArtifactToken> groups =
+         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
+      List<ArtifactReadable> features =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
+      for (ArtifactToken group : groups) {
+         content = content + "platform(\r\n" + "\tname = \"" + group.getName().replace(" ",
+            "_") + "\",\r\n" + "\tconstraint_values = [\r\n";
+         List<Entry<String, List<String>>> constraintsToApply =
+            orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId,
+               group).entrySet().stream().filter(
+                  map -> !map.getKey().equals("Config") && !map.getKey().equals(
+                     "Configuration") && !map.getKey().equals("ConfigurationGroup")).collect(Collectors.toList());
+         for (Entry<String, List<String>> entry : constraintsToApply) {
+            Optional<Object> isMultiValued =
+               features.stream().filter(value -> value.getName().equals(entry.getKey())).map(
+                  value -> value.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued)).filter(
+                     value -> value.equals(true)).findFirst();
+            if (isMultiValued.isEmpty()) {
+               content = content + "\t\t\"//features:feature" + "_" + entry.getKey() + "_" + entry.getValue().get(
+                  0) + "\",\r\n";
+            } else {
+               for (int i = 0; i < entry.getValue().size(); i++) {
+                  content =
+                     content + "\t\t\"//features:feature" + i + "_" + entry.getKey() + "_" + entry.getValue().get(
+                        i) + "\",\r\n";
+               }
+
+            }
+         }
+         content = content + "\t\t\"//configurations:config_group_" + group.getName().replace(" ", "_") + "\"\r\n";
+         content = content + "\t]\r\n)\r\n";
+      }
+
+      return prefix + content;
+   }
+
+   @Override
+   public String getBazelBuildFile() {
+      return "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "filegroup(\r\n" + "    name = \"srcs\",\r\n" + "    srcs = [\r\n" + "        \"BUILD\",\r\n" + "        \"WORKSPACE\",\r\n" + "        \"//platforms/configurations:srcs\",\r\n" + "        \"//platforms/configuration-groups:srcs\",\r\n" + "        \"//configurations:srcs\",\r\n" + "        \"//features:srcs\",\r\n" + "    ],\r\n" + ")";
+   }
+
+   @Override
+   public String getBazelWorkspaceFile() {
+      return "workspace(name = \"osee_applicability\")";
+   }
+
+   @Override
+   public String getConfigurationBazelFile(BranchId branchId) {
+      String prefix =
+         "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "#note: Configuration and configuration groups have to be declared here since they are a mutually exclusive selection.\r\n" + "constraint_setting(name = \"configuration\")\r\n";
+      String content = "";
+      // Load all configurations (stored as branch views)
+      List<ArtifactReadable> branchViews =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
+      for (ArtifactReadable branchView : branchViews) {
+         content = content + "constraint_value(\r\n" + "    name = \"config_" + branchView.getName().replace(" ",
+            "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
+      }
+      List<ArtifactToken> groups =
+         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
+      for (ArtifactToken group : groups) {
+         content = content + "constraint_value(\r\n" + "    name = \"config_group_" + group.getName().replace(" ",
+            "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
+      }
+      return prefix + content;
    }
 }

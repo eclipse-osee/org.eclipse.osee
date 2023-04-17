@@ -162,4 +162,16 @@ public interface OrcsApplicability {
 
    List<String> getApplicabilityConstraintConflicts(ApplicabilityId childApplic, ApplicabilityId parentApplic,
       BranchId branch);
+
+   String getFeatureBazelFile(BranchId branchId);
+
+   String getConfigurationPlatformBazelFile(BranchId branchId);
+
+   String getConfigurationBazelFile(BranchId branchId);
+
+   String getConfigurationGroupBazelFile(BranchId branchId);
+
+   String getBazelBuildFile();
+
+   String getBazelWorkspaceFile();
 }
