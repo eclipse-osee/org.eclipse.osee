@@ -29,10 +29,6 @@
 
 	// Define any styles affected by the theme.
 
-	.message-interface-table-view-message-header {
-		color: mat.get-color-from-palette($primary, 600);
-	}
-
 	.message-table-row-even {
 		background-color: mat.get-color-from-palette($background, background);
 	}

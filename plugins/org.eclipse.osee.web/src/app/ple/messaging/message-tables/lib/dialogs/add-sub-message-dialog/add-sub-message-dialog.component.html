@@ -80,7 +80,6 @@
 					matInput
 					cdkTextareaAutosize
 					[(ngModel)]="data.subMessage.description"
-					required
 					data-cy="field-description"></textarea>
 			</mat-form-field>
 			<mat-form-field>
@@ -103,7 +102,6 @@
 			color="primary"
 			*ngIf="
 				data.subMessage.name.length > 0 &&
-				data.subMessage.description.length > 0 &&
 				data.subMessage.interfaceSubMessageNumber !== undefined &&
 				data.subMessage.interfaceSubMessageNumber !== ''
 			"
