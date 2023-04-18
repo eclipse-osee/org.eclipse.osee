@@ -37,14 +37,12 @@ public class InterfaceStructureCountEndpointImpl implements InterfaceStructureCo
 
    @Override
    public int getStructures(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
-      return this.interfaceStructureApi.getAllRelatedCount(branch, subMessageId, pageNum, pageSize,
-         orderByAttributeType);
+      return this.interfaceStructureApi.getAllRelatedCount(branch, subMessageId);
    }
 
    @Override
    public int getStructures(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
-      return this.interfaceStructureApi.getAllRelatedAndFilterCount(branch, subMessageId, filter, pageNum, pageSize,
-         orderByAttributeType);
+      return this.interfaceStructureApi.getAllRelatedAndFilterCount(branch, subMessageId, filter);
    }
 
 }

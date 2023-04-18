@@ -77,13 +77,13 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   int getAllRelatedCount(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   int getAllRelatedCount(BranchId branch, ArtifactId subMessageId);
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId viewId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter);
 
    InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
 

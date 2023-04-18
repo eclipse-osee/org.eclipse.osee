@@ -193,7 +193,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          }
 
       }
-      if (rootQueryData.isIdQueryType() || rootQueryData.isCountQueryType()) {
+      if (rootQueryData.isIdQueryType() || (rootQueryData.isCountQueryType() && !rootQueryData.hasCriteriaType(
+         CriteriaFollowSearch.class))) {
          fieldAlias = artWithAlias;
       } else {
          String attsAlias = writeAttsCommonTableExpression(artWithAlias);
@@ -216,8 +217,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          }
       }
       finishWithClause();
+
       if (rootQueryData.isCountQueryType()) {
-         write("SELECT count(*) FROM %s", fieldAlias);
+         if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
+            write("select count(distinct art_id) from %s", fieldAlias);
+         } else {
+            write("SELECT count(*) FROM %s", fieldAlias);
+         }
       } else {
          write("SELECT * FROM %s", fieldAlias);
       }
@@ -231,29 +237,34 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                      attrSearchAlias + ".art_path", "','||" + fieldAlias + ".other_art_id||','") + " > 0 )");
 
       }
-      if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
-         write(" ORDER BY art_id");
-      } else if (this.rels2Alias != null) {
-         write(" ORDER BY ");
-         write("top desc");
-         if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
-            "RELATION AND ATTRIBUTE")) {
-            write(", CASE WHEN fields1.type_id = ");
-            write(this.rootQueryData.orderByAttribute().getIdString());
-            write(" THEN fields1.VALUE ELSE \n");
-            write("'");
-            write(new String(new char[4000]).replace('\0', 'Z'));
-            write("'");
-            write("\n" + "END ASC");
-         }
-         if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
-            "RELATION AND ATTRIBUTE")) {
-            if (this.output.toString().contains("top_rel_type")) {
-               write(", top_rel_type, top_rel_order, rel_order");
-            } else {
-               write(", case when other_art_id = 0 then other_art_id else 1 end, rel_order");
+      if (rootQueryData.isCountQueryType() && rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
+         write(" and top = 1");
+      }
+      if (!rootQueryData.isCountQueryType()) {
+         if (parentWriter == null && !rootQueryData.isSelectQueryType()) {
+            write(" ORDER BY art_id");
+         } else if (this.rels2Alias != null) {
+            write(" ORDER BY ");
+            write("top desc");
+            if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
+               "RELATION AND ATTRIBUTE")) {
+               write(", CASE WHEN fields1.type_id = ");
+               write(this.rootQueryData.orderByAttribute().getIdString());
+               write(" THEN fields1.VALUE ELSE \n");
+               write("'");
+               write(new String(new char[4000]).replace('\0', 'Z'));
+               write("'");
+               write("\n" + "END ASC");
             }
+            if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
+               "RELATION AND ATTRIBUTE")) {
+               if (this.output.toString().contains("top_rel_type")) {
+                  write(", top_rel_type, top_rel_order, rel_order");
+               } else {
+                  write(", case when other_art_id = 0 then other_art_id else 1 end, rel_order");
+               }
 
+            }
          }
       }
    }
@@ -399,7 +410,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       } else {
          writeSelectAndHint();
       }
-      if (rootQueryData.isCountQueryType()) {
+      if (rootQueryData.isCountQueryType() && !rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
          writeSelectFields(getMainTableAlias(OseeDb.ARTIFACT_TABLE), "art_id");
       } else {
          writeSelectFields();
