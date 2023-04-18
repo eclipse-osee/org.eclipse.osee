@@ -113,7 +113,7 @@ WHERE
             tempLowerBound == 0 ? lowerBound + pagination.getPageSize() : lowerBound + pagination.getPageSize() - 1L;
          writer.write(" ) t1 where rn between " + lowerBound + " and " + upperBound + " ");
       } else {
-         writer.write(" ) ");
+         writer.write(" ) t1 ");
       }
 
       return attrSearchAlias;

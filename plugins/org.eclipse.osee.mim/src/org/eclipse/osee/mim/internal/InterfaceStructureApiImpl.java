@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -728,12 +729,11 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public int getAllRelatedCount(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public int getAllRelatedCount(BranchId branch, ArtifactId subMessageId) {
       int count = 0;
       try {
-         count =
-            this.getAccessor().getAllByRelationAndCount(branch, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-               subMessageId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute);
+         count = this.getAccessor().getAllByRelationAndCount(branch,
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, new ArrayList<RelationTypeSide>());
 
          return count;
       } catch (Exception ex) {
@@ -771,12 +771,12 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter) {
       int count = 0;
       try {
          count = this.getAccessor().getAllByRelationAndFilterAndCount(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
-            this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
+            this.getFullFollowRelationDetails(), this.elementAttributeList);
 
          return count;
       } catch (Exception ex) {
