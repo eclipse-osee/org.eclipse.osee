@@ -44,6 +44,16 @@
 			data-cy="delete-feature-btn">
 			<mat-icon color="warn">delete_forever</mat-icon>Delete Feature
 		</button>
+		<button
+			mat-menu-item
+			(click)="addFeatureConstraint()">
+			<mat-icon color="success">add_box</mat-icon>Add Feature Constraint
+		</button>
+		<button
+			mat-menu-item
+			(click)="editFeatureConstraints()">
+			<mat-icon color="primary">edit</mat-icon>Edit Feature Constraints
+		</button>
 	</ng-template>
 </mat-menu>
 <mat-menu

@@ -34,6 +34,7 @@ import {
 } from '../../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../../types/pl-config-branch';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-plconfig-edit-configuration-dialog',
@@ -52,6 +53,7 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 		MatOptionModule,
 		MatListModule,
 		A11yModule,
+		MatButtonModule,
 	],
 })
 export class EditConfigurationDialogComponent {

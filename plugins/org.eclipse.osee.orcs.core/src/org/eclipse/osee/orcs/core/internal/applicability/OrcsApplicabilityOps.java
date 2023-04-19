@@ -14,6 +14,8 @@
 package org.eclipse.osee.orcs.core.internal.applicability;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +48,7 @@ import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ApplicabilityTokenWithConstraints;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -59,6 +62,7 @@ import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -258,7 +262,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return config;
    }
 
-   private String getViewToFeatureValue(ArtifactId view, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
+   private String getViewToFeatureValue(ArtifactId view, FeatureDefinition fDef,
+      Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
       Map<String, List<String>> map = branchViewsMap.get(view);
       //
       List<String> list = map.get(fDef.getName());
@@ -297,7 +302,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public ArtifactToken createFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx, XResultData results) {
+   public ArtifactToken createFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx,
+      XResultData results) {
       ArtifactToken fDefArt = ArtifactToken.SENTINEL;
 
       if (Strings.isInValid(featureDef.getName())) {
@@ -360,7 +366,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public ArtifactToken updateFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx, XResultData results) {
+   public ArtifactToken updateFeatureDefinition(FeatureDefinition featureDef, TransactionBuilder tx,
+      XResultData results) {
       ArtifactToken fDefArt = ArtifactToken.SENTINEL;
 
       if (Strings.isInValid(featureDef.getName())) {
@@ -552,7 +559,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   private void addIntroduceTuple2(Tuple2Type<ArtifactId, String> tupleType, ArtifactId featureArt, TransactionBuilder tx, String applicString) {
+   private void addIntroduceTuple2(Tuple2Type<ArtifactId, String> tupleType, ArtifactId featureArt,
+      TransactionBuilder tx, String applicString) {
       GammaId gamma = GammaId.SENTINEL;
       if (!(gamma = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2(tupleType, featureArt,
          applicString)).isValid()) {
@@ -637,7 +645,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public Collection<FeatureDefinition> getFeaturesByProductApplicability(BranchId branch, String productApplicability) {
+   public Collection<FeatureDefinition> getFeaturesByProductApplicability(BranchId branch,
+      String productApplicability) {
       QueryBuilder featureQuery =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).and(
             CoreAttributeTypes.ProductApplicability, productApplicability);
@@ -649,6 +658,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       XResultData results = new XResultData();
       try {
          FeatureDefinition featureDef = getFeature(feature.getIdString(), branch);
+         if (applicabilityConstraintIncludesFeature(featureDef, branch)) {
+            results.error(
+               "Cannot delete feature. A feature constraint exists that includes this feature. Delete any feature constraint with this feature before deleting the feature itself.");
+            return results;
+         }
          TransactionBuilder tx = txFactory.createTransaction(branch, "Delete Feature");
          List<ArtifactToken> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
          Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
@@ -681,6 +695,341 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          results.error(Lib.exceptionToString(ex));
       }
       return results;
+   }
+
+   @Override
+   public Boolean applicabilityConstraintIncludesFeature(FeatureDefinition featureDef, BranchId branch) {
+      // query for existing feature constraints
+      Multimap<Long, Long> list = ArrayListMultimap.create();
+      orcsApi.getQueryFactory().tupleQuery().getTuple2E1E2FromType(CoreTupleTypes.ApplicabilityConstraint, branch,
+         list::put);
+
+      // query db for applic tokens
+      Collection<ApplicabilityToken> values =
+         orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+
+      // look for any constraint that includes the feature
+      for (Long listKey : list.keySet()) {
+         for (Long listValue : list.get(listKey)) {
+
+            ApplicabilityToken child =
+               values.stream().filter(a -> a.getIdString().equals(listKey.toString())).findAny().orElse(
+                  ApplicabilityToken.SENTINEL);
+            ApplicabilityToken parent =
+               values.stream().filter(a -> a.getIdString().equals(listValue.toString())).findAny().orElse(
+                  ApplicabilityToken.SENTINEL);
+
+            if (child.getName().contains(featureDef.getName()) || parent.getName().contains(featureDef.getName())) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public List<String> getApplicabilityConstraintConflicts(ApplicabilityId childApplic, ApplicabilityId parentApplic,
+      BranchId branch) {
+      List<String> conflictsMessage = new ArrayList<String>();
+
+      // query for all features
+      ApplicabilityBranchConfig currentBranchConfig = getConfig(branch);
+
+      // query db for applic tokens
+      Collection<ApplicabilityToken> values =
+         orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+
+      // find the name of the input applic ids
+      ApplicabilityToken childApplicToken =
+         values.stream().filter(a -> a.getIdString().equals(childApplic.getId().toString())).findAny().orElse(
+            ApplicabilityToken.SENTINEL);
+      ApplicabilityToken parentApplicToken =
+         values.stream().filter(a -> a.getIdString().equals(parentApplic.getId().toString())).findAny().orElse(
+            ApplicabilityToken.SENTINEL);
+
+      // parse the names
+      String childApplicName = childApplicToken.getName();
+      String parentApplicName = parentApplicToken.getName();
+
+      // if input parent applic is OR compound applic
+      // if the config has an applic that does not match input child applic, move to next config (we do not care about parent in that case)
+      // each config must have at least one applic that matches one of the applics in the input parent comp applic (if the child applics match of course)
+      if (parentApplicName.contains("|")) {
+
+         // remove whitespace and split the string
+         childApplicName = childApplicName.replaceAll("\\s", "");
+         String[] splitChildApplicName = childApplicName.split("\\=");
+
+         parentApplicName = parentApplicName.replaceAll("\\s", "");
+         String[] splitParentApplics = parentApplicName.split("\\|");
+
+         for (ExtendedFeatureDefinition feature1 : currentBranchConfig.getFeatures()) {
+            for (NameValuePair config1 : feature1.getConfigurations()) {
+
+               if (feature1.getName().equals(
+                  splitChildApplicName[0]) && (config1.getValue().equals(splitChildApplicName[1]))) {
+
+                  // flag and message to track the conflict status of the current config
+                  Boolean configIsClean = false;
+                  String currentConfigConflicts = "";
+
+                  for (ExtendedFeatureDefinition feature2 : currentBranchConfig.getFeatures()) {
+
+                     for (String singleParentApplic : splitParentApplics) {
+
+                        String[] splitParentApplicName = singleParentApplic.split("\\=");
+                        // if the feature name matches the feature used in current parent applic
+                        if (feature2.getName().equals(splitParentApplicName[0])) {
+                           for (NameValuePair config2 : feature2.getConfigurations()) {
+
+                              if (!configIsClean) {
+                                 if (config1.getName().equals(config2.getName()) && config2.getValue().equals(
+                                    splitParentApplicName[1])) {
+                                    configIsClean = true;
+                                 } else if (config1.getName().equals(config2.getName())) {
+                                    if (!currentConfigConflicts.equals("")) {
+                                       currentConfigConflicts += " | ";
+                                    }
+                                    currentConfigConflicts +=
+                                       "'" + feature2.getName() + " = " + config2.getValue() + "'";
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+                  if (!configIsClean) {
+                     conflictsMessage.add(currentConfigConflicts + " in Configuration: " + config1.getName());
+                  }
+               }
+            }
+         }
+      }
+      // if input parent applic is AND compound applic
+      // if the config has an applic that does not match input child applic, move to next config (we do not care about parent in that case)
+      // each config must have all applics match applics found in the input parent compound applic (if the child applics match of course)
+      else if (parentApplicName.contains("&")) {
+
+         // remove whitespace and split the string
+         childApplicName = childApplicName.replaceAll("\\s", "");
+         String[] splitChildApplicName = childApplicName.split("\\=");
+
+         parentApplicName = parentApplicName.replaceAll("\\s", "");
+         String[] splitParentApplics = parentApplicName.split("\\&");
+
+         for (ExtendedFeatureDefinition feature1 : currentBranchConfig.getFeatures()) {
+            for (NameValuePair config1 : feature1.getConfigurations()) {
+
+               if (feature1.getName().equals(
+                  splitChildApplicName[0]) && (config1.getValue().equals(splitChildApplicName[1]))) {
+
+                  String currentConfigConflicts = "";
+
+                  for (ExtendedFeatureDefinition feature2 : currentBranchConfig.getFeatures()) {
+
+                     for (String singleParentApplic : splitParentApplics) {
+
+                        String[] splitParentApplicName = singleParentApplic.split("\\=");
+                        // if the feature name matches the feature used in current parent applic
+                        if (feature2.getName().equals(splitParentApplicName[0])) {
+                           for (NameValuePair config2 : feature2.getConfigurations()) {
+
+                              if (config1.getName().equals(
+                                 config2.getName()) && !config2.getValue().equals(splitParentApplicName[1])) {
+                                 if (!currentConfigConflicts.equals("")) {
+                                    currentConfigConflicts += " & ";
+                                 }
+                                 currentConfigConflicts += "'" + feature2.getName() + " = " + config2.getValue() + "'";
+                              }
+                           }
+                        }
+
+                     }
+                  }
+                  conflictsMessage.add(currentConfigConflicts + " in Configuration: " + config1.getName());
+
+               }
+            }
+         }
+      }
+      // if input parent applic is singular applic
+      else {
+         // remove whitespace and split the string
+         childApplicName = childApplicName.replaceAll("\\s", "");
+         String[] splitChildApplicName = childApplicName.split("\\=");
+         parentApplicName = parentApplicName.replaceAll("\\s", "");
+         String[] splitParentApplicName = parentApplicName.split("\\=");
+
+         for (ExtendedFeatureDefinition feature1 : currentBranchConfig.getFeatures()) {
+            for (NameValuePair config1 : feature1.getConfigurations()) {
+               // if child applics match for the current feature applic in the config, the parent applics MUST match
+               // if child applics do not match, move on
+               if (feature1.getName().equals(
+                  splitChildApplicName[0]) && (config1.getValue().equals(splitChildApplicName[1]))) {
+                  for (ExtendedFeatureDefinition feature2 : currentBranchConfig.getFeatures()) {
+                     for (NameValuePair config2 : feature2.getConfigurations()) {
+                        // if input parent applic does not match the applic in the current config, add to conflicts
+                        if (config1.getName().equals(config2.getName()) && feature2.getName().equals(
+                           splitParentApplicName[0]) && !(config2.getValue().equals(splitParentApplicName[1]))) {
+                           conflictsMessage.add(
+                              "'" + feature2.getName() + " = " + config2.getValue() + "' in Configuration: '" + config2.getName() + "'");
+                        }
+                     }
+                  }
+               }
+
+            }
+         }
+      }
+
+      return conflictsMessage;
+   }
+
+   @Override
+   public List<ApplicabilityTokenWithConstraints> getApplicabilityWithConstraints(BranchId branch) {
+      // create empty list to populate later
+      List<ApplicabilityTokenWithConstraints> applicTokensWithConstraints = new ArrayList<>();
+      // create multi map of child and parent applicability IDs in the constraint
+      Multimap<Long, Long> list = ArrayListMultimap.create();
+      orcsApi.getQueryFactory().tupleQuery().getTuple2E1E2FromType(CoreTupleTypes.ApplicabilityConstraint, branch,
+         list::put);
+
+      // query db for applic tokens
+      Collection<ApplicabilityToken> values =
+         orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+
+      // loop through each constraint
+      for (Long listKey : list.keySet()) {
+         for (Long listValue : list.get(listKey)) {
+            boolean childExists = false;
+
+            // find and use the names and ids of the applicabilities that match the child and parent applicabilities in the constraint
+            ApplicabilityToken child =
+               values.stream().filter(a -> a.getIdString().equals(listKey.toString())).findAny().orElse(
+                  ApplicabilityToken.SENTINEL);
+            ApplicabilityToken parent =
+               values.stream().filter(a -> a.getIdString().equals(listValue.toString())).findAny().orElse(
+                  ApplicabilityToken.SENTINEL);
+
+            // check if child exists in the return list
+            for (ApplicabilityTokenWithConstraints token1 : applicTokensWithConstraints) {
+               boolean parentExists = false;
+               // if the child exists
+               if (token1.getId().equals(child.getId())) {
+                  childExists = true;
+                  // if the parent exists
+                  for (ApplicabilityTokenWithConstraints token2 : applicTokensWithConstraints) {
+                     if (token2.getId().equals(parent.getId())) {
+                        parentExists = true;
+                        // make existing array empty to avoid cascading list
+                        token2.clearConstraints();
+                        token1.addConstraint(token2);
+                     }
+                  }
+                  // if the parent does not exist, make the parent and add to the existing child
+                  if (!parentExists) {
+                     ApplicabilityTokenWithConstraints applicTokenParent =
+                        new ApplicabilityTokenWithConstraints(parent.getId(), parent.getName());
+                     token1.addConstraint(applicTokenParent);
+                  }
+               }
+            }
+
+            // if the child does not exist in the return list
+            if (!childExists) {
+               boolean parentExists = false;
+               // make the child
+               ApplicabilityTokenWithConstraints applicTokenChild =
+                  new ApplicabilityTokenWithConstraints(child.getId(), child.getName());
+               // check to see if the parent exists
+               for (ApplicabilityTokenWithConstraints token1 : applicTokensWithConstraints) {
+                  if (token1.getId().equals(parent.getId())) {
+                     parentExists = true;
+                     applicTokenChild.addConstraint(token1);
+                  }
+               }
+               // if parent does not exist
+               if (!parentExists) {
+                  ApplicabilityTokenWithConstraints applicTokenParent =
+                     new ApplicabilityTokenWithConstraints(parent.getId(), parent.getName());
+                  applicTokenChild.addConstraint(applicTokenParent);
+               }
+               // add to the return list
+               applicTokensWithConstraints.add(applicTokenChild);
+            }
+
+         }
+      }
+
+      return applicTokensWithConstraints;
+   }
+
+   @Override
+   public XResultData addApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2,
+      BranchId branch) {
+      XResultData response = new XResultData();
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Add Applicability Constraint");
+      GammaId gamma = GammaId.SENTINEL;
+      if (!(gamma = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2(
+         CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2)).isValid()) {
+         tx.addTuple2(CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2);
+      } else {
+         tx.introduceTuple(CoreTupleTypes.ApplicabilityConstraint, gamma);
+      }
+
+      TransactionToken commit = tx.commit();
+
+      if (!commit.isValid()) {
+         response.error(
+            "Error occurred during commit of adding app Constraint: " + applicability1.getIdString() + " and " + applicability2.getIdString());
+      }
+      return response;
+   }
+
+   @Override
+   public XResultData removeApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2,
+      BranchId branch) {
+      XResultData response = new XResultData();
+
+      // loop through existing constraints to find the match
+      Multimap<Long, Long> list = ArrayListMultimap.create();
+      orcsApi.getQueryFactory().tupleQuery().getTuple2E1E2FromType(CoreTupleTypes.ApplicabilityConstraint, branch,
+         list::put);
+
+      // query db for applic tokens
+      Collection<ApplicabilityToken> values =
+         orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+
+      // loop through each constraint
+      for (Long listKey : list.keySet()) {
+         for (Long listValue : list.get(listKey)) {
+
+            // find and use the names and ids of the applicabilities that match the child and parent applicabilities in the constraint
+            ApplicabilityToken child =
+               values.stream().filter(a -> a.getIdString().equals(listKey.toString())).findAny().orElse(
+                  ApplicabilityToken.SENTINEL);
+            ApplicabilityToken parent =
+               values.stream().filter(a -> a.getIdString().equals(listValue.toString())).findAny().orElse(
+                  ApplicabilityToken.SENTINEL);
+
+            // if the child and parent match the current listKey and listValue -> delete
+            if (applicability1.getId().equals(child.getId())) {
+               if (applicability2.getId().equals(parent.getId())) {
+
+                  TransactionBuilder tx =
+                     orcsApi.getTransactionFactory().createTransaction(branch, "Delete Applicability Constraint");
+                  tx.deleteTuple2(CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2);
+                  TransactionToken commit = tx.commit();
+
+                  if (!commit.isValid()) {
+                     response.error(
+                        "Error occurred during commit of removing app Constraint: " + applicability1.getIdString() + " and " + applicability2.getIdString());
+                  }
+               }
+            }
+         }
+      }
+      return response;
    }
 
    @Override
@@ -1187,7 +1536,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   public boolean passesApplicabilityConstraint(BranchId branch, ArtifactId viewId, String applic, XResultData results) {
+   public boolean passesApplicabilityConstraint(BranchId branch, ArtifactId viewId, String applic,
+      XResultData results) {
       Long appId = orcsApi.getKeyValueOps().getByValue(applic);
 
       List<ApplicabilityToken> constraints = new LinkedList<>();
@@ -1894,7 +2244,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   private BlockApplicabilityOps getBlockApplicabilityOps(XResultData results, BlockApplicabilityStageRequest data, ArtifactId viewId, String cachePath, BranchId branch) {
+   private BlockApplicabilityOps getBlockApplicabilityOps(XResultData results, BlockApplicabilityStageRequest data,
+      ArtifactId viewId, String cachePath, BranchId branch) {
       BlockApplicabilityOps ops = null;
       ArtifactToken viewToken;
 
@@ -2304,7 +2655,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public Collection<ProductTypeDefinition> getProductTypeDefinitions(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<ProductTypeDefinition> getProductTypeDefinitions(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       QueryBuilder productQuery =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.ProductType);
       if (orderByAttributeType != null && orderByAttributeType.isValid()) {
@@ -2406,7 +2758,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch, String productApplicability) {
+   public Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch,
+      String productApplicability) {
       QueryBuilder viewQuery =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).and(
             CoreAttributeTypes.ProductApplicability, productApplicability).follow(
@@ -2474,7 +2827,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData applyBlockVisibilityOnServer(String blockApplicId, BlockApplicabilityStageRequest data, BranchId branch) {
+   public XResultData applyBlockVisibilityOnServer(String blockApplicId, BlockApplicabilityStageRequest data,
+      BranchId branch) {
       XResultData results = new XResultData();
 
       String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);

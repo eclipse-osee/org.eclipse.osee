@@ -1,0 +1,108 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Feature Constraints</h1>
+<div mat-dialog-content>
+	<ng-container *ngIf="applicsToDisplay.length > 0; else noApplicsToDisplay">
+		<table
+			mat-table
+			[dataSource]="applicsToDisplay"
+			class="mat-elevation-z8 constraints-table">
+			<ng-container matColumnDef="childApplic">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="header-text">
+					Allowed Applicability
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let applic"
+					class="border-right">
+					{{ applic.name }}
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="isOnlyApplicableIf">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="header-text">
+					Is Only Applicable If
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let applic"
+					class="border-right">
+					Is Only Applicable If
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="parentApplic">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="header-text">
+					Required Applicability
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let applic"
+					class="border-right">
+					{{ applic.constraints[0].name }}
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="delete">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="header-text"></th>
+				<td
+					mat-cell
+					*matCellDef="let applic">
+					<button
+						mat-raised-button
+						color="warn"
+						(click)="
+							deleteFeatureConstraint(
+								applic.id,
+								applic.name,
+								applic.constraints[0].id,
+								applic.constraints[0].name
+							)
+						">
+						Delete
+					</button>
+				</td>
+			</ng-container>
+
+			<tr
+				mat-header-row
+				*matHeaderRowDef="displayedColumns"></tr>
+			<tr
+				mat-row
+				*matRowDef="let row; columns: displayedColumns"></tr>
+		</table>
+	</ng-container>
+	<ng-template #noApplicsToDisplay>
+		No Feature Constraints Exist on Branch...
+	</ng-template>
+</div>
+<!-- Action Buttons -->
+<div mat-dialog-actions>
+	<button
+		mat-button
+		(click)="onCancelClick()">
+		Cancel
+	</button>
+</div>

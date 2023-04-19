@@ -411,21 +411,53 @@
 															'-' +
 															element.name
 														">
-														<mat-option
+														<ng-container
 															*ngFor="
 																let value of element.values
-															"
-															[value]="value"
-															[attr.data-cy]="
-																'option-' +
-																value +
-																'-' +
-																config.values.includes(
-																	value
-																)
 															">
-															{{ value }}
-														</mat-option>
+															<ng-container
+																*ngIf="{
+																	result:
+																		applicIsNotPermitted(
+																			displayedColumn.name,
+																			element,
+																			value
+																		)
+																		| async
+																} as isNotPermitted">
+																<mat-option
+																	[value]="
+																		value
+																	"
+																	[attr.data-cy]="
+																		'option-' +
+																		value +
+																		'-' +
+																		config.values.includes(
+																			value
+																		)
+																	"
+																	[disabled]="
+																		isNotPermitted.result
+																	">
+																	<ng-container
+																		*ngIf="
+																			isNotPermitted.result;
+																			else isPermitted
+																		">
+																		<del>{{
+																			value
+																		}}</del>
+																	</ng-container>
+																	<ng-template
+																		#isPermitted>
+																		{{
+																			value
+																		}}
+																	</ng-template>
+																</mat-option>
+															</ng-container>
+														</ng-container>
 													</mat-select>
 												</mat-form-field>
 											</div>
@@ -490,17 +522,53 @@
 															'-' +
 															element.name
 														">
-														<mat-option
+														<ng-container
 															*ngFor="
 																let value of element.values
-															"
-															[value]="value"
-															[attr.data-cy]="
-																'option-' +
-																value
 															">
-															{{ value }}
-														</mat-option>
+															<ng-container
+																*ngIf="{
+																	result:
+																		applicIsNotPermitted(
+																			displayedColumn.name,
+																			element,
+																			value
+																		)
+																		| async
+																} as isNotPermitted">
+																<mat-option
+																	[value]="
+																		value
+																	"
+																	[attr.data-cy]="
+																		'option-' +
+																		value +
+																		'-' +
+																		config.values.includes(
+																			value
+																		)
+																	"
+																	[disabled]="
+																		isNotPermitted.result
+																	">
+																	<ng-container
+																		*ngIf="
+																			isNotPermitted.result;
+																			else isPermitted
+																		">
+																		<del>{{
+																			value
+																		}}</del>
+																	</ng-container>
+																	<ng-template
+																		#isPermitted>
+																		{{
+																			value
+																		}}
+																	</ng-template>
+																</mat-option>
+															</ng-container>
+														</ng-container>
 													</mat-select>
 												</mat-form-field>
 											</div>

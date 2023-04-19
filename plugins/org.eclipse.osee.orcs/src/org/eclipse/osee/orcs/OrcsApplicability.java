@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityTokenWithConstraints;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -75,7 +76,8 @@ public interface OrcsApplicability {
 
    Collection<CreateViewDefinition> getViewDefinitions(BranchId branch);
 
-   Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch, String productApplicability);
+   Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch,
+      String productApplicability);
 
    XResultData createView(CreateViewDefinition view, BranchId branch);
 
@@ -125,7 +127,8 @@ public interface OrcsApplicability {
 
    ProductTypeDefinition getProductTypeDefinition(ArtifactReadable artifact);
 
-   Collection<ProductTypeDefinition> getProductTypeDefinitions(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType);
+   Collection<ProductTypeDefinition> getProductTypeDefinitions(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType);
 
    XResultData createProductType(ProductTypeDefinition productType, BranchId branch);
 
@@ -146,4 +149,17 @@ public interface OrcsApplicability {
    XResultData deleteCompoundApplicabilityFromBranch(ApplicabilityId compApplicId, BranchId branch);
 
    XResultData validate(BranchId branch, boolean update, XResultData results);
+
+   XResultData addApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2,
+      BranchId branch);
+
+   XResultData removeApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2,
+      BranchId branch);
+
+   List<ApplicabilityTokenWithConstraints> getApplicabilityWithConstraints(BranchId branch);
+
+   Boolean applicabilityConstraintIncludesFeature(FeatureDefinition featureDef, BranchId branch);
+
+   List<String> getApplicabilityConstraintConflicts(ApplicabilityId childApplic, ApplicabilityId parentApplic,
+      BranchId branch);
 }

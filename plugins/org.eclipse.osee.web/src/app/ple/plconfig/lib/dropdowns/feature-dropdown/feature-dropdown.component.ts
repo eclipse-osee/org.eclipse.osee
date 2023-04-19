@@ -13,7 +13,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, OperatorFunction } from 'rxjs';
-import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
+import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { trackableFeature } from '../../types/features/base';
 import { defaultBaseFeature } from '../../types/features/feature';
@@ -31,6 +31,12 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { AddFeatureConstraintDialogComponent } from './../../dialogs/add-feature-constraint-dialog/add-feature-constraint-dialog.component';
+import {
+	defaultFeatureConstraint,
+	featureConstraintData,
+} from './../../types/pl-config-feature-constraints';
+import { ViewFeatureConstraintsDialogComponent } from '../../dialogs/view-feature-constraints-dialog/view-feature-constraints-dialog.component';
 
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
@@ -52,11 +58,15 @@ export class FeatureDropdownComponent {
 	);
 	editable = this.currentBranchService.branchApplicEditable;
 	features = this.currentBranchService.branchApplicFeatures;
+	featureConstraints =
+		this.currentBranchService.applicsWithFeatureConstraints;
+
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private currentBranchService: PlConfigCurrentBranchService,
 		public dialog: MatDialog
 	) {}
+
 	deleteFeature(feature: trackableFeature) {
 		this.currentBranchService
 			.deleteFeature(feature.id)
@@ -143,9 +153,52 @@ export class FeatureDropdownComponent {
 			)
 			.subscribe();
 	}
+
+	addFeatureConstraint() {
+		this.selectedBranch
+			.pipe(
+				take(1),
+				switchMap(() =>
+					of({
+						featureConstraint: defaultFeatureConstraint,
+					}).pipe(
+						take(1),
+						switchMap((dialogData) =>
+							this.dialog
+								.open(AddFeatureConstraintDialogComponent, {
+									data: dialogData,
+									minWidth: '60%',
+								})
+								.afterClosed()
+								.pipe(
+									take(1),
+									filter(
+										(val) => val !== undefined
+									) as OperatorFunction<
+										featureConstraintData | undefined,
+										featureConstraintData
+									>,
+									switchMap((result) =>
+										this.currentBranchService
+											.addFeatureConstraint(result)
+											.pipe(take(1))
+									)
+								)
+						)
+					)
+				)
+			)
+			.subscribe();
+	}
+
+	editFeatureConstraints() {
+		this.dialog.open(ViewFeatureConstraintsDialogComponent);
+	}
+
 	toggleMenu(menuTrigger: MatMenuTrigger) {
 		menuTrigger.toggleMenu();
 	}
+
 	isCompoundApplic(name: string) {
 		if (name.includes(' | ') || name.includes(' & ')) {
 			return false;

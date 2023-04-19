@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ApplicabilityTokenWithConstraints;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -42,12 +42,10 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -108,7 +106,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return applicabilityQuery.getApplicabilitiesReferenced(artifact, branch);
    }
 
-   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds) {
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(
+      Collection<? extends ArtifactId> artIds) {
       List<Pair<ArtifactId, ApplicabilityToken>> artToApplicToken = new ArrayList<>();
       for (ArtifactId artId : artIds) {
          artToApplicToken.add(new Pair<>(artId, getApplicabilityToken(artId)));
@@ -142,12 +141,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds) {
+   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs,
+      List<ApplicabilityId> applicabilityIds) {
       return applicabilityQuery.getAffectedBranches(injectDateMs, removalDateMs, applicabilityIds, branch);
    }
 
    @Override
-   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds) {
+   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx,
+      List<ApplicabilityId> applicabilityIds) {
       return applicabilityQuery.getAffectedBranches(injectionTx, removalTx, applicabilityIds, branch);
    }
 
@@ -463,7 +464,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public List<ApplicabilityUseResultToken> getApplicabilityUsage(String applic, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
+   public List<ApplicabilityUseResultToken> getApplicabilityUsage(String applic, List<ArtifactTypeToken> artTypes,
+      List<AttributeTypeToken> attrTypes) {
 
       return applicabilityQuery.getApplicabilityUsage(branch, applic, artTypes, attrTypes);
 
@@ -484,7 +486,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Collection<ProductTypeDefinition> getProductTypes(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<ProductTypeDefinition> getProductTypes(long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       return ops.getProductTypeDefinitions(branch, pageNum, pageSize, orderByAttributeType);
    }
 
@@ -555,56 +558,30 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public XResultData addApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2) {
-      XResultData response = new XResultData();
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Add Applicability Constraint");
-      GammaId gamma = GammaId.SENTINEL;
-      if (!(gamma = orcsApi.getQueryFactory().tupleQuery().getTuple2GammaFromE1E2(
-         CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2)).isValid()) {
-         tx.addTuple2(CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2);
-      } else {
-         tx.introduceTuple(CoreTupleTypes.ApplicabilityConstraint, gamma);
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
       }
-
-      TransactionToken commit = tx.commit();
-      if (commit.isValid()) {
-         response.addRaw(commit.toString());
-      } else {
-         response.error(
-            "Error occurred during commit of adding app Constraint: " + applicability1.getIdString() + " and " + applicability2.getIdString());
-      }
-      return response;
+      return ops.addApplicabilityConstraint(applicability1, applicability2, branch);
    }
 
    @Override
    public XResultData removeApplicabilityConstraint(ApplicabilityId applicability1, ApplicabilityId applicability2) {
-      XResultData response = new XResultData();
-      if (orcsApi.getQueryFactory().tupleQuery().doesTuple2Exist(CoreTupleTypes.ApplicabilityConstraint, applicability1,
-         applicability2)) {
-         TransactionBuilder tx =
-            orcsApi.getTransactionFactory().createTransaction(branch, "Add Applicability Constraint");
-         tx.deleteTuple2(CoreTupleTypes.ApplicabilityConstraint, applicability1, applicability2);
-         TransactionToken commit = tx.commit();
-         if (commit.isValid()) {
-            response.addRaw(commit.toString());
-         } else {
-            response.error(
-               "Error occurred during commit of adding app Constraint: " + applicability1.getIdString() + " and " + applicability2.getIdString());
-         }
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
       }
-      return response;
+      return ops.removeApplicabilityConstraint(applicability1, applicability2, branch);
    }
 
    @Override
-   public List<Pair<String, String>> getApplicabilityConstraints() {
-      List<Pair<String, String>> constraints = new ArrayList<>();
-      HashMap<Long, Long> list = new HashMap<>();
-      orcsApi.getQueryFactory().tupleQuery().getTuple2E1E2FromType(CoreTupleTypes.ApplicabilityConstraint, branch,
-         list::put);
-      for (Entry<Long, Long> entry : list.entrySet()) {
-         constraints.add(new Pair<>(orcsApi.getKeyValueOps().getByKey(entry.getKey()),
-            orcsApi.getKeyValueOps().getByKey(entry.getValue())));
-      }
-      return constraints;
+   public List<ApplicabilityTokenWithConstraints> getApplicabilityWithConstraints() {
+      return ops.getApplicabilityWithConstraints(branch);
+   }
+
+   @Override
+   public List<String> getApplicabilityConstraintConflicts(ApplicabilityId childApplic, ApplicabilityId parentApplic) {
+      return ops.getApplicabilityConstraintConflicts(childApplic, parentApplic, branch);
    }
 
 }

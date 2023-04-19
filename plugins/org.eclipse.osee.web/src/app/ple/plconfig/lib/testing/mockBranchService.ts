@@ -12,7 +12,46 @@
  **********************************************************************/
 import { NamedId } from '@osee/shared/types';
 import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
+import { applicWithConstraints } from '../types/pl-config-feature-constraints';
 
+export const testApplicsWithFeatureConstraints: applicWithConstraints[] = [
+	{
+		id: '1',
+		name: 'test1',
+		constraints: [
+			{
+				id: '2',
+				name: 'test2',
+				constraints: [],
+			},
+		],
+	},
+	{
+		id: '3',
+		name: 'test3',
+		constraints: [
+			{
+				id: '4',
+				name: 'test4',
+				constraints: [],
+			},
+		],
+	},
+];
+export const testBranchApplicabilityIdName: NamedId[] = [
+	{
+		id: '1',
+		name: 'TEST1 = INCLUDED',
+	},
+	{
+		id: '2',
+		name: 'TEST2 = INCLUDED',
+	},
+	{
+		id: '3',
+		name: 'TEST3 = INCLUDED | TEST4 = EXCLUDED',
+	},
+];
 export const testApplicabilityTag: NamedId = {
 	id: '1234',
 	name: 'BROKENFEATURE = INCLUDED',

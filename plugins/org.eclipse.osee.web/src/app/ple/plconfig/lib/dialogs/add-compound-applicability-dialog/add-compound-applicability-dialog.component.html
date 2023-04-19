@@ -14,48 +14,14 @@
 	<h1 mat-dialog-title>Add Compound Applicablility</h1>
 	<div mat-dialog-content>
 		<!-- Feature 1 -->
-		<div class="feature">
-			<mat-label>Feature 1</mat-label>
-			<mat-form-field
-				class="dialog-font-size"
-				class="dialog-full-width">
-				<mat-label>Select a Feature</mat-label>
-				<mat-select
-					name="firstfeaturename"
-					[(ngModel)]="
-						data.compoundApplicability.applicabilities[0]
-							.featureName
-					"
-					required>
-					<ng-container *ngFor="let feature of features | async">
-						<mat-option
-							*ngIf="!isCompoundApplic(feature.name)"
-							[value]="feature.name">
-							{{ feature.name }}
-						</mat-option>
-					</ng-container>
-				</mat-select>
-			</mat-form-field>
-			<mat-form-field
-				class="dialog-font-size"
-				class="dialog-full-width">
-				<mat-label>Select a Value</mat-label>
-				<mat-select
-					name="firstfeaturevalue"
-					[(ngModel)]="
-						data.compoundApplicability.applicabilities[0]
-							.featureValue
-					"
-					required>
-					<mat-option
-						*ngFor="let inclusionOption of inclusionOptions"
-						[value]="inclusionOption">
-						{{ inclusionOption }}
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
+		<div class="tw-mb-4">
+			<osee-separated-feature-selector
+				(selectedFeatureNameValue)="
+					data.compoundApplicability.applicabilities[0] = $event
+				">
+				<mat-label label>Feature 1</mat-label>
+			</osee-separated-feature-selector>
 		</div>
-
 		<!-- Print section based on number of desired applicabilities (starts at 1) -->
 		<ng-container
 			*ngFor="
@@ -64,7 +30,7 @@
 				trackBy: valueTracker
 			">
 			<!-- Relationship options -->
-			<div class="relationship">
+			<div class="tw-mb-4">
 				<mat-label>Relationship</mat-label>
 				<mat-form-field
 					class="dialog-font-size"
@@ -86,46 +52,14 @@
 			</div>
 
 			<!-- Feature 2 -->
-			<div class="feature">
-				<mat-label>Feature {{ x + 2 }}</mat-label>
-				<mat-form-field
-					class="dialog-font-size"
-					class="dialog-full-width">
-					<mat-label>Select a Feature</mat-label>
-					<mat-select
-						[(ngModel)]="
-							data.compoundApplicability.applicabilities[x + 1]
-								.featureName
-						"
-						[name]="'feature' + x + 'name'"
-						required>
-						<ng-container *ngFor="let feature of features | async">
-							<mat-option
-								*ngIf="!isCompoundApplic(feature.name)"
-								[value]="feature.name">
-								{{ feature.name }}
-							</mat-option>
-						</ng-container>
-					</mat-select>
-				</mat-form-field>
-				<mat-form-field
-					class="dialog-font-size"
-					class="dialog-full-width">
-					<mat-label>Select a Value</mat-label>
-					<mat-select
-						[(ngModel)]="
-							data.compoundApplicability.applicabilities[x + 1]
-								.featureValue
-						"
-						[name]="'feature' + x + 'value'"
-						required>
-						<mat-option
-							*ngFor="let inclusionOption of inclusionOptions"
-							[value]="inclusionOption">
-							{{ inclusionOption }}
-						</mat-option>
-					</mat-select>
-				</mat-form-field>
+			<div class="tw-mb-4">
+				<osee-separated-feature-selector
+					(selectedFeatureNameValue)="
+						data.compoundApplicability.applicabilities[x + 1] =
+							$event
+					">
+					<mat-label label>Feature {{ x + 2 }}</mat-label>
+				</osee-separated-feature-selector>
 			</div>
 		</ng-container>
 
