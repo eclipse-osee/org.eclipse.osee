@@ -45,6 +45,16 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
          a -> !a.getExistingAttributeTypes().isEmpty()).forEach(
             a -> getEnumerations().add(new InterfaceEnumeration(a)));
       this.artifactReadable = art;
+
+      if (!getEnumerations().isEmpty()) {
+         String desc = "";
+         for (InterfaceEnumeration enumeration : getEnumerations()) {
+            if (enumeration.isValid()) {
+               desc += enumeration.getOrdinal() + " = " + enumeration.getName() + "\n";
+            }
+         }
+         setDescription(desc.trim());
+      }
    }
 
    public InterfaceEnumerationSet(Long id, String name) {

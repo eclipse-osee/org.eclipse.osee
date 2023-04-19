@@ -328,7 +328,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       InterfaceStructureToken structure;
       try {
          structure =
-            this.getAccessor().get(branch, artId, this.getFollowRelationDetails(), InterfaceStructureToken.class);
+            this.getAccessor().get(branch, artId, this.getFullFollowRelationDetails(), InterfaceStructureToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -347,7 +347,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       InterfaceStructureToken structure;
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),
             viewId);
          structure = this.parseStructure(branch, structure, viewId);
 
@@ -406,7 +406,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       InterfaceStructureToken structure;
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),
             viewId);
          structure = this.parseStructure(branch, structure, filter);
          return structure;
@@ -422,17 +422,16 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return this.query(branch, query, false);
    }
 
-   @Override
-   public List<RelationTypeSide> getFollowRelationDetails() {
+   public List<RelationTypeSide> getFullFollowRelationDetails() {
       return Arrays.asList(CoreRelationTypes.InterfaceStructureContent_DataElement,
          CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
-         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet);
+         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+         CoreRelationTypes.InterfaceEnumeration_EnumerationState);
    }
 
-   private List<RelationTypeSide> getFullFollowRelationDetails() {
+   private List<RelationTypeSide> getFollowRelationDetails() {
       return Arrays.asList(CoreRelationTypes.InterfaceStructureContent_DataElement,
-         CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
-         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet);
+         CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
    }
 
    @Override
@@ -564,7 +563,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       try {
          List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByQuery(branch, query,
-            this.getFollowRelationDetails(), isExact, pageNum, pageSize);
+            this.getFullFollowRelationDetails(), isExact, pageNum, pageSize);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -649,7 +648,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAll(branch,
-            this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute);
+            this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -679,7 +678,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByFilter(branch, filter,
-            this.structureAttributeList, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute);
+            this.structureAttributeList, this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure);
          }
@@ -714,7 +713,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFollowRelationDetails(),
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),
             pageNum, pageSize, orderByAttribute, viewId);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure, viewId, structure.getElements());
@@ -757,7 +756,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       try {
          structureList = (List<InterfaceStructureToken>) this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
-            this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
+            this.getFullFollowRelationDetails(), pageNum, pageSize, orderByAttribute, this.elementAttributeList);
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, structure, viewId, structure.getElements());
          }
@@ -775,7 +774,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       try {
          count = this.getAccessor().getAllByRelationAndFilterAndCount(branch,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, filter, this.structureAttributeList,
-            this.getFullFollowRelationDetails(), this.elementAttributeList);
+            this.getFollowRelationDetails(), this.elementAttributeList);
 
          return count;
       } catch (Exception ex) {
