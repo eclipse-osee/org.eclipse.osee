@@ -12,9 +12,13 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.MimChangeSummary;
+import org.eclipse.osee.mim.types.MimChangeSummaryItem;
 import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 
@@ -23,8 +27,17 @@ import org.eclipse.osee.mim.types.MimDifferenceReport;
  */
 public interface InterfaceDifferenceReportApi {
 
-   Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch1, BranchId branch2);
-
    MimDifferenceReport getDifferenceReport(BranchId branch, BranchId compareBranch);
 
+   Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch1, ArtifactId view, BranchId branch2);
+
+   Map<ArtifactId, MimChangeSummaryItem> getChangeSummaryItems(BranchId branch1, BranchId branch2, ArtifactId view);
+
+   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view);
+
+   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
+      Map<ArtifactId, MimChangeSummaryItem> changes);
+
+   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
+      Map<ArtifactId, MimChangeSummaryItem> changes, List<ApplicabilityToken> applicTokenList);
 }

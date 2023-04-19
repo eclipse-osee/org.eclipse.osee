@@ -21,14 +21,20 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public class MimDifferenceItem {
    private final ArtifactId artId;
+   private final String name;
+   private final Long artTypeId;
+   private final String artTypeName;
    private boolean added = false;
    private boolean deleted = false;
-   private final Map<Long, String[]> diffs;
+   private final Map<Long, MimAttributeChange> attributeChanges;
    private final Map<ArtifactId, MimRelationChange> relationChanges;
 
-   public MimDifferenceItem(ArtifactId artId) {
+   public MimDifferenceItem(ArtifactId artId, String name, Long artTypeId, String artTypeName) {
       this.artId = artId;
-      this.diffs = new HashMap<>();
+      this.name = name;
+      this.artTypeId = artTypeId;
+      this.artTypeName = artTypeName;
+      this.attributeChanges = new HashMap<>();
       this.relationChanges = new HashMap<>();
    }
 
@@ -36,8 +42,20 @@ public class MimDifferenceItem {
       return artId;
    }
 
-   public Map<Long, String[]> getDiffs() {
-      return diffs;
+   public String getName() {
+      return name;
+   }
+
+   public Long getArtType() {
+      return artTypeId;
+   }
+
+   public String getArtTypeName() {
+      return artTypeName;
+   }
+
+   public Map<Long, MimAttributeChange> getAttributeChanges() {
+      return attributeChanges;
    }
 
    public Map<ArtifactId, MimRelationChange> getRelationChanges() {
@@ -60,11 +78,8 @@ public class MimDifferenceItem {
       this.deleted = deleted;
    }
 
-   public void addAttributeChange(Long attrId, String oldValue, String newValue) {
-      String[] vals = new String[2];
-      vals[0] = oldValue;
-      vals[1] = newValue;
-      diffs.put(attrId, vals);
+   public void addAttributeChange(Long attrId, String attrName, String oldValue, String newValue) {
+      attributeChanges.put(attrId, new MimAttributeChange(attrId, attrName, oldValue, newValue));
    }
 
    /**
@@ -73,8 +88,8 @@ public class MimDifferenceItem {
     * @param added Used to specify if the relation represents an addition. Otherwise assume it represents a deletion.
     * Will need to modify to support merges and other types.
     */
-   public void addRelationChange(Long relationId, ArtifactId artId, boolean added) {
-      relationChanges.put(artId, new MimRelationChange(artId, relationId, added));
+   public void addRelationChange(Long relationTypeId, ArtifactId artIdA, ArtifactId artIdB, String artBName, boolean added) {
+      relationChanges.put(artId, new MimRelationChange(relationTypeId, artIdA, artIdB, artBName, added));
    }
 
 }

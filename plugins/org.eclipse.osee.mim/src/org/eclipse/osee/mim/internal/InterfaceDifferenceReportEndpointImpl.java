@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportEndpoint;
+import org.eclipse.osee.mim.types.MimChangeSummary;
 import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 
@@ -39,8 +40,19 @@ public class InterfaceDifferenceReportEndpointImpl implements InterfaceDifferenc
    }
 
    @Override
-   public Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch2) {
-      return interfaceDifferenceReportApi.getDifferences(branch, branch2);
+   public Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch2, ArtifactId view) {
+      if (view == null) {
+         view = ArtifactId.SENTINEL;
+      }
+      return interfaceDifferenceReportApi.getDifferences(branch, view, branch2);
+   }
+
+   @Override
+   public MimChangeSummary getChangeSummary(BranchId branch2, ArtifactId view) {
+      if (view == null) {
+         view = ArtifactId.SENTINEL;
+      }
+      return interfaceDifferenceReportApi.getChangeSummary(branch, branch2, view);
    }
 
 }
