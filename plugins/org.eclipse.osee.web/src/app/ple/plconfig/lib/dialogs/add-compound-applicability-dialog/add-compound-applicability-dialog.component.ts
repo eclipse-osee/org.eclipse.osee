@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import {
 	MatDialogModule,
 	MatDialogRef,
@@ -28,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-feature-selector/separated-feature-selector.component';
 
 @Component({
 	selector: 'osee-add-compound-applicability-dialog',
@@ -44,15 +44,13 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 		MatSelectModule,
 		MatOptionModule,
 		MatButtonModule,
+		SeparatedFeatureSelectorComponent,
 	],
 })
 export class AddCompoundApplicabilityDialogComponent {
-	features = this.currentBranchService.branchApplicFeatures;
 	relationships = compApplicRelationshipStructure;
-	inclusionOptions: string[] = ['Included', 'Excluded'];
 
 	constructor(
-		private currentBranchService: PlConfigCurrentBranchService,
 		public dialogRef: MatDialogRef<AddCompoundApplicabilityDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLAddCompoundApplicabilityData
 	) {}
@@ -91,10 +89,6 @@ export class AddCompoundApplicabilityDialogComponent {
 		var newApplic: applicability = { featureName: '', featureValue: '' };
 		this.data.compoundApplicability.applicabilities.push(newApplic);
 		this.data.compoundApplicability.relationships.push('');
-	}
-
-	isCompoundApplic(name: string) {
-		return name.includes(' | ') || name.includes(' & ');
 	}
 
 	valueTracker<T>(index: number, item: T) {

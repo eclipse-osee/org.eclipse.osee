@@ -61,4 +61,5 @@ export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
 		updateConfigurationGroup(cfgGroup: ConfigurationGroupDefinition) {
 			return of(MockXResultData);
 		},
+		branchApplicFeatures: of(testBranchApplicability.features),
 	};

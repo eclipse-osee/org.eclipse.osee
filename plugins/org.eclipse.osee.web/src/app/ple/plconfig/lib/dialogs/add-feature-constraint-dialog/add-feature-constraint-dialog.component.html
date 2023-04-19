@@ -1,0 +1,181 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #addFeatureConstraintForm="ngForm">
+	<h1 mat-dialog-title>Add Feature Constraint</h1>
+	<div mat-dialog-content>
+		<!-- Applicability (Child) -->
+		<mat-form-field class="tw-w-full tw-text-lg">
+			<mat-label>Select an Applicability</mat-label>
+
+			<input
+				placeholder="Filter..."
+				matInput
+				[(ngModel)]="data.featureConstraint.applicability1.name"
+				name="selectedChild"
+				[matAutocomplete]="auto"
+				(keyup)="
+					filter(data.featureConstraint.applicability1.name, true);
+					closePreview()
+				"
+				(ngModelChange)="clearApp1ID(); closePreview()"
+				required />
+			<mat-autocomplete
+				#auto="matAutocomplete"
+				(optionSelected)="findMatch(true)">
+				<mat-option
+					*ngFor="let applic of filteredChildApplic$ | async"
+					[value]="applic.name">
+					{{ applic.name }}
+				</mat-option>
+			</mat-autocomplete>
+		</mat-form-field>
+
+		<mat-slide-toggle (change)="toggleIsCompoundApplic()">
+			Compound Applicability?
+		</mat-slide-toggle>
+
+		<!-- If constraint is applicability (Parent) -->
+		<div *ngIf="!constraintIsCompApplic">
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Select an Applicability</mat-label>
+
+				<input
+					placeholder="Filter..."
+					matInput
+					[(ngModel)]="data.featureConstraint.applicability2.name"
+					name="selectedParent"
+					[matAutocomplete]="auto"
+					(keyup)="
+						filter(
+							data.featureConstraint.applicability2.name,
+							false
+						);
+						closePreview()
+					"
+					(ngModelChange)="clearApp2ID(); closePreview()"
+					required />
+				<mat-autocomplete
+					#auto="matAutocomplete"
+					(optionSelected)="findMatch(false)">
+					<mat-option
+						*ngFor="let applic of filteredParentApplic$ | async"
+						[value]="applic.name">
+						{{ applic.name }}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+		</div>
+
+		<!-- If constraint is compound applicability (Parent) -->
+		<div *ngIf="constraintIsCompApplic">
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Select a Compound Applicability</mat-label>
+
+				<input
+					placeholder="Filter..."
+					matInput
+					[(ngModel)]="data.featureConstraint.applicability2.name"
+					name="selectedParent"
+					[matAutocomplete]="auto"
+					(keyup)="
+						filter(
+							data.featureConstraint.applicability2.name,
+							false
+						)
+					"
+					(ngModelChange)="clearApp2ID(); closePreview()"
+					required />
+				<mat-autocomplete
+					#auto="matAutocomplete"
+					(optionSelected)="findMatch(false)">
+					<mat-option
+						*ngFor="let applic of filteredParentCompApplic$ | async"
+						[value]="applic.name">
+						{{ applic.name }}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+		</div>
+
+		<!-- Preview the text in real words AND any conflicts that may exist once added -->
+		<div
+			class="preview-in-words"
+			[hidden]="hidePreview">
+			<div class="preview-title">Preview:</div>
+			<!-- Constructed feature constraint -->
+			<mat-label>
+				<a class="preview-text">
+					{{ data.featureConstraint.applicability1.name }}
+				</a>
+				is only applicable if
+				<a class="preview-text">
+					{{ data.featureConstraint.applicability2.name }}
+				</a>
+			</mat-label>
+			<!-- Conflicts -->
+			<br />
+			<br />
+			<mat-label>
+				<div class="preview-title">
+					Conflicts that MUST be resolved before adding:
+				</div>
+				<div class="conflict-message">
+					<ng-container *ngIf="conflict$ | async as conflicts">
+						<ng-container
+							*ngIf="conflicts.length > 0; else noConflicts">
+							<ng-container *ngFor="let conflict of conflicts">
+								{{ conflict }}
+								<br />
+							</ng-container>
+						</ng-container>
+					</ng-container>
+					<ng-template #noConflicts> No Conflicts </ng-template>
+				</div>
+			</mat-label>
+		</div>
+	</div>
+
+	<!-- Action Buttons -->
+	<div mat-dialog-actions>
+		<button
+			mat-button
+			(click)="onCancelClick()">
+			Cancel
+		</button>
+		<button
+			mat-raised-button
+			[disabled]="
+				addFeatureConstraintForm.invalid ||
+				data.featureConstraint.applicability2.id === '' ||
+				data.featureConstraint.applicability1.id === ''
+			"
+			(click)="toggleHidePreview(); findConstraintConflicts()">
+			View Preview
+		</button>
+		<ng-container *ngIf="conflict$ | async as conflicts">
+			<button
+				mat-raised-button
+				[hidden]="
+					addFeatureConstraintForm.invalid ||
+					data.featureConstraint.applicability2.id === '' ||
+					data.featureConstraint.applicability1.id === '' ||
+					hidePreview
+				"
+				[mat-dialog-close]="data"
+				[disabled]="conflicts.length > 0"
+				color="primary">
+				Confirm
+			</button>
+		</ng-container>
+	</div>
+</form>

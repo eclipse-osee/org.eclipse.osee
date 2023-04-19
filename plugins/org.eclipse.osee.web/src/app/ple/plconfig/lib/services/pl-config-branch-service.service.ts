@@ -24,8 +24,10 @@ import {
 	editConfiguration,
 } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { response } from '@osee/shared/types';
+import { HttpParamsType, response } from '@osee/shared/types';
 import { NamedId, branch } from '@osee/shared/types';
+import { featureConstraintData } from './../types/pl-config-feature-constraints';
+import { applicWithConstraints } from './../types/pl-config-feature-constraints';
 
 @Injectable({
 	providedIn: 'root',
@@ -38,6 +40,54 @@ export class PlConfigBranchService {
 	public getBranches(type: string): Observable<branch[]> {
 		return this.http.get<branch[]>(apiURL + '/ats/ple/branches/' + type);
 	}
+	public addFeatureConstraint(
+		data: featureConstraintData,
+		branchId: string | number | undefined
+	): Observable<response> {
+		let params: HttpParamsType = {};
+		if (
+			data.featureConstraint.applicability1.id !== '' &&
+			data.featureConstraint.applicability2.id !== ''
+		) {
+			params = {
+				...params,
+				applicability1: data.featureConstraint.applicability1.id,
+				applicability2: data.featureConstraint.applicability2.id,
+			};
+		}
+		return this.http.post<response>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/constraint',
+			null,
+			{ params: params }
+		);
+	}
+	public getApplicsWithFeatureConstraints(
+		branchId: number | string | undefined
+	): Observable<applicWithConstraints[]> {
+		return this.http.get<applicWithConstraints[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/constraints'
+		);
+	}
+	public deleteFeatureConstraint(
+		branchId: number | string | undefined,
+		data: featureConstraintData
+	): Observable<response> {
+		let params: HttpParamsType = {};
+		if (
+			data.featureConstraint.applicability1.id !== '' &&
+			data.featureConstraint.applicability2.id !== ''
+		) {
+			params = {
+				...params,
+				applicability1: data.featureConstraint.applicability1.id,
+				applicability2: data.featureConstraint.applicability2.id,
+			};
+		}
+		return this.http.delete<response>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/constraint',
+			{ params: params }
+		);
+	}
 	public getBranchApplicability(
 		id: number | string | undefined
 	): Observable<PlConfigApplicUIBranchMapping> {
@@ -46,6 +96,25 @@ export class PlConfigBranchService {
 				apiURL + '/orcs/applicui/branch/' + id + '/all'
 			)
 			.pipe(share());
+	}
+	public getFeatureConstraintConflicts(
+		branchId: number | string | undefined,
+		childApplicId: number | string,
+		parentApplicId: number | string
+	): Observable<string[]> {
+		let params: HttpParamsType = {};
+		if (parentApplicId !== '') {
+			params = {
+				...params,
+				childApplicability: childApplicId,
+				parentApplicability: parentApplicId,
+			};
+		}
+		return this.http.get<string[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/constraintConflicts',
+			{ params: params }
+		);
+		// return of(['', '']);
 	}
 	public addConfiguration(
 		branchId: string | number | undefined,

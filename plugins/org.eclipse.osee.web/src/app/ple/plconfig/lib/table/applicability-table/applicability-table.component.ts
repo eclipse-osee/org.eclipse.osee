@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import {
 	AfterViewInit,
 	Component,
@@ -147,6 +147,9 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 	groupCount = this.currentBranchService.groupCount;
 	groupList = this.currentBranchService.groupList;
 	_editable = this.uiStateService.editable;
+	applicsWithFeatureConstraint$ =
+		this.currentBranchService.applicsWithFeatureConstraints;
+	feature$ = this.currentBranchService.branchApplicFeatures;
 	@ViewChild(MatSort, { static: false }) sort: MatSort;
 	menuPosition = {
 		x: '0',
@@ -194,6 +197,124 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 	}
 	valueTracker(index: any, item: any) {
 		return index;
+	}
+	applicIsNotPermitted(
+		columnName: string,
+		feature: trackableFeature,
+		featureValue: string
+	) {
+		// 2 cases to check for:
+		//
+		// #1: if the input applic matches a childApplic in a feature constraint, and the parentApplic of the same
+		// constraint shares a feature but not value with an applic on the current config (column), disable the input applicability option
+		//
+		// #2: if the input applic matches the feature but not value of parentApplic in a feature constraint, and the childApplic of the same
+		//constraint matches an applic on the current config (column), disable the input applicablity option
+		let isChildApplicMatch = false;
+		let isParentApplicWrongValueMatch = false;
+		return combineLatest([
+			this.applicsWithFeatureConstraint$,
+			this.feature$,
+		]).pipe(
+			switchMap(([childApplics, features]) =>
+				of(childApplics).pipe(
+					map((childApplics) => {
+						// find a parentApplic that shares the feature but NOT the value of the input applic
+						const foundParent = childApplics.find(
+							(childApplic) =>
+								childApplic.constraints[0].name
+									.toLowerCase()
+									.includes(feature.name.toLowerCase()) &&
+								!childApplic.constraints[0].name
+									.toLowerCase()
+									.includes(featureValue.toLowerCase())
+						);
+						// find a childApplic that matches the applic of the input applic
+						const foundChild = childApplics.find(
+							(childApplic) =>
+								childApplic.name
+									.toLowerCase()
+									.includes(feature.name.toLowerCase()) &&
+								childApplic.name
+									.toLowerCase()
+									.includes(featureValue.toLowerCase())
+						);
+						if (foundParent) {
+							isParentApplicWrongValueMatch = true;
+							return foundParent;
+						} else if (foundChild) {
+							isChildApplicMatch = true;
+							return foundChild;
+						} else {
+							return undefined;
+						}
+					}),
+					filter((childApplic) => childApplic !== undefined),
+					switchMap((childApplic) =>
+						of(
+							features
+								.map((feature) => {
+									return (
+										(isParentApplicWrongValueMatch &&
+											childApplic &&
+											feature.configurations.some(
+												(config) => {
+													// if the childApplic within the same feature constraint as the found parentApplic matches an existing applicability
+													// within the current config, do not allow the input option to be selectable
+													return (
+														config.name
+															.toLowerCase()
+															.includes(
+																columnName.toLowerCase()
+															) &&
+														childApplic.name
+															.toLowerCase()
+															.includes(
+																config.value.toLowerCase()
+															) &&
+														childApplic.name
+															.toLowerCase()
+															.includes(
+																feature.name.toLowerCase()
+															)
+													);
+												}
+											)) ||
+										(isChildApplicMatch &&
+											childApplic &&
+											feature.configurations.some(
+												(config) => {
+													// if the parentApplic matches the feature but not value of an applic on the current configuration, mark the current value as unselectable
+													return (
+														config.name
+															.toLowerCase()
+															.includes(
+																columnName.toLowerCase()
+															) &&
+														!childApplic.constraints[0].name
+															.toLowerCase()
+															.includes(
+																config.value.toLowerCase()
+															) &&
+														childApplic.constraints[0].name
+															.toLowerCase()
+															.includes(
+																feature.name.toLowerCase()
+															)
+													);
+												}
+											))
+									);
+								})
+								.reduce(
+									(acc, curr) => (acc = acc || curr),
+									false
+								)
+						)
+					)
+				)
+			)
+		);
 	}
 	modifyProduct(
 		configuration: string,

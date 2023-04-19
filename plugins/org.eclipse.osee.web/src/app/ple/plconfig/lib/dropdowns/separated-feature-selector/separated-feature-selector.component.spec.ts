@@ -11,50 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-feature-selector/separated-feature-selector.component';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService.mock';
 import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
-import { defaultCompoundApplicability } from './../../types/pl-config-compound-applicabilities';
 
-import { AddCompoundApplicabilityDialogComponent } from './add-compound-applicability-dialog.component';
+import { SeparatedFeatureSelectorComponent } from './separated-feature-selector.component';
 
-describe('AddCompoundApplicabilityDialogComponent', () => {
-	let component: AddCompoundApplicabilityDialogComponent;
-	let fixture: ComponentFixture<AddCompoundApplicabilityDialogComponent>;
+describe('SeparatedFeatureSelectorComponent', () => {
+	let component: SeparatedFeatureSelectorComponent;
+	let fixture: ComponentFixture<SeparatedFeatureSelectorComponent>;
 
 	beforeEach(async () => {
 		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
 			'getBranchApplicability',
 		]);
-
 		await TestBed.configureTestingModule({
-			imports: [
-				MatFormFieldModule,
-				MatListModule,
-				MatDialogModule,
-				MatInputModule,
-				MatSelectModule,
-				FormsModule,
-				AddCompoundApplicabilityDialogComponent,
-				NoopAnimationsModule,
-				MatSlideToggleModule,
-				SeparatedFeatureSelectorComponent,
-			],
+			imports: [SeparatedFeatureSelectorComponent, NoopAnimationsModule],
 			providers: [
 				{ provide: PlConfigBranchService, useValue: branchService },
 				{
@@ -65,23 +40,10 @@ describe('AddCompoundApplicabilityDialogComponent', () => {
 					provide: PlConfigTypesService,
 					useValue: plConfigTypesServiceMock,
 				},
-				{ provide: MatDialogRef, useValue: {} },
-				{
-					provide: MAT_DIALOG_DATA,
-					useValue: {
-						currentBranch: '3182843164128526558',
-						compoundApplicability:
-							new defaultCompoundApplicability(),
-					},
-				},
 			],
 		}).compileComponents();
-	});
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(
-			AddCompoundApplicabilityDialogComponent
-		);
+		fixture = TestBed.createComponent(SeparatedFeatureSelectorComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

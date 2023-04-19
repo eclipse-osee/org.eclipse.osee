@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ApplicabilityTokenWithConstraints;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -238,7 +239,8 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("product-types")
    @Produces({MediaType.APPLICATION_JSON})
-   Collection<ProductTypeDefinition> getProductTypes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<ProductTypeDefinition> getProductTypes(@QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)
@@ -249,7 +251,8 @@ public interface ApplicabilityEndpoint {
    @Path("change")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<BranchId> getAffectedBranches(@QueryParam("injectionDateMs") Long injectDateMs, @QueryParam("removalDateMs") @DefaultValue("-1") Long removalDateMs, List<ApplicabilityId> applicabilityIds);
+   List<BranchId> getAffectedBranches(@QueryParam("injectionDateMs") Long injectDateMs,
+      @QueryParam("removalDateMs") @DefaultValue("-1") Long removalDateMs, List<ApplicabilityId> applicabilityIds);
 
    @PUT
    @Path("artifacts")
@@ -261,7 +264,8 @@ public interface ApplicabilityEndpoint {
    @Path("change")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<BranchId> getAffectedBranches(@QueryParam("injectiontx") TransactionId injectionTx, @QueryParam("removaltx") @DefaultValue("-1") TransactionId removalTx, List<ApplicabilityId> applicabilityIds);
+   List<BranchId> getAffectedBranches(@QueryParam("injectiontx") TransactionId injectionTx,
+      @QueryParam("removaltx") @DefaultValue("-1") TransactionId removalTx, List<ApplicabilityId> applicabilityIds);
 
    @GET
    @Path("table")
@@ -281,13 +285,15 @@ public interface ApplicabilityEndpoint {
    @Path("{applicId}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken setApplicability(@PathParam("applicId") ApplicabilityId applicId, List<? extends ArtifactId> artifacts);
+   TransactionToken setApplicability(@PathParam("applicId") ApplicabilityId applicId,
+      List<? extends ArtifactId> artifacts);
 
    @PUT
    @Path("set/{applicTag}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken setApplicabilityByString(@PathParam("applicTag") String applicTag, List<? extends ArtifactId> artifacts);
+   TransactionToken setApplicabilityByString(@PathParam("applicTag") String applicTag,
+      List<? extends ArtifactId> artifacts);
 
    /**
     * Set the applicabilities referenced by the provided artifacts. This is stored in the tuple table which means it
@@ -363,7 +369,9 @@ public interface ApplicabilityEndpoint {
    @Path("/artifacts/applic")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<ApplicabilityUseResultToken> getApplicabilityUsage(@QueryParam("applic") String applic, @QueryParam("artTypes") List<ArtifactTypeToken> artTypes, @QueryParam("attrTypes") List<AttributeTypeToken> attrTypes);
+   List<ApplicabilityUseResultToken> getApplicabilityUsage(@QueryParam("applic") String applic,
+      @QueryParam("artTypes") List<ArtifactTypeToken> artTypes,
+      @QueryParam("attrTypes") List<AttributeTypeToken> attrTypes);
 
    @POST
    @Path("uploadBlockApplicability")
@@ -374,7 +382,8 @@ public interface ApplicabilityEndpoint {
    @Path("blockVisibility/{blockApplicId}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData applyBlockVisibilityOnServer(@PathParam("blockApplicId") String blockApplicId, BlockApplicabilityStageRequest data);
+   XResultData applyBlockVisibilityOnServer(@PathParam("blockApplicId") String blockApplicId,
+      BlockApplicabilityStageRequest data);
 
    @GET
    @Path("downloadBlockApplicability/{blockApplicId}")
@@ -394,16 +403,23 @@ public interface ApplicabilityEndpoint {
    @POST
    @Path("constraint")
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData addApplicabilityConstraint(@QueryParam("applicability1") ApplicabilityId applicability1, @QueryParam("applicability2") ApplicabilityId applicability2);
+   XResultData addApplicabilityConstraint(@QueryParam("applicability1") ApplicabilityId applicability1,
+      @QueryParam("applicability2") ApplicabilityId applicability2);
 
    @DELETE
    @Path("constraint")
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData removeApplicabilityConstraint(@QueryParam("applicability1") ApplicabilityId applicability1, @QueryParam("applicability2") ApplicabilityId applicability2);
+   XResultData removeApplicabilityConstraint(@QueryParam("applicability1") ApplicabilityId applicability1,
+      @QueryParam("applicability2") ApplicabilityId applicability2);
 
    @GET
    @Path("constraints")
    @Produces(MediaType.APPLICATION_JSON)
-   List<Pair<String, String>> getApplicabilityConstraints();
+   List<ApplicabilityTokenWithConstraints> getApplicabilityWithConstraints();
 
+   @GET
+   @Path("constraintConflicts")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<String> getApplicabilityConstraintConflicts(@QueryParam("childApplicability") ApplicabilityId childApplic,
+      @QueryParam("parentApplicability") ApplicabilityId parentApplic);
 }

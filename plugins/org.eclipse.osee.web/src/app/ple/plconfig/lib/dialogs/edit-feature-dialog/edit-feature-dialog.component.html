@@ -13,7 +13,7 @@
 <h1
 	mat-dialog-title
 	*ngIf="(editable | async) === 'true'">
-	Editing Feature {{ data.feature.name }}
+	Editing Feature: {{ data.feature.name }}
 </h1>
 <h1
 	mat-dialog-title
@@ -22,20 +22,6 @@
 </h1>
 <div mat-dialog-content>
 	<div *ngIf="(editable | async) === 'true'">
-		<mat-form-field
-			class="dialog-font-size"
-			class="dialog-full-width">
-			<mat-label>Title</mat-label>
-			<input
-				matInput
-				type="text"
-				[(ngModel)]="data.feature.name"
-				#input
-				[disabled]="(editable | async) === 'false'"
-				data-cy="field-name"
-				[attr.data-cy-value]="'field-name-' + data.feature.name" />
-		</mat-form-field>
-		<br />
 		<mat-form-field
 			class="dialog-font-size"
 			class="dialog-full-width">

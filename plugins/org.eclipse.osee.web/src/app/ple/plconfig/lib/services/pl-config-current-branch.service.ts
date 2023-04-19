@@ -80,11 +80,27 @@ import { transactionToken } from '@osee/shared/types/change-report';
 import { NamedId } from '@osee/shared/types';
 import { PlConfigTypesService } from './pl-config-types.service';
 import { productType } from '../types/pl-config-product-types';
+import {
+	applicWithConstraints,
+	featureConstraintData,
+} from './../types/pl-config-feature-constraints';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlConfigCurrentBranchService {
+	private _applicsWithFeatureConstraints: Observable<
+		applicWithConstraints[]
+	> = this.uiStateService.branchId.pipe(
+		filter((val) => val !== ''),
+		switchMap((branchId) =>
+			this.branchService.getApplicsWithFeatureConstraints(branchId).pipe(
+				repeatWhen((_) => this.uiStateService.updateReq),
+				share()
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
 	private _branchApplicabilityNoChanges: Observable<PlConfigApplicUIBranchMapping> =
 		this.uiStateService.branchId.pipe(
 			switchMap((val) =>
@@ -483,6 +499,9 @@ export class PlConfigCurrentBranchService {
 	) {}
 	public get branchApplicability() {
 		return this._branchApplicability;
+	}
+	public get applicsWithFeatureConstraints() {
+		return this._applicsWithFeatureConstraints;
 	}
 	public get groupList() {
 		return this._groupList;
@@ -997,6 +1016,55 @@ export class PlConfigCurrentBranchService {
 							}
 						})
 					)
+			)
+		);
+	}
+	public addFeatureConstraint(data: featureConstraintData) {
+		return this.uiStateService.branchId.pipe(
+			filter((val) => val != ''),
+			switchMap((branchId) =>
+				this.branchService.addFeatureConstraint(data, branchId).pipe(
+					tap((val) => {
+						if (val.results.length > 0) {
+							this.uiStateService.error = val.results[0];
+						} else {
+							this.uiStateService.updateReqConfig = true;
+							this.uiStateService.error = '';
+						}
+					})
+				)
+			)
+		);
+	}
+	public deleteFeatureConstraint(data: featureConstraintData) {
+		return this.uiStateService.branchId.pipe(
+			filter((val) => val != ''),
+			switchMap((branchId) =>
+				this.branchService.deleteFeatureConstraint(branchId, data).pipe(
+					tap((val) => {
+						if (val.results.length > 0) {
+							this.uiStateService.error = val.results[0];
+						} else {
+							this.uiStateService.updateReqConfig = true;
+							this.uiStateService.error = '';
+						}
+					})
+				)
+			)
+		);
+	}
+	public getFeatureConstraintConflicts(
+		childApplicId: number | string,
+		parentApplicId: number | string
+	) {
+		return this.uiStateService.branchId.pipe(
+			filter((val) => val != ''),
+			switchMap((branchId) =>
+				this.branchService.getFeatureConstraintConflicts(
+					branchId,
+					childApplicId,
+					parentApplicId
+				)
 			)
 		);
 	}

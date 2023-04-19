@@ -1,0 +1,42 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-content select="[label]"></ng-content>
+<mat-form-field
+	class="dialog-font-size"
+	class="dialog-full-width">
+	<mat-label>Select a Feature</mat-label>
+	<mat-select
+		[(ngModel)]="selectedFeature"
+		(ngModelChange)="selectedFeatureChange.next($event)"
+		required>
+		<ng-container *ngFor="let feature of features | async">
+			<mat-option [value]="feature">
+				{{ feature.name }}
+			</mat-option>
+		</ng-container>
+	</mat-select>
+</mat-form-field>
+<mat-form-field
+	class="dialog-font-size"
+	class="dialog-full-width">
+	<mat-label>Select a Value</mat-label>
+	<mat-select
+		(selectionChange)="selectedValue.next($event.value)"
+		required>
+		<mat-option
+			*ngFor="let inclusionOption of options | async"
+			[value]="inclusionOption">
+			{{ inclusionOption }}
+		</mat-option>
+	</mat-select>
+</mat-form-field>
