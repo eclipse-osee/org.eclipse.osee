@@ -13,38 +13,56 @@
 
 package org.eclipse.osee.framework.core.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
+
 /**
  * @author Ryan T. Baldwin
  */
 public class ChangeReportRowDto {
 
-   private String ids = "";
+   // Serialized
    private String names = "";
    private String itemType = "";
-   private String itemKind = "";
    private String changeType = "";
    private String isValue = "";
    private String wasValue = "";
 
+   // JsonIgnored
+   private ArtifactReadable artA;
+   private ArtifactReadable artB;
+   private ChangeType itemKindType;
+   private ModificationType modType;
+   private ApplicabilityToken isApplic;
+   private ApplicabilityToken wasApplic;
+
    public ChangeReportRowDto() {
    }
 
-   public ChangeReportRowDto(String ids, String names, String itemType, String itemKind, String changeType, String isValue, String wasValue) {
-      this.ids = ids;
+   public ChangeReportRowDto(ArtifactReadable artA, ArtifactReadable artB, String names, String itemType, String changeType, String isValue, String wasValue, ChangeType itemKindType, ModificationType modType, ApplicabilityToken isApplic, ApplicabilityToken wasApplic) {
+      this.artA = artA;
+      this.artB = artB;
       this.names = names;
       this.itemType = itemType;
-      this.itemKind = itemKind;
       this.changeType = changeType;
       this.isValue = isValue;
       this.wasValue = wasValue;
+      this.itemKindType = itemKindType;
+      this.modType = modType;
+      this.isApplic = isApplic;
+      this.wasApplic = wasApplic;
    }
 
    public String getIds() {
-      return ids;
-   }
-
-   public void setIds(String ids) {
-      this.ids = ids;
+      String id = artA.getIdString();
+      if (artB.isValid()) {
+         id += " - " + artB.getIdString();
+      }
+      return id;
    }
 
    public String getNames() {
@@ -64,11 +82,7 @@ public class ChangeReportRowDto {
    }
 
    public String getItemKind() {
-      return itemKind;
-   }
-
-   public void setItemKind(String itemKind) {
-      this.itemKind = itemKind;
+      return getItemKindType().getName().replace("Change", "");
    }
 
    public String getChangeType() {
@@ -93,6 +107,49 @@ public class ChangeReportRowDto {
 
    public void setWasValue(String wasValue) {
       this.wasValue = wasValue;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtA() {
+      return artA;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtB() {
+      return artB;
+   }
+
+   @JsonIgnore
+   public ChangeType getItemKindType() {
+      return itemKindType;
+   }
+
+   public void setItemKindType(ChangeType itemKindType) {
+      this.itemKindType = itemKindType;
+   }
+
+   @JsonIgnore
+   public ModificationType getModType() {
+      return modType;
+   }
+
+   public void setModType(ModificationType modType) {
+      this.modType = modType;
+   }
+
+   @JsonIgnore
+   public ArtifactTypeToken getArtType() {
+      return this.artA.getArtifactType();
+   }
+
+   @JsonIgnore
+   public ApplicabilityToken getIsApplic() {
+      return isApplic;
+   }
+
+   @JsonIgnore
+   public ApplicabilityToken getWasApplic() {
+      return wasApplic;
    }
 
 }

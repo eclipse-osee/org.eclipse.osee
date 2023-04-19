@@ -100,6 +100,11 @@ public class ExcelWorkbookWriter {
       }
    }
 
+   public void setColumnWidthInCharacters(int index, int numChars, int maxWidth) {
+      checkActiveSheet();
+      setColumnWidth(index, Math.min(((int) (numChars * 1.2)) * 256, maxWidth));
+   }
+
    public int getColumnWidth(int index) {
       checkActiveSheet();
       return activeSheet.getColumnWidth(index);
@@ -149,7 +154,8 @@ public class ExcelWorkbookWriter {
       writeCell(rowIndex, cellIndex, value, Strings.EMPTY_STRING, HyperLinkType.SHEET, styles);
    }
 
-   public void writeCell(int rowIndex, int cellIndex, Object value, String hyperlink, HyperLinkType hyperlinkType, CELLSTYLE... styles) {
+   public void writeCell(int rowIndex, int cellIndex, Object value, String hyperlink, HyperLinkType hyperlinkType,
+      CELLSTYLE... styles) {
       checkActiveSheet();
       Row row = activeSheet.getRow(rowIndex);
       if (row == null) {
@@ -211,12 +217,20 @@ public class ExcelWorkbookWriter {
                font.setColor(IndexedColors.BLUE.getIndex());
                font.setUnderline(Font.U_SINGLE);
                break;
-            case YELLOW:
-               style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+            case LIGHT_GREY:
+               style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+               style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+               break;
+            case LIGHT_RED:
+               style.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             case WRAP:
                style.setWrapText(true);
+               break;
+            case YELLOW:
+               style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+               style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             default:
                break;
@@ -235,9 +249,11 @@ public class ExcelWorkbookWriter {
       CENTERV,
       GREEN,
       HYPERLINK,
-      YELLOW,
+      LIGHT_GREY,
+      LIGHT_RED,
       NONE,
-      WRAP
+      WRAP,
+      YELLOW
    }
 
    public enum HyperLinkType {

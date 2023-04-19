@@ -41,7 +41,7 @@ public final class IcdStreamingOutput implements StreamingOutput {
    @Override
    public void write(OutputStream output) {
       try {
-         IcdGenerator generator = new IcdGenerator(mimApi);
+         MimIcdGenerator generator = new MimIcdGenerator(mimApi);
          generator.runOperation(output, branch, viewId, connectionId, diff);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);

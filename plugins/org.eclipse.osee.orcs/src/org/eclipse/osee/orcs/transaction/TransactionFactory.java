@@ -61,5 +61,5 @@ public interface TransactionFactory {
 
    List<ChangeItem> getArtifactHistory(ArtifactId artifact, BranchId branch);
 
-   List<ChangeReportRowDto> getTxChangeReport(BranchId branch, TransactionId txId1, TransactionId txId2);
+   List<ChangeReportRowDto> getTxChangeReport(BranchId branch, BranchId branch2, TransactionId txId1, TransactionId txId2);
 }
