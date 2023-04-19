@@ -72,11 +72,13 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
 
    @Override
    public PlatformTypeToken get(BranchId branch, ArtifactId platformTypeId) {
+      if (!platformTypeId.isValid()) {
+         return PlatformTypeToken.SENTINEL;
+      }
       try {
          return this.getAccessor().get(branch, platformTypeId,
             Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
-               CoreRelationTypes.InterfaceEnumeration_EnumerationState),
-            PlatformTypeToken.class);
+               CoreRelationTypes.InterfaceEnumeration_EnumerationState));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);

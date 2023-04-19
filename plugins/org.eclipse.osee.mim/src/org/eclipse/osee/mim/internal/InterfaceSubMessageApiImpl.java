@@ -122,7 +122,8 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
       try {
          List<RelationTypeSide> parentRelations =
             Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-               CoreRelationTypes.InterfaceConnectionContent_Connection);
+               CoreRelationTypes.InterfaceConnectionContent_Connection,
+               CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, subMessageId, parentRelations, InterfaceSubMessageToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
