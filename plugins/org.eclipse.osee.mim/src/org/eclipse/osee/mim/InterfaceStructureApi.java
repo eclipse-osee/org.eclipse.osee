@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 
@@ -92,8 +91,6 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter);
 
    InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter, ArtifactId viewId);
-
-   List<RelationTypeSide> getFollowRelationDetails();
 
    List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element);
 
