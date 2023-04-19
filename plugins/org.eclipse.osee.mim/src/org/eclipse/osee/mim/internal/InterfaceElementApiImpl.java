@@ -123,13 +123,15 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       try {
          InterfaceStructureElementToken element = this.getAccessor().get(branch, elementId,
             this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
-         element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL);
-         return element;
+         if (element.isValid()) {
+            element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL);
+            return element;
+         }
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
-         return null;
       }
+      return InterfaceStructureElementToken.SENTINEL;
    }
 
    private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement) {
