@@ -138,10 +138,11 @@ public class DevProgressMetricsBlam extends AbstractBlam {
                bwr.write(sb.toString());
                bwr.flush();
                bwr.close();
-
+               res.close();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
+
          };
       });
    }

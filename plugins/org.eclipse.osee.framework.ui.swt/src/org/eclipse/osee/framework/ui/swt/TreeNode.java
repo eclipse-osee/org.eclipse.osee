@@ -80,29 +80,12 @@ public class TreeNode implements ITreeNode, Serializable {
    /**
     * Subclasses should override this method so that calls to setChildren(objChildren) will result in a set of children
     * that matches the subclass. The default implementation will setup the children as TreeNode's.
-    * 
+    *
     * @param backingData The data that should be placed on the child.
     * @return A new node for the backing data.
     */
    protected ITreeNode getChild(Object backingData) {
       return new TreeNode(this, null, backingData);
-   }
-
-   /**
-    * Recursively fill a node from a content provider runnable. If an exception is thrown from the provider then it will
-    * be set as the child of the node.
-    */
-   public static void fillNode(ITreeNode node, IContentProviderRunnable provider) {
-      try {
-         node.setChildren(provider.run(node.getBackingData()));
-
-         for (Object child : node.getChildren()) {
-            fillNode((ITreeNode) child, provider);
-         }
-
-      } catch (Exception e) {
-         node.setChildren(new Object[] {e});
-      }
    }
 
    @SuppressWarnings("unchecked")

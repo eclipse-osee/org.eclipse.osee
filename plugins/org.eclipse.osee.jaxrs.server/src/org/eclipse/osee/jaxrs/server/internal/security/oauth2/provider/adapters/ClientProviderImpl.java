@@ -158,13 +158,15 @@ public class ClientProviderImpl implements ClientProvider {
 
    @Override
    public URI getClientLogoUri(UriInfo uriInfo, Client client) {
-      String clientGuid;
+      String clientGuid = "";
       if (client instanceof ApplicationClient) {
          ApplicationClient appClient = (ApplicationClient) client;
          clientGuid = appClient.getGuid();
       } else {
          OAuthClient authClient = storage.getClientByClientKey(client.getClientId());
-         clientGuid = authClient.getGuid();
+         if (authClient != null) {
+            clientGuid = authClient.getGuid();
+         }
       }
       return UriBuilder.fromUri(uriInfo.getBaseUri()).path("client").path("{client-guid}").path("logo").build(
          clientGuid);
@@ -174,14 +176,16 @@ public class ClientProviderImpl implements ClientProvider {
    public ByteSource getClientLogoSupplier(UriInfo uriInfo, String applicationGuid) {
       OAuthClient client = storage.getClientByClientGuid(applicationGuid);
       ByteSource supplier = null;
-      if (client.hasApplicationLogoSupplier()) {
-         supplier = client.getApplicationLogoSupplier();
-      } else {
-         String logoUri = client.getApplicationLogoUri();
-         if (Strings.isValid(logoUri)) {
-            supplier = newSupplier(logoUri);
+      if (client != null) {
+         if (client.hasApplicationLogoSupplier()) {
+            supplier = client.getApplicationLogoSupplier();
          } else {
-            // provide default image if available;
+            String logoUri = client.getApplicationLogoUri();
+            if (Strings.isValid(logoUri)) {
+               supplier = newSupplier(logoUri);
+            } else {
+               // provide default image if available;
+            }
          }
       }
       return supplier;

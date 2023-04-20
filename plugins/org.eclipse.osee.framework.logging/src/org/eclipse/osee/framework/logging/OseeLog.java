@@ -32,12 +32,12 @@ public class OseeLog {
       }
    }
 
-   private static OseeLogger getLog() {
+   private static synchronized OseeLogger getLog() {
       makevalid();
       return log;
    }
 
-   private static StatusManager getSM() {
+   private static synchronized StatusManager getSM() {
       makevalid();
       return sm;
    }

@@ -117,7 +117,7 @@ public class OAuth2ClientRequestFilter implements ClientRequestFilter {
       String authHeader;
       if (OAuthConstants.BEARER_TOKEN_TYPE.equals(tokenType)) {
          authHeader = OAuth2Util.asAuthorizationHeader(accessToken);
-      } else if (OAuthConstants.HAWK_TOKEN_TYPE.equals(tokenType)) {
+      } else if (OAuthConstants.HAWK_TOKEN_TYPE.equals(tokenType) && requestedUri != null) {
          String httpMethod = context.getMethod();
          authHeader = OAuth2Util.asAuthorizationHeader(accessToken, httpMethod, requestedUri);
       } else {

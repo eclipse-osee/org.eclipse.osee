@@ -46,6 +46,9 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
 
    public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {
       super(parent, style, new PatternFilter(), true);
+      if (treeViewer == null) {
+         throw new RuntimeException("treeViewer is null");
+      }
       treeViewer.setLabelProvider(new CheckBoxStateTreeLabelProvider(this));
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 

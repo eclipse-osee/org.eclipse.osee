@@ -188,6 +188,7 @@ public final class OAuthUtil {
       } else {
          subject = clientSubject;
       }
+
       return OAuthUtil.newSecurityContext(subject);
    }
 

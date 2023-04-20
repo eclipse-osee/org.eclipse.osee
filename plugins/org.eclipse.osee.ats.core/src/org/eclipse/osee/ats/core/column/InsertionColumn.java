@@ -88,7 +88,9 @@ public class InsertionColumn extends AbstractServicesColumn {
             IAtsInsertionActivity insertionActivity = atsApi.getProgramService().getInsertionActivity(workPackage);
             if (insertionActivity != null) {
                IAtsInsertion insertion = atsApi.getProgramService().getInsertion(insertionActivity);
-               result = insertion.getName();
+               if (insertion != null) {
+                  result = insertion.getName();
+               }
             }
          }
       }

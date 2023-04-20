@@ -410,6 +410,9 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
          @Override
          public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+            if (getConflictFromSelection(structuredSelection) == null) {
+                 throw new RuntimeException("getConflictFromSelection(structuredSelection) returns null");
+            }
             return super.isEnabledWithException(
                structuredSelection) && getConflictFromSelection(structuredSelection).isWordAttribute();
          }

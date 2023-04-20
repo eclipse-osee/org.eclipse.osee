@@ -153,14 +153,13 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTop() throws Exception {
-      try (Scanner s =
+      Scanner s =
          new Scanner(Runtime.getRuntime().exec(new String[] {"bash", "-c", "top -n 1"}).getInputStream()).useDelimiter(
-            "\\A")) {
-         String results = s.hasNext() ? s.next() : "";
-
-         return AHTML.simplePage(results);
-         //      return (new ServerStatusTop()).get();
-      }
+            "\\A");
+      String results = s.hasNext() ? s.next() : "";
+      s.close();
+      return AHTML.simplePage(results);
+      //      return (new ServerStatusTop()).get();
    }
 
    @Path("status")

@@ -279,36 +279,36 @@ public class LisFileParser implements DispoImporterApi {
       FileFilter fileFilter = new WildcardFileFilter("*.LIS");
       File[] lisFiles = vcastFolder.listFiles(fileFilter);
       Map<String, File> idToLisFile = new HashMap<String, File>();
-
-      for (int i = 0; i < lisFiles.length; i++) {
-         boolean fileFound = false;
-         String[] parts = lisFiles[i].getName().split("\\.");
-         for (String s : parts) {
-            if (Pattern.matches("\\-?\\d+", s) && !s.equals("2")) {
-               if (idToLisFile.containsKey(s)) {
-                  if (FileUtils.isFileNewer(lisFiles[i], idToLisFile.get(s))) {
-                     idToLisFile.remove(s);
+      if (lisFiles != null) {
+         for (int i = 0; i < lisFiles.length; i++) {
+            boolean fileFound = false;
+            String[] parts = lisFiles[i].getName().split("\\.");
+            for (String s : parts) {
+               if (Pattern.matches("\\-?\\d+", s) && !s.equals("2")) {
+                  if (idToLisFile.containsKey(s)) {
+                     if (FileUtils.isFileNewer(lisFiles[i], idToLisFile.get(s))) {
+                        idToLisFile.remove(s);
+                        idToLisFile.put(s, lisFiles[i]);
+                     }
+                  } else {
                      idToLisFile.put(s, lisFiles[i]);
                   }
-               } else {
-                  idToLisFile.put(s, lisFiles[i]);
+                  fileFound = true;
+                  break;
                }
-               fileFound = true;
-               break;
             }
-         }
-         if (!fileFound) {
-            if (idToLisFile.containsKey("2")) {
-               if (FileUtils.isFileNewer(lisFiles[i], idToLisFile.get("2"))) {
-                  idToLisFile.remove("2");
+            if (!fileFound) {
+               if (idToLisFile.containsKey("2")) {
+                  if (FileUtils.isFileNewer(lisFiles[i], idToLisFile.get("2"))) {
+                     idToLisFile.remove("2");
+                     idToLisFile.put("2", lisFiles[i]);
+                  }
+               } else {
                   idToLisFile.put("2", lisFiles[i]);
                }
-            } else {
-               idToLisFile.put("2", lisFiles[i]);
             }
          }
       }
-
       return idToLisFile;
    }
 
@@ -374,7 +374,6 @@ public class LisFileParser implements DispoImporterApi {
       newItem.setMethodNumber(Integer.toString(functionNum));
 
       try {
-         String fileName = sourceFileJoin.getDisplayName();
          String fullPathToFile = vCastDir + File.separator + lisFile.getLISFile();
          Date lastModified = DispoUtil.getTimestampOfFile(fullPathToFile);
          newItem.setLastUpdate(lastModified);

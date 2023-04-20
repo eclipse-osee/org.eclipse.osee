@@ -319,8 +319,10 @@ public class IcdGenerator {
                String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
                String taskFileType = struct.getInterfaceTaskFileType() + "";
                String desc = struct.getDescription();
-               String categoryFull = catEnum.getId() + " " + catEnum.getName();
-
+               String categoryFull = "";
+               if (catEnum != null) {
+                  categoryFull = catEnum.getId() + " " + catEnum.getName();
+               }
                boolean txRateChanged = msgDiffItem != null && msgDiffItem.getDiffs().containsKey(
                   CoreAttributeTypes.InterfaceMessageRate.getId());
                boolean msgNumChanged = msgDiffItem != null && msgDiffItem.getDiffs().containsKey(
