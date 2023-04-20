@@ -127,8 +127,10 @@ public class TemplateReflector {
 
       try {
          Class<?> clazz = getClassFromWhiteList(qualifier);
-         Field field = clazz.getDeclaredField(name);
-         return field.get(null);
+         if (clazz != null) {
+            Field field = clazz.getDeclaredField(name);
+            return field.get(null);
+         }
       } catch (Exception ex) {
          results.errorf("Failed to get argument for %s, full error: %s", qname, ex.toString());
       }

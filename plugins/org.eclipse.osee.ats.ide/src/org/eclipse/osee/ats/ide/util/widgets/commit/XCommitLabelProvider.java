@@ -128,6 +128,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          if (status == CommitStatus.Commit_Overridden) {
             CommitOverride override =
                AtsApiService.get().getBranchService().getCommitOverrideOps().getCommitOverride(teamWf, branch);
+
             String userName = AtsApiService.get().getUserService().getUserById(override.getUser()).getName();
             return String.format("%s by %s - Reason: [%s]", status.getDisplayName(), userName, override.getReason());
          }
@@ -222,8 +223,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleActionColumn(BranchId branch) {
-      CommitStatus commitStatus = AtsApiService.get().getBranchService().getCommitStatus(
-         commitXManager.getXCommitViewer().getTeamArt(), branch);
+      CommitStatus commitStatus =
+         AtsApiService.get().getBranchService().getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
          return "Finish Update";
       } else if (commitStatus == CommitStatus.Branch_Not_Configured) {

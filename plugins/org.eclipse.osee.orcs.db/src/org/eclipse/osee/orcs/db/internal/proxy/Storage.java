@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -44,10 +42,6 @@ public class Storage extends DataResource {
 
    public boolean isDataValid() {
       return this.rawContent != null && this.rawContent.length > 0;
-   }
-
-   public InputStream getInputStream() {
-      return new ByteArrayInputStream(getContent());
    }
 
    public boolean isInitialized() {

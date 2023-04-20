@@ -298,6 +298,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   if (mergeBranch.equals(branchEvent.getSourceBranch())) {
                      close();
                   }
+                  break;
                case Committed:
                   if (isApplicableSourceAndDestEvent(branchEvent.getSourceBranch(),
                      branchEvent.getDestinationBranch())) {

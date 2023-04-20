@@ -36,14 +36,19 @@ public class ServerHealthExec {
       }
       String cmd = cmds.iterator().next();
       System.err.println(String.format("exec cmd [%s]", cmd));
+      Scanner s = null;
       try {
-         try (Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A")) {
-            String results = s.hasNext() ? s.next() : "";
-            results = String.format("cmd [%s]<br/><br/>%s", cmd, results.replaceAll("\n", "<br/>"));
-            return AHTML.simplePage(results);
-         }
+         s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+         String results = s.hasNext() ? s.next() : "";
+         results = String.format("cmd [%s]<br/><br/>%s", cmd, results.replaceAll("\n", "<br/>"));
+         return AHTML.simplePage(results);
+
       } catch (Exception ex) {
          return AHTML.simplePage(String.format("cmd [%s]<br/><br/>Exception: %s", cmd, Lib.exceptionToString(ex)));
+      } finally {
+         if (s != null) {
+            s.close();
+         }
       }
    }
 

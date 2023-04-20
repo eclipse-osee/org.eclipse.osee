@@ -42,7 +42,9 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
 
    public void setInput(Collection<T> input) {
       this.input = input;
-      super.setElements(input.toArray(new Object[input.size()]));
+      if (input != null) {
+         super.setElements(input.toArray(new Object[input.size()]));
+      }
    }
 
    @SuppressWarnings("unchecked")

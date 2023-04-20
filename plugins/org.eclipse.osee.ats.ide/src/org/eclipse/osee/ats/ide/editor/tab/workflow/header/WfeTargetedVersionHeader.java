@@ -103,6 +103,9 @@ public class WfeTargetedVersionHeader extends Composite {
 
    public static boolean promptChangeVersion(final IAtsTeamWorkflow teamWf) {
       WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(teamWf);
+      if (editor == null) {
+         throw new RuntimeException("editor is null");
+      }
       return promptChangeVersion(editor, teamWf);
    }
 
