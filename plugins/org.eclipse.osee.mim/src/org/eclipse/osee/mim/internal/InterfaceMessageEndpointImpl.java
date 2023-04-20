@@ -27,28 +27,37 @@ import org.eclipse.osee.mim.types.InterfaceMessageToken;
 public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
 
    private final BranchId branch;
-   private final ArtifactId ConnectionId;
+   private final ArtifactId connectionId;
    private final InterfaceMessageApi messageApi;
 
    public InterfaceMessageEndpointImpl(BranchId branch, ArtifactId connectionId, InterfaceMessageApi interfaceMessageApi) {
       this.branch = branch;
       this.messageApi = interfaceMessageApi;
-      this.ConnectionId = connectionId;
+      this.connectionId = connectionId;
    }
 
    @Override
    public Collection<InterfaceMessageToken> getAllMessages(String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       if (Strings.isValid(filter)) {
-         return this.messageApi.getAllForConnectionAndFilter(branch, ConnectionId, filter, viewId, pageNum, pageSize,
+         return this.messageApi.getAllForConnectionAndFilter(branch, connectionId, filter, viewId, pageNum, pageSize,
             orderByAttributeTypeId);
       }
-      return this.messageApi.getAllForConnection(branch, ConnectionId, viewId, pageNum, pageSize,
+      return this.messageApi.getAllForConnection(branch, connectionId, viewId, pageNum, pageSize,
          orderByAttributeTypeId);
    }
 
    @Override
    public InterfaceMessageToken getInterfaceMessage(ArtifactId messageId, ArtifactId viewId) {
-      return this.messageApi.getRelatedToConnection(branch, ConnectionId, messageId, viewId);
+      return this.messageApi.getRelatedToConnection(branch, connectionId, messageId, viewId);
+   }
+
+   @Override
+   public int getAllMessagesCount(String filter, ArtifactId viewId) {
+      if (Strings.isValid(filter)) {
+         return this.messageApi.getAllForConnectionAndFilterCount(branch, connectionId, filter);
+      } else {
+         return this.messageApi.getAllForConnectionAndCount(branch, connectionId);
+      }
    }
 
 }

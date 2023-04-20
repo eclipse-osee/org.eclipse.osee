@@ -16,33 +16,30 @@
 package org.eclipse.osee.mim.internal;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceStructureCountEndpoint;
 
 public class InterfaceStructureCountEndpointImpl implements InterfaceStructureCountEndpoint {
 
    private final BranchId branch;
-   private final ArtifactId messageId;
    private final ArtifactId subMessageId;
    private final InterfaceStructureApi interfaceStructureApi;
 
    public InterfaceStructureCountEndpointImpl(BranchId branch, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
       this.branch = branch;
-      this.messageId = messageId;
       this.subMessageId = subMessageId;
       this.interfaceStructureApi = interfaceStructureApi;
    }
 
    @Override
-   public int getStructures(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
-      return this.interfaceStructureApi.getAllRelatedCount(branch, subMessageId);
-   }
-
-   @Override
-   public int getStructures(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
-      return this.interfaceStructureApi.getAllRelatedAndFilterCount(branch, subMessageId, filter);
+   public int getStructures(String filter) {
+      if (Strings.isValid(filter)) {
+         return this.interfaceStructureApi.getAllRelatedAndFilterCount(branch, subMessageId, filter);
+      } else {
+         return this.interfaceStructureApi.getAllRelatedCount(branch, subMessageId);
+      }
    }
 
 }

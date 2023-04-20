@@ -144,6 +144,8 @@ export abstract class CurrentStructureService {
 	}
 	abstract get structures(): Observable<(structure | structureWithChanges)[]>;
 
+	abstract get structuresCount(): Observable<number>;
+
 	set filter(value: string) {
 		this.ui.filterString = value;
 	}

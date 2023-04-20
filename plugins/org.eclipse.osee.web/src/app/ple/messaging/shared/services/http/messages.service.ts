@@ -75,6 +75,32 @@ export class MessagesService {
 		);
 	}
 
+	getFilteredMessagesCount(
+		filter: string,
+		branchId: string,
+		connectionId: string,
+		viewId: string
+	): Observable<number> {
+		let params: HttpParamsType = {};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<number>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/connections/' +
+				connectionId +
+				'/messages/count',
+			{
+				params: params,
+			}
+		);
+	}
+
 	/**
 	 * Finds a specific message
 	 * @param branchId branch to look for contents on

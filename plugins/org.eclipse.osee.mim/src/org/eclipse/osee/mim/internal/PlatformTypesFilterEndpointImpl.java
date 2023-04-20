@@ -79,4 +79,15 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
       return platformApi.getAll(branch, pageNum, pageSize, orderByAttributeTypeId);
    }
 
+   @Override
+   public int getPlatformTypesCount(String filter) {
+      List<AttributeTypeId> attributes = this.createAttributeList();
+      try {
+         return platformApi.getAccessor().getAllByFilterAndCount(branch, filter, attributes);
+      } catch (IllegalArgumentException | SecurityException ex) {
+         System.out.println(ex);
+         return 0;
+      }
+   }
+
 }

@@ -45,7 +45,7 @@
 			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100]"
 			[pageIndex]="currentPage | async"
 			(page)="setPage($event)"
-			[length]="minPageSize | async"
+			[length]="filteredDataSize | async"
 			[disabled]="false"></mat-paginator>
 	</ng-container>
 </div>

@@ -366,6 +366,17 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    }
 
    @Override
+   public int getAllByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes) {
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (Strings.isValid(filter)) {
+         query = query.and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
+            QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
+      return query.getCount();
+   }
+
+   @Override
    public T getByRelationWithoutId(BranchId branch, RelationTypeSide relation, ArtifactId relatedId) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getByRelationWithoutId(branch, relation, relatedId, new LinkedList<RelationTypeSide>());
    }
@@ -664,12 +675,9 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    }
 
    @Override
-   public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, Collection<RelationTypeSide> followRelations) throws IllegalArgumentException, SecurityException {
+   public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId) throws IllegalArgumentException, SecurityException {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(
          artifactType).andRelatedTo(relation, relatedId);
-      for (RelationTypeSide rel : followRelations) {
-         query = query.follow(rel);
-      }
       return query.getCount();
    }
 

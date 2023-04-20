@@ -48,4 +48,9 @@ public interface PlatformTypesFilterEndpoint {
     */
    Collection<PlatformTypeToken> getPlatformTypes(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
+   @GET()
+   @Path("count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getPlatformTypesCount(@QueryParam("filter") String filter);
+
 }
