@@ -214,10 +214,9 @@ export class MessageTableComponent implements AfterViewChecked {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	messages = this.messageService.messages;
+	messagesCount = this.messageService.messagesCount;
 	currentPage = this.messageService.currentPage;
-	/**
-	 * @TODO this needs to be replaced with a SQL query since we can't tell whether a user decreased the size or the results themselves decreased
-	 */
+
 	currentOffset = combineLatest([
 		this.messageService.currentPage.pipe(startWith(0), pairwise()),
 		this.messageService.currentPageSize,
@@ -231,10 +230,8 @@ export class MessageTableComponent implements AfterViewChecked {
 			}
 		}, 10)
 	);
-	private _messageLength = this.messages.pipe(
-		map((messages) => messages.length)
-	);
-	minPageSize = combineLatest([this.currentOffset, this._messageLength]).pipe(
+
+	minPageSize = combineLatest([this.currentOffset, this.messagesCount]).pipe(
 		debounceTime(100),
 		switchMap(([offset, messages]) => of([offset, messages])),
 		map(([offset, length]) => Math.max(offset + 1, length + 1))

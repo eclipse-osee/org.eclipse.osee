@@ -396,10 +396,9 @@
 				<ng-container *ngIf="hasFilter">
 					<mat-paginator
 						[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100]"
-						[pageSize]="st.length"
 						[pageIndex]="currentPage | async"
 						(page)="setPage($event)"
-						[length]="minPageSize | async"
+						[length]="structuresCount | async"
 						[disabled]="false"></mat-paginator>
 				</ng-container>
 			</ng-container>

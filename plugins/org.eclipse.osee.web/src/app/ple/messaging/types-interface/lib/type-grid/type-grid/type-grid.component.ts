@@ -76,6 +76,7 @@ export class TypeGridComponent implements OnChanges, OnDestroy {
 	columnCount = this.uiService.columnCount;
 	gutterSize: string = '';
 	filteredData = this.typesService.typeData.pipe(takeUntil(this._done));
+	filteredDataSize = this.typesService.typeDataCount;
 	rowHeight: string = '';
 	inEditMode = this.typesService.inEditMode;
 
@@ -97,10 +98,11 @@ export class TypeGridComponent implements OnChanges, OnDestroy {
 			}
 		}, 10)
 	);
-	private _typesLength = this.typesService.typeData.pipe(
-		map((types) => types.length)
-	);
-	minPageSize = combineLatest([this.currentOffset, this._typesLength]).pipe(
+
+	minPageSize = combineLatest([
+		this.currentOffset,
+		this.filteredDataSize,
+	]).pipe(
 		debounceTime(100),
 		switchMap(([offset, types]) => of([offset, types])),
 		map(([offset, length]) => Math.max(offset + 1, length + 1)),

@@ -13,7 +13,6 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -733,7 +732,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       int count = 0;
       try {
          count = this.getAccessor().getAllByRelationAndCount(branch,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, new ArrayList<RelationTypeSide>());
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId);
 
          return count;
       } catch (Exception ex) {

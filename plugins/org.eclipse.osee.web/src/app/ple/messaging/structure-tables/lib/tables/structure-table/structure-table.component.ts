@@ -195,9 +195,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 		shareReplay(1)
 	);
 	structures = this.structureService.structures;
-	/**
-	 * @TODO this needs to be replaced with a SQL query since we can't tell whether a user decreased the size or the results themselves decreased
-	 */
+	structuresCount = this.structureService.structuresCount;
 	currentPage = this.structureService.currentPage;
 
 	currentOffset = combineLatest([
@@ -213,12 +211,9 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 			}
 		}, 10)
 	);
-	private _structureLength = this.structures.pipe(
-		map((structures) => structures.length)
-	);
 	minPageSize = combineLatest([
 		this.currentOffset,
-		this._structureLength,
+		this.structuresCount,
 	]).pipe(
 		debounceTime(100),
 		switchMap(([offset, messages]) => of([offset, messages])),

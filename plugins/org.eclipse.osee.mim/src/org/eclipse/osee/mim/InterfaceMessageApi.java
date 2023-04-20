@@ -59,5 +59,9 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
 
    Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter);
 
+   int getAllForConnectionAndFilterCount(BranchId branch, ArtifactId connectionId, String filter);
+
+   int getAllForConnectionAndCount(BranchId branch, ArtifactId connectionId);
+
    Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 }

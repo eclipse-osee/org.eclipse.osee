@@ -156,6 +156,56 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 					: of(structures)
 		)
 	);
+	private _structuresCount = combineLatest([
+		this.ui.filter,
+		this.ui.BranchId,
+		this.ui.messageId,
+		this.ui.subMessageId,
+		this.ui.connectionId,
+		this.ui.viewId,
+	]).pipe(
+		share(),
+		debounceTime(500),
+		distinctUntilChanged(),
+		filter(
+			([
+				filter,
+				branchId,
+				messageId,
+				subMessageId,
+				connectionId,
+				viewId,
+			]) =>
+				branchId !== '' &&
+				messageId !== '' &&
+				subMessageId !== '' &&
+				connectionId !== ''
+		),
+		switchMap(
+			([
+				filter,
+				branchId,
+				messageId,
+				subMessageId,
+				connectionId,
+				viewId,
+			]) =>
+				this.structure
+					.getFilteredStructuresCount(
+						filter,
+						branchId,
+						messageId,
+						subMessageId,
+						connectionId,
+						viewId
+					)
+					.pipe(
+						repeat({ delay: () => this.ui.UpdateRequired }),
+						share()
+					)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
 
 	get currentPage() {
 		return this._currentPage$;
@@ -170,6 +220,10 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 	}
 	set pageSize(page: number) {
 		this._currentPageSize$.next(page);
+	}
+
+	get structuresCount() {
+		return this._structuresCount;
 	}
 
 	get structures() {

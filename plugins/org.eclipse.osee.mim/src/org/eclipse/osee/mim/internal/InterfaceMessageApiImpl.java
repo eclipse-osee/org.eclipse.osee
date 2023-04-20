@@ -292,6 +292,36 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
+   public int getAllForConnectionAndFilterCount(BranchId branch, ArtifactId connectionId, String filter) {
+      int count = 0;
+      List<AttributeTypeId> messageAttributes = createMessageAttributes();
+      List<AttributeTypeId> subMessageAttributes = createSubMessageAttributes();
+      try {
+         count = this.getAccessor().getAllByRelationAndFilterAndCount(branch,
+            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
+            this.fullRelations, subMessageAttributes);
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return -1;
+      }
+      return count;
+   }
+
+   @Override
+   public int getAllForConnectionAndCount(BranchId branch, ArtifactId connectionId) {
+      int count = 0;
+
+      try {
+         count = this.getAccessor().getAllByRelationAndCount(branch,
+            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId);
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return -1;
+      }
+      return count;
+   }
+
+   @Override
    public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       List<InterfaceMessageToken> messages = new LinkedList<InterfaceMessageToken>();
       List<AttributeTypeId> messageAttributes = createMessageAttributes();

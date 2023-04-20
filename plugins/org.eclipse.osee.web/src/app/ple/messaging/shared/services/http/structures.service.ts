@@ -94,6 +94,40 @@ export class StructuresService {
 			}
 		);
 	}
+
+	getFilteredStructuresCount(
+		filter: string,
+		branchId: string,
+		messageId: string,
+		subMessageId: string,
+		connectionId: string,
+		viewId: string
+	) {
+		let params: HttpParamsType = {
+			//
+		};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<Required<number>>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/connections/' +
+				connectionId +
+				'/messages/' +
+				messageId +
+				'/submessages/' +
+				subMessageId +
+				'/structures/count/',
+			{
+				params: params,
+			}
+		);
+	}
 	getStructure(
 		branchId: string,
 		messageId: string,

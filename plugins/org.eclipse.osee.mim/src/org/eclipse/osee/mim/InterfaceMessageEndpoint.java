@@ -39,6 +39,14 @@ public interface InterfaceMessageEndpoint {
    Collection<InterfaceMessageToken> getAllMessages(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
+   @Path("count")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * Gets count of messages returned
+    */
+   int getAllMessagesCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
+
+   @GET()
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
    /**

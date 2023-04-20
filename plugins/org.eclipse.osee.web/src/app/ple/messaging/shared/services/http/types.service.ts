@@ -27,7 +27,7 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import type { relation, transaction } from '@osee/shared/types';
+import type { HttpParamsType, relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -59,6 +59,20 @@ export class TypesService {
 					pageNum: pageNum,
 				},
 			}
+		);
+	}
+
+	getFilteredTypesCount(
+		filter: string,
+		branchId: string
+	): Observable<number> {
+		let params: HttpParamsType = {};
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<number>(
+			apiURL + '/mim/branch/' + branchId + '/types/filter/count',
+			{ params: params }
 		);
 	}
 

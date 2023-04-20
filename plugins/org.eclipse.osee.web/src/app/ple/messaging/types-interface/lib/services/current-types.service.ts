@@ -72,6 +72,22 @@ export class CurrentTypesService {
 		shareReplay({ refCount: true, bufferSize: 1 })
 	);
 
+	private _typeDataCount = combineLatest([
+		this.uiService.filter,
+		this.uiService.BranchId,
+	]).pipe(
+		share(),
+		filter(([filter, id]) => id !== ''),
+		debounceTime(500),
+		distinctUntilChanged(),
+		switchMap(([filter, id]) =>
+			this.typesService.getFilteredTypesCount(filter, id).pipe(
+				repeatWhen((_) => this.uiService.typeUpdateRequired),
+				share()
+			)
+		),
+		shareReplay({ refCount: true, bufferSize: 1 })
+	);
 	constructor(
 		private typesService: TypesService,
 		private uiService: PlMessagingTypesUIService,
@@ -89,6 +105,9 @@ export class CurrentTypesService {
 		return this._typeData;
 	}
 
+	get typeDataCount() {
+		return this._typeDataCount;
+	}
 	/**
 	 * Creates a new platform type using the platform types POST API, current branch,but without the id,idIntValue, and idString present and includes enum values
 	 * @todo fix this up later to be in enumeration-ui.service

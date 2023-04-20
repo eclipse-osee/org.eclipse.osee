@@ -94,6 +94,30 @@ export class CurrentMessagesService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	private _messagesListCount = combineLatest([
+		this.ui.filter,
+		this.BranchId,
+		this.connectionId,
+		this.viewId,
+	]).pipe(
+		filter(
+			([filter, branchId, connection, viewId]) =>
+				connection !== '' && branchId !== ''
+		),
+		share(),
+		debounceTime(500),
+		distinctUntilChanged(),
+		switchMap(([filter, branchId, connection, viewId]) =>
+			this.messageService
+				.getFilteredMessagesCount(filter, branchId, connection, viewId)
+				.pipe(
+					repeatWhen((_) => this.ui.UpdateRequired),
+					share()
+				)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
 	private _messages = combineLatest([
 		this.ui.isInDiff,
 		this._messagesList,
@@ -253,6 +277,10 @@ export class CurrentMessagesService {
 	}
 	get messages() {
 		return this._messages;
+	}
+
+	get messagesCount() {
+		return this._messagesListCount;
 	}
 
 	get allMessages() {

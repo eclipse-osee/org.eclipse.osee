@@ -48,6 +48,9 @@ import { CurrentStructureService } from './current-structure.service';
 	providedIn: 'root',
 })
 export class CurrentStructureSingleService extends CurrentStructureService {
+	get structuresCount(): Observable<number> {
+		return of(1);
+	}
 	private _structures = combineLatest([
 		this.BranchId,
 		this.branchInfoService.parentBranch,
