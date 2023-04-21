@@ -78,6 +78,15 @@
 									"with": "src/environments/environment.prod.ts"
 								}
 							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
