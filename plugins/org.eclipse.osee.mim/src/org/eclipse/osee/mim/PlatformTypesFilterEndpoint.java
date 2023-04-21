@@ -21,12 +21,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("filter")
+@Swagger
 public interface PlatformTypesFilterEndpoint {
 
    @GET()
@@ -36,7 +38,8 @@ public interface PlatformTypesFilterEndpoint {
     *
     * @return list of platform Types
     */
-   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{filter}")
@@ -46,7 +49,9 @@ public interface PlatformTypesFilterEndpoint {
     *
     * @return List of platform types
     */
-   Collection<PlatformTypeToken> getPlatformTypes(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<PlatformTypeToken> getPlatformTypes(@PathParam("filter") String filter,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("count")

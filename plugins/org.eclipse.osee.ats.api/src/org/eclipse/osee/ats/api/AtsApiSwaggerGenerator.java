@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api;
+package org.eclipse.osee.ats.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.core.util.Json;
@@ -34,23 +34,32 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Dominic Guss
  */
-public class DefineApiSwaggerGenerator {
+public class AtsApiSwaggerGenerator {
    private static final String definitionPath = "../org.eclipse.osee.web.ui/src/swagger/definitions/";
    // Only one period in the definition file name is supported
-   private static final String definitionFile = "org_eclipse_osee_define_api.json";
-   private static final String infoTitle = "Define API Endpoint Definitions";
-   private static final String infoDescription = "Allows interactive support for Define API endpoints.";
-   private static final String serverUrl = "/define";
-   private static final String serverDescription = "Define";
+   private static final String definitionFile = "org_eclipse_osee_ats_api.json";
+   private static final String infoTitle = "ATS API Endpoint Definitions";
+   private static final String infoDescription = "Allows interactive support for ATS API endpoints.";
+   private static final String serverUrl = "/ats";
+   private static final String serverDescription = "ATS";
 
    public static void main(String[] args) {
 
-      Set<Class<?>> allClasses = Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api");
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.publishing"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.publishing.datarights"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.publishing.templatemanager"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.synchronization"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.toggles"));
+      Set<Class<?>> allClasses = Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.agile");
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.agile.jira"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.config"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.country"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.ev"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.insertion"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.metrics"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.notify"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.program"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.task"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.util"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.util.health"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.workdef"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.workflow"));
+      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.ats.api.workflow.attr"));
 
       Set<Class<?>> swaggerClasses = new HashSet<Class<?>>();
 

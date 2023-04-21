@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workflow.state;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -63,6 +64,7 @@ public interface IAtsStateManager {
 
    void addState(String stateName, List<? extends AtsUser> assignees);
 
+   @JsonSetter
    void setAssignees(List<? extends AtsUser> assignees);
 
    WorkState createState(String stateName);

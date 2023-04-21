@@ -21,6 +21,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.MimChangeSummary;
 import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
@@ -29,6 +30,7 @@ import org.eclipse.osee.mim.types.MimDifferenceReport;
  * @author Ryan T. Baldwin
  */
 @Path("diff")
+@Swagger
 public interface InterfaceDifferenceReportEndpoint {
 
    @GET()
@@ -44,7 +46,8 @@ public interface InterfaceDifferenceReportEndpoint {
    @GET()
    @Path("{branchId}/diff")
    @Produces(MediaType.APPLICATION_JSON)
-   Map<ArtifactId, MimDifferenceItem> getDifferences(@PathParam("branchId") BranchId branch2, @QueryParam("view") ArtifactId view);
+   Map<ArtifactId, MimDifferenceItem> getDifferences(@PathParam("branchId") BranchId branch2,
+      @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("{branchId}/branchDiff")

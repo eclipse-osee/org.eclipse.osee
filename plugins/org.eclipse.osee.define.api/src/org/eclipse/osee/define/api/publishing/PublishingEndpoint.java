@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 
 @Path("word")
+@Swagger
 public interface PublishingEndpoint {
    @POST
    @Consumes({MediaType.APPLICATION_JSON})

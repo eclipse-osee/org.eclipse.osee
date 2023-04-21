@@ -15,7 +15,6 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import java.util.Collection;
 import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -30,7 +29,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -41,10 +39,12 @@ import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Angel Avila
  */
+@Swagger
 public class DispoSetResource {
 
    private final DispoApi dispoApi;
@@ -109,7 +109,8 @@ public class DispoSetResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response postDispoSetByName(@FormParam("path") String importPath, @PathParam("name") String name, @QueryParam("dispoType") String dispoType, @QueryParam("userName") String userName) {
+   public Response postDispoSetByName(@FormParam("path") String importPath, @PathParam("name") String name,
+      @QueryParam("dispoType") String dispoType, @QueryParam("userName") String userName) {
       DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
       descriptor.setName(name);
       descriptor.setImportPath(importPath);
@@ -211,7 +212,8 @@ public class DispoSetResource {
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet, @QueryParam("userName") String userName) {
+   public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet,
+      @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.editDispoSet(branch, setId, newDispositionSet, userName);
       status = Status.OK;
@@ -231,7 +233,9 @@ public class DispoSetResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response runMassDisposition(@PathParam("setId") String setId, @QueryParam("resolutionType") String resolutionType, @QueryParam("resolution") String resolution, List<String> itemIds, @QueryParam("userName") String userName) {
+   public Response runMassDisposition(@PathParam("setId") String setId,
+      @QueryParam("resolutionType") String resolutionType, @QueryParam("resolution") String resolution,
+      List<String> itemIds, @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution, userName);
       status = Status.OK;
@@ -281,7 +285,8 @@ public class DispoSetResource {
    @Path("{setId}/search")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Iterable<DispoItem> getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
+   public Iterable<DispoItem> getDispoItemsByAnnotationText(@PathParam("setId") String setId,
+      @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
       Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(branch, setId, value, isDetailed);
       return foundItems;
    }

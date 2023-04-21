@@ -20,11 +20,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Angel Avila
  */
+@Swagger
 public class KeyValueResource {
 
    private final OrcsApi orcsApi;

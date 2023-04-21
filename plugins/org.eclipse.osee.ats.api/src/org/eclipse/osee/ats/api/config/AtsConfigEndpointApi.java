@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.type.ViewModel;
  * @author Donald G. Dunne
  */
 @Path("config")
+@Swagger
 public interface AtsConfigEndpointApi {
 
    /**

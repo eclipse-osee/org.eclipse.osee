@@ -21,12 +21,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("elements")
+@Swagger
 public interface InterfaceElementEndpoint {
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
@@ -35,7 +37,8 @@ public interface InterfaceElementEndpoint {
     *
     * @return all elements for a given structure
     */
-   Collection<InterfaceStructureElementToken> getAllElements(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceStructureElementToken> getAllElements(@QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")

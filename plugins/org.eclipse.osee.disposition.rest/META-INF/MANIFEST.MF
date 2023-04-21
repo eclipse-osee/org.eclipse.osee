@@ -9,8 +9,14 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: 
  com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,
  com.fasterxml.jackson.databind,
+ io.swagger.v3.core.util,
+ io.swagger.v3.jaxrs2,
+ io.swagger.v3.oas.models,
+ io.swagger.v3.oas.models.info,
+ io.swagger.v3.oas.models.servers,
  javax.annotation.security,
  javax.ws.rs,
  javax.ws.rs.core,
@@ -18,6 +24,8 @@ Import-Package:
  org.apache.commons.io,
  org.apache.commons.io.filefilter,
  org.eclipse.jdt.annotation,
+ org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.query,
  org.eclipse.osee.disposition.model,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
@@ -25,6 +33,7 @@ Import-Package:
  org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
@@ -35,4 +44,4 @@ Import-Package:
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.vcast,
  org.eclipse.osee.vcast.model
-Require-Bundle: org.eclipse.osee.ats.api
+Export-Package: org.eclipse.osee.disposition.rest

@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * This interface defines the REST API end points for importing and exporting synchronization artifacts.
@@ -28,6 +29,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
  */
 
 @Path("synchronization")
+@Swagger
 public interface SynchronizationEndpoint {
 
    /**

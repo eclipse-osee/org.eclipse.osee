@@ -29,10 +29,12 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Angel Avila
  */
+@Swagger
 public class AnnotationResource {
    private final DispoApi dispoApi;
    private final BranchId branch;
@@ -98,7 +100,8 @@ public class AnnotationResource {
    @Path("resolutionType/{resolutionType}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Iterable<DispoAnnotationData> getAllDispoAnnotationsByType(@PathParam("resolutionType") String resolutionType) {
+   public Iterable<DispoAnnotationData> getAllDispoAnnotationsByType(
+      @PathParam("resolutionType") String resolutionType) {
       Iterable<DispoAnnotationData> annotationData = dispoApi.getDispoAnnotations(branch, itemId);
       return dispoApi.getDispoAnnotationsByType(annotationData, resolutionType);
    }
@@ -130,7 +133,8 @@ public class AnnotationResource {
    @Path("{annotationId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation, @QueryParam("userName") String userName) {
+   public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation,
+      @QueryParam("userName") String userName) {
       Response response;
       boolean wasEdited = dispoApi.editDispoAnnotation(branch, itemId, annotationId, newAnnotation, userName, false);
       if (wasEdited) {
@@ -152,7 +156,8 @@ public class AnnotationResource {
     */
    @Path("{annotationId}")
    @DELETE
-   public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId, @QueryParam("userName") String userName) {
+   public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId,
+      @QueryParam("userName") String userName) {
       Response response;
       boolean wasEdited = dispoApi.deleteDispoAnnotation(branch, itemId, annotationId, userName, false);
       if (wasEdited) {

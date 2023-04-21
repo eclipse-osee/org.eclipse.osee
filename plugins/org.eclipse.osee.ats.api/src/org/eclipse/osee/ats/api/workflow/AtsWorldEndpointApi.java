@@ -25,12 +25,14 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("world")
+@Swagger
 public interface AtsWorldEndpointApi {
 
    @GET
@@ -56,7 +58,8 @@ public interface AtsWorldEndpointApi {
    @GET
    @Path("my/{userArtId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   String getMyWorldUICustomized(@PathParam("userArtId") ArtifactId userArtId, @PathParam("customizeGuid") String customizeGuid);
+   String getMyWorldUICustomized(@PathParam("userArtId") ArtifactId userArtId,
+      @PathParam("customizeGuid") String customizeGuid);
 
    @GET
    @Path("coll/{collectorId}")
@@ -71,7 +74,8 @@ public interface AtsWorldEndpointApi {
    @GET
    @Path("coll/{collectorId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   String getCollectionUICustomized(@PathParam("collectorId") ArtifactId collectorId, @PathParam("customizeGuid") String customizeGuid);
+   String getCollectionUICustomized(@PathParam("collectorId") ArtifactId collectorId,
+      @PathParam("customizeGuid") String customizeGuid);
 
    @PUT
    @Path("search")

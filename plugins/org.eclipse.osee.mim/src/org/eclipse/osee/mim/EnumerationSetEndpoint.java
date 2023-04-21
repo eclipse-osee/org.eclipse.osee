@@ -21,12 +21,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("enumerations")
+@Swagger
 public interface EnumerationSetEndpoint {
 
    @GET()

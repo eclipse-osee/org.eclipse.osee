@@ -21,12 +21,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("messages")
+@Swagger
 public interface InterfaceMessageEndpoint {
 
    @GET()
@@ -36,7 +38,9 @@ public interface InterfaceMessageEndpoint {
     *
     * @return messages and submessages
     */
-   Collection<InterfaceMessageToken> getAllMessages(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceMessageToken> getAllMessages(@QueryParam("filter") String filter,
+      @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("count")
@@ -55,6 +59,7 @@ public interface InterfaceMessageEndpoint {
     * @param messageId message id to look for
     * @return interface message that is found
     */
-   InterfaceMessageToken getInterfaceMessage(@PathParam("id") ArtifactId messageId, @QueryParam("viewId") ArtifactId viewId);
+   InterfaceMessageToken getInterfaceMessage(@PathParam("id") ArtifactId messageId,
+      @QueryParam("viewId") ArtifactId viewId);
 
 }

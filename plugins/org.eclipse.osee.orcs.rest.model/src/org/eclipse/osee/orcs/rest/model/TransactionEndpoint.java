@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -37,6 +38,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Roberto E. Escobar
  */
 @Path("txs")
+@Swagger
 public interface TransactionEndpoint {
 
    @GET
@@ -56,7 +58,8 @@ public interface TransactionEndpoint {
    @GET
    @Path("export/from/{tx-id1}/to/{tx-id2}")
    @Produces({MediaType.APPLICATION_JSON})
-   TransactionBuilderData exportTxsDiff(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
+   TransactionBuilderData exportTxsDiff(@PathParam("tx-id1") TransactionId txId1,
+      @PathParam("tx-id2") TransactionId txId2);
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -76,10 +79,12 @@ public interface TransactionEndpoint {
 
    @PUT
    @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment")
-   Response replaceWithBaselineTxVersion(@PathParam("user") UserId userId, @PathParam("branch-id") BranchId branchId, @PathParam("tx-id") TransactionId txId, @PathParam("art-id") ArtifactId artId, String comment);
+   Response replaceWithBaselineTxVersion(@PathParam("user") UserId userId, @PathParam("branch-id") BranchId branchId,
+      @PathParam("tx-id") TransactionId txId, @PathParam("art-id") ArtifactId artId, String comment);
 
    @GET
    @Path("{art-id}/{branch-id}")
    @Produces({MediaType.APPLICATION_JSON})
-   List<ChangeItem> getArtifactHistory(@PathParam("art-id") ArtifactId artifact, @PathParam("branch-id") BranchId branch);
+   List<ChangeItem> getArtifactHistory(@PathParam("art-id") ArtifactId artifact,
+      @PathParam("branch-id") BranchId branch);
 }

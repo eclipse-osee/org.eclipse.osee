@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -64,6 +65,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -1787,5 +1789,20 @@ public final class Lib {
       uriPath = uriPath.replaceAll("%3A", ":");
       return baseUri.resolve(uriPath).getPath();
 
+   }
+
+   public static Set<Class<?>> getAllClassesUnderPackage(String packageName) {
+      InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(packageName.replaceAll("[.]", "/"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+      return reader.lines().filter(line -> line.endsWith(".class")).map(line -> getClass(line, packageName)).collect(
+         Collectors.toSet());
+   }
+
+   private static Class<?> getClass(String className, String packageName) {
+      try {
+         return Class.forName(packageName + "." + className.substring(0, className.lastIndexOf('.')));
+      } catch (ClassNotFoundException e) {
+         throw new OseeCoreException("Class not found exception thrown: " + e.getMessage());
+      }
    }
 }

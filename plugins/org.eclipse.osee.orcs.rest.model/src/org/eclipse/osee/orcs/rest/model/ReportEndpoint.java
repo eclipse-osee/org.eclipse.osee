@@ -22,16 +22,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author David W. Miller
  */
 @Path("report")
+@Swagger
 public interface ReportEndpoint {
 
    @GET
    @Path("{branch}/view/{view}/template/{template}")
    @Produces({MediaType.APPLICATION_XML})
-   Response getReportFromTemplate(@PathParam("branch") BranchId branch, @DefaultValue("-1") @PathParam("view") ArtifactId view, @DefaultValue("-1") @PathParam("template") ArtifactId templateArt);
+   Response getReportFromTemplate(@PathParam("branch") BranchId branch,
+      @DefaultValue("-1") @PathParam("view") ArtifactId view,
+      @DefaultValue("-1") @PathParam("template") ArtifactId templateArt);
 
 }

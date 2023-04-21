@@ -22,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 
@@ -29,6 +30,7 @@ import org.eclipse.osee.mim.types.PlatformTypeToken;
  * @author Luciano T. Vaglienti
  */
 @Path("types")
+@Swagger
 public interface PlatformTypesEndpoint {
 
    @GET()
@@ -38,7 +40,8 @@ public interface PlatformTypesEndpoint {
     *
     * @return List of platform types
     */
-   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{type_id}")

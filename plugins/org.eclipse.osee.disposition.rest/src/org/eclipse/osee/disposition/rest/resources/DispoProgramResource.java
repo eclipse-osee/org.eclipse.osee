@@ -39,11 +39,13 @@ import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Angel Avila
  */
 @Path("program")
+@Swagger
 public class DispoProgramResource {
 
    private final DispoApi dispoApi;
@@ -189,7 +191,8 @@ public class DispoProgramResource {
    @Path("importDispoBranch")
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public Response importDispoBranchByName(@FormParam("filterState") String filterState, @FormParam("name") String branchName) {
+   public Response importDispoBranchByName(@FormParam("filterState") String filterState,
+      @FormParam("name") String branchName) {
       BranchToken branch = dispoApi.getDispoProgramIdByName(branchName);
       Response.Status status;
       dispoApi.importAllDispoSets(branch, filterState, "OSEE System Auto-Import (Branch)");

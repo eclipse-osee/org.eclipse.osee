@@ -35,12 +35,14 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Megumi Telles
  */
 @Path("ci")
+@Swagger
 public class ContinuousIntegrationResource {
    private final DispoApi dispoApi;
 
@@ -147,7 +149,8 @@ public class ContinuousIntegrationResource {
       }
    }
 
-   private Response createAndUpdateAnnotation(CiItemData data, String userName, Response response, BranchId branchId, String itemId) {
+   private Response createAndUpdateAnnotation(CiItemData data, String userName, Response response, BranchId branchId,
+      String itemId) {
       for (DispoAnnotationData annotation : data.getAnnotations()) {
          DispoAnnotationData temp = new DispoAnnotationData();
          String createdAnnotationId = dispoApi.createDispoAnnotation(branchId, itemId, temp, userName, true);

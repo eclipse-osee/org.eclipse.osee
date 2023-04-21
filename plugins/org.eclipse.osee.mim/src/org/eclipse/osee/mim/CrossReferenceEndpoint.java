@@ -21,20 +21,26 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.CrossReference;
 
 @Path("crossReference")
+@Swagger
 public interface CrossReferenceEndpoint {
 
    @GET()
    @Path("connection/{connectionId}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<CrossReference> getAll(@PathParam("connectionId") ArtifactId connectionId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<CrossReference> getAll(@PathParam("connectionId") ArtifactId connectionId,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("connection/{connectionId}/{filter}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<CrossReference> getAllAndFilter(@PathParam("connectionId") ArtifactId connectionId, @PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<CrossReference> getAllAndFilter(@PathParam("connectionId") ArtifactId connectionId,
+      @PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")

@@ -27,11 +27,13 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("datastore")
+@Swagger
 public interface DatastoreEndpoint {
 
    @GET
@@ -68,7 +70,8 @@ public interface DatastoreEndpoint {
    @GET
    @Path("user")
    @Produces(MediaType.APPLICATION_JSON)
-   UserToken getUserInfo(@Context HttpHeaders headers, @HeaderParam("osee.user.id") String userId, @HeaderParam(HttpHeaders.AUTHORIZATION) String authHeader);
+   UserToken getUserInfo(@Context HttpHeaders headers, @HeaderParam("osee.user.id") String userId,
+      @HeaderParam(HttpHeaders.AUTHORIZATION) String authHeader);
 
    @GET
    @Path("gamma/unused/{ids}")

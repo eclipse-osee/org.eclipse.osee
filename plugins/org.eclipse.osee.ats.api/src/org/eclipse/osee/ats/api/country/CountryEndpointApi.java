@@ -22,11 +22,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("countryep")
+@Swagger
 public interface CountryEndpointApi extends BaseConfigEndpointApi<JaxCountry> {
 
    @PUT

@@ -21,25 +21,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("branch")
+@Swagger
 public interface DefineBranchEndpointApi {
 
    @GET
    @Path("{branch}/validate/arttype/{artType}/all")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public XResultData validateAll(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeToken artType);
+   public XResultData validateAll(@PathParam("branch") BranchId branch,
+      @PathParam("artType") ArtifactTypeToken artType);
 
    @GET
    @Path("{branch}/validate/arttype/{artType}/dupparent")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public XResultData getChildrenWithMultipleParents(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeToken artType);
+   public XResultData getChildrenWithMultipleParents(@PathParam("branch") BranchId branch,
+      @PathParam("artType") ArtifactTypeToken artType);
 
    @GET
    @Path("{branch}/validate/arttype/{artType}/orphan")

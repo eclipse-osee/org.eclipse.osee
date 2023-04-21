@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.MimReportToken;
 import org.eclipse.osee.mim.types.NodeTraceReportItem;
 
@@ -27,6 +28,7 @@ import org.eclipse.osee.mim.types.NodeTraceReportItem;
  * @author Ryan Baldwin
  */
 @Path("reports")
+@Swagger
 public interface MimReportsEndpoint {
 
    @GET()
@@ -46,11 +48,13 @@ public interface MimReportsEndpoint {
    @GET()
    @Path("{branchId}/interfacesFromRequirement/{artId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public NodeTraceReportItem getInterfacesFromRequirement(@PathParam("branchId") BranchId branch, @PathParam("artId") ArtifactId artId);
+   public NodeTraceReportItem getInterfacesFromRequirement(@PathParam("branchId") BranchId branch,
+      @PathParam("artId") ArtifactId artId);
 
    @GET()
    @Path("{branchId}/requirementsFromInterface/{artId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public NodeTraceReportItem getRequirementsFromInterface(@PathParam("branchId") BranchId branch, @PathParam("artId") ArtifactId artId);
+   public NodeTraceReportItem getRequirementsFromInterface(@PathParam("branchId") BranchId branch,
+      @PathParam("artId") ArtifactId artId);
 
 }

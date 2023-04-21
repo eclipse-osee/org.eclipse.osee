@@ -19,11 +19,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("insertionactivityep")
+@Swagger
 public interface InsertionActivityEndpointApi extends BaseConfigEndpointApi<JaxInsertionActivity> {
 
    @PUT

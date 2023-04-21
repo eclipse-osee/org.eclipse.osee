@@ -27,6 +27,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -50,6 +51,7 @@ import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthUsage;
  * @author Donald G. Dunne
  */
 @Path("/health")
+@Swagger
 public final class ServerHealthEndpointImpl {
    private final IApplicationServerManager applicationServerManager;
    private final IAuthenticationManager authManager;

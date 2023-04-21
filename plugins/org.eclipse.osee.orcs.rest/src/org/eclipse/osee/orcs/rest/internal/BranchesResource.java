@@ -25,6 +25,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityEndpointImpl;
@@ -39,6 +40,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
  * @author Roberto E. Escobar
  */
 @Path("branch")
+@Swagger
 public class BranchesResource {
    private final OrcsApi orcsApi;
 

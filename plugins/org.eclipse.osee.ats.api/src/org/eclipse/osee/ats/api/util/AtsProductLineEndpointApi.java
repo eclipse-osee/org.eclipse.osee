@@ -21,12 +21,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Audrey E Denk
  */
 @Path("ple")
+@Swagger
 public interface AtsProductLineEndpointApi {
 
    @GET

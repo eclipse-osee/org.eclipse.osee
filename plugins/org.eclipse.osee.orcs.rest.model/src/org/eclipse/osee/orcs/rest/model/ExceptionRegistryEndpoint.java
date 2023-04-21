@@ -22,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.exceptionregistry.ExceptionRegistryEntry;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * This interface defines the REST API end points for the Exception Registry.
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.core.exceptionregistry.ExceptionRegistryEntry;
  */
 
 @Path("exceptionregistry")
+@Swagger
 public interface ExceptionRegistryEndpoint {
 
    /**

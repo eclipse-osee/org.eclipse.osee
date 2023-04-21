@@ -20,12 +20,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("filter")
+@Swagger
 public interface InterfaceSubMessageFilterEndpoint {
 
    @GET()
