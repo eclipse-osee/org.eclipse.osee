@@ -30,10 +30,12 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Angel Avila
  */
+@Swagger
 public class DispoItemResource {
    private final DispoApi dispoApi;
    private final BranchId branch;
@@ -93,7 +95,8 @@ public class DispoItemResource {
    @Path("{itemId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem, @QueryParam("userName") String userName, @QueryParam("assignUser") boolean assignUser) {
+   public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem,
+      @QueryParam("userName") String userName, @QueryParam("assignUser") boolean assignUser) {
       Response response;
       boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem, userName, assignUser);
       if (wasEdited) {

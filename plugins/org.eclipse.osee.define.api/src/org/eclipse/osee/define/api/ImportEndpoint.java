@@ -23,49 +23,60 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author David W. Miller
  */
 @Path("import")
+@Swagger
 public interface ImportEndpoint {
 
    @POST
    @Path("{branch}/word")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData importWord(@PathParam("branch") BranchId branch, @DefaultValue("") @QueryParam("wordDoc") String wordDoc, @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier);
+   XResultData importWord(@PathParam("branch") BranchId branch, @DefaultValue("") @QueryParam("wordDoc") String wordDoc,
+      @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier);
 
    @POST
    @Path("{branch}/verify")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData verifyWordImport(@PathParam("branch") BranchId branch, @DefaultValue("") @QueryParam("wordDoc") String wordDoc, @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier);
+   XResultData verifyWordImport(@PathParam("branch") BranchId branch,
+      @DefaultValue("") @QueryParam("wordDoc") String wordDoc, @QueryParam("parentArtifact") ArtifactId parent,
+      @QueryParam("tier") Integer tier);
 
    @POST
    @Path("{branch}/rectify")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData rectifyWordImport(@PathParam("branch") BranchId branch, @DefaultValue("") @QueryParam("wordDoc") String wordDoc, @QueryParam("parentArtifact") ArtifactId parent, @QueryParam("tier") Integer tier, @QueryParam("doorsIds") String doorsIds);
+   XResultData rectifyWordImport(@PathParam("branch") BranchId branch,
+      @DefaultValue("") @QueryParam("wordDoc") String wordDoc, @QueryParam("parentArtifact") ArtifactId parent,
+      @QueryParam("tier") Integer tier, @QueryParam("doorsIds") String doorsIds);
 
    @POST
    @Path("{branch}/all")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir, @QueryParam("startBranch") Integer startBranch, @QueryParam("handleRelations") boolean handleRelations, @QueryParam("singleBranch") boolean singleBranch);
+   XResultData importSetup(@PathParam("branch") BranchId branch, @QueryParam("baseDir") String baseDir,
+      @QueryParam("startBranch") Integer startBranch, @QueryParam("handleRelations") boolean handleRelations,
+      @QueryParam("singleBranch") boolean singleBranch);
 
    @POST
    @Path("postProcess/{startBranch}/{singleBranch}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData postProcess(@PathParam("startBranch") Integer startBranch, @PathParam("singleBranch") boolean singleBranch);
+   XResultData postProcess(@PathParam("startBranch") Integer startBranch,
+      @PathParam("singleBranch") boolean singleBranch);
 
    @POST
    @Path("postProcessBranch/{branch}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData postProcessBranch(@PathParam("branch") BranchId branch, @QueryParam("figure") ArtifactId figure, @QueryParam("caption") ArtifactId caption);
+   XResultData postProcessBranch(@PathParam("branch") BranchId branch, @QueryParam("figure") ArtifactId figure,
+      @QueryParam("caption") ArtifactId caption);
 
    @POST
    @Path("postProcessBranchLinks/{branch}/parent/{parent}")

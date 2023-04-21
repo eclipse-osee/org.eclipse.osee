@@ -21,11 +21,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("insertionep")
+@Swagger
 public interface InsertionEndpointApi extends BaseConfigEndpointApi<JaxInsertion> {
 
    @PUT

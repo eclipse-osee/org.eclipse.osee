@@ -18,10 +18,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PLGenericDBObject;
 
 @Path("query")
+@Swagger
 public interface QueryMIMResourcesEndpoint {
 
    @POST()

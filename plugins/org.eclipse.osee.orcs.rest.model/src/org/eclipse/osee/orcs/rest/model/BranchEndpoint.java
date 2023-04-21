@@ -42,12 +42,14 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("branches")
+@Swagger
 public interface BranchEndpoint {
 
    @POST
@@ -105,7 +107,8 @@ public interface BranchEndpoint {
    @GET
    @Path("{type}/category/{category}")
    @Produces(MediaType.APPLICATION_JSON)
-   List<Branch> getBranchesByCategoryAndType(@PathParam("type") String type, @PathParam("category") BranchCategoryToken category);
+   List<Branch> getBranchesByCategoryAndType(@PathParam("type") String type,
+      @PathParam("category") BranchCategoryToken category);
 
    @GET
    @Path("{branch}")
@@ -126,13 +129,15 @@ public interface BranchEndpoint {
    @Path("{branch}/category/{category}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData setBranchCategory(@PathParam("branch") BranchId branch, @PathParam("category") BranchCategoryToken category);
+   XResultData setBranchCategory(@PathParam("branch") BranchId branch,
+      @PathParam("category") BranchCategoryToken category);
 
    @DELETE
    @Path("{branch}/category/{category}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData deleteBranchCategory(@PathParam("branch") BranchId branch, @PathParam("category") BranchCategoryToken category);
+   XResultData deleteBranchCategory(@PathParam("branch") BranchId branch,
+      @PathParam("category") BranchCategoryToken category);
 
    @POST
    @Path("{branch}")
@@ -147,13 +152,15 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch}/artifact/type/{artifactTypes}/attributes")
    @Produces(MediaType.APPLICATION_JSON)
-   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("artifactTypes") String artifactTypes);
+   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch,
+      @PathParam("artifactTypes") String artifactTypes);
 
    @POST
    @Path("{branch}/commit/{destination-branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   TransactionResult commitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
+   TransactionResult commitBranch(@PathParam("branch") BranchId branch,
+      @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
 
    @GET
    @Path("{branch1}/diff/{branch2}")
@@ -163,12 +170,14 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch1}/changes/{branch2}")
    @Produces({MediaType.APPLICATION_JSON})
-   List<ChangeReportRowDto> getBranchChangeReport(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
+   List<ChangeReportRowDto> getBranchChangeReport(@PathParam("branch1") BranchId branch1,
+      @PathParam("branch2") BranchId branch2);
 
    @GET
    @Path("{branch}/changes/{tx1}/{tx2}")
    @Produces({MediaType.APPLICATION_JSON})
-   List<ChangeReportRowDto> getBranchTxChangeReport(@PathParam("branch") BranchId branch, @PathParam("tx1") TransactionId tx1, @PathParam("tx2") TransactionId tx2);
+   List<ChangeReportRowDto> getBranchTxChangeReport(@PathParam("branch") BranchId branch,
+      @PathParam("tx1") TransactionId tx1, @PathParam("tx2") TransactionId tx2);
 
    @PUT
    @Path("{branch}/name")
@@ -184,7 +193,8 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch}/relation/type/{relationTypes}")
    @Produces(MediaType.APPLICATION_JSON)
-   JsonRelations getRelationsByType(@PathParam("branch") BranchId branch, @PathParam("relationTypes") String relationTypes);
+   JsonRelations getRelationsByType(@PathParam("branch") BranchId branch,
+      @PathParam("relationTypes") String relationTypes);
 
    @PUT
    @Path("{branch}/state/{branch-state}")
@@ -218,7 +228,8 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch}/view/{viewId}/artifact/type/{artifactTypes}/attributes")
    @Produces(MediaType.APPLICATION_JSON)
-   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("artifactTypes") String artifactTypes);
+   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch,
+      @PathParam("viewId") ArtifactId viewId, @PathParam("artifactTypes") String artifactTypes);
 
    @POST
    @Path("{branch}/update")
@@ -228,7 +239,8 @@ public interface BranchEndpoint {
 
    @POST
    @Path("{branch}/permission/{permission}/{subject}")
-   void setBranchPermission(@PathParam("subject") ArtifactId subject, @PathParam("branch") BranchId branch, @PathParam("permission") PermissionEnum permission);
+   void setBranchPermission(@PathParam("subject") ArtifactId subject, @PathParam("branch") BranchId branch,
+      @PathParam("permission") PermissionEnum permission);
 
    @PUT
    @Path("{branch}/associated-artifact/{art-id}")
@@ -241,7 +253,8 @@ public interface BranchEndpoint {
 
    @DELETE
    @Path("{branch}")
-   Response purgeBranch(@PathParam("branch") BranchId branch, @DefaultValue("false") @QueryParam("recurse") boolean recurse);
+   Response purgeBranch(@PathParam("branch") BranchId branch,
+      @DefaultValue("false") @QueryParam("recurse") boolean recurse);
 
    @DELETE
    @Path("{branch}/associated-artifact")
@@ -250,7 +263,8 @@ public interface BranchEndpoint {
    @DELETE
    @Path("{branch}/commit/{destination-branch}")
    @Produces({MediaType.APPLICATION_JSON})
-   Response unCommitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch);
+   Response unCommitBranch(@PathParam("branch") BranchId branch,
+      @PathParam("destination-branch") BranchId destinationBranch);
 
    @DELETE
    @Path("{branch}/archive")
@@ -270,7 +284,8 @@ public interface BranchEndpoint {
    @Path("{branchId}/other-mods/{art-id}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Collection<BranchId> getOtherBranchesWithModifiedArtifacts(@PathParam("branchId") BranchId branchId, @PathParam("art-id") ArtifactId artifactId);
+   Collection<BranchId> getOtherBranchesWithModifiedArtifacts(@PathParam("branchId") BranchId branchId,
+      @PathParam("art-id") ArtifactId artifactId);
 
    /**
     * Undo the latest commit on a branch by purging the latest transaction.

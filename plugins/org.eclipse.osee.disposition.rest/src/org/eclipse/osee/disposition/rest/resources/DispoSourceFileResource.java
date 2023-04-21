@@ -31,12 +31,14 @@ import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Angel Avila
  */
+@Swagger
 public class DispoSourceFileResource {
    private final DispoApi dispoApi;
    private final BranchId branch;
@@ -59,7 +61,8 @@ public class DispoSourceFileResource {
    @Path("{fileName}/{fileNumber}")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getDispoItemsById(@PathParam("fileName") String fileName, @PathParam("fileNumber") String fileNumber) {
+   public Response getDispoItemsById(@PathParam("fileName") String fileName,
+      @PathParam("fileNumber") String fileNumber) {
       if (!fileName.endsWith(".LIS")) {
          fileName = fileName.replaceAll(dispoApi.getConfig().getFileExtRegex(), ".LIS");
       }

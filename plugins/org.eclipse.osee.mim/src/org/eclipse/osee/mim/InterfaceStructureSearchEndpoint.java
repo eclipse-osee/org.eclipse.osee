@@ -19,12 +19,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("structures")
+@Swagger
 public interface InterfaceStructureSearchEndpoint {
 
    @GET()
@@ -32,7 +34,7 @@ public interface InterfaceStructureSearchEndpoint {
    Collection<InterfaceStructureToken> getStructures(@QueryParam("filter") String filter,
       @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
-
+  
    @GET
    @Path("name")
    @Produces(MediaType.APPLICATION_JSON)
@@ -43,5 +45,5 @@ public interface InterfaceStructureSearchEndpoint {
    @Path("name/count")
    @Produces(MediaType.APPLICATION_JSON)
    int getStructuresByNameCount(@QueryParam("name") String name);
-
+  
 }

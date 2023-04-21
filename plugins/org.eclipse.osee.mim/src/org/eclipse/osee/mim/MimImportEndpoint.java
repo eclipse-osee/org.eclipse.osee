@@ -25,6 +25,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.MimImportToken;
 
@@ -32,6 +33,7 @@ import org.eclipse.osee.mim.types.MimImportToken;
  * @author Ryan T. Baldwin
  */
 @Path("import")
+@Swagger
 public interface MimImportEndpoint {
 
    @GET
@@ -42,7 +44,8 @@ public interface MimImportEndpoint {
    @Path("icd/{branchId}")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.MULTIPART_FORM_DATA)
-   public MimImportSummary getImportSummary(@PathParam("branchId") BranchId branch, @QueryParam("fileName") String fileName, @Multipart("file") InputStream stream);
+   public MimImportSummary getImportSummary(@PathParam("branchId") BranchId branch,
+      @QueryParam("fileName") String fileName, @Multipart("file") InputStream stream);
 
    @POST
    @Path("types")

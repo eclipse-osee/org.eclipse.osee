@@ -24,12 +24,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.ColorTeams;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald D. Dunne
  */
 @Path("workpackage")
+@Swagger
 public interface AtsWorkPackageEndpointApi {
 
    @GET
@@ -52,6 +54,7 @@ public interface AtsWorkPackageEndpointApi {
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
+   XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId,
+      JaxWorkPackageData workPackageData);
 
 }

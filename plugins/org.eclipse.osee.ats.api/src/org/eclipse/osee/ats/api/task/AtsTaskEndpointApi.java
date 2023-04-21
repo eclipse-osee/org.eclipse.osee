@@ -22,11 +22,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("task")
+@Swagger
 public interface AtsTaskEndpointApi {
 
    @PUT

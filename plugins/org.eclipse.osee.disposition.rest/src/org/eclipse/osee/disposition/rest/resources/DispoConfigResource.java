@@ -21,10 +21,12 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Angel Avila
  */
+@Swagger
 public class DispoConfigResource {
 
    private final DispoApi dispoApi;

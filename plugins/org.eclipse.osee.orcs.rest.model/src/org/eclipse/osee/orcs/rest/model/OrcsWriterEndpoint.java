@@ -21,12 +21,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.orcs.rest.model.writer.config.OrcsWriterInputConfig;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 
 /**
  * @author Donald G. dunne
  */
+@Swagger
 public interface OrcsWriterEndpoint {
 
    /**

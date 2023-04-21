@@ -21,12 +21,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceNode;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("nodes")
+@Swagger
 public interface InterfaceNodeEndpoint {
 
    @GET()
@@ -36,7 +38,8 @@ public interface InterfaceNodeEndpoint {
     *
     * @return all nodes
     */
-   Collection<InterfaceNode> getAllNodes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceNode> getAllNodes(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")

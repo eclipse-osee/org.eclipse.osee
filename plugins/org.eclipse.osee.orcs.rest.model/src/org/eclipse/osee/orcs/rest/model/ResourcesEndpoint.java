@@ -25,11 +25,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("resources")
+@Swagger
 public interface ResourcesEndpoint {
 
    @GET

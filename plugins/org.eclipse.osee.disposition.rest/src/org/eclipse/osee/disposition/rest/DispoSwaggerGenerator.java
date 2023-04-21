@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api;
+package org.eclipse.osee.disposition.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.core.util.Json;
@@ -34,24 +34,19 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Dominic Guss
  */
-public class DefineApiSwaggerGenerator {
+public class DispoSwaggerGenerator {
+
    private static final String definitionPath = "../org.eclipse.osee.web.ui/src/swagger/definitions/";
    // Only one period in the definition file name is supported
-   private static final String definitionFile = "org_eclipse_osee_define_api.json";
-   private static final String infoTitle = "Define API Endpoint Definitions";
-   private static final String infoDescription = "Allows interactive support for Define API endpoints.";
-   private static final String serverUrl = "/define";
-   private static final String serverDescription = "Define";
+   private static final String definitionFile = "org_eclipse_osee_disposition_rest.json";
+   private static final String infoTitle = "Dispo API Endpoint Definitions";
+   private static final String infoDescription = "Allows interactive support for Dispo API endpoints.";
+   private static final String serverUrl = "/dispo";
+   private static final String serverDescription = "Dispo";
 
    public static void main(String[] args) {
 
-      Set<Class<?>> allClasses = Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api");
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.publishing"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.publishing.datarights"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.publishing.templatemanager"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.synchronization"));
-      allClasses.addAll(Lib.getAllClassesUnderPackage("org.eclipse.osee.define.api.toggles"));
-
+      Set<Class<?>> allClasses = Lib.getAllClassesUnderPackage("org.eclipse.osee.disposition.rest.resources");
       Set<Class<?>> swaggerClasses = new HashSet<Class<?>>();
 
       for (Class<?> clazz : allClasses) {

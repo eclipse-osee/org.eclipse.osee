@@ -20,8 +20,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 @Path("count")
+@Swagger
 public interface InterfaceStructureCountEndpoint {
 
    @GET()

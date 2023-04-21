@@ -21,12 +21,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("structures")
+@Swagger
 public interface InterfaceStructureEndpoint {
 
    @GET()
@@ -36,7 +38,9 @@ public interface InterfaceStructureEndpoint {
     *
     * @return all structures for a given sub message
     */
-   Collection<InterfaceStructureToken> getAllStructures(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceStructureToken> getAllStructures(@QueryParam("filter") String filter,
+      @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{id}")
@@ -47,6 +51,7 @@ public interface InterfaceStructureEndpoint {
     * @param structureId id of structure to fetch
     * @return structure that is fetched
     */
-   InterfaceStructureToken getStructure(@PathParam("id") ArtifactId structureId, @QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
+   InterfaceStructureToken getStructure(@PathParam("id") ArtifactId structureId, @QueryParam("filter") String filter,
+      @QueryParam("viewId") ArtifactId viewId);
 
 }

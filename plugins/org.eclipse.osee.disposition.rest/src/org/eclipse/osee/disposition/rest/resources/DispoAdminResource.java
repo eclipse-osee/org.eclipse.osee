@@ -46,13 +46,14 @@ import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Angel Avila
  */
-
+@Swagger
 public class DispoAdminResource {
    private final DispoApi dispoApi;
    private final BranchId branch;
@@ -66,7 +67,8 @@ public class DispoAdminResource {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
+   public Response getDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet,
+      @Encoded @QueryParam("secondarySet") String secondarySet) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
       final DispoSet dispoSet2 = dispoApi.getDispoSetById(branch, secondarySet);
       final STRSReport writer = new STRSReport(dispoApi);
@@ -91,7 +93,8 @@ public class DispoAdminResource {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) {
+   public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet,
+      @QueryParam("option") String option) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
@@ -149,7 +152,8 @@ public class DispoAdminResource {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response postDispoSetExportDirectory(@Encoded @PathParam("primarySet") String primarySet, @QueryParam("option") String option, @HeaderParam("expoFileName") String expoFileName) {
+   public Response postDispoSetExportDirectory(@Encoded @PathParam("primarySet") String primarySet,
+      @QueryParam("option") String option, @HeaderParam("expoFileName") String expoFileName) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
@@ -181,7 +185,9 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") BranchId sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params, @QueryParam("userName") String userName) {
+   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet,
+      @QueryParam("sourceBranch") BranchId sourceBranch, @QueryParam("sourcePackage") Long sourcePackage,
+      CopySetParams params, @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params, userName);
       status = Status.OK;
@@ -192,7 +198,9 @@ public class DispoAdminResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet, CopySetParams params, @QueryParam("userName") String userName) {
+   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet,
+      @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet,
+      CopySetParams params, @QueryParam("userName") String userName) {
       dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params, userName);
       Response.Status status = Status.OK;
       return Response.status(status).build();

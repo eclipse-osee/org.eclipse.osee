@@ -26,11 +26,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.config.BaseConfigEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("programep")
+@Swagger
 public interface ProgramEndpointApi extends BaseConfigEndpointApi<JaxProgram> {
 
    @PUT

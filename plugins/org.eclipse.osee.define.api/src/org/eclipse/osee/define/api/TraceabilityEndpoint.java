@@ -28,11 +28,13 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Ryan D. Brooks
  */
 @Path("trace")
+@Swagger
 public interface TraceabilityEndpoint {
 
    /**
@@ -44,12 +46,14 @@ public interface TraceabilityEndpoint {
    @Path("highlowtrace")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_XML)
-   Response getLowHighReqReport(@QueryParam("branch") BranchId branch, @QueryParam("selected_types") String selectedTypes);
+   Response getLowHighReqReport(@QueryParam("branch") BranchId branch,
+      @QueryParam("selected_types") String selectedTypes);
 
    @GET
    @Path("srs-impd/{branch}")
    @Produces(MediaType.APPLICATION_JSON)
-   TraceData getSrsToImpd(@PathParam("branch") BranchId branch, @DefaultValue("-1") @QueryParam("excludeType") ArtifactTypeId excludeType);
+   TraceData getSrsToImpd(@PathParam("branch") BranchId branch,
+      @DefaultValue("-1") @QueryParam("excludeType") ArtifactTypeId excludeType);
 
    @GET
    @Path("ui")
@@ -60,31 +64,37 @@ public interface TraceabilityEndpoint {
    @Path("pidsVerification")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_XML)
-   Response getPidsVerificationReport(@QueryParam("branch") BranchId branch, @QueryParam("rootArtifact") ArtifactId rootArtifact);
+   Response getPidsVerificationReport(@QueryParam("branch") BranchId branch,
+      @QueryParam("rootArtifact") ArtifactId rootArtifact);
 
    @POST
    @Path("cert/{branch}/repo/{repository-name}/files")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId baselineFiles(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName, CertBaselineData baselineData);
+   ArtifactId baselineFiles(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName,
+      CertBaselineData baselineData);
 
    @GET
    @Path("cert/{branch}/{artifact}")
    @Produces(MediaType.APPLICATION_JSON)
-   CertBaselineData getBaselineData(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId certBaselineData);
+   CertBaselineData getBaselineData(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId certBaselineData);
 
    @GET
    @Path("cert/{branch}/repo/{repository-name}")
    @Produces(MediaType.APPLICATION_JSON)
-   List<CertBaselineData> getBaselineData(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName);
+   List<CertBaselineData> getBaselineData(@PathParam("branch") BranchId branch,
+      @PathParam("repository-name") String repositoryName);
 
    @POST
    @Path("cert/{destination-branch}/repo/{repository-name}/{source-branch}")
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken copyCertBaselineData(@PathParam("destination-branch") BranchId destinationBranch, @PathParam("repository-name") String repositoryName, @PathParam("source-branch") BranchId sourceBranch);
+   TransactionToken copyCertBaselineData(@PathParam("destination-branch") BranchId destinationBranch,
+      @PathParam("repository-name") String repositoryName, @PathParam("source-branch") BranchId sourceBranch);
 
    @GET
    @Path("cert/{branch}/repo/{repository-name}/files")
    @Produces(MediaType.APPLICATION_JSON)
-   List<CertFileData> getCertFileData(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName);
+   List<CertFileData> getCertFileData(@PathParam("branch") BranchId branch,
+      @PathParam("repository-name") String repositoryName);
 }

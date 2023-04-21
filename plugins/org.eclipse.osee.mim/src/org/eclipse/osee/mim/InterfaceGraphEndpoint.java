@@ -18,12 +18,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.GraphView;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("graph")
+@Swagger
 public interface InterfaceGraphEndpoint {
 
    @GET()

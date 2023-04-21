@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
@@ -51,6 +52,7 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
  * @author Donald G. Dunne
  */
 @Path("action")
+@Swagger
 public interface AtsActionEndpointApi {
 
    @GET
@@ -147,12 +149,14 @@ public interface AtsActionEndpointApi {
    @Path("branch/commit")
    @PUT
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData commitWorkingBranch(@QueryParam("teamWfId") String teamWfId, @QueryParam("branchId") BranchId destinationBranch);
+   public XResultData commitWorkingBranch(@QueryParam("teamWfId") String teamWfId,
+      @QueryParam("branchId") BranchId destinationBranch);
 
    @Path("createEmpty")
    @POST
    @Produces(MediaType.APPLICATION_JSON)
-   public String createEmptyAction(@QueryParam("userId") String userId, @QueryParam("ai") String actionItem, @QueryParam("title") String title);
+   public String createEmptyAction(@QueryParam("userId") String userId, @QueryParam("ai") String actionItem,
+      @QueryParam("title") String title);
 
    /**
     * @param form containing information to create a new action
@@ -178,7 +182,8 @@ public interface AtsActionEndpointApi {
    @Path("{actionId}/attributeType/{attrTypeId}")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") AttributeTypeToken attributeType);
+   Attribute getActionAttributeByType(@PathParam("actionId") String actionId,
+      @PathParam("attrTypeId") AttributeTypeToken attributeType);
 
    /**
     * @param actionId (atsId, artId) of workItem
@@ -191,7 +196,8 @@ public interface AtsActionEndpointApi {
    @PUT
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
+   Attribute setActionAttributeByType(@PathParam("actionId") String actionId,
+      @PathParam("attrTypeId") String attrTypeId, List<String> values);
 
    /**
     * Will cancel action if configured to do so and tasks and reviews are completed.
@@ -213,7 +219,8 @@ public interface AtsActionEndpointApi {
    @PUT
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId, @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> artifacts);
+   public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId,
+      @PathParam("changeType") String attrTypeId, Collection<ArtifactToken> artifacts);
 
    /**
     * @return valid unreleased versions to select
@@ -237,7 +244,9 @@ public interface AtsActionEndpointApi {
    @GET
    @Path("{id}/assocArt/{attrTypeId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId, @PathParam("relatedReqs") AttributeTypeToken relatedReqs, @QueryParam("versionType") AttributeTypeToken versionType);
+   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId,
+      @PathParam("relatedReqs") AttributeTypeToken relatedReqs,
+      @QueryParam("versionType") AttributeTypeToken versionType);
 
    @Path("branch/changes/{branchId}")
    @GET

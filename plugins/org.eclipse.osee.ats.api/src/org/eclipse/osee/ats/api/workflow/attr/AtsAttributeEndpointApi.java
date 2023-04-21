@@ -19,11 +19,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("attr")
+@Swagger
 public interface AtsAttributeEndpointApi {
 
    @GET

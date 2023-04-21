@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
@@ -35,6 +36,7 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
  * @author Donald G. Dunne
  */
 @Path("teamwf")
+@Swagger
 public interface AtsTeamWfEndpointApi {
 
    @GET

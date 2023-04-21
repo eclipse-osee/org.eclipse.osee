@@ -17,12 +17,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.ConnectionViewType;
 
 /**
  * @author Luciano T. Vaglienti
  */
 @Path("enums")
+@Swagger
 public interface EnumEndpoint {
 
    @GET()

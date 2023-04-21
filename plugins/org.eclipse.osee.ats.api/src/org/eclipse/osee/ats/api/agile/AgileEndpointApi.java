@@ -37,12 +37,14 @@ import org.eclipse.osee.ats.api.util.RestResult;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 @Path("agile")
+@Swagger
 public interface AgileEndpointApi {
 
    @GET
@@ -72,7 +74,8 @@ public interface AgileEndpointApi {
    @Path("program/{programId}/backlogitem")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxProgramBacklogItemUpdate updateProgramBacklogItem(@PathParam("programId") long programId, JaxProgramBacklogItemUpdate pBacklogItem);
+   public JaxProgramBacklogItemUpdate updateProgramBacklogItem(@PathParam("programId") long programId,
+      JaxProgramBacklogItemUpdate pBacklogItem);
 
    @DELETE
    @Path("programbacklogitem/{programBacklogItemId}")
@@ -82,7 +85,8 @@ public interface AgileEndpointApi {
    @Path("program/{programId}/feature")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxProgramFeatureUpdate updateProgramFeature(@PathParam("programId") long programId, JaxProgramFeatureUpdate pBacklogItem);
+   public JaxProgramFeatureUpdate updateProgramFeature(@PathParam("programId") long programId,
+      JaxProgramFeatureUpdate pBacklogItem);
 
    @DELETE
    @Path("programfeature/{programFeatureId}")
@@ -186,13 +190,15 @@ public interface AgileEndpointApi {
    @Path("team/{teamId}/sprint/{sprintId}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, AgileSprintData sprintData);
+   public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId,
+      AgileSprintData sprintData);
 
    @POST
    @Path("team/{teamId}/sprint/{sprintId}/config")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig);
+   public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId,
+      @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig);
 
    /**
     * QueryParam KanbanRowType rowType=BY_STORY or BY_ASSIGNEE
@@ -205,7 +211,8 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/sprint/{sprintId}/kb/story")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxKbSprint getSprintItemsForKbByStory(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
+   public JaxKbSprint getSprintItemsForKbByStory(@PathParam("teamId") long teamId,
+      @PathParam("sprintId") long sprintId);
 
    @GET
    @Path("team/{teamId}/sprint/{sprintId}/config")
@@ -307,7 +314,8 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/sprint/{sprintId}/world/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   public Response getSprintItemsUICustomized(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, @PathParam("customizeGuid") String customizeGuid);
+   public Response getSprintItemsUICustomized(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId,
+      @PathParam("customizeGuid") String customizeGuid);
 
    @POST
    @Path("team")
