@@ -14,26 +14,18 @@
 package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-import static org.eclipse.osee.framework.core.util.RendererOption.BRANCH;
-import static org.eclipse.osee.framework.core.util.RendererOption.COMPARE_BRANCH;
-import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_ARTIFACT_TYPES;
-import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_FOLDERS;
-import static org.eclipse.osee.framework.core.util.RendererOption.FIRST_TIME;
-import static org.eclipse.osee.framework.core.util.RendererOption.LINK_TYPE;
-import static org.eclipse.osee.framework.core.util.RendererOption.MAINTAIN_ORDER;
-import static org.eclipse.osee.framework.core.util.RendererOption.NO_DISPLAY;
-import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_DIFF;
-import static org.eclipse.osee.framework.core.util.RendererOption.RECURSE_ON_LOAD;
-import static org.eclipse.osee.framework.core.util.RendererOption.RESULT_PATH_RETURN;
-import static org.eclipse.osee.framework.core.util.RendererOption.SKIP_ERRORS;
-import static org.eclipse.osee.framework.core.util.RendererOption.TRANSACTION_OPTION;
-import static org.eclipse.osee.framework.core.util.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
-import static org.eclipse.osee.framework.core.util.RendererOption.USE_TEMPLATE_ONCE;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.BRANCH;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.COMPARE_BRANCH;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.LINK_TYPE;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.PUBLISH_DIFF;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.RESULT_PATH_RETURN;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.TRANSACTION_OPTION;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.USE_TEMPLATE_ONCE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.IntPredicate;
@@ -54,8 +46,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -416,29 +410,34 @@ public class WordTemplateRendererTest {
    }
 
    private void modifyOption(RendererOption optName, Object optValue) {
-      this.renderer.updateOption(optName, optValue);
+      if(Objects.nonNull(optValue)) {
+      this.renderer.setRendererOption(optName, optValue);
+      } else {
+         this.renderer.removeRendererOption(optName);
+      }
    }
 
    @Before
    public void setUp() {
       // Establish default option settings
-      HashMap<RendererOption, Object> rendererOptionsMap = new HashMap<>();
-      rendererOptionsMap.put(BRANCH, null);
-      rendererOptionsMap.put(COMPARE_BRANCH, null);
-      rendererOptionsMap.put(PUBLISH_DIFF, true);
-      rendererOptionsMap.put(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_NAME);
-      rendererOptionsMap.put(UPDATE_PARAGRAPH_NUMBERS, false);
-      rendererOptionsMap.put(TRANSACTION_OPTION, null);
-      rendererOptionsMap.put(SKIP_ERRORS, true);
-      rendererOptionsMap.put(EXCLUDE_FOLDERS, true);
-      rendererOptionsMap.put(EXCLUDE_ARTIFACT_TYPES, new ArrayList<ArtifactTypeToken>());
-      rendererOptionsMap.put(RECURSE_ON_LOAD, true);
-      rendererOptionsMap.put(MAINTAIN_ORDER, true);
-      rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);
-      rendererOptionsMap.put(FIRST_TIME, true);
-      rendererOptionsMap.put(NO_DISPLAY, true);
-      rendererOptionsMap.put(RendererOption.PUBLISH_EMPTY_HEADERS, true);
-
+      //@formatter:off
+      RendererMap rendererOptionsMap =
+         new EnumRendererMap
+            (
+              RendererOption.PUBLISH_DIFF,             true,
+              RendererOption.LINK_TYPE,                LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+              RendererOption.UPDATE_PARAGRAPH_NUMBERS, false,
+              RendererOption.SKIP_ERRORS,              true,
+              RendererOption.EXCLUDE_FOLDERS,          true,
+              RendererOption.EXCLUDE_ARTIFACT_TYPES,   new ArrayList<ArtifactTypeToken>(),
+              RendererOption.RECURSE_ON_LOAD,          true,
+              RendererOption.MAINTAIN_ORDER,           true,
+              RendererOption.USE_TEMPLATE_ONCE,        true,
+              RendererOption.FIRST_TIME,               true,
+              RendererOption.NO_DISPLAY,               true,
+              RendererOption.PUBLISH_EMPTY_HEADERS,    true
+            );
+      //@formatter:on
       renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
 
       String branchName = method.getQualifiedTestName();
@@ -791,9 +790,9 @@ public class WordTemplateRendererTest {
        * Setup comparison publish between the root and child branches
        */
 
-      this.renderer.updateOption(BRANCH, childBranch);
-      this.renderer.updateOption(PUBLISH_DIFF, true);
-      this.renderer.updateOption(COMPARE_BRANCH, rootBranch);
+      this.renderer.setRendererOption(BRANCH, childBranch);
+      this.renderer.setRendererOption(PUBLISH_DIFF, true);
+      this.renderer.setRendererOption(COMPARE_BRANCH, rootBranch);
 
       this.renderer.publish(singleTemplate, null, Collections.singletonList(volume4ArtifactChildBranch));
 

@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.RendererUtil;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -118,7 +118,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
          }
       }
 
-      getRenderer().updateOption(RendererOption.RESULT_PATH_RETURN, resultPath);
+      getRenderer().setRendererOption(RendererOption.RESULT_PATH_RETURN, resultPath);
       collector.onCompare(data);
    }
 

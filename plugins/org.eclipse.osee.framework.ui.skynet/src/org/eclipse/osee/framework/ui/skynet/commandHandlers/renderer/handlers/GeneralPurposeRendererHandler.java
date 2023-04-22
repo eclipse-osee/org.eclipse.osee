@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -33,7 +33,7 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
 
-      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+      RendererMap rendererOptions = new EnumRendererMap();
 
       String presentationTypeStr = event.getParameter(PresentationType.class.getSimpleName());
       String template = event.getParameter(RendererOption.TEMPLATE_OPTION.getKey());
@@ -42,13 +42,13 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
 
       PresentationType presentationType = PresentationType.valueOf(presentationTypeStr);
       if (template != null) {
-         rendererOptions.put(RendererOption.TEMPLATE_OPTION, template);
+         rendererOptions.setRendererOption(RendererOption.TEMPLATE_OPTION, template);
       }
       if (openOption != null) {
-         rendererOptions.put(RendererOption.OPEN_OPTION, openOption);
+         rendererOptions.setRendererOption(RendererOption.OPEN_OPTION, openOption);
       }
       if (view.isValid()) {
-         rendererOptions.put(RendererOption.VIEW, view);
+         rendererOptions.setRendererOption(RendererOption.VIEW, view);
       }
 
       RendererManager.openInJob(artifacts, presentationType, rendererOptions);

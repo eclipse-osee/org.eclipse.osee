@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -551,7 +551,7 @@ public class SetupPublishing {
                       CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
                       SetupPublishing.previewTemplateName                                                    /* Name                       */
                          (
-                            RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
+                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
                          ),
                       "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json",                                    /* Renderer Options File Name */
                       "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.xml",                                     /* Template Content File Name */

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;

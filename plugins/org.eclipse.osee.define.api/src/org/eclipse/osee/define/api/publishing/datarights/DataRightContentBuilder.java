@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.util.WordCoreUtil.pageType;
-import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil.pageType;
 
 /**
  * Encapsulates a {@link Map} of {@link DataRightAnchor} objects by {@link ArtifactId} for the sequence of artifacts

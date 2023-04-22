@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -53,20 +54,36 @@ public final class WordTemplateFileDiffer {
 
    public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) {
 
-      this.renderer.updateOption(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
-      this.renderer.updateOption(RendererOption.OUTLINE_TYPE, outlineType);
-      this.renderer.updateOption(RendererOption.ALL_ATTRIBUTES, true);
-      this.renderer.updateOption(RendererOption.USE_ARTIFACT_NAMES, true);
-      this.renderer.updateOption(RendererOption.IN_PUBLISH_MODE, true);
-      // need to keep original value as well as reseting to false
-      this.renderer.updateOption(RendererOption.ORIG_PUBLISH_AS_DIFF,
-         renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
-      this.renderer.updateOption(RendererOption.PUBLISH_DIFF, false);
+      if (Objects.nonNull(nextParagraphNumber)) {
+         this.renderer.setRendererOption(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
+      } else {
+         this.renderer.removeRendererOption(RendererOption.PARAGRAPH_NUMBER);
+      }
 
-      this.renderer.updateOption(RendererOption.RECURSE, recurseChildren);
+      if (Objects.nonNull(outlineType)) {
+         this.renderer.setRendererOption(RendererOption.OUTLINE_TYPE, outlineType);
+      } else {
+         this.renderer.removeRendererOption(RendererOption.OUTLINE_TYPE);
+      }
+
+      this.renderer.setRendererOption(RendererOption.ALL_ATTRIBUTES, true);
+      this.renderer.setRendererOption(RendererOption.USE_ARTIFACT_NAMES, true);
+      this.renderer.setRendererOption(RendererOption.IN_PUBLISH_MODE, true);
+
+      // need to keep original value as well as reseting to false
+      if (this.renderer.isRendererOptionSet(RendererOption.PUBLISH_DIFF)) {
+         this.renderer.setRendererOption(RendererOption.ORIG_PUBLISH_AS_DIFF,
+            renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
+      } else {
+         this.renderer.removeRendererOption(RendererOption.ORIG_PUBLISH_AS_DIFF);
+      }
+
+      this.renderer.setRendererOption(RendererOption.PUBLISH_DIFF, false);
+
+      this.renderer.setRendererOption(RendererOption.RECURSE, recurseChildren);
       // can use this as "diff branch?"
       BranchId endBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
-      this.renderer.updateOption(RendererOption.WAS_BRANCH, endBranch);
+      this.renderer.setRendererOption(RendererOption.WAS_BRANCH, endBranch);
 
       BranchId compareBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.COMPARE_BRANCH);
 
@@ -153,7 +170,7 @@ public final class WordTemplateFileDiffer {
       }
 
       if (!artifactDeltas.isEmpty()) {
-         RendererManager.diffWithRenderer(artifactDeltas, diffPrefix, renderer, renderer.getRendererOptions());
+         RendererManager.diffWithRenderer(artifactDeltas, diffPrefix, renderer, renderer.getRendererOptionsCopy());
       }
    }
 

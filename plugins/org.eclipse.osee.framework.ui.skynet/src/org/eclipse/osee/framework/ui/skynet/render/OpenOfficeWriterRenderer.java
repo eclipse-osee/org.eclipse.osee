@@ -15,13 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.swt.program.Program;
@@ -56,12 +54,12 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer {
 
    private static final String RENDERER_NAME = "Open Office Editor";
 
-   public OpenOfficeWriterRenderer(Map<RendererOption, Object> rendererOptions) {
+   public OpenOfficeWriterRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
    }
 
    public OpenOfficeWriterRenderer() {
-      super(new HashMap<RendererOption, Object>());
+      super();
    }
 
    @Override
@@ -70,7 +68,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public OpenOfficeWriterRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public OpenOfficeWriterRenderer newInstance(RendererMap rendererOptions) {
       return new OpenOfficeWriterRenderer(rendererOptions);
    }
 
@@ -121,7 +119,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       return NO_MATCH;
    }
 

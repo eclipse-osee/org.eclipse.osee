@@ -19,9 +19,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.eclipse.osee.define.api.publishing.AttributeOptions;
-import org.eclipse.osee.define.api.publishing.MetadataOptions;
-import org.eclipse.osee.define.api.publishing.OutliningOptions;
+import org.eclipse.osee.framework.core.publishing.AttributeOptions;
+import org.eclipse.osee.framework.core.publishing.MetadataOptions;
+import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 

@@ -16,9 +16,8 @@ package org.eclipse.osee.ats.ide.world;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
-import static org.eclipse.osee.framework.core.util.RendererOption.OPEN_OPTION;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.OPEN_OPTION;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -28,7 +27,8 @@ import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
@@ -41,22 +41,22 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
 
    private static final String Option_WORLD_EDITOR = "world.editor.option";
 
-   public AtsWorldEditorRenderer(Map<RendererOption, Object> rendererOptions) {
+   public AtsWorldEditorRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
    }
 
    public AtsWorldEditorRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       if (artifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          return NO_MATCH;
       }
 
       if (artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
-         if (Option_WORLD_EDITOR.equals(rendererOptions.get(OPEN_OPTION))) {
+         if (Option_WORLD_EDITOR.equals(rendererOptions.getRendererOptionValue(OPEN_OPTION))) {
             return SPECIALIZED_KEY_MATCH;
          } else {
             return PRESENTATION_SUBTYPE_MATCH;
@@ -93,7 +93,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsWorldEditorRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public AtsWorldEditorRenderer newInstance(RendererMap rendererOptions) {
       return new AtsWorldEditorRenderer(rendererOptions);
    }
 

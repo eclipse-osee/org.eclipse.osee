@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
@@ -28,7 +26,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -112,8 +111,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
             monitor.done();
          }
       };
-      Map<RendererOption, Object> rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.NO_DISPLAY, false);
+      var rendererOptions = RendererMap.of(RendererOption.NO_DISPLAY, false);
 
       RendererManager.merge(colletor, mergeArtifact, null, sourceChangeFile, destChangeFile, "Source_Dest_Merge",
          rendererOptions);
@@ -128,9 +126,9 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
             outputFiles.add(AIFile.constructIFile(data.getOutputPath()));
          }
       };
-      Map<RendererOption, Object> rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.NO_DISPLAY, true);
-      rendererOptions.put(RendererOption.TEMPLATE_OPTION, RendererOption.THREE_WAY_MERGE.getKey());
+
+      var rendererOptions = RendererMap.of(RendererOption.NO_DISPLAY, true, RendererOption.TEMPLATE_OPTION,
+         RendererOption.THREE_WAY_MERGE.getKey());
 
       RendererManager.diff(colletor, artifactDelta, "", rendererOptions);
    }

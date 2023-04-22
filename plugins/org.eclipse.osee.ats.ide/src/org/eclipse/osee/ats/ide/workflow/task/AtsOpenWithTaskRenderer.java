@@ -13,12 +13,10 @@
 package org.eclipse.osee.ats.ide.workflow.task;
 
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.core.util.RendererOption.OPEN_OPTION;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.OPEN_OPTION;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.util.AtsImage;
@@ -34,7 +32,7 @@ import org.eclipse.osee.ats.ide.workflow.task.related.ShowRelatedTasksAction;
 import org.eclipse.osee.ats.ide.workflow.task.related.ShowRelatedTestCasesAction;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -53,16 +51,16 @@ public class AtsOpenWithTaskRenderer extends DefaultArtifactRenderer {
    private static final String Option_REQ_DIFF = "tasks.requirement.diff.option";
    private static final String Option_RELATED_TASK = "tasks.related.task.option";
 
-   public AtsOpenWithTaskRenderer(Map<RendererOption, Object> rendererOptions) {
+   public AtsOpenWithTaskRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
    }
 
    public AtsOpenWithTaskRenderer() {
-      super(new HashMap<RendererOption, Object>());
+      super();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       int rating = NO_MATCH;
       try {
          if (artifact instanceof IAtsTask && AtsApiService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(
@@ -117,11 +115,11 @@ public class AtsOpenWithTaskRenderer extends DefaultArtifactRenderer {
 
    @Override
    public AtsOpenWithTaskRenderer newInstance() {
-      return new AtsOpenWithTaskRenderer(new HashMap<RendererOption, Object>());
+      return new AtsOpenWithTaskRenderer();
    }
 
    @Override
-   public AtsOpenWithTaskRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public AtsOpenWithTaskRenderer newInstance(RendererMap rendererOptions) {
       return new AtsOpenWithTaskRenderer(rendererOptions);
    }
 

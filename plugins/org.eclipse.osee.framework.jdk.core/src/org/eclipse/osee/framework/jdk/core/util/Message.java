@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -720,6 +721,64 @@ public class Message {
     *
     * <pre>
     *    &lt;indent(n)&gt;   &lt;title&gt;
+    *    &lt;indent(n+1)&gt; &lt;block&gt;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>indent:</dt>
+    * <dd>is an indent string the message's current indent level n.</dd>
+    * <dt>title:</dt>
+    * <dd>is the string "Reason Follows:"</dd>
+    * <dt>block</dt>
+    * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
+    * </dl>
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}.
+    * @return this {@link Message}.
+    * @throws NullPointerException when the parameter <code>throwable</code> is <code>null</code>.
+    */
+
+   public Message reasonFollows(Throwable throwable) {
+      return this.reasonFollows("Reason Follows", throwable);
+   }
+
+   /**
+    * When the parameter <code>throwable</code> is non-<code>null</code>, adds a reason follows message as if the method
+    * {@link Message#reasonFollows} had been called; otherwise, no action is performed.
+    *
+    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}. This parameter maybe
+    * <code>null</code>.
+    * @return this {@link Message}.
+    */
+
+   public Message reasonFollowsIfNonNull(Throwable throwable) {
+      return Objects.nonNull(throwable) ? this.reasonFollows(throwable) : this;
+   }
+
+   /**
+    * When the parameter <code>throwableOptional</code> is non-<code>null</code> and has a value present, adds a reason
+    * follows message as if the method {@link Message#reasonFollows} had been called with
+    * <code>throwableOptional.get()</code>; otherwise, no action is performed.
+    *
+    * @param throwable a possibly empty {@link Optional} containing the {@link Throwable} whose message is to be added
+    * to the {@link Message}.
+    * @return this {@link Message}.
+    */
+
+   public Message reasonFollowsIfPresent(Optional<? extends Throwable> throwableOptional) {
+      //@formatter:off
+      return Objects.nonNull(throwableOptional) && throwableOptional.isPresent()
+                ? this.reasonFollows(throwableOptional.get())
+                : this;
+      //@formatter:on
+   }
+
+   /**
+    * Adds a title line with a block containing the message from the throwable. The lines will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;indent(n)&gt;   &lt;title&gt;
     *    &lt;indent(n+1)&gt; &lt;exception-class&gt;
     *    &lt;indent(n+1)&gt; &lt;exception-message&gt;
     *    &lt;indent(n+1)&gt; &lt;exception-trace&gt;
@@ -772,33 +831,6 @@ public class Message {
     *
     * <pre>
     *    &lt;indent(n)&gt;   &lt;title&gt;
-    *    &lt;indent(n+1)&gt; &lt;block&gt;
-    * </pre>
-    *
-    * Where:
-    * <dl>
-    * <dt>indent:</dt>
-    * <dd>is an indent string the message's current indent level n.</dd>
-    * <dt>title:</dt>
-    * <dd>is the string "Reason Follows:"</dd>
-    * <dt>block</dt>
-    * <dd>is the string from parameter <code>throwable</code> {@link Throwable#getMessage} method.</dd>
-    * </dl>
-    *
-    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}.
-    * @return this {@link Message}.
-    * @throws NullPointerException when the parameter <code>throwable</code> is <code>null</code>.
-    */
-
-   public Message reasonFollows(Throwable throwable) {
-      return this.reasonFollows("Reason Follows", throwable);
-   }
-
-   /**
-    * Adds a title line with a block containing the message from the throwable. The lines will be formatted as follows:
-    *
-    * <pre>
-    *    &lt;indent(n)&gt;   &lt;title&gt;
     *    &lt;indent(n+1)&gt; &lt;exception-class&gt;
     *    &lt;indent(n+1)&gt; &lt;exception-message&gt;
     *    &lt;indent(n+1)&gt; &lt;exception-trace&gt;
@@ -825,37 +857,6 @@ public class Message {
 
    public Message reasonFollowsWithTrace(Throwable throwable) {
       return this.reasonFollowsWithTrace("Reason Follows", throwable);
-   }
-
-   /**
-    * When the parameter <code>throwable</code> is non-<code>null</code>, adds a reason follows message as if the method
-    * {@link Message#reasonFollows} had been called; otherwise, no action is performed.
-    *
-    * @param throwable the {@link Throwable} whose message is to be added to the {@link Message}. This parameter maybe
-    * <code>null</code>.
-    * @return this {@link Message}.
-    */
-
-   public Message reasonFollowsIfNonNull(Throwable throwable) {
-      return Objects.nonNull(throwable) ? this.reasonFollows(throwable) : this;
-   }
-
-   /**
-    * When the parameter <code>throwableOptional</code> is non-<code>null</code> and has a value present, adds a reason
-    * follows message as if the method {@link Message#reasonFollows} had been called with
-    * <code>throwableOptional.get()</code>; otherwise, no action is performed.
-    *
-    * @param throwable a possibly empty {@link Optional} containing the {@link Throwable} whose message is to be added
-    * to the {@link Message}.
-    * @return this {@link Message}.
-    */
-
-   public Message reasonFollowsIfPresent(Optional<? extends Throwable> throwableOptional) {
-      //@formatter:off
-      return Objects.nonNull(throwableOptional) && throwableOptional.isPresent()
-                ? this.reasonFollows(throwableOptional.get())
-                : this;
-      //@formatter:on
    }
 
    /**
@@ -978,6 +979,18 @@ public class Message {
 
       this.lines.add(new Line(this.indent, title, valueString));
 
+      return this;
+   }
+
+   /**
+    * Provides the {@link Message} to the <code>appender</code> {@link Consumer} and returns this {@link Message}.
+    *
+    * @param appender a {@link Consumer} that appends to the provided {@link Message}.
+    * @return this {@link Message}.
+    */
+
+   public Message segment(Consumer<Message> appender) {
+      appender.accept(this);
       return this;
    }
 
@@ -1114,6 +1127,10 @@ public class Message {
       return this.segmentIndexedList(title, valueList, (t) -> t);
    }
 
+   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor) {
+      return this.segmentIndexedList(title, valueList, valueExtractor, -1);
+   }
+
    /**
     * Adds a new segment line with a title and a value string generated from a {@link List}. The invocation of this
     * method generates the value string from the {@link List}. Changes to the {@link List} after this method completes
@@ -1194,10 +1211,6 @@ public class Message {
       this.indent--;
 
       return this;
-   }
-
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor) {
-      return this.segmentIndexedList(title, valueList, valueExtractor, -1);
    }
 
    /**

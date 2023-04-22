@@ -21,9 +21,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -32,8 +30,9 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.RendererUtil;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -72,10 +71,10 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private Thread rendererThread;
 
    public FileSystemRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
    }
 
-   public FileSystemRenderer(Map<RendererOption, Object> rendererOptions) {
+   public FileSystemRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
       this.rendererThread = null;
       this.rendererException = null;
@@ -422,7 +421,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
             var pipedInputStream = new PipedInputStream();
             var pipedOutputStream = new PipedOutputStream(pipedInputStream);
-            this.updateOption(RendererOption.OUTPUT_STREAM, pipedOutputStream);
+            this.setRendererOption(RendererOption.OUTPUT_STREAM, pipedOutputStream);
             var renderer = this;
 
             /*

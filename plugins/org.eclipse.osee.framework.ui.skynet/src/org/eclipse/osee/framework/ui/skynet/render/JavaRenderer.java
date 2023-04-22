@@ -19,10 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileSystem;
@@ -38,7 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -86,12 +84,12 @@ public class JavaRenderer extends FileSystemRenderer {
 
    private static final String RENDERER_NAME = "Java Editor";
 
-   public JavaRenderer(Map<RendererOption, Object> rendererOptions) {
+   public JavaRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
    }
 
    public JavaRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
    }
 
    /**
@@ -127,12 +125,12 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public DefaultArtifactRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public DefaultArtifactRenderer newInstance(RendererMap rendererOptions) {
       return new JavaRenderer(rendererOptions);
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       int toReturn = NO_MATCH;
       if (artifact.isOfType(CoreArtifactTypes.TestCase)) {
          if (presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.DEFAULT_OPEN)) {

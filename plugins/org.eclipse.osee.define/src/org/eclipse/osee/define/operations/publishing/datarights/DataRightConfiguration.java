@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
-import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 
 /**
  * This class defines defaults and constants for the Data Rights Manager.

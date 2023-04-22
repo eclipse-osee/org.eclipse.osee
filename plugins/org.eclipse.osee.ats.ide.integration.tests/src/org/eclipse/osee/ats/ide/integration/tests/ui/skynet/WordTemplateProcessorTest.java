@@ -18,8 +18,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
@@ -31,7 +29,8 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
@@ -214,9 +213,7 @@ public class WordTemplateProcessorTest {
    }
 
    private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws IOException {
-      Map<RendererOption, Object> rendererOptions = new HashMap<>();
-
-      rendererOptions.put(RendererOption.TEMPLATE_ARTIFACT, recurseTemplate);
+      var rendererOptions = new EnumRendererMap(RendererOption.TEMPLATE_ARTIFACT, recurseTemplate);
       String filePath = RendererManager.open(myRootArtifact, PresentationType.PREVIEW, rendererOptions);
 
       String fileContents = Lib.fileToString(new File(filePath));

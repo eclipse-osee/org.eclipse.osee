@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.integration.tests.define;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
@@ -35,8 +34,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -308,7 +307,7 @@ public class RendererEndpointTest {
          ArtifactQuery.getArtifactFromTypeAndName
             (
                CoreArtifactTypes.RendererTemplateWholeWord,
-               RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
+               RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
                CoreBranches.COMMON
             );
 

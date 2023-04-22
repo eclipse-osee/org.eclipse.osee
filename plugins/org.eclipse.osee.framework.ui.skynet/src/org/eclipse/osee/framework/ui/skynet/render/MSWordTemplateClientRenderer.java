@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +39,11 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.WordCoreUtil;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -243,7 +243,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
                       Map.of
                          (
                             RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
                          )
                    )
          );
@@ -271,15 +271,19 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    private final WordTemplateProcessor templateProcessor;
 
    public MSWordTemplateClientRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
+      this.comparator = new WordTemplateCompare(this);
+      this.templateProcessor = new WordTemplateProcessor(this);
+      this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
+      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
    }
 
-   public MSWordTemplateClientRenderer(Map<RendererOption, Object> options) {
+   public MSWordTemplateClientRenderer(RendererMap options) {
       super(options);
       this.comparator = new WordTemplateCompare(this);
       this.templateProcessor = new WordTemplateProcessor(this);
       this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
-      this.updateOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
+      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
    }
 
    /**
@@ -299,7 +303,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       return MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
    }
 
@@ -465,11 +469,11 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
       if (templateArt != null && templateArt.isValid() && (!useTemplateOnce || useTemplateOnce && (firstTime || secondTime))) {
          if (useTemplateOnce) {
             if (secondTime) {
-               updateOption(RendererOption.SECOND_TIME, false);
+               setRendererOption(RendererOption.SECOND_TIME, false);
             }
             if (firstTime) {
-               updateOption(RendererOption.FIRST_TIME, false);
-               updateOption(RendererOption.SECOND_TIME, true);
+               setRendererOption(RendererOption.FIRST_TIME, false);
+               setRendererOption(RendererOption.SECOND_TIME, true);
             }
          }
 
@@ -493,11 +497,11 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    @Override
    public MSWordTemplateClientRenderer newInstance() {
-      return new MSWordTemplateClientRenderer(new HashMap<RendererOption, Object>());
+      return new MSWordTemplateClientRenderer();
    }
 
    @Override
-   public MSWordTemplateClientRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public MSWordTemplateClientRenderer newInstance(RendererMap rendererOptions) {
       return new MSWordTemplateClientRenderer(rendererOptions);
    }
 

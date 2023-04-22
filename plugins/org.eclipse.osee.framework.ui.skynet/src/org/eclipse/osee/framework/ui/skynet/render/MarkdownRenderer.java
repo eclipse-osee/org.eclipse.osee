@@ -26,9 +26,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -42,8 +40,9 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -185,20 +184,30 @@ public class MarkdownRenderer extends FileSystemRenderer {
    private final SynchronizationEndpoint synchronizationEndpoint;
 
    public MarkdownRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
+      this.comparator = new MarkdownDiffRenderer();
+      this.menuCommands = MarkdownRenderer.menuCommandDefinitions;
+      if (MarkdownRenderer.LOCAL & MarkdownRenderer.CAN_STREAM) {
+         this.synchronizationEndpoint =
+            OsgiUtil.getService(this.getClass(), OseeClient.class).getSynchronizationEndpoint();
+         this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, true);
+      } else {
+         this.synchronizationEndpoint = null;
+         this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, false);
+      }
    }
 
-   public MarkdownRenderer(Map<RendererOption, Object> rendererOptions) {
+   public MarkdownRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
       this.comparator = new MarkdownDiffRenderer();
       this.menuCommands = MarkdownRenderer.menuCommandDefinitions;
       if (MarkdownRenderer.LOCAL & MarkdownRenderer.CAN_STREAM) {
          this.synchronizationEndpoint =
             OsgiUtil.getService(this.getClass(), OseeClient.class).getSynchronizationEndpoint();
-         this.updateOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, true);
+         this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, true);
       } else {
          this.synchronizationEndpoint = null;
-         this.updateOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, false);
+         this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, false);
       }
    }
 
@@ -240,7 +249,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       if (artifact.isOfType(CoreArtifactTypes.Markdown) || artifact.isAttributeTypeValid(
          CoreAttributeTypes.PrimaryAttribute)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
@@ -390,7 +399,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public MarkdownRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public MarkdownRenderer newInstance(RendererMap rendererOptions) {
       return new MarkdownRenderer(rendererOptions);
    }
 

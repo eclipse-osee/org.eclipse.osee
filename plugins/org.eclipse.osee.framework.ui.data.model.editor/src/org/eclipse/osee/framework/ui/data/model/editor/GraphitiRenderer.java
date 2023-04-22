@@ -20,16 +20,14 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_H
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.data.model.editor.GraphitiImage.GRAPHITI_DIAGRAM;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,16 +43,16 @@ import org.eclipse.ui.IWorkbenchPage;
  */
 public class GraphitiRenderer extends DefaultArtifactRenderer {
 
-   public GraphitiRenderer(Map<RendererOption, Object> rendererOptions) {
+   public GraphitiRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
    }
 
    public GraphitiRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
    }
 
    @Override
-   public GraphitiRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public GraphitiRenderer newInstance(RendererMap rendererOptions) {
       return new GraphitiRenderer(rendererOptions);
    }
 
@@ -69,7 +67,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       int rating = IRenderer.NO_MATCH;
       if (artifact.isOfType(CoreArtifactTypes.ModelDiagram)) {
          if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT, PREVIEW, DEFAULT_OPEN, SPECIALIZED_EDIT)) {

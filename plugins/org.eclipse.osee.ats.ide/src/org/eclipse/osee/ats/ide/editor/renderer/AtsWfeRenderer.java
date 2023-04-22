@@ -17,16 +17,15 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED
 import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
@@ -41,12 +40,12 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
 
    private static final String Option_WORKFLOW_EDITOR = "workflow.editor.option";
 
-   public AtsWfeRenderer(Map<RendererOption, Object> rendererOptions) {
+   public AtsWfeRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
    }
 
    public AtsWfeRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
    }
 
    @Override
@@ -66,17 +65,17 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsWfeRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public AtsWfeRenderer newInstance(RendererMap rendererOptions) {
       return new AtsWfeRenderer(rendererOptions);
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
 
       if (!artifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT,
          PRODUCE_ATTRIBUTE) && artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
 
-         if (Option_WORKFLOW_EDITOR.equals(rendererOptions.get(RendererOption.OPEN_OPTION)) && //
+         if (Option_WORKFLOW_EDITOR.equals(rendererOptions.getRendererOptionValue(RendererOption.OPEN_OPTION)) && //
             !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) && //
             !RendererManager.isDefaultArtifactEditor()) {
             return SPECIALIZED_MATCH;

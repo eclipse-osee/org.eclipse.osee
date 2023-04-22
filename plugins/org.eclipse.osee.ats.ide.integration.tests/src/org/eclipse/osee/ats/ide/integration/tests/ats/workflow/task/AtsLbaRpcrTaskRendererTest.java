@@ -13,10 +13,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 
 import static org.junit.Assert.assertTrue;
-import java.util.HashMap;
 import org.eclipse.osee.ats.ide.workflow.task.AtsOpenWithTaskRenderer;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.junit.Test;
 
@@ -31,7 +29,7 @@ public class AtsLbaRpcrTaskRendererTest {
    private final PresentationType presentationType2 = PresentationType.PREVIEW;
    private final PresentationType presentationType3 = PresentationType.DIFF;
    private final PresentationType presentationType4 = PresentationType.SPECIALIZED_EDIT;
-   AtsOpenWithTaskRenderer renderer = new AtsOpenWithTaskRenderer(new HashMap<RendererOption, Object>());
+   AtsOpenWithTaskRenderer renderer = new AtsOpenWithTaskRenderer();
 
    @Test
    public void testGetPresentationTypeSpecialized() {

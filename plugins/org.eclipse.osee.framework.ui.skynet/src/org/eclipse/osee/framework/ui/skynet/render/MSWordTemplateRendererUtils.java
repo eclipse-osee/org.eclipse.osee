@@ -17,7 +17,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -149,7 +150,7 @@ public class MSWordTemplateRendererUtils {
     * @return the determined applicability rating.
     */
 
-   public static int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public static int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       //@formatter:off
       if (presentationType.matches( PresentationType.GENERALIZED_EDIT, PresentationType.GENERAL_REQUESTED )) {
          return IRenderer.NO_MATCH;
@@ -169,7 +170,7 @@ public class MSWordTemplateRendererUtils {
                 && !artifact.isAttributeTypeValid( CoreAttributeTypes.WholeWordContent )
                 && !artifact.isAttributeTypeValid( CoreAttributeTypes.NativeContent ) ) ) {
          return
-            MSWordTemplateRendererUtils.OPEN_IN_WORD.equals( rendererOptions.get( RendererOption.OPEN_OPTION ) )
+            MSWordTemplateRendererUtils.OPEN_IN_WORD.equals( rendererOptions.getRendererOptionValue( RendererOption.OPEN_OPTION ) )
                ? IRenderer.PRESENTATION_TYPE_OPTION_MATCH
                : IRenderer.BASE_MATCH;
       }

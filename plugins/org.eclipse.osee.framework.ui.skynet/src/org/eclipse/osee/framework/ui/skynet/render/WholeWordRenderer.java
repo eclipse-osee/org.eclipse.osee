@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +35,10 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -176,7 +176,8 @@ public class WholeWordRenderer extends FileSystemRenderer {
     */
 
    public WholeWordRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
+      this.comparator = new WholeWordCompare(this);
    }
 
    /**
@@ -185,7 +186,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
     * @param options map of {@link RendererOption}s.
     */
 
-   public WholeWordRenderer(Map<RendererOption, Object> options) {
+   public WholeWordRenderer(RendererMap options) {
       super(options);
       this.comparator = new WholeWordCompare(this);
    }
@@ -262,7 +263,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       //@formatter:off
       if (
               !presentationType.matches
@@ -394,7 +395,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public WholeWordRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public WholeWordRenderer newInstance(RendererMap rendererOptions) {
       return new WholeWordRenderer(rendererOptions);
    }
 
