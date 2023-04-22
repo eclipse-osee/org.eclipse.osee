@@ -16,6 +16,9 @@ package org.eclipse.osee.define.api.publishing;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.osee.define.api.publishing.templatemanager.RendererOptions;
+import org.eclipse.osee.framework.core.publishing.AttributeOptions;
+import org.eclipse.osee.framework.core.publishing.MetadataOptions;
+import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 
 /**
  * @author Loren K. Ashley

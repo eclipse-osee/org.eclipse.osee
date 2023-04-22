@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -31,7 +29,7 @@ import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -79,13 +77,14 @@ public class NativeRenderer extends FileSystemRenderer {
 
    private final IComparator comparator;
 
-   public NativeRenderer(Map<RendererOption, Object> rendererOptions) {
+   public NativeRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
       this.comparator = new NativeWordCompare(this);
    }
 
    public NativeRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
+      this.comparator = new NativeWordCompare(this);
    }
 
    @Override
@@ -110,12 +109,12 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public NativeRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public NativeRenderer newInstance(RendererMap rendererOptions) {
       return new NativeRenderer(rendererOptions);
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
             return PRESENTATION_SUBTYPE_MATCH;

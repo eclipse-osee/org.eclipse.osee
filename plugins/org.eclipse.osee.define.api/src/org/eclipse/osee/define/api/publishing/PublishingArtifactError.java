@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 

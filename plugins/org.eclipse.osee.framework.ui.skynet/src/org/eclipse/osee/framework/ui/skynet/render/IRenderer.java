@@ -21,8 +21,9 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
@@ -44,7 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
  * @author Loren K. Ashley
  */
 
-public interface IRenderer {
+public interface IRenderer extends RendererMap {
 
    public static final int ARTIFACT_TYPE_MATCH = 20;
    public static final int BASE_MATCH = 5;
@@ -86,7 +87,7 @@ public interface IRenderer {
     * @return an {@link IRenderer} applicability rating.
     */
 
-   int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions);
+   int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions);
 
    /**
     * Gets an implementation of the {@link IComparator} interface for comparing artifacts of the type supported by the
@@ -172,7 +173,7 @@ public interface IRenderer {
     * @return a new instance of the {@link IRenderer} interface.
     */
 
-   IRenderer newInstance(Map<RendererOption, Object> rendererOptions);
+   IRenderer newInstance(RendererMap rendererOptions);
 
    /**
     * Opens the provided {@link Artifact} objects with the appropriate editor for the {@link PresentationType}.
@@ -220,17 +221,6 @@ public interface IRenderer {
     */
 
    boolean supportsCompare();
-
-   /**
-    * Updates the value of a renderer option.
-    *
-    * @param key the {@link RendererOption} to be updated.
-    * @param value the new value.
-    * @throws NullPointerException when either of the parameters <code>key</code> or <code>value</code> are
-    * <code>null</code>.
-    */
-
-   void updateOption(RendererOption key, Object value);
 }
 
 /* EOF */

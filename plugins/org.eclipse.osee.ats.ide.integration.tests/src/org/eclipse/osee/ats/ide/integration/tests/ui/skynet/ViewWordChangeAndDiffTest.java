@@ -21,9 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
@@ -38,8 +36,10 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.RendererUtil;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -103,14 +103,13 @@ public final class ViewWordChangeAndDiffTest {
 
    private IFolder renderFolder;
    private BranchId branch;
-   private Map<RendererOption, Object> rendererOptions;
+   private RendererMap rendererOptions;
 
    @Before
    public void setUp() throws Exception {
       renderFolder = RendererUtil.ensureRenderFolderExists(PresentationType.DIFF).orElseThrow();
       branch = SAW_Bld_2;
-      rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.NO_DISPLAY, true);
+      this.rendererOptions = new EnumRendererMap(RendererOption.NO_DISPLAY, true);
    }
 
    @Test

@@ -23,7 +23,7 @@ import org.eclipse.osee.define.api.importing.RoughArtifact;
 import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

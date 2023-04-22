@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +40,8 @@ import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -131,10 +131,15 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   continue;
                }
 
-               HashMap<RendererOption, Object> rendererOptions = new HashMap<>();
-               rendererOptions.put(RendererOption.NO_DISPLAY, true);
-               rendererOptions.put(RendererOption.SKIP_DIALOGS, true);
-               rendererOptions.put(RendererOption.OVERRIDE_DATA_RIGHTS, overrideDataRightsClassification);
+               //@formatter:off
+               var rendererOptions =
+                  RendererMap.of
+                     (
+                       RendererOption.NO_DISPLAY,           true,
+                       RendererOption.SKIP_DIALOGS,         true,
+                       RendererOption.OVERRIDE_DATA_RIGHTS, overrideDataRightsClassification
+                     );
+               //@formatter:on
 
                RendererManager.diff(collector, artifactDeltas, prefix, rendererOptions);
             }

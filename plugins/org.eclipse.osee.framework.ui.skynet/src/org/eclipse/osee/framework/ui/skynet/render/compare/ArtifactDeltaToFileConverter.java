@@ -15,15 +15,14 @@ package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.CompareData;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -76,10 +75,15 @@ public class ArtifactDeltaToFileConverter {
             outputFiles.add(AIFile.constructIFile(data.getOutputPath()));
          }
       };
-      Map<RendererOption, Object> rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.NO_DISPLAY, true);
-      rendererOptions.put(RendererOption.TEMPLATE_OPTION, RendererOption.DIFF_NO_ATTRIBUTES_VALUE.getKey());
-      rendererOptions.put(RendererOption.ADD_MERGE_TAG, true);
+      //@formatter:off
+      var rendererOptions =
+         RendererMap.of
+            (
+              RendererOption.NO_DISPLAY,       true,
+              RendererOption.TEMPLATE_OPTION,  RendererOption.DIFF_NO_ATTRIBUTES_VALUE.getKey(),
+              RendererOption.ADD_MERGE_TAG,    true
+            );
+      //@formatter:on
       // Set ADD MERGE TAG as an option so resulting document will indicate a merge section
 
       RendererManager.diff(colletor, artifactDelta, "", rendererOptions);

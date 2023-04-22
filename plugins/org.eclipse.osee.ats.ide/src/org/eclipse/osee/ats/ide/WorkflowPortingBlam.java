@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -33,7 +32,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorRenderer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -61,7 +59,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
       List<Artifact> destinationWorkflows = createDestinationWorkflows(changes, actionableItems);
       changes.execute();
 
-      AtsWorldEditorRenderer renderer = new AtsWorldEditorRenderer(new HashMap<RendererOption, Object>());
+      AtsWorldEditorRenderer renderer = new AtsWorldEditorRenderer();
       renderer.open(destinationWorkflows, PresentationType.SPECIALIZED_EDIT);
    }
 

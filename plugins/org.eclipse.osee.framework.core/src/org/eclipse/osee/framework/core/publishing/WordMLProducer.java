@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.framework.core.publishing;
 
 import java.io.IOException;
 import java.util.Arrays;

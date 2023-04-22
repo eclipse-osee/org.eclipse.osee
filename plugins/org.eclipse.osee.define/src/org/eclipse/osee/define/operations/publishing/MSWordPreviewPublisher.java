@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.publishing.PublishingOptions;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**

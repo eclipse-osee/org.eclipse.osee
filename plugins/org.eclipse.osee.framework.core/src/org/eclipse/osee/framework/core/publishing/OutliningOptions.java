@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api.publishing;
+package org.eclipse.osee.framework.core.publishing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
@@ -88,7 +88,7 @@ public class OutliningOptions implements ToMessage {
          this.headingAttributeType = "";
       }
       if (Objects.isNull(this.includeEmptyHeaders)) {
-         this.includeEmptyHeaders = false;
+         this.includeEmptyHeaders = true;
       }
       if (Objects.isNull(this.outlineNumber)) {
          this.outlineNumber = "";

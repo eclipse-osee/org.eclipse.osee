@@ -15,12 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -52,9 +51,14 @@ public class SingleNativeDiffHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      String pathPrefix = RenderingUtil.getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName(changes).orElse(Strings.emptyString());
-      Map<RendererOption, Object> rendererOptions = new HashMap<>();
-      rendererOptions.put(RendererOption.VIEW, Handlers.getViewId());
+      //@formatter:off
+      String pathPrefix =
+         RenderingUtil
+            .getFileNameSegmentFromFirstTransactionDeltaSupplierAssociatedArtifactName(changes)
+            .orElse(Strings.emptyString());
+      //@formatter:on
+
+      var rendererOptions = RendererMap.of(RendererOption.VIEW, Handlers.getViewId());
 
       RendererManager.diffInJob(artifactDeltas, pathPrefix, rendererOptions);
       return null;

@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,8 +32,9 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -189,14 +189,14 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
                       Map.of
                          (
                             RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
                          )
                    )
          );
       //@formatter:on
    }
 
-   private IComparator comparator;
+   private final IComparator comparator;
 
    /**
     * Creates a new {@link MSWordTemplateServerRenderer} without any options. This constructor is used by the
@@ -204,7 +204,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    public MSWordTemplateServerRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
       this.comparator = new WordTemplateCompare(this);
    }
 
@@ -214,8 +214,9 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     * @param options map of {@link RendererOption}s.
     */
 
-   public MSWordTemplateServerRenderer(Map<RendererOption, Object> options) {
+   public MSWordTemplateServerRenderer(RendererMap options) {
       super(options);
+      this.comparator = new WordTemplateCompare(this);
    }
 
    /**
@@ -256,7 +257,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       var rating = MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
       if (PresentationType.PREVIEW_SERVER.equals(presentationType)) {
          rating++;
@@ -454,7 +455,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public MSWordTemplateServerRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public MSWordTemplateServerRenderer newInstance(RendererMap rendererOptions) {
       return new MSWordTemplateServerRenderer(rendererOptions);
    }
 

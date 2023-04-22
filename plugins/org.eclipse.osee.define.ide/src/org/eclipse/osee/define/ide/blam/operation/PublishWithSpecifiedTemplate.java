@@ -13,32 +13,32 @@
 
 package org.eclipse.osee.define.ide.blam.operation;
 
-import static org.eclipse.osee.framework.core.util.RendererOption.BRANCH;
-import static org.eclipse.osee.framework.core.util.RendererOption.COMPARE_BRANCH;
-import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_ARTIFACT_TYPES;
-import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_FOLDERS;
-import static org.eclipse.osee.framework.core.util.RendererOption.FIRST_TIME;
-import static org.eclipse.osee.framework.core.util.RendererOption.INCLUDE_UUIDS;
-import static org.eclipse.osee.framework.core.util.RendererOption.LINK_TYPE;
-import static org.eclipse.osee.framework.core.util.RendererOption.MAINTAIN_ORDER;
-import static org.eclipse.osee.framework.core.util.RendererOption.OVERRIDE_DATA_RIGHTS;
-import static org.eclipse.osee.framework.core.util.RendererOption.PROGRESS_MONITOR;
-import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_DIFF;
-import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_EMPTY_HEADERS;
-import static org.eclipse.osee.framework.core.util.RendererOption.RECURSE;
-import static org.eclipse.osee.framework.core.util.RendererOption.SKIP_ERRORS;
-import static org.eclipse.osee.framework.core.util.RendererOption.TRANSACTION_OPTION;
-import static org.eclipse.osee.framework.core.util.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
-import static org.eclipse.osee.framework.core.util.RendererOption.USE_TEMPLATE_ONCE;
-import static org.eclipse.osee.framework.core.util.RendererOption.VIEW;
-import static org.eclipse.osee.framework.core.util.RendererOption.WAS_BRANCH;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.BRANCH;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.COMPARE_BRANCH;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.EXCLUDE_ARTIFACT_TYPES;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.EXCLUDE_FOLDERS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.FIRST_TIME;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.INCLUDE_UUIDS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.LINK_TYPE;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.MAINTAIN_ORDER;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.OVERRIDE_DATA_RIGHTS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.PROGRESS_MONITOR;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.PUBLISH_DIFF;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.PUBLISH_EMPTY_HEADERS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.RECURSE;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.SKIP_ERRORS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.TRANSACTION_OPTION;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.USE_TEMPLATE_ONCE;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.VIEW;
+import static org.eclipse.osee.framework.core.publishing.RendererOption.WAS_BRANCH;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,9 +46,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -84,6 +87,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private static String PARENT_TEMPLATE = "Parent Template";
    private static String CHILD_TEMPLATE = "Child Template";
    private static String DATA_RIGHTS = "Data Rights";
+   private static String NOT_SELECTED = "--select--";
 
    private List<Artifact> templates;
    private BranchId branch;
@@ -102,32 +106,30 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+
       populateTemplateList();
 
-      boolean useArtifactNameInLinks = variableMap.getBoolean(RendererOption.USE_ARTIFACT_NAMES.getKey());
-      boolean useParagraphNumbersInLinks = variableMap.getBoolean(RendererOption.USE_PARAGRAPH_NUMBERS.getKey());
-
-      if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
-         throw new OseeArgumentException("Please select at least one Document Link Format");
-      }
-      LinkType linkType;
-      if (useArtifactNameInLinks && useParagraphNumbersInLinks) {
-         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
-      } else if (useParagraphNumbersInLinks) {
-         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER;
-      } else {
-         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
-      }
+      /*
+       * Templates
+       */
 
       Artifact parent = getTemplate(variableMap.getString(PARENT_TEMPLATE));
+
       if (parent == null) {
          throw new OseeArgumentException("Must select a Parent Template");
       }
+
       Artifact child = getTemplate(variableMap.getString(CHILD_TEMPLATE));
 
-      String classification = variableMap.getString(DATA_RIGHTS);
+      /*
+       * Artifacts
+       */
 
       List<Artifact> artifacts = variableMap.getArtifacts(ARTIFACTS);
+
+      /*
+       * Find Is Branch
+       */
 
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
@@ -139,8 +141,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          throw new OseeArgumentException("Cannot determine IS branch.");
       }
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+      /*
+       * View
+       */
 
       Object view = variableMap.getValue(RendererOption.VIEW.getKey());
       ArtifactId viewId = ArtifactId.SENTINEL;
@@ -152,29 +155,116 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          }
       }
 
-      HashMap<RendererOption, Object> rendererOptionsMap = new HashMap<>();
-      rendererOptionsMap.put(BRANCH, branch);
-      rendererOptionsMap.put(COMPARE_BRANCH, variableMap.getValue(WAS_BRANCH.getKey()));
-      rendererOptionsMap.put(INCLUDE_UUIDS, variableMap.getValue(INCLUDE_UUIDS.getKey()));
-      rendererOptionsMap.put(LINK_TYPE, linkType);
-      rendererOptionsMap.put(UPDATE_PARAGRAPH_NUMBERS, variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS.getKey()));
-      rendererOptionsMap.put(EXCLUDE_ARTIFACT_TYPES, variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES.getKey()));
-      rendererOptionsMap.put(TRANSACTION_OPTION, transaction);
-      rendererOptionsMap.put(SKIP_ERRORS, true);
-      rendererOptionsMap.put(EXCLUDE_FOLDERS, true);
-      rendererOptionsMap.put(RECURSE, true);
-      rendererOptionsMap.put(MAINTAIN_ORDER, true);
-      rendererOptionsMap.put(PROGRESS_MONITOR, monitor);
-      rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);
-      rendererOptionsMap.put(FIRST_TIME, true);
-      rendererOptionsMap.put(PUBLISH_DIFF, variableMap.getValue(PUBLISH_DIFF.getKey()));
-      rendererOptionsMap.put(VIEW, viewId);
-      rendererOptionsMap.put(PUBLISH_EMPTY_HEADERS, false);
-      rendererOptionsMap.put(OVERRIDE_DATA_RIGHTS, classification);
+      /*
+       * Check Was Branch
+       */
+
+      var wasBranchId = variableMap.getValue(WAS_BRANCH.getKey());
+      wasBranchId = Objects.nonNull(wasBranchId) ? wasBranchId : BranchId.SENTINEL;
+
+      /*
+       * Transaction
+       */
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+
+      if (Objects.isNull(transaction)) {
+         throw new OseeCoreException("Failed to create transaction.");
+      }
+
+      /*
+       * Find Link Type
+       */
+
+      boolean useArtifactNameInLinks = variableMap.getBoolean(RendererOption.USE_ARTIFACT_NAMES.getKey());
+      boolean useParagraphNumbersInLinks = variableMap.getBoolean(RendererOption.USE_PARAGRAPH_NUMBERS.getKey());
+
+      if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
+         throw new OseeArgumentException("Please select at least one Document Link Format");
+      }
+
+      LinkType linkType;
+      if (useArtifactNameInLinks && useParagraphNumbersInLinks) {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+      } else if (useParagraphNumbersInLinks) {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER;
+      } else {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
+      }
+
+      /*
+       * Inlcude UUIDs
+       */
+
+      var includeUuids = variableMap.getBoolean(INCLUDE_UUIDS.getKey());
+
+      /*
+       * Update Paragraph Numbers
+       */
+
+      var updateParagraphNumbers = variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS.getKey());
+
+      /*
+       * Publish Diff
+       */
+
+      var publishDiff = variableMap.getValue(PUBLISH_DIFF.getKey());
+
+      /*
+       * Override Data Rights
+       */
+
+      var overrideDataRights = variableMap.getBoolean(OVERRIDE_DATA_RIGHTS.getKey());
+
+      var classification = variableMap.getString(DATA_RIGHTS);
+
+      if (overrideDataRights && (NOT_SELECTED.equals(classification))) {
+         throw new OseeArgumentException("When Override Data Rights is selected, a Data Right must be selectd.");
+      }
+
+      /*
+       * Exclude Artifact Types List
+       */
+
+      var excludeArtifactTypesList = variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES.getKey());
+
+      //@formatter:off
+      RendererMap rendererOptionsMap =
+         new EnumRendererMap
+            (
+              BRANCH,                   branch,
+              VIEW,                     viewId,
+              COMPARE_BRANCH,           wasBranchId,
+              TRANSACTION_OPTION,       transaction,
+              LINK_TYPE,                linkType,
+              INCLUDE_UUIDS,            includeUuids,
+              UPDATE_PARAGRAPH_NUMBERS, updateParagraphNumbers,
+              PUBLISH_DIFF,             publishDiff,
+              SKIP_ERRORS,              true,
+              EXCLUDE_FOLDERS,          true,
+              RECURSE,                  true,
+              MAINTAIN_ORDER,           true,
+              USE_TEMPLATE_ONCE,        true,
+              FIRST_TIME,               true,
+              PUBLISH_EMPTY_HEADERS,    false
+            );
+
+      if( Objects.nonNull( excludeArtifactTypesList ) && !excludeArtifactTypesList.isEmpty() ) {
+         rendererOptionsMap.setRendererOption(EXCLUDE_ARTIFACT_TYPES, excludeArtifactTypesList);
+      }
+
+      if( Objects.nonNull( monitor ) ) {
+         rendererOptionsMap.setRendererOption( PROGRESS_MONITOR, monitor );
+      }
+
+      if( overrideDataRights ) {
+         rendererOptionsMap.setRendererOption( OVERRIDE_DATA_RIGHTS, classification );
+      }
 
       MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
 
-      Boolean isDiff = (Boolean) rendererOptionsMap.get(PUBLISH_DIFF);
+      Boolean isDiff = (Boolean) rendererOptionsMap.getRendererOptionValue(PUBLISH_DIFF);
 
       final AtomicInteger toProcessSize = new AtomicInteger(0);
       if (isDiff) {
@@ -204,9 +294,16 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       });
 
       if (result.get()) {
+
          renderer.publish(parent, child, artifacts);
-         transaction.execute();
-         monitor.done();
+
+         if( Objects.nonNull(transaction) ) {
+            transaction.execute();
+         }
+
+         if( Objects.nonNull(monitor) ) {
+            monitor.done();
+         }
       }
    }
 
@@ -409,7 +506,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             return artifact;
          }
       }
-      return null;
+      return Artifact.SENTINEL;
    }
 
    @Override

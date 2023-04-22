@@ -27,9 +27,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -37,7 +35,8 @@ import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
@@ -143,14 +142,17 @@ public class PlainTextRenderer extends FileSystemRenderer {
    private final IComparator comparator;
 
    public PlainTextRenderer() {
-      this(new HashMap<RendererOption, Object>());
+      super();
+      this.comparator = new PlainTextDiffRenderer();
+      this.menuCommands = PlainTextRenderer.menuCommandDefinitions;
+      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, PlainTextRenderer.CAN_STREAM);
    }
 
-   public PlainTextRenderer(Map<RendererOption, Object> rendererOptions) {
+   public PlainTextRenderer(RendererMap rendererOptions) {
       super(rendererOptions);
       this.comparator = new PlainTextDiffRenderer();
       this.menuCommands = PlainTextRenderer.menuCommandDefinitions;
-      this.updateOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, PlainTextRenderer.CAN_STREAM);
+      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, PlainTextRenderer.CAN_STREAM);
    }
 
    /**
@@ -166,7 +168,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.PlainTextContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN, PRODUCE_ATTRIBUTE, DIFF)) {
             return PRESENTATION_SUBTYPE_MATCH;
@@ -287,11 +289,11 @@ public class PlainTextRenderer extends FileSystemRenderer {
 
    @Override
    public PlainTextRenderer newInstance() {
-      return new PlainTextRenderer(new HashMap<RendererOption, Object>());
+      return new PlainTextRenderer();
    }
 
    @Override
-   public PlainTextRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public PlainTextRenderer newInstance(RendererMap rendererOptions) {
       return new PlainTextRenderer(rendererOptions);
    }
 

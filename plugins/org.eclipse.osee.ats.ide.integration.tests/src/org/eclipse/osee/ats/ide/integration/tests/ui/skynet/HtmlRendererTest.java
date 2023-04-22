@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -80,7 +78,7 @@ public class HtmlRendererTest {
    public void setUp() {
       Artifact Folder;
       Artifact htmlArtifact;
-      renderer = new HTMLRenderer(new HashMap<RendererOption, Object>());
+      renderer = new HTMLRenderer();
       // create example artifact
       theArtifacts = new ArrayList<>();
 

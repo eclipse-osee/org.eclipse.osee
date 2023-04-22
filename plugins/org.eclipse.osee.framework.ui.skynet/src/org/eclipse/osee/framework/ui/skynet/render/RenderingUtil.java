@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionDeltaSupplier;
 import org.eclipse.osee.framework.core.publishing.FilenameFactory;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.RendererUtil;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
@@ -674,7 +674,7 @@ public final class RenderingUtil {
 
    private static IFile setRendererResultPathReturn(IRenderer renderer, IFile file) {
       try {
-         renderer.updateOption(RendererOption.RESULT_PATH_RETURN, RenderingUtil.getOsString(file).orElseThrow());
+         renderer.setRendererOption(RendererOption.RESULT_PATH_RETURN, RenderingUtil.getOsString(file).orElseThrow());
       } catch (Exception e) {
          //@formatter:off
          throw

@@ -23,7 +23,6 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,8 +31,10 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,11 +51,8 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.compare.AbstractWordCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateFileDiffer;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -63,8 +61,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
+ * @author Loren K. Ashley
  */
-public class DefaultArtifactRenderer implements IRenderer {
+
+public class DefaultArtifactRenderer extends EnumRendererMap implements IRenderer {
 
    /**
     * The context menu command title for the Artifact Editor command.
@@ -111,16 +111,19 @@ public class DefaultArtifactRenderer implements IRenderer {
    private static final String OPEN_IN_HISTORY = "open.with.resource.history";
 
    private static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
+
    /**
     * A short description of the type of documents processed by the renderer.
     */
 
    private static final String RENDERER_DOCUMENT_TYPE_DESCRIPTION = "Default Document Types";
+
    /**
     * The renderer identifier used for publishing template selection.
     */
 
    private static final String RENDERER_IDENTIFIER = DefaultArtifactRenderer.class.getCanonicalName();
+
    /**
     * The {@link IRenderer} implementation's name.
     */
@@ -194,18 +197,14 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    protected List<MenuCmdDef> menuCommands;
-   private final Map<RendererOption, Object> rendererOptions;
 
    public DefaultArtifactRenderer() {
-      this(new EnumMap<>(RendererOption.class));
+      super();
    }
 
-   public DefaultArtifactRenderer(Map<RendererOption, Object> rendererOptions) {
+   public DefaultArtifactRenderer(RendererMap rendererMap) {
+      super(rendererMap);
       //@formatter:off
-      this.rendererOptions =
-         Objects.nonNull( rendererOptions ) && (!rendererOptions.isEmpty())
-            ? new EnumMap<>( rendererOptions )
-            : new EnumMap<>( RendererOption.class );
       this.menuCommands =
          ( this.getClass() == DefaultArtifactRenderer.class )
             ? DefaultArtifactRenderer.menuCommandDefinitions
@@ -235,31 +234,11 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    /**
-    * @deprecated NOT USED
-    */
-
-   @Deprecated
-   public void clearOption(RendererOption key) {
-      if (Objects.nonNull(key)) {
-         this.rendererOptions.remove(key);
-      }
-   }
-
-   /**
-    * @deprecated NOT USED
-    */
-
-   @Deprecated
-   public void clearOptions() {
-      this.rendererOptions.clear();
-   }
-
-   /**
     * {@inheritDoc}
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_TYPE;
       }
@@ -356,31 +335,25 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    /**
-    * Gets an immutable view of the renderer's options. The view is backed by the renderer's options and changes to the
-    * renderer's options will be reflected in the view.
+    * Gets a copy of the renderer's options. Changes to the renderer's options will not be reflected in the returned
+    * {@link RendererMap}.
     *
-    * @implNote Used by {@link WordTemplateFileDiffer} and {@link WordTemplateProcessor}
     * @return an immutable view of the renderer's options.
     */
 
-   public Map<RendererOption, Object> getRendererOptions() {
-      return Collections.unmodifiableMap(this.rendererOptions);
+   public RendererMap getRendererOptionsCopy() {
+      return new EnumRendererMap(this);
    }
 
    /**
-    * Gets a renderer option. If an explicit value has not been set for the renderer, a default value is returned.
+    * Gets an immutable view of the renderer's options. The view is backed by the renderer's options and changes to the
+    * renderer's options will be reflected in the view.
     *
-    * @implNode Used by {@link AtsOpenWithTaskRenderer}, {@link OpenUsingRenderer}, {@link WordTemplateFileDiffer},
-    * {@link AbstractWordCompare}, {@link MSWordTempateClientRenderer}, {@link WordTemplateProcessor}
-    * @param key the {@link RendererOption} to get.
-    * @return the value of the {@link RendererOption} specified by <code>key</code>.
+    * @return an immutable view of the renderer's options.
     */
 
-   public Object getRendererOptionValue(RendererOption key) {
-
-      var value = this.rendererOptions.get(key);
-
-      return Objects.nonNull(value) ? value : key.getType().getDefaultValue();
+   public RendererMap getRendererOptionsView() {
+      return this.unmodifiableRendererMap();
    }
 
    /**
@@ -406,7 +379,7 @@ public class DefaultArtifactRenderer implements IRenderer {
     */
 
    @Override
-   public IRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+   public IRenderer newInstance(RendererMap rendererOptions) {
       return new DefaultArtifactRenderer(rendererOptions);
    }
 
@@ -420,8 +393,8 @@ public class DefaultArtifactRenderer implements IRenderer {
          @Override
          public void run() {
             String openOption = "";
-            if (rendererOptions.containsKey(RendererOption.OPEN_OPTION)) {
-               openOption = (String) rendererOptions.get(RendererOption.OPEN_OPTION);
+            if (DefaultArtifactRenderer.this.isRendererOptionSet(RendererOption.OPEN_OPTION)) {
+               openOption = DefaultArtifactRenderer.this.getRendererOptionValue(RendererOption.OPEN_OPTION);
             }
 
             if (OPEN_IN_GRAPH.equals(openOption)) {
@@ -465,7 +438,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
       WordMLProducer wordMl = producer;
-      boolean allAttrs = (boolean) rendererOptions.get(RendererOption.ALL_ATTRIBUTES);
+      boolean allAttrs = (boolean) this.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES);
 
       wordMl.startParagraph();
 
@@ -548,28 +521,17 @@ public class DefaultArtifactRenderer implements IRenderer {
     * {@inheritDoc}
     */
 
-   @Override
-   public void updateOption(RendererOption key, Object value) {
-      if (Objects.isNull(key)) {
-         return;
-      }
-
-      if (Objects.nonNull(value)) {
-         this.rendererOptions.put(key, value);
-      } else {
-         this.rendererOptions.remove(key);
-      }
-   }
-
-   /**
-    * @deprecated NOT USED
-    */
-
-   @Deprecated
-   public void updateOptions(Map<RendererOption, Object> rendererOptions) {
-      if (Objects.nonNull(rendererOptions)) {
-         this.rendererOptions.putAll(rendererOptions);
-      }
-   }
+   //   @Override
+   //   private void updateOption(RendererOption key, Object value) {
+   //      if (Objects.isNull(key)) {
+   //         return;
+   //      }
+   //
+   //      if (Objects.nonNull(value)) {
+   //         this.rendererOptions.put(key, value);
+   //      } else {
+   //         this.rendererOptions.remove(key);
+   //      }
+   //   }
 
 }

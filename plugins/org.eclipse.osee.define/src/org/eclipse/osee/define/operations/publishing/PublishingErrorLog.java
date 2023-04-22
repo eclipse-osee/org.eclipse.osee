@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.define.api.publishing.PublishingArtifactError;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**

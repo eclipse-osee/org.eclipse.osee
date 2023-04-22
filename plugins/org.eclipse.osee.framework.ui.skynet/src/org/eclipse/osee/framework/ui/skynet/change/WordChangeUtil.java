@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -80,7 +80,7 @@ public final class WordChangeUtil {
 
                var msWordTemplateClientRenderer = new MSWordTemplateClientRenderer();
 
-               msWordTemplateClientRenderer.updateOption
+               msWordTemplateClientRenderer.setRendererOption
                   (
                      RendererOption.VIEW,
                      Handlers.getViewId()
