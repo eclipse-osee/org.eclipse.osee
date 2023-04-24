@@ -53,9 +53,22 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 @Path("applic")
 public interface ApplicabilityEndpoint {
 
+   /**
+    * NOTE: this should only be used by the client
+    */
    @GET
+   @Path("ide")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<ApplicabilityToken> getApplicabilityTokens();
+
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<ApplicabilityToken> getApplicabilityTokens(@QueryParam("orderByName") @DefaultValue("false") boolean orderByName, @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") @DefaultValue("0") Long pageNum, @QueryParam("count") @DefaultValue("0") Long pageSize);
+
+   @GET
+   @Path("count")
+   @Produces(MediaType.APPLICATION_JSON)
+   Long getApplicabilityTokenCount(@QueryParam("filter") @DefaultValue("") String filter);
 
    @POST
    @Path("compound")
