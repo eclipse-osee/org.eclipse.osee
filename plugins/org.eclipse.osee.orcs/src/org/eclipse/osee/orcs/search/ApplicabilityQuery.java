@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.search;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,10 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 public interface ApplicabilityQuery {
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
+
+   Collection<ApplicabilityToken> getApplicabilityTokens(BranchId branch, boolean orderByName, String filter, Long pageNum, Long pageSize);
+   
+   Long getApplicabilityTokenCount(BranchId branch, String filter);
 
    ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch);
 

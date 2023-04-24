@@ -57,6 +57,10 @@ public interface TupleQuery {
     */
    <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, BiConsumer<Long, String> consumer);
 
+   <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, boolean orderByName, String filter, Long pageNum, Long pageSize, BiConsumer<Long, String> consumer);
+   
+   <E1, E2> Long getTuple2UniqueE2PairCount(Tuple2Type<E1, E2> tupleType, BranchId branchId, String filter);
+
    <E1, E2, E3> void getTuple3E1ValueFromType(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, BiConsumer<E1, String> consumer);
 
    <E1, E2, E3> void getTuple3E3ValueFromType(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, BiConsumer<E3, String> consumer);

@@ -52,6 +52,35 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_E2_BY_TUPLE_TYPE =
       "select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
+   private static final String SELECT_COUNT_E2_BY_TUPLE_TYPE = "select count(*) from (select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key) t1";
+   private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED =
+      "select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "ORDER BY osee_key_value.value";
+
+   private static final String SELECT_E2_BY_TUPLE_TYPE_PAGINATED =
+      "select * from (select distinct e2, VALUE, row_number() OVER () rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "\n" + ") as applic where rn between ? and ?";
+
+   private static final String SELECT_E2_BY_TUPLE_TYPE_FILTERED =
+      "select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n";
+
+   private static final String SELECT_COUNT_E2_BY_TUPLE_TYPE_FILTERED =
+      "select count(*) from (select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%'))t1  \n";
+
+   
+   private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED =
+      "select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + "ORDER BY osee_key_value.value";
+
+   private static final String SELECT_E2_BY_TUPLE_TYPE_PAGINATED_FILTERED =
+      "select * from (select distinct e2, VALUE, row_number() OVER () rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + ") as applic where rn between ? and ?";
+
+   /**
+    * Note: the following 2 queries are not supported on HSQL due to pagination + ordering not supported on HSQL
+    */
+   private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED =
+      "select * from (select distinct e2, VALUE, row_number() OVER (ORDER BY osee_key_value.value) rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "ORDER BY osee_key_value.value) as applic where rn between ? and ?";
+
+   private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED_FILTERED =
+      "select * from (select distinct e2, VALUE, row_number() OVER (ORDER BY osee_key_value.value) rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + "ORDER BY osee_key_value.value) as applic where rn between ? and ?";
+
    private static final String SELECT_E2_BY_TUPLE_TYPE_RAW =
       "select distinct e2 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e1 = ?";
 
@@ -142,6 +171,79 @@ public class TupleQueryImpl implements TupleQuery {
    @Override
    public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, E1 e1, BranchId branch, BiConsumer<Long, String> consumer) {
       runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", tupleType, e1, branch);
+   }
+
+   private String getTuple2UniqueE2PairFiltered(String baseQuery, String filter) {
+      //this exists because the insertion inside a string doesn't seem to work
+      return baseQuery.replace("%?%", "%" + filter + "%");
+   }
+
+   @Override
+   public <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, boolean orderByName, String filter, Long pageNum, Long pageSize, BiConsumer<Long, String> consumer) {
+      if (jdbcClient.getDbType().isPaginationOrderingSupported()) {
+         if (!filter.equals("") && pageNum > 0 && pageSize > 0 && !orderByName) {
+            Long tempLowerBound = (pageNum - 1) * pageSize;
+            Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+            Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
+            runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_PAGINATED_FILTERED, filter),
+               "e2", tupleType, branchId, lowerBound, upperBound);
+         } else if (pageNum > 0 && pageSize > 0 && !orderByName) {
+            Long tempLowerBound = (pageNum - 1) * pageSize;
+            Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+            Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_PAGINATED, "e2", tupleType, branchId, lowerBound, upperBound);
+         } else if (!filter.equals("") && !orderByName) {
+            runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_FILTERED, filter), "e2",
+               tupleType, branchId);
+         } else if (!filter.equals("") && pageNum > 0 && pageSize > 0 && orderByName) {
+            Long tempLowerBound = (pageNum - 1) * pageSize;
+            Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+            Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
+            runQuery(consumer,
+               this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED_FILTERED, filter), "e2",
+               tupleType, branchId, lowerBound, upperBound);
+         } else if (pageNum > 0 && pageSize > 0 && orderByName) {
+            Long tempLowerBound = (pageNum - 1) * pageSize;
+            Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+            Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED, "e2", tupleType, branchId, lowerBound,
+               upperBound);
+         } else if (!filter.equals("") && orderByName) {
+            runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED, filter),
+               "e2", tupleType, branchId);
+         } else if (orderByName) {
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_ORDERED, "e2", tupleType, branchId);
+         } else {
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE, "e2", tupleType, branchId);
+         }
+      } else {
+         if (!filter.equals("") && pageNum > 0 && pageSize > 0 && !orderByName) {
+            Long tempLowerBound = (pageNum - 1) * pageSize;
+            Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+            Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
+            runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_PAGINATED_FILTERED, filter),
+               "e2", tupleType, branchId, lowerBound, upperBound);
+         } else if (pageNum > 0 && pageSize > 0 && !orderByName) {
+            Long tempLowerBound = (pageNum - 1) * pageSize;
+            Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
+            Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_PAGINATED, "e2", tupleType, branchId, lowerBound, upperBound);
+         } else if (!filter.equals("") && !orderByName) {
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_FILTERED, "e2", tupleType, branchId, filter);
+         } else if (!filter.equals("") && orderByName) {
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED, "e2", tupleType, branchId, filter);
+         } else {
+            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE, "e2", tupleType, branchId);
+         }
+      }
+   }
+   
+   @Override
+   public <E1, E2> Long getTuple2UniqueE2PairCount(Tuple2Type<E1, E2> tupleType, BranchId branchId,  String filter) {
+      if(!filter.equals("")) {
+         return Long.valueOf(jdbcClient.fetch(0L, this.getTuple2UniqueE2PairFiltered(SELECT_COUNT_E2_BY_TUPLE_TYPE_FILTERED,filter), tupleType, branchId));
+      }
+      return Long.valueOf(jdbcClient.fetch(0L, SELECT_COUNT_E2_BY_TUPLE_TYPE, tupleType,branchId));
    }
 
    @Override

@@ -105,12 +105,30 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
+   public Collection<ApplicabilityToken> getApplicabilityTokens(BranchId branch, boolean orderByName, String filter,
+      Long pageNum, Long pageSize) {
+      LinkedList<ApplicabilityToken> tokens = new LinkedList<>();
+      BiConsumer<Long, String> consumer = (id, name) -> tokens.add(new ApplicabilityToken(id, name));
+      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ApplicabilityDefinition, branch, orderByName, filter, pageNum,
+         pageSize, consumer);
+      if (tokens.isEmpty()) {
+         tokens.add(ApplicabilityToken.BASE);
+      }
+      return tokens;
+   }
+
+   @Override
    public HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2) {
       HashMap<Long, ApplicabilityToken> tokens = new HashMap<>();
       BiConsumer<Long, String> consumer = (id, name) -> tokens.put(id, new ApplicabilityToken(id, name));
       tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ApplicabilityDefinition, branch1, consumer);
       tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ApplicabilityDefinition, branch2, consumer);
       return tokens;
+   }
+
+   @Override
+   public Long getApplicabilityTokenCount(BranchId branch, String filter) {
+      return tupleQuery.getTuple2UniqueE2PairCount(CoreTupleTypes.ApplicabilityDefinition, branch, filter);
    }
 
    @Override
@@ -543,4 +561,5 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       }
       result.add(new ApplicabilityUseResultToken(appToken, artSet));
    }
+
 }

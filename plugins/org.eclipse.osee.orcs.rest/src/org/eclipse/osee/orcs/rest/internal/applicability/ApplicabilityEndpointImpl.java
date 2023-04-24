@@ -84,6 +84,16 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public Collection<ApplicabilityToken> getApplicabilityTokens(boolean orderByName, String filter, Long pageNum, Long pageSize) {
+      return applicabilityQuery.getApplicabilityTokens(branch, orderByName, filter, pageNum, pageSize);
+   }
+   
+   @Override
+   public Long getApplicabilityTokenCount(String filter) {
+      return applicabilityQuery.getApplicabilityTokenCount(branch, filter);
+   }
+
+   @Override
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds) {
       return applicabilityQuery.getApplicabilityTokens(artIds, branch);
    }
@@ -596,4 +606,5 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       }
       return constraints;
    }
+
 }
