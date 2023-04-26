@@ -25,7 +25,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * @author Donald G. Dunne
@@ -45,15 +50,45 @@ public class OpenWorkflowByIdAction extends Action {
 
    public OpenWorkflowByIdAction(String name) {
       super(name);
-      setToolTipText(getText());
+      setToolTipText(getText() + "\nClick to open dialog OR\nCtrl-Click to search ID(s) in clipboard");
    }
 
    @Override
    public void run() {
-
       MultipleIdSearchData data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
       if (Strings.isValid(overrideId)) {
          data.setEnteredIds(overrideId);
+      }
+      MultipleIdSearchOperation operation = new MultipleIdSearchOperation(data);
+      if (pend) {
+         try {
+            Operations.executeWorkAndCheckStatus(operation);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      } else {
+         Operations.executeAsJob(operation, true);
+      }
+   }
+
+   @Override
+   public void runWithEvent(Event event) {
+      MultipleIdSearchData data = null;
+      // Use clipboard value if CTRL is down on click
+      if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+         Clipboard clipboard = new Clipboard(AWorkbench.getDisplay());
+         String str = (String) clipboard.getContents(TextTransfer.getInstance());
+         if (Strings.isValid(str)) {
+            data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
+            data.setEnteredIds(str);
+         }
+      }
+      // Else, popup entry dialog
+      else {
+         data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
+         if (Strings.isValid(overrideId)) {
+            data.setEnteredIds(overrideId);
+         }
       }
       MultipleIdSearchOperation operation = new MultipleIdSearchOperation(data);
       if (pend) {
