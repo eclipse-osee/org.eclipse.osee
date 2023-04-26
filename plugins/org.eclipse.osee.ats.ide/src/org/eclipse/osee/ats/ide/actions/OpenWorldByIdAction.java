@@ -25,7 +25,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * @author Donald G. Dunne
@@ -41,14 +46,27 @@ public class OpenWorldByIdAction extends Action {
 
    public OpenWorldByIdAction(String name) {
       super(name);
-      setToolTipText(getText());
+      setToolTipText(getText() + "\nClick to open dialog OR\nCtrl-Click to search ID(s) in clipboard");
    }
 
    @Override
-   public void run() {
-      MultipleIdSearchData data = new MultipleIdSearchData(getText(), AtsEditor.WorldEditor);
-      if (Strings.isValid(overrideId)) {
-         data.setEnteredIds(overrideId);
+   public void runWithEvent(Event event) {
+      MultipleIdSearchData data = null;
+      // Use clipboard value if CTRL is down on click
+      if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+         Clipboard clipboard = new Clipboard(AWorkbench.getDisplay());
+         String clipboardStr = (String) clipboard.getContents(TextTransfer.getInstance());
+         if (Strings.isValid(clipboardStr)) {
+            data = new MultipleIdSearchData(getText(), AtsEditor.WorldEditor);
+            data.setEnteredIds(clipboardStr);
+         }
+      }
+      // Else, popup entry dialog
+      else {
+         data = new MultipleIdSearchData(getText(), AtsEditor.WorldEditor);
+         if (Strings.isValid(overrideId)) {
+            data.setEnteredIds(overrideId);
+         }
       }
       MultipleIdSearchOperation operation = new MultipleIdSearchOperation(data);
       if (pend) {
@@ -68,8 +86,9 @@ public class OpenWorldByIdAction extends Action {
       return ImageManager.getImageDescriptor(AtsImage.OPEN_BY_ID);
    }
 
-   public void setOverrideIdString(String enteredIdString) {
-      this.overrideId = enteredIdString;
+   // This should only be used by tests
+   public void setOverrideIdString(String overrideId) {
+      this.overrideId = overrideId;
    }
 
    public void setPend(boolean pend) {
