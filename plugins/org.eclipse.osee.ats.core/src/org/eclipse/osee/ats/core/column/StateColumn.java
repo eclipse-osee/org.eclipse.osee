@@ -41,8 +41,11 @@ public class StateColumn extends AbstractServicesColumn {
             return hold + block;
          }
 
-         String currStateName =
-            atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.CurrentStateName, "");
+         String currStateName = "";
+         if (atsApi.getConfigValue("UseStateAssignAttrs", "true").equals("true")) {
+            currStateName =
+               atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.CurrentStateName, "");
+         }
          if (Strings.isInValid(currStateName)) {
             currStateName = ((IAtsWorkItem) atsObject).getCurrentStateName();
          }
