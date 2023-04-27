@@ -40,6 +40,8 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
    public static interface Display {
       void setImage(KeyedImage image);
 
+      public void setDetails(String details);
+
       void setText(String value);
 
       void onCreate(IManagedForm managedForm, Composite parent);
@@ -62,7 +64,10 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
    @Override
    public void onUpdate() {
       display.setImage(getKeyedImage());
-      display.setText(createInfoPage());
+      String createInfoPageStr = createInfoPage();
+      display.setText(createInfoPageStr);
+      String details = createInfoPageStr;
+      display.setDetails(details);
    }
 
    private KeyedImage getKeyedImage() {
@@ -119,7 +124,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       String message;
       Artifact associatedArtifact = changeData.getAssociatedArtifact();
       if (associatedArtifact != null) {
-         message = AXml.textToXml(associatedArtifact.getName());
+         message = AXml.textToXml(associatedArtifact.toStringWithId());
       } else {
          message = "Unkown";
       }
