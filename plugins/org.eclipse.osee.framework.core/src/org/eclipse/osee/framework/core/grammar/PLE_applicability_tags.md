@@ -17,79 +17,79 @@ names of features, configurations, configuration groups, and feature values may 
 
 ### Simple Feature Applicability Tags
 
-> ``Feature[A=Included]`` text_1 ``End Feature``<br>
-> Projects `text_1` when feature A is included.
+> `Feature[A=Included]` text_1 `End Feature`<br>
+> Projects 'text_1' when feature A is included.
 
-> ``Feature[A]`` text_1 ``End Feature``<br>
-> Projects `text_1` when feature A is included.  When the feature name is specified without a value, the default value for the feature is implied.  For features with the values Included/Excluded the default is Included.
+> `Feature[A]` text_1 `End Feature`<br>
+> Projects 'text_1' when feature A is included.  When the feature name is specified without a value, the default value for the feature is implied.  For features with the values Included/Excluded the default is Included.
 
-> ``Feature[A=Excluded]`` text_1 ``End Feature``<br>
-> Projects `text_1` when feature A is excluded.
+> `Feature[A=Excluded]` text_1 `End Feature`<br>
+> Projects 'text_1' when feature A is excluded.
 
 
 ### Simple Configuration Applicability Tags
 
-> ``Configuration[Config_1]`` text_1 ``End Configuration``<br>
-> Projects `text_1` when generating a projection for the configuration Config_1
+> `Configuration[Config_1]` text_1 `End Configuration`<br>
+> Projects 'text_1' when generating a projection for the configuration Config_1.
 
-> ``Configuration Not[Config_1]`` text_1 ``End Configuration``<br>
-> Projects `text_1` when generating a projection for any configuration other than Config_1
+> `Configuration Not[Config_1]` text_1 `End Configuration`<br>
+> Projects 'text_1' when generating a projection for any configuration other than Config_1.
 
-> ``ConfigurationGroup[CommonConfig]`` text_1 ``End ConfigurationGroup``<br>
-> Projects `text_1` when generating a projection for any configuration included in the configuration group CommonConfig
+> `ConfigurationGroup[CommonConfig]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration included in the configuration group CommonConfig.
 
-> ``ConfigurationGroup Not[CommonConfig]`` text_1 ``End ConfigurationGroup``<br>
-> Projects `text_1` when generating a projection for any configuration except those included in the configuration group CommonConfig
+> `ConfigurationGroup Not[CommonConfig]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration except those included in the configuration group CommonConfig.
 
 ### Tags with else
 
-> ``Feature[A]`` text_1 ``Feature Else`` text_2 ``End Feature``<br>
-> Projects `text_1` when feature A is included, otherwise `text_2` is projected
+> `Feature[A]` text_1 `Feature Else` text_2 `End Feature`<br>
+> Projects 'text_1' when feature A is included, otherwise 'text_2' is projected.
 
-> ``Configuration[Config_1]`` text_1 ``Configuration Else`` text_2 ``End Configuration``<br>
-> Projects `text_1` when generating a projection for the configuration Config_1, otherwise `text_2` is projected
+> `Configuration[Config_1]` text_1 `Configuration Else` text_2 `End Configuration`<br>
+> Projects 'text_1' when generating a projection for the configuration Config_1, otherwise 'text_2' is projected.
 
-> ``ConfigurationGroup[CommonConfig]`` text_1 ``ConfigurationGroup Else`` text_2 ``End ConfigurationGroup``<br>
-> Projects `text_1` when generating a projection for any configuration included in the configuration group CommonConfig, otherwise `text_2` is projected
+> `ConfigurationGroup[CommonConfig]` text_1 `ConfigurationGroup Else` text_2 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration included in the configuration group CommonConfig, otherwise 'text_2' is projected.
 
 ### Tags with compound values (And/Or)
 
-> ``Feature[A=Included | B=Included]`` text_1 ``End Feature``<br>
-> Projects `text_1` when feature A is included or feature B is included.
+> `Feature[A=Included | B=Included]` text_1 `End Feature`<br>
+> Projects 'text_1' when feature A is included or feature B is included.
 
-> ``Feature[A=Include & B=Included]`` text_1 ``End Feature``<br>
-> Projects `text_1` only when feature A and feature B are included.
+> `Feature[A=Include & B=Included]` text_1 `End Feature`<br>
+> Projects 'text_1' only when feature A and feature B are included.
 
-> ``Configuration[Config_1 | Config_2]`` text_1 ``End Configuration``<br>
-> Projects `text_1` when generating a projection for configuration Config_1 or Config_2
+> `Configuration[Config_1 | Config_2]` text_1 `End Configuration`<br>
+> Projects 'text_1' when generating a projection for configuration Config_1 or Config_2.
 
-> ``Configuration Not[Config_1 | Config_2]`` text_1 ``End Configuration``<br>
-> Projects `text_1` when generating a projection for any configuration other than Config_1 or Config_2
+> `Configuration Not[Config_1 | Config_2]` text_1 `End Configuration`<br>
+> Projects 'text_1' when generating a projection for any configuration other than Config_1 or Config_2.
 
-> ``ConfigurationGroup[CommonConfig | ConfigGroupX]`` text_1 ``End ConfigurationGroup``<br>
-> Projects `text_1` when generating a projection for any configuration included in the configuration group CommonConfig or ConfigGroupX
+> `ConfigurationGroup[CommonConfig | ConfigGroupX]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration included in the configuration group CommonConfig or ConfigGroupX.
 
-> ``ConfigurationGroup Not[CommonConfig | ConfigGroupX]`` text_1 ``End ConfigurationGroup``<br>
-> Projects `text_1` when generating a projection for any configuration except those included in the configuration group CommonConfig or ConfigGroupX
+> `ConfigurationGroup Not[CommonConfig | ConfigGroupX]` text_1 `End ConfigurationGroup`<br>
+> Projects 'text_1' when generating a projection for any configuration except those included in the configuration group CommonConfig or ConfigGroupX.
 
 #### Not Valid
 Using & is not valid for Configurations or ConfigurationGroups because it would always evaluate to not applicable and exclude the text.
 
->~~``Configuration[Config_1 & Config_2]`` text_1 ``End Configuration``~~
+>~~`Configuration[Config_1 & Config_2]` text_1 `End Configuration`~~
 
->~~``ConfigurationGroup[CommonConfig & ConfigGroupX]`` text_1 ``End ConfigurationGroup``~~
+>~~`ConfigurationGroup[CommonConfig & ConfigGroupX]` text_1 `End ConfigurationGroup`~~
 
 ### Nested Tags
 
-> ``Feature[A]`` text_1 ``Feature[B]`` text_2 ``End Feature`` text_3 ``End Feature``<br>
-> Projects `text_1 text_2 text_3` when feature A is included and feature B is included.
-> Projects `text_1 text_3` when feature A is included and feature B is excluded.
-> Projects nothing when feature A is excluded
+> `Feature[A]` text_1 `Feature[B]` text_2 `End Feature` text_3 `End Feature`<br>
+> Projects 'text_1 text_2 text_3' when feature A is included and feature B is included.
+> Projects 'text_1 text_3' when feature A is included and feature B is excluded.
+> Projects nothing when feature A is excluded.
 
-> ``Feature[A]`` text_1 ``Feature[B]`` text_2 ``End Feature`` ``Feature Else`` text_3 ``End Feature``<br>
-> Projects `text_1 text_2` when feature A is included and feature B is included.
-> Projects `text_1` when feature A is included and feature B is excluded.
-> Projects `text_3` when feature A is excluded
+> `Feature[A]` text_1 `Feature[B]` text_2 `End Feature` `Feature Else` text_3 `End Feature`<br>
+> Projects 'text_1 text_2' when feature A is included and feature B is included.
+> Projects 'text_1' when feature A is included and feature B is excluded.
+> Projects 'text_3' when feature A is excluded.
 
 Note: Ensure each tag has a matching end tag.  Tags may be embedded inside of else tags.
 
@@ -103,11 +103,11 @@ Note: If you use nested tags inside of tables the same rules apply, the tags mus
 
 | Col A | Col B | Col C | Col D | Col E |
 |---|---|---|---|---|
-| ``Feature[A]`` 1a | 1b | 1c | 1d  | 1e ``End Feature`` |
-| ``Feature[A]`` 2a | 2b | 2c | 2d  | 2e  |
-| 3a | 3b | 3c | 3d  | 3e ``End Feature`` |
-| ``Feature[A]`` 4a ``End Feature`` <br> ``Feature[A]`` 5a ``End Feature`` | 2b | 4c | 4d | ``Feature[A]`` 4e ``End Feature`` <br> ``Feature[A]`` 5e ``End Feature`` |
-| ~~``Feature[A]`` 6a~~ | ~~6b~~ | ~~6c``End Feature``~~ | ~~6d~~  | ~~6e~~ |
+| `Feature[A]` 1a | 1b | 1c | 1d  | 1e `End Feature` |
+| `Feature[A]` 2a | 2b | 2c | 2d  | 2e  |
+| 3a | 3b | 3c | 3d  | 3e `End Feature` |
+| `Feature[A]` 4a `End Feature` <br> `Feature[A]` 5a `End Feature` | 2b | 4c | 4d | `Feature[A]` 4e `End Feature` <br> `Feature[A]` 5e `End Feature` |
+| ~~`Feature[A]` 6a~~ | ~~6b~~ | ~~6c`End Feature`~~ | ~~6d~~  | ~~6e~~ |
 
 
 
@@ -129,13 +129,13 @@ It is important to initially preview change reports with no view selected and th
 >
 >    - Working Branch text:
 >
->        ``Feature[A=Included]`` text_1 ``End Feature``
+>        `Feature[A=Included]` text_1 `End Feature`
 >
 >    Note that the a new feature tag was put around the text.
 
 >    - Diff with no view selected:
 >
->        ``Feature[A=Included]`` text_1 ``End Feature``
+>        `Feature[A=Included]` text_1 `End Feature`
 >
 >    - Diff with view where A is included:
 >
@@ -188,7 +188,7 @@ The list:
 
 ## Debug Hints/Tips
 - Check spelling and correct capitalization on all applicability tags
-- Verify each start tag has a matching end tag (NOTE: when embedding tags, each start tag still requires a matching end tag) and that the start and end tag types match (e.g., “``End Feature``” for a starting “``Feature[A]``” and “``End ConfigurationGroup``” for a starting “``ConfigurationGroup[CommonConfig]``”.
+- Verify each start tag has a matching end tag (NOTE: when embedding tags, each start tag still requires a matching end tag) and that the start and end tag types match (e.g., “`End Feature`” for a starting “`Feature[A]`” and “`End ConfigurationGroup`” for a starting “`ConfigurationGroup[CommonConfig]`”.
 - Verify all brackets ‘[‘ ‘]’ are correct
 - Verify the feature(s) inside the brackets are spelled correctly and are valid.
     - **NOTE:** To determine if feature is valid, check the Feature Definition artifact on your branch which is located under the ‘Product Line’ folder)
