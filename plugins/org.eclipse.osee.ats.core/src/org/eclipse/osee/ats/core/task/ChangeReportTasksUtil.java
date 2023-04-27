@@ -82,6 +82,7 @@ public class ChangeReportTasksUtil {
       }
       if (changeItems == null || changeItems.isEmpty()) {
          crtd.getResults().warning(NO_CHANGE_ITEMS_FOUND);
+         crtd.setChangeItems(Collections.emptyList());
          return;
       } else {
          crtd.setChangeItems(changeItems);
