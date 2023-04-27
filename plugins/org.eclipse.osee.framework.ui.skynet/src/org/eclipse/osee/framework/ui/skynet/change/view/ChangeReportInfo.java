@@ -15,13 +15,17 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.change.presenter.ChangeReportInfoPresenter;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
@@ -34,6 +38,7 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
    private FormText formText;
    private Label label;
    private ScrolledForm form;
+   private String details;
 
    @Override
    public void onCreate(IManagedForm managedForm, Composite parent) {
@@ -43,7 +48,7 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
       form.getBody().setBackground(parent.getBackground());
 
       Composite composite = toolkit.createComposite(parent, SWT.WRAP);
-      composite.setLayout(ALayout.getZeroMarginLayout(2, false));
+      composite.setLayout(ALayout.getZeroMarginLayout(3, false));
       GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
       gd.widthHint = 200;
       composite.setLayoutData(gd);
@@ -57,6 +62,24 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
       formText.setLayoutData(gd);
       formText.layout();
       toolkit.paintBordersFor(form.getBody());
+
+      Button showDetails = toolkit.createButton(composite, "Details", SWT.PUSH);
+      showDetails.setToolTipText("Show Full Details");
+      showDetails.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            String html = details;
+            try {
+               html = html.replaceAll("<br/><br/>", "<br/>");
+               html = html.replaceAll(" - +<b>", "<br/><b>");
+            } catch (Exception ex) {
+               // do nothing
+            }
+            ResultsEditor.open("Details", "Change Report Details", html);
+         }
+
+      });
    }
 
    @Override
@@ -82,6 +105,15 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
          gridData.heightHint = 8 * (2 + size);
          formText.setLayoutData(gridData);
       }
+   }
+
+   public String getDetails() {
+      return details;
+   }
+
+   @Override
+   public void setDetails(String details) {
+      this.details = details;
    }
 
 }
