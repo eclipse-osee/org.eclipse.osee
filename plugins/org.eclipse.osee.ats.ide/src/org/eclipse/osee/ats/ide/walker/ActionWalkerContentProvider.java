@@ -59,7 +59,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
          } else if (!isTopArtifactGoal() && entity instanceof TeamWorkFlowArtifact) {
             objs.add(entity);
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) entity;
-            if (!view.isShowAll() && AtsApiService.get().getTaskService().getTasks(teamArt).size() > 8) {
+            if (!view.isShowAll() && AtsApiService.get().getTaskService().getTasks(teamArt).size() > 0) {
                TaskWrapper taskWrapper = new TaskWrapper(teamArt);
                objs.add(taskWrapper);
                AbstractWorkflowArtifact activeAwa = view.getActiveAwa();
@@ -72,7 +72,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             } else {
                objs.addAll(AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) entity));
             }
-            if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
+            if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 0) {
                ReviewWrapper reviewWrapper = new ReviewWrapper(teamArt);
                objs.add(reviewWrapper);
                if (ReviewManager.getReviews(teamArt).contains(view.getActiveAwa())) {
@@ -84,17 +84,17 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
          } else if (entity instanceof GoalArtifact) {
             objs.add(entity);
             GoalArtifact goal = (GoalArtifact) entity;
-            if (!view.isShowAll() && goal.getMembers().size() > 10) {
+            if (!view.isShowAll() && goal.getMembers().size() > 0) {
                objs.add(new GoalMemberWrapper(goal));
             } else {
                objs.addAll(goal.getMembers());
             }
-         } else if (entity instanceof Artifact && AtsApiService.get().getQueryServiceIde().getArtifact(
-            entity).isOfType(AtsArtifactTypes.AgileSprint)) {
+         } else if (entity instanceof Artifact && AtsApiService.get().getQueryServiceIde().getArtifact(entity).isOfType(
+            AtsArtifactTypes.AgileSprint)) {
             objs.add(entity);
             IAgileSprint sprint = AtsApiService.get().getWorkItemService().getAgileSprint(
                AtsApiService.get().getQueryServiceIde().getArtifact(entity));
-            if (!view.isShowAll() && AtsApiService.get().getAgileService().getItems(sprint).size() > 10) {
+            if (!view.isShowAll() && AtsApiService.get().getAgileService().getItems(sprint).size() > 0) {
                objs.add(new SprintMemberWrapper(sprint));
             } else {
                objs.addAll(AtsApiService.get().getAgileService().getItems(sprint));
@@ -116,7 +116,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             List<Object> objs = new ArrayList<>(5);
             if (!isTopArtifactGoal()) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) inputElement;
-               if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
+               if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 0) {
                   ReviewWrapper reviewWrapper = new ReviewWrapper(teamArt);
                   objs.add(reviewWrapper);
                   if (ReviewManager.getReviews(teamArt).contains(view.getActiveAwa())) {
@@ -125,7 +125,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                } else {
                   objs.addAll(ReviewManager.getReviews(teamArt));
                }
-               if (!view.isShowAll() && AtsApiService.get().getTaskService().getTasks(teamArt).size() > 8) {
+               if (!view.isShowAll() && AtsApiService.get().getTaskService().getTasks(teamArt).size() > 0) {
                   TaskWrapper taskWrapper = new TaskWrapper(teamArt);
                   objs.add(taskWrapper);
                   AbstractWorkflowArtifact activeAwa = view.getActiveAwa();
@@ -143,7 +143,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
          } else if (inputElement instanceof GoalArtifact) {
             List<Object> objs = new ArrayList<>(5);
             GoalArtifact goal = (GoalArtifact) inputElement;
-            if (!view.isShowAll() && goal.getMembers().size() > 10) {
+            if (!view.isShowAll() && goal.getMembers().size() > 0) {
                objs.add(new GoalMemberWrapper(goal));
             } else {
                objs.addAll(goal.getMembers());
@@ -154,7 +154,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             List<Object> objs = new ArrayList<>(5);
             IAgileSprint sprint = AtsApiService.get().getWorkItemService().getAgileSprint(
                AtsApiService.get().getQueryServiceIde().getArtifact(inputElement));
-            if (!view.isShowAll() && AtsApiService.get().getAgileService().getItems(sprint).size() > 10) {
+            if (!view.isShowAll() && AtsApiService.get().getAgileService().getItems(sprint).size() > 0) {
                objs.add(new SprintMemberWrapper(sprint));
             } else {
                objs.addAll(AtsApiService.get().getAgileService().getItems(sprint));

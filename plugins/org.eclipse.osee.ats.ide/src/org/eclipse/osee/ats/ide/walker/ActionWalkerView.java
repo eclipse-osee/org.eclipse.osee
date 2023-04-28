@@ -115,7 +115,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
             }
 
          });
-         createActions();
+         createToolbar();
          layoutMgr.start();
          refresh();
 
@@ -228,11 +228,9 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       }
    }
 
-   private void createActions() {
+   private void createToolbar() {
       IActionBars bars = getViewSite().getActionBars();
-      // IMenuManager mm = bars.getMenuManager();
       IToolBarManager tbm = bars.getToolBarManager();
-
       tbm.add(new ActionWalkerLayoutAction(this));
       tbm.add(new ActionWalkerShowAllAction(this));
       tbm.add(new ActionWalkerRefreshAction(this));
@@ -296,7 +294,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    }
 
    @Override
-   public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
+   public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective,
+      IWorkbenchPartReference partRef, String changeId) {
       processWindowActivated();
    }
 

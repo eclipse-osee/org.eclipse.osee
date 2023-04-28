@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.core.task;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -57,6 +57,7 @@ public class CreateTasksWorkflow {
    protected final String pcrNumber;
    protected final AtsApi atsApi;
    protected IAtsActionableItem actionableItem;
+   protected final List<INewActionListener> newActionListeners = new ArrayList<>();
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, Collection<String> taskNamesMissingTaskArtifact, //
       boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
@@ -100,7 +101,7 @@ public class CreateTasksWorkflow {
    }
 
    public Collection<INewActionListener> getNewActionListeners() {
-      return Collections.emptyList();
+      return newActionListeners;
    }
 
    public IAtsTeamWorkflow createMissingWorkflow() {

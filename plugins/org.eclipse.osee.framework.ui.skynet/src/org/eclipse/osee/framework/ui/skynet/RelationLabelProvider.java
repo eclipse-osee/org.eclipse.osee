@@ -130,6 +130,10 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
          return String.valueOf(wrapper.getRelation().getRelOrder());
       }
+      if (columnIndex == 6 && element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
+         return wrapper.getOther().getArtifactType().getName();
+      }
       if (element instanceof RelationTypeToken) {
          if (columnIndex == 0) {
             return ((RelationTypeToken) element).getName();

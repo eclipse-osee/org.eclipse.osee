@@ -85,8 +85,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private final IDirtiableEditor editor;
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
    public static final String[] columnNames =
-      new String[] {"Type/Side/Name", "Art Id", "Rationale", "Id", "Gamma Id", "Order By"};
-   public static final Integer[] columnLengths = new Integer[] {600, 50, 300, 50, 50, 50};
+      new String[] {"Type/Side/Name", "Art Id", "Rationale", "Id", "Gamma Id", "Order By", "Art Type"};
+   public static final Integer[] columnLengths = new Integer[] {600, 50, 300, 50, 50, 50, 80};
 
    private MenuItem openMenuItem, viewRelationTreeItem, deleteRelationMenuItem, deleteArtifactMenuItem;
 

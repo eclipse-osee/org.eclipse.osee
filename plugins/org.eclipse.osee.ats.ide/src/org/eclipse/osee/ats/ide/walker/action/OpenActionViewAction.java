@@ -30,7 +30,7 @@ public class OpenActionViewAction extends Action {
 
    public OpenActionViewAction() {
       super("Open Action View");
-      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
+      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION_WALKER));
    }
 
    @Override
