@@ -49,13 +49,16 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTableColumn;
@@ -262,10 +265,20 @@ public class CreateChangeReportTasksOperation {
                         reportOnly, crttwd.getRd(), changes, new Date(), AtsCoreUsers.SYSTEM_USER, chgRptTeamWf,
                         new CommitConfigItem(targetedVersion, atsApi), crttwd.getWorkType(), null, null);
                   workflowCreator.setActionableItem(ai);
+                  // Set name off derived-from host workflow and not off action
+                  workflowCreator.getNewActionListeners().add(new INewActionListener() {
+
+                     @Override
+                     public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
+                        changes.setSoleAttributeValue(teamWf, CoreAttributeTypes.Name, hostTeamWf.getName());
+                     }
+
+                  });
                   destTeamWf = workflowCreator.createMissingWorkflow();
                   rd.success("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
                } else {
-                  rd.logf("Need to Create Destination Team Wf for team %s\n", toTeamDef.toStringWithId());
+                  rd.logf("Need to Create Destination Team Wf for team %s with name [%s]\n", toTeamDef.toStringWithId(),
+                     hostTeamWf.getName());
                }
             } else {
                rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
@@ -486,7 +499,8 @@ public class CreateChangeReportTasksOperation {
       }
    }
 
-   private IAtsActionableItem getToSiblingAi(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, ChangeReportOptionsToTeam toSiblingTeamDef) {
+   private IAtsActionableItem getToSiblingAi(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd,
+      ChangeReportOptionsToTeam toSiblingTeamDef) {
       IAtsActionableItem toSiblingAi = null;
       if (Strings.isNumeric(toSiblingTeamDef.getAiId())) {
          toSiblingAi = atsApi.getActionableItemService().getActionableItem(toSiblingTeamDef.getAiId());
@@ -496,7 +510,8 @@ public class CreateChangeReportTasksOperation {
       return toSiblingAi;
    }
 
-   private IAtsActionableItem getAiFromWorkType(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, WorkType workType) {
+   private IAtsActionableItem getAiFromWorkType(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd,
+      WorkType workType) {
       if (workType == null) {
          rd.errorf("Team Definition and Work Type invalid in CreateTaskDefinition\n");
          return null;
@@ -520,7 +535,8 @@ public class CreateChangeReportTasksOperation {
       return ais.iterator().next();
    }
 
-   private IAtsTeamDefinition getToTeamDef(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, ChangeReportOptionsToTeam toSiblingTeamDef) {
+   private IAtsTeamDefinition getToTeamDef(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd,
+      ChangeReportOptionsToTeam toSiblingTeamDef) {
       IAtsTeamDefinition toTeamDef = null;
       if (Strings.isNumeric(toSiblingTeamDef.getTeamId())) {
          toTeamDef =
@@ -544,7 +560,8 @@ public class CreateChangeReportTasksOperation {
       return fromTeamDef;
    }
 
-   private IAtsTeamDefinition getTeamDefFromWorkType(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, WorkType workType) {
+   private IAtsTeamDefinition getTeamDefFromWorkType(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd,
+      WorkType workType) {
       if (workType == null) {
          rd.errorf("Team Definition and Work Type invalid in CreateTaskDefinition\n");
          return null;
@@ -568,7 +585,8 @@ public class CreateChangeReportTasksOperation {
       return teamDefs.iterator().next();
    }
 
-   private void addToNewTaskData(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, Date createdDate) {
+   private void addToNewTaskData(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      ChangeReportTaskMatch taskMatch, Date createdDate) {
       JaxAtsTask task = new JaxAtsTask();
       task.setName(taskMatch.getTaskName());
       if (taskMatch.getMatchType() == ChangeReportTaskMatchType.StaticTskCompAsNeeded) {

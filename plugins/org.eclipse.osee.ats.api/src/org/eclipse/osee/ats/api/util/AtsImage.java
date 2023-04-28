@@ -29,6 +29,7 @@ public class AtsImage extends OseeImage {
    private static String IDE_PLUGIN_ID = "org.eclipse.osee.ats.ide";
 
    public static AtsImage ACTION = new AtsImage("action.gif");
+   public static AtsImage ACTION_WALKER = new AtsImage("actionWalker.gif");
    public static AtsImage ACTIONABLE_ITEM = new AtsImage("AI.gif");
    public static AtsImage ARROW_LEFT_YELLOW = new AtsImage("nav_forward.gif");
    public static AtsImage ART_VIEW = new AtsImage("artView.gif");

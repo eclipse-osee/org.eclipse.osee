@@ -92,7 +92,9 @@ public class ChangeReportTasksUtil {
    /**
     * Compare already ChgRptTskCompAsNeeded task matches with existing tasks and determine fate.
     */
-   public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactToken> idToArtifact, ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
+   public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactToken> idToArtifact,
+      ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType,
+      IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
       Collection<IAtsTask> tasks = Collections.emptyList();
       if (destTeamWf != null) {
@@ -193,7 +195,8 @@ public class ChangeReportTasksUtil {
    /**
     * @return task match if task referenced
     */
-   public static ChangeReportTaskMatch getTaskMatch(IAtsTask task, ArtifactId referencedChgArt, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+   public static ChangeReportTaskMatch getTaskMatch(IAtsTask task, ArtifactId referencedChgArt,
+      ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
       ArtifactId taskRefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
          AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
       for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
@@ -209,7 +212,8 @@ public class ChangeReportTasksUtil {
    }
 
    @SuppressWarnings("unlikely-arg-type")
-   public static IAtsTeamWorkflow getDestTeamWfOrNull(ChangeReportTaskTeamWfData crttwd, WorkType workType, AtsApi atsApi, IAtsTeamWorkflow sourceTeamWf, IAtsTeamDefinition destTeamDef) {
+   public static IAtsTeamWorkflow getDestTeamWfOrNull(ChangeReportTaskTeamWfData crttwd, WorkType workType,
+      AtsApi atsApi, IAtsTeamWorkflow sourceTeamWf, IAtsTeamDefinition destTeamDef) {
       // Try to find by Derive_To first
       ArtifactToken chgRptTeamWf = crttwd.getChgRptTeamWf();
 
@@ -229,12 +233,20 @@ public class ChangeReportTasksUtil {
       }
       // Else, look through siblings for matching team def
       for (IAtsTeamWorkflow teamWf : teamWorkflows) {
-         if (!teamWf.equals(sourceTeamWf) && teamWf.getTeamDefinition().equals(destTeamDef)) {
+         if (!teamWf.equals(sourceTeamWf) && //
+            teamWf.getTeamDefinition().equals(destTeamDef) && //
+            // If already derived, this is not the correct workflow
+            notAlreadyDerived(teamWf) //
+         ) {
             crttwd.setDestTeamWf(teamWf.getArtifactToken());
             return teamWf;
          }
       }
       return null;
+   }
+
+   private static boolean notAlreadyDerived(IAtsTeamWorkflow teamWf) {
+      return AtsApiService.get().getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_From).isEmpty();
    }
 
 }

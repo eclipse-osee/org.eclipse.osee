@@ -43,7 +43,8 @@ public interface IAtsChangeReportTaskNameProvider {
 
    public ChangeReportTaskNameProviderToken getId();
 
-   default Map<ArtifactId, ArtifactToken> getTasksComputedAsNeeded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+   default Map<ArtifactId, ArtifactToken> getTasksComputedAsNeeded(ChangeReportTaskData crtd,
+      ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
       return getTasksComputedAsNeeded(crtd, crttwd, atsApi, isAddTaskMatch());
    }
 
@@ -54,7 +55,8 @@ public interface IAtsChangeReportTaskNameProvider {
       return true;
    }
 
-   default public Map<ArtifactId, ArtifactToken> getTasksComputedAsNeeded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, boolean addTaskMatch) {
+   default public Map<ArtifactId, ArtifactToken> getTasksComputedAsNeeded(ChangeReportTaskData crtd,
+      ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, boolean addTaskMatch) {
       Map<ArtifactId, ArtifactToken> idToArtifact = new HashMap<>();
       getModifiedArifactNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
       getRelArtifactNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
@@ -67,7 +69,8 @@ public interface IAtsChangeReportTaskNameProvider {
     * Add tasks defined in StaticTaskDefinition through java api. These will be added regardless of change report
     * contents.
     */
-   default void getApiAndTaskNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
+   default void getApiAndTaskNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
       for (StaticTaskDefinition taskDef : crtd.getSetDef().getStaticTaskDefs()) {
          ChangeReportTaskMatch match = new ChangeReportTaskMatch();
          match.setTaskName(taskDef.getName());
@@ -81,14 +84,16 @@ public interface IAtsChangeReportTaskNameProvider {
    /**
     * Allow extensions to add other names
     */
-   default void getExtensionNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
+   default void getExtensionNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
       // do nothing
    }
 
    /**
     * Compute all artifacts on an included rel that doesn't have 2 artifacts both excluded.
     */
-   default void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
+   default void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
       for (ArtifactId chgRptArt : getRelArts(crtd, crttwd, atsApi)) {
          logAndAddTaskName(crtd, crttwd, atsApi, ArtifactToken.valueOf(chgRptArt, ""), idToArtifact,
             TaskChangeType.Relation.name(), addTaskMatch);
@@ -98,14 +103,17 @@ public interface IAtsChangeReportTaskNameProvider {
    /**
     * Compute all artifacts modified and deleted
     */
-   default void getModifiedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
+   default void getModifiedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
       processModifiedDeletedArts(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
    }
 
    /**
     * Override to provide additional attributes to be added to created task
     */
-   default ChangeReportTaskMatch logAndAddTaskName(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, ArtifactToken chgRptArt, Map<ArtifactId, ArtifactToken> idToArtifact, String chgType, boolean addTaskMatch) {
+   default ChangeReportTaskMatch logAndAddTaskName(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      AtsApi atsApi, ArtifactToken chgRptArt, Map<ArtifactId, ArtifactToken> idToArtifact, String chgType,
+      boolean addTaskMatch) {
       ArtifactToken art =
          atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranchId(), DeletionFlag.INCLUDE_DELETED);
       idToArtifact.put(art, art);
@@ -186,7 +194,8 @@ public interface IAtsChangeReportTaskNameProvider {
       return safeName;
    }
 
-   default ChangeReportModDelArts processModifiedDeletedArts(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, //
+   default ChangeReportModDelArts processModifiedDeletedArts(ChangeReportTaskData crtd,
+      ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, //
       AtsApi atsApi, boolean addTaskMatch) {
 
       List<ChangeItem> changeItems = crtd.getChangeItems();
@@ -230,7 +239,8 @@ public interface IAtsChangeReportTaskNameProvider {
    /**
     * @return A, B where A is if Artifact/Attributes are included and B if deleted
     */
-   default ArtifactIncluded isIncluded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportRollup rollup, ArtifactTypeToken artType, AtsApi atsApi) {
+   default ArtifactIncluded isIncluded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      ChangeReportRollup rollup, ArtifactTypeToken artType, AtsApi atsApi) {
 
       Collection<ArtifactTypeToken> incArtTypes = crtd.getSetDef().getChgRptOptions().getArtifactTypes();
       Collection<ArtifactTypeToken> exclArtTypes = crtd.getSetDef().getChgRptOptions().getNotArtifactTypes();
@@ -331,7 +341,8 @@ public interface IAtsChangeReportTaskNameProvider {
       return data;
    }
 
-   default Collection<ArtifactId> getRelArts(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+   default Collection<ArtifactId> getRelArts(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      AtsApi atsApi) {
 
       Collection<RelationTypeToken> incRelTypes = crtd.getSetDef().getChgRptOptions().getRelationTypes();
       Collection<RelationTypeToken> exclRelTypes = crtd.getSetDef().getChgRptOptions().getNotRelationTypes();
